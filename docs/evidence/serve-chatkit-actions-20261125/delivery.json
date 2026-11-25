@@ -1,0 +1,323 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 508,
+    "version_revision": 183,
+    "profile_revision": 73,
+    "previous_profile_revision": 72,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "65a636677f473b8069041d2fd38ec87928f9c3c86ba26519fbe6404a3f503ac0",
+    "fallback": "7e12f99fb4206fc16805bed598582024d9fb070d7fdc2ea157948df5f0e93ae8",
+    "engine": "536f91c65daacaae906bd836561c5a536157e08c52e5c8e013e2c11acccbfe22",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 506,
+  "previous_primary": "ca900adad5073113c93d037ac888979c8e692df0455a9364724cfa3a81b3d7b1",
+  "recovery": {
+    "primary": {
+      "seconds": 230.789,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "thread": "cthr_20dce6b91ce67b7ee3d30c2d75b49a06",
+        "user_item": "item_99c5fdf409fc11b4e99a247f13037b26",
+        "original_call": "call_resp_25c5c4c7d8eb7335dd609324f2420d1a_0",
+        "completed_call": "call_resp_25c5c4c7d8eb7335dd609324f2420d1a_0",
+        "form": "fc_1580b490dfe5729e2f937bfc598b977a",
+        "widget": "item_14a67e821f57e3f2cd6c255a738bc17d",
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "workflow": "agent_1583fb1d010fda60f9c919459f2a10b7",
+        "file": "file_b1fa3ff9f3915af8905b47e007ed3594",
+        "thread": "cthr_20dce6b91ce67b7ee3d30c2d75b49a06",
+        "form": "fc_1580b490dfe5729e2f937bfc598b977a",
+        "widget": "item_14a67e821f57e3f2cd6c255a738bc17d",
+        "call": "call_resp_25c5c4c7d8eb7335dd609324f2420d1a_0",
+        "user": "item_99c5fdf409fc11b4e99a247f13037b26"
+      },
+      "recovered": {
+        "answer": "506",
+        "widget_label": "verified 506",
+        "answered_form": "fc_1580b490dfe5729e2f937bfc598b977a",
+        "ids": [
+          "item_99c5fdf409fc11b4e99a247f13037b26",
+          "fc_1580b490dfe5729e2f937bfc598b977a",
+          "item_14a67e821f57e3f2cd6c255a738bc17d",
+          "msg_361620b103ad49ea0c7cb1e6ca7f4634"
+        ],
+        "call": "call_resp_25c5c4c7d8eb7335dd609324f2420d1a_0",
+        "foreign": 404,
+        "deleted": 404,
+        "duplicate": 409,
+        "new_turn": 409,
+        "untyped": 409
+      },
+      "sdk": "7.47.0",
+      "independent": "42",
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease_sha256": "f14170a423fc49f06941e8798ec38db9225af7eec442ef4e7703fdf4bfd52b5f",
+      "before_sha256": "2f980ba7fd91a09892bc6fe928fcf5417219c8c4cd0bb4346fedeb14af6c32d9",
+      "after_sha256": "d57d6baee51048e45438bb092fc603cb7ad88f4c5b0860a84fb34b27b0d31f8f",
+      "gateway_takeover": {
+        "enabled": true,
+        "root_manifest_sha256": "65a636677f473b8069041d2fd38ec87928f9c3c86ba26519fbe6404a3f503ac0",
+        "cycle_id": "397bc77a-0cb1-484b-af30-163409f6dc00",
+        "selected": "fallback",
+        "launch_payload": "fallback",
+        "payload_manifest_sha256": "7e12f99fb4206fc16805bed598582024d9fb070d7fdc2ea157948df5f0e93ae8",
+        "fallback_consumed": true,
+        "protected": false,
+        "pending": false,
+        "payload_prepared": true,
+        "state_available": true,
+        "worker_pid": 3792,
+        "worker_start_ticks": 380218651,
+        "probe_pid": null,
+        "probe_count": 1,
+        "last_fault": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "fingerprint": "46bb0d97f2b6dbf1e94d07c4eae7a2458ac5c21784446db2ebe711c96dc30419",
+          "generation": 1,
+          "kind": "native_process_signal",
+          "payload_sha256": "65a636677f473b8069041d2fd38ec87928f9c3c86ba26519fbe6404a3f503ac0",
+          "role": "gateway",
+          "signal": 6
+        },
+        "reason": "",
+        "role_launch_authority": false
+      }
+    },
+    "fallback": {
+      "seconds": 165.962,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "thread": "cthr_c9499c8e3fec8afc6b9f6043bd497309",
+        "user_item": "item_5cd7cf71e367b2ea63ce5db199c55c05",
+        "original_call": "call_resp_0a1b85cc8a1c4be748b4a2d772adf953_0",
+        "completed_call": "call_resp_0a1b85cc8a1c4be748b4a2d772adf953_0",
+        "form": "fc_1b6ef5bb6bfd7cb3977190f073203792",
+        "widget": "item_90183598bdb3f7eb25e2bb7260ed55ca",
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "workflow": "agent_a412de4f72cd8cf61a1b598cde0e11ed",
+        "file": "file_ba037ba1b948c214431e0aa728631a82",
+        "thread": "cthr_c9499c8e3fec8afc6b9f6043bd497309",
+        "form": "fc_1b6ef5bb6bfd7cb3977190f073203792",
+        "widget": "item_90183598bdb3f7eb25e2bb7260ed55ca",
+        "call": "call_resp_0a1b85cc8a1c4be748b4a2d772adf953_0",
+        "user": "item_5cd7cf71e367b2ea63ce5db199c55c05"
+      },
+      "recovered": {
+        "answer": "506",
+        "widget_label": "verified 506",
+        "answered_form": "fc_1b6ef5bb6bfd7cb3977190f073203792",
+        "ids": [
+          "item_5cd7cf71e367b2ea63ce5db199c55c05",
+          "fc_1b6ef5bb6bfd7cb3977190f073203792",
+          "item_90183598bdb3f7eb25e2bb7260ed55ca",
+          "msg_44274834767eb86d5fe7a61fdcd63fa8"
+        ],
+        "call": "call_resp_0a1b85cc8a1c4be748b4a2d772adf953_0",
+        "foreign": 404,
+        "deleted": 404,
+        "duplicate": 409,
+        "new_turn": 409,
+        "untyped": 409
+      },
+      "sdk": "7.47.0",
+      "independent": "42",
+      "ports_free": true,
+      "remaining": [],
+      "unchanged_default": true,
+      "lease_sha256": "0c1c07d7c838c6b9e199555d7e9bb6449b2a9f249344ad315abbbc4af26e98d0",
+      "before_sha256": "8153065f32a0162d28219be724b1ab586b3ef45635e94b14bcf67fd93e5f338e",
+      "after_sha256": "48c52139983e92eed9009ed4d374fc89aa1645fdb18e05ed1cef62cf390eefb6"
+    }
+  },
+  "browser_reference": 16,
+  "browser_declared": 16,
+  "browser_missing": [],
+  "browser_operations": [
+    "attachments.create",
+    "attachments.delete",
+    "input.transcribe",
+    "items.feedback",
+    "items.list",
+    "threads.add_client_tool_output",
+    "threads.add_structured_input",
+    "threads.add_user_message",
+    "threads.create",
+    "threads.custom_action",
+    "threads.delete",
+    "threads.get_by_id",
+    "threads.list",
+    "threads.retry_after_item",
+    "threads.sync_custom_action",
+    "threads.update"
+  ],
+  "browser_remaining_event_work": [
+    "per-operation output and SSE schemas",
+    "events during handler execution",
+    "notice",
+    "stream_options",
+    "thread.item.removed",
+    "thread.updated",
+    "additional thread item shapes"
+  ],
+  "browser_event_audit": {
+    "upstream": {
+      "repository": "openai/chatkit-python",
+      "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+      "files": {
+        "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+        "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+        "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+      }
+    },
+    "upstream_event_types": [
+      "client_effect",
+      "error",
+      "notice",
+      "progress_update",
+      "stream_options",
+      "thread.created",
+      "thread.item.added",
+      "thread.item.done",
+      "thread.item.removed",
+      "thread.item.replaced",
+      "thread.item.updated",
+      "thread.updated"
+    ],
+    "native_constructor_names": [
+      "client_effect",
+      "error",
+      "progress_update",
+      "thread.created",
+      "thread.item.added",
+      "thread.item.done",
+      "thread.item.replaced",
+      "thread.item.updated"
+    ],
+    "missing_native_constructors": [
+      "notice",
+      "stream_options",
+      "thread.item.removed",
+      "thread.updated"
+    ],
+    "actual_action_event_names": [
+      "client_effect",
+      "error",
+      "progress_update",
+      "thread.item.added",
+      "thread.item.done",
+      "thread.item.replaced"
+    ],
+    "actual_sync_objects": 3,
+    "actual_structured_input_items": 2,
+    "native_sources": {
+      "src/server/chatkit_actions.cpp": "3e325075c82790d129efb018f30ac3b5f8a4f8d892de39afb835bf7eef420968",
+      "src/server/chatkit_client.cpp": "939c9969368eaf06fada474fefa2d320f8fc56bb3b338a29c6be89adcde200e6"
+    }
+  },
+  "browser_output_schema_audit": {
+    "issued_spec_sha256": "9ebb654e12cfb48d3ef66a51f0ba228d9d82f87f1eefa31667f07df2b6704739",
+    "application_sha256": "e3f55d720e9b4c8ed4edadaaa02c1b0fb3a17192471f7a6e590e19131c2da73a",
+    "per_operation_json": [
+      "attachments.create",
+      "input.transcribe"
+    ],
+    "cases": [
+      {
+        "operation": "threads.sync_custom_action",
+        "example": {
+          "updated_item": 33
+        },
+        "published_schema": "chatkit_client_result",
+        "accepted_by_declaration": true,
+        "accepted_by_reference": false
+      },
+      {
+        "operation": "threads.get_by_id",
+        "example": {
+          "id": 1,
+          "created_at": "bad-date"
+        },
+        "published_schema": "chatkit_client_result",
+        "accepted_by_declaration": true,
+        "accepted_by_reference": false
+      },
+      {
+        "operation": "threads.list",
+        "example": {
+          "data": [
+            34
+          ],
+          "has_more": false
+        },
+        "published_schema": "chatkit_client_result",
+        "accepted_by_declaration": true,
+        "accepted_by_reference": false
+      },
+      {
+        "operation": "items.list",
+        "example": {
+          "data": [
+            null
+          ],
+          "has_more": false
+        },
+        "published_schema": "chatkit_client_result",
+        "accepted_by_declaration": true,
+        "accepted_by_reference": false
+      }
+    ],
+    "declared_sse": {
+      "schema": {
+        "type": "string"
+      }
+    }
+  },
+  "openapi_sha256": "9ebb654e12cfb48d3ef66a51f0ba228d9d82f87f1eefa31667f07df2b6704739",
+  "application_sha256": "e3f55d720e9b4c8ed4edadaaa02c1b0fb3a17192471f7a6e590e19131c2da73a",
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71,
+    "receipt_sha256": "a8a4f10b701a608f27a9961b8e26bab6835fef67b5810a696ef6528336219b28"
+  },
+  "soak": {
+    "source_commit": "e94a4eb36db8d338cc04cc60bbda334825606988",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/actions-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/actions-client-primary-01/bundle",
+      "manifest_sha256": "65a636677f473b8069041d2fd38ec87928f9c3c86ba26519fbe6404a3f503ac0"
+    },
+    "revision": 508,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/actions-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "2795293712ee02ffb260378fe61d1c158beab06986fd3ec46ceafdd3b26dac40",
+    "handoff_sha256": "910d4637d9bfbb2e4587086ceb9d3db615982b48418931fe4f45b11981b9788c",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev508-preflight.json"
+}
