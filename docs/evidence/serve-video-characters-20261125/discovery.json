@@ -1,0 +1,35 @@
+{
+  "stage": "targeted_cpu_verified",
+  "prior": "cpu.json",
+  "issued": false,
+  "capability": {
+    "endpoint": "/v1/videos/characters",
+    "operations": [
+      "create",
+      "retrieve"
+    ],
+    "scope": "authenticated_client",
+    "source": "original_encoded_clip",
+    "max_name_characters": 80,
+    "max_source_bytes": 33554432,
+    "decoder_compiled": "build-dependent"
+  },
+  "build": {
+    "engine": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "native_tests": 3,
+  "native_log_sha256": "c1c23a5a75d5a18a7224d8ace3552c5826fd68f0c9219ce3d13ac603783297f1",
+  "sdk_driver_sha256": "404f3ddec4b31b6f7de13bb22ac77a85aa048139240b5046d480b9f682be2bb0",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 245,
+    "native_routes": 406,
+    "reviewed_source_anchors": 1376,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

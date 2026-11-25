@@ -9,6 +9,8 @@
 
 #include "../src/server/object_protocol.h"
 #include "q4t/server/binary_store.h"
+#include "q4t/server/chat_capabilities.h"
+#include "q4t/server/file_video.h"
 #include "q4t/server/http_connection.h"
 #include "q4t/server/object_retention.h"
 #include "q4t/server/lifetime.h"
@@ -41,6 +43,24 @@ Q4T_TEST(video_character_reads_have_reserved_observation_capacity) {
             !VideoCharacterMethodAllowed("GET", create + "/char_") &&
             !VideoCharacterMethodAllowed("GET", item + "/content"));
   return true;
+}
+
+Q4T_TEST(video_character_discovery_matches_upload_and_compile_limits) {
+  q4t::io::Json capabilities;
+  Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("local", false, false),
+                               &capabilities));
+  const auto* item = capabilities.Find("video_characters");
+  Q4T_CHECK(item && item->GetString("endpoint") == kVideoCharacters &&
+            item->GetString("scope") == "authenticated_client" &&
+            item->GetString("source") == "original_encoded_clip" &&
+            item->GetInt("max_name_characters") == 80 &&
+            item->GetInt("max_source_bytes") ==
+                static_cast<int64_t>(FileVideoLimits{}.max_source_bytes));
+  const auto* ops = item->GetArray("operations");
+  Q4T_CHECK(ops && ops->array.size() == 2 && ops->array[0].str == "create" &&
+            ops->array[1].str == "retrieve");
+  const auto* compiled = item->Find("decoder_compiled");
+  return compiled && compiled->IsBool();
 }
 
 Q4T_TEST(video_character_keeps_original_clip_behind_scoped_metadata) {

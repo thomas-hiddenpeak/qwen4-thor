@@ -1,5 +1,6 @@
 #include "q4t/server/chat_capabilities.h"
 #include "q4t/server/file_limits.h"
+#include "q4t/server/file_video.h"
 #include "q4t/server/embeddings_plan.h"
 #include "q4t/server/asr_assets.h"
 #include "q4t/server/tts_assets.h"
@@ -624,6 +625,11 @@ std::string ChatCapabilitiesJson(
          R"("recovery":"original_queued_only_started_never_replayed",)"
          R"("scope":"authenticated_client","configuration_endpoint":"/v1/config",)"
          R"("core_readiness_dependency":false})"
+         R"(,"video_characters":{"endpoint":"/v1/videos/characters",)"
+         R"("operations":["create","retrieve"],"scope":"authenticated_client",)"
+         R"("source":"original_encoded_clip","max_name_characters":80,)"
+         R"("max_source_bytes":)" + std::to_string(FileVideoLimits{}.max_source_bytes) +
+         R"(,"decoder_compiled":)" + (video_decoder ? "true" : "false") + "}" +
          R"(,"application_state":{"profile":"q4t-objects-v1",)"
          R"("live_recording":{"opt_in":"--live-recordings","session_flag":"store","default":false,)"
          R"("content":"/v1/live/sessions/{session_id}/content","content_type":"audio/wav",)"
