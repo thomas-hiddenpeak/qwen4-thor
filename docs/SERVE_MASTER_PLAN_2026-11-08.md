@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+主配置上传双轨原片，轻配置读取同一角色，模型按该 ID 调工具并复述正确的名称。两种容量的其他客户都收到 404，独立 Chat 都答 42。两次实际启动通过，留下完整的 rev498 恢复前驱。[验证记录](evidence/serve-video-track-selection-20261125/profiles.json)
+
 56 项 CPU 检查通过，包括两处轨道启用标志逐字节对照、错误轨道反例与前驱恢复记录还原。主、轻配置将接管同一份用户上传的双轨视频。[验证记录](evidence/serve-video-track-selection-20261125/profiles.json)
 
 官方 SDK 经原生 HTTPS 上传两轨 MP4，文件顺序在前的三秒轨已禁用。引擎记录启用轨旋转后的 64×128 尺寸和两秒时长，保存的整个双轨原片与上传字节一致。模型按 ID 调用工具并从回填返回角色名。另一客户收到 404，独立 Chat 答 42。继续恢复配置和发行交接。[验证记录](evidence/serve-video-track-selection-20261125/business.json)
