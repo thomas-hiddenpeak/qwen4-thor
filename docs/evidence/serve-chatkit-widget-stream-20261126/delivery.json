@@ -1,0 +1,216 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 518,
+    "version_revision": 188,
+    "profile_revision": 78,
+    "previous_profile_revision": 77,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "223c023b4278f35acfecf55b3ce8db47a5b52aaccf09572f8ccada9965873f15",
+    "fallback": "9d6bc84ef9f8f508eacd49a53ab45887c93d1b0f68e98e02e79ee17d35850513",
+    "engine": "756f7950b494436f1a1e6796724af96e289ab9c847f6a569df5b9817dfeb57e3",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 516,
+  "previous_primary": "f513c6eb40b0e3b861599283eff2ee866a34f97a609511629dad349c955ce365",
+  "source_commit": "30e9173acdb51baf64c6b7f3fc623707f71ee873",
+  "recovery": {
+    "fallback": {
+      "seconds": 167.121,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "thread": "cthr_e210db52d2c90dd314df2c122ad86141",
+        "item": "item_0f3e38cf3ec74083cbdfbd4ddef282ce",
+        "component": "review",
+        "before": [
+          "rev516",
+          "待复核"
+        ],
+        "after": [
+          "rev516",
+          "已复核"
+        ],
+        "port": 18161,
+        "egress": false
+      },
+      "recovered": {
+        "item": "item_0f3e38cf3ec74083cbdfbd4ddef282ce",
+        "after": [
+          "rev516",
+          "已复核"
+        ],
+        "component": "review",
+        "duplicate": 502,
+        "deleted": 404
+      },
+      "sibling": 404,
+      "peer": 404,
+      "chat_after": "42",
+      "sdk": "7.47.0",
+      "released_ports": true,
+      "owned_processes_remaining": 0,
+      "lease_exit_sha256": "d3dde9f53c83a18bd83b6874f6734baf3ae286d2b4af295b7c57d072c5cded7f",
+      "decision_sha256": "911eb66a4b58fe67cf952fe69efa39a1d498b5e9dda88761d3338e9eefc23844"
+    },
+    "primary": {
+      "seconds": 243.821,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "thread": "cthr_6d33d081afe21436b63e94bd4d8974f5",
+        "item": "item_a3002452293dd11309dfb04ce12e4299",
+        "component": "review",
+        "before": [
+          "rev516",
+          "待复核"
+        ],
+        "after": [
+          "rev516",
+          "已复核"
+        ],
+        "port": 18161,
+        "egress": false
+      },
+      "recovered": {
+        "item": "item_a3002452293dd11309dfb04ce12e4299",
+        "after": [
+          "rev516",
+          "已复核"
+        ],
+        "component": "review",
+        "duplicate": 502,
+        "deleted": 404
+      },
+      "sibling": 404,
+      "peer": 404,
+      "chat_after": "42",
+      "sdk": "7.47.0",
+      "released_ports": true,
+      "owned_processes_remaining": 0,
+      "lease_exit_sha256": "f975322430e9ec41af8b5a76cce8af566b6f7fb36f024f178df84f0a372e4beb",
+      "decision_sha256": "b43d31e516b138a2e782a341e98439bc38d58acdb155efbb7bffe96479e84409",
+      "takeover": {
+        "selected": "fallback",
+        "probes": 1,
+        "signal": 6,
+        "manifest_sha256": "9d6bc84ef9f8f508eacd49a53ab45887c93d1b0f68e98e02e79ee17d35850513"
+      }
+    }
+  },
+  "wire": {
+    "status": "PASS",
+    "sdk_receipt_sha256": "14933d34a9d6f97b423146d721fab5ce29f4b3a1303a6939ab1be2f7f5f76768",
+    "packages": [
+      {
+        "slot": "fallback",
+        "manifest_sha256": "9d6bc84ef9f8f508eacd49a53ab45887c93d1b0f68e98e02e79ee17d35850513",
+        "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+        "sse": 57,
+        "json": 14
+      },
+      {
+        "slot": "primary",
+        "manifest_sha256": "223c023b4278f35acfecf55b3ce8db47a5b52aaccf09572f8ccada9965873f15",
+        "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+        "sse": 57,
+        "json": 14
+      }
+    ]
+  },
+  "profiles_sha256": "8e26df7b105fce765c58f009bae409ea34c516c15155051af8102194915a5732",
+  "business_sha256": "661ef7e01130dd5ec237b23dacc7259ecc6af8089b5c839819023ccafd7c7163",
+  "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+  "application_sha256": "0cac96397e48d5ae63686f6c1fab2352328c26ebbeb4d5572ff2bafb5507e60a",
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "5b8191a0eb35818dec719676aff878133e308beaf219ad26c6075095c0e40c86"
+        ],
+        "sha256": "d772735984f346c1370646e2f006f75645cb28557fd58ec1728ceb44f98d0398",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "7f6c7f43-0eb4-4da6-b58b-2712221dd259"
+        ],
+        "sha256": "a866f6507cd00b4749d1e07cf7a23507595092e71b6d52fa1c7eb4fa26f6f20d",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "f3efef44-9c14-41d4-ad10-885b376cd8d7"
+        ],
+        "sha256": "568bb9eef2d18d20a2c63917ad8080ec39843ed485dec5e3baa2cb7990bba7a9",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71
+  },
+  "soak": {
+    "source_commit": "30e9173acdb51baf64c6b7f3fc623707f71ee873",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-client-primary-01/bundle",
+      "manifest_sha256": "223c023b4278f35acfecf55b3ce8db47a5b52aaccf09572f8ccada9965873f15"
+    },
+    "revision": 518,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "b6b25235eb348ae2774aa91c7d8802b196b40f7ae952a2ed99dcb1469236a154",
+    "handoff_sha256": "cd2318d5d5722c38a0bdbfd1f44b5c86ed256034d7dd283b69cb864fef5e4cca",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev518-preflight.json",
+  "retained_day_plan": {
+    "status": "PASS",
+    "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src",
+    "generation": "5b8191a0eb35818dec719676aff878133e308beaf219ad26c6075095c0e40c86",
+    "manifest": "a5e061b8a33a550e104b320dca0dae24564f7ce364e143527bf45687bf229cef",
+    "unchanged_plan": "7ece2cb3afee956dfad3f6e9816ff43e900f9095a590fc76999330f3b21efc53",
+    "protected_raw_files": 28,
+    "executed_hours": 0,
+    "bindings": {
+      "q4t": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/5b8191a0eb35818dec719676aff878133e308beaf219ad26c6075095c0e40c86/q4t",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/bundle/engine/q4t",
+        "sha256": "6caf7555c0ebe92a0530e708c7aa0704e39d4d38ba0c33bf51ea24848564fb20"
+      },
+      "q4t.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/5b8191a0eb35818dec719676aff878133e308beaf219ad26c6075095c0e40c86/q4t.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/bundle/engine/q4t.release.json",
+        "sha256": "25e83423d9f8b2651f1782b4fa9f85716bf0670641da9ff3a2473cd350befd2c"
+      },
+      "service.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/5b8191a0eb35818dec719676aff878133e308beaf219ad26c6075095c0e40c86/service.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/service.release.json",
+        "sha256": "9d3a0cbc86c57daf83ac3a1d2181f31d29133253e58e2ef34c32896db94e5d72"
+      }
+    }
+  }
+}

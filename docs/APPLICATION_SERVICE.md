@@ -159,7 +159,7 @@ text({widget: {type: "Card", children: [{type: "Text", value}]}});
 
 工作流调用一次 `text` 提交状态和组件。同步动作返回 `updated_item` 或空值；流式动作可在工作者内调用 `progress("读取发行记录")`，浏览器收到进度后可以断开请求。每次动作最多发送 64 次实时进度，每次最多 4096 个 UTF-8 字节。结果中的 `progress` 和 `effects` 仍按原协议在提交后发出。结果可以附带 `notices`、字符串或空的 `title`，流式动作还可用 `remove_sender: true` 移除触发动作的组件。线程标题、组件和状态在同一修订上原子提交。写入冲突或无效结果在发出首条进度前返回 HTTP 错误，之后发出终止错误事件；此前已送达的进度不代表写入成功。默认 rev510 已交付上述行为。10 个 JSON 操作、6 个 SSE 操作有分操作输出合同；业务回放覆盖 12 种事件，其他线程条目及嵌套更新形态仍需验收。[发行回执](evidence/serve-chatkit-browser-output-20261125/delivery.json)[动作与合同验收](evidence/serve-chatkit-browser-output-20261125/business.json)
 
-流式组件候选为动作处理程序提供 `streamWidget(root)`。每次传入同一条目的完整快照。有发送者时更新原条目，新组件的 ID 由服务端生成。为文本组件设置稳定的 `id` 后，客户端可以按增量显示后续字符。下面的处理程序先显示“发行”，再补上从工作流状态读取的版本号。
+rev518 为流式动作处理程序提供 `streamWidget(root)`。每次传入同一条目的完整快照。有发送者时更新原条目，新组件的 ID 由服务端生成。为文本组件设置稳定的 `id` 后，客户端可以按增量显示后续字符。下面的处理程序先显示“发行”，再补上从工作流状态读取的版本号。
 
 ```js
 const card = value => ({type: "Card", children: [

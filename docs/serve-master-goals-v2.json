@@ -3380,13 +3380,18 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_widget_stream_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-chatkit-widget-stream-20261126/business.json",
         "component_receipt": "evidence/serve-chatkit-widget-stream-20261126/components.json",
         "profiles": "evidence/serve-chatkit-widget-stream-20261126/profiles.json",
-        "updates": ["widget.streaming_text.value_delta", "widget.root.updated", "widget.component.updated"],
-        "next": "managed fault recovery and recoverable delivery"
+        "updates": [
+          "widget.streaming_text.value_delta",
+          "widget.root.updated",
+          "widget.component.updated"
+        ],
+        "revision": 518,
+        "delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json"
       },
       "chatkit_browser_operations_20261125": {
         "reference": 16,
@@ -8255,13 +8260,18 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_widget_stream_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-chatkit-widget-stream-20261126/business.json",
         "component_receipt": "evidence/serve-chatkit-widget-stream-20261126/components.json",
         "profiles": "evidence/serve-chatkit-widget-stream-20261126/profiles.json",
-        "updates": ["widget.streaming_text.value_delta", "widget.root.updated", "widget.component.updated"],
-        "next": "managed fault recovery and recoverable delivery"
+        "updates": [
+          "widget.streaming_text.value_delta",
+          "widget.root.updated",
+          "widget.component.updated"
+        ],
+        "revision": 518,
+        "delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json"
       },
       "chatkit_browser_operations_20261125": {
         "reference": 16,
@@ -9574,8 +9584,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 516,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev516-preflight.json",
+        "revision": 518,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev518-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11242,7 +11252,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev516_delivered_remaining_deliveries",
+      "state": "rev518_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12572,7 +12582,8 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
-      }
+      },
+      "current_widget_delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -12677,16 +12688,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "861d71230590e2d830eef5f84fc91824bc7599a8",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src",
+        "source_commit": "30e9173acdb51baf64c6b7f3fc623707f71ee873",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/bundle",
-          "manifest_sha256": "a5e061b8a33a550e104b320dca0dae24564f7ce364e143527bf45687bf229cef"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-client-primary-01/bundle",
+          "manifest_sha256": "223c023b4278f35acfecf55b3ce8db47a5b52aaccf09572f8ccada9965873f15"
         },
-        "revision": 482,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "7ece2cb3afee956dfad3f6e9816ff43e900f9095a590fc76999330f3b21efc53",
-        "handoff_sha256": "d38f7c6894ff12b8e15e996daaae9d37d84e276d39a169525f4b447129b4f831",
+        "revision": 518,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "b6b25235eb348ae2774aa91c7d8802b196b40f7ae952a2ed99dcb1469236a154",
+        "handoff_sha256": "cd2318d5d5722c38a0bdbfd1f44b5c86ed256034d7dd283b69cb864fef5e4cca",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13097,9 +13108,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 514,
-        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json",
-        "plan_sha256": "35eafadf8197ad25c9253dcd861fdfed71f0ffa6a23c7a010b615af3e7c7bdc6",
+        "revision": 518,
+        "receipt": "evidence/serve-chatkit-widget-stream-20261126/delivery.json",
+        "plan_sha256": "b6b25235eb348ae2774aa91c7d8802b196b40f7ae952a2ed99dcb1469236a154",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
