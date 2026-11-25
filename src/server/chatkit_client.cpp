@@ -270,7 +270,8 @@ bool Emit(int fd, const Json& event, const StateAccess& access) {
 
 void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                         const ChatPlanConfig& config, const StateAccess& access,
-                        std::string_view token, const std::string& body) {
+                        std::string_view token, const std::string& body,
+                        ChatKitIssuer issuer, std::string_view origin) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (!http || !http->Client().Allowed()) {
     Fail(fd, access, Error(401, "invalid_client_secret", "Invalid session"));
@@ -294,14 +295,17 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   const bool create = type == "threads.create";
   if (!create && type != "threads.add_user_message" &&
       type != "threads.add_client_tool_output") {
-    auto result =
-        chatkit_detail::BrowserOperation(objects, access, grant, type, params);
+    auto result = type == "attachments.create"
+                      ? chatkit_detail::ReserveAttachment(objects, access, grant,
+                                                         params, issuer, origin)
+                      : chatkit_detail::BrowserOperation(objects, access, grant, type, params);
     if (!result.ok()) {
       Fail(fd, access, result);
       return;
     }
     detail::SendSimple(fd, 200, "OK", OutputJson(result.value),
-                       "application/json", {access.deadline});
+                       "application/json", {access.deadline}, {}, {},
+                       type == "attachments.create");
     return;
   }
   if (!jobs) {

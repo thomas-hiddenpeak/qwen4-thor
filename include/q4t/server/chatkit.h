@@ -5,13 +5,14 @@
 namespace q4t::server {
 struct ChatPlanConfig;
 class ResponsesJobs;
-void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
-                        const ChatPlanConfig& config, const StateAccess& access,
-                        std::string_view token, const std::string& body);
 struct ChatKitIssuer {
   std::string_view binding;
   std::string_view key_digest;
 };
+void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
+                        const ChatPlanConfig& config, const StateAccess& access,
+                        std::string_view token, const std::string& body,
+                        ChatKitIssuer issuer, std::string_view origin);
 Status ValidateChatKit(const io::Json& value, const char* root,
                        ChatPlanError* error);
 ObjectReply HandleChatKit(ObjectStore& objects, const StateAccess& access,

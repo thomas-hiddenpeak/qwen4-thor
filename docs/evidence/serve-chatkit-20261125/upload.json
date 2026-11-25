@@ -1,0 +1,73 @@
+{
+  "stage": "targeted_cpu",
+  "issued": false,
+  "reference": {
+    "repository": "openai/chatkit-python",
+    "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "files": {
+      "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+      "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+      "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+    }
+  },
+  "schemas": {
+    "schema_views": 2,
+    "checks": {
+      "request": {
+        "accepted": 2,
+        "rejected": 6
+      },
+      "descriptor": {
+        "accepted": 1,
+        "rejected": 4
+      },
+      "file": {
+        "accepted": 1,
+        "rejected": 2
+      }
+    },
+    "path_parameters": 2,
+    "source_hashes": {
+      "serve-application-v1.schema.json": "cd5642343a68a3fddd309e53f32f7552856cef4949e6ac267b73e695324dc38f",
+      "serve-openapi-bundle-v1.json": "1518bf4a6b24f718f6130f0d428400c922e9a49fe9acc8c277397547f4a0b494"
+    }
+  },
+  "native": {
+    "chatkit_two_phase_document_": "d828fbcf89fcb2ff2e2c8b379a36290c6cc38d6b939cfcc49b744e12db9e580b",
+    "chatkit_attachment_publication_requires_": "cd08ad5b67b08b3ee39daae7e477e691e4316ff35ad80cbc2c31220a4b5519a0",
+    "chatkit_upload_enforces_session_bytes_": "e0f1e9e686c338190188af7c284e97f7e99cf7e6302a3553ed9915260efe7c76",
+    "chatkit_forwarded_ticket_binds_": "0525396fa515917a105b2449095c3eb1a84b79c6731a7bd27312d6fe45d8d978",
+    "chatkit_two_phase_expiry_": "8f4c2a121837335f8568c9c6fa986444155540e20fdb04c92b76d0a7f17cf022"
+  },
+  "ingress": {
+    "external-front": "de483381b4619200613a5a140f1e10d23ca973a9f3321c2cddeb1f7e964565f7",
+    "browser-ingress": "bad0af8192a30411ff4c31c4a06bb4b93a5d38d29080b892123fb8a32b2a8513"
+  },
+  "migration": {
+    "cases": 50,
+    "sha256": "5de0c77167ec2cb963359419657264e684bf9c6777b340324ec48ee21cf57440"
+  },
+  "inventory": {
+    "routes": 243,
+    "native_routes": 402,
+    "mutation_checks": 40
+  },
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "sources": {
+    "src/server/chat_http.cpp": "880d53483e9f54bc50ae1ea118dd9c56f2681109c80c13ea58dd0fc72306a702",
+    "src/server/chatkit_client.cpp": "cb84fcac926f60a2c9e0c832db7934b1ca32346b8361e5b6396a67ddd2bb07e7",
+    "src/server/chatkit_attachments.cpp": "349a0b1a64add2fcb3a79ed5eb36e58c8051215a42356cbec5d0a4894d5dc9ce",
+    "src/server/files_http.cpp": "a5ac0d520f1ecb393990d15f70890a958f96ccd94c677c0de65d0f64abc14ab2",
+    "src/server/realtime_client_ticket.cpp": "e95f7d207fcb8605614b4df0d3cfc41f0f466aef8c46e009650aa56610db32df",
+    "src/service/ingress_main.cpp": "04a4d20871cdd47099272f201ac8b1ad30ac6ab81e8f70c83ec94837b1e865be",
+    "tools/serve_gateway/gateway.py": "772c3bef8f2ed5d87f8d2e3878d7fc4c24547e5b57e80e1e032e89ace573975a",
+    "tests/server_chatkit_test.cpp": "1761550dbec02cc3133979282a4ef8412ed3359c66bde30ca3fb000cd0f15339",
+    "tools/serve_responses/chatkit_files_sdk.mjs": "85461ba890b158793e9bada408eb15b6500ce04a366c42e1e2a271afa058b16e",
+    "tools/serve_responses/chatkit_upload_profiles.py": "1cdba3bd350fe2a3a8709b05a11e0ab95bc69c220f16b2f67899949408fa84fa"
+  },
+  "pending": [
+    "Native TLS and real model reading the uploaded decision",
+    "Original file and thread recovery",
+    "Stopped recoverable release"
+  ]
+}

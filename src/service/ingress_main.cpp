@@ -500,7 +500,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   Lease lease{capacity};
   AccessIdentity identity;
   Decision binding;
-  std::string eval_forwarding;
+  std::string public_origin;
   std::string_view delegated;
   int64_t delegated_expires_at = 0;
   int status = 400;
@@ -532,11 +532,14 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
                            ? "" : "Sec-WebSocket-Protocol: " +
                                       websocket_protocol + "\r\n")
                 : "Connection: keep-alive\r\n") +
-           eval_forwarding +
+           public_origin +
            framing + "\r\nX-Request-Id: " + request_id +
            "\r\nX-Q4T-Client-Id: " + std::string(identity.Id()) +
            "\r\nX-Q4T-Gateway-Token: " + binding.token + "\r\n" +
-           (!delegated.empty() ? "Authorization: Bearer " + std::string(delegated) + "\r\n"
+           (!delegated.empty() && server::IsChatKitClient(method, path)
+                ? "Authorization: Q4T-ChatKit " + std::string(identity.IssuerDigest()) +
+                      " Bearer " + std::string(delegated) + "\r\n"
+            : !delegated.empty() ? "Authorization: Bearer " + std::string(delegated) + "\r\n"
              : (server::IsRealtimeCredentialTarget(path) ||
                 path == "/v1/chatkit/sessions")
                  ? "Authorization: Q4T-Issuer " + std::string(identity.IssuerDigest()) + "\r\n" : "") +
@@ -616,11 +619,11 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     if (!source_allowed) return reject(403, "gateway_source_denied");
     if (!HostMatches(resolved.host, config.host))
       return reject(400, "gateway_bad_request");
-    if (server::IsEvalTarget(path)) {
-      eval_forwarding = "X-Forwarded-Host: " + resolved.host +
+    if (server::IsEvalTarget(path) || (method == "POST" && path == "/v1/chatkit")) {
+      public_origin = "X-Forwarded-Host: " + resolved.host +
                         "\r\nX-Forwarded-Proto: " + resolved.scheme + "\r\n";
       if (!config.http.path_prefix.empty())
-        eval_forwarding += "X-Forwarded-Prefix: " + config.http.path_prefix + "\r\n";
+        public_origin += "X-Forwarded-Prefix: " + config.http.path_prefix + "\r\n";
     }
     if (!config.cors.Response(headers.origin, &client.extra_headers))
       return reject(403, "cors_origin_denied");
@@ -656,7 +659,9 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
       const auto now = std::chrono::duration_cast<std::chrono::seconds>(
           std::chrono::system_clock::now().time_since_epoch()).count();
       const bool chatkit = server::IsChatKitClient(method, path);
-      const auto audience = chatkit ? server::ClientTicketAudience::kChatKit
+      const auto audience = !server::ParseChatKitTransfer(method, path).file.empty()
+                                ? server::ClientTicketAudience::kChatKitUpload
+                                : chatkit ? server::ClientTicketAudience::kChatKit
                                     : server::ClientTicketAudience::kRealtime;
       if ((!chatkit && !server::RealtimeGrantTarget(method, path)) ||
           !server::ReadRealtimeTicket(credential, &ticket, audience) || ticket.expires_at <= now)

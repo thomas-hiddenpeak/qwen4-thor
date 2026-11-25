@@ -10584,7 +10584,12 @@
             }
           }
         },
-        "description": "Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON."
+        "description": "Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.",
+        "x-q4t-result-by-request-type": {
+          "attachments.create": {
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_document"
+          }
+        }
       }
     },
     "/v1/chatkit/attachments": {
@@ -10650,6 +10655,87 @@
                   "file"
                 ],
                 "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/chatkit/attachments/{session_id}/{file_id}": {
+      "put": {
+        "operationId": "put_v1_chatkit_attachments_session_id_file_id",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^cksess_[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^file_[0-9a-f]{32}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON response",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_document_attachment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "no query",
+        "x-q4t-body-contract": "raw bytes of the reserved size and media type",
+        "description": "Complete the reserved document with its upload credential and the media type returned by attachments.create.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "*/*": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
               }
             }
           }
@@ -58110,6 +58196,7 @@
                   "threads.update",
                   "items.list",
                   "items.feedback",
+                  "attachments.create",
                   "attachments.delete"
                 ]
               },
@@ -58126,6 +58213,40 @@
             ],
             "additionalProperties": false,
             "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "attachments.create"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "params": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "size": {
+                          "type": "integer",
+                          "minimum": 0
+                        },
+                        "mime_type": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "size",
+                        "mime_type"
+                      ]
+                    }
+                  }
+                }
+              },
               {
                 "if": {
                   "properties": {
@@ -58332,6 +58453,65 @@
               "name",
               "type",
               "mime_type"
+            ],
+            "additionalProperties": false
+          },
+          "chatkit_reserved_document": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "const": "file"
+              },
+              "mime_type": {
+                "type": "string"
+              },
+              "upload_descriptor": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "method": {
+                    "const": "PUT"
+                  },
+                  "headers": {
+                    "type": "object",
+                    "properties": {
+                      "Authorization": {
+                        "type": "string"
+                      },
+                      "Content-Type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "Authorization",
+                      "Content-Type"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "url",
+                  "method",
+                  "headers"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "type",
+              "mime_type",
+              "upload_descriptor"
             ],
             "additionalProperties": false
           },

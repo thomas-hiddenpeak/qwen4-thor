@@ -219,6 +219,17 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ledger.LedgerError):
                     live.previous_record(current)
 
+    def test_reserved_documents_preserve_direct_upload_feedback_and_metrics(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(chatkit=live.FEEDBACK_CHATKIT, evals=live.METEOR_EVALS)
+        target = dict(old, chatkit=live.UPLOAD_CHATKIT)
+        self.assertTrue(migration.explicit_extension(old, target))
+        self.assertFalse(migration.explicit_extension(target, old))
+        for field in ('item_feedback', 'entity_mentions', 'direct_document_upload', 'two_phase_document_upload'):
+            bad = dict(live.UPLOAD_CHATKIT, **{field: False})
+            self.assertFalse(migration.explicit_extension(old, dict(target, chatkit=bad)))
+        self.assertFalse(migration.explicit_extension(dict(old,chatkit=live.CHATKIT_CAPABILITY),target))
+
     def test_feedback_requires_both_browser_contracts_and_the_issued_metrics(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(chatkit=live.CHATKIT_CAPABILITY, evals=live.METEOR_EVALS)

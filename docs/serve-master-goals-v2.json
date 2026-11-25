@@ -3063,6 +3063,10 @@
         "receipt": "evidence/serve-chatkit-20261125/feedback.json",
         "entity_mentions": "native_tls_verified",
         "profiles": "evidence/serve-chatkit-20261125/feedback-profiles.json"
+      },
+      "chatkit_two_phase_documents_20261125": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-chatkit-20261125/upload.json"
       }
     },
     {

@@ -6,6 +6,9 @@
 
 #include "object_protocol.h"
 #include "q4t/server/file_limits.h"
+#include "q4t/server/http_response.h"
+#include "q4t/server/input_contract.h"
+#include "q4t/server/realtime_client_ticket.h"
 
 namespace q4t::server::chatkit_detail {
 namespace {
@@ -33,6 +36,22 @@ ObjectReply LiveSession(ObjectStore& objects, const StateAccess& access,
   if (!data.GetArray("attachments"))
     return Error(503, "chatkit_record_invalid",
                  "Invalid session attachment list");
+  if (!data.Has("pending_attachments"))
+    Set(&data, "pending_attachments", Object());
+  auto& pending = Field(data, "pending_attachments");
+  if (!pending.IsObject())
+    return Error(503, "chatkit_record_invalid", "Invalid pending attachments");
+  const auto now = std::time(nullptr);
+  auto& ids = Field(data, "attachments").array;
+  for (const auto& [id, reservation] : pending.object) {
+    if (reservation.GetInt("expires_at") <= now)
+      std::erase_if(ids, [&](const Json& value) {
+        return value.IsString() && value.str == id;
+      });
+  }
+  std::erase_if(pending.object, [now](const auto& entry) {
+    return entry.second.GetInt("expires_at") <= now;
+  });
   read.operation = ObjectOperation::kPut;
   read.expected_revision = found.value.GetInt("revision");
   read.expires_at = found.value.GetInt("expires_at");
@@ -43,9 +62,13 @@ ObjectReply LiveSession(ObjectStore& objects, const StateAccess& access,
 }
 
 const Json& UploadSettings(const Grant& grant) {
-  return *grant.data.Find("session")
-              ->Find("chatkit_configuration")
-              ->Find("file_upload");
+  static const Json empty;
+  const auto* session = grant.data.Find("session");
+  const auto* configuration =
+      session ? session->Find("chatkit_configuration") : nullptr;
+  const auto* upload =
+      configuration ? configuration->Find("file_upload") : nullptr;
+  return upload ? *upload : empty;
 }
 
 ObjectRequest File(const StateAccess& access, const std::string& id) {
@@ -55,10 +78,40 @@ ObjectRequest File(const StateAccess& access, const std::string& id) {
   request.id = id;
   return request;
 }
+
+Json Attachment(const std::string& id, std::string_view name,
+                std::string_view mime) {
+  return Object({{"id", String(id)},
+                 {"name", String(std::string(name))},
+                 {"mime_type", String(std::string(mime))},
+                 {"type", String("file")}});
+}
+
+ObjectReply CheckReservation(const ObjectRequest& session, std::string_view id,
+                             std::string_view token, ReservedFile* file) {
+  const auto& pending = *session.data.Find("pending_attachments");
+  const auto* item = pending.Find(std::string(id));
+  if (!item || !token.starts_with("ckup_") ||
+      item->GetString("token_sha256") != Digest(token))
+    return Error(401, "invalid_upload_token",
+                 "Invalid or expired attachment upload");
+  if (item->GetInt("expires_at") <= std::time(nullptr))
+    return Error(401, "invalid_upload_token", "Attachment upload expired");
+  const auto size = item->GetInt("size", -1);
+  if (size < 0 || static_cast<uint64_t>(size) > kFileBytes ||
+      item->GetString("name").empty() || item->GetString("mime_type").empty())
+    return Error(503, "chatkit_record_invalid",
+                 "Invalid attachment reservation");
+  *file = {item->GetString("name"), item->GetString("mime_type"),
+           static_cast<uint64_t>(size)};
+  return {};
+}
 }  // namespace
 
 ObjectReply AttachmentLimit(const Grant& grant, uint64_t* limit) {
   const auto& settings = UploadSettings(grant);
+  if (!settings.IsObject())
+    return Error(503, "chatkit_record_invalid", "Missing upload settings");
   if (!settings.GetBool("enabled"))
     return Error(403, "chatkit_upload_disabled",
                  "File upload is disabled for this session");
@@ -70,9 +123,113 @@ ObjectReply AttachmentLimit(const Grant& grant, uint64_t* limit) {
   return {};
 }
 
+ObjectReply ReserveAttachment(ObjectStore& objects, const StateAccess& access,
+                              const Grant& grant, const Json& params,
+                              ChatKitIssuer issuer, std::string_view base) {
+  uint64_t limit = 0;
+  auto enabled = AttachmentLimit(grant, &limit);
+  if (!enabled.ok()) return enabled;
+  const auto name = params.GetString("name");
+  const auto* size = params.Find("size");
+  const auto* type = params.Find("mime_type");
+  if (name.empty() || name.size() > 1024 || name.find('\0') != name.npos ||
+      detail::NormalizeUtf8(name) != name || !size || !IsInputInteger(*size) ||
+      size->number < 0 || !type || !type->IsString())
+    return Error(400, "invalid_request",
+                 "Expected a filename, size and media type");
+  if (size->number > static_cast<double>(limit))
+    return Error(413, "chatkit_attachment_too_large",
+                 "Attachment exceeds the session file size");
+  const auto mime =
+      type->str.empty() ? std::string("application/octet-stream") : type->str;
+  if (mime.size() > 255 || std::ranges::any_of(mime, [](unsigned char ch) {
+        return ch < 0x20 || ch > 0x7e;
+      }))
+    return Error(400, "invalid_request", "Invalid attachment media type");
+  if (base.empty())
+    return Error(400, "invalid_upload_origin",
+                 "Invalid attachment upload origin");
+  const auto id = NewObjectId(ObjectKind::kFile);
+  CryptoKey entropy;
+  if (id.empty() || CryptoRandom(entropy) != CryptoResult::kOk)
+    return Error(503, "object_entropy_unavailable",
+                 "No attachment upload entropy");
+  std::string token = "ckup_" + trace::HexDigest(entropy);
+  CryptoWipe(entropy);
+  const auto expires =
+      std::min<int64_t>(std::time(nullptr) + 300,
+                        grant.data.Find("session")->GetInt("expires_at"));
+  if (access.scope != "local:anonymous") {
+    std::string signed_token;
+    if (!access.scope.starts_with("client:") ||
+        !SignRealtimeTicket(issuer.binding, issuer.key_digest,
+                            std::string_view(access.scope).substr(7), token,
+                            expires, &signed_token,
+                            ClientTicketAudience::kChatKitUpload)) {
+      CryptoWipe(&token);
+      return Error(503, "chatkit_issuer_unavailable",
+                   "Attachment issuer unavailable");
+    }
+    CryptoWipe(&token);
+    token = std::move(signed_token);
+  }
+  const auto hash = Digest(token);
+  auto resource = Attachment(id, name, mime);
+  const auto url =
+      std::string(base) + "/v1/chatkit/attachments/" + grant.session + "/" + id;
+  Set(&resource, "upload_descriptor",
+      Object({{"url", String(url)},
+              {"method", String("PUT")},
+              {"headers", Object({{"Authorization", String("Bearer " + token)},
+                                  {"Content-Type", String(mime)}})}}));
+  CryptoWipe(&token);
+  for (int attempt = 0; attempt < 4; ++attempt) {
+    ObjectRequest session;
+    auto found = LiveSession(objects, access, grant, &session);
+    if (!found.ok()) return found;
+    auto& ids = Field(session.data, "attachments").array;
+    if (ids.size() >=
+        static_cast<uint64_t>(UploadSettings(grant).GetInt("max_files")))
+      return Error(409, "chatkit_attachment_limit",
+                   "Session file count reached");
+    ids.push_back(String(id));
+    Set(&Field(session.data, "pending_attachments"), id,
+        Object({{"name", String(name)},
+                {"mime_type", String(mime)},
+                {"size", *size},
+                {"expires_at", Number(expires)},
+                {"token_sha256", String(hash)}}));
+    session.mutate_before = expires;
+    auto saved = objects.Execute(session, access.deadline, access.cancelled);
+    if (saved.ok()) {
+      saved.value = std::move(resource);
+      return saved;
+    }
+    if (saved.commit_unknown || saved.code != "object_revision_conflict")
+      return saved;
+  }
+  return Error(409, "chatkit_session_busy",
+               "Session changed during attachment reservation");
+}
+
+ObjectReply ReadReservation(ObjectStore& objects, const StateAccess& access,
+                            Grant* grant, std::string_view id,
+                            std::string_view token, ReservedFile* file) {
+  ObjectRequest session;
+  auto found = LiveSession(objects, access, *grant, &session);
+  if (!found.ok()) return found;
+  auto checked = CheckReservation(session, id, token, file);
+  if (!checked.ok()) return checked;
+  grant->data = std::move(session.data);
+  uint64_t limit = 0;
+  return AttachmentLimit(*grant, &limit);
+}
+
 ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
                               const Grant& grant, BinaryStage* stage,
-                              std::string_view name, std::string_view mime) {
+                              std::string_view name, std::string_view mime,
+                              std::string_view reserved_id,
+                              std::string_view token) {
   uint64_t limit = 0;
   auto enabled = AttachmentLimit(grant, &limit);
   if (!enabled.ok()) return enabled;
@@ -82,30 +239,45 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
     return Error(413, "chatkit_attachment_too_large",
                  "Attachment exceeds the session file size");
   const StateAccess state{access.scope, access.deadline, access.cancelled};
-  const auto id = NewObjectId(ObjectKind::kFile);
+  const auto id = reserved_id.empty() ? NewObjectId(ObjectKind::kFile)
+                                      : std::string(reserved_id);
   if (id.empty())
     return Error(503, "object_entropy_unavailable", "No attachment ID");
   const auto type =
       mime.empty() ? "application/octet-stream" : std::string(mime);
-  auto resource = Object({{"id", String(id)},
-                          {"name", String(std::string(name))},
-                          {"mime_type", String(type)},
-                          {"type", String("file")}});
+  auto resource = Attachment(id, name, type);
   BinaryStore binary(objects);
   for (int attempt = 0; attempt < 4; ++attempt) {
     ObjectRequest session;
     auto live = LiveSession(objects, state, grant, &session);
     if (!live.ok()) return live;
     auto& ids = Field(session.data, "attachments").array;
-    if (ids.size() >=
-        static_cast<uint64_t>(UploadSettings(grant).GetInt("max_files")))
-      return Error(409, "chatkit_attachment_limit",
-                   "Session file count reached");
-    ids.push_back(String(id));
+    const auto file_expiry = session.mutate_before;
+    if (reserved_id.empty()) {
+      if (ids.size() >=
+          static_cast<uint64_t>(UploadSettings(grant).GetInt("max_files")))
+        return Error(409, "chatkit_attachment_limit",
+                     "Session file count reached");
+      ids.push_back(String(id));
+    } else {
+      ReservedFile reserved;
+      auto checked = CheckReservation(session, id, token, &reserved);
+      if (!checked.ok()) return checked;
+      if (reserved.bytes != stage->manifest.bytes || reserved.mime != type ||
+          reserved.name != name)
+        return Error(400, "chatkit_attachment_mismatch",
+                     "Upload differs from its reservation");
+      auto& pending = Field(session.data, "pending_attachments");
+      session.mutate_before = std::min(session.mutate_before,
+                                       pending.Find(id)->GetInt("expires_at"));
+      std::erase_if(pending.object,
+                    [&](const auto& item) { return item.first == id; });
+    }
     auto file = File(state, id);
     file.operation = ObjectOperation::kPut;
     file.created_at = std::time(nullptr);
-    file.expires_at = file.mutate_before = session.mutate_before;
+    file.expires_at = file_expiry;
+    file.mutate_before = session.mutate_before;
     auto metadata = Object({{"id", String(id)},
                             {"object", String("file")},
                             {"bytes", Number(stage->manifest.bytes)},
@@ -143,6 +315,8 @@ ObjectReply RemoveAttachment(ObjectStore& objects, const StateAccess& access,
     if (!std::erase_if(
             ids, [&](const Json& v) { return v.IsString() && v.str == id; }))
       return Missing();
+    std::erase_if(Field(session.data, "pending_attachments").object,
+                  [&](const auto& item) { return item.first == id; });
     auto file = File(access, id);
     auto found = objects.Execute(file, access.deadline, access.cancelled);
     if (!found.ok() && found.http_status != 404) return found;

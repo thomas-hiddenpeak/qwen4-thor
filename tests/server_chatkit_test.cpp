@@ -10,6 +10,9 @@
 #include "q4t/server/realtime_client_ticket.h"
 #include "q4t/test.h"
 
+#include <sys/socket.h>
+#include <unistd.h>
+
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
@@ -591,5 +594,209 @@ Q4T_TEST(chatkit_upload_enforces_session_bytes_before_publication) {
   return true;
 }
 
+Q4T_TEST(chatkit_two_phase_document_binds_credential_bytes_and_publication) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto access = Access();
+  const BinaryAccess binary{access.scope, access.deadline, access.cancelled};
+  const auto session = Create(objects, access, 16, true);
+  Q4T_CHECK(session.ok());
+  const auto secret = session.value.GetString("client_secret");
+  chatkit_detail::Grant grant;
+  Q4T_CHECK(chatkit_detail::Redeem(objects, access, secret, std::time(nullptr),
+                                   &grant)
+                .ok());
+  const std::string base = "https://example.test:8443/team";
+  const std::string original("abc\0xyz", 7);
+  auto reserve = [&](int64_t size) {
+    return chatkit_detail::ReserveAttachment(
+        objects, access, grant,
+        Object({{"name", String("资料.bin")},
+                {"size", Number(size)},
+                {"mime_type", String("application/octet-stream")}}),
+        {kBinding, kIssuer}, base);
+  };
+  Q4T_CHECK(reserve(-1).http_status == 400);
+  Q4T_CHECK(reserve((1 << 20) + 1).http_status == 413);
+  auto reservation = reserve(original.size());
+  Q4T_CHECK(reservation.ok() && reserve(1).http_status == 409);
+  const auto id = reservation.value.GetString("id");
+  auto& desc = Field(reservation.value, "upload_descriptor");
+  const auto url = desc.GetString("url");
+  Q4T_CHECK(desc.GetString("method") == "PUT" && url.starts_with(base));
+  const auto path = url.substr(base.size());
+  const auto transfer = ParseChatKitTransfer("PUT", path);
+  Q4T_CHECK(transfer.file == id && transfer.session == grant.session &&
+            ParseChatKitTransfer("POST", path).file.empty() &&
+            ParseChatKitTransfer("PUT", path + "?extra=1").file.empty());
+  const auto& headers = Field(desc, "headers");
+  const auto authorization = headers.GetString("Authorization");
+  const auto token = BearerCredential(authorization);
+  const auto mime = headers.GetString("Content-Type");
+  std::string bearer;
+  const auto envelope = "Q4T-ChatKit " + kIssuer + " " + authorization;
+  Q4T_CHECK(token.starts_with("ckup_") && url.find(token) == url.npos &&
+            ResolveForwardedChatKit(envelope, "alpha", kBinding,
+                                    std::time(nullptr), &bearer,
+                                    ClientTicketAudience::kChatKitUpload) &&
+            !ResolveForwardedChatKit(envelope, "alpha", kBinding,
+                                     std::time(nullptr), &bearer));
+  ObjectRequest record;
+  record.scope = access.scope;
+  record.id = grant.session;
+  record.kind = ObjectKind::kChatKitSession;
+  auto saved = objects.Execute(record, access.deadline, access.cancelled);
+  Q4T_CHECK(saved.ok() &&
+            OutputJson(saved.value).find(token) == std::string::npos);
+  BinaryRead read;
+  Q4T_CHECK(Files(objects).Open(binary, id, &read).http_status == 404);
+  Json files = Array(), model = Array();
+  Q4T_CHECK(chatkit_detail::ResolveAttachments(
+                objects, access, grant, Array({String(id)}), &files, &model)
+                .http_status == 404);
+  {
+    FileHttpRequest request(objects, binary);
+    HttpBodyStream stream;
+    Q4T_CHECK(
+        request.PrepareChatKit(secret, mime, &stream, transfer).http_status ==
+        401);
+    Q4T_CHECK(request.PrepareChatKit(token, "text/plain", &stream, transfer)
+                  .http_status == 415);
+  }
+  {
+    auto other = Access("client:beta");
+    FileHttpRequest foreign(objects, {other.scope, other.deadline, {}});
+    HttpBodyStream stream;
+    Q4T_CHECK(
+        foreign.PrepareChatKit(token, mime, &stream, transfer).http_status ==
+        404);
+  }
+  // Both transfers open before either finishes. Only the first complete body
+  // may publish; the other request must never replace its bytes.
+  FileHttpRequest winner(objects, binary), duplicate(objects, binary);
+  HttpBodyStream accepted, losing;
+  Q4T_CHECK(winner.PrepareChatKit(token, mime, &accepted, transfer).ok() &&
+            duplicate.PrepareChatKit(token, mime, &losing, transfer).ok() &&
+            accepted.max_bytes == original.size());
+  auto finish = [](FileHttpRequest& request) {
+    int fd[2];
+    if (socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, fd))
+      return std::string{};
+    request.Serve(fd[0]);
+    close(fd[0]);
+    char buffer[4096];
+    auto n = recv(fd[1], buffer, sizeof(buffer), 0);
+    close(fd[1]);
+    return n > 0 ? std::string(buffer, n) : std::string{};
+  };
+  {
+    FileHttpRequest short_upload(objects, binary);
+    HttpBodyStream stream;
+    Q4T_CHECK(short_upload.PrepareChatKit(token, mime, &stream, transfer).ok());
+    Q4T_CHECK(stream.consume("abc", access.deadline));
+    Q4T_CHECK(finish(short_upload).starts_with("HTTP/1.1 400"));
+  }
+  Q4T_CHECK(accepted.consume(original, access.deadline) &&
+            losing.consume("changed", access.deadline));
+  auto committed = finish(winner);
+  Q4T_CHECK(committed.starts_with("HTTP/1.1 200") &&
+            committed.find(id) != committed.npos &&
+            committed.find("upload_descriptor") == committed.npos);
+  Q4T_CHECK(finish(duplicate).starts_with("HTTP/1.1 401"));
+  Q4T_CHECK(Files(objects).Open(binary, id, &read).ok());
+  BinaryStore storage(objects);
+  std::string bytes;
+  Q4T_CHECK(storage.Read(binary, read, 0, &bytes).ok() && bytes == original);
+  Q4T_CHECK(storage.Close(binary, &read).ok() &&
+            chatkit_detail::RemoveAttachment(objects, access, grant, id).ok());
+  auto pending = reserve(0);
+  Q4T_CHECK(pending.ok());
+  const auto empty_id = pending.value.GetString("id");
+  const auto auth = Field(Field(pending.value, "upload_descriptor"), "headers")
+                        .GetString("Authorization");
+  FileHttpRequest empty(objects, binary);
+  HttpBodyStream stream;
+  Q4T_CHECK(empty
+                .PrepareChatKit(BearerCredential(auth), mime, &stream,
+                                {grant.session, empty_id})
+                .ok() &&
+            empty.WireLimit() == 0 && stream.max_bytes > 0);
+  Q4T_CHECK(finish(empty).starts_with("HTTP/1.1 200"));
+  return true;
+}
+Q4T_TEST(
+    chatkit_two_phase_expiry_reclaims_capacity_and_revocation_stops_commit) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  const auto access = Access();
+  const BinaryAccess binary{access.scope, access.deadline, {}};
+  auto session = Create(objects, access, 12, true);
+  Q4T_CHECK(session.ok());
+  chatkit_detail::Grant grant;
+  Q4T_CHECK(chatkit_detail::Redeem(objects, access,
+                                   session.value.GetString("client_secret"),
+                                   std::time(nullptr), &grant)
+                .ok());
+  auto reserve = [&] {
+    return chatkit_detail::ReserveAttachment(
+        objects, access, grant,
+        Object({{"name", String("record.txt")},
+                {"mime_type", String("text/plain")},
+                {"size", Number(1)}}),
+        {kBinding, kIssuer}, "http://localhost");
+  };
+  auto expired = reserve();
+  Q4T_CHECK(expired.ok());
+  const auto id = expired.value.GetString("id");
+  const auto token = Field(Field(expired.value, "upload_descriptor"), "headers")
+                         .GetString("Authorization");
+  ObjectRequest row;
+  row.scope = access.scope;
+  row.kind = ObjectKind::kChatKitSession;
+  row.id = grant.session;
+  auto read = objects.Execute(row, access.deadline, {});
+  Q4T_CHECK(read.ok());
+  row.expected_revision = read.value.GetInt("revision");
+  row.expires_at = read.value.GetInt("expires_at");
+  row.data = Field(read.value, "data");
+  auto& pending = Field(Field(row.data, "pending_attachments"), id);
+  Set(&pending, "expires_at", Number(std::time(nullptr) - 1));
+  row.operation = ObjectOperation::kPut;
+  Q4T_CHECK(objects.Execute(row, access.deadline, {}).ok());
+  chatkit_detail::ReservedFile file;
+  Q4T_CHECK(chatkit_detail::ReadReservation(objects, access, &grant, id,
+                                            BearerCredential(token), &file)
+                .http_status == 401);
+  auto current = reserve();
+  Q4T_CHECK(current.ok() && current.value.GetString("id") != id);
+  const auto new_id = current.value.GetString("id");
+  const auto auth = Field(Field(current.value, "upload_descriptor"), "headers")
+                        .GetString("Authorization");
+  chatkit_detail::Grant redeemed;
+  redeemed.session = grant.session;
+  Q4T_CHECK(chatkit_detail::ReadReservation(objects, access, &redeemed, new_id,
+                                            BearerCredential(auth), &file)
+                .ok());
+  Q4T_CHECK(file.name == "record.txt" && file.mime == "text/plain" &&
+            file.bytes == 1);
+  BinaryStore store(objects);
+  BinaryStage stage;
+  Q4T_CHECK(store.Begin(binary, 1, 60, &stage).ok() &&
+            store.Append(binary, &stage, "x").ok());
+  Q4T_CHECK(HandleChatKit(objects, access, "POST",
+                          "/v1/chatkit/sessions/" + grant.session + "/cancel",
+                          "")
+                .ok());
+  Q4T_CHECK(chatkit_detail::PublishAttachment(objects, binary, redeemed, &stage,
+                                              file.name, file.mime, new_id,
+                                              BearerCredential(auth))
+                .http_status == 401);
+  Q4T_CHECK(store.Abort(binary, &stage).ok());
+  Q4T_CHECK(Files(objects)
+                .List(binary, Object())
+                .value.GetArray("data")
+                ->array.empty());
+  return true;
+}
 }  // namespace
 }  // namespace q4t::server
