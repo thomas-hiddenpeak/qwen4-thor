@@ -824,7 +824,10 @@
       },
       "chatkit_browser_page_defaults_20261125": {
         "state": "cpu_verified",
-        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json"
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
+        "stage": "candidate_https_verified",
+        "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -3219,7 +3222,21 @@
       },
       "chatkit_browser_page_defaults_20261125": {
         "state": "cpu_verified",
-        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json"
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
+        "stage": "candidate_https_verified",
+        "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "issued": false
+      },
+      "chatkit_browser_operations_20261125": {
+        "reference": 16,
+        "declared": 12,
+        "remaining": [
+          "threads.add_structured_input",
+          "threads.custom_action",
+          "threads.retry_after_item",
+          "threads.sync_custom_action"
+        ],
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json"
       }
     },
     {
@@ -7952,7 +7969,21 @@
       },
       "chatkit_browser_page_defaults_20261125": {
         "state": "cpu_verified",
-        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json"
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
+        "stage": "candidate_https_verified",
+        "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "issued": false
+      },
+      "chatkit_browser_operations_20261125": {
+        "reference": 16,
+        "declared": 12,
+        "remaining": [
+          "threads.add_structured_input",
+          "threads.custom_action",
+          "threads.retry_after_item",
+          "threads.sync_custom_action"
+        ],
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json"
       }
     },
     {

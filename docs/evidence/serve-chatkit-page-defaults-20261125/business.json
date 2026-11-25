@@ -1,0 +1,122 @@
+{
+  "stage": "candidate_https_verified",
+  "issued": false,
+  "predecessor_revision": 504,
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 81.08,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "identity": {
+    "binary": "bfb4f20dbae00747c4606a249cb7e4ff8e90163c80ea9346cb35ac414312ae6e",
+    "protocol_sha256": "5548ee80290f96fccbba8ee4261e974f8b74cb77586980aef9edb4346421d9ea"
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "answers": [
+      "504",
+      "504"
+    ],
+    "independent_chat": "42",
+    "peer": 404,
+    "other_user": 404,
+    "revoked": 401,
+    "secret_on_admin": 401,
+    "items": 5,
+    "call_id": "call_resp_c5a184ab4fc95761a85357229564129d_0",
+    "tool_result": {
+      "publication_revision": 504
+    },
+    "duplicate_result": 409,
+    "page_defaults": {
+      "thread": "cthr_0f0beea36ff5f046d5099bc5f8e5cbf3",
+      "total": 21,
+      "first": 20,
+      "cursor": "fc_98cf24eefff8e303be6213a6d6654558",
+      "next": [
+        "item_9f50febda45b35b0650bf8a70cd48cdc"
+      ],
+      "browser_limits": [
+        null,
+        0,
+        20
+      ],
+      "management_zero": 0,
+      "invalid_fields": [
+        "order",
+        "limit",
+        "thread_id",
+        "before"
+      ]
+    },
+    "sse_events": [
+      3,
+      8,
+      8
+    ],
+    "wire_objects": 10,
+    "driver_sha256": "6a4fd1095e1216622b7aa70c72af4f6eba37e9073f87ca887296c75986341e26"
+  },
+  "checks": {
+    "management_responses_validated_against_frozen_schema": 10,
+    "ascending_embedded_first_page": 20,
+    "ascending_remaining": 1,
+    "descending_first_page": 20,
+    "descending_remaining": 1,
+    "management_zero_has_more": true,
+    "peer_thread_http": 404,
+    "revoked_session_http": 401
+  },
+  "sha256": {
+    "browser_actor": "4345ef7ae657d67c9307fa7b0e2be8388aebafd613e949c69c5686c9b22fefff",
+    "lease": "7f45596589169237990f62e6583eba4241cf3799afaeeada27d36a62e7ce8872",
+    "redacted_http": "cc3e4d97271fb429a0813add841e8bfbc75de67d127fc747b35443600bf6e550"
+  },
+  "upstream_browser": {
+    "commit": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "types_sha256": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+    "declared": [
+      "attachments.create",
+      "attachments.delete",
+      "input.transcribe",
+      "items.feedback",
+      "items.list",
+      "threads.add_client_tool_output",
+      "threads.add_user_message",
+      "threads.create",
+      "threads.delete",
+      "threads.get_by_id",
+      "threads.list",
+      "threads.update"
+    ],
+    "missing": [
+      "threads.add_structured_input",
+      "threads.custom_action",
+      "threads.retry_after_item",
+      "threads.sync_custom_action"
+    ],
+    "reference_count": 16,
+    "reference_classes": {
+      "threads.get_by_id": "ThreadsGetByIdReq",
+      "threads.create": "ThreadsCreateReq",
+      "threads.list": "ThreadsListReq",
+      "threads.add_user_message": "ThreadsAddUserMessageReq",
+      "threads.add_client_tool_output": "ThreadsAddClientToolOutputReq",
+      "threads.add_structured_input": "ThreadsAddStructuredInputReq",
+      "threads.custom_action": "ThreadsCustomActionReq",
+      "threads.sync_custom_action": "ThreadsSyncCustomActionReq",
+      "threads.retry_after_item": "ThreadsRetryAfterItemReq",
+      "items.feedback": "ItemsFeedbackReq",
+      "attachments.delete": "AttachmentsDeleteReq",
+      "attachments.create": "AttachmentsCreateReq",
+      "input.transcribe": "InputTranscribeReq",
+      "items.list": "ItemsListReq",
+      "threads.update": "ThreadsUpdateReq",
+      "threads.delete": "ThreadsDeleteReq"
+    }
+  }
+}

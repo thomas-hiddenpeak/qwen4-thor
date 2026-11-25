@@ -3,6 +3,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {loadSdk} from '../serve_protocol/sdk.mjs';
+import {verifyPageDefaults} from './chatkit_page_sdk.mjs';
 
 let input = '';
 for await (const chunk of process.stdin) input += chunk;
@@ -25,7 +26,7 @@ const project = new OpenAI({...options, apiKey: plan.key});
 const peer = new OpenAI({...options, apiKey: plan.other});
 const sessions = project.beta.chatkit.sessions;
 const threads = project.beta.chatkit.threads;
-const release = JSON.parse(readFileSync(new URL(
+const release = JSON.parse(readFileSync(plan.releaseRecord ?? new URL(
   '../../docs/evidence/serve-webhooks-20261124/preparation-delivery.json', import.meta.url)));
 const revision = String(release.publication.publication_revision);
 const agent = await project.beta.agents.create({
@@ -36,7 +37,7 @@ const agent = await project.beta.agents.create({
 
 });
 const session = user => sessions.create({user, workflow: {id:agent.id},
-  rate_limits:{max_requests_per_1_minute:30}});
+  rate_limits:{max_requests_per_1_minute:plan.verifyPageDefaults ? 50 : 30}});
 const [reader, sibling] = await Promise.all([session('reader'), session('other-reader')]);
 assert.ok(reader.client_secret.startsWith('cksec_'));
 const adminDenial = new OpenAI({...options, apiKey:reader.client_secret});
@@ -102,6 +103,12 @@ const page = await browser(reader.client_secret,'items.list',{thread_id:id,limit
 assert.equal(page.after,items.data[1].id);
 const next = await browser(reader.client_secret,'items.list',{thread_id:id,after:page.after,order:'asc'});
 assert.deepEqual(next.data.map(x=>x.id),items.data.slice(2).map(x=>x.id));
+const pageDefaults = plan.verifyPageDefaults ? await verifyPageDefaults({
+  thread: id, threads,
+  browser: (op, params, status) => browser(reader.client_secret, op, params, status),
+  followUp: () => turn('threads.add_user_message', {thread_id: id,
+    input: message('Repeat the integer you just reported, using only digits.')}),
+}) : undefined;
 await browser(sibling.client_secret,'threads.get_by_id',{thread_id:id},404);
 assert.deepEqual((await browser(sibling.client_secret,'threads.list',{})).data,[]);
 await assert.rejects(peer.beta.chatkit.threads.retrieve(id),e=>e.status===404);
@@ -120,6 +127,6 @@ assert.equal(independent,'42');
 assert.equal(new Set(wire.map(x=>x.method+' '+x.path)).size,6);
 const evidence = {sdk:version,answers:[first.answer,second.answer],independent_chat:independent,
   peer:404,other_user:404,revoked:401,secret_on_admin:401,items:items.data.length,
-  call_id:call.call_id,tool_result:received.output,duplicate_result:409,
+  call_id:call.call_id,tool_result:received.output,duplicate_result:409,page_defaults:pageDefaults,
   sse_events:[opened.length,first.events.length,second.events.length],wire};
 process.stdout.write(JSON.stringify(evidence));
