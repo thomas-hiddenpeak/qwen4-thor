@@ -8,6 +8,7 @@ from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
+from tools.serve_responses import media_profiles
 from tools.serve_responses import chatkit_image_profiles as images
 from tools.serve_responses import chatkit_widget_profiles as widgets
 from tools.serve_responses import chatkit_workflow_profiles as workflows
@@ -161,6 +162,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if media_profiles.KEY in plan:
+        return Handoff(media_profiles.KEY, media_profiles.RELEASE, media_profiles.ACTOR,
+                       media_profiles.RECEIPT, reuse.SESSION_CONTROL_RECEIPT,
+                       reuse.SESSION_CONTROL_REVIEWED, media_profiles.check)
     if session_controls.KEY in plan:
         structured = 'failed' in plan[session_controls.KEY]
         return Handoff(session_controls.KEY, session_controls.RELEASE,
@@ -210,6 +215,8 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
+    if spec.actor == media_profiles.ACTOR:
+        params.update(media_profiles.sdk_parameters(stage))
     if spec.actor == session_controls.STRUCTURED_ACTOR:
         params['failed'] = plan[spec.key]['failed']
     if plan['name'] == 'light':

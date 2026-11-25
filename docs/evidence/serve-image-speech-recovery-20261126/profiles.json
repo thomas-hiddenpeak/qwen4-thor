@@ -1,0 +1,105 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 520,
+  "build": {
+    "engine": "e85bc0507d7fd11294d5def8ea922c40ddab553fa9154c7ca51fbf79216ad201",
+    "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb"
+  },
+  "openapi_sha256": "78af957e002169eeb8fc2a656de0b103673a1aaa23f06c8080207664c1f99e30",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "primary",
+        "source": {
+          "id": "resp_31ead6e645e8f76430365e6833671ca0",
+          "policy": "disabled",
+          "tokens": 1078,
+          "color": "blue",
+          "source_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+          "mime": "audio/opus",
+          "audio_bytes": 10040,
+          "audio_sha256": "4c0e276b5d20948ad35d452be76d3de499fd41ccb196ea25d5c4435ec225b2b1",
+          "file": "file_1d1c90ed02e56b10e6aa82fc33abe593"
+        },
+        "current": {
+          "id": "resp_31ead6e645e8f76430365e6833671ca0",
+          "policy": "disabled",
+          "tokens": 1078,
+          "color": "blue",
+          "source_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+          "mime": "audio/opus",
+          "audio_bytes": 10040,
+          "audio_sha256": "4c0e276b5d20948ad35d452be76d3de499fd41ccb196ea25d5c4435ec225b2b1"
+        },
+        "peer": 404
+      },
+      "seconds": 69.42,
+      "starts": 1,
+      "record_sha256": "48771b76e80864cb381a912c193891baacd24250d2a2498bab2c05bd72c82700",
+      "receipt_sha256": "dd4715f06a3f45c6e02323e8e966056ad64931ec0626f3d1660a81780f32a67c",
+      "predecessor": "68f7313537f01bae223b8735e4d7514753a743acd4b259b94ccc12e350549ce4"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "light",
+        "source": {
+          "id": "resp_31ead6e645e8f76430365e6833671ca0",
+          "policy": "disabled",
+          "tokens": 1078,
+          "color": "blue",
+          "source_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+          "mime": "audio/opus",
+          "audio_bytes": 10040,
+          "audio_sha256": "4c0e276b5d20948ad35d452be76d3de499fd41ccb196ea25d5c4435ec225b2b1",
+          "file": "file_1d1c90ed02e56b10e6aa82fc33abe593"
+        },
+        "current": {
+          "id": "resp_7079d679cc6480024cc3e3c368180039",
+          "policy": "enabled",
+          "tokens": 550,
+          "color": "blue",
+          "source_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+          "mime": "application/octet-stream",
+          "audio_bytes": 10040,
+          "audio_sha256": "859bd30e9555c3a387c8cb684b0f39d576ede158a3b987f96a9a9dda7aa0ddc0"
+        },
+        "peer": 404
+      },
+      "seconds": 50.124,
+      "starts": 1,
+      "record_sha256": "81c9607df693cb15f854d4909bc9392801bee4269b4880d8d16f12d8f1d3c1b5",
+      "receipt_sha256": "72b1cc9735af24a428055bb84c1da32616c159649560486466236c6c30265069",
+      "predecessor": "5f92707475a6a04a32ccc13d3b9eeb64cf8eef141c545fa375749fd03c54adc2"
+    }
+  },
+  "business_evidence": "e45879f37d9c41ab8cd14cc52d725624b497c859593ca68588433aba6c8edc74",
+  "lease_exit": "49298a8258b7a77afb916a9096a4e92038b559ad85a692fb25c829b48c5362f6",
+  "acceptance": "9917de3f728c61679fa9a45242468a10f02dbc73f1d0405d689cf8b68888a179",
+  "qualification": "18bc7b6050bc5a29df3590667d56a8e3091106ccccc86002878a7340a83366c5",
+  "default_preserved": true,
+  "migration": [
+    {
+      "profile": "primary",
+      "old_format": "q4t-profile-business-v65",
+      "old_sha256": "68f7313537f01bae223b8735e4d7514753a743acd4b259b94ccc12e350549ce4",
+      "new_format": "q4t-profile-business-v66",
+      "new_sha256": "48771b76e80864cb381a912c193891baacd24250d2a2498bab2c05bd72c82700",
+      "wrong_capacity_rejected": true
+    },
+    {
+      "profile": "light",
+      "old_format": "q4t-profile-business-v65",
+      "old_sha256": "5f92707475a6a04a32ccc13d3b9eeb64cf8eef141c545fa375749fd03c54adc2",
+      "new_format": "q4t-profile-business-v66",
+      "new_sha256": "81c9607df693cb15f854d4909bc9392801bee4269b4880d8d16f12d8f1d3c1b5",
+      "wrong_capacity_rejected": true
+    }
+  ],
+  "cpu": {
+    "cases": 53,
+    "log_sha256": "53aa5fcb9c57ace2e37edad5bc1394509f63f917879a0f7944264f74ec287abe"
+  }
+}

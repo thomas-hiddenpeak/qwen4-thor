@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主配置使用完整图像识别蓝色，以 audio/opus 合成并保存客户文件。轻配置按原回答和文件 ID 读回相同音频，启用图像上下文压缩后输入从 1078 降至 550 tokens，又按 SDK 默认类型合成语音。两次独立 Chat 都回答 42，跨客户读取均返回 404。两套配置各启动一次，分别耗时 69.420 秒和 50.124 秒。两份 v66 资格记录可逐字节还原已发行的 v65 前驱，53 项针对性 CPU 检查通过。集成构建的内存拒绝退出码及真实监督器的等待、恢复也已验证。默认仍为 rev520，下一步检验托管包接手与发布。[配置交接](evidence/serve-image-speech-recovery-20261126/profiles.json) · [集成短验](evidence/serve-image-speech-recovery-20261126/combined.json)
+
 语音合成已对官方 SDK 默认的 application/octet-stream 和显式 audio/opus 返回协商后的类型。audio/* 客户仍取得 audio/ogg，显式 SSE 收到音频增量与终态。四条原生 TLS 响应均由独立解码器识别为单声道 Opus 并解出非静默波形；不匹配和非法权重分别返回 406、400。首次真实请求暴露写出层漏列 audio/opus，已修复并保留 409 回执。可选托管 nginx 已能转发 Accept。第二次驱动在六个 HTTP 请求通过后遇到本机 FFmpeg 缺少裸 PCM 复用器，直接从保留字节解码为 WAV 完成校验，额外模型启动 0 次。下一步为整包交接。[语音回执](evidence/serve-speech-media-20261126/business.json)
 
 同一张 896×896 蓝色图片经官方 SDK、原生 TLS 分别走 stable 和 beta Responses。六选一的结构化结果都为 blue；启用上下文压缩后输入从 1078 降为 550 tokens，两边 compact 均保留原图，跨客户读取均返回 404。普通回答在 16 tokens 截断，给到 96 后用 25 tokens 完成，但正文仍被标为 refusal。两条普通结果均保留为质量失败；尚待整包交接。[业务回执](evidence/serve-responses-image-context-20261126/business.json)
