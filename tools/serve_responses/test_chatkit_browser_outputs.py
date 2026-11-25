@@ -30,6 +30,20 @@ class BrowserOutputTest(unittest.TestCase):
         self.assertTrue(all(ref == self.media['text/event-stream']['x-q4t-event-schema']
                             for ref in self.events.values()))
 
+    def test_upload_completion_accepts_file_or_image_with_preview(self):
+        document = dict(id='file_a', type='file', name='note.txt', mime_type='text/plain')
+        image = dict(id='file_b', type='image', name='picture.png', mime_type='image/png',
+                     preview_url='data:image/png;base64,iVBORw0KGgo=')
+        for path, verb in [('/v1/chatkit/attachments', 'post'),
+                           ('/v1/chatkit/attachments/{session_id}/{file_id}', 'put')]:
+            response = self.spec['paths'][path][verb]['responses']['200']['content']
+            schema = response['application/json']['schema']
+            self.assertTrue(self.valid(schema, document))
+            self.assertTrue(self.valid(schema, image))
+            self.assertFalse(self.valid(schema, dict(document, type='image')))
+            self.assertFalse(self.valid(schema, dict(image, preview_url='https://elsewhere.test/')))
+            self.assertFalse(self.valid(schema, dict(image, upload_descriptor={})))
+
     def test_json_bodies_are_selected_by_operation(self):
         empty_page = dict(data=[], has_more=False, after=None)
         for name in ('threads.list', 'items.list'):

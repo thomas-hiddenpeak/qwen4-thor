@@ -241,6 +241,11 @@ def schema(graph):
     definitions['chatkit_transcription_result'] = obj(dict(text=string), ['text'])
     definitions['chatkit_document_attachment'] = obj(dict(id=dict(type='string'),name=dict(type='string'),
         type=dict(const='file'),mime_type=dict(type='string')), ['id','name','type','mime_type'])
+    definitions['chatkit_uploaded_attachment'] = dict(oneOf=[
+        ref('chatkit_document_attachment'),
+        obj(dict(id=string, name=string, type=dict(const='image'), mime_type=string,
+                 preview_url=dict(type='string', format='uri', pattern='^data:image/png;base64,')),
+            ['id', 'name', 'type', 'mime_type', 'preview_url'])])
     definitions['chatkit_reserved_document'] = obj(dict(
         id=string, name=string, type=dict(const='file'), mime_type=string,
         upload_descriptor=obj(dict(url=dict(type='string',format='uri'), method=dict(const='PUT'),
@@ -825,8 +830,8 @@ def add_openapi(paths, response, error):
         ('/v1/evals/{eval_id}/runs/{run_id}/output_items', 'get', None, 'eval_output_list', 'eval_output_query'),
         ('/v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}', 'get', None, 'eval_output_item', None),
         ('/v1/chatkit', 'post', 'chatkit_client_request', 'chatkit_client_result', None),
-        ('/v1/chatkit/attachments', 'post', None, 'chatkit_document_attachment', None),
-        ('/v1/chatkit/attachments/{session_id}/{file_id}', 'put', None, 'chatkit_document_attachment', None),
+        ('/v1/chatkit/attachments', 'post', None, 'chatkit_uploaded_attachment', None),
+        ('/v1/chatkit/attachments/{session_id}/{file_id}', 'put', None, 'chatkit_uploaded_attachment', None),
         ('/v1/chatkit/sessions', 'post', 'chatkit_create', 'chatkit_session', None),
         ('/v1/chatkit/sessions/{session_id}/cancel', 'post', None, 'chatkit_session', None),
         ('/v1/chatkit/threads', 'get', None, 'chatkit_threads', 'chatkit_thread_query'),

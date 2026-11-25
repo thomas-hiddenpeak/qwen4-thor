@@ -377,7 +377,36 @@ ObjectReply BinaryStore::Read(const BinaryAccess& access,
   if (!checked.ok()) return checked;
   if (chunk >= read.manifest.chunks.size())
     return Invalid("Invalid binary chunk index");
-  const auto& entry = read.manifest.chunks[chunk];
+  return ReadChunk(access, read.manifest.chunks[chunk], bytes);
+}
+
+ObjectReply BinaryStore::ReadStage(const BinaryAccess& access,
+                                   const BinaryStage& stage, uint64_t max_bytes,
+                                   std::string* bytes) {
+  if (!bytes) return Invalid("Missing staging read buffer");
+  bytes->clear();
+  auto checked = State(access, stage.scope, stage.id, stage.expires,
+                       stage.closed, stage.commit_unknown);
+  if (!checked.ok()) return checked;
+  if (stage.manifest.bytes > max_bytes)
+    return Error(413, "file_image_capacity", "Image byte budget exceeded");
+  std::string source;
+  source.reserve(stage.manifest.bytes);
+  for (const auto& entry : stage.manifest.chunks) {
+    if (entry.bytes > stage.manifest.bytes - source.size()) return Corrupt();
+    std::string chunk;
+    auto read = ReadChunk(access, entry, &chunk);
+    if (!read.ok()) return read;
+    source.append(chunk);
+  }
+  if (source.size() != stage.manifest.bytes) return Corrupt();
+  *bytes = std::move(source);
+  return {};
+}
+
+ObjectReply BinaryStore::ReadChunk(const BinaryAccess& access,
+                                   const BinaryChunk& entry,
+                                   std::string* bytes) {
   auto reply =
       objects_.Execute(Request(access, entry.id, ObjectOperation::kGet),
                        access.deadline, access.cancelled);

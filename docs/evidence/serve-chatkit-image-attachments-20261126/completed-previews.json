@@ -1,0 +1,206 @@
+{
+  "stage": "completed_upload_and_history_previews_verified",
+  "issued": false,
+  "default_revision": 514,
+  "baseline": {
+    "candidate": "936cfcfa0ecb80620d8b28632c16556666dbade8",
+    "failed_case": "chatkit_image_attachment_resolves_original_pixels_and_scoped_file",
+    "red_log_sha256": "ea236b84f07a9d79f801482592272f17a6a288ad9af68b6e318e8efcc2b56abe"
+  },
+  "cpu": {
+    "passed": [
+      "chatkit_retry_selects_legacy_user_identity_and_discards_only_future",
+      "chatkit_image_attachment_resolves_original_pixels_and_scoped_file",
+      "chatkit_preview_preserves_alpha_aspect_ratio_and_rejects_invalid_images",
+      "chatkit_preview_codec_outage_keeps_scoped_image_input",
+      "chatkit_retry_preserves_raster_and_legacy_document_identity",
+      "chatkit_attachment_publication_requires_a_live_owner_and_actual_binary",
+      "chatkit_two_phase_document_binds_credential_bytes_and_publication",
+      "file_webp_container_validates_actual_formats_and_complete_lengths",
+      "file_webp_actual_owned_decode_matches_pillow_and_codec_identity",
+      "file_webp_budget_cancel_timeout_and_worker_failure_release_ownership",
+      "file_webp_missing_optional_codec_preserves_builtin_pixels_and_text"
+    ],
+    "product_and_fault_injection_log_sha256": "68896480674a3e3e21e232f8f0c5691d16cb5effae9125a053b2bf4d1b0b1c06",
+    "schema_checks": 4,
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 245,
+      "native_routes": 406,
+      "reviewed_source_anchors": 1386,
+      "mutation_checks": 40,
+      "errors": []
+    }
+  },
+  "http": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 33.891,
+    "unchanged_default": true,
+    "cleanup_ok": true,
+    "phases": [
+      "create"
+    ],
+    "sdk": "7.47.0",
+    "guard_status": "COMPLETED",
+    "lease_sha256": "ca1c9a115944beef0cdf333d7f0cc7c88614b67779dcca59b2b4fc6caf0b6523",
+    "engine_sha256": "8cee2aa5f53e8d2bbd0696a4ca23f766eb40b9679f35fa1b10e8095e82eed5be",
+    "ingress_sha256": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "actor_sha256": "d7250f0e7d8cee3988c1d201d1d04f5b4c31e10da3b78921e731dbfe2effc681",
+    "original_sdk_sha256": "e4e0426bee9784138f057f26b95ce7d78adeb5921e47e2a84b6ed44e65a00688",
+    "observations": [
+      {
+        "phase": "first",
+        "thread": "cthr_e0345cfa4bdb8b7e1bd073b4aa2a335a",
+        "file": "file_5aa3831e48cc01b469f0328046cea245",
+        "answer": "Red",
+        "expected": "RED"
+      },
+      {
+        "phase": "retry",
+        "thread": "cthr_e0345cfa4bdb8b7e1bd073b4aa2a335a",
+        "file": "file_5aa3831e48cc01b469f0328046cea245",
+        "answer": "Red",
+        "expected": "RED"
+      },
+      {
+        "phase": "first",
+        "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+        "file": "file_81442a23b931eab36b1fc79232306ac7",
+        "answer": "blue",
+        "expected": "BLUE"
+      },
+      {
+        "phase": "retry",
+        "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+        "file": "file_81442a23b931eab36b1fc79232306ac7",
+        "answer": "Blue",
+        "expected": "BLUE"
+      },
+      {
+        "phase": "original_after",
+        "text": "Reply with only the integer 6 times 7.",
+        "value": "49",
+        "refusal": null
+      }
+    ]
+  },
+  "browser": {
+    "browser": "Chromium",
+    "version": "148.0.7778.0",
+    "rows": [
+      {
+        "upload": "direct",
+        "source_mime": "image/png",
+        "size": [
+          96,
+          96
+        ],
+        "views": [
+          "upload",
+          "browser",
+          "management",
+          "browser_after_delete",
+          "management_after_delete"
+        ],
+        "pixel_sha256": "f14c3e90e2f349cff92a04e54c66051031b3ca0b71f5398995e03ea5dc8eb2dc",
+        "preview_bytes": 252
+      },
+      {
+        "upload": "two_phase",
+        "source_mime": "image/jpeg",
+        "size": [
+          96,
+          96
+        ],
+        "views": [
+          "upload",
+          "browser",
+          "management",
+          "browser_after_delete",
+          "management_after_delete"
+        ],
+        "pixel_sha256": "2be38a43dcb1017c5f892bdc03deafd767b5e74d6fe12d44892e0c1f28195687",
+        "preview_bytes": 254
+      }
+    ]
+  },
+  "contracts_and_snapshots": {
+    "check": "official_browser_and_management_schemas_and_immutable_journals",
+    "status": "PASS",
+    "rows": [
+      {
+        "mode": "direct",
+        "mime": "image/png",
+        "sha256": "dde7a85f27759e8787f7e6723450502a7e18ec83f59d8bbf262996fdfa81bea0",
+        "thread": "cthr_e0345cfa4bdb8b7e1bd073b4aa2a335a",
+        "file": "file_5aa3831e48cc01b469f0328046cea245",
+        "item": "item_4d95e1cb2361acdf8e19cfe2ae08cf34",
+        "first": "Red",
+        "retry": "Red",
+        "events": [
+          8,
+          6
+        ],
+        "source_deleted": 404,
+        "other_key": 404,
+        "other_user": 404,
+        "response_records": {
+          "resp_ea85d00cedcf5aa8734ebf452198ff23": "6633dd457e0bd3199a0741b9c595390b758bb7821e81398b894b85787b7a8af9",
+          "resp_051e60de58118836530a16cd7f08dff2": "2cd8d72aec8863df3f8b9f5a73f8de549421093ff351df81e5b6efe1cf87dcfb"
+        },
+        "snapshot_id": "input_snapshot_3c5bbcbe734505454b29ad366ba59df1",
+        "snapshot_sha256": "3cc9902c83b95c7c1261ce8e08607d1cace0ddfa8a442a50fb55a28bbc5d4feb",
+        "snapshot_format": "q4t.image_input_snapshot.v1",
+        "original_pixels": [
+          128,
+          128
+        ],
+        "browser_attachment_type": "image",
+        "preview_url_present": true
+      },
+      {
+        "mode": "two_phase",
+        "mime": "image/jpeg",
+        "sha256": "4a824fb46a44451aad044d7c05cfb8a6f530da837ff68d124aaa523c4ba34539",
+        "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+        "file": "file_81442a23b931eab36b1fc79232306ac7",
+        "item": "item_173590506ab4d32f47cdac6a91efa2c2",
+        "first": "blue",
+        "retry": "Blue",
+        "events": [
+          8,
+          6
+        ],
+        "source_deleted": 404,
+        "other_key": 404,
+        "other_user": 404,
+        "response_records": {
+          "resp_43197094c017fdf3a4cd0e6e847bc5a9": "0b0ff3e932b57548a011bd1e2c19b5c1ce2128b16fda33e2a772450b4c1de03e",
+          "resp_e53f0427ae11a525de805b9b1e5665d6": "f0b09b7fa592ce470f86da665ba0005a131dbeeb06a13406bd04c2bc59590559"
+        },
+        "snapshot_id": "input_snapshot_0bb56e3106ea22f24fdf81e0b997f3dd",
+        "snapshot_sha256": "548180f4aa77e1d5ad879272b9062d20c9707ad8e5369b13f8586e884eb456f0",
+        "snapshot_format": "q4t.image_input_snapshot.v1",
+        "original_pixels": [
+          128,
+          128
+        ],
+        "browser_attachment_type": "image",
+        "preview_url_present": true
+      }
+    ]
+  },
+  "untested_or_open": [
+    "The pre-upload reservation currently returns a generic file with a write-only upload descriptor. A separate read capability is needed for clients that retain that first response.",
+    "Managed cross-profile and fallback delivery are pending.",
+    "The independent arithmetic control still answered 49. Original image refusals remain in the prior business receipt."
+  ],
+  "dev_harness": {
+    "initial_lease": "COMMAND_FAILED",
+    "model_starts_before_path_fix": 0
+  }
+}

@@ -5,6 +5,8 @@
 #include <unordered_set>
 
 #include "object_protocol.h"
+#include "q4t/io/base64.h"
+#include "q4t/server/file_image.h"
 #include "q4t/server/file_limits.h"
 #include "q4t/server/http_framing.h"
 #include "q4t/server/http_response.h"
@@ -248,6 +250,7 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
       mime.empty() ? "application/octet-stream" : std::string(mime);
   auto resource = Attachment(id, name, type);
   BinaryStore binary(objects);
+  bool preview_checked = false;
   for (int attempt = 0; attempt < 4; ++attempt) {
     ObjectRequest session;
     auto live = LiveSession(objects, state, grant, &session);
@@ -273,6 +276,26 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
                                        pending.Find(id)->GetInt("expires_at"));
       std::erase_if(pending.object,
                     [&](const auto& item) { return item.first == id; });
+    }
+    if (!preview_checked &&
+        AttachmentModelInput(resource).GetString("type") == "input_image") {
+      std::string source, png, encoded;
+      auto read = binary.ReadStage(access, *stage, FileImageLimits{}.max_bytes,
+                                   &source);
+      if (!read.ok()) return read;
+      auto preview = MakeRasterPreview(source, access, &png);
+      if (preview.ok()) {
+        if (!io::EncodeBase64(png, 64U << 10, &encoded))
+          return Error(503, "chatkit_preview_invalid", "Invalid preview size");
+        Set(&resource, "type", String("image"));
+        Set(&resource, "preview_url",
+            String("data:image/png;base64," + encoded));
+      } else if (preview.http_status != 503) {
+        return preview;
+      }
+      // A missing or busy preview codec leaves the original usable for
+      // inference. The reservation and file still commit atomically.
+      preview_checked = true;
     }
     auto file = File(state, id);
     file.operation = ObjectOperation::kPut;
@@ -390,7 +413,7 @@ ObjectReply ResolveAttachments(ObjectStore& objects, const StateAccess& access,
     if (!attachment || attachment->GetString("id") != id.str)
       return Error(503, "chatkit_record_invalid", "Invalid stored attachment");
     auto metadata = *attachment;
-    Set(&metadata, "preview_url", {});
+    if (!metadata.Has("preview_url")) Set(&metadata, "preview_url", {});
     published->array.push_back(std::move(metadata));
     model->array.push_back(AttachmentModelInput(*attachment));
   }

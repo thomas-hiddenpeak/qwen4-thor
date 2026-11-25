@@ -133,7 +133,22 @@ for (const fixture of plan.fixtures) {
 
   const restored = await project.beta.chatkit.threads.listItems(thread, {order: 'asc'});
   assert.equal(restored.data.find(x => x.type === 'chatkit.user_message').id, original.id);
-  rows.push({wire: {upload: file, browser: browserPage, management: page},
+  const historical = {};
+  if (plan.verify_previews) {
+    const renewedPage = await rpc(renewed, 'items.list', {thread_id: thread, order: 'asc'});
+    await rpc(sibling, 'items.list', {thread_id: thread}, 404);
+    historical.browser_after_delete = renewedPage.data.find(x => x.type === 'user_message').attachments[0];
+    historical.management_after_delete = restored.data.find(x => x.type === 'chatkit.user_message').attachments[0];
+    for (const attachment of [file, browserUser.attachments[0], original.attachments[0],
+                              ...Object.values(historical)]) {
+      assert.equal(attachment.id, file.id);
+      assert.equal(attachment.type, 'image');
+      assert.equal(attachment.preview_url, file.preview_url);
+      assert.match(attachment.preview_url, /^data:image\/png;base64,/);
+      assert.ok(!attachment.upload_descriptor);
+    }
+  }
+  rows.push({wire: {upload: file, browser: browserPage, management: page, ...historical},
     mode: fixture.mode, mime: fixture.mime, sha256: digest(bytes),
     thread, file: file.id, item: original.id, first, retry: again, events: [created.length, replay.length],
     source_deleted: 404, other_key: 404, other_user: 404});

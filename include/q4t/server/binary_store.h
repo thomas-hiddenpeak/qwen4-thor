@@ -65,6 +65,9 @@ class BinaryStore {
                              const BinaryStage& stage, ObjectRequest root,
                              std::vector<ObjectRequest>* writes);
   ObjectReply Abort(const BinaryAccess& access, BinaryStage* stage);
+  // Inspect a completed private upload before the caller publishes it.
+  ObjectReply ReadStage(const BinaryAccess& access, const BinaryStage& stage,
+                        uint64_t max_bytes, std::string* bytes);
   // Pin a durable root's exact manifest while it is read. Deletion of the
   // public file after Open cannot invalidate an active bounded download.
   ObjectReply Open(const BinaryAccess& access, ObjectKind kind,
@@ -80,6 +83,8 @@ class BinaryStore {
   ObjectReply Close(const BinaryAccess& access, BinaryRead* read);
 
  private:
+  ObjectReply ReadChunk(const BinaryAccess& access, const BinaryChunk& chunk,
+                        std::string* bytes);
   ObjectStore& objects_;
 };
 }  // namespace q4t::server

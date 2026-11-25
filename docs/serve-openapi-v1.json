@@ -10798,7 +10798,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-application-v1.schema.json#/$defs/chatkit_document_attachment"
+                  "$ref": "serve-application-v1.schema.json#/$defs/chatkit_uploaded_attachment"
                 }
               }
             }
@@ -10888,7 +10888,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-application-v1.schema.json#/$defs/chatkit_document_attachment"
+                  "$ref": "serve-application-v1.schema.json#/$defs/chatkit_uploaded_attachment"
                 }
               }
             }

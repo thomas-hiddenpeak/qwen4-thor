@@ -1290,7 +1290,9 @@
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
-        "browser_preview": false
+        "browser_preview": "verified after upload and after source deletion",
+        "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
+        "reservation_preview": "pending"
       }
     },
     {
@@ -2858,7 +2860,9 @@
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
-        "browser_preview": false
+        "browser_preview": "verified after upload and after source deletion",
+        "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
+        "reservation_preview": "pending"
       }
     },
     {
@@ -3453,7 +3457,9 @@
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
-        "browser_preview": false
+        "browser_preview": "verified after upload and after source deletion",
+        "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
+        "reservation_preview": "pending"
       }
     },
     {
@@ -6232,7 +6238,9 @@
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
-        "browser_preview": false
+        "browser_preview": "verified after upload and after source deletion",
+        "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
+        "reservation_preview": "pending"
       }
     },
     {
@@ -8309,7 +8317,9 @@
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
-        "browser_preview": false
+        "browser_preview": "verified after upload and after source deletion",
+        "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
+        "reservation_preview": "pending"
       }
     },
     {
@@ -11188,7 +11198,9 @@
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
-        "browser_preview": false
+        "browser_preview": "verified after upload and after source deletion",
+        "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
+        "reservation_preview": "pending"
       }
     },
     {
@@ -12518,7 +12530,9 @@
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
-        "browser_preview": false
+        "browser_preview": "verified after upload and after source deletion",
+        "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
+        "reservation_preview": "pending"
       }
     },
     {

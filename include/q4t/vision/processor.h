@@ -93,6 +93,12 @@ struct ProcessedVideo {
   }
 };
 
+// Render a browser preview at the caller's already admitted dimensions.
+// Samples source RGBA including transparency, without model preprocessing.
+bool DecodePreviewRgba(const uint8_t* bytes, size_t count, uint32_t width,
+                       uint32_t height, uint32_t preview_width,
+                       uint32_t preview_height, std::vector<uint8_t>* rgba);
+
 // Decode + resize + normalize + patchify.
 // image_bytes: raw PNG/JPEG/static GIF image data.
 // num_bytes: length of image_bytes.

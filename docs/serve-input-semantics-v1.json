@@ -638,7 +638,7 @@
     "include/q4t/text/tokenizer.h": "7bb4d249805ab904fb5b8717b983d2dd939cf5421a72e9fa67953bd4ebd59f50",
     "include/q4t/vision/configuration.h": "50f4ab0cacc680c48d87450c168cb6d1a5ac57f51cfaff14963c97b2db1e72a9",
     "include/q4t/vision/media_plan.h": "f808faab7c44f85656ab6ace27499ad9658764d3bd37f8e8529869fb47dc129c",
-    "include/q4t/vision/processor.h": "889b0df7143c127d69b6d19a8b0cf267f9ff2c81fe05354cd2f7236beee85bcc",
+    "include/q4t/vision/processor.h": "8cbde5c1fe84232a44df95ff7b77fa425d956d5c516448f5acbb5e9b274afde1",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
     "src/model/model.cu": "846b7a57d6b4ff3ac8e67974b6182722155a20cac9a985c092c6604c66cfcd52",
     "src/model/model_head.cu": "d480e1c6c898aa65a016ee454abe4447246a58c3c3e70c6db1559e27347fde45",
@@ -762,7 +762,7 @@
     "src/service/ingress_main.cpp": "6df87c6b7479336b7a25b4a90085b18362a55467276517f6e89ee027010853c1",
     "src/text/tokenizer.cpp": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541",
     "src/vision/media_plan.cpp": "92c58967a84c96a7786e65deb013502b423375e3ee4f0493d897d0af8917f16e",
-    "src/vision/processor.cpp": "9e5b1ffab8863b80fe8fab66b9c47a95a72e5f96760a988e85a652e0d56a5317",
+    "src/vision/processor.cpp": "77ab978cb844941681b834d1fd242d8d5348d19c9422f656bb0596341572d58f",
     "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
     "tools/examples/chat_client.py": "1a1e7a35ca0c4d7db4132c79fd4ba2e18d6b3e975d6976a62c7f503f13c83710",
     "tools/examples/js/chat_client.mjs": "69fe7d61b3794943f88dc9ff46d9e27b03f90a607f6684cbfe52645d156e2b55"

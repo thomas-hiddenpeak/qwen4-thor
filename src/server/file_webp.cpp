@@ -6,6 +6,7 @@
 #include "file_webp_protocol.h"
 #include "object_protocol.h"
 #include "q4t/vision/media_plan.h"
+#include "q4t/server/file_image.h"
 
 namespace q4t::server {
 namespace {
@@ -21,10 +22,10 @@ uint32_t Little(std::string_view bytes, size_t start, size_t length) {
   return value;
 }
 ObjectReply Invalid() {
-  return Error(400, "invalid_file_image", "Invalid WebP image container");
+  return Error(400, "invalid_file_image", "Invalid raster image container");
 }
 ObjectReply Capacity() {
-  return Error(413, "file_image_capacity", "WebP image budget exceeded");
+  return Error(413, "file_image_capacity", "Image budget exceeded");
 }
 bool Limits(const FileWebpLimits& limits) {
   return limits.max_pixels && limits.max_pixels <= (256ULL << 20) &&
@@ -176,15 +177,11 @@ void detail::SetWebpWorkerEntryForTesting(std::string entry) {
   test_entry = std::move(entry);
 }
 #endif
-ObjectReply DecodeWebpImage(std::string_view source,
-                            const FileWebpLimits& limits,
-                            const BinaryAccess& access, FileWebpPixels* pixels,
-                            GrammarControl control) {
-  if (!pixels) return Invalid();
-  *pixels = {};
-  WebpHeader header;
-  auto reply = Admitted(source, limits, &header);
-  if (!reply.ok()) return reply;
+namespace {
+ObjectReply RunImageCodec(std::string_view source, const FileWebpLimits& limits,
+                          const BinaryAccess& access, bool preview,
+                          GrammarControl control, webp_detail::Result* receipt,
+                          std::string* png) {
   if (access.scope.empty())
     return Error(503, "object_scope_unavailable",
                  "Authenticated image scope required");
@@ -209,9 +206,10 @@ ObjectReply DecodeWebpImage(std::string_view source,
 #endif
   if (!detail::GrammarProcess::Start(entry, control, &process, &failure))
     return Failed(failure);
-  webp_detail::Request request{webp_detail::kMagic, source.size(),
-                               limits.max_pixels, limits.max_edge,
-                               limits.max_output_bytes};
+  webp_detail::Request request{
+      webp_detail::kMagic,     source.size(),
+      limits.max_pixels,       limits.max_edge,
+      limits.max_output_bytes, preview ? webp_detail::kPreviewEdge : 0U};
   webp_detail::Result result;
   webp_detail::Ready ready{};
   auto transfer = [&](void* data, size_t size, bool write) {
@@ -223,10 +221,10 @@ ObjectReply DecodeWebpImage(std::string_view source,
     return Failed(process->Failure());
   if (ready == webp_detail::Ready::kDependency)
     return Error(503, "file_image_dependency_unavailable",
-                 "WebP codec unavailable");
+                 "Image codec unavailable");
   if (ready == webp_detail::Ready::kSandbox)
     return Error(503, "file_image_isolation_unavailable",
-                 "WebP isolation unavailable");
+                 "Image codec isolation unavailable");
   if (ready == webp_detail::Ready::kCapacity) return Capacity();
   if (ready == webp_detail::Ready::kInvalid) return Invalid();
   if (ready != webp_detail::Ready::kReady)
@@ -238,26 +236,48 @@ ObjectReply DecodeWebpImage(std::string_view source,
     return Failed(GrammarFailure::kWorker);
   if (result.failure == webp_detail::Failure::kDependency)
     return Error(503, "file_image_dependency_unavailable",
-                 "WebP codec unavailable");
+                 "Image codec unavailable");
   if (result.failure == webp_detail::Failure::kSandbox)
     return Error(503, "file_image_isolation_unavailable",
-                 "WebP isolation unavailable");
+                 "Image codec isolation unavailable");
   if (result.failure == webp_detail::Failure::kCapacity) return Capacity();
   if (result.failure == webp_detail::Failure::kInvalid) return Invalid();
   if (result.failure != webp_detail::Failure::kNone || !result.bytes ||
       result.bytes > limits.max_output_bytes ||
       strnlen(result.decoder_version, 64) >= 64 ||
       strnlen(result.encoder_version, 64) >= 64 ||
-      strnlen(result.decoder_sha256, 65) != 64 ||
+      ((!preview || IsWebpImage(source)) &&
+       strnlen(result.decoder_sha256, 65) != 64) ||
       strnlen(result.encoder_sha256, 65) != 64)
     return Failed(GrammarFailure::kWorker);
-  FileWebpPixels next;
-  next.png.resize(result.bytes);
-  if (!transfer(next.png.data(), next.png.size(), false))
+  std::string output(result.bytes, '\0');
+  if (!transfer(output.data(), output.size(), false))
     return Failed(process->Failure());
   std::string trailing;
   if (!process->CollectOutput(&trailing, 0, deadline, cancelled))
     return Failed(process->Failure());
+  if (cancelled()) return Failed(GrammarFailure::kCancelled);
+  if (Clock::now() >= deadline) return Failed(GrammarFailure::kTimeout);
+  *receipt = result;
+  *png = std::move(output);
+  return {};
+}
+}  // namespace
+
+ObjectReply DecodeWebpImage(std::string_view source,
+                            const FileWebpLimits& limits,
+                            const BinaryAccess& access, FileWebpPixels* pixels,
+                            GrammarControl control) {
+  if (!pixels) return Invalid();
+  *pixels = {};
+  WebpHeader header;
+  auto reply = Admitted(source, limits, &header);
+  if (!reply.ok()) return reply;
+  FileWebpPixels next;
+  webp_detail::Result result;
+  reply = RunImageCodec(source, limits, access, false, std::move(control),
+                        &result, &next.png);
+  if (!reply.ok()) return reply;
   const auto codec = [](const char* name, const char* version,
                         const char* sha) {
     return Object({{"name", String(name)},
@@ -276,9 +296,48 @@ ObjectReply DecodeWebpImage(std::string_view source,
                codec("zlib", result.encoder_version, result.encoder_sha256)}});
   reply = ValidateWebpPixels(source, limits, next, &header);
   if (!reply.ok()) return Failed(GrammarFailure::kWorker);
-  if (cancelled()) return Failed(GrammarFailure::kCancelled);
-  if (Clock::now() >= deadline) return Failed(GrammarFailure::kTimeout);
   *pixels = std::move(next);
+  return {};
+}
+
+ObjectReply MakeRasterPreview(std::string_view source,
+                              const BinaryAccess& access, std::string* png) {
+  if (!png) return Invalid();
+  png->clear();
+  const FileImageLimits admission;
+  if (source.size() > admission.max_bytes) return Capacity();
+  const auto bytes = [](std::string_view value) {
+    return std::span(reinterpret_cast<const uint8_t*>(value.data()),
+                     value.size());
+  };
+  WebpHeader size;
+  if (IsWebpImage(source)) {
+    auto parsed = ReadWebpHeader(source, &size);
+    if (!parsed.ok()) return parsed;
+  } else {
+    vision::MediaHeader header;
+    if (!vision::ReadMediaHeader(bytes(source), &header))
+      return Error(400, "invalid_file_image", "Invalid static raster image");
+    size = {header.width, header.height};
+  }
+  if (size.width > admission.max_edge || size.height > admission.max_edge ||
+      uint64_t{size.width} * size.height > admission.max_pixels)
+    return Capacity();
+  FileWebpLimits limits{admission.max_pixels, admission.max_edge, 48U << 10,
+                        admission.codec_timeout_ms};
+  webp_detail::Result receipt;
+  std::string result;
+  auto converted =
+      RunImageCodec(source, limits, access, true, {}, &receipt, &result);
+  if (!converted.ok()) return converted;
+  vision::MediaHeader rendered;
+  const auto longest = std::max(size.width, size.height);
+  if (!vision::ReadMediaHeader(bytes(result), &rendered) ||
+      rendered.format != vision::MediaFormat::kPng ||
+      rendered.width != webp_detail::PreviewDimension(size.width, longest) ||
+      rendered.height != webp_detail::PreviewDimension(size.height, longest))
+    return Failed(GrammarFailure::kWorker);
+  *png = std::move(result);
   return {};
 }
 }  // namespace q4t::server
