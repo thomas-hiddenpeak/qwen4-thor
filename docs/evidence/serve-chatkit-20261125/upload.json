@@ -1,5 +1,5 @@
 {
-  "stage": "targeted_cpu",
+  "stage": "native_tls_verified",
   "issued": false,
   "reference": {
     "repository": "openai/chatkit-python",
@@ -66,8 +66,63 @@
     "tools/serve_responses/chatkit_upload_profiles.py": "1cdba3bd350fe2a3a8709b05a11e0ab95bc69c220f16b2f67899949408fa84fa"
   },
   "pending": [
-    "Native TLS and real model reading the uploaded decision",
-    "Original file and thread recovery",
-    "Stopped recoverable release"
-  ]
+    "Two capacities, managed recovery and recoverable issuance"
+  ],
+  "first_tls_attempt": {
+    "status": "FAIL",
+    "SDK_requests": 0,
+    "model_starts": 1,
+    "cause": "The inherited isolated test certificate expired at 2026-11-25T02:46:42Z. The ingress refused startup. The issued default is separate and uses native ingress with TLS disabled.",
+    "result_sha256": "f94aa1d6547344d1bb2296139e9bfde926d84e896a3e5ef30b8c0e94be742bd0",
+    "lease_sha256": "b022f9d2bf65caee0202c9107b29670f227a4077d40c6a758412515ad25f20cc",
+    "retry_certificate_sha256": "eab6fd3f4476d5125091430776ceea8d57c03ae7bc49953e1dbc4b1c4e90e285"
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.309,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "upload": {
+    "mode": "two_phase",
+    "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "source_bytes": 830,
+    "sdk": "7.47.0",
+    "original_answer": "157",
+    "continued_answer": "157",
+    "items": 4,
+    "peer": 404,
+    "independent": "42",
+    "controls": {
+      "pending_file": 404,
+      "pending_model": 404,
+      "replay": 401,
+      "discarded": 401,
+      "revoked_upload": 401,
+      "short": 400,
+      "wrong_mime": 415,
+      "wrong_session": 401,
+      "full_session_on_upload": 401,
+      "upload_on_browser": 401,
+      "origin_verified": true
+    },
+    "official_wire": [
+      {
+        "method": "GET",
+        "path": "/chatkit/threads/{thread_id}/items",
+        "status": 200,
+        "json_sha256": "227cc2833a844a0410a80fde7716553084372d425d11d684cd8376b23b19eea7"
+      }
+    ]
+  },
+  "device_sources": {
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/result.json": "a43d7e3265894f85ef55c936b18d5bd883af011a1139765d0fc835e302bedced",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/plan.json": "06ae91f4e73ff15c84ab0740d3d04e4bdc3694d69a046710a67f5a845be27710",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-lease-02/exit.json": "cafc973a8df7ef32725620adfd0620fc05e5347c5ef655a2dcddf0d5e6a7760c",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/create/sdk-result.json": "672fbf29fd7a10ef3acb03fe3113af965919c04f5f8c56e3970254d93726400c",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/create/wire-receipts.json": "6ca8b5c9c69baf21d92fe0cb1f8c904aac68638ea70daded8cf088a8c66b76fb"
+  }
 }
