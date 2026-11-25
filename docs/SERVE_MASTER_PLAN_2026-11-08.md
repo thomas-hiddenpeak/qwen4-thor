@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+旧发行的两种合法拒答输入在读取时违反公开 schema。修复后原有三种记录均能按原 ID 分页读取，文件字节保持一致。三版 Python SDK 经公开的原始响应方法与同一份 schema 取回原角色和拒答内容，跨客户请求返回 404。已有 64 份 Skills、Threads、Runs 响应的严格离线回放也已登记。下一步验证实际模型和托管服务。[验证记录](evidence/serve-stored-message-projection-20261125/cpu.json)
+
 主配置发出空值和同形字符串两次工具调用；轻配置取回前一配置持久化的两条记录，用同一调用 ID 和原始参数重新回答。两次启动中 JSON、SSE 以及客户隔离均通过，留下已发行的 rev500 恢复前驱。下一步验证故障接管与可回退发布。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)
 
 53 项 CPU 检查通过。覆盖两份发行前驱的复原、拒绝串换类型与会话、错误资料计数，以及未审查配置不可登记。下一步由轻配置读取主配置已保存的两段工具历史并回放。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)

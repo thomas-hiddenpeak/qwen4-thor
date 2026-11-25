@@ -3199,6 +3199,10 @@
         "business": "evidence/serve-video-characters-20261125/business.json",
         "profiles": "evidence/serve-video-characters-20261125/profiles.json",
         "delivery": "evidence/serve-video-characters-20261125/delivery.json"
+      },
+      "stored_message_projection_20261125": {
+        "stage": "native_cpu_verified",
+        "receipt": "evidence/serve-stored-message-projection-20261125/cpu.json"
       }
     },
     {
@@ -7908,6 +7912,14 @@
         "stage": "issued",
         "evidence": "evidence/serve-video-track-selection-20261125/python-sdk.json",
         "delivery": "evidence/serve-video-track-selection-20261125/delivery.json"
+      },
+      "stored_message_projection_20261125": {
+        "stage": "native_cpu_verified",
+        "receipt": "evidence/serve-stored-message-projection-20261125/cpu.json"
+      },
+      "archived_resource_client_20261125": {
+        "stage": "sdk_cpu_replay",
+        "receipt": "evidence/serve-stored-message-projection-20261125/python-resource-replay.json"
       }
     },
     {

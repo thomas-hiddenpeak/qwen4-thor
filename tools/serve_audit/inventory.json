@@ -4457,7 +4457,7 @@
     "src/server/chat_speaker_turns.cpp": "e2579cea71db5b497da0d953f90877aa9b2f020ebc5e9edff853ce839d05a09f",
     "src/server/chat_speech.cpp": "040556a6e3ddc3db73023027845c109002a55d675748b2ce603e851c941721e9",
     "src/server/chat_speech_prompt.cpp": "8ae4eaf7d1fbbe522e65ff0b05760b466b0e4ce7abd0d4ec8e093283b713cd2a",
-    "src/server/chat_storage.cpp": "23c3b1fc06fbf72aeb75abd732c508db5c7aa73830797d8743fa723b0dd80dbf",
+    "src/server/chat_storage.cpp": "58bcb7f5d214ead7937f9fbf584bbeb585aaae7f173dbadf73998418fbc41d73",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
     "src/server/chat_template.cpp": "b49990fcc0e45e19ad18dc411e28bf4d05e640d0a8318ef30a0083bd725aba52",
     "src/server/chat_tool_history.cpp": "a8c6210b9d3ffc644c69f55e27956e85176aa977398398b5422bef7ad0d4973c",

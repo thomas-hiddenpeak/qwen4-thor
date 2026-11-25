@@ -1,0 +1,688 @@
+{
+  "stage": "native_cpu_verified",
+  "issued": false,
+  "original": [
+    {
+      "name": "part",
+      "original": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "refusal",
+            "refusal": "原始拒答"
+          }
+        ]
+      },
+      "actual": {
+        "role": "assistant",
+        "content": null,
+        "id": "chatmsg_168b0e5db934dfee51dd7d26b1f29231c7d83a017fd7536e9737f0aeb8fb0f7b",
+        "name": null,
+        "content_parts": [
+          {
+            "type": "refusal",
+            "refusal": "原始拒答"
+          }
+        ]
+      },
+      "official_errors": [
+        {
+          "path": [
+            "data",
+            1,
+            "content_parts"
+          ],
+          "constraint": "anyOf"
+        }
+      ]
+    },
+    {
+      "name": "field",
+      "original": {
+        "role": "assistant",
+        "content": null,
+        "refusal": "原始拒答"
+      },
+      "actual": {
+        "role": "assistant",
+        "content": null,
+        "refusal": "原始拒答",
+        "id": "chatmsg_8bd332aefff0f73a7dcc88d8a4f80e0c5747ad41f912e5303e531d2efb0f1354",
+        "name": null,
+        "content_parts": null
+      },
+      "official_errors": []
+    },
+    {
+      "name": "both",
+      "original": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "refusal",
+            "refusal": "part-A"
+          }
+        ],
+        "refusal": "field-B"
+      },
+      "actual": {
+        "role": "assistant",
+        "content": null,
+        "refusal": "field-B",
+        "id": "chatmsg_fe84bdfd962f91cfb844537b739d6cec0240a77eb7c20f7b5d5e5ed7e4ff6d2e",
+        "name": null,
+        "content_parts": [
+          {
+            "type": "refusal",
+            "refusal": "part-A"
+          }
+        ]
+      },
+      "official_errors": [
+        {
+          "path": [
+            "data",
+            1,
+            "content_parts"
+          ],
+          "constraint": "anyOf"
+        }
+      ]
+    }
+  ],
+  "candidate": [
+    {
+      "name": "part",
+      "original": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "refusal",
+            "refusal": "原始拒答"
+          }
+        ]
+      },
+      "actual": {
+        "role": "assistant",
+        "content": null,
+        "id": "chatmsg_cf4cf7b778337e2aa24647828d64ff1cbd09c272193807bda0e13d17e3aba58a",
+        "name": null,
+        "content_parts": null,
+        "refusal": "原始拒答",
+        "original_content_parts": [
+          {
+            "type": "refusal",
+            "refusal": "原始拒答"
+          }
+        ]
+      },
+      "official_errors": []
+    },
+    {
+      "name": "field",
+      "original": {
+        "role": "assistant",
+        "content": null,
+        "refusal": "原始拒答"
+      },
+      "actual": {
+        "role": "assistant",
+        "content": null,
+        "refusal": "原始拒答",
+        "id": "chatmsg_7782d5941a52d5c7c8fb380d7bb059c5a7b56044c1e353877488f1ed7f3f9891",
+        "name": null,
+        "content_parts": null
+      },
+      "official_errors": []
+    },
+    {
+      "name": "both",
+      "original": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "refusal",
+            "refusal": "part-A"
+          }
+        ],
+        "refusal": "field-B"
+      },
+      "actual": {
+        "role": "assistant",
+        "content": null,
+        "refusal": "field-B",
+        "id": "chatmsg_c88f86c08c2f2e07b2263f4742ad483dcdbe3cf1d5d6f096387ad12815fe0b95",
+        "name": null,
+        "content_parts": null,
+        "original_content_parts": [
+          {
+            "type": "refusal",
+            "refusal": "part-A"
+          }
+        ]
+      },
+      "official_errors": []
+    }
+  ],
+  "old_data_reopened": {
+    "cases": [
+      {
+        "id": "chatcmpl_3bdb32f65239c98d42a3113376cb1419",
+        "copy_sha256": "52c52ad867011dd2b52e9fe0c0a8ba6d43c3573e4bef22af520bb2216bf33e64",
+        "peer": 404,
+        "unknown": 401,
+        "entry": "chatmsg_fe84bdfd962f91cfb844537b739d6cec0240a77eb7c20f7b5d5e5ed7e4ff6d2e",
+        "original_preserved": true,
+        "descending_page": true
+      },
+      {
+        "id": "chatcmpl_959707ef607e75f35d8502db6fa1627d",
+        "copy_sha256": "983baabe9c964c5a0685f0a6798803e73329169f579f8c8661213d28eac72b6a",
+        "peer": 404,
+        "unknown": 401,
+        "entry": "chatmsg_8bd332aefff0f73a7dcc88d8a4f80e0c5747ad41f912e5303e531d2efb0f1354",
+        "original_preserved": true,
+        "descending_page": true
+      },
+      {
+        "id": "chatcmpl_c3f796cbb9899a4695108c07f30f544d",
+        "copy_sha256": "cb38ab05b4e48bd0687cc25d26c9f9623e1687ee6ed85536d12cc57a27319591",
+        "peer": 404,
+        "unknown": 401,
+        "entry": "chatmsg_168b0e5db934dfee51dd7d26b1f29231c7d83a017fd7536e9737f0aeb8fb0f7b",
+        "original_preserved": true,
+        "descending_page": true
+      }
+    ],
+    "original_and_copy_unchanged": true
+  },
+  "sdk": {
+    "2.8.1": {
+      "native_http": {
+        "version": "2.8.1",
+        "cases": [
+          {
+            "id": "chatcmpl_3bdb32f65239c98d42a3113376cb1419",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          },
+          {
+            "id": "chatcmpl_959707ef607e75f35d8502db6fa1627d",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          },
+          {
+            "id": "chatcmpl_c3f796cbb9899a4695108c07f30f544d",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          }
+        ],
+        "backend": "native CPU HTTP fixture; original issued records"
+      },
+      "typed_history_cpu_replay": {
+        "sdk": "2.8.1",
+        "cases": [
+          {
+            "id": "chatcmpl-auto-e8dcf298692d2c2d4b79a85ca096168f",
+            "source": "5e2e438f5225fcf428fa421cb277e2792963dfcd0021a4722860ac97deb5488e",
+            "strict_errors": [
+              [
+                [
+                  "data",
+                  0,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  2,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  3,
+                  "role"
+                ],
+                "literal_error"
+              ]
+            ],
+            "raw_roles": [
+              "user",
+              "assistant",
+              "tool",
+              "user"
+            ]
+          },
+          {
+            "id": "chatcmpl-auto-a4b4d1d4ced6844102245f7eb0c3d724",
+            "source": "785523d98825d5d238209b3eb50792d48762017bde0a4bbf3dc0aeae42ff69a5",
+            "strict_errors": [
+              [
+                [
+                  "data",
+                  0,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  2,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  3,
+                  "role"
+                ],
+                "literal_error"
+              ]
+            ],
+            "raw_roles": [
+              "user",
+              "assistant",
+              "tool",
+              "user"
+            ]
+          }
+        ]
+      },
+      "http_receipt_sha256": "46e7c68718eb075c72d777417cb847d0ffd61177b678bd8bf38f19286aed09c5",
+      "replay_receipt_sha256": "700dead87d2020718ff351b077bf18ca53477f67ee95d5839cf0276613b10d0b"
+    },
+    "3.42.1": {
+      "native_http": {
+        "version": "3.42.1",
+        "cases": [
+          {
+            "id": "chatcmpl_3bdb32f65239c98d42a3113376cb1419",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          },
+          {
+            "id": "chatcmpl_959707ef607e75f35d8502db6fa1627d",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          },
+          {
+            "id": "chatcmpl_c3f796cbb9899a4695108c07f30f544d",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          }
+        ],
+        "backend": "native CPU HTTP fixture; original issued records"
+      },
+      "typed_history_cpu_replay": {
+        "sdk": "3.42.1",
+        "cases": [
+          {
+            "id": "chatcmpl-auto-e8dcf298692d2c2d4b79a85ca096168f",
+            "source": "5e2e438f5225fcf428fa421cb277e2792963dfcd0021a4722860ac97deb5488e",
+            "strict_errors": [
+              [
+                [
+                  "data",
+                  0,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  2,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  3,
+                  "role"
+                ],
+                "literal_error"
+              ]
+            ],
+            "raw_roles": [
+              "user",
+              "assistant",
+              "tool",
+              "user"
+            ]
+          },
+          {
+            "id": "chatcmpl-auto-a4b4d1d4ced6844102245f7eb0c3d724",
+            "source": "785523d98825d5d238209b3eb50792d48762017bde0a4bbf3dc0aeae42ff69a5",
+            "strict_errors": [
+              [
+                [
+                  "data",
+                  0,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  2,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  3,
+                  "role"
+                ],
+                "literal_error"
+              ]
+            ],
+            "raw_roles": [
+              "user",
+              "assistant",
+              "tool",
+              "user"
+            ]
+          }
+        ]
+      },
+      "http_receipt_sha256": "91bb0f834eebe91f91a5ca1def19be4236a595fb75780e2b7c6dc82f3ac6b608",
+      "replay_receipt_sha256": "38f28568ecf9e290e3f6d33635e1e1c8b1648a0f1bb7926df196f08aa2e6119c"
+    },
+    "3.55.1": {
+      "native_http": {
+        "version": "3.55.1",
+        "cases": [
+          {
+            "id": "chatcmpl_3bdb32f65239c98d42a3113376cb1419",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          },
+          {
+            "id": "chatcmpl_959707ef607e75f35d8502db6fa1627d",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          },
+          {
+            "id": "chatcmpl_c3f796cbb9899a4695108c07f30f544d",
+            "roles": [
+              "user",
+              "assistant",
+              "user"
+            ],
+            "strict_role_errors": [
+              [
+                "data",
+                0,
+                "role"
+              ],
+              [
+                "data",
+                2,
+                "role"
+              ]
+            ],
+            "cursor": true,
+            "foreign": 404,
+            "lossless": true
+          }
+        ],
+        "backend": "native CPU HTTP fixture; original issued records"
+      },
+      "typed_history_cpu_replay": {
+        "sdk": "3.55.1",
+        "cases": [
+          {
+            "id": "chatcmpl-auto-e8dcf298692d2c2d4b79a85ca096168f",
+            "source": "5e2e438f5225fcf428fa421cb277e2792963dfcd0021a4722860ac97deb5488e",
+            "strict_errors": [
+              [
+                [
+                  "data",
+                  0,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  2,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  3,
+                  "role"
+                ],
+                "literal_error"
+              ]
+            ],
+            "raw_roles": [
+              "user",
+              "assistant",
+              "tool",
+              "user"
+            ]
+          },
+          {
+            "id": "chatcmpl-auto-a4b4d1d4ced6844102245f7eb0c3d724",
+            "source": "785523d98825d5d238209b3eb50792d48762017bde0a4bbf3dc0aeae42ff69a5",
+            "strict_errors": [
+              [
+                [
+                  "data",
+                  0,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  2,
+                  "role"
+                ],
+                "literal_error"
+              ],
+              [
+                [
+                  "data",
+                  3,
+                  "role"
+                ],
+                "literal_error"
+              ]
+            ],
+            "raw_roles": [
+              "user",
+              "assistant",
+              "tool",
+              "user"
+            ]
+          }
+        ]
+      },
+      "http_receipt_sha256": "9b4243a79a2076292de06ad1dacc625c366a9e5d37653e52635ec6e34b180d58",
+      "replay_receipt_sha256": "fab2d7be45b9e1c325438aadf1c05d8a20f408a1a459219c90560112c8bdf3b6"
+    }
+  },
+  "cpu": {
+    "native_cases": 6,
+    "python_cases": 2,
+    "logs": {
+      "stored-projection-selected-02.log": "56ed86af4fa9dc3aeb2362e22aaa3ec4913c48df361a12573a9c5036e7f975d6",
+      "compatibility.log": "e72448bef2fc1a3708dd118d866558b405d9f270b86ee78dc2142a5ead188c10",
+      "schema-tests.log": "881791e7ea080bad75063adab72f3093b2d3b22feb6adae72c0ba61becf975bb"
+    }
+  },
+  "source": {
+    "official_spec": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "candidate_code": "58bcb7f5d214ead7937f9fbf584bbeb585aaae7f173dbadf73998418fbc41d73",
+    "verifier": "f31523e0dbbfd34384430ab0c37b89beb93a4dc6e2fa3fea2e6d44c461264e14"
+  },
+  "fixture_notes": [
+    "Initial developer fixture lacked the executable object-worker entry, returned 503 before checking a page.",
+    "Initial standalone C++ test compilation lacked the host-only worker test definition. The corrected fixture builds with the normal test macro."
+  ],
+  "scope": "Real production storage handlers and object subprocess over a local CPU HTTP fixture. Generated completions in this fixture are synthetic. Cross-role Python failure is SDK-side. Live model/managed release pending."
+}

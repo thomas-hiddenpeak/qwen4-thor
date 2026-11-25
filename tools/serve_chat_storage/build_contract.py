@@ -63,8 +63,10 @@ def definitions():
                  content=dict(type=['string', 'null']),
                  content_parts=dict(anyOf=[dict(type='null'), dict(type='array',
                      items=dict(oneOf=[ref('chat_input_'+name) for name in
-                         ('textPart', 'refusalPart', 'imagePart', 'videoPart', 'filePart', 'audioPart')]))]))
-    result['stored_chat_message'] = obj(props, ('id', 'role', 'content', 'name'))
+                         ('textPart', 'imagePart', 'videoPart', 'filePart', 'audioPart')]))]))
+    props['original_content_parts'] = dict(type='array', minItems=1, maxItems=1,
+                                          items=ref('chat_input_refusalPart'))
+    result['stored_chat_message'] = obj(props, ('id', 'role', 'content', 'content_parts'))
     for name, item in [('stored_chat_list', 'stored_chat'),
                        ('stored_chat_messages', 'stored_chat_message')]:
         result[name] = obj(dict(object=dict(const='list'), data=dict(type='array',
