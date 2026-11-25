@@ -268,7 +268,11 @@ q4t_add_python_contract(q4t_recovery_ledger_contracts
 q4t_add_python_contract(q4t_recovery_journal_contracts
   tools/serve_recovery/test_journal.py)
 q4t_add_python_contract(q4t_guardian_runtime_contracts
-  tools/serve_recovery/test_runtime.py --guardian $<TARGET_FILE:q4t_guardian>)
+  tools/serve_recovery/test_runtime.py --guardian $<TARGET_FILE:q4t_guardian>
+  -v RuntimeTests)
+q4t_add_python_contract(q4t_guardian_production_runtime_contracts
+  tools/serve_recovery/test_runtime.py --guardian $<TARGET_FILE:q4t_guardian>
+  -v ProductionRuntimeTests)
 q4t_add_python_contract(q4t_recovery_child_contracts
   tools/serve_recovery/test_child.py)
 q4t_add_python_contract(q4t_recovery_gateway_contracts

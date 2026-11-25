@@ -1,0 +1,29 @@
+{
+  "status": "TARGETED_CTEST_PASSED",
+  "candidate_failure": {
+    "run": 45713583971,
+    "failed_target": "q4t_guardian_runtime_contracts",
+    "seconds": 180.01,
+    "log_sha256": "bb4d931d60259e0312a0a08131199117bf74d9b1b0c7070535ad311266d42f69"
+  },
+  "prior_success": {
+    "run": 45708881064,
+    "seconds": 154.15,
+    "log_sha256": "1864c776e019e326c4e663a473e99b4fad8825d4a99d2993f437d285519baa6c"
+  },
+  "checks_sha256": "5f81b466b5e5dc95f6d26250a16c54c7c0e6a68c57136439dd86f870a1c17427",
+  "original_methods": 44,
+  "unchanged_method_bodies": 44,
+  "groups": {
+    "q4t_guardian_runtime_contracts": 40,
+    "q4t_guardian_production_runtime_contracts": 4
+  },
+  "seconds": {
+    "q4t_guardian_runtime_contracts": 130.735,
+    "q4t_guardian_production_runtime_contracts": 56.5589
+  },
+  "seconds_allowed_per_group": 180,
+  "python": "/usr/bin/python3",
+  "model_starts": 0,
+  "local_setup": "First configure missed system dependency headers. The next configure selected a local Python without os.pidfd_open. Reused the accepted build include paths and selected the same system interpreter as public CI. Both groups then ran completely."
+}

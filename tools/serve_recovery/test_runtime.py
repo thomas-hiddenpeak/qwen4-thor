@@ -225,7 +225,7 @@ class Service:
         self.snapshots.close()
 
 
-class RuntimeTests(unittest.TestCase):
+class GuardianFixture(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.libc = ctypes.CDLL(None, use_errno=True)
@@ -268,6 +268,8 @@ class RuntimeTests(unittest.TestCase):
         self.services.append(service)
         return service
 
+
+class RuntimeTests(GuardianFixture):
     def test_foreground_control_stop_and_lease_release(self):
         service = self.launch()
         current = service.ready()
@@ -482,74 +484,6 @@ class RuntimeTests(unittest.TestCase):
         self.assertTrue(service.stop()['cleanup_confirmed'])
         receipt = json.loads((service.directory/'handoff-order.json').read_bytes())
         self.assertTrue(receipt['before_alive'] and receipt['after_alive'])
-
-    def test_production_controller_cpu_backend_model_and_controller_recovery(self):
-        service = self.launch(production=True, gateway=True)
-        first = service.wait(lambda s: s['business_ready'], timeout=15)
-        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
-        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2, timeout=15)
-        self.assertEqual(first['controller_pid'], second['controller_pid'])
-        signal_identity(second['controller_pid'], second['controller_start_ticks'], signal.SIGKILL)
-        third = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 3, timeout=20)
-        self.assertEqual(third['controller_generation'], 2)
-        self.assertEqual(third['gateway_pid'], first['gateway_pid'])
-        self.assertEqual(len(service.persistent()['attempts']['model']), 2)
-        self.assertTrue(service.stop()['cleanup_confirmed'])
-
-    def test_model_crash_then_startup_pressure_recovers_without_quarantine(self):
-        service = self.launch(production=True, gateway=True)
-        first = service.wait(lambda s: s['business_ready'], timeout=20)
-        (service.directory/'refuse-memory-2').touch()
-        (service.directory/'report-memory-floor').touch()
-        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
-        held = service.wait(lambda s: (s.get('controller_health') or {}).get('reason') ==
-                            'startup_memory_floor', timeout=20)
-        self.assertFalse(held['business_ready'])
-        self.assertEqual(held['model_generation'], 2)
-        self.assertEqual(len(service.persistent()['attempts']['model']), 1)
-        (service.directory/'restore-memory').touch()
-        third = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 3,
-                             timeout=60)
-        self.assertEqual(third['controller_pid'], first['controller_pid'])
-        self.assertEqual(third['gateway_pid'], first['gateway_pid'])
-        state = service.persistent()
-        self.assertIsNone(state['quarantine'])
-        self.assertEqual([f['generation'] for f in state['failures'] if f['unknown']], [1])
-        self.assertEqual(len(state['attempts']['model']), 2)
-        self.assertTrue(service.stop()['cleanup_confirmed'])
-        service.assert_lease_free()
-
-    def test_production_blocked_log_preserves_business_and_control_generation(self):
-        service = self.launch(production=True, gateway=True)
-        first = service.wait(lambda s: s['business_ready'], timeout=15)
-        model_directory = service.directory/'controller-1/model-1'
-        os.mkfifo(model_directory/'model.log', 0o600)
-        (service.directory/'log.flood').touch()
-        degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
-            s['controller_health']['auxiliary_io']['worker_state'] == 'DISABLED', timeout=12)
-        self.assertTrue((service.directory/'log.drained').exists())
-        self.assertTrue(degraded['business_ready'])
-        for field in ('model_pid', 'model_generation', 'controller_pid', 'gateway_pid'):
-            self.assertEqual(degraded[field], first[field])
-        stats = degraded['controller_health']['auxiliary_io']
-        self.assertGreater(stats['dropped_bytes'], 0)
-        self.assertLessEqual(stats['queued_bytes'], 128*1024)
-        self.assertEqual(degraded['controller_health']['reason'], 'auxiliary_io_unavailable')
-        self.assertTrue(service.stop()['cleanup_confirmed'])
-        service.assert_lease_free()
-
-    def test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe(self):
-        service = self.launch(production=True, gateway=True)
-        first = service.wait(lambda s: s['business_ready'], timeout=15)
-        (service.directory/'monitor.unavailable').touch()
-        degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
-            s['controller_health']['reason'] == 'nvml_timeout', timeout=12)
-        self.assertEqual(degraded['model_pid'], first['model_pid'])
-        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
-        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2, timeout=15)
-        self.assertEqual(second['probe_used_for_generation'], 1)
-        self.assertEqual(second['controller_pid'], first['controller_pid'])
-        self.assertTrue(service.stop()['cleanup_confirmed'])
 
     def test_simultaneous_gateway_controller_failure_cleans_both_domains(self):
         service = self.launch(models=True, gateway=True)
@@ -882,6 +816,76 @@ class RuntimeTests(unittest.TestCase):
         state = json.loads((Path(result['directory'])/store.STATE).read_text())['state']
         self.assertEqual(state['desired'], 'STOPPED')
         self.assertTrue(all(value is None for value in state['active'].values()))
+
+
+class ProductionRuntimeTests(GuardianFixture):
+    def test_production_controller_cpu_backend_model_and_controller_recovery(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2, timeout=15)
+        self.assertEqual(first['controller_pid'], second['controller_pid'])
+        signal_identity(second['controller_pid'], second['controller_start_ticks'], signal.SIGKILL)
+        third = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 3, timeout=20)
+        self.assertEqual(third['controller_generation'], 2)
+        self.assertEqual(third['gateway_pid'], first['gateway_pid'])
+        self.assertEqual(len(service.persistent()['attempts']['model']), 2)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+
+    def test_model_crash_then_startup_pressure_recovers_without_quarantine(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=20)
+        (service.directory/'refuse-memory-2').touch()
+        (service.directory/'report-memory-floor').touch()
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        held = service.wait(lambda s: (s.get('controller_health') or {}).get('reason') ==
+                            'startup_memory_floor', timeout=20)
+        self.assertFalse(held['business_ready'])
+        self.assertEqual(held['model_generation'], 2)
+        self.assertEqual(len(service.persistent()['attempts']['model']), 1)
+        (service.directory/'restore-memory').touch()
+        third = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 3,
+                             timeout=60)
+        self.assertEqual(third['controller_pid'], first['controller_pid'])
+        self.assertEqual(third['gateway_pid'], first['gateway_pid'])
+        state = service.persistent()
+        self.assertIsNone(state['quarantine'])
+        self.assertEqual([f['generation'] for f in state['failures'] if f['unknown']], [1])
+        self.assertEqual(len(state['attempts']['model']), 2)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_production_blocked_log_preserves_business_and_control_generation(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        model_directory = service.directory/'controller-1/model-1'
+        os.mkfifo(model_directory/'model.log', 0o600)
+        (service.directory/'log.flood').touch()
+        degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
+            s['controller_health']['auxiliary_io']['worker_state'] == 'DISABLED', timeout=12)
+        self.assertTrue((service.directory/'log.drained').exists())
+        self.assertTrue(degraded['business_ready'])
+        for field in ('model_pid', 'model_generation', 'controller_pid', 'gateway_pid'):
+            self.assertEqual(degraded[field], first[field])
+        stats = degraded['controller_health']['auxiliary_io']
+        self.assertGreater(stats['dropped_bytes'], 0)
+        self.assertLessEqual(stats['queued_bytes'], 128*1024)
+        self.assertEqual(degraded['controller_health']['reason'], 'auxiliary_io_unavailable')
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_production_monitor_failure_keeps_model_then_uses_single_cpu_probe(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        (service.directory/'monitor.unavailable').touch()
+        degraded = service.wait(lambda s: s['state'] == 'READY_DEGRADED' and
+            s['controller_health']['reason'] == 'nvml_timeout', timeout=12)
+        self.assertEqual(degraded['model_pid'], first['model_pid'])
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        second = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 2, timeout=15)
+        self.assertEqual(second['probe_used_for_generation'], 1)
+        self.assertEqual(second['controller_pid'], first['controller_pid'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
 
 
 if __name__ == '__main__':
