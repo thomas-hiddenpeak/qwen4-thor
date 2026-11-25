@@ -774,6 +774,11 @@
       "history_arguments_delivery_20261125": {
         "revision": 486,
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "chat_audio_wire_schema_20261125": {
+        "stage": "schema_verified",
+        "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
+        "pending": "Publish corrected client declarations with the next package"
       }
     },
     {
@@ -1138,6 +1143,11 @@
       "history_arguments_delivery_20261125": {
         "revision": 486,
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "chat_audio_wire_schema_20261125": {
+        "stage": "schema_verified",
+        "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
+        "pending": "Publish corrected client declarations with the next package"
       }
     },
     {
@@ -5796,6 +5806,11 @@
           "other graders",
           "release"
         ]
+      },
+      "chat_audio_wire_schema_20261125": {
+        "stage": "schema_verified",
+        "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
+        "pending": "Publish corrected client declarations with the next package"
       }
     },
     {
@@ -7674,6 +7689,11 @@
       "assistant_pagination_20261125": {
         "stage": "targeted_cpu_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/empty.json"
+      },
+      "chat_audio_wire_schema_20261125": {
+        "stage": "schema_verified",
+        "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
+        "pending": "Publish corrected client declarations with the next package"
       }
     },
     {

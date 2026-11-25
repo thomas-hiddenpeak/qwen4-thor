@@ -71,7 +71,29 @@
           ]
         },
         "audio": {
-          "type": "null"
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 7,
+                  "maxLength": 256,
+                  "pattern": "^audio_",
+                  "not": {
+                    "pattern": "[^A-Za-z0-9_-]"
+                  }
+                }
+              },
+              "required": [
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "annotations": {
           "anyOf": [
@@ -300,6 +322,27 @@
             "properties": {
               "role": {
                 "not": {
+                  "const": "assistant"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "audio": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "role"
+            ],
+            "properties": {
+              "role": {
+                "not": {
                   "const": "tool"
                 }
               }
@@ -368,6 +411,16 @@
                           "properties": {
                             "refusal": {
                               "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "required": [
+                            "audio"
+                          ],
+                          "properties": {
+                            "audio": {
+                              "type": "object"
                             }
                           }
                         },

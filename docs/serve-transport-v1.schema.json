@@ -68,8 +68,30 @@
             "rejected_prediction_tokens": {
               "type": "integer",
               "minimum": 0
+            },
+            "audio_tokens": {
+              "type": "integer",
+              "minimum": 0
             }
           }
+        },
+        "q4t_audio_synthesis": {
+          "type": "object",
+          "properties": {
+            "input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "output_tokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "input_tokens",
+            "output_tokens"
+          ],
+          "additionalProperties": false
         }
       }
     },
@@ -202,6 +224,46 @@
                       "name",
                       "arguments"
                     ]
+                  },
+                  "audio": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 7,
+                            "maxLength": 256,
+                            "pattern": "^audio_",
+                            "not": {
+                              "pattern": "[^A-Za-z0-9_-]"
+                            }
+                          },
+                          "expires_at": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "data": {
+                            "type": "string",
+                            "minLength": 1,
+                            "contentEncoding": "base64"
+                          },
+                          "transcript": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "id",
+                          "expires_at",
+                          "data",
+                          "transcript"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
                 }
               },
@@ -286,7 +348,6 @@
             "required": [
               "index",
               "delta",
-              "finish_reason",
               "logprobs"
             ],
             "properties": {
@@ -315,6 +376,41 @@
                       }
                     },
                     "additionalProperties": false
+                  },
+                  "audio": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 7,
+                            "maxLength": 256,
+                            "pattern": "^audio_",
+                            "not": {
+                              "pattern": "[^A-Za-z0-9_-]"
+                            }
+                          },
+                          "expires_at": {
+                            "type": "integer",
+                            "minimum": 1
+                          },
+                          "data": {
+                            "type": "string",
+                            "minLength": 1,
+                            "contentEncoding": "base64"
+                          },
+                          "transcript": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "minProperties": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
                 }
               },
@@ -330,6 +426,39 @@
               "logprobs": {
                 "$ref": "#/$defs/logprobs"
               }
+            },
+            "if": {
+              "required": [
+                "delta"
+              ],
+              "properties": {
+                "delta": {
+                  "required": [
+                    "audio"
+                  ],
+                  "properties": {
+                    "audio": {
+                      "type": "object",
+                      "required": [
+                        "expires_at"
+                      ],
+                      "maxProperties": 1
+                    }
+                  }
+                }
+              }
+            },
+            "then": {
+              "not": {
+                "required": [
+                  "finish_reason"
+                ]
+              }
+            },
+            "else": {
+              "required": [
+                "finish_reason"
+              ]
             }
           }
         },

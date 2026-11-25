@@ -16591,7 +16591,10 @@
                       {
                         "type": "string",
                         "minLength": 1,
-                        "maxLength": 256
+                        "maxLength": 256,
+                        "not": {
+                          "pattern": "\\u0000"
+                        }
                       },
                       {
                         "type": "object",
@@ -16599,13 +16602,16 @@
                           "id": {
                             "type": "string",
                             "minLength": 1,
-                            "maxLength": 256
+                            "maxLength": 256,
+                            "not": {
+                              "pattern": "\\u0000"
+                            }
                           }
                         },
-                        "additionalProperties": false,
                         "required": [
                           "id"
-                        ]
+                        ],
+                        "additionalProperties": false
                       }
                     ]
                   },
