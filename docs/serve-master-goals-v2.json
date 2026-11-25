@@ -1298,16 +1298,20 @@
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       },
       "responses_image_context_20261126": {
-        "stage": "native_tls_sdk_geometry_and_source_verified",
+        "stage": "issued_with_scoped_verification",
         "receipt": "evidence/serve-responses-image-context-20261126/business.json",
         "ordinary_refusal": "quality failure recorded on both unconstrained attempts",
-        "issued": false
+        "issued": true,
+        "revision": 522,
+        "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       },
       "image_speech_startup_recovery_qualification_20261126": {
-        "stage": "primary_light_verified_managed_packaging_pending",
-        "issued": false,
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
         "receipt": "evidence/serve-image-speech-recovery-20261126/profiles.json",
-        "business": "evidence/serve-image-speech-recovery-20261126/combined.json"
+        "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
+        "revision": 522,
+        "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       },
       "visual_answer_encoding_20261126": {
         "stage": "native_tls_sdk_business_passed",
@@ -6310,15 +6314,19 @@
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       },
       "speech_response_media_20261126": {
-        "stage": "native_tls_sdk_and_independent_decode_verified",
-        "issued": false,
-        "receipt": "evidence/serve-speech-media-20261126/business.json"
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-speech-media-20261126/business.json",
+        "revision": 522,
+        "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       },
       "image_speech_startup_recovery_qualification_20261126": {
-        "stage": "primary_light_verified_managed_packaging_pending",
-        "issued": false,
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
         "receipt": "evidence/serve-image-speech-recovery-20261126/profiles.json",
-        "business": "evidence/serve-image-speech-recovery-20261126/combined.json"
+        "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
+        "revision": 522,
+        "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       }
     },
     {
@@ -9673,8 +9681,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 520,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev520-preflight.json",
+        "revision": 522,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev522-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9757,17 +9765,20 @@
         "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
       },
       "managed_startup_memory_20261126": {
-        "stage": "targeted_cpu_and_real_native_cli_verified",
-        "issued": false,
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
         "receipt": "evidence/serve-managed-startup-memory-20261126/cpu.json",
-        "next": "managed integrated release",
-        "cli_receipt": "evidence/serve-managed-startup-memory-20261126/cli.json"
+        "cli_receipt": "evidence/serve-managed-startup-memory-20261126/cli.json",
+        "revision": 522,
+        "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       },
       "image_speech_startup_recovery_qualification_20261126": {
-        "stage": "primary_light_verified_managed_packaging_pending",
-        "issued": false,
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
         "receipt": "evidence/serve-image-speech-recovery-20261126/profiles.json",
-        "business": "evidence/serve-image-speech-recovery-20261126/combined.json"
+        "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
+        "revision": 522,
+        "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       }
     },
     {
@@ -11367,7 +11378,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev520_delivered_remaining_deliveries",
+      "state": "rev522_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12699,7 +12710,8 @@
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       },
       "current_widget_delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json",
-      "current_agent_session_delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      "current_agent_session_delivery": "evidence/serve-agent-structured-format-20261126/delivery.json",
+      "current_response_media_delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -12804,16 +12816,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "059cb52447bf3e5051df897865783358a441becf",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/agent-format-delivery-soak-src",
+        "source_commit": "6fb49e611f57bce51ddf28a12d38b9526f8986c4",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-media-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/agent-format-client-primary-01/bundle",
-          "manifest_sha256": "e7638c7cff1281def8072e43fddededf46e38e1b73bdab0a6cbbb93f9f996123"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-media-client-primary-01/bundle",
+          "manifest_sha256": "55451cb7e3500f3348f8b00dad063f98ac805eb7e901fda70bd8b2d792ba5cea"
         },
-        "revision": 520,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/agent-format-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "e9cda51b09f53a80df63a2745ca11cba8b63437c1c1d4b733fcbd64477b47a93",
-        "handoff_sha256": "bcd702d30994b6c1ee6d78cb5a23f57f4b283596f6030bf9dcab467128f4da9b",
+        "revision": 522,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-media-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "72a29b681d1779577829aeb7cc4d689729d7a85ef7297854d3d1be404c23ec3a",
+        "handoff_sha256": "f7b79ca7ffd02b715af5aae739d860390f3fca4547ba8c8e3e5e11017c912ca9",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13224,19 +13236,21 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 520,
-        "receipt": "evidence/serve-agent-structured-format-20261126/delivery.json",
-        "plan_sha256": "e9cda51b09f53a80df63a2745ca11cba8b63437c1c1d4b733fcbd64477b47a93",
+        "revision": 522,
+        "receipt": "evidence/serve-image-speech-recovery-20261126/delivery.json",
+        "plan_sha256": "72a29b681d1779577829aeb7cc4d689729d7a85ef7297854d3d1be404c23ec3a",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
         "checked": true
       },
       "image_speech_startup_recovery_qualification_20261126": {
-        "stage": "primary_light_verified_managed_packaging_pending",
-        "issued": false,
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
         "receipt": "evidence/serve-image-speech-recovery-20261126/profiles.json",
-        "business": "evidence/serve-image-speech-recovery-20261126/combined.json"
+        "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
+        "revision": 522,
+        "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       }
     }
   ],
