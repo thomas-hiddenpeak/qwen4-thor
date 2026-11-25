@@ -1,5 +1,9 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+ChatKit 会话可以提交带媒体类型的 base64 录音，转写沿用原生 ASR 与客户配额，浏览器收到仅含 text 的 JSON。四项 CPU 回归、两项有效和七项无效 schema 输入均已验证。下一步通过实际 TLS 会话提交两种编码的同一段语音。[验证记录](evidence/serve-chatkit-composer-20261125/cpu.json)
+
+官方 Node SDK 通过原生 TLS 运行两种 Evals，各读出项目资料中的 157，正反评分分别为 1 和 0。第三个真实运行成功取消，跨客户访问返回 404，独立 Chat 答 42。数据与控制并发各限 1，单次模型启动共 39.033 秒。7 个响应同时通过官方和本地合同。[验证记录](evidence/serve-observation-admission-20261125/business.json)
+
 旧原生网关被四个普通状态查询占满后，Evals 取消返回 429。候选在相同条件下通过操作端口返回 200；取消名额已被占用时仍返回 429。240 个常规方法的前后分类逐项对照，唯一变化是 Evals 取消进入专用通道。三处入口共用应用观测判断。下一步验证真实评估运行取消和可回退交付。[验证记录](evidence/serve-observation-admission-20261125/cpu.json)
 
 主配置完成 6 × 7。轻配置读取同一 Run 的消息和步骤，随后到达末页。8 个对应页面响应摘要均与主配置相同。两端的另一个客户读原线程返回 404，独立 Chat 回答 42。专门的 C++ 测试同时覆盖数据槽、观测槽及取消。下一步验证受监护恢复与发行。[验证记录](evidence/serve-assistant-pagination-20261125/profiles.json)

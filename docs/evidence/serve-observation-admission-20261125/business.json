@@ -1,0 +1,74 @@
+{
+  "stage": "targeted_device_verified",
+  "issued": false,
+  "source": "bbbfa0175",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.033,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "inputs": {
+    "binary": "247c9b3fc7f12566e8b9ac74b9fecafe6ba4a62a74eb432f6727993dcf0da870",
+    "ingress": "3fc018c2dcfd69433ddff22ac2b4e99cbba525e72f26d0e56433967f86d92d4a",
+    "sdk_driver": "b2b8e73254d336a8c334a1a561f916ecbdcefc12bb85f7953576995ad9763300",
+    "protected": {
+      "build/q4t": "655f31bf9864fd3c4d8f8f6625c5afb2ff551c80f6bb2091e2953be266fe20f7",
+      "build/service/manifest.json": "faf7f3e0bc257160aaed8279c9b435fada02957d2e532262c4163e6a6ce557aa",
+      "build/service.release.json": "383e44a4e78441c36cca5a6caebb04d0aba855338c604828f9332a2ed7222664",
+      "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    },
+    "certificate_sha256": "dae447eee7a41e5cdc36945e68b65fa036d3e85b1e6403e0b4b1657fda2fc031",
+    "starts": 1,
+    "seconds": 300,
+    "max_inflight": 1,
+    "max_control_inflight": 1
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "reports": [
+      {
+        "type": "completions",
+        "prediction": "157",
+        "score": 1,
+        "seed": 7102,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_47086306edf0855e8fe0dd25e63317c8"
+      },
+      {
+        "type": "responses",
+        "prediction": "157",
+        "score": 0,
+        "seed": 1677642472254141,
+        "usage": {
+          "model_name": "qwen3.8-flash-next",
+          "invocation_count": 1,
+          "prompt_tokens": 309,
+          "completion_tokens": 4,
+          "total_tokens": 313,
+          "cached_tokens": 0
+        },
+        "original_id": "evalrun_aca94471f32210261ca64246e5f892ce"
+      }
+    ],
+    "independent_chat": "42",
+    "canceled": "canceled",
+    "foreign_project": 404,
+    "deleted": 404,
+    "driver_sha256": "b2b8e73254d336a8c334a1a561f916ecbdcefc12bb85f7953576995ad9763300",
+    "receipts": 7
+  },
+  "receipts_sha256": "2a063f29f0aa6e7c4a79c6948ff0ef9610e052531c86b51f41da4c8bd17ca4ff",
+  "raw_archive_sha256": "43c381cead4370d1c2e4904c10c784594130dae523b0b3bb6b8f7745f1282842",
+  "guard_sha256": "d3eeb6486c46b1233a3e937367e56390bd802ec08c879a2ac24c56616558b799"
+}

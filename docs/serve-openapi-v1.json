@@ -10588,6 +10588,9 @@
         "x-q4t-result-by-request-type": {
           "attachments.create": {
             "$ref": "serve-application-v1.schema.json#/$defs/chatkit_reserved_document"
+          },
+          "input.transcribe": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_transcription_result"
           }
         }
       }

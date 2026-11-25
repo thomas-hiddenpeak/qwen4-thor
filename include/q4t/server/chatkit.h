@@ -1,8 +1,11 @@
 #pragma once
 
+#include <functional>
+
 #include "q4t/server/responses_state.h"
 
 namespace q4t::server {
+struct AsrRequest;
 struct ChatPlanConfig;
 class ResponsesJobs;
 struct ChatKitIssuer {
@@ -12,7 +15,10 @@ struct ChatKitIssuer {
 void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                         const ChatPlanConfig& config, const StateAccess& access,
                         std::string_view token, const std::string& body,
-                        ChatKitIssuer issuer, std::string_view origin);
+                        ChatKitIssuer issuer, std::string_view origin,
+                        const std::function<void(const io::Json&)>& transcribe);
+Status ParseChatKitTranscription(const io::Json& params, AsrRequest* request,
+                                 ChatPlanError* error);
 Status ValidateChatKit(const io::Json& value, const char* root,
                        ChatPlanError* error);
 ObjectReply HandleChatKit(ObjectStore& objects, const StateAccess& access,

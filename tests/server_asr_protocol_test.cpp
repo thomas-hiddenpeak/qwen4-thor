@@ -9,6 +9,8 @@
 #include <stdexcept>
 
 #include "q4t/audio/asr_config.h"
+#include "q4t/io/base64.h"
+#include "q4t/server/chatkit.h"
 #include "q4t/server/chat_capabilities.h"
 #include "q4t/test.h"
 
@@ -43,6 +45,44 @@ Json Read(const std::string& wire) {
 }
 SampledToken Token(int id = 7) { return {id, -9999, {}, -0.25}; }
 }  // namespace
+
+Q4T_TEST(chatkit_composer_audio_uses_native_asr_and_preserves_failed_input) {
+  const std::string wav("RIFF\0\0\0\0WAVE", 12);
+  const std::string webm("\x1a\x45\xdf\xa3" "recording");
+  std::string encoded;
+  auto params = [&](const std::string& audio, const char* mime) {
+    if (!q4t::io::EncodeBase64(audio, 128, &encoded))
+      throw std::runtime_error("fixture encoding");
+    Json value;
+    if (!q4t::io::ParseJson("{\"mime_type\":\"" + std::string(mime) +
+          "\",\"audio_base64\":\"" + encoded + "\"}", &value))
+      throw std::runtime_error("fixture JSON");
+    return value;
+  };
+  AsrRequest request;
+  ChatPlanError error;
+  Q4T_CHECK(ParseChatKitTranscription(params(wav, "audio/wav"), &request,
+                                      &error));
+  Q4T_CHECK(request.file == wav && request.model == "qwen3-asr-0.6b" &&
+            request.format == AsrFormat::kText && !request.stream);
+  Q4T_CHECK(ParseChatKitTranscription(params(webm, "audio/webm;codecs=opus"),
+                                      &request, &error));
+  Q4T_CHECK(request.file == webm);
+  Q4T_CHECK(!ParseChatKitTranscription(params(wav, "audio/webm"), &request,
+                                       &error));
+  Q4T_CHECK(error.http_status == 415 && error.param == "params.mime_type");
+  for (const auto* raw : {
+           R"({"mime_type":"audio/wav","audio_base64":""})",
+           R"({"mime_type":"audio/wav","audio_base64":"a==="})",
+           R"({"mime_type":42,"audio_base64":"YQ=="})",
+           R"({"mime_type":"audio/wav","audio_base64":"YQ==","model":"x"})"}) {
+    Json input;
+    Q4T_CHECK(q4t::io::ParseJson(raw, &input));
+    Q4T_CHECK(!ParseChatKitTranscription(input, &request, &error));
+    Q4T_CHECK(error.http_status == 400 && request.file == webm);
+  }
+  return true;
+}
 
 Q4T_TEST(audio_translation_form_preserves_only_translation_input_fields) {
   ChatPlanError error;

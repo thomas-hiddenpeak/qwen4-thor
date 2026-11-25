@@ -148,7 +148,7 @@ def schema(graph):
     definitions.update(graph_definitions(chatkit, 'chatkit_'))
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
         'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output', 'threads.get_by_id',
-        'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.create', 'attachments.delete']),
+        'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.create', 'attachments.delete', 'input.transcribe']),
         params=dict(type='object'), metadata=dict(type='object')), ['type', 'params'])
     string = dict(type='string')
     def browser_fields(properties, required):
@@ -172,9 +172,15 @@ def schema(graph):
         for name, params in [
             ('attachments.create', browser_fields(dict(name=dict(type='string', minLength=1),
                 size=dict(type='integer', minimum=0), mime_type=string), ['name', 'size', 'mime_type'])),
+            ('input.transcribe', obj(dict(
+                audio_base64=dict(type='string', minLength=4, maxLength=34952536,
+                                  contentEncoding='base64'),
+                mime_type=dict(type='string', minLength=1, maxLength=255)),
+                ['audio_base64', 'mime_type'])),
             ('items.feedback', feedback), ('threads.create', browser_fields({'input': message}, ['input'])),
             ('threads.add_user_message', browser_fields(dict(input=message, thread_id=string), ['input', 'thread_id']))]]
     definitions['chatkit_client_result'] = dict(type='object')
+    definitions['chatkit_transcription_result'] = obj(dict(text=string), ['text'])
     definitions['chatkit_document_attachment'] = obj(dict(id=dict(type='string'),name=dict(type='string'),
         type=dict(const='file'),mime_type=dict(type='string')), ['id','name','type','mime_type'])
     definitions['chatkit_reserved_document'] = obj(dict(
@@ -937,7 +943,9 @@ def add_openapi(paths, response, error):
         if path == '/v1/chatkit':
             operation['description'] = 'Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.'
             success['content']['text/event-stream'] = dict(schema=dict(type='string'))
-            operation['x-q4t-result-by-request-type'] = {'attachments.create': external('chatkit_reserved_document')}
+            operation['x-q4t-result-by-request-type'] = {
+                'attachments.create': external('chatkit_reserved_document'),
+                'input.transcribe': external('chatkit_transcription_result')}
         if path == '/v1/chatkit/attachments':
             operation['description'] = 'Upload a document with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.'
             operation['x-q4t-body-contract'] = 'one multipart file'

@@ -45,6 +45,8 @@ ObjectReply ParseRealtimeTranscriptionCommand(
     RealtimeTranscriptionCommand* output);
 ObjectReply DecodeRealtimeAudioBase64(std::string_view text,
                                       std::string* output);
+ObjectReply DecodeAudioBase64(std::string_view text, size_t byte_limit,
+                              std::string* output);
 // Preserves omitted fields and distinguishes explicit null/empty updates.
 // Parsing does not claim that optional processing backends have been enabled;
 // the execution adapter must validate and execute every accepted setting.
