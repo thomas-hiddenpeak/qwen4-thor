@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'chatkit_retry_handoff' in self.plan:
+            from tools.serve_responses import chatkit_retry_profiles
+            chatkit_retry_profiles.business(self, capabilities)
         if 'stored_refusal_handoff' in self.plan:
             from tools.serve_chat_storage import refusal_profiles
             refusal_profiles.business(self, capabilities)

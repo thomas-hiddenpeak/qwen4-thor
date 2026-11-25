@@ -819,15 +819,20 @@
         "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
       },
       "query_defaults_20261125": {
-        "stage": "candidate_declarations_cpu_verified",
-        "receipt": "evidence/serve-application-query-20261125/defaults.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-application-query-20261125/defaults.json",
+        "issued": true,
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_browser_page_defaults_20261125": {
         "state": "cpu_verified",
         "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
-        "stage": "candidate_https_verified",
+        "stage": "issued",
         "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
@@ -1225,9 +1230,12 @@
         "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json",
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
@@ -2726,9 +2734,12 @@
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json",
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
@@ -3233,9 +3244,11 @@
       "chatkit_browser_page_defaults_20261125": {
         "state": "cpu_verified",
         "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
-        "stage": "candidate_https_verified",
+        "stage": "issued",
         "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_browser_operations_20261125": {
         "reference": 16,
@@ -3247,12 +3260,17 @@
         ],
         "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
         "candidate_declared": 13,
-        "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json"
+        "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json",
+        "issued_revision": 506,
+        "issued_declared": 13
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json",
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
@@ -7980,15 +7998,20 @@
         "receipt": "evidence/serve-stored-message-projection-20261125/python-resource-replay.json"
       },
       "query_defaults_20261125": {
-        "stage": "candidate_declarations_cpu_verified",
-        "receipt": "evidence/serve-application-query-20261125/defaults.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-application-query-20261125/defaults.json",
+        "issued": true,
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_browser_page_defaults_20261125": {
         "state": "cpu_verified",
         "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
-        "stage": "candidate_https_verified",
+        "stage": "issued",
         "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_browser_operations_20261125": {
         "reference": 16,
@@ -8000,12 +8023,17 @@
         ],
         "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
         "candidate_declared": 13,
-        "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json"
+        "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json",
+        "issued_revision": 506,
+        "issued_declared": 13
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json",
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
@@ -9614,6 +9642,10 @@
       "stored_message_delivery_20261125": {
         "revision": 504,
         "receipt": "evidence/serve-stored-message-projection-20261125/delivery.json"
+      },
+      "chatkit_retry_delivery_20261125": {
+        "revision": 506,
+        "receipt": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
@@ -10795,15 +10827,18 @@
         "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "chatkit_retry_20261125": {
-        "stage": "candidate_native_https_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
-        "issued": false
+        "issued": true,
+        "profiles": "evidence/serve-chatkit-retry-20261125/profiles.json",
+        "revision": 506,
+        "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev504_delivered_remaining_deliveries",
+      "state": "rev506_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12091,6 +12126,10 @@
       "stored_message_delivery_20261125": {
         "revision": 504,
         "receipt": "evidence/serve-stored-message-projection-20261125/delivery.json"
+      },
+      "chatkit_retry_delivery_20261125": {
+        "revision": 506,
+        "receipt": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     },
     {
@@ -12594,6 +12633,10 @@
       "stored_message_delivery_20261125": {
         "revision": 504,
         "receipt": "evidence/serve-stored-message-projection-20261125/delivery.json"
+      },
+      "chatkit_retry_delivery_20261125": {
+        "revision": 506,
+        "receipt": "evidence/serve-chatkit-retry-20261125/delivery.json"
       }
     }
   ],

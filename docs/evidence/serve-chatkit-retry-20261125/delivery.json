@@ -1,0 +1,129 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 506,
+    "version_revision": 182,
+    "profile_revision": 72,
+    "previous_profile_revision": 71,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "ca900adad5073113c93d037ac888979c8e692df0455a9364724cfa3a81b3d7b1",
+    "fallback": "cbe5b93a635d4a0255bd9f5f30bb01fc83f6321b150c82cf22d339d8c4743bb2",
+    "engine": "6d89986ef1bae9e413cbe594dfa77fbef72248416a76526ffbb1262b9dcb5a4b",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 504,
+  "previous_primary": "e0ce664056e74c87421514ac6105ef9d162316589022a9be241d4f7e31174a93",
+  "recovery": {
+    "primary": {
+      "seconds": 226.466,
+      "starts": 2,
+      "generations": [
+        1,
+        2
+      ],
+      "unchanged_default": true,
+      "ports_free": true,
+      "remaining": [],
+      "sdk": "7.47.0",
+      "user_item": "item_58141e3e0f4d0ad4efc7958073e2e9d0",
+      "original_call": "call_resp_2e624e92e55fec280568b469e2ad89da_0",
+      "retry_call": "call_resp_9358915f4b980a5592daaf27f5dda7ee_0",
+      "scope_answer": "157",
+      "deleted_file_status": 404,
+      "peer": 404,
+      "independent": "42",
+      "lease_sha256": "eddbdb08b62c7e719920e69a8401340e049fdf10ff20653ff8b72fd2a9602be6",
+      "before_sha256": "e6b39817fccd06da10d4caf47c0613640265d04dde211d8bec558c8901e3b2e5",
+      "after_sha256": "2fbd605381f12a77bba8e2035328e0cb7e476f7873e12c021d7987cd10adc079",
+      "gateway_takeover": {
+        "enabled": true,
+        "root_manifest_sha256": "ca900adad5073113c93d037ac888979c8e692df0455a9364724cfa3a81b3d7b1",
+        "cycle_id": "ed12c87a-09e2-4fbd-aa6b-c81450333e8b",
+        "selected": "fallback",
+        "launch_payload": "fallback",
+        "payload_manifest_sha256": "cbe5b93a635d4a0255bd9f5f30bb01fc83f6321b150c82cf22d339d8c4743bb2",
+        "fallback_consumed": true,
+        "protected": false,
+        "pending": false,
+        "payload_prepared": true,
+        "state_available": true,
+        "worker_pid": 4158738,
+        "worker_start_ticks": 379776813,
+        "probe_pid": null,
+        "probe_count": 1,
+        "last_fault": {
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8",
+          "fingerprint": "a57942902182b85662536615bde959f99ba3646633351a3ad8ab311d1c7c7e27",
+          "generation": 1,
+          "kind": "native_process_signal",
+          "payload_sha256": "ca900adad5073113c93d037ac888979c8e692df0455a9364724cfa3a81b3d7b1",
+          "role": "gateway",
+          "signal": 6
+        },
+        "reason": "",
+        "role_launch_authority": false
+      }
+    },
+    "fallback": {
+      "seconds": 162.318,
+      "starts": 2,
+      "generations": [
+        1,
+        2
+      ],
+      "unchanged_default": true,
+      "ports_free": true,
+      "remaining": [],
+      "sdk": "7.47.0",
+      "user_item": "item_6bbad07e81314972fa52d35451823aef",
+      "original_call": "call_resp_170433d93ce50fa375f2112c68d89f42_0",
+      "retry_call": "call_resp_24cf0f90572cf9e2fc1c21d082e28697_0",
+      "scope_answer": "157",
+      "deleted_file_status": 404,
+      "peer": 404,
+      "independent": "42",
+      "lease_sha256": "06be16df3a457b780e45eed86753fed1d895a9de8092c6207c394391e9a850d3",
+      "before_sha256": "0fa931f47ee0a10d576eccad98339e690d58173871701881551c667172c9a2ad",
+      "after_sha256": "a799406aa3b91ed4e7143458ad00294ab11b141e8c1d4072b7869ff583e00b22"
+    }
+  },
+  "openapi_sha256": "f3d3e765a7d8b48b3167da66fb6cedfa6f8f872ab4c4fb2dfc3f55d94525f673",
+  "browser_reference": 16,
+  "browser_declared": 13,
+  "browser_missing": [
+    "threads.add_structured_input",
+    "threads.custom_action",
+    "threads.sync_custom_action"
+  ],
+  "application_sha256": "e844c854368646dee3726f4314bbf3b27b4f65fed91f7a78217a7d97104bd89f",
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71,
+    "receipt_sha256": "b8b2c77a57c056bd68f97d428a4a7f497545bb861c9a139632481d46b6c9d08c"
+  },
+  "soak": {
+    "source_commit": "cf3abae3e6c05853ee302b56d4a110b4811f46cf",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/retry-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/retry-client-primary-01/bundle",
+      "manifest_sha256": "ca900adad5073113c93d037ac888979c8e692df0455a9364724cfa3a81b3d7b1"
+    },
+    "revision": 506,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/retry-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "c1f95b28df5f924e0cac91ab77eb15b9da1092147dc1c24349235d4ab6c2b3ae",
+    "handoff_sha256": "9102b815b3ca4603fa409c7163391fdda1296280b97f3887ec1c1cf99e19c3b4",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev506-preflight.json"
+}

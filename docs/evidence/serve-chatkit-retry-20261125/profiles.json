@@ -1,0 +1,127 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 504,
+  "tests": {
+    "passed": 52,
+    "sha256": "9cc0766f17f63bbb6c48d7658366024c357a49ab78196d298883d5c94124eb26"
+  },
+  "predecessors": {
+    "primary": {
+      "predecessor": "111af0f29262039f80b38f93f3dec904f0245f22655f827f96eb3cccd7d2775a",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    },
+    "light": {
+      "predecessor": "dc83d48ae79f951b0b3c9ebdf957f7e6c29459b2eda52c97adb397286e4f6961",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    }
+  },
+  "build": {
+    "engine": "6d89986ef1bae9e413cbe594dfa77fbef72248416a76526ffbb1262b9dcb5a4b",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "runs": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "primary",
+        "source": {
+          "phase": "primary",
+          "sdk": "7.47.0",
+          "peer": 404,
+          "workflow": "agent_a55bd39cb645cbf369ba96e2b3b7f28e",
+          "thread": "cthr_0387e67136f093ad1e09056377898220",
+          "attachment": "file_b278cf68e1097af181dc2fd1f56563cc",
+          "session": "cksess_89e91457857b64486e119a944fdbcd82fcdf381efb204ecb06ca9e3eb8033558",
+          "call": "call_resp_f09d8c13debcf34417cb6b49d56494e1_0",
+          "proposed_count": 157,
+          "bytes": 830,
+          "sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+          "source_deleted": 404
+        },
+        "original_ids": [
+          "item_5d1c6a99aa6cafe96ec0cf5b1d463673",
+          "fc_370f6a044a6b0db50f7c1bf9e3e65399"
+        ],
+        "browser_zero": 2,
+        "management_zero": 0,
+        "peer": 404,
+        "deleted": 404,
+        "chat": "42"
+      },
+      "raw_sha256": "721fed6c92ad9530ea50f134cd2039b4930dacfcda570dce72a5cc7acb57847f",
+      "seconds": 44.30324738100171
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "light",
+        "source": {
+          "phase": "primary",
+          "sdk": "7.47.0",
+          "peer": 404,
+          "workflow": "agent_a55bd39cb645cbf369ba96e2b3b7f28e",
+          "thread": "cthr_0387e67136f093ad1e09056377898220",
+          "attachment": "file_b278cf68e1097af181dc2fd1f56563cc",
+          "session": "cksess_89e91457857b64486e119a944fdbcd82fcdf381efb204ecb06ca9e3eb8033558",
+          "call": "call_resp_f09d8c13debcf34417cb6b49d56494e1_0",
+          "proposed_count": 157,
+          "bytes": 830,
+          "sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+          "source_deleted": 404
+        },
+        "original_ids": [
+          "item_5d1c6a99aa6cafe96ec0cf5b1d463673",
+          "fc_370f6a044a6b0db50f7c1bf9e3e65399"
+        ],
+        "browser_zero": 2,
+        "management_zero": 0,
+        "peer": 404,
+        "deleted": 404,
+        "chat": "42",
+        "recovered": {
+          "call": "call_resp_d47cd63f462630f33ea67bed7f084b69_0",
+          "answer": "157",
+          "ids": [
+            "item_5d1c6a99aa6cafe96ec0cf5b1d463673",
+            "fc_efdcc1585a6523688b3b34d7b0a37e2c",
+            "msg_02ba35604c98afdce8bf86a9705c1d44"
+          ],
+          "foreign_browser": 404
+        }
+      },
+      "raw_sha256": "4fa256c760e1eb1863643d50803149ffa3bc50321aadf82c589d1050db32a4dc",
+      "seconds": 45.90815777797252
+    }
+  },
+  "openapi_sha256": "f3d3e765a7d8b48b3167da66fb6cedfa6f8f872ab4c4fb2dfc3f55d94525f673",
+  "registry": {
+    "status": "ACCEPT_CHATKIT_RETRY_PRIMARY_LIGHT",
+    "registry_sha256": "62bc686090507014d9e73b5aa67d384f9d39938c3172416438d23d91c96c026d",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 86,
+      "cleanup_complete": true,
+      "lease_result_sha256": "0c1fcbfe0f3089e70ffc72cf45167c5cae59576ed2934b19c648be087a4036c6"
+    },
+    "migration_permit_sha256": "d512ad049a6d848fdf28d32d44fe1b5774887e3a77932454e325d3c9a435f649",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "review": {
+    "pins": {
+      "primary": "d12779c9764a3fd17a59a01c62cbf05b967fe43aa0dd58dbfec6197d0932d805",
+      "light": "9850ef16382e3717158652263f8e1867976c4e347684e1b577b799f22129a9e7"
+    },
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "acceptance": "9e55d1861f434b4d0c3d7ef37ed25188625a2b659a71586bed396337a4b83ba4"
+  },
+  "lease_sha256": "0c1fcbfe0f3089e70ffc72cf45167c5cae59576ed2934b19c648be087a4036c6"
+}
