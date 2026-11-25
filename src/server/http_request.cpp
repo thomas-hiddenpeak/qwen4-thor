@@ -1,6 +1,7 @@
 #include "q4t/server/http_request.h"
 #include "q4t/server/application_routes.h"
 #include "q4t/server/voice_request.h"
+#include "q4t/server/file_video.h"
 
 #include <unistd.h>
 #include <poll.h>
@@ -447,6 +448,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   }
   const size_t route_limit =
       streaming                      ? stream->max_bytes
+      : VideoCharacterMethodAllowed(*method, *path) && *method == "POST"
+          ? FileVideoLimits{}.max_source_bytes + 65536
       : IsVoiceTarget(*path)         ? kVoiceFormBytes
       : IsTranscriptionTarget(*path) ? kTranscriptionBodyBytes
       : IsMcpTunnelResponse(*method, *path)

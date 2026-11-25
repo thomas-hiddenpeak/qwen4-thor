@@ -1,0 +1,26 @@
+{
+  "source": "Original geometric robot moving to the right, no human subject or external images.",
+  "program_sha256": "3aaaea5675e78f02446349524d40c7ef633f19858b5164ae5c655c8e8b1a3b2b",
+  "width": 128,
+  "height": 96,
+  "fps": 6,
+  "frames": 12,
+  "seconds": 2.0,
+  "rgb_sha256": "a03975d6eef3740445d573c629889d9d96327bd3f1664925af672fc6a0f30b59",
+  "encoded_sha256": "9c520d80f7451718cdab6361e3bdc17af7a56cfd3e8443f9727d4fb312df3de7",
+  "encoded_bytes": 4468,
+  "decoded_centers": [
+    26.79,
+    32.73,
+    38.69,
+    44.8,
+    50.9,
+    56.84,
+    62.82,
+    68.76,
+    74.81,
+    80.91,
+    86.88,
+    92.84
+  ]
+}

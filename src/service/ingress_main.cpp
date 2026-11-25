@@ -436,6 +436,7 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::FileMethodAllowed(method, path) ||
       server::UploadMethodAllowed(method, path) ||
       server::IsChatKitClient(method, path) ||
+      server::VideoCharacterMethodAllowed(method, path) ||
       server::EvalMethodAllowed(method, path) || server::IsSafetyRead(method, path) ||
       server::ChatKitMethodAllowed(method, path) ||
       server::WebhookMethodAllowed(method, path) ||

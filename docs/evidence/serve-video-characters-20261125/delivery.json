@@ -1,0 +1,135 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 498,
+    "version_revision": 178,
+    "profile_revision": 68,
+    "previous_profile_revision": 67,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "f76a8645a93a832fb2188c6ba749256236b3cd9afe6db5cacc1db18a7d91fbdb",
+    "fallback": "16e998e7658f1c8173662b1e6b34efcbe617f964b040c0347363c1b0cf0b4316",
+    "engine": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "1b36fe71a7de1f19b3e2fb5275d249c2cc66a635b956a6fb347943b8cd81f3c5",
+  "recovery": {
+    "fallback": {
+      "seconds": 157.406,
+      "starts": 2,
+      "sdk": "7.47.0",
+      "resource": {
+        "id": "char_c74ee5381ef8447bc9202dba4b7a4166",
+        "name": "项目视频角色",
+        "created_at": 1795590201
+      },
+      "lookup": {
+        "function": "get_video_character",
+        "argument_id": "char_c74ee5381ef8447bc9202dba4b7a4166",
+        "resolved": {
+          "name": "项目视频角色"
+        }
+      },
+      "peer": 404,
+      "independent_chat": "42",
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 329.065,
+      "starts": 2,
+      "sdk": "7.47.0",
+      "resource": {
+        "id": "char_4d44d4500234f10037f7ae5d7b3f3206",
+        "name": "项目视频角色",
+        "created_at": 1795590527
+      },
+      "lookup": {
+        "function": "get_video_character",
+        "argument_id": "char_4d44d4500234f10037f7ae5d7b3f3206",
+        "resolved": {
+          "name": "项目视频角色"
+        }
+      },
+      "peer": 404,
+      "independent_chat": "42",
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "soak": {
+    "source_commit": "24f12366bbe5bcb9742d9931839dcce38039b332",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/character-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/character-client-primary-01/bundle",
+      "manifest_sha256": "f76a8645a93a832fb2188c6ba749256236b3cd9afe6db5cacc1db18a7d91fbdb"
+    },
+    "revision": 498,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/character-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "1387a714d68d27df1c945bec31e0bf2678f82b4f62067d1e2f44c26c0b95aa25",
+    "handoff_sha256": "28ae49fc440226186000a19d198e47c49d9e743b590f54f714b82b5053e9ed6f",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "openapi_sha256": "5d244546b8498b66382275810a5a324525966f1035b28e3f4e17b4ebe11abd04",
+  "method_declarations": {
+    "required": 231,
+    "matched": 219,
+    "remaining": 12,
+    "missing": [
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "GET /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "GET /videos/{video_id}",
+      "DELETE /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /videos/{video_id}/remix"
+    ]
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/character-delivery-delivery/result.json": "68306f621d7eea91293bdcf3b652e4ae0e863465480b9aba5993f09825cfa8c4",
+    ".q4t-work/serve-responses-agents-20261123/character-delivery-delivery/plan.json": "647f617ba513a8c889c7b74bc2542b3dde628b373c0f42442f26523db1768234",
+    ".q4t-work/serve-responses-agents-20261123/character-delivery-delivery/check.stdout": "be9057d9314f9fef41ea795ddcfe2983a5833be62f40b8f2a014190ab758e316",
+    ".q4t-work/serve-responses-agents-20261123/character-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/character-delivery-delivery/version-status.stdout": "f6fd485be01169ded9c0c5648b676d70ccd0e409abafdb95d03278ea584d8673",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-composer-src/docs/evidence/serve-video-characters-20261125/business.json": "0259b188f87efd72339c090483f479f4f4dc2f7df939b8d03ac6fe064bee4047",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-composer-src/docs/evidence/serve-video-characters-20261125/profiles.json": "840aef69e7dd9b2f80ee39df485be740c62d736adfd1ca575027703e9c6ad7a0",
+    ".q4t-work/serve-responses-agents-20261123/character-release-methods.json": "3b74ea6035bfc88c2acba67c2eb027e1f748bf3e1ba09c4e1e727ee47f2ac37f",
+    ".q4t-work/serve-responses-agents-20261123/character-delivery-day.json": "8ea6350ec6360d3851e805aaac06b7ee0a92aa3305ce8b33ca493adda9e1d733",
+    ".q4t-work/serve-responses-agents-20261123/character-delivery-maintenance-01/result.json": "8d8126eb277ad3533052ae6db882ceaaa0957b060bd2b8ea62cd98bb472b94a3",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/environment-soak-retained-498.json": "3020a8e81a05c1609b39a3adaf5263b33444cdf4caf64244a33c6a76ff8f4eaa",
+    ".q4t-work/serve-responses-agents-20261123/character-maintenance-lease-01/exit.json": "0d96d872588fb64126d1ced6cad9283b302d01f63757e79302eb8c1ec47b56dd",
+    ".q4t-work/serve-responses-agents-20261123/character-publish-lease-01/exit.json": "1a6764259fc679d158a556d7ca32c01281511679a89e3574bf68264fd4cafd37",
+    ".q4t-work/serve-responses-agents-20261123/character-fallback-lease-01/exit.json": "4ed609c64b2a0a0e46393403297b22da764c01738bded7ef4fe298d024fc07f0",
+    ".q4t-work/serve-responses-agents-20261123/character-fallback-business-01/prepare-run.json": "014611132c631de63d095cf6a53286924fce8d295a2af7bf163349f3fb1df23c",
+    ".q4t-work/serve-responses-agents-20261123/character-fallback-business-01/restore-run.json": "ed8b3cb793d9c5ec99e9056ef4aec42382e84d8240a682d55f2711db8dd45a19",
+    ".q4t-work/serve-responses-agents-20261123/character-fallback-business-01/interruption.json": "fc12de0bf65f9a12f30def8c0e268ccba56aa1fb3803beb0c4e83de34b7fb438",
+    ".q4t-work/serve-responses-agents-20261123/character-fallback-business-01/result.json": "5f41f2dc5ece7b2dfb47bd61eec3186a781d15ed2bffca5ec4a12c7fbc3cff8f",
+    ".q4t-work/serve-responses-agents-20261123/character-fallback-business-01/chat-after.wire": "d71a7b4416fe562fc73c47862a7f63b4716b283e23d6149b7101928134d19ed4",
+    ".q4t-work/serve-responses-agents-20261123/character-client-fallback-01/origin.json": "70ce9f950638fc2b97f62b982f9ad6b663a86495b461d0b3484c7b309cea9bb0",
+    ".q4t-work/serve-responses-agents-20261123/character-client-fallback-01/service.release.json": "5f38e529e3920153ecb615b1ed4ae7d4fd1638787aff5a3d985072ec6bb4bd90",
+    ".q4t-work/serve-responses-agents-20261123/character-client-fallback-01/service-acceptance.json": "0fff598ca367f7b533d40860074f3e94a3eef955a03f642b62afbc4b90ae9681",
+    ".q4t-work/serve-responses-agents-20261123/character-primary-lease-01/exit.json": "02bf6867933aca1d33a4021ac1197cd74a3ff1dcc3596d21124733915ee7c02b",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-character-01/prepare-run.json": "675b4be4114b9b2580ccb5e69a2dfd225fc3d554c83a2e13b5f7a614b603cb31",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-character-01/restore-run.json": "77a413007e9155a48a8d90521e5ca8c82c9ad38dc2c04e92f7c00c42539a7d23",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-character-01/interruption.json": "22c415b4be4935ea920d62c813298d69ff68017f14b6062e31ccb1ac9cb092de",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-character-01/result.json": "b5a64c2e25ca9e74b20d5424c7e8cc2722bfa19fe59a203e66403ff2185278cb",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-character-01/chat-after.wire": "a255510d3568660afafea849ee47ada78a854e633506622453c5eb2880f40f3d",
+    ".q4t-work/serve-responses-agents-20261123/character-client-primary-01/origin.json": "63453b3a54883549d56414bf650a57aa3aa68568aa9da068b863387140c6f128",
+    ".q4t-work/serve-responses-agents-20261123/character-client-primary-01/service.release.json": "3d0fcd1bd0f855a7da624553fdd6123c1d909288b84e377e68b67df577bd0617",
+    ".q4t-work/serve-responses-agents-20261123/character-client-primary-01/service-acceptance.json": "fee064fe42cba335d4307a3ba3354eac029766331c4748f67490207378d75ab6",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-character-01/takeover.json": "49cf70e61e0a0389a7a987fcbe8826b4e198af2d7f776c3799b9deec08be9808"
+  }
+}

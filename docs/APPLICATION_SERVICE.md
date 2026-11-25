@@ -10,6 +10,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 | Evals 英文 METEOR | rev488 已发行 | 按词对齐、词干和 WordNet 同义词计算分数；复用隔离评分进程、客户取消、截止时间和逐行工作预算。词库随包分发。云端的分词与词库版本未公开，该实现已与 NLTK 3.9.2 做差分。[发行回执](evidence/serve-evals-20261125/meteor-delivery.json) |
 | Evals 运行报告（rev482） | 从创建、读取、列表或取消响应的 `report_url` 获取 HTML，可查看运行状态、成败计数和各评分项结果。使用同一项目的认证头访问。报告只展示前 100 项评分，完整数据仍可从页面中的两个 JSON 链接读取。 | 原生前置按已验证的 Host、协议和部署前缀生成绝对地址。匹配客户端策略的可选 nginx 前置转发外部地址。旧式匿名上游或固定外部地址的部署可在模型进程设置 `Q4T_EVAL_PUBLIC_BASE=https://llm.example/tenant`。地址只含协议、主机、可选端口与路径前缀，末尾省略斜杠。 |
 | Evals 运行取消（rev496） | 取消进入独立名额，可从繁忙客户的普通状态查询中独立准入。 | 真实 SDK、普通读槽占满、取消并发上限与恢复后的租户隔离均通过。[取消验收](evidence/serve-observation-admission-20261125/business.json) |
+| 视频角色引用 | SDK 可上传命名参考片段，并按 ID 读取所属客户的元数据。保留原始编码供后续视频任务取用。 | rev498 已验证上传、按 ID 工具查询、租户隔离与损坏输入。监督器重启模型及独立回退包接管后，原角色均可读回。视频生成待验收。[发行回执](evidence/serve-video-characters-20261125/delivery.json) |
 | ChatKit 语音输入 | 浏览器使用有效的会话密钥向 `/v1/chatkit` 发送 `input.transcribe`，得到 `{"text":"…"}`。部署须配置原生 ASR 模型。 | rev496 已用 WAV、WebM/Opus 验证中文录音、错误处理和接管后的转写。[发行回执](evidence/serve-chatkit-composer-20261125/delivery.json) |
 | ChatKit 消息反馈和实体提及 | rev490 已发行。浏览器保留评价与标签，管理 SDK 显示提及文本。 | 两份公开 schema 与 49 项配置迁移检查已通过。模型、持久化和恢复验收见[记录](evidence/serve-chatkit-20261125/feedback.json)。 |
 | ChatKit 文档两步上传 | 浏览器调用 `attachments.create`，随后按返回地址、凭证和媒体类型 PUT 原始字节。完成前无法引用文件。有效期为 5 分钟或剩余会话时间中的较短者。 | 原生前置采用外部 Host、协议和部署前缀。自定义公开地址可设置 `Q4T_CHATKIT_PUBLIC_BASE`。原生 TLS 实机已用该文档完成两轮问答，rev492 验收了配置切换、模型重启与回退接管。[验证记录](evidence/serve-chatkit-20261125/upload.json) |

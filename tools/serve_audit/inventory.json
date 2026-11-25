@@ -3177,6 +3177,26 @@
         "src/server/files_http.cpp",
         "tests/server_chatkit_test.cpp"
       ]
+    },
+    "GET /v1/videos/characters/{character_id}": {
+      "semantics": "创建经过解码检查的视频角色引用，或读取所属客户的角色信息。",
+      "boundary": "视频原始字节与角色信息经同一事务提交，读取按认证范围隔离。",
+      "evidence": [
+        "src/server/video_characters.cpp",
+        "src/server/binary_store.cpp",
+        "src/server/object_retention.cpp",
+        "tests/server_video_character_test.cpp"
+      ]
+    },
+    "POST /v1/videos/characters": {
+      "semantics": "创建经过解码检查的视频角色引用，或读取所属客户的角色信息。",
+      "boundary": "视频原始字节与角色信息经同一事务提交，读取按认证范围隔离。",
+      "evidence": [
+        "src/server/video_characters.cpp",
+        "src/server/binary_store.cpp",
+        "src/server/object_retention.cpp",
+        "tests/server_video_character_test.cpp"
+      ]
     }
   },
   "whitelists": {
@@ -3791,8 +3811,8 @@
     ]
   },
   "sources_sha256": {
-    "CMakeLists.txt": "f31b5702f439e890f4b63370edae3aa239a84ca31b662abf91390fbf45d56b72",
-    "cmake/ChatProtocolIdentity.cmake": "65dc756c7606862d5c16455fcce10ef4a9cc9207e7cd50ee2b8422d0da80de09",
+    "CMakeLists.txt": "428de9f9005069257eaf748bc26400b0ea096ce1477cb24ff5ee1252a3733e40",
+    "cmake/ChatProtocolIdentity.cmake": "90451a6e2585c63ab80ae8d1f3d0d0cba16d1a89c7147c926c3179c6072862e7",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -3884,7 +3904,7 @@
     "include/q4t/server/application_owner.h": "722cb383b3cbe48525c7444d852cac99d508679e7099ca9236aab50e8a38f87b",
     "include/q4t/server/application_payload.h": "2fa32a7326e774cb8eeec9d65c198bdb6db9daf0d77b53defb554304b2822b5c",
     "include/q4t/server/application_query.h": "27512bc784496d711c453e5beff34e52ad85d08d5c2e393fbf423cb069219786",
-    "include/q4t/server/application_routes.h": "9e8a27b4501c8f0779374020d8a6ac40e4f5e2ff5fca7ac3afce8b57e4ef8e76",
+    "include/q4t/server/application_routes.h": "0e9f5a5cae7f782840c244f8ee12dc420cfb156d13bd778f7edb97550f7d25ad",
     "include/q4t/server/asr_alignment_output.h": "39207f0226078638ffc76e28f7cd7afb535039ad25b3a5cfa41c23bf5a5ed5fe",
     "include/q4t/server/asr_assets.h": "fbe0273effd4952d4677010387f958886b3288d9daaa39f12baa45259c786b9e",
     "include/q4t/server/asr_chunk_output.h": "d8f9731c4aaf1e2c57d1d66667fb7f1df9ca4e9238de94c5ce39210264694628",
@@ -4036,7 +4056,7 @@
     "include/q4t/server/native_responses_stream.h": "279c2643b25cfa624c37f0050bb5a5fd847af3f471d64c89357d8fd5eda302ca",
     "include/q4t/server/object_diagnostics.h": "cc8670d714a456557c598fb3ea9661b8df5421d7c018b44a45dac6c31d5dbd08",
     "include/q4t/server/object_retention.h": "f5dd11a1415b894c8d0b0cd1b38bd04267a932662b7f05a7f84a50ae3061efe5",
-    "include/q4t/server/object_store.h": "d936699c1653b00595826c37bbef09e14ecc695b25e6a51e777d8949ba376918",
+    "include/q4t/server/object_store.h": "6dd0ad095c9db2e3223b0a088b0920f9b1ad49d3d19c8f1ce0eb04e45716164a",
     "include/q4t/server/object_store_options.h": "50ac339fb5830d363ac62bea2cfb89fe45f6318f48a146addb593bd7522ec319",
     "include/q4t/server/output_constraints.h": "f227e73a5826900182eff0505e031115ad67acb39fdd00968a8fc03e8dfed0de",
     "include/q4t/server/output_schema.h": "2dc3a1fc244c5cfeb44c4938d311ede680d37bdbd4a7302824029395b10216c5",
@@ -4378,7 +4398,7 @@
     "src/server/batch_state.cpp": "c1f4ea93b2b4373f649cd870a0066afa9698798a25360a73d69da29bd474fc71",
     "src/server/batch_usage.cpp": "abf218b785045fe0116bc88ba22fd21087db0989b7a4b50011b1d35d5abbebca",
     "src/server/batch_validation.cpp": "670542f022f7e4b8d10a28ef80941170925f41e1c9e5ef1507705d545dfff394",
-    "src/server/binary_store.cpp": "2e93d18d0e316a3333db9fe8a7298592250f77f6fd8c95ac956facc7b6a0835d",
+    "src/server/binary_store.cpp": "fc83dbebeaeed0c7cd5a9c99790af22a99bbfcc3e06678384906b747425cf141",
     "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",
     "src/server/cache_protocol.h": "656ec7f5dcca374f441d2374196bbe9785fa6114daedeabdecc2e213e1fe8ab2",
     "src/server/cache_worker.cpp": "17f69350f9b85048ea23bc497a1a99caa1760244de6da14cb9295a2c97155706",
@@ -4395,7 +4415,7 @@
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
     "src/server/chat_audio_translation.cpp": "e0853dba46a7af885bd31863f5bcc1e6cb9b44af3d69aba8bea8af372ed5d6ce",
-    "src/server/chat_capabilities.cpp": "5b655844119536effb3fb558cf1f7e2ab3903b133bb9e1efc013b936b57ff435",
+    "src/server/chat_capabilities.cpp": "9dc705e17ee482243bd25c08da06ec7050b6f289c1f5235a16528a11ad72cbc0",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -4405,7 +4425,7 @@
     "src/server/chat_file_inputs.cpp": "33ce64cebd2b0da3515a091647ed64f222d4607468d9cfde21e2f7f67cac5a23",
     "src/server/chat_generation.cpp": "3d7318c7f3721312adbab0b5927177da711d5c00244aca802ce596180def1672",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
-    "src/server/chat_http.cpp": "fd2b15e45ebbce8d8941ae4ed27c2223c3169df33e0362e8f9122642ef124879",
+    "src/server/chat_http.cpp": "109b61a64c283285b2dcab3fdf2927eabbccab88c1a8c94e1b7710a623447e68",
     "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
     "src/server/chat_input_tokens.cpp": "dd87f54ed02954be2b7da3279775960cb73c84e2841eb26ebe86afffdce4f773",
     "src/server/chat_live.cpp": "d6e864597470524f416bdb8e6266f79408b782041b192c43c37c3732226611fa",
@@ -4581,7 +4601,7 @@
     "src/server/grammar_process.cpp": "67ddca7db2f6bcb0e2451c3775382dd63a87d3cc643b091c49a5d31a92622754",
     "src/server/grammar_worker.cpp": "b0a4d626a76f8bc340270a3ba6f3dc0705859e0f18e519c492d6442e85a6f7c7",
     "src/server/grammar_worker_internal.h": "5cb4e75d45a877a64a6fe5be67da91b69441eb5625b7ce309483798f3dd0e294",
-    "src/server/http_request.cpp": "d7cea59d87563330520785c3d361dd207e9d35a48e06ff8c4997310dced85c4a",
+    "src/server/http_request.cpp": "0acafee4405e85a41b3790ed480d51c094fce9b920f3fe719eca290a8b973b02",
     "src/server/http_response.cpp": "6be2c277addba721d42b2dec79e3756707748765a027282ce471bc006c53ac58",
     "src/server/input_contract.cpp": "23234835afe065049c19d68863f338f90b122f6d7682630b640a41e29626ac80",
     "src/server/input_snapshot.cpp": "32b0bdb416abacabd175881e7091b05c11271ca6ac0bd83abdd1516bd0549438",
@@ -4662,9 +4682,9 @@
     "src/server/native_python.cpp": "da6c06e2c1826fbb51a37db256b15708545100798e8790b99662924bca9643d9",
     "src/server/native_python.h": "adc82bd7d129a59ac7e75da0bcde623e37670d28d9e1e3552da1198bcd9c11c6",
     "src/server/native_responses_stream.cpp": "a280a427551117fadacc9669877f9e583f47a80f5f83980cb50cc7f0b5afacf1",
-    "src/server/object_protocol.h": "900d3b564a9857071dbba399a10d7556a26059704a9b639292ba618a029bfa02",
-    "src/server/object_retention.cpp": "d5c5ad29986d45c3858d684390761769da0bafe1b3f0ee3628e845ac7e45719c",
-    "src/server/object_store.cpp": "962fe79b440c51fcf19feec1be962a85badeae5f2ed87223d7d82517609d3629",
+    "src/server/object_protocol.h": "eb18edf29ae1250fd3e40c19820a5acd87ca2814797bc951e552e59016522e16",
+    "src/server/object_retention.cpp": "b97fbac118850d72be3552e741024e145fea09e76a7991ecdcd77a1dc0fcacf8",
+    "src/server/object_store.cpp": "21be1c598287e4f21c712ffa3c76ba1ce8b7dc0de8f67fcce99174ac59e72423",
     "src/server/object_store_options.cpp": "3981c3b99f2389b8528bcc71c4b16552f5b29b31353f7b9569122ffe311729c4",
     "src/server/object_worker.cpp": "2b0d9616e4ebd9b3ca84dadbc984ff338c97cacf209e2da9bbd5e57bb36acc49",
     "src/server/output_constraints.cpp": "add0daef3ba87df074329f1ed554220023ab0db4211667f27ea723e23c4cacd9",
@@ -4918,7 +4938,7 @@
     "src/service/ingress_cors.cpp": "452b281b9d29dbdc43e482f71541de4e7441f05a196c37a82a65a2aa6dfe8303",
     "src/service/ingress_credentials.cpp": "66a013ef60799f7c7d82d568c09e8dce03b7ae670a4bcf1a392b83a91c54f7be",
     "src/service/ingress_duplex.cpp": "be9017f8829efb3f711c191090a6353a796f0cddaf72b97796361f73346d2549",
-    "src/service/ingress_main.cpp": "d3a3ad2fd035702e3e21721b8b2e16a478b49d95d97364c97dc568a8c865b369",
+    "src/service/ingress_main.cpp": "6df87c6b7479336b7a25b4a90085b18362a55467276517f6e89ee027010853c1",
     "src/service/ingress_proxy.cpp": "055dac272a2e0b7b008105215a9e2fb282ea432ec60a0da050a0d175d51b5d90",
     "src/service/ingress_realtime.cpp": "c1d6df9be66ca2df69ee6aa241756358a2fbd30e0a2abb6d0fcaf193b27d6e25",
     "src/service/ingress_tls.cpp": "3b6c78c716c9def82aa095788562d532631c9a6eec4ecc43f0cafe9bda1a9048",
@@ -4950,7 +4970,7 @@
     "third_party/nltk-porter/porter.py": "06461524b1a0ebb00cbb3042e89622e2f24ad2c3b5f491a5427f3c807addeb1e",
     "third_party/wordnet/meteor-3.0.zlib": "fe649820402b5d695d52527419c0aafd378ecca06591b9cd3418ba3b2121ca9e",
     "tools/serve_gateway/client_policy.py": "85357f0b6f697842b258b76019c332eea1ec700fbce5d3a1e450f96d0796f221",
-    "tools/serve_gateway/gateway.py": "772c3bef8f2ed5d87f8d2e3878d7fc4c24547e5b57e80e1e032e89ace573975a",
+    "tools/serve_gateway/gateway.py": "05f1014d08cca49f0f0943c6272d20ea6110767beaf6e27ecfcb55f041342ba6",
     "tools/serve_host/native.py": "e79c3523879c90adba893c69ced359c2eef8dd3c7b6f53615610f3f4c00ca8c3",
     "tools/serve_recovery/__init__.py": "33c953cdec79c42cfed4cc996815e673ad3084470aa0dfbcb6077077617463d7",
     "tools/serve_recovery/acceptance.py": "37e1d9e04a7dd5077c6a282721ebed93bf0a4d395b520f8dc90585a934a9b268",
@@ -5046,9 +5066,9 @@
     "tools/serve_recovery/profile_duplex_reuse.py": "bc859bb6d52dcd06b2ce4dd00474dd1edd9a93c504944f4f64333c3f7eda0361",
     "tools/serve_recovery/profile_duplex_source.py": "b05094553f2aa4db55da549e5c08e3cb3a038726fa101610745ecd3b26d8da13",
     "tools/serve_recovery/profile_duplex_targeted.py": "5e50d2fbd64f411d8e7f80c706ad72dcf6a342b94bd3fbfb4c68f36ed75e091a",
-    "tools/serve_recovery/profile_evidence.py": "03d7cef3f3854190912f9b33b95c345423671ac47fca21bcf9640ada13b38588",
+    "tools/serve_recovery/profile_evidence.py": "b0ad2e8c3bb22b86a858d5abff138344094294e176a38561ae497a1515d1c842",
     "tools/serve_recovery/profile_io.py": "e69ab9e2b09963cc72ccfe402d437f7abd3f967e4e83981c7821c7f92c936429",
-    "tools/serve_recovery/profile_live_reuse.py": "ce725583038b5a3a6aaf5328b3fd88ce00830415e4291f80cdb36340ecb76b10",
+    "tools/serve_recovery/profile_live_reuse.py": "069b1bf2c04a4709ca166d5ec2fed6543cded5bce161fa94c600b425116b4a3f",
     "tools/serve_recovery/profile_managed_acceptance.py": "01818ce38b46cd5eafb18b3c564e1f3dd8cbeb0259d0094cea62bbcbc73375c7",
     "tools/serve_recovery/profile_manager.py": "e25ff91dcfca63dcd1a8afaf211813a14e0684ebccbd9d9f65546480fefdff92",
     "tools/serve_recovery/profile_mcp_codec.py": "7e15a4c46f22822e1b22f85d49756f4f486e42b701c2b7ff90ec7a84674ea722",
@@ -5056,7 +5076,7 @@
     "tools/serve_recovery/profile_mcp_reuse.py": "c1da2ae33277ca9e250bdaabf29c5d4ed4490981a4d3aa297845088207490f3d",
     "tools/serve_recovery/profile_mcp_source.py": "ca8f30b89a355623bc7d2ae8a3d3bb8b63fe797c49699ff5ec8e65746e0efff6",
     "tools/serve_recovery/profile_memory.py": "b7681b4d41eb3f378aa33d0b52ddcf6eb9610d9e592ef7e9bd98bd7e507e04a5",
-    "tools/serve_recovery/profile_migration.py": "ee08bb21d508a1c83d8ddd98b17741ec78c38e094daafbe2d2e3e806296293e4",
+    "tools/serve_recovery/profile_migration.py": "759231485d3d2c8ad93fd6912029483b88306a6aa03fd761ffcdef0caba62215",
     "tools/serve_recovery/profile_policy.py": "8ab6134b788a109d4ace974e23a268c5ea785d60e26141c3106b43e3eb3fc34b",
     "tools/serve_recovery/profile_primary_review.py": "0d3f063119af8fac2b29e4342f3ff431975b2ffa33795f8a3421d6807bbd8292",
     "tools/serve_recovery/profile_prompt.py": "b4f27fb5f9dc9dcb267638a47d08aa98577886a800e20b2c41ba424987a7bf47",
@@ -5065,7 +5085,7 @@
     "tools/serve_recovery/profile_prompt_reuse.py": "20362a6f84e671ebbfa9b301d704957991320d08dbd0087f34ae402ff31c9739",
     "tools/serve_recovery/profile_prompt_targeted.py": "b337f06f2411e7c196600096318d5a99fc5d7d0130e17b2707100f6563c4c78f",
     "tools/serve_recovery/profile_realtime.py": "e291929d1455ea9a3dac41458e7b5c0aba6594c44eb0abf1453d390e1a93b879",
-    "tools/serve_recovery/profile_record.py": "9aec1d2335a8a4f1176ba3d9be588c87d2dee443ebbec11e40a3e7262d92c9fb",
+    "tools/serve_recovery/profile_record.py": "0649fd29a62548a41633143c768f876ab2683deb41dfac78b45e30c66571fee2",
     "tools/serve_recovery/profile_refusal_reuse.py": "712e0014726be188bb677e9d65238898a1b7e2700d892fc52a770dbc3c984e78",
     "tools/serve_recovery/profile_refusal_targeted.py": "989b21a6910c570a7ee00fad67a77896ef6329f58a4d160408a79d694716e1ac",
     "tools/serve_recovery/profile_runtime.py": "78420a2fce8158a3e1a538da5e564cad6bad5752f0095b91f01ba25e13edb184",
@@ -5164,7 +5184,9 @@
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
     "tools/serve_soak/native_contract.py": "c267d7099bdb13fe96da0895d1d528e0c8b59d12a31e8a29e9089b9eb6613eb4",
     "tools/serve_soak/native_report.py": "65485e2858db9339de28bf6845385007c75ca2b05bf1104b4964773b363a2ccd",
-    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440"
+    "tools/serve_soak/native_stage.py": "60ccd2e7d38a2b703109604cfdc0f6beb65de4f1acb6341536c41ec2b4770440",
+    "include/q4t/server/video_characters.h": "90dcad14aae44cb338700f99c3f82b9156935ce677fba12f15f5cc73e112890e",
+    "src/server/video_characters.cpp": "58698f03234ded534a6557627c86e668d2df78613dd6063905ad46770fbfabb2"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
@@ -9606,6 +9628,42 @@
       "evidence": [
         "src/service/ingress_main.cpp",
         "include/q4t/server/application_routes.h"
+      ]
+    },
+    "GET /v1/videos/characters/{character_id}": {
+      "semantics": "创建经过解码检查的视频角色引用，或读取所属客户的角色信息。",
+      "boundary": "视频原始字节与角色信息经同一事务提交，读取按认证范围隔离。",
+      "evidence": [
+        "src/server/video_characters.cpp",
+        "src/server/binary_store.cpp",
+        "src/server/object_retention.cpp",
+        "tests/server_video_character_test.cpp"
+      ]
+    },
+    "OPTIONS /v1/videos/characters": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "OPTIONS /v1/videos/characters/{character_id}": {
+      "semantics": "原生入口响应此资源允许的跨域预检。",
+      "boundary": "仅返回已配置来源和此资源支持的方法。",
+      "evidence": [
+        "src/service/ingress_main.cpp",
+        "include/q4t/server/application_routes.h"
+      ]
+    },
+    "POST /v1/videos/characters": {
+      "semantics": "创建经过解码检查的视频角色引用，或读取所属客户的角色信息。",
+      "boundary": "视频原始字节与角色信息经同一事务提交，读取按认证范围隔离。",
+      "evidence": [
+        "src/server/video_characters.cpp",
+        "src/server/binary_store.cpp",
+        "src/server/object_retention.cpp",
+        "tests/server_video_character_test.cpp"
       ]
     }
   },

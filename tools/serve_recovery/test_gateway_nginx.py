@@ -112,6 +112,7 @@ class Stack:
                 path = self.path.split('?', 1)[0]
                 roots = ('/v1/safety', '/v1/evals', '/v1/chatkit', '/v1/webhook_endpoints', '/v1/webhook_event_types', '/v1/skills', '/v1/containers', '/v1/threads', '/v1/assistants', '/v1/vaults', '/v1/agents', '/v1/prompts', '/v1/conversations', '/v1/responses',
                          '/v1/files', '/v1/uploads', '/v1/batches',
+                         '/v1/videos/characters',
                          '/v1/vector_stores', '/v1/tunnels', '/v1/audio/voice_consents',
                          '/v1/audio/voices', '/v1/realtime/traces', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions', '/v1/realtime/calls', '/v1/realtime/translations/calls', '/v1/live/sessions')
                 return (any(path == root or path.startswith(root+'/')
@@ -441,6 +442,7 @@ class NginxTests(unittest.TestCase):
             identities = dict(id='C-1', output_item_id='outputitem_1', eval_id='eval_1', webhook_endpoint_id='whe_1', automation_id='automation_1', invocation_id='invocation_1',
                               run_id='run_1', step_id='step_1', thread_id='thread_1', message_id='msg_1', assistant_id='asst_1', subagent_id='subagent_1', artifact_id='artifact_1', environment_id='environment_1', environment_template_id='environment_template_1', vault_id='vault_1', credential_id='cred_1', agent_id='agent_1', turn_id='turn_1', response_id='resp_1', conversation_id='conv_1',
                               item_id='item_1', completion_id='chat_1',
+                              character_id='char_' + 'c'*32,
                               upload_id='upload_1', file_id='file_1', container_id='cntr_1', skill_id='skill_1',
                               prompt_id='pmpt_1', version='1', batch_id='batch_1',
                               vector_store_id='vs_1', tunnel_id='tunnel_local', consent_id='cons_1',
@@ -465,7 +467,15 @@ class NginxTests(unittest.TestCase):
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
             content_type = 'application/json'
-            if method == 'POST' and (template in (
+            if method == 'POST' and template == '/v1/videos/characters':
+                content_type = 'multipart/form-data; boundary=cpu-route'
+                body = ('--cpu-route\r\nContent-Disposition: form-data; '
+                        'name="name"\r\n\r\nroute fixture\r\n'
+                        '--cpu-route\r\nContent-Disposition: form-data; '
+                        'name="video"; filename="fixture.mp4"\r\n'
+                        'Content-Type: video/mp4\r\n\r\nvideo fixture bytes'
+                        '\r\n--cpu-route--\r\n')
+            elif method == 'POST' and (template in (
                                       '/v1/files', '/v1/chatkit/attachments', '/v1/audio/transcriptions', '/v1/audio/translations') or
                                       template.endswith('/parts')):
                 content_type = 'multipart/form-data; boundary=cpu-route'

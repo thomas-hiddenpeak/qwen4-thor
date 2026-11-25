@@ -414,6 +414,8 @@ def current_surface(root):
                           ('/v1/threads/{thread_id}/messages/{message_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/assistants', ('GET', 'POST')),
                           ('/v1/assistants/{assistant_id}', ('GET', 'POST', 'DELETE')),
+                          ('/v1/videos/characters', ('POST',)),
+                          ('/v1/videos/characters/{character_id}', ('GET',)),
                           ('/v1/safety/alerts/{id}', ('GET',)),
                           ('/v1/safety/cases/{id}', ('GET',)),
                           ('/v1/webhook_event_types', ('GET',)),
@@ -441,6 +443,10 @@ def current_surface(root):
         for method in methods:
             routes.append((path, method))
             native_routes.append((method, path, 'false' if method == 'POST' else 'true'))
+    if ('HandleVideoCharacter(*objects_, access, method, path,' not in dispatch or
+            'server::VideoCharacterMethodAllowed(method, path)' not in native or
+            'kVideoCharacters = "/v1/videos/characters"' not in application_routes):
+        raise ValueError('review authenticated video character routing')
     if ('GetSafetyRecord(*objects_, access, method, path, body)' not in dispatch or
             'server::IsSafetyRead(method, path)' not in native or
             not all(path in application_routes for path in ('/v1/safety/alerts/', '/v1/safety/cases/'))):

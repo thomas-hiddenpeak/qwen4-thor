@@ -296,6 +296,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_webp_worker.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_webp_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_video_test.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../tests/server_video_character_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_file_audio_rate_test.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../tests/server_speech_encode_test.cpp
@@ -336,6 +337,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_threads.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_credentials.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/safety_records.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/video_characters.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/safety_cli.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_registry.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/webhook_keys.cpp

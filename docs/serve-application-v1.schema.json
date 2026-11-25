@@ -30602,6 +30602,60 @@
       ],
       "additionalProperties": false
     },
+    "video_character": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "unixtime"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "created_at"
+      ],
+      "additionalProperties": false
+    },
+    "video_character_create": {
+      "type": "object",
+      "properties": {
+        "video": {
+          "type": "string",
+          "format": "binary"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        }
+      },
+      "required": [
+        "video",
+        "name"
+      ],
+      "additionalProperties": false
+    },
     "safety_case": {
       "type": "object",
       "properties": {
