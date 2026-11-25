@@ -11,6 +11,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 Responses 与 beta Responses 的图像上下文选项候选已通过 3 项原生 CPU 用例和 1 项应用合同用例。显式启用时，自动细节图片使用 512 像素上限，high 使用 1024，original 按原规则保留；自动策略在同一请求有多张用户图片时启用。原始图像和 detail 留在会话记录中。初版夹具自称 PNG 却只有一个字节，已换为有效 PNG。来源清单 40 项变异检查通过。下一步用合成色块通过真实 TLS 比对图像回答、用量和 compact 回读。[CPU 验证记录](evidence/serve-responses-image-context-20261126/cpu.json)
 
+rev520 已发行 Agent 会话的结构化输出、缓存寿命和失败回合恢复。用官方 SDK 提交只要求整数的 schema，模型退出和主网关切换后，均沿用原会话、回合和条目 ID，读回发行号 518，下一回合答 42。原始失败回合字节一致，其他客户读取均返回 404。首次替换模型在统一内存低于启动门槛时退出，失败记录保留。发布核对 13 份受保护记录，生产期望为 STOPPED，发布时模型启动 0 次。24 小时运行计划已预检，由用户实跑。设备真实失能冷启动待维护窗口。[发行及恢复回执](evidence/serve-agent-structured-format-20261126/delivery.json)
+
 公开 JSON Schema 已在主、轻配置间实际生效。主配置查到真实发行号 518，创建流关闭填充。轻配置按原会话、回合和回答 ID 读回记录，订阅恢复默认填充，下一回合答出 42。独立检查两个持久 Responses 的请求与生效缓存寿命分别为 12h 和 30m。清除设置后可读回模型默认状态，两个配置的跨客户读取均为 404。每种配置各启动一次模型，分别耗时 41.504 和 35.994 秒。两份 v65 记录均逐字节还原各自的 v64 前驱。 下一步是托管服务故障接手及可回退发行。[配置交接回执](evidence/serve-agent-structured-format-20261126/profiles.json)
 
 Agents 的结构化输出格式只有 type 和 schema。原版本把该配置直接交给 Responses，合法请求会因缺少 text.format.name 失败。现由内部适配器命名并开启严格校验。官方 SDK 通过原生 TLS 收到整数 518 与 42，持久配置保留客户原始 schema，后端两回合均实际启用 strict。模型此前两次对普通发行号查询拒答，保留质量失败。用同一 107-token 请求做两次独立启动，贪心和固定种子采样的正文、逐 token 概率及用量各自相同，均得到 518。 默认仍为 rev518，下一步验证修订包的配置和托管交接。[业务与对照记录](evidence/serve-agent-structured-format-20261126/business.json)

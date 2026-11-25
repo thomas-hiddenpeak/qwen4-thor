@@ -30,7 +30,9 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 | 旧版 Realtime 对话与转写 | Node SDK 7.47.0 在原生 TLS 上完成中文转写、文本增量及终态；两种容量均已验证 | SDK WebSocket 助手使用 WSS，部署时为其配置原生 TLS 或可选 TLS 网关。转写须通过支持 transcription intent 的连接助手并显式传入 beta 头。[SDK 回执](evidence/serve-realtime-legacy-sessions-20261124/beta-resources.json) |
 | 上传语音翻译 | 中文真实录音译为英文，JSON、纯文本、详尽 JSON、SRT 和 VTT 均已通过两种容量短验 | 配置原生 ASR；字幕还需对齐模型。`whisper-1` 是请求别名，实际后端为 Qwen ASR 和本地 Chat。[双配置回执](evidence/serve-audio-translation-20261124/profiles.json) |
 
-### Python 读取已保存的 Chat 输入
+#rev520 支持 Agent 会话的 JSON Schema 输出。客户端在 `agent.text.format` 提交 `type` 和 `schema`。内部 Responses 调用补入名称并启用严格约束，查询会话时返回客户提交的配置。缓存寿命更新应用于后续回合，已失败的模型输出保留在其原回合。
+
+## Python 读取已保存的 Chat 输入
 
 在仓库内使用官方 Python SDK 时，可用下面的方法按发布的应用 schema 校验每一页。Python SDK 的严格响应类型把已保存输入的角色限定为 assistant；实际记录也包含用户、工具及指令角色。这个辅助函数使用 SDK 现有的鉴权、传输和分页参数，返回通过校验的原始字段。运行示例的客户端环境需要 `jsonschema`。
 
