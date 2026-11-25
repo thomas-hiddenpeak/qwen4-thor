@@ -1,0 +1,176 @@
+{
+  "stage": "issued",
+  "original_independent_trial": {
+    "verdict": "INDETERMINATE",
+    "reason": "Concurrent build reported ENOSPC. The strict lease exit is empty, no managed result was written and the private runs directory is empty.",
+    "leases_reused": false,
+    "observed_model_runs": 0,
+    "sources": {
+      "webhook-dev/assistant-pages-cuda-build-01.log": "a8b10f515e7fff8ce8d485bee851d8e87b7ba36a795c78076c2951f7927c3042",
+      "fatal-business-upload-01/init.log": "27c77e658a0091db33ca4a29392f50ab05dfb1ef94dfc1a8ca8fce117afd0972",
+      "fatal-business-upload-01/registration.json": "1929a9346e105db5680dfc08188ade3927e0ca064403990839633b3c865b2536",
+      "fatal-business-upload-01/version-prepare.log": "c49054563b45d60d60abf440c97b1afbb719a42af16d487e5737994d3707ba3f",
+      "upload-primary-lease-01/exit.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "upload-primary-lease-01/events.jsonl": "df62d97764ec70bba24d346dac6d664fb09b10a3dda2bf63fe9dadb22a0e6a97",
+      "upload-primary-lease-01/nvml-queries.jsonl": "ba788deb5222b504cf3854748ffc82bc6b305c50dcf3414904d2e899324508cd"
+    }
+  },
+  "original_recovery_trial": {
+    "status": "FAIL",
+    "reason": "The unpaced SDK test received 429 before an expected 401. The repeated run honored the shipped gateway policy.",
+    "model_starts": 1
+  },
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 492,
+    "version_revision": 175,
+    "profile_revision": 65,
+    "previous_profile_revision": 64,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "f007cbd22e2092bb9bbc34bb8015f59996a2dcbce41e387e8a767c53a4416955",
+    "fallback": "06819c6d44334b1e244ddf1501ed73b9156b7df2868da8c3ae3409b7868edc16",
+    "engine": "b2f878818f2d2307d1ff7acf6221a16fa710c0b8dccfad845ff9ce731a15f286",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "d5384687815af9b9018903f1e810dd1851c75bd04228ac54540997f3f486fc8f",
+  "recovery": {
+    "fallback": {
+      "seconds": 150.598,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "workflow": "agent_251975c25fbbcb137bec13ad7e07c245",
+        "thread": "cthr_17e18ffc76246a8fe5ecfbf27866a58b",
+        "file": "file_3830eb8da81d10e1b29b428fe7225b7a",
+        "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+        "source_bytes": 830,
+        "answers": [
+          "157"
+        ],
+        "items": 6,
+        "peer": 404,
+        "independent_chat": "42",
+        "upload_mode": "restored",
+        "stored": {
+          "file_revision": 4,
+          "file_identity": "ae4774a4545d0b69352e23b90d85e41edd6df7c686ae1a434ae2c66d787c35a9",
+          "file": "dd1684ca0e161aafb68ce67b1832e9423551409aa1c3873ff99e3ca4cc2e025d",
+          "thread": "94e4f98538f0d541f16a16510c34dc31aca3a4c98826f4e71905385fcf278bf2"
+        },
+        "stored_before": {
+          "file_revision": 3,
+          "file_identity": "ae4774a4545d0b69352e23b90d85e41edd6df7c686ae1a434ae2c66d787c35a9",
+          "file": "eb8c08bed3568a93c98230dcecff15da0d52ca75281be7d913d71f2a99cc9561",
+          "thread": "b53cf49b51d259027dcb871fc164860d9f531402adca037968895770f370430d"
+        }
+      },
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 308.125,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "workflow": "agent_359406cd125caca4643534e02347e3db",
+        "thread": "cthr_cbb1cac173e6046cded9360139c0b327",
+        "file": "file_b95dc5277a16e90aaabc0c0adfe58946",
+        "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+        "source_bytes": 830,
+        "answers": [
+          "157"
+        ],
+        "items": 6,
+        "peer": 404,
+        "independent_chat": "42",
+        "upload_mode": "restored",
+        "stored": {
+          "file_revision": 4,
+          "file_identity": "0b5c90ed161caa32b6406f71c29c4d4d6eff775c3ffb8005cb5e2ceb53287590",
+          "file": "2a0c07dd820c02775d8b1cd7dd853f7227a84d24e827b8df3c069ae7c93cc93c",
+          "thread": "9b9df9185532b06e0d5862e7687d50511617dae38e695ffb6c1efcbedf0aef0a"
+        },
+        "stored_before": {
+          "file_revision": 3,
+          "file_identity": "0b5c90ed161caa32b6406f71c29c4d4d6eff775c3ffb8005cb5e2ceb53287590",
+          "file": "644056c663e4a3452ee4178cab6246d028175b00094ee50177900286bcc196d6",
+          "thread": "c7da7f32520b168c0c258f03817bf860f55f02c11b8dafef3a8268e64569c794"
+        }
+      },
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "licenses": {
+    "wordnet/LICENSE": "e95e845ba95cedf3fb62c96f656ab2d71e4404f3aa84741f1ec2862741965c98",
+    "wordnet/README.md": "97bb7f99cdba513e8a07ea014fb336d6ef64297cd9e885b5b2677465029d41d7",
+    "nltk-porter/LICENSE.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "nltk-porter/README.md": "8dea3dbffdaef73332cd58c073907d544f185a28a7f4c3bc697a1de01e02a13a"
+  },
+  "soak": {
+    "source_commit": "d261295d54f2032bfbf227fac98c31cbac38e015",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-client-primary-01/bundle",
+      "manifest_sha256": "f007cbd22e2092bb9bbc34bb8015f59996a2dcbce41e387e8a767c53a4416955"
+    },
+    "revision": 492,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "d6dc1ace1089baf5371b51f37e087c1b09a632c921f59733853a7e6d39646c08",
+    "handoff_sha256": "88c9f8ecfaa2db3222bf12099926a7a18a82b7774a0908c9015501467ed83118",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "method_declarations": {
+    "matched": 217,
+    "required": 231,
+    "remaining": 14
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-delivery/plan.json": "e7449878c8285762e895ca3e4561a51ad79cfabbc1ae4ae4635b12d5a3eb1a86",
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-delivery/result.json": "4d59979ff0a8db282295d7c8020a24d5f25ac4256da6b9b0ca08b66400216fb5",
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-delivery/check.stdout": "a7d19b80828238d38c7ab4ac285494725d720a77a26979778c3b7d00a5e9000b",
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-delivery/version-status.stdout": "5cd3d62e67a22a609bc86e3c3e0b96b8d1849014f974a90b5b7c5732a1fd04ea",
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-day.json": "294aa473c48c8499261d61b43b46e63f522173db0161b0de6be1f73fb7e7020c",
+    ".q4t-work/serve-responses-agents-20261123/upload-release-methods.json": "a680bef8cd7a8c29cde1680bd6a19ee87833bfa8a41aa801a3a42956f9c453a4",
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-maintenance-01/result.json": "4072d81ef871c28ee4dba52a7963e69d176cf3addbc7eeb715ee62e236a8d5f6",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-chatkit-20261125/upload-profiles.json": "06d93567b4f44646ba76df2f647ee6e6b662d2b5753152594ce256a269c63612",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-chatkit-20261125/upload.json": "0681fefde1b1792302338edcb4389a4c05d6d296cf69d732fa2e404907baf06b",
+    ".q4t-work/serve-responses-agents-20261123/upload-maintenance-lease-02/exit.json": "b34b321636ddc45046da821d6c0955f3d12df20e8ffb25b28371a8e65c66174b",
+    ".q4t-work/serve-responses-agents-20261123/upload-publish-lease-01/exit.json": "1660698d5052953218a068f9f0d63767f723a1e020340ff9225b2daf1941700e",
+    ".q4t-work/serve-responses-agents-20261123/upload-maintenance-lease-01/exit.json": "c1c134e2aa1b9d8e9a0e3363038973dbc3c2108d4ea60c4264109db6651062d7",
+    ".q4t-work/serve-responses-agents-20261123/upload-delivery-maintenance-01/generations-apply.stdout": "26d8932cf9d8241267485d5d11dd06e252f5d739430bf40fb2b22b53378f07e6",
+    ".q4t-work/serve-responses-agents-20261123/managed_upload_maintenance_resume.py": "b0bbc3489063d4f6eb0bae8b5f367ae5db4057e8b3f67f1bd828e34a6a675d1d",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-business-01/result.json": "ec8ff9a3f650dd6da8de8d1e6114851c874bd361388467d38e758b6de0786b83",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-business-01/prepare/upload-sdk.stderr": "e01918e9bba167f276ab38263f90511202546212c1d24dea96e1f697f9b87b8d",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-lease-01/exit.json": "d430f52567d9025a62b8da5265d50a8a2e51fd810ab416b0248227b6c99b51cf",
+    ".q4t-work/serve-responses-agents-20261123/upload_request_pacing.mjs": "f5cad9c16dbc615a1dee5a74d571149ee151380076734a765170b244cbf9f846",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-lease-02/exit.json": "7650e12cdd35f8f1aec4400927986915c4fc0d8f2cbead2af49e04e2d2898a67",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-business-02/prepare-run.json": "484abf13a11efe34e68a2054b0c68e576047c2af6a599f0a4ecb833b5f7a4101",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-business-02/restore-run.json": "390c695165e7f41810a3c4f1ecb4cae51d1791d13ef31555ef0986d581c9e7bb",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-business-02/result.json": "8965231777c94bb35d5dff9006bcdb13ca1b43d6d2bfa63e7980200288ea9b06",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-business-02/interruption.json": "0a8cc613b47fcf0ced6fe3b4426f259d894301bb9ef6fd57ade5e3f07f4bdcc8",
+    ".q4t-work/serve-responses-agents-20261123/upload-fallback-business-02/chat-after.wire": "2a64a3d51d79339913a418607b30a4de1eee1f3d2defb0fa5b29f48c993389db",
+    ".q4t-work/serve-responses-agents-20261123/upload-client-fallback-01/origin.json": "21a5d448cb014f889cf09222480e5ef28644773d753082ed8f2e5a5352438e03",
+    ".q4t-work/serve-responses-agents-20261123/upload-client-fallback-01/service.release.json": "f7a4d22dceb3fd3c1065dd964b557b3c574bdfa5765642012395e3af772575c4",
+    ".q4t-work/serve-responses-agents-20261123/upload-client-fallback-01/service-acceptance.json": "28bcfb83a47502f4554a79385eaed25a20b4525f27aebe0daf4f4ba54ecbe02c",
+    ".q4t-work/serve-responses-agents-20261123/upload-primary-lease-02/exit.json": "3b24d1a9d934a1a18b0eeb3d5066fea188d2f342fc8df2e4c214e1c02ff3723d",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-upload-02/prepare-run.json": "64f0dac1c4e37cd4c27232ec216b04ea57e848f6a8b18c7af548b35752e0d2fa",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-upload-02/restore-run.json": "b808cc290463bbb7e5b087e732e0bdc62b2fd7646fedbe9cd7ccc22d8610065a",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-upload-02/result.json": "87b9bfa912fcde13cd44b2e9555a62df9fc1df5cee84154753b80e4cccd41464",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-upload-02/interruption.json": "2ea7a4345df39969b5075c989c9d2d7fee0da696302d336719dbe9c883b34ab0",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-upload-02/chat-after.wire": "ae81f8c32ebb599a7caae3edd3d2604efc08deb3f8502cd3bcf1ce2dca4c2e00",
+    ".q4t-work/serve-responses-agents-20261123/upload-client-primary-01/origin.json": "0063d8df3cae04438d394e4beda4c14719dc389e2be99fa783cfe55f9267fa1d",
+    ".q4t-work/serve-responses-agents-20261123/upload-client-primary-01/service.release.json": "d2de0adf47f01bca105eee8799e4863b2af75c7cf91853edf2efa76bf7e0d3fa",
+    ".q4t-work/serve-responses-agents-20261123/upload-client-primary-01/service-acceptance.json": "4d58570d6ef761f9f80ce4eafdede4f2512276b8788a1e6dbc9fd304be94363a",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-upload-02/takeover.json": "715073ab817b4d779a85eb4ab8bea2ba5744c3c31027f5468abaff9b73747642"
+  }
+}
