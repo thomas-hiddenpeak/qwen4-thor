@@ -531,6 +531,11 @@ def explicit_extension(previous, target):
     old_history = old_tools.get('history', {})
     new_history = new_tools.get('history', {})
     from tools.serve_recovery import profile_live_reuse as live
+    if 'video_characters' in target and 'video_characters' not in previous:
+        if (not package.same_json(target['video_characters'], live.CHARACTER_CAPABILITY)
+                or 'input_transcribe' not in previous.get('chatkit', {})):
+            return False
+        previous = dict(previous, video_characters=target['video_characters'])
     if ('input_transcribe' in target.get('chatkit', {}) and
             'input_transcribe' not in previous.get('chatkit', {})):
         configured = previous.get('transcriptions', {}).get('configured')

@@ -23,6 +23,13 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+CHARACTER_RECORD = 'q4t-profile-business-v54'
+CHARACTER_FORMAT = 'q4t-video-character-source-v1'
+CHARACTER_RECEIPT = 'video-character-handoff.json'
+CHARACTER_REVIEWED = {}
+CHARACTER_CAPABILITY = dict(endpoint='/v1/videos/characters', operations=['create', 'retrieve'],
+                            scope='authenticated_client', source='original_encoded_clip',
+                            max_name_characters=80, max_source_bytes=32 << 20, decoder_compiled=True)
 COMPOSER_RECORD = 'q4t-profile-business-v53'
 COMPOSER_FORMAT = 'q4t-chatkit-dictation-source-v1'
 COMPOSER_RECEIPT = 'chatkit-dictation-handoff.json'
@@ -309,7 +316,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 SAFETY_RECORD: SAFETY_FORMAT, HISTORY_RECORD: HISTORY_FORMAT,
                 METEOR_RECORD: METEOR_FORMAT, FEEDBACK_RECORD: FEEDBACK_FORMAT,
                 UPLOAD_RECORD: UPLOAD_FORMAT, PAGINATION_RECORD: PAGINATION_FORMAT,
-                COMPOSER_RECORD: COMPOSER_FORMAT}
+                COMPOSER_RECORD: COMPOSER_FORMAT, CHARACTER_RECORD: CHARACTER_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -444,6 +451,14 @@ def composer_capability(capabilities):
 
 
 def format_for(capabilities, evidence=None):
+    if 'video_characters' in capabilities:
+        prior = dict(capabilities)
+        character = prior.pop('video_characters')
+        ledger.require(ledger.canonical(character) == ledger.canonical(CHARACTER_CAPABILITY)
+                       and CHARACTER_RECEIPT in (evidence or {})
+                       and format_for(prior, evidence) == COMPOSER_RECORD,
+                       'character qualification requires a verified reference and the issued dictation handoff')
+        return CHARACTER_RECORD
     if 'input_transcribe' in capabilities.get('chatkit', {}):
         prior = dict(capabilities, chatkit=UPLOAD_CHATKIT)
         ledger.require(ledger.canonical(capabilities['chatkit']) == ledger.canonical(composer_capability(capabilities))
@@ -666,8 +681,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            CHARACTER_RECORD: (COMPOSER_RECORD, COMPOSER_REVIEWED, 'video_characters', CHARACTER_RECEIPT),
             COMPOSER_RECORD: (PAGINATION_RECORD, PAGINATION_REVIEWED, None, COMPOSER_RECEIPT),
             PAGINATION_RECORD: (UPLOAD_RECORD, UPLOAD_REVIEWED, None, PAGINATION_RECEIPT),
             UPLOAD_RECORD: (FEEDBACK_RECORD, FEEDBACK_REVIEWED, None, 'chatkit-upload-handoff.json'),
@@ -884,7 +900,7 @@ def attach(value, prior):
         ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
         del previous['capabilities']['responses']
     envelope = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']])
-    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD):
+    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD):
         # Prior releases already compressed their history. Keep those signed
         # bytes once and compress only this release's reconstruction fields.
         envelope['history'] = previous.pop('reused_business')
@@ -896,7 +912,7 @@ def attach(value, prior):
 
 def previous_record(value):
     reuse = value['reused_business']
-    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD)
+    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD)
     ledger.keys(reuse, ('format', 'previous', 'history') if separate_history else ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
@@ -908,6 +924,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            CHARACTER_RECORD: (COMPOSER_FORMAT, ('format', 'previous', 'history')),
             COMPOSER_RECORD: (PAGINATION_FORMAT, ('format', 'previous', 'history')),
             PAGINATION_RECORD: (UPLOAD_FORMAT, ('format', 'previous', 'history')),
             UPLOAD_RECORD: (FEEDBACK_FORMAT, ('format', 'previous', 'history')),
@@ -948,8 +965,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            CHARACTER_RECORD: (CHARACTER_REVIEWED, COMPOSER_REVIEWED),
             COMPOSER_RECORD: (COMPOSER_REVIEWED, PAGINATION_REVIEWED),
             PAGINATION_RECORD: (PAGINATION_REVIEWED, UPLOAD_REVIEWED),
             UPLOAD_RECORD: (UPLOAD_REVIEWED, FEEDBACK_REVIEWED),

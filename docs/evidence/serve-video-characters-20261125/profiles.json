@@ -1,0 +1,55 @@
+{
+  "stage": "qualification_prepared",
+  "issued": false,
+  "prior_revision": 496,
+  "tests": {
+    "passed": 57,
+    "log_sha256": "09d630a13f934fd0dbfff65630271156b292866d598bb6585a41dea64ffcd8e5",
+    "predecessors": {
+      "primary": {
+        "current": "a2a84dafd898a1ed1c8bae6cb6cd6333ff0a5dc6cb7f689befc106a604b36c10",
+        "reconstructed": "10c882afa094a33b3608843a03eb90eb4a366c8f9b20d9100ed110f67b38e203"
+      },
+      "light": {
+        "current": "e3f170a3f64539e75ce3902f37f05d07f47cdc54fdebfcd3ed4492b4c8f6dbc9",
+        "reconstructed": "2820381c6a1cc285b5df2c1bfe6aafaee42b3caf06092877c4b43d23d8c2673e"
+      }
+    },
+    "negative_comparisons": {
+      "primary": {
+        "predecessor": "a2a84dafd898a1ed1c8bae6cb6cd6333ff0a5dc6cb7f689befc106a604b36c10",
+        "candidate_shape": true,
+        "field_negatives": 4,
+        "proof_negatives": 3,
+        "reverse_refused": true
+      },
+      "light": {
+        "predecessor": "e3f170a3f64539e75ce3902f37f05d07f47cdc54fdebfcd3ed4492b4c8f6dbc9",
+        "candidate_shape": true,
+        "field_negatives": 4,
+        "proof_negatives": 3,
+        "reverse_refused": true
+      }
+    }
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 245,
+    "native_routes": 406,
+    "reviewed_source_anchors": 1376,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "preparation": {
+    "prior_attempt": "Missing tracked worker manifest in sparse checkout; stopped before model launch.",
+    "fixed": "Materialized the worker and embedding identities from the checked commit."
+  },
+  "expected": [
+    "primary creates the reference using the original encoded clip",
+    "light retrieves the same character and tool result",
+    "peer lookup returns 404; independent Chat returns 42"
+  ]
+}
