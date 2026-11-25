@@ -33,7 +33,7 @@ enum class Program { kJavaScript, kPython, kMeteor };
 
 ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
                     GrammarControl control, Program kind,
-                    const detail::ProgramProgress& progress = {}) {
+                    const detail::ProgramFrameSink& progress = {}) {
   const bool python = kind != Program::kJavaScript;
   const bool meteor = kind == Program::kMeteor;
   const char* entry = python ? "--hosted-python-worker" : "--program-worker";
@@ -68,25 +68,31 @@ ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
   if (progress) {
     // A zero length ends the provisional frames. CollectOutput still verifies
     // EOF and normal exit before exposing the final program response.
+    size_t stream_bytes = 0;
     for (unsigned count = 0;; ++count) {
       uint32_t length = 0;
       if (!worker->Transfer(&length, sizeof(length), false,
                             control.compile_deadline, control.cancelled))
         return Failure(worker->Failure());
       if (length == 0) break;
-      if (length > detail::kMaxActionProgressBytes * 6 + 2 ||
+      if (length > detail::kMaxActionFrameBytes ||
+          length > detail::kMaxActionStreamBytes - stream_bytes ||
           count >= detail::kMaxActionProgressFrames)
-        return Failure(GrammarFailure::kWorker);
+        return Error(502, "chatkit_action_invalid_result",
+                     "The workflow exceeded its streaming limit");
+      stream_bytes += length;
       std::string encoded(length, '\0');
       if (!worker->Transfer(encoded.data(), length, false,
                             control.compile_deadline, control.cancelled))
         return Failure(worker->Failure());
-      Json text;
-      if (!io::ParseJson(encoded, &text, true, kApplicationJsonLimits) ||
-          !text.IsString() || text.str.size() > detail::kMaxActionProgressBytes)
+      Json frame;
+      if (!io::ParseJson(encoded, &frame, true, kApplicationJsonLimits) ||
+          (!frame.IsObject() &&
+           (!frame.IsString() ||
+            frame.str.size() > detail::kMaxActionProgressBytes)))
         return Error(502, "chatkit_action_invalid_result",
-                     "The workflow returned invalid progress text");
-      if (!progress(text.str)) return Failure(GrammarFailure::kCancelled);
+                     "The workflow returned an invalid streaming frame");
+      if (!progress(frame)) return Failure(GrammarFailure::kCancelled);
       uint8_t accepted = 1;
       if (!worker->Transfer(&accepted, sizeof(accepted), true,
                             control.compile_deadline, control.cancelled))
@@ -149,7 +155,7 @@ ObjectReply ExecuteProgramWorker(const io::Json& input,
 
 ObjectReply ExecuteActionWorker(const io::Json& input,
                                 const BinaryAccess& access,
-                                const detail::ProgramProgress& progress) {
+                                const detail::ProgramFrameSink& progress) {
   return Execute(input, access, {}, Program::kJavaScript, progress);
 }
 
@@ -194,10 +200,10 @@ int MaybeRunProgramWorker(int argc, char** argv) {
     if (setenv("TZ", "UTC0", 1) != 0) return 4;
     tzset();
     if (!detail::EnterNativeDocumentSandbox()) return 4;
-    detail::ProgramProgress progress;
+    detail::ProgramFrameSink progress;
     if (action) {
-      progress = [](std::string_view text) {
-        auto encoded = OutputJson(String(std::string(text)));
+      progress = [](const Json& frame) {
+        auto encoded = OutputJson(frame);
         uint32_t size = static_cast<uint32_t>(encoded.size());
         uint8_t accepted = 0;
         return detail::WorkerTransfer(&size, sizeof(size), true) &&

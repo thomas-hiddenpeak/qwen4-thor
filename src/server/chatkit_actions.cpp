@@ -4,7 +4,9 @@
 #include <ctime>
 
 #include "chatkit_thread_state.h"
+#include "chatkit_widget_stream.h"
 #include "object_protocol.h"
+#include "program_vm.h"
 #include "q4t/server/files.h"
 #include "q4t/server/program_worker.h"
 #include "q4t/server/request_json.h"
@@ -28,7 +30,8 @@ ObjectReply BadOutput() {
 
 ObjectReply Execute(const StateAccess& access, const Json& code, Json context,
                     int64_t now,
-                    const std::function<bool(std::string_view)>& progress) {
+                    const std::function<bool(const Json&)>& progress,
+                    const Json& streamed_widget) {
   auto input = Object({{"code", code},
                        {"action_context", std::move(context)},
                        {"tools", Array()},
@@ -40,8 +43,13 @@ ObjectReply Execute(const StateAccess& access, const Json& code, Json context,
       input, {access.scope, access.deadline, access.cancelled}, progress);
   if (!run.ok()) return run;
   const auto* output = run.value.GetArray("output");
-  if (run.value.GetString("status") != "completed" || !output ||
-      output->array.size() != 1 ||
+  if (run.value.GetString("status") != "completed" || !output)
+    return BadOutput();
+  if (output->array.empty() && streamed_widget.IsObject()) {
+    run.value = Object();
+    return run;
+  }
+  if (output->array.size() != 1 ||
       output->array.front().GetString("type") != "text")
     return BadOutput();
   Json result;
@@ -56,15 +64,6 @@ ObjectReply Execute(const StateAccess& access, const Json& code, Json context,
       return BadOutput();
   run.value = std::move(result);
   return run;
-}
-
-bool WidgetTree(const Json& node) {
-  if (!node.IsObject() || node.GetString("type").empty()) return false;
-  const auto* children = node.Find("children");
-  if (!children || children->IsNull()) return true;
-  if (children->IsObject()) return WidgetTree(*children);
-  return children->IsArray() &&
-         std::ranges::all_of(children->array, WidgetTree);
 }
 
 ObjectReply PrepareEvents(const Json& result, bool streaming, Json* events) {
@@ -166,10 +165,10 @@ ObjectReply BindActionFile(ObjectStore& objects, const StateAccess& access,
   return {};
 }
 
-ObjectReply DispatchAction(
-    ObjectStore& objects, const StateAccess& access, const Grant& grant,
-    const Json& params, bool streaming,
-    const std::function<bool(std::string_view)>& progress) {
+ObjectReply DispatchAction(ObjectStore& objects, const StateAccess& access,
+                           const Grant& grant, const Json& params,
+                           bool streaming,
+                           const std::function<bool(const Json&)>& emit) {
   const auto id = params.GetString("thread_id");
   const auto* sender_id = params.Find("item_id");
   const auto* action = params.Find("action");
@@ -221,13 +220,65 @@ ObjectReply DispatchAction(
               {"state", state ? *state : Json{}},
               {"state_variables", variables ? *variables : Object()},
               {"streaming", Boolean(streaming)}});
-  auto run = Execute(access, *code, std::move(context), now, progress);
+  Json item, current;
+  auto ensure_item = [&]() {
+    if (item.IsObject()) return true;
+    if (sender) {
+      item = *sender;
+      auto visible = ClientItem(item);
+      if (const auto* widget = visible.Find("widget")) current = *widget;
+    } else {
+      item = Object({{"id", String(NewObjectId(ObjectKind::kConversationItem))},
+                     {"thread_id", String(id)},
+                     {"created_at", Number(now)},
+                     {"object", String("chatkit.thread_item")},
+                     {"type", String("chatkit.widget")}});
+    }
+    return !item.GetString("id").empty();
+  };
+  auto publish = [&](const Json& widget) -> ObjectReply {
+    if (!ValidWidget(widget, true)) return BadOutput();
+    auto encoded = OutputJson(widget);
+    if (encoded.size() > detail::kMaxActionFrameBytes) return BadOutput();
+    if (!ensure_item())
+      return Error(503, "chatkit_id_unavailable", "No widget ID");
+    Set(&item, "widget", String(std::move(encoded)));
+    if (current.IsNull()) {
+      if (!emit(Object({{"type", String("thread.item.added")},
+                        {"item", ClientItem(item)}})))
+        return Error(499, "request_cancelled", "Widget stream cancelled");
+    } else {
+      const auto updates = WidgetUpdates(current, widget);
+      for (const auto& update : updates.array)
+        if (!emit(Object({{"type", String("thread.item.updated")},
+                          {"item_id", *item.Find("id")},
+                          {"update", update}})))
+          return Error(499, "request_cancelled", "Widget stream cancelled");
+    }
+    current = widget;
+    return {};
+  };
+  ObjectReply frame_error;
+  std::function<bool(const Json&)> on_frame;
+  if (streaming && emit) {
+    on_frame = [&](const Json& frame) {
+      if (frame.IsString())
+        return emit(
+            Object({{"type", String("progress_update")}, {"text", frame}}));
+      frame_error = publish(frame);
+      return frame_error.ok();
+    };
+  }
+  auto run = Execute(access, *code, std::move(context), now, on_frame, current);
+  if (!frame_error.ok()) return frame_error;
   if (!run.ok()) return run;
   Json events = Array(), visible;
   auto prepared = PrepareEvents(run.value, streaming, &events);
   if (!prepared.ok()) return prepared;
+  const bool provisional = current.IsObject();
   const auto* widget = run.value.Find("widget");
-  const bool update = widget && !widget->IsNull();
+  const bool final_widget = widget && !widget->IsNull();
+  const bool update = provisional || final_widget;
   const auto* remove = run.value.Find("remove_sender");
   if (remove && (!remove->IsBool() ||
                  (remove->boolean && (!streaming || !sender || update))))
@@ -236,28 +287,24 @@ ObjectReply DispatchAction(
   const auto* title = run.value.Find("title");
   if (title && !title->IsString() && !title->IsNull()) return BadOutput();
   if (update) {
-    const auto type = widget->GetString("type");
-    if ((type != "Card" && type != "Basic" && type != "ListView") ||
-        !WidgetTree(*widget))
-      return BadOutput();
-    auto item =
-        sender ? *sender
-               : Object({{"id",
-                          String(NewObjectId(ObjectKind::kConversationItem))},
-                         {"thread_id", String(id)},
-                         {"created_at", Number(now)},
-                         {"object", String("chatkit.thread_item")},
-                         {"type", String("chatkit.widget")}});
-    if (item.GetString("id").empty())
-      return Error(503, "chatkit_id_unavailable", "No widget ID");
-    Set(&item, "widget", String(OutputJson(*widget)));
+    if (final_widget) {
+      if (provisional) {
+        auto sent = publish(*widget);
+        if (!sent.ok()) return sent;
+      } else {
+        if (!ValidWidget(*widget, false)) return BadOutput();
+        if (!ensure_item())
+          return Error(503, "chatkit_id_unavailable", "No widget ID");
+        Set(&item, "widget", String(OutputJson(*widget)));
+      }
+    }
     visible = ClientItem(item);
     if (sender)
       *sender = std::move(item);
     else
       items.push_back(std::move(item));
     if (streaming) {
-      if (!sender)
+      if (!sender && !provisional)
         events.array.push_back(
             Object({{"type", String("thread.item.added")}, {"item", visible}}));
       events.array.push_back(Object(
