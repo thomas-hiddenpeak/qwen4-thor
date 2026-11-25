@@ -19722,7 +19722,7 @@
           "control_connection_reserve": 4,
           "draining_control_window_max_ms": 2000,
           "header_flood_guarantee": false,
-          "stream_usage": "if requested: null on choices chunks, object on final empty-choices chunk",
+          "stream_usage": "When requested, ordinary choice chunks use null and the final usage chunk carries usage. A moderation report may arrive in a separate empty-choices chunk.",
           "stream_error": "one error then DONE when writable; partial write failure closes without another terminal"
         },
         "oneOf": [
@@ -19978,7 +19978,8 @@
                         "stop",
                         "length",
                         "tool_calls",
-                        "function_call"
+                        "function_call",
+                        "content_filter"
                       ]
                     }
                   }
@@ -20019,6 +20020,19 @@
                   "fast",
                   null
                 ]
+              },
+              "moderation": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/chatModeration"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q4t_moderation_usage": {
+                "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/chatModerationUsage"
               }
             }
           },
@@ -20126,7 +20140,8 @@
                         "stop",
                         "length",
                         "tool_calls",
-                        "function_call"
+                        "function_call",
+                        "content_filter"
                       ]
                     },
                     "logprobs": {
@@ -20197,6 +20212,19 @@
                   "fast",
                   null
                 ]
+              },
+              "moderation": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/chatModeration"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q4t_moderation_usage": {
+                "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/chatModerationUsage"
               }
             },
             "if": {
@@ -20207,14 +20235,29 @@
               }
             },
             "then": {
-              "required": [
-                "usage"
-              ],
-              "properties": {
-                "usage": {
-                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/usage"
+              "anyOf": [
+                {
+                  "required": [
+                    "usage"
+                  ],
+                  "properties": {
+                    "usage": {
+                      "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/usage"
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "moderation",
+                    "q4t_moderation_usage"
+                  ],
+                  "properties": {
+                    "moderation": {
+                      "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/chatModeration"
+                    }
+                  }
                 }
-              }
+              ]
             }
           },
           "readiness": {
@@ -20339,6 +20382,181 @@
                 }
               }
             }
+          },
+          "moderationCategoryMap": {
+            "type": "object",
+            "required": [
+              "harassment",
+              "harassment/threatening",
+              "hate",
+              "hate/threatening",
+              "illicit",
+              "illicit/violent",
+              "self-harm",
+              "self-harm/instructions",
+              "self-harm/intent",
+              "sexual",
+              "sexual/minors",
+              "violence",
+              "violence/graphic"
+            ],
+            "maxProperties": 13
+          },
+          "moderationReport": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "error"
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  }
+                },
+                "required": [
+                  "type",
+                  "code",
+                  "message"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "moderation_results"
+                  },
+                  "model": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "results": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "moderation_result"
+                        },
+                        "model": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "categories": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/moderationCategoryMap"
+                            }
+                          ],
+                          "additionalProperties": {
+                            "type": "boolean"
+                          }
+                        },
+                        "category_scores": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/moderationCategoryMap"
+                            }
+                          ],
+                          "additionalProperties": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "category_applied_input_types": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/moderationCategoryMap"
+                            }
+                          ],
+                          "additionalProperties": {
+                            "type": "array",
+                            "maxItems": 2,
+                            "uniqueItems": true,
+                            "items": {
+                              "enum": [
+                                "text",
+                                "image"
+                              ]
+                            }
+                          }
+                        },
+                        "flagged": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "model",
+                        "categories",
+                        "category_scores",
+                        "category_applied_input_types",
+                        "flagged"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "model",
+                  "results"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "chatModeration": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/moderationReport"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/moderationReport"
+              }
+            },
+            "required": [
+              "input",
+              "output"
+            ],
+            "additionalProperties": false
+          },
+          "chatModerationUsage": {
+            "type": "object",
+            "properties": {
+              "input_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "output_tokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1024
+              },
+              "model_steps": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2
+              }
+            },
+            "required": [
+              "input_tokens",
+              "output_tokens",
+              "model_steps"
+            ],
+            "additionalProperties": false
           }
         }
       },
@@ -87162,7 +87380,8 @@
                         "stop",
                         "length",
                         "tool_calls",
-                        "function_call"
+                        "function_call",
+                        "content_filter"
                       ]
                     }
                   }
@@ -87203,6 +87422,19 @@
                   "fast",
                   null
                 ]
+              },
+              "moderation": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_chatModeration"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q4t_moderation_usage": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_chatModerationUsage"
               }
             }
           },
@@ -87310,7 +87542,8 @@
                         "stop",
                         "length",
                         "tool_calls",
-                        "function_call"
+                        "function_call",
+                        "content_filter"
                       ]
                     },
                     "logprobs": {
@@ -87381,6 +87614,19 @@
                   "fast",
                   null
                 ]
+              },
+              "moderation": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_chatModeration"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "q4t_moderation_usage": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_chatModerationUsage"
               }
             },
             "if": {
@@ -87391,14 +87637,29 @@
               }
             },
             "then": {
-              "required": [
-                "usage"
-              ],
-              "properties": {
-                "usage": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_usage"
+              "anyOf": [
+                {
+                  "required": [
+                    "usage"
+                  ],
+                  "properties": {
+                    "usage": {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_usage"
+                    }
+                  }
+                },
+                {
+                  "required": [
+                    "moderation",
+                    "q4t_moderation_usage"
+                  ],
+                  "properties": {
+                    "moderation": {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_chatModeration"
+                    }
+                  }
                 }
-              }
+              ]
             }
           },
           "chat_readiness": {
@@ -87523,6 +87784,181 @@
                 }
               }
             }
+          },
+          "chat_moderationCategoryMap": {
+            "type": "object",
+            "required": [
+              "harassment",
+              "harassment/threatening",
+              "hate",
+              "hate/threatening",
+              "illicit",
+              "illicit/violent",
+              "self-harm",
+              "self-harm/instructions",
+              "self-harm/intent",
+              "sexual",
+              "sexual/minors",
+              "violence",
+              "violence/graphic"
+            ],
+            "maxProperties": 13
+          },
+          "chat_moderationReport": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "error"
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  }
+                },
+                "required": [
+                  "type",
+                  "code",
+                  "message"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "moderation_results"
+                  },
+                  "model": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "results": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "moderation_result"
+                        },
+                        "model": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "categories": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_moderationCategoryMap"
+                            }
+                          ],
+                          "additionalProperties": {
+                            "type": "boolean"
+                          }
+                        },
+                        "category_scores": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_moderationCategoryMap"
+                            }
+                          ],
+                          "additionalProperties": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          }
+                        },
+                        "category_applied_input_types": {
+                          "allOf": [
+                            {
+                              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_moderationCategoryMap"
+                            }
+                          ],
+                          "additionalProperties": {
+                            "type": "array",
+                            "maxItems": 2,
+                            "uniqueItems": true,
+                            "items": {
+                              "enum": [
+                                "text",
+                                "image"
+                              ]
+                            }
+                          }
+                        },
+                        "flagged": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "model",
+                        "categories",
+                        "category_scores",
+                        "category_applied_input_types",
+                        "flagged"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "model",
+                  "results"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "chat_chatModeration": {
+            "type": "object",
+            "properties": {
+              "input": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_moderationReport"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_moderationReport"
+              }
+            },
+            "required": [
+              "input",
+              "output"
+            ],
+            "additionalProperties": false
+          },
+          "chat_chatModerationUsage": {
+            "type": "object",
+            "properties": {
+              "input_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "output_tokens": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1024
+              },
+              "model_steps": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2
+              }
+            },
+            "required": [
+              "input_tokens",
+              "output_tokens",
+              "model_steps"
+            ],
+            "additionalProperties": false
           },
           "stored_chat_query": {
             "type": "object",

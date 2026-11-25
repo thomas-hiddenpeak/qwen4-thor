@@ -779,6 +779,11 @@
         "stage": "schema_verified",
         "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
         "pending": "Publish corrected client declarations with the next package"
+      },
+      "chat_moderation_wire_schema_20261125": {
+        "stage": "schema_verified",
+        "receipt": "evidence/serve-chat-audio-wire-20261125/moderation.json",
+        "pending": "Publish corrected Chat response declarations alongside pagination and audio"
       }
     },
     {
@@ -1148,6 +1153,11 @@
         "stage": "schema_verified",
         "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
         "pending": "Publish corrected client declarations with the next package"
+      },
+      "chat_moderation_wire_schema_20261125": {
+        "stage": "schema_verified",
+        "receipt": "evidence/serve-chat-audio-wire-20261125/moderation.json",
+        "pending": "Publish corrected Chat response declarations alongside pagination and audio"
       }
     },
     {
@@ -7694,6 +7704,11 @@
         "stage": "schema_verified",
         "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
         "pending": "Publish corrected client declarations with the next package"
+      },
+      "chat_moderation_wire_schema_20261125": {
+        "stage": "schema_verified",
+        "receipt": "evidence/serve-chat-audio-wire-20261125/moderation.json",
+        "pending": "Publish corrected Chat response declarations alongside pagination and audio"
       }
     },
     {

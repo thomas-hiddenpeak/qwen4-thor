@@ -58827,7 +58827,8 @@
                   "stop",
                   "length",
                   "tool_calls",
-                  "function_call"
+                  "function_call",
+                  "content_filter"
                 ]
               }
             }
@@ -58868,6 +58869,19 @@
             "fast",
             null
           ]
+        },
+        "moderation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/chat_chatModeration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "q4t_moderation_usage": {
+          "$ref": "#/$defs/chat_chatModerationUsage"
         }
       }
     },
@@ -58975,7 +58989,8 @@
                   "stop",
                   "length",
                   "tool_calls",
-                  "function_call"
+                  "function_call",
+                  "content_filter"
                 ]
               },
               "logprobs": {
@@ -59046,6 +59061,19 @@
             "fast",
             null
           ]
+        },
+        "moderation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/chat_chatModeration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "q4t_moderation_usage": {
+          "$ref": "#/$defs/chat_chatModerationUsage"
         }
       },
       "if": {
@@ -59056,14 +59084,29 @@
         }
       },
       "then": {
-        "required": [
-          "usage"
-        ],
-        "properties": {
-          "usage": {
-            "$ref": "#/$defs/chat_usage"
+        "anyOf": [
+          {
+            "required": [
+              "usage"
+            ],
+            "properties": {
+              "usage": {
+                "$ref": "#/$defs/chat_usage"
+              }
+            }
+          },
+          {
+            "required": [
+              "moderation",
+              "q4t_moderation_usage"
+            ],
+            "properties": {
+              "moderation": {
+                "$ref": "#/$defs/chat_chatModeration"
+              }
+            }
           }
-        }
+        ]
       }
     },
     "chat_readiness": {
@@ -59188,6 +59231,181 @@
           }
         }
       }
+    },
+    "chat_moderationCategoryMap": {
+      "type": "object",
+      "required": [
+        "harassment",
+        "harassment/threatening",
+        "hate",
+        "hate/threatening",
+        "illicit",
+        "illicit/violent",
+        "self-harm",
+        "self-harm/instructions",
+        "self-harm/intent",
+        "sexual",
+        "sexual/minors",
+        "violence",
+        "violence/graphic"
+      ],
+      "maxProperties": 13
+    },
+    "chat_moderationReport": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "error"
+            },
+            "code": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            }
+          },
+          "required": [
+            "type",
+            "code",
+            "message"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "const": "moderation_results"
+            },
+            "model": {
+              "type": "string",
+              "minLength": 1
+            },
+            "results": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "moderation_result"
+                  },
+                  "model": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "categories": {
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/chat_moderationCategoryMap"
+                      }
+                    ],
+                    "additionalProperties": {
+                      "type": "boolean"
+                    }
+                  },
+                  "category_scores": {
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/chat_moderationCategoryMap"
+                      }
+                    ],
+                    "additionalProperties": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "category_applied_input_types": {
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/chat_moderationCategoryMap"
+                      }
+                    ],
+                    "additionalProperties": {
+                      "type": "array",
+                      "maxItems": 2,
+                      "uniqueItems": true,
+                      "items": {
+                        "enum": [
+                          "text",
+                          "image"
+                        ]
+                      }
+                    }
+                  },
+                  "flagged": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type",
+                  "model",
+                  "categories",
+                  "category_scores",
+                  "category_applied_input_types",
+                  "flagged"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "type",
+            "model",
+            "results"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "chat_chatModeration": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/chat_moderationReport"
+        },
+        "output": {
+          "$ref": "#/$defs/chat_moderationReport"
+        }
+      },
+      "required": [
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "chat_chatModerationUsage": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1024
+        },
+        "model_steps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        }
+      },
+      "required": [
+        "input_tokens",
+        "output_tokens",
+        "model_steps"
+      ],
+      "additionalProperties": false
     },
     "stored_chat_query": {
       "type": "object",
