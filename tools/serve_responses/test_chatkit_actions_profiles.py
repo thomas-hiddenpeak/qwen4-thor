@@ -54,3 +54,29 @@ class BrowserOutputHandoff(unittest.TestCase):
                 changed = deepcopy(after)
                 changed['recovered'][key] = value
                 profiles.check_browser_result(changed, before)
+
+
+class GenerationHandoff(unittest.TestCase):
+    def test_original_partial_document_and_isolation_survive_the_handoff(self):
+        rows = package.read(profiles.GENERATION_PROOF.with_name('profiles.json'))['profiles']
+        before, after = rows['primary']['sdk'], rows['light']['sdk']
+        profiles.check_generation_result(after, before)
+        for key, value in [('answer', '999'), ('file_sha256', '0' * 64),
+                           ('ids', list(reversed(after['recovered']['ids']))),
+                           ('peer', 200), ('sibling', 200)]:
+            with self.subTest(key=key), self.assertRaises(RuntimeError):
+                changed = deepcopy(after)
+                changed['recovered'][key] = value
+                profiles.check_generation_result(changed, before)
+        for key in ['thread', 'file', 'partial', 'received']:
+            with self.subTest(key=key), self.assertRaises(RuntimeError):
+                changed = deepcopy(after)
+                changed['source'][key] += 'x'
+                profiles.check_generation_result(changed, before)
+
+    def test_duplex_unpacking_preserves_all_historical_record_formats(self):
+        from tools.serve_recovery import profile_live_reuse as reuse
+        self.assertTrue(set(f'q4t-profile-business-v{i}' for i in range(26, 62))
+                        <= reuse.PACKED_DUPLEX_RECORDS)
+        self.assertTrue({reuse.RECORD_FORMAT, reuse.BETA_RECORD_FORMAT, reuse.AGENT_RECORD_FORMAT}
+                        .isdisjoint(reuse.PACKED_DUPLEX_RECORDS))

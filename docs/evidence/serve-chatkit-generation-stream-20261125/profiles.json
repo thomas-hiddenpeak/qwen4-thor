@@ -1,0 +1,111 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 510,
+  "build": {
+    "engine": "dfbc7b0ac5fcbc5bd4fcc627f8071fe1dcc71ef8caf47f5453dde3164c3a9d89",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "openapi_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+  "combined_sha256": "d0cfdc597076c87de67aea8d5c75986b91c32610ab2d006121365b11b9a9e3fc",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "primary",
+        "source": {
+          "workflow": "agent_0ad81f66f6325956776daefac01043da",
+          "thread": "cthr_9491cc6b49827cb73d783032ff8bf84a",
+          "file": "file_1a15a1d054292bc91d611fcb625282e2",
+          "item": "msg_35a0c9b1864569c057e102e68ec2a1db",
+          "user": "item_2b1c481ca32ffee942a46bbf7ad6fd04",
+          "received": "1",
+          "partial": "1.",
+          "document_sha256": "d1f1101a791a76a45a78f74804c4472803712c18952bf82582a52c36542c5bc5"
+        },
+        "revision": "510",
+        "chat": "42"
+      },
+      "seconds": 40.384,
+      "starts": 1,
+      "record_sha256": "858b8111be51b5378b5f16082843dad6d2abbdf56e3366bee1d7f64a82b19ea4",
+      "predecessor": "acdcd284eb75f69e9dc7f0b85e75d4146edf049868b367e7935be4703d2fa34b"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "light",
+        "source": {
+          "workflow": "agent_0ad81f66f6325956776daefac01043da",
+          "thread": "cthr_9491cc6b49827cb73d783032ff8bf84a",
+          "file": "file_1a15a1d054292bc91d611fcb625282e2",
+          "item": "msg_35a0c9b1864569c057e102e68ec2a1db",
+          "user": "item_2b1c481ca32ffee942a46bbf7ad6fd04",
+          "received": "1",
+          "partial": "1.",
+          "document_sha256": "d1f1101a791a76a45a78f74804c4472803712c18952bf82582a52c36542c5bc5"
+        },
+        "recovered": {
+          "answer": "510",
+          "ids": [
+            "item_2b1c481ca32ffee942a46bbf7ad6fd04",
+            "msg_35a0c9b1864569c057e102e68ec2a1db",
+            "item_7bbc63243fadefdeb6bc88b940c2b39c",
+            "msg_6566066f940f13e9a78c8e5b60959d23"
+          ],
+          "peer": 404,
+          "sibling": 404,
+          "file_sha256": "d1f1101a791a76a45a78f74804c4472803712c18952bf82582a52c36542c5bc5"
+        },
+        "revision": "510",
+        "chat": "42"
+      },
+      "seconds": 35.647,
+      "starts": 1,
+      "record_sha256": "b79a92d5003ddb295b50c00849425eccfc55c5674c0554550d89b64ac7bde609",
+      "predecessor": "ce580aca9e8f74bba813d7bc9bec97e2668278c54564db66d47601e84c4b5933"
+    }
+  },
+  "journals": [
+    {
+      "status": "cancelled",
+      "message": [
+        "msg_35a0c9b1864569c057e102e68ec2a1db"
+      ],
+      "sha256": "99e82cb8aa330116d64c1b1ddab5db8ea5915411cf5a7e1d4dd6cd11516901fa",
+      "response": "resp_0b1041c76cc1d6b9835a16a314c0d554",
+      "notes": 0
+    },
+    {
+      "status": "completed",
+      "message": [
+        "msg_6566066f940f13e9a78c8e5b60959d23"
+      ],
+      "sha256": "27e93b86731b97812482be4083f4ce3f2a3d8d90821b8bff4451f2e62e647b7c",
+      "response": "resp_d68920872f1b9f7cb25eb32d73efea53",
+      "notes": 1
+    }
+  ],
+  "lease_sha256": "91771c94dbf28e1ae3065ff4d8e834a5e4a6a16ad1232718ccbc6de29b9ba96c",
+  "registry": {
+    "status": "ACCEPT_CHATKIT_GENERATION_PRIMARY_LIGHT",
+    "registry_sha256": "ae50d72de4ade31f69b02e1fcc27fcc83b82e0c411ac936ba7141566668c59f2",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 73,
+      "cleanup_complete": true,
+      "lease_result_sha256": "91771c94dbf28e1ae3065ff4d8e834a5e4a6a16ad1232718ccbc6de29b9ba96c"
+    },
+    "migration_permit_sha256": "1541a1b10a782f8cab72573232a736d509df2d80316c5ab3268326825d308d94",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "initial_registry_failure": {
+    "log_sha256": "bd2c5c3a96e7776f41b298b38b33600778e7ce06b7fd775575f5e3e0c6178762",
+    "reason": "v61 missed the separate list of formats requiring duplex decompression; switched to the existing Live format registry, preserving the three historical raw formats",
+    "gpu_reruns": 0
+  }
+}

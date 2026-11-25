@@ -1,0 +1,125 @@
+// Carry an interrupted project document review across a capacity or process change.
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {readFileSync} from 'node:fs';
+import {loadSdk} from '../serve_protocol/sdk.mjs';
+
+let input = '';
+for await (const bytes of process.stdin) input += bytes;
+const plan = JSON.parse(input);
+const {OpenAI, version} = loadSdk(plan.sdk);
+const connect = apiKey => new OpenAI({apiKey, baseURL: plan.base, maxRetries: 0});
+const owner = connect(plan.key), peer = connect(plan.other);
+const release = JSON.parse(readFileSync(new URL(
+  '../../docs/evidence/serve-chatkit-browser-output-20261125/delivery.json', import.meta.url)));
+const revision = String(release.publication.publication_revision);
+const document = Buffer.from(JSON.stringify({
+  publication_revision: release.publication.publication_revision,
+  previous_revision: release.previous_revision,
+  desired: release.publication.desired,
+  primary: release.publication.primary,
+  fallback: release.publication.fallback,
+}));
+const sha = data => createHash('sha256').update(data).digest('hex');
+const session = (workflow, user = 'project-reviewer') => owner.beta.chatkit.sessions.create({
+  workflow: {id: workflow}, user, chatkit_configuration: {
+    file_upload: {enabled: true, max_files: 1, max_file_size: 1},
+  },
+});
+async function send(grant, path, body, status = 200, signal = AbortSignal.timeout(45000)) {
+  const upload = body instanceof FormData;
+  const response = await fetch(plan.base + path, {
+    method: 'POST', signal, body: upload ? body : JSON.stringify(body),
+    headers: {Authorization: 'Bearer ' + grant.client_secret,
+      ...(upload ? {} : {'Content-Type': 'application/json'})},
+  });
+  if (response.status !== status) throw Error(path + ' ' + response.status + ' ' + await response.text());
+  return response;
+}
+const rpc = (grant, type, params, status, signal) => send(grant, '/chatkit', {type, params}, status, signal);
+const text = (value, attachments = []) => ({content: [{type: 'input_text', text: value}], attachments, inference_options: {}});
+const list = async (grant, thread) => (await rpc(grant, 'items.list', {thread_id: thread, order: 'asc'})).json();
+
+async function interrupt() {
+  const workflow = (await owner.beta.agents.create({model: plan.model, reasoning: {effort: 'none'}})).id;
+  const grant = await session(workflow);
+  const form = new FormData();
+  form.set('file', new File([document], 'publication.json', {type: 'application/json'}));
+  const file = (await (await send(grant, '/chatkit/attachments', form)).json()).id;
+  const stop = new AbortController();
+  const r = await rpc(grant, 'threads.create', {input: text(
+    'Explain the attached project publication to a reviewer in thirty numbered sentences, one full sentence per line.', [file],
+  )}, 200, AbortSignal.any([stop.signal, AbortSignal.timeout(45000)]));
+  const reader = r.body.getReader(), decoder = new TextDecoder();
+  let carry = '', thread, item, prefix = '', allowCancel = false;
+  while (!prefix.trim()) {
+    const chunk = await reader.read();
+    assert.ok(!chunk.done, 'model stream ended before its first assistant text');
+    carry += decoder.decode(chunk.value, {stream: true});
+    let sep;
+    while ((sep = /\r?\n\r?\n/.exec(carry))) {
+      const line = carry.slice(0, sep.index);
+      carry = carry.slice(sep.index + sep[0].length);
+      if (!line.startsWith('data: ')) continue;
+      const event = JSON.parse(line.slice(6));
+      if (event.type === 'thread.created') thread = event.thread.id;
+      if (event.type === 'stream_options') allowCancel = event.stream_options.allow_cancel;
+      if (event.update?.type === 'assistant_message.content_part.text_delta') {
+        item = event.item_id;
+        prefix += event.update.delta;
+      }
+    }
+  }
+  stop.abort();
+  await reader.cancel().catch(() => {});
+  assert.ok(allowCancel && thread && item);
+  const end = Date.now() + 40000;
+  let partial;
+  do {
+    const rows = await owner.beta.chatkit.threads.listItems(thread, {order: 'asc'});
+    partial = rows.data.find(row => row.id === item);
+    if (!partial) await new Promise(resolve => setTimeout(resolve, 200));
+  } while (!partial && Date.now() < end);
+  assert.ok(partial?.content[0].text.startsWith(prefix));
+  const saved = await list(grant, thread);
+  assert.deepEqual(saved.data.map(row => row.type), ['user_message', 'assistant_message']);
+  assert.equal(saved.data[0].attachments[0].id, file);
+  assert.equal(saved.data[1].content[0].text, partial.content[0].text);
+  return {workflow, thread, file, item, user: saved.data[0].id, received: prefix,
+    partial: partial.content[0].text, document_sha256: sha(document)};
+}
+
+async function resume(source) {
+  const {workflow, thread, file, item, user, partial} = source;
+  const grant = await session(workflow), sibling = await session(workflow, 'other-reader');
+  await rpc(sibling, 'items.list', {thread_id: thread}, 404);
+  await assert.rejects(peer.beta.chatkit.threads.retrieve(thread), error => error.status === 404);
+  const bytes = Buffer.from(await (await owner.files.content(file)).arrayBuffer());
+  assert.equal(sha(bytes), sha(document));
+  const before = await list(grant, thread);
+  assert.deepEqual(before.data.map(row => row.id), [user, item]);
+  assert.equal(before.data[1].content[0].text, partial);
+  const response = await rpc(grant, 'threads.add_user_message', {thread_id: thread,
+    input: text('What is publication_revision in the attached project publication? Reply only with that integer.')});
+  const events = (await response.text()).split(/\r?\n/).filter(line => line.startsWith('data: '))
+    .map(line => JSON.parse(line.slice(6)));
+  assert.ok(!events.some(event => event.type === 'error'));
+  const answer = events.find(event => event.type === 'thread.item.done' && event.item.type === 'assistant_message')?.item;
+  assert.equal(answer?.content[0].text.trim(), revision);
+  const after = await list(grant, thread);
+  assert.deepEqual(after.data.slice(0, 2), before.data);
+  const history = await owner.beta.chatkit.threads.listItems(thread, {order: 'asc'});
+  const ids = after.data.map(row => row.id);
+  assert.deepEqual(history.data.map(row => row.id), ids);
+  assert.equal(history.data[1].content[0].text, partial);
+  assert.equal(history.data.at(-1).content[0].text.trim(), revision);
+  return {answer: revision, ids, peer: 404, sibling: 404, file_sha256: sha(bytes)};
+}
+
+assert.ok(['primary', 'light'].includes(plan.phase));
+const source = plan.phase === 'primary' ? await interrupt() : plan.previous.source;
+const recovered = plan.phase === 'light' ? await resume(source) : undefined;
+const chat = await peer.chat.completions.create({model: plan.model, temperature: 0, max_tokens: 16,
+  messages: [{role: 'user', content: 'Return only the integer 6 times 7.'}], chat_template_kwargs: {enable_thinking: false}});
+assert.equal(chat.choices[0].message.content.trim(), '42');
+process.stdout.write(JSON.stringify({sdk: version, phase: plan.phase, source, recovered, revision, chat: '42'}));

@@ -1272,6 +1272,11 @@
         "stage": "candidate_http",
         "issued": false,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+      },
+      "chatkit_generation_profiles_20261125": {
+        "stage": "profile_verified",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
       }
     },
     {
@@ -2812,6 +2817,11 @@
         "stage": "candidate_http",
         "issued": false,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+      },
+      "chatkit_generation_profiles_20261125": {
+        "stage": "profile_verified",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
       }
     },
     {
@@ -3380,6 +3390,11 @@
         "stage": "candidate_http",
         "issued": false,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+      },
+      "chatkit_generation_profiles_20261125": {
+        "stage": "profile_verified",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
       }
     },
     {
@@ -7097,6 +7112,11 @@
         "stage": "candidate_http",
         "issued": false,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+      },
+      "chatkit_generation_profiles_20261125": {
+        "stage": "profile_verified",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
       }
     },
     {
@@ -8190,6 +8210,11 @@
         "stage": "candidate_http",
         "issued": false,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+      },
+      "chatkit_generation_profiles_20261125": {
+        "stage": "profile_verified",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
       }
     },
     {
@@ -11033,6 +11058,11 @@
         "stage": "candidate_http",
         "issued": false,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+      },
+      "chatkit_generation_profiles_20261125": {
+        "stage": "profile_verified",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
       }
     },
     {

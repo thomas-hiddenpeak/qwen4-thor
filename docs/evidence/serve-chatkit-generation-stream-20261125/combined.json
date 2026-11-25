@@ -1,0 +1,69 @@
+{
+  "stage": "candidate_http",
+  "issued": false,
+  "binary": "dfbc7b0ac5fcbc5bd4fcc627f8071fe1dcc71ef8caf47f5453dde3164c3a9d89",
+  "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+  "actor": "c593d9b9eec94f60f929ee20ec6b076f4ccdf78c398d8921ff5794d8b5ee6a16",
+  "cancelled": true,
+  "cancellation_proof_sha256": "0cbfbc98df40a610a23b7658ec0c180a51e1a4838398c2996bea1d8da9b054f5",
+  "web_modes": [
+    "live",
+    "cached"
+  ],
+  "web_requests": 1,
+  "source_citations": 2,
+  "terminal_errors": 1,
+  "wire": {
+    "actual_stream_events": 469,
+    "groups": [
+      {
+        "mode": "live",
+        "thread": "cthr_012a3e710eb70612679ae1f80408e208",
+        "item": "msg_1e4652ecafd4a6509ddc73f120ba7217",
+        "events": 45,
+        "url": "http://127.0.0.1:35673/record",
+        "source_title": "Q4T publication record",
+        "index": 103,
+        "answer": "The Q4T publication record gives publication revision **508** [source](<http://127.0.0.1:35673/record>).",
+        "response": "resp_d1fc65d1e63ff01a7ed2d79b6a87acf8",
+        "original_sha256": "8f469231135fa6c064e4bc226193094e4e8b266bdc62d22b59b40e9cf2c55592",
+        "foreign": 404
+      },
+      {
+        "mode": "cached",
+        "thread": "cthr_3a4f211fefd08e8a4cf2319b8a4f245a",
+        "item": "msg_d47c056dba608d0645ab8f1c781814f6",
+        "events": 45,
+        "url": "http://127.0.0.1:35673/record",
+        "source_title": "Q4T publication record",
+        "index": 103,
+        "answer": "The Q4T publication record gives publication revision **508** [source](<http://127.0.0.1:35673/record>).",
+        "response": "resp_9c8d2bb9080bd629f30aaa625c8c2084",
+        "original_sha256": "a31ab2893d44a70f4988fb06cc8232586829e38e90592d1bc9b19a59d6931b3d",
+        "foreign": 404
+      }
+    ],
+    "terminal": {
+      "events": 379,
+      "last": {
+        "type": "error",
+        "code": "custom",
+        "message": "Object not found",
+        "allow_retry": true
+      },
+      "deleted": "cthr_7fd11ad95915581bea8ae7682c8c346a"
+    },
+    "wire_sha256": "84e79707b7c580e6ae00c5aa50ae9ad2a7339d704a8a66bc9a5624d62c0a147b"
+  },
+  "lease_sha256": "ab35777ef75826f2ea826010ade9c2abc84f90625c7cc142264432f77ba80f5a",
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 101.046,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "chat": "42"
+}
