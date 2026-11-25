@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v57' and
+              value['reused_business'].get('format') == 'q4t-stored-refusal-source-v1') or
              (value.get('format') == 'q4t-profile-business-v56' and
               value['reused_business'].get('format') == 'q4t-typed-function-history-source-v1') or
              (value.get('format') == 'q4t-profile-business-v55' and
@@ -165,6 +167,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
         'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
         'ACCEPT_AUTOMATION_PRIMARY_LIGHT': 'q4t-agent-automation-source-v1',
+        'ACCEPT_STORED_REFUSAL_PRIMARY_LIGHT': 'q4t-stored-refusal-source-v1',
         'ACCEPT_TYPED_HISTORY_PRIMARY_LIGHT': 'q4t-typed-function-history-source-v1',
         'ACCEPT_VIDEO_TRACK_PRIMARY_LIGHT': 'q4t-video-track-source-v1',
         'ACCEPT_VIDEO_CHARACTER_PRIMARY_LIGHT': 'q4t-video-character-source-v1',

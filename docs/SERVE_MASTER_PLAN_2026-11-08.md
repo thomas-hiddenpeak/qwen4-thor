@@ -1,5 +1,9 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+52 项主机检查通过，覆盖原记录复原、拒绝串换拒答正文与消息 ID、客户隔离失效及未审查配置登记。下一步由轻配置接手主配置持久化的两个真实 Chat。[验证记录](evidence/serve-stored-message-projection-20261125/profiles.json)
+
+单次模型启动完成了两条带历史拒答的 Chat，两次都回答 42。Node 和 Python 经原生 HTTPS 取回同一消息 ID；Python 实际响应通过冻结官方 schema，反向分页和不同客户的 404 均通过。下一步验证容量切换和监督器恢复。[验证记录](evidence/serve-stored-message-projection-20261125/business.json)
+
 首次设备验证中，模型答对 42，拒答字段也已取回；反向分页读取了首行。Node CursorPage 没有顶层 last_id，驱动因而漏发 after。三条历史记录的实际 HTTP 请求复现了该问题，并验证最后一条消息的 ID 与响应正文游标一致。下一步重验受影响业务。[验证记录](evidence/serve-stored-message-projection-20261125/cursor.json)
 
 旧发行的两种合法拒答输入在读取时违反公开 schema。修复后原有三种记录均能按原 ID 分页读取，文件字节保持一致。三版 Python SDK 经公开的原始响应方法与同一份 schema 取回原角色和拒答内容，跨客户请求返回 404。已有 64 份 Skills、Threads、Runs 响应的严格离线回放也已登记。下一步验证实际模型和托管服务。[验证记录](evidence/serve-stored-message-projection-20261125/cpu.json)

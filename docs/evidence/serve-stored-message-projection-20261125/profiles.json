@@ -1,0 +1,28 @@
+{
+  "stage": "qualification_prepared",
+  "issued": false,
+  "previous_revision": 502,
+  "tests": {
+    "passed": 52,
+    "modules": [
+      "tools.serve_recovery.test_profile_migration",
+      "tools.serve_chat_storage.test_refusal_profiles"
+    ],
+    "sha256": "0d3da33e9791ee309a67b78ed834bf805d902314b8299188bcea8249158c7ff8"
+  },
+  "predecessors": {
+    "primary": {
+      "predecessor": "a20dcaffedf0867ddbf7a0db9ab85fc96a9a626dfd61f1d7716b31f21272b057",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    },
+    "light": {
+      "predecessor": "aaf1cffc4688eac8ecfb65185606db573ee85b49e55507ec245fa5756aa931ad",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    }
+  },
+  "scope": "The light capacity must retrieve primary completion IDs and identical refusal fields, including the conflicting original part."
+}

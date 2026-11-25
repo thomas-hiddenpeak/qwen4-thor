@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'stored_refusal_handoff' in self.plan:
+            from tools.serve_chat_storage import refusal_profiles
+            refusal_profiles.business(self, capabilities)
         if 'typed_history_handoff' in self.plan:
             from tools.serve_protocol import typed_history_profiles
             typed_history_profiles.business(self, capabilities)
