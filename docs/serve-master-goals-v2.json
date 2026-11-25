@@ -808,6 +808,10 @@
       "application_page_limits_20261125": {
         "stage": "targeted_schema_verified",
         "receipt": "evidence/serve-application-query-20261125/page-limits.json"
+      },
+      "typed_tool_history_20261125": {
+        "stage": "cpu_verified",
+        "evidence": "evidence/serve-history-argument-types-20261125/cpu.json"
       }
     },
     {
@@ -1195,6 +1199,10 @@
       "dictation_delivery_20261125": {
         "revision": 496,
         "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "typed_tool_history_20261125": {
+        "stage": "cpu_verified",
+        "evidence": "evidence/serve-history-argument-types-20261125/cpu.json"
       }
     },
     {

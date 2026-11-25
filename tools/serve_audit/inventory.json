@@ -4459,7 +4459,7 @@
     "src/server/chat_speech_prompt.cpp": "8ae4eaf7d1fbbe522e65ff0b05760b466b0e4ce7abd0d4ec8e093283b713cd2a",
     "src/server/chat_storage.cpp": "23c3b1fc06fbf72aeb75abd732c508db5c7aa73830797d8743fa723b0dd80dbf",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "271b1a517fbc4f4bf40dbfd9f075c78975d69d3d97300f30303b631c510d2ade",
+    "src/server/chat_template.cpp": "b49990fcc0e45e19ad18dc411e28bf4d05e640d0a8318ef30a0083bd725aba52",
     "src/server/chat_tool_history.cpp": "a8c6210b9d3ffc644c69f55e27956e85176aa977398398b5422bef7ad0d4973c",
     "src/server/chat_tts_backend.cpp": "4cbd1c256e1a949a9b05fb52664706af09c13247cc25bcca72b8d173a3790946",
     "src/server/chat_tts_execution.cpp": "8adb04490a52a5d353ba3e3497ad1acc252bd057b9eee7220942bd354cf64f1f",

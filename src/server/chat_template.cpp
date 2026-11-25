@@ -394,6 +394,28 @@ bool NeedsJsonHistoryValue(const io::Json& value) {
   return false;
 }
 
+// Flat XML parameters render strings without quotes. A historical "null",
+// for example, is indistinguishable from JSON null without a type contract.
+bool NeedsTypedHistory(const io::Json& value, const io::Json* property) {
+  if (property && property->GetString("type") == "string")
+    return !value.IsString();
+  if (!value.IsString()) return false;
+  const auto start = value.str.find_first_not_of(" \t\r\n");
+  if (start == value.str.npos ||
+      std::string_view("-0123456789[{tfn").find(value.str[start]) ==
+          std::string_view::npos)
+    return false;
+  io::Json parsed;
+  return io::ParseJson(value.str, &parsed, true, kSchemaJsonLimits).ok();
+}
+
+void AppendHistoryRecord(const io::Json& name, const io::Json& arguments,
+                         std::string* prompt) {
+  *prompt += "[Historical function call arguments as received]\n";
+  *prompt += "{\"name\":" + EncodeSchemaJson(name) +
+             ",\"arguments\":" + EncodeSchemaJson(arguments) + "}";
+}
+
 Status AppendToolCalls(const io::Json& request, const io::Json& message,
                        bool has_content, std::string* prompt,
                        std::span<const std::string> async_call_ids,
@@ -443,34 +465,50 @@ Status AppendToolCalls(const io::Json& request, const io::Json& message,
         // The transport preserves the text the model emitted. A rejected
         // call has no parameter mapping. Preserve it in assistant history so
         // the next turn can use the corresponding tool error to repair it.
-        *prompt += "[Historical function call arguments as received]\n";
-        *prompt += "{\"name\":" + EncodeSchemaJson(*name) +
-                   ",\"arguments\":" + EncodeSchemaJson(*arguments) + "}";
+        AppendHistoryRecord(*name, *arguments, prompt);
         continue;
       }
       arguments = &parsed;
     }
-    *prompt += "<tool_call>\n<function=" + name->str + ">\n";
+    bool json_arguments = false;
     if (arguments) {
       if (!arguments->IsObject()) {
         return Status::Fail("tool arguments must be an object");
       }
-      bool json_arguments = false;
+      const io::Json* properties = nullptr;
       if (const auto* tools = request.GetArray("tools")) {
         for (const auto& tool : tools->array) {
           const auto* definition = tool.Find("function");
-          if (definition && definition->GetString("name") == name->str)
-            json_arguments = NeedsJsonToolArguments(*definition);
+          if (!definition || definition->GetString("name") != name->str)
+            continue;
+          json_arguments = NeedsJsonToolArguments(*definition);
+          if (const auto* schema = definition->Find("parameters"))
+            properties = schema->Find("properties");
+          break;
         }
       }
       for (const auto& format : call_formats)
         if (format.call_id == call.GetString("id")) {
           json_arguments = format.json_arguments;
+          // A later declaration may give the same tool a different schema.
+          properties = nullptr;
           break;
         }
       for (const auto& [key, value] : arguments->object) {
         json_arguments |= !ValidInputName(key) || NeedsJsonHistoryValue(value);
       }
+      if (!json_arguments && call.Has("id") &&
+          std::ranges::any_of(arguments->object, [&](const auto& entry) {
+            return NeedsTypedHistory(
+                entry.second,
+                properties ? properties->Find(entry.first) : nullptr);
+          })) {
+        AppendHistoryRecord(*name, *fn->Find("arguments"), prompt);
+        continue;
+      }
+    }
+    *prompt += "<tool_call>\n<function=" + name->str + ">\n";
+    if (arguments) {
       if (json_arguments) {
         *prompt += "<parameter=arguments>\n" + EncodeSchemaJson(*arguments) +
                    "\n</parameter>\n";
