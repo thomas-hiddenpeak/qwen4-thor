@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "object_protocol.h"
+#include "q4t/server/request_json.h"
 
 namespace q4t::server::detail {
 namespace {
@@ -37,7 +38,7 @@ struct Execution {
   size_t jobs = 0;
   size_t result_events = 0;
   size_t progress_count = 0;
-  const ProgramProgress* progress = nullptr;
+  const ProgramFrameSink* progress = nullptr;
   std::string fault;
 };
 
@@ -160,19 +161,51 @@ JSValue Emit(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
   }
 }
 
-// Only streamed ChatKit handlers receive this function. Replies and durable
+enum class ActionFrame { kProgress, kWidget, kComponent };
+
+// Only streamed ChatKit handlers receive these functions. Replies and durable
 // changes still go through the ordinary, checked program result.
-JSValue Progress(JSContext* context, JSValueConst, int argc,
-                 JSValueConst* argv) {
+JSValue Progress(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
+                 int kind, JSValue*) {
   try {
     auto& run = *static_cast<Execution*>(JS_GetContextOpaque(context));
-    std::string text;
-    if (argc != 1 || !JS_IsString(argv[0]) ||
-        !CopyString(context, argv[0], &text, kMaxActionProgressBytes) ||
-        run.progress_count >= kMaxActionProgressFrames ||
-        !(*run.progress)(text))
+    const auto frame_kind = static_cast<ActionFrame>(kind);
+    const bool component = frame_kind == ActionFrame::kComponent;
+    if (!run.fault.empty() || argc != (component ? 2 : 1) ||
+        run.progress_count >= kMaxActionProgressFrames)
       return Fail(context, "program_progress_failed");
     ++run.progress_count;
+    Json frame;
+    std::string bytes;
+    if (frame_kind != ActionFrame::kProgress) {
+      const auto node = argv[component ? 1 : 0];
+      std::string target;
+      if (component &&
+          (!JS_IsString(argv[0]) ||
+           !CopyString(context, argv[0], &target, kMaxActionFrameBytes) ||
+           target.empty()))
+        return Fail(context, "program_widget_invalid");
+      if (!JS_IsObject(node)) return Fail(context, "program_widget_invalid");
+      JSValue encoded =
+          JS_JSONStringify(context, node, JS_UNDEFINED, JS_UNDEFINED);
+      const bool valid =
+          JS_IsString(encoded) &&
+          CopyString(context, encoded, &bytes, kMaxActionFrameBytes);
+      JS_FreeValue(context, encoded);
+      if (!valid ||
+          !io::ParseJson(bytes, &frame, true, kApplicationJsonLimits) ||
+          !frame.IsObject())
+        return Fail(context, "program_widget_invalid");
+      if (component)
+        frame = Array({String(std::move(target)), std::move(frame)});
+    } else {
+      if (!JS_IsString(argv[0]) ||
+          !CopyString(context, argv[0], &bytes, kMaxActionProgressBytes))
+        return Fail(context, "program_progress_failed");
+      frame = String(std::move(bytes));
+    }
+    if (!run.fault.empty() || !(*run.progress)(frame))
+      return Fail(context, "program_progress_failed");
     return JS_UNDEFINED;
   } catch (...) {
     return Fail(context, "program_memory_limit");
@@ -357,10 +390,17 @@ bool Install(Execution& run) {
     okay = JS_DefinePropertyValueStr(context, global, i ? "image" : "text",
                                      function, JS_PROP_ENUMERABLE) >= 0;
   }
-  if (okay && run.progress) {
-    auto function = JS_NewCFunction(context, Progress, "progress", 1);
-    okay = JS_DefinePropertyValueStr(context, global, "progress", function,
-                                     JS_PROP_ENUMERABLE) >= 0;
+  if (run.progress) {
+    static constexpr const char* names[] = {"progress", "streamWidget",
+                                            "streamWidgetComponent"};
+    for (int kind = 0; okay && kind < 3; ++kind) {
+      const int arity =
+          kind == static_cast<int>(ActionFrame::kComponent) ? 2 : 1;
+      auto function =
+          JS_NewCFunctionData(context, Progress, arity, kind, 0, nullptr);
+      okay = JS_DefinePropertyValueStr(context, global, names[kind], function,
+                                       JS_PROP_ENUMERABLE) >= 0;
+    }
   }
   JS_FreeValue(context, global);
   if (!okay) return false;
@@ -400,7 +440,7 @@ bool Install(Execution& run) {
 }  // namespace
 
 io::Json EvaluateProgram(const io::Json& input,
-                         const ProgramProgress& progress) {
+                         const ProgramFrameSink& progress) {
   auto response = Object({{"status", String("incomplete")},
                           {"error", String("program_invalid_state")},
                           {"calls", Array()},

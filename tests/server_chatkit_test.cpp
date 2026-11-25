@@ -671,6 +671,32 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
        {"finish",
         String("progress('checking');text({notices:[{level:'info',"
                "message:'saved'}],title:'Reviewed',remove_sender:true})")},
+       {"sequence", String(R"(const w = value => ({type:'Card', children:[
+         {type:'Text',id:'label',value,streaming:true}]});
+         streamWidget(w('北')); progress('step'); streamWidget(w('北京'));
+         streamWidget(w('京')); text({state:'done'}))")},
+       {"invalid_final",
+        String("streamWidget({type:'Card'});text({widget:[]})")},
+       {"deep_component", String(R"(let node={type:'Text',value:'deep'};
+         for(let i=0;i<60;i++) node={type:'Box',children:node};
+         streamWidget({type:'Card',children:{type:'Box',children:{type:'Box',
+           children:{type:'Box',children:{type:'Box',id:'target'}}}}});
+         streamWidgetComponent('target', node))")},
+       {"component",
+        String(R"(streamWidgetComponent(actionContext.action.payload.target,
+         actionContext.action.payload.node))")},
+       {"duplicate", String(R"(streamWidget({type:'Basic',children:[
+         {type:'Text',id:'t',value:'A'},{type:'Text',id:'t',value:'B'}]});
+         text({state:'wrong'}))")},
+       {"invalid_frame", String(R"(streamWidget({type:'Card',children:[]});
+         streamWidget({type:'Button'});text({state:'wrong'}))")},
+       {"after_error", String(R"(streamWidget({type:'Card',children:[]});
+         text({title:1,state:'wrong'}))")},
+       {"plain_widget", String(R"(streamWidget({type:'Card',children:[]}))")},
+       {"final_widget", String(R"(streamWidget({type:'Card',children:[]});
+         text({widget:{type:'Basic',children:[]}}))")},
+       {"wire_limit", String(R"(for(let i=0;i<10;i++)
+         streamWidget({type:'Card',meta:'a'.repeat(60000),n:i}))")},
        {"live_bad",
         String("progress('checking');text({title:8,remove_sender:true})")},
        {"bad_unicode",
@@ -707,8 +733,7 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
   Q4T_CHECK(objects.Execute(put, access.deadline, {}).ok());
   auto dispatch = [&](const StateAccess& who, std::string name, Json payload,
                       Json sender, bool streaming,
-                      const std::function<bool(std::string_view)>& progress =
-                          {}) {
+                      const std::function<bool(const Json&)>& progress = {}) {
     auto params = Object({{"thread_id", String(put.id)},
                           {"item_id", sender},
                           {"action", Object({{"type", String(std::move(name))},
@@ -741,15 +766,16 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
                 "thread.item.replaced" &&
             next.value.array.front().Find("item")->GetString("id") == id.str);
   std::vector<std::string> progress;
-  auto observe = [&](std::string_view text) {
-    progress.emplace_back(text);
+  auto observe = [&](const Json& event) {
+    if (event.GetString("type") != "progress_update") return false;
+    progress.push_back(event.GetString("text"));
     return true;
   };
   Q4T_CHECK(dispatch(access, "live_bad", {}, id, true, observe).http_status ==
             502);
   Q4T_CHECK(progress == std::vector<std::string>{"checking"});
   auto cancelled = dispatch(access, "finish", {}, id, true,
-                            [](std::string_view) { return false; });
+                            [](const Json&) { return false; });
   Q4T_CHECK(cancelled.http_status == 499);
   progress.clear();
   Q4T_CHECK(dispatch(access, "many", {}, id, true, observe).http_status ==
@@ -764,7 +790,7 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
   // The worker is still waiting for acknowledgment. A real intervening
   // thread write must win without erasing the widget.
   bool renamed = false;
-  auto race = dispatch(access, "finish", {}, id, true, [&](std::string_view) {
+  auto race = dispatch(access, "finish", {}, id, true, [&](const Json&) {
     auto params = Object(
         {{"thread_id", String(put.id)}, {"title", String("Other writer")}});
     renamed = chatkit_detail::BrowserOperation(objects, access, grant,
@@ -790,6 +816,134 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
   Q4T_CHECK(thread.GetString("title") == "Reviewed" &&
             thread.Find("items")->GetArray("data")->array.empty() &&
             OutputJson(thread) == OutputJson(*events[2].Find("thread")));
+  std::vector<Json> live;
+  auto collect = [&](const Json& event) {
+    live.push_back(event);
+    return true;
+  };
+  auto item_count = [&]() {
+    auto record = chatkit_detail::ReadThread(objects, access, put.id, &grant);
+    return record.value.Find("data")->GetArray("items")->array.size();
+  };
+  Q4T_CHECK(
+      dispatch(access, "invalid_frame", {}, {}, true, collect).http_status ==
+      502);
+  Q4T_CHECK(live.size() == 1 && item_count() == 0);
+  live.clear();
+  Q4T_CHECK(
+      dispatch(access, "after_error", {}, {}, true, collect).http_status ==
+      502);
+  Q4T_CHECK(live.size() == 1 && item_count() == 0);
+  live.clear();
+  Q4T_CHECK(dispatch(access, "duplicate", {}, {}, true, collect).http_status ==
+            502);
+  Q4T_CHECK(live.empty() && item_count() == 0);
+  Q4T_CHECK(dispatch(access, "wire_limit", {}, {}, true, collect).http_status ==
+            502);
+  Q4T_CHECK(live.size() == 8 && item_count() == 0);
+  Q4T_CHECK(dispatch(access, "sequence", {}, {}, true, [](const Json&) {
+              return false;
+            }).http_status == 499);
+  Q4T_CHECK(item_count() == 0);
+  live.clear();
+  const auto seq = dispatch(access, "sequence", {}, {}, true, collect);
+  Q4T_CHECK(seq.ok() && live.size() == 4 && seq.value.array.size() == 1);
+  const auto new_id = *live[0].Find("item")->Find("id");
+  Q4T_CHECK(live[0].GetString("type") == "thread.item.added" &&
+            live[1].GetString("text") == "step" &&
+            live[2].GetString("type") == "thread.item.updated" &&
+            live[2].GetString("item_id") == new_id.str &&
+            live[3].GetString("item_id") == new_id.str);
+  const auto& delta = *live[2].Find("update");
+  Q4T_CHECK(delta.GetString("type") == "widget.streaming_text.value_delta" &&
+            delta.GetString("component_id") == "label" &&
+            delta.GetString("delta") == "京" && !delta.GetBool("done", true));
+  Q4T_CHECK(live[3].Find("update")->GetString("type") == "widget.root.updated");
+  const auto& complete = seq.value.array.front();
+  Q4T_CHECK(complete.GetString("type") == "thread.item.done" &&
+            complete.Find("item")->GetString("id") == new_id.str);
+  auto latest = chatkit_detail::ReadThread(objects, access, put.id, &grant);
+  const auto& record = *latest.value.Find("data");
+  Q4T_CHECK(record.GetString("action_state") == "done" &&
+            record.GetArray("items")->array.size() == 1 &&
+            OutputJson(chatkit_detail::ClientItem(
+                record.GetArray("items")->array.front())) ==
+                OutputJson(*complete.Find("item")));
+  live.clear();
+  const auto component =
+      Object({{"type", String("Box")},
+              {"id", String("group")},
+              {"children", Object({{"type", String("Text")},
+                                   {"id", String("detail")},
+                                   {"value", String("已核验")}})}});
+  auto replace = [&](const Json& sender, std::string target, const Json& node) {
+    return dispatch(
+        access, "component",
+        Object({{"target", String(std::move(target))}, {"node", node}}), sender,
+        true, collect);
+  };
+  Q4T_CHECK(
+      dispatch(access, "invalid_final", {}, {}, true, collect).http_status ==
+      502);
+  Q4T_CHECK(live.size() == 1 && item_count() == 1);
+  live.clear();
+  auto branch = replace(new_id, "label", component);
+  Q4T_CHECK(branch.ok() && live.size() == 1);
+  const auto& change = *live.front().Find("update");
+  Q4T_CHECK(live.front().GetString("type") == "thread.item.updated" &&
+            live.front().GetString("item_id") == new_id.str &&
+            change.GetString("type") == "widget.component.updated" &&
+            change.GetString("component_id") == "label" &&
+            OutputJson(*change.Find("component")) == OutputJson(component));
+  auto committed_widget = [&]() {
+    auto read = chatkit_detail::ReadThread(objects, access, put.id, &grant);
+    return chatkit_detail::ClientItem(
+        read.value.Find("data")->GetArray("items")->array.front());
+  };
+  Q4T_CHECK(OutputJson(committed_widget()) ==
+            OutputJson(*branch.value.array.front().Find("item")));
+  live.clear();
+  auto leaf = Object({{"type", String("Text")}, {"value", String("final")}});
+  auto nested = replace(new_id, "detail", leaf);
+  Q4T_CHECK(nested.ok() && live.size() == 1 &&
+            live.front().Find("update")->GetString("component_id") == "detail");
+  const auto saved_branch = OutputJson(committed_widget());
+  Q4T_CHECK(saved_branch.find("final") != std::string::npos);
+  live.clear();
+  Q4T_CHECK(replace(new_id, "detail", leaf).http_status == 502);
+  Q4T_CHECK(replace({}, "group", leaf).http_status == 502);
+  auto clash = component;
+  Set(&Field(clash, "children"), "id", String("group"));
+  Q4T_CHECK(replace(new_id, "group", clash).http_status == 502);
+  Q4T_CHECK(live.empty());
+  Q4T_CHECK(dispatch(access, "deep_component", {}, new_id, true, collect)
+                .http_status == 502);
+  Q4T_CHECK(live.size() == 1 && saved_branch == OutputJson(committed_widget()));
+  live.clear();
+  const auto changed =
+      dispatch(access, "final_widget", {}, new_id, true, collect);
+  Q4T_CHECK(changed.ok() && live.size() == 2 &&
+            changed.value.array.size() == 1);
+  Q4T_CHECK(live[0].GetString("type") == "thread.item.updated" &&
+            live[1].GetString("item_id") == new_id.str &&
+            changed.value.array.front().GetString("type") ==
+                "thread.item.replaced" &&
+            changed.value.array.front().Find("item")->Find("widget")->GetString(
+                "type") == "Basic");
+  live.clear();
+  auto only = dispatch(access, "plain_widget", {}, {}, true, collect);
+  Q4T_CHECK(only.ok() && live.size() == 1 && only.value.array.size() == 1 &&
+            item_count() == 2);
+  auto conflicted =
+      dispatch(access, "sequence", {}, {}, true, [&](const Json& ev) {
+        if (ev.GetString("type") != "thread.item.added") return true;
+        return chatkit_detail::BrowserOperation(
+                   objects, access, grant, "threads.update",
+                   Object({{"thread_id", String(put.id)},
+                           {"title", String("Concurrent")}}))
+            .ok();
+      });
+  Q4T_CHECK(conflicted.http_status == 409 && item_count() == 2);
   return true;
 }
 

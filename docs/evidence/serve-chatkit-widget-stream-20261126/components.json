@@ -1,0 +1,134 @@
+{
+  "stage": "candidate_http",
+  "issued": false,
+  "base_candidate": "8ac9728ceb690f7548f9c7c5f7a7894956e11dc8",
+  "released_revision": 516,
+  "identity": {
+    "binary": "756f7950b494436f1a1e6796724af96e289ab9c847f6a569df5b9817dfeb57e3",
+    "protocol_sha256": "5f72db621e81bf8ad9294062a9718c02395eaefad5656e1eb9d099eccf360d81"
+  },
+  "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8",
+  "driver": "2f36f20f61265efef7f36aaa271e986ab92012e572b103a04960bdb5aed7bd41",
+  "sdk": "7.47.0",
+  "business": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 42.651,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "protected": {
+    "build/q4t": "f3f750b909537f54edab559e6117e648a32abc9be0682f230cc9603923048841",
+    "build/service/manifest.json": "f513c6eb40b0e3b861599283eff2ee866a34f97a609511629dad349c955ce365",
+    "build/service.release.json": "c92e7f494b8f84d20e39c85051c6e3a3b1a15ce86c13284750aaa1cc98be9291",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "model_requests": 2,
+  "independent_chat": "42",
+  "wire": {
+    "sse": 57,
+    "json": 14
+  },
+  "reference": {
+    "validated_events": 9,
+    "component_events": 3,
+    "replayed_committed_events": 2,
+    "reference": "dacc133c280b39b9334d06ea73f0f1c199e59927"
+  },
+  "root_reference": {
+    "compared_diffs": 2,
+    "validated_events": 9,
+    "reference": "dacc133c280b39b9334d06ea73f0f1c199e59927"
+  },
+  "lease_sha256": "d42c0d0d5e82e7668bf66216903a579c4c173bf12df82e205cf042d7075d4ac0",
+  "raw_sdk_sha256": "14933d34a9d6f97b423146d721fab5ce29f4b3a1303a6939ab1be2f7f5f76768",
+  "cpu": {
+    "baseline_failed": "branch.ok() && live.size() == 1",
+    "candidate": "PASS",
+    "boundaries": [
+      "unknown target",
+      "no sender or preceding root",
+      "duplicate IDs",
+      "nested result depth",
+      "invalid final snapshot",
+      "rename or omit target ID",
+      "unchanged sibling and rollback"
+    ]
+  },
+  "committed": {
+    "id": "item_bb83e57c08ad596dc5ddeeaf2a561257",
+    "thread_id": "cthr_98edd02445e956c485c6a1b9282f1469",
+    "created_at": "2026-11-25T19:28:46Z",
+    "type": "widget",
+    "widget": {
+      "type": "Card",
+      "children": [
+        {
+          "type": "Box",
+          "children": [
+            {
+              "type": "Box",
+              "id": "release",
+              "children": [
+                {
+                  "type": "Text",
+                  "id": "revision",
+                  "value": "516"
+                },
+                {
+                  "type": "Text",
+                  "value": "复核通过"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "first_update": {
+    "type": "thread.item.updated",
+    "item_id": "item_bb83e57c08ad596dc5ddeeaf2a561257",
+    "update": {
+      "type": "widget.component.updated",
+      "component_id": "summary",
+      "component": {
+        "type": "Box",
+        "id": "release",
+        "children": [
+          {
+            "type": "Text",
+            "id": "revision",
+            "value": "516"
+          },
+          {
+            "type": "Text",
+            "id": "status",
+            "value": "待复核"
+          }
+        ]
+      }
+    }
+  },
+  "second_update": {
+    "type": "thread.item.updated",
+    "item_id": "item_bb83e57c08ad596dc5ddeeaf2a561257",
+    "update": {
+      "type": "widget.component.updated",
+      "component_id": "status",
+      "component": {
+        "type": "Text",
+        "value": "复核通过"
+      }
+    }
+  },
+  "aborted_types": [
+    "stream_options",
+    "thread.item.updated",
+    "error"
+  ],
+  "sibling_http": 404,
+  "removed_id_http": 502
+}

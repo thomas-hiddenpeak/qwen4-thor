@@ -1,0 +1,28 @@
+{
+  "status": "verified_source_inventory",
+  "revision": 518,
+  "local_self_check": 40,
+  "paths": [
+    "CMakeLists.txt",
+    "cmake/ChatProtocolIdentity.cmake",
+    "include/q4t/server/program_worker.h",
+    "src/server/chatkit_actions.cpp",
+    "src/server/chatkit_actions.h",
+    "src/server/chatkit_client.cpp",
+    "src/server/chatkit_widget_stream.cpp",
+    "src/server/chatkit_widget_stream.h",
+    "src/server/program_vm.cpp",
+    "src/server/program_vm.h",
+    "src/server/program_worker.cpp",
+    "tools/serve_recovery/profile_live_reuse.py",
+    "tools/serve_recovery/profile_record.py"
+  ],
+  "matched_packages": {
+    "primary": "223c023b4278f35acfecf55b3ce8db47a5b52aaccf09572f8ccada9965873f15",
+    "fallback": "9d6bc84ef9f8f508eacd49a53ab45887c93d1b0f68e98e02e79ee17d35850513"
+  },
+  "previous_ci": {
+    "pr": 45693157138,
+    "push": 45693145363
+  }
+}

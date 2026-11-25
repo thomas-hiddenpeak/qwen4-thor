@@ -14,7 +14,7 @@ ObjectReply ExecuteProgramWorker(const io::Json& input,
 // terminal result before the caller can commit any application state.
 ObjectReply ExecuteActionWorker(
     const io::Json& input, const BinaryAccess& access,
-    const std::function<bool(std::string_view)>& progress);
+    const std::function<bool(const io::Json&)>& progress);
 ObjectReply ExecutePythonWorker(const io::Json& input,
                                 const BinaryAccess& access,
                                 GrammarControl control = {});

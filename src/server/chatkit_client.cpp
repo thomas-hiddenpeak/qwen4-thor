@@ -532,20 +532,16 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                            Object({{"allow_cancel", Boolean(true)}})}}),
                   write_access);
     };
-    std::function<bool(std::string_view)> progress;
+    std::function<bool(const Json&)> emit_event;
     if (stream_action)
-      progress = [&](std::string_view text) {
+      emit_event = [&](const Json& event) {
         auto write_access = access;
         write_access.deadline =
             std::min(access.deadline, Clock::now() + std::chrono::seconds(2));
-        return begin(true, write_access) &&
-               Emit(fd,
-                    Object({{"type", String("progress_update")},
-                            {"text", String(std::string(text))}}),
-                    write_access);
+        return begin(true, write_access) && Emit(fd, event, write_access);
       };
     auto result = chatkit_detail::DispatchAction(objects, access, grant, params,
-                                                 stream_action, progress);
+                                                 stream_action, emit_event);
     if (!result.ok()) {
       if (!started) {
         Fail(fd, access, result);
