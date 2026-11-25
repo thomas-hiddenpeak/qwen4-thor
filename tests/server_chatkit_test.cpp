@@ -162,6 +162,106 @@ Q4T_TEST(chatkit_session_body_and_read_routes_obey_sdk_and_http_bounds) {
   Q4T_CHECK(!IsChatKitTarget("/v1/chatkit/sessions/cksess_x/cancel/extra"));
   return true;
 }
+Q4T_TEST(chatkit_browser_page_defaults_and_management_zero_are_distinct) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto access = Access();
+  const auto session = Create(objects, access, 100);
+  chatkit_detail::Grant grant;
+  Q4T_CHECK(session.ok() &&
+            chatkit_detail::Redeem(objects, access,
+                                   session.value.GetString("client_secret"),
+                                   std::time(nullptr), &grant)
+                .ok());
+  const auto workflow =
+      grant.data.Find("session")->Find("workflow")->GetString("id");
+  const auto start = std::time(nullptr) - 21;
+  auto items = Array();
+  const std::string last = "cthr_test_20";
+  for (int i = 0; i < 21; ++i) {
+    const auto item = "msg_test_" + std::to_string(i);
+    items.array.push_back(Object({{"id", String(item)},
+                                  {"thread_id", String(last)},
+                                  {"object", String("chatkit.thread_item")},
+                                  {"created_at", Number(start + i)},
+                                  {"type", String("chatkit.assistant_message")},
+                                  {"content", Array()}}));
+    ObjectRequest write;
+    write.kind = ObjectKind::kChatKitThread;
+    write.operation = ObjectOperation::kPut;
+    write.scope = access.scope;
+    write.id = "cthr_test_" + std::to_string(i);
+    write.created_at = start + i;
+    const auto thread =
+        Object({{"id", String(write.id)},
+                {"user", String("reader")},
+                {"object", String("chatkit.thread")},
+                {"created_at", Number(write.created_at)},
+                {"status", Object({{"type", String("active")}})},
+                {"title", {}}});
+    write.data = Object({{"thread", thread},
+                         {"items", i == 20 ? items : Array()},
+                         {"workflow", String(workflow)},
+                         {"created_by", String(grant.session)}});
+    Q4T_CHECK(objects.Execute(write, access.deadline).ok());
+  }
+  for (bool threads : {true, false}) {
+    auto base = threads ? Object() : Object({{"thread_id", String(last)}});
+    const char* op = threads ? "threads.list" : "items.list";
+    auto list = [&](const Json& params) {
+      return chatkit_detail::BrowserOperation(objects, access, grant, op,
+                                              params);
+    };
+    const auto omitted = list(base);
+    Q4T_CHECK(omitted.ok() && omitted.value.GetBool("has_more"));
+    Q4T_CHECK(omitted.value.GetArray("data")->array.size() == 20);
+    const auto prefix = std::string(threads ? "cthr_test_" : "msg_test_");
+    Q4T_CHECK(omitted.value.GetString("after") == prefix + "1");
+    for (const auto& limit : {Json{}, Number(0), Number(20)}) {
+      auto query = base;
+      Set(&query, "limit", limit);
+      const auto result = list(query);
+      Q4T_CHECK(result.ok() &&
+                OutputJson(result.value) == OutputJson(omitted.value));
+    }
+    auto next = base;
+    Set(&next, "limit", Number(0));
+    Set(&next, "after", String(omitted.value.GetString("after")));
+    const auto page = list(next);
+    Q4T_CHECK(page.ok() && !page.value.GetBool("has_more") &&
+              page.value.GetArray("data")->array.front().GetString("id") ==
+                  prefix + "0");
+    auto invalid = base;
+    Set(&invalid, "order", {});
+    const auto null_order = list(invalid);
+    Q4T_CHECK(null_order.http_status == 400 &&
+              null_order.value.GetString("param") == "order");
+    // Malformed pagination is rejected before an item-list storage lookup.
+    Json malformed;
+    Q4T_CHECK(io::ParseJson(R"({"thread_id":"cthr_missing","limit":1.5})",
+                            &malformed, true));
+    const auto invalid_limit = list(malformed);
+    Q4T_CHECK(invalid_limit.http_status == 400 &&
+              invalid_limit.value.GetString("param") == "limit");
+    if (!threads) {
+      const auto missing_id = list(Object());
+      Q4T_CHECK(missing_id.http_status == 400 &&
+                missing_id.value.GetString("param") == "thread_id");
+    }
+    const auto route = threads ? "/v1/chatkit/threads"
+                               : "/v1/chatkit/threads/" + last + "/items";
+    const auto empty =
+        HandleChatKit(objects, access, "GET", route + "?limit=0", "");
+    Q4T_CHECK(empty.ok() && empty.value.GetArray("data")->array.empty() &&
+              empty.value.GetBool("has_more"));
+    const auto missing =
+        HandleChatKit(objects, access, "GET", route + "?before=unknown", "");
+    Q4T_CHECK(missing.http_status == 400 &&
+              missing.value.GetString("param") == "before");
+  }
+  return true;
+}
+
 Q4T_TEST(
     chatkit_thread_history_enforces_identity_workflow_retention_and_cursors) {
   Fixture fixture;

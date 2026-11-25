@@ -179,6 +179,10 @@ def schema(graph):
     message = ref('chatkit_browser_message')
     feedback = browser_fields(dict(thread_id=string, item_ids=dict(type='array', items=string),
                                    kind=dict(enum=['positive', 'negative'])), ['thread_id', 'item_ids', 'kind'])
+    browser_page = dict(
+        limit=dict(anyOf=[dict(type='integer', minimum=0, maximum=100), dict(type='null')],
+                   default=20, description='Zero or null selects the default of 20.'),
+        order=dict(enum=['asc', 'desc'], default='desc'), after=nullable(string))
     definitions['chatkit_client_request']['allOf'] = [
         {'if': {'properties': {'type': {'const': name}}},
          'then': {'properties': {'params': params}}}
@@ -190,6 +194,8 @@ def schema(graph):
                                   contentEncoding='base64'),
                 mime_type=dict(type='string', minLength=1, maxLength=255)),
                 ['audio_base64', 'mime_type'])),
+            ('threads.list', browser_fields(browser_page, [])),
+            ('items.list', browser_fields(dict(browser_page, thread_id=string), ['thread_id'])),
             ('items.feedback', feedback), ('threads.create', browser_fields({'input': message}, ['input'])),
             ('threads.add_user_message', browser_fields(dict(input=message, thread_id=string), ['input', 'thread_id']))]]
     definitions['chatkit_client_result'] = dict(type='object')

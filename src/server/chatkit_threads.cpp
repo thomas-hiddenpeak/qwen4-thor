@@ -9,6 +9,7 @@
 #include "chatkit_attachments.h"
 #include "object_protocol.h"
 #include "q4t/server/application_query.h"
+#include "q4t/server/input_contract.h"
 
 namespace q4t::server {
 namespace {
@@ -127,16 +128,34 @@ ObjectReply HandleChatKit(ObjectStore& objects, const StateAccess& access,
 }
 namespace chatkit_detail {
 namespace {
-ObjectReply ClientPage(const Json& rows, const Json& params, bool threads) {
+ObjectReply ClientPage(ObjectStore& objects, const StateAccess& access,
+                       const Grant& grant, const Json& params, bool threads) {
   auto query = Object();
-  for (const auto* key : {"limit", "order", "after"}) {
-    if (const auto* v = params.Find(key); v && !v->IsNull())
-      Set(&query, key, *v);
+  // The ChatKit browser server selects its default for a zero or null
+  // page size. The project management GET endpoints support an empty page.
+  if (const auto* limit = params.Find("limit"); limit && !limit->IsNull()) {
+    if (!IsInputInteger(*limit) || limit->number < 0 || limit->number > 100)
+      return Invalid("limit", "Expected an integer page size from 0 to 100");
+    if (limit->number != 0) Set(&query, "limit", *limit);
   }
+  if (const auto* order = params.Find("order")) {
+    if (!order->IsString()) return Invalid("order", "Expected asc or desc");
+    Set(&query, "order", *order);
+  }
+  if (const auto* after = params.Find("after"); after && !after->IsNull())
+    Set(&query, "after", *after);
   ChatPlanError error;
   auto valid =
       ValidateChatKit(query, threads ? "thread_query" : "item_query", &error);
   if (!valid) return Invalid(error.param.c_str(), valid.message());
+  const auto* thread_id = params.Find("thread_id");
+  if (!threads && (!thread_id || !thread_id->IsString()))
+    return Invalid("thread_id", "Expected a thread ID");
+  auto source = threads ? BrowserHistory(objects, access, grant)
+                        : ReadThread(objects, access, thread_id->str, &grant);
+  if (!source.ok()) return source;
+  const auto& rows =
+      threads ? source.value : Field(Field(source.value, "data"), "items");
   auto page = assistant_detail::PageAssistantRows(rows, query);
   if (!page.ok()) return page;
   Json data = Array();
@@ -225,20 +244,15 @@ ObjectReply BrowserOperation(ObjectStore& objects, const StateAccess& access,
   if (operation == "attachments.delete")
     return RemoveAttachment(objects, access, grant,
                             params.GetString("attachment_id"));
-  if (operation == "threads.list") {
-    auto history = BrowserHistory(objects, access, grant);
-    if (!history.ok()) return history;
-    return ClientPage(history.value, params, true);
-  }
+  if (operation == "threads.list" || operation == "items.list")
+    return ClientPage(objects, access, grant, params, operation == "threads.list");
   if (operation != "threads.get_by_id" && operation != "threads.update" &&
-      operation != "threads.delete" && operation != "items.list")
+      operation != "threads.delete")
     return Invalid("type", "Unknown ChatKit client operation");
   const auto id = params.GetString("thread_id");
   auto row = ReadThread(objects, access, id, &grant);
   if (!row.ok()) return row;
   auto& data = Field(row.value, "data");
-  if (operation == "items.list")
-    return ClientPage(*data.GetArray("items"), params, false);
   ObjectReply result;
   if (operation == "threads.get_by_id") {
     result.value = ClientThread(data);

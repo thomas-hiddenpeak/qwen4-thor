@@ -59091,6 +59091,111 @@
                 "if": {
                   "properties": {
                     "type": {
+                      "const": "threads.list"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "params": {
+                      "type": "object",
+                      "properties": {
+                        "limit": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "default": 20,
+                          "description": "Zero or null selects the default of 20."
+                        },
+                        "order": {
+                          "enum": [
+                            "asc",
+                            "desc"
+                          ],
+                          "default": "desc"
+                        },
+                        "after": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "items.list"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "params": {
+                      "type": "object",
+                      "properties": {
+                        "limit": {
+                          "anyOf": [
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 100
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ],
+                          "default": 20,
+                          "description": "Zero or null selects the default of 20."
+                        },
+                        "order": {
+                          "enum": [
+                            "asc",
+                            "desc"
+                          ],
+                          "default": "desc"
+                        },
+                        "after": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "thread_id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "thread_id"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
                       "const": "items.feedback"
                     }
                   }

@@ -1,0 +1,30 @@
+{
+  "stage": "cpu_verified",
+  "issued": false,
+  "predecessor_revision": 504,
+  "applies_to": [
+    "ChatKit browser threads.list",
+    "ChatKit browser items.list"
+  ],
+  "upstream_commit": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+  "upstream_sources": {
+    "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+    "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+    "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+  },
+  "evidence": {
+    "before": "be24fd0282b1a20664721bdc598572ed79e366a13e52f93b05609de36765c951",
+    "after": "3f6549b84e7087a1e698143b978c75d03c3b73ac7c3e8669850590c79bb902b3",
+    "contract": "b01da9cffeb7edd168a0fba1103541f63a0637d84b29a00ff55a14d4e8d3d953",
+    "native_passed": 3,
+    "schema_and_audit_passed": 4,
+    "inventory_mutations": 40
+  },
+  "contract": [
+    "21 threads and 21 items. Browser omission, null, zero and 20 returned the same descending page; the cursor returned the remaining item.",
+    "Explicit null order and fractional page size return 400 with their own parameter; a missing item-list thread_id reports that field.",
+    "Management GET with zero returns an empty page with has_more, and an unknown before cursor reports before."
+  ],
+  "fixture_failure": "The intermediate negative test passed 1.5 through an integer-only constructor. It now decodes the literal HTTP JSON number, preserving its fractional part.",
+  "next": "Run the targeted production HTTP browser and project-management paths, then qualify the package."
+}
