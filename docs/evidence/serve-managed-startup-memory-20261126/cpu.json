@@ -1,0 +1,94 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "source_parent": "059cb52447bf3e5051df897865783358a441becf",
+  "original_managed_service": {
+    "result": {
+      "status": "FAIL",
+      "seconds": 222.77320922678337,
+      "model_starts": 2,
+      "stop_returncode": 0,
+      "supervisor_exit": 0,
+      "remaining": [],
+      "adopted_reaped": 0,
+      "ports_free": true,
+      "unchanged_default": true,
+      "receipt_sha256": "4fdeef8186cc80e26e09196f24480cf697d5de45d95a9d88f3e4f918938ce477"
+    },
+    "second_start": {
+      "state": "startup_memory_insufficient",
+      "estimate_bytes": 118635525036,
+      "headroom_bytes": 2147483648,
+      "required_bytes": 120783008684,
+      "observed_total_bytes": 131920637952,
+      "observed_available_bytes": 120090460160
+    },
+    "shortfall_bytes": 692548524,
+    "ledger_failures": [
+      {
+        "at": 78953384465,
+        "fingerprint": "5c6a46a3085511b33a185d8a0bd6602622c604616575ef3edcba7c697c5c7793",
+        "generation": 1,
+        "unknown": true
+      },
+      {
+        "at": 90708220955,
+        "fingerprint": "5c6a46a3085511b33a185d8a0bd6602622c604616575ef3edcba7c697c5c7793",
+        "generation": 2,
+        "unknown": true
+      }
+    ],
+    "quarantine": "repeated_model_fault",
+    "model_log_sha256": "98fb89430a62a9ce12d308ab6574790668dc8b5cc1623e324f0b263e08c9821b",
+    "ledger_sha256": "5333f2cd462a8229e148d99c93cc6104ea2ef87cc43bbf438a16f531d6459d31"
+  },
+  "native_cases": {
+    "passed": 11,
+    "log_sha256": "ff640c99f0c6091396da3ee2a767d73426090a89cba951fbb714089db5d72318"
+  },
+  "python_cases": {
+    "passed": 89,
+    "log_sha256": "4dc4612b01488028b7ac360292b465030a2b0498a95057b6a3996abbb5dea634"
+  },
+  "production_supervisor_cpu_backend": {
+    "passed": 1,
+    "run_seconds": 27.785,
+    "healthy_generations": [
+      1,
+      3
+    ],
+    "waiting_generation": 2,
+    "same_gateway_and_controller": true,
+    "wait_reason": "startup_memory_floor",
+    "stored_model_attempts": [
+      6383518822,
+      26959491370
+    ],
+    "unknown_generations": [
+      1
+    ],
+    "quarantine": null,
+    "stop": "STOPPED",
+    "lease_released": true,
+    "trace_sha256": "192ac356d1d1ba6b3ff4e3350c1afc9539c0c780d59426d95a1fcfbe15d5c06e",
+    "ledger_sha256": "966fde1f26c3ed8667292e8bcada21a0f2ac982a2c2ee15c6446ae8e9830ab84"
+  },
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 246,
+    "native_routes": 408,
+    "reviewed_source_anchors": 1388,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "native_guardian_sha256": "cc9efdcb2b36f5694c914b93e1c8d546df7f33d7c35ca50b800ad5dde17404fc",
+  "native_cli_sha256": "45b51e0d25b584bce4b7e1129697a0d1bafb4478b4d182db51c1e77e631445c7",
+  "limitations": [
+    "The end-to-end run uses the production Guardian, journal, model exec barrier and Controller with a CPU model fixture.",
+    "The exact memory floor comes from a generation-bound optional packet. Without it, the persistent backoff and launch budget still apply.",
+    "Negotiated native CLI status on the real Thor binary and integrated release qualification are pending."
+  ]
+}

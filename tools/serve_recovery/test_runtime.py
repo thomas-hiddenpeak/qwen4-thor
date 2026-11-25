@@ -496,6 +496,29 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(len(service.persistent()['attempts']['model']), 2)
         self.assertTrue(service.stop()['cleanup_confirmed'])
 
+    def test_model_crash_then_startup_pressure_recovers_without_quarantine(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=20)
+        (service.directory/'refuse-memory-2').touch()
+        (service.directory/'report-memory-floor').touch()
+        signal_identity(first['model_pid'], first['model_start_ticks'], signal.SIGKILL)
+        held = service.wait(lambda s: (s.get('controller_health') or {}).get('reason') ==
+                            'startup_memory_floor', timeout=20)
+        self.assertFalse(held['business_ready'])
+        self.assertEqual(held['model_generation'], 2)
+        self.assertEqual(len(service.persistent()['attempts']['model']), 1)
+        (service.directory/'restore-memory').touch()
+        third = service.wait(lambda s: s['business_ready'] and s['model_generation'] == 3,
+                             timeout=60)
+        self.assertEqual(third['controller_pid'], first['controller_pid'])
+        self.assertEqual(third['gateway_pid'], first['gateway_pid'])
+        state = service.persistent()
+        self.assertIsNone(state['quarantine'])
+        self.assertEqual([f['generation'] for f in state['failures'] if f['unknown']], [1])
+        self.assertEqual(len(state['attempts']['model']), 2)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
     def test_production_blocked_log_preserves_business_and_control_generation(self):
         service = self.launch(production=True, gateway=True)
         first = service.wait(lambda s: s['business_ready'], timeout=15)

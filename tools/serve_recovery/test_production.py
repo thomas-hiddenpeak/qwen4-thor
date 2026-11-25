@@ -226,6 +226,43 @@ class ControllerTests(unittest.TestCase):
         self.assertNotIn('--object-store-dir',
                          controller.model_command('/package', base, config, policy_path))
 
+    def test_startup_memory_exit_requires_unready_owned_process_and_healthy_device(self):
+        for rc, ready, owned, fatal, stopped, expected in [
+                (os.EX_TEMPFAIL, False, True, False, False, 'memory'),
+                (1, False, True, False, False, 'unknown'),
+                (-9, False, True, False, False, 'unknown'),
+                (os.EX_TEMPFAIL, True, True, False, False, 'unknown'),
+                (os.EX_TEMPFAIL, False, False, False, False, 'unknown'),
+                (os.EX_TEMPFAIL, False, True, True, False, 'device'),
+                (os.EX_TEMPFAIL, False, True, False, True, 'stop')]:
+            with self.subTest(expected=expected, rc=rc, owned=owned, ready=ready):
+                actor = controller.Controller.__new__(controller.Controller)
+                actor.ready, actor.stopping, actor.quarantined = ready, stopped, False
+                actor.monitor = mock.Mock(fatal=fatal)
+                actor.model = mock.Mock(pid=345)
+                actor.model.poll.return_value = rc
+                actor.owner = dict(pid=345 if owned else 346)
+                actor.grant = dict(generation=7)
+                actor.profiles = mock.Mock()
+                actor.progress = None
+                if expected == 'memory':
+                    actor.progress = mock.Mock()
+                    actor.progress.poll.side_effect = OSError('observer closed')
+                actor.close_model, actor.record_fault, actor.quarantine = (mock.Mock() for _ in range(3))
+                actor.retire_failed_start()
+                actor.close_model.assert_called_once_with(startup_memory=expected == 'memory')
+                if expected == 'memory':
+                    actor.profiles.startup_pressure.assert_called_once_with(7)
+                    self.assertEqual(actor.phase, 'WAIT_DEPENDENCY')
+                else:
+                    actor.profiles.startup_pressure.assert_not_called()
+                if expected == 'unknown':
+                    actor.record_fault.assert_called_once_with(policy.FaultKind.UNKNOWN_MODEL_EXIT)
+                else:
+                    actor.record_fault.assert_not_called()
+                if expected == 'device':
+                    actor.quarantine.assert_called_once_with('device_failure')
+
     def test_changed_bundle_quarantines_before_spending_model_budget(self):
         actor = object.__new__(controller.Controller)
         actor.package, actor.config = ROOT, dict(manifest_sha256='a'*64)

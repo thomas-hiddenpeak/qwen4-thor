@@ -105,6 +105,12 @@ struct StartupMemoryChecks {
   StartupMemorySnapshot before_metadata;
   StartupMemorySnapshot before_allocations;
   StartupMemorySnapshot before_ready;
+
+  bool Insufficient() const {
+    return before_metadata.state == StartupMemoryState::kInsufficient ||
+           before_allocations.state == StartupMemoryState::kInsufficient ||
+           before_ready.state == StartupMemoryState::kInsufficient;
+  }
 };
 
 inline std::string StartupMemoryChecksJson(const StartupMemoryChecks& checks) {

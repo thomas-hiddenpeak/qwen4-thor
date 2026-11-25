@@ -114,6 +114,28 @@ ProgressPublisher::~ProgressPublisher() {
     worker_.join();
   }
 }
+void ProgressPublisher::StartupMemoryRefused(uint64_t total, uint64_t available,
+                                           uint64_t required) noexcept {
+  // Private Q4TMEM01 frame, with the same process and generation identity as
+  // regular progress. A full or disconnected receiver cannot block startup.
+  std::array<unsigned char, 8 + 8 * 8 + 2 * 36> packet{};
+  std::memcpy(packet.data(), "Q4TMEM01", 8);
+  size_t offset = 8;
+  for (auto value : {identity_.pid, identity_.start_ticks,
+                     identity_.pid_namespace, identity_.controller_generation,
+                     identity_.model_generation, total, available, required}) {
+    for (int i = 0; i < 8; ++i) {
+      packet[offset++] = static_cast<unsigned char>(value & 0xff);
+      value >>= 8;
+    }
+  }
+  for (const auto* id : {&identity_.boot_id, &identity_.service_id}) {
+    std::memcpy(packet.data() + offset, id->data(), id->size());
+    offset += id->size();
+  }
+  send(socket_.Get(), packet.data(), offset, MSG_DONTWAIT | MSG_NOSIGNAL);
+}
+
 void ProgressPublisher::Start() {
   if (worker_.joinable()) return;
   worker_ = std::jthread([this](std::stop_token stop) {

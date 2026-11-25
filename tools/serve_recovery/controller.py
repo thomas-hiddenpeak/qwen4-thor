@@ -75,6 +75,7 @@ class Controller:
         self.heartbeat_at = 0
         self.monitor = monitor.Monitor(self.lease_fd)
         self.observations = observation_io.Observations()
+        self.startup_memory_floors = {}
         self.model, self.grant, self.probe_job = None, None, None
         self.ready = False
         self.frozen = False
@@ -253,10 +254,20 @@ class Controller:
             return None
         try:
             observed_memory = memory.read()
+        except (OSError, ValueError):
+            self.phase, self.reason = 'WAIT_DEPENDENCY', 'memory_unknown'
+            return None
+        try:
             if observed_memory['available_bytes'] < 4096*1024**2:
                 self.reason = 'memory_headroom'
                 return None
             if self.profiles is not None and not self.profiles.prepare_launch(self, observed_memory):
+                return None
+            capacity = self.profiles.launch if self.profiles is not None else None
+            floor = self.startup_memory_floors.get(capacity)
+            if floor is not None and floor[0] == observed_memory.get('total_bytes') and (
+                    observed_memory['available_bytes'] < floor[1]):
+                self.phase, self.reason = 'WAIT_DEPENDENCY', 'startup_memory_floor'
                 return None
             model = Path(self.base['model_dir'])
             bundle.check_assets(model, bundle.observed_assets(model, self.manifest), read_edges=True)
@@ -354,6 +365,7 @@ class Controller:
             self.idle(min(5, result.get('retry_after_ns', 5_000_000_000)/1e9))
             return False
         self.grant = result['grant']
+        self.owner = None
         self.continuous = True
         self.probe_passed = self.need_cuda_probe = False
         self.phase, self.reason = 'STARTING', 'model_loading'
@@ -543,7 +555,7 @@ class Controller:
             time.sleep(.025)
         return not self.stopping
 
-    def close_model(self, *, planned=False):
+    def close_model(self, *, planned=False, startup_memory=False):
         if self.grant is not None:
             self.channel.admission(self.grant['generation'], False)
         usage = getattr(self, 'usage', None)
@@ -610,7 +622,10 @@ class Controller:
                 # transactions. Do not spend another receipt timeout here.
                 self.grant = None
                 return True
-            reply = self.transaction('retired', dict(role='model', ticket=self.grant['ticket'], verified=True))
+            retirement = dict(role='model', ticket=self.grant['ticket'], verified=True)
+            if startup_memory:
+                retirement['startup_wait'] = 'memory'
+            reply = self.transaction('retired', retirement)
             if not reply['ok']:
                 self.frozen = True
                 return False
@@ -643,6 +658,34 @@ class Controller:
         elif reply['result'].get('quarantine') is not None:
             self.quarantined = True
             self.phase, self.reason = 'QUARANTINED', 'repeated_model_fault'
+
+    def retire_failed_start(self):
+        startup_memory = False
+        if self.monitor.fatal and not self.quarantined:
+            self.quarantine('device_failure')
+        elif not self.quarantined and not self.stopping:
+            startup_memory = (not self.ready and self.model is not None and
+                              self.owner is not None and self.owner.get('pid') == self.model.pid and
+                              self.model.poll() == os.EX_TEMPFAIL)
+            if startup_memory:
+                self.phase, self.reason = 'WAIT_DEPENDENCY', 'startup_memory_insufficient'
+                self.last_fault = policy.FaultKind.RESOURCE_EXHAUSTED
+                if self.progress is not None:
+                    # The process can exit between tick() and poll(). Drain
+                    # its private socket once more before retiring its grant.
+                    try:
+                        self.progress.poll()
+                        floor = self.progress.startup_memory
+                    except Exception:
+                        floor = None  # Exit status still authorizes a bounded wait.
+                    if floor is not None:
+                        capacity = self.profiles.launch if self.profiles is not None else None
+                        self.startup_memory_floors[capacity] = floor
+                if self.profiles is not None:
+                    self.profiles.startup_pressure(self.grant['generation'])
+            else:
+                self.record_fault(policy.FaultKind.UNKNOWN_MODEL_EXIT)
+        self.close_model(startup_memory=startup_memory)
 
     def supervise(self):
         self.tick()
@@ -708,11 +751,7 @@ class Controller:
             except (OSError, ValueError, RuntimeError, KeyError):
                 loaded = False
             if not loaded and self.grant is not None:
-                if self.monitor.fatal and not self.quarantined:
-                    self.quarantine('device_failure')
-                elif not self.quarantined and not self.stopping:
-                    self.record_fault(policy.FaultKind.UNKNOWN_MODEL_EXIT)
-                self.close_model()
+                self.retire_failed_start()
             self.idle(0.1)
         self.monitor.cancel()
         if self.policies is not None:

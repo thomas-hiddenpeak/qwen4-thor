@@ -82,6 +82,10 @@ class Profiles:
         self.resource_pressure.reset()
         self.selection.unpark()
 
+    def startup_pressure(self, generation):
+        self.generation = generation
+        self.memory_fault = True
+
     def fault(self, controller, kind):
         if (kind == policy.FaultKind.RESOURCE_EXHAUSTED and controller.watchdog is not None and
                 controller.watchdog.snapshot().get('reason') == 'critical_memory_pressure'):

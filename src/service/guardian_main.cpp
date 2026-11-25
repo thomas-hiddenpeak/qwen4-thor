@@ -1300,12 +1300,19 @@ class Guardian {
               "model differs from qualified version payload");
     } else if (operation == "spawned" || operation == "ready" ||
                operation == "retired" || operation == "stable") {
-      Require(w::HasKeys(args, {"role", "ticket",
-                                operation == "spawned"  ? "owner"
-                                : operation == "stable" ? "successful_request"
-                                                        : "verified"}) &&
-                  Text(args, "role") == "model" && !model_ticket_.empty() &&
-                  Text(args, "ticket") == model_ticket_,
+      const bool startup_wait =
+          operation == "retired" && args.Find("startup_wait") != nullptr;
+      const bool valid_fields =
+          startup_wait
+              ? w::HasKeys(args, {"role", "ticket", "verified", "startup_wait"}) &&
+                    Text(args, "startup_wait") == "memory" &&
+                    model_registered_ && !model_ready_committed_
+              : w::HasKeys(args, {"role", "ticket",
+                                  operation == "spawned"  ? "owner"
+                                  : operation == "stable" ? "successful_request"
+                                                          : "verified"});
+      Require(valid_fields && Text(args, "role") == "model" &&
+                  !model_ticket_.empty() && Text(args, "ticket") == model_ticket_,
               "invalid model ticket");
       if (operation == "spawned") {
         Require(model_.pidfd.Get() < 0, "model grant already consumed");

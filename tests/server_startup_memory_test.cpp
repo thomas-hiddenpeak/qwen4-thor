@@ -34,6 +34,28 @@ Q4T_TEST(startup_memory_estimate_plus_headroom_exact_boundary) {
   return true;
 }
 
+Q4T_TEST(startup_memory_exit_requires_observed_insufficiency) {
+  using q4t::server::StartupMemoryChecks;
+  for (const auto field : {&StartupMemoryChecks::before_metadata,
+                           &StartupMemoryChecks::before_allocations,
+                           &StartupMemoryChecks::before_ready}) {
+    StartupMemoryChecks checks;
+    for (const auto state : {StartupMemoryState::kNotObserved,
+                             StartupMemoryState::kBudgetDisabled,
+                             StartupMemoryState::kDisabled,
+                             StartupMemoryState::kEstimateUnavailable,
+                             StartupMemoryState::kRequiredOverflow,
+                             StartupMemoryState::kObservationUnavailable,
+                             StartupMemoryState::kAdmitted}) {
+      (checks.*field).state = state;
+      Q4T_CHECK(!checks.Insufficient());
+    }
+    (checks.*field).state = StartupMemoryState::kInsufficient;
+    Q4T_CHECK(checks.Insufficient());
+  }
+  return true;
+}
+
 Q4T_TEST(startup_memory_unknown_and_inconsistent_samples_fail_closed) {
   for (const auto memory : {SystemMemory{}, SystemMemory{false, 1000, 900},
                            SystemMemory{true, 0, 0},
