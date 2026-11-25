@@ -231,6 +231,24 @@ ObjectReply NormalizeSessionAgent(Json settings, const Json& overrides,
   return result;
 }
 
+io::Json NativeAgentWebSearch(const io::Json& tool) {
+  const auto mode = tool.GetString("mode");
+  if (mode == "disabled") return {};
+  auto native = Object({{"type", String("web_search")},
+                        {"external_web_access", Boolean(mode == "live")},
+                        {"search_context_size",
+                         String(tool.GetString("context_size", "medium"))}});
+  if (Nonnull(tool, "allowed_domains"))
+    Set(&native, "filters",
+        Object({{"allowed_domains", *tool.Find("allowed_domains")}}));
+  if (Nonnull(tool, "location")) {
+    auto location = *tool.Find("location");
+    Set(&location, "type", String("approximate"));
+    Set(&native, "user_location", std::move(location));
+  }
+  return native;
+}
+
 ObjectReply HandleAgentRegistration(ObjectStore& objects,
                                     std::string_view method,
                                     std::string_view target,

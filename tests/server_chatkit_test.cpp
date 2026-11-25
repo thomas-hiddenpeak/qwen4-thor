@@ -1,4 +1,6 @@
 #include "../src/server/chatkit_actions.h"
+#include "../src/server/chatkit_generation_stream.h"
+#include "q4t/server/http_response.h"
 #include "../src/server/chatkit_structured.h"
 #include "../src/server/chatkit_credentials.h"
 #include "../src/server/chatkit_retry.h"
@@ -842,6 +844,190 @@ Q4T_TEST(chatkit_structured_answers_keep_browser_and_management_identity) {
             !invalid_form.value.array.at(0).Has("browser_form"));
   return true;
 }
+Q4T_TEST(chatkit_registered_web_search_preserves_scope_and_access_mode) {
+  auto declaration =
+      Object({{"type", String("web_search")},
+              {"mode", String("cached")},
+              {"context_size", String("low")},
+              {"allowed_domains", Array({String("example.org")})},
+              {"location", Object({{"country", String("CN")}})}});
+  const auto original = OutputJson(declaration);
+  const auto cached = NativeAgentWebSearch(declaration);
+  Q4T_CHECK(!cached.GetBool("external_web_access", true) &&
+            cached.GetString("search_context_size") == "low");
+  Q4T_CHECK(cached.Find("filters")->GetArray("allowed_domains")->array[0].str ==
+            "example.org");
+  Q4T_CHECK(cached.Find("user_location")->GetString("type") == "approximate" &&
+            cached.Find("user_location")->GetString("country") == "CN");
+  Q4T_CHECK(original == OutputJson(declaration));
+  Set(&declaration, "mode", String("live"));
+  Q4T_CHECK(NativeAgentWebSearch(declaration).GetBool("external_web_access"));
+  Set(&declaration, "mode", String("disabled"));
+  Q4T_CHECK(NativeAgentWebSearch(declaration).IsNull());
+  return true;
+}
+
+Q4T_TEST(chatkit_generation_preserves_browser_and_management_citation_sources) {
+  Json response;
+  Q4T_CHECK(io::ParseJson(R"({
+    "created_at":1,"output":[{"type":"message","role":"assistant","id":"msg_1",
+    "content":[{"type":"output_text","text":"出处𐀀","annotations":[
+      {"type":"file_citation","filename":"发布.md","file_id":"f","index":0},
+      {"type":"file_citation","filename":"","index":1},
+      {"type":"file_path","file_id":"other","index":2},
+      {"type":"url_citation","title":"发布","url":"https://q4t.example/r",
+       "start_index":1,"end_index":3},
+      {"type":"container_file_citation","filename":"验收.log","start_index":2,
+       "end_index":3}]},{"type":"refusal","refusal":"refused"}]}]})",
+                          &response));
+  auto projected = chatkit_detail::ProjectOutput(response, "cthr_1");
+  Q4T_CHECK(projected.ok() && projected.value.array.size() == 1);
+  auto management = projected.value.array.front();
+  auto browser = chatkit_detail::ClientItem(management);
+  const auto& content = browser.GetArray("content")->array;
+  const auto& refs = content[0].GetArray("annotations")->array;
+  Q4T_CHECK(refs.size() == 3 &&
+            content[1].GetArray("annotations")->array.empty());
+  Q4T_CHECK(refs[0].GetString("type") == "annotation" &&
+            refs[0].GetInt("index", -1) == 0 &&
+            refs[0].Find("source")->GetString("filename") == "发布.md" &&
+            refs[0].Find("source")->GetString("title") == "发布.md");
+  Q4T_CHECK(refs[1].Find("source")->GetString("type") == "url" &&
+            refs[1].Find("source")->GetString("title") == "发布" &&
+            refs[1].GetInt("index") == 3);
+  Q4T_CHECK(refs[2].Find("source")->GetString("filename") == "验收.log" &&
+            refs[2].GetInt("index") == 3);
+  chatkit_detail::ProjectManagementItem(&management);
+  const auto& compact =
+      management.GetArray("content")->array[0].GetArray("annotations")->array;
+  Q4T_CHECK(compact.size() == 3 && compact[0].GetString("type") == "file" &&
+            compact[0].Find("source")->GetString("filename") == "发布.md" &&
+            !compact[0].Has("index") &&
+            !compact[0].Find("source")->Has("title"));
+  Q4T_CHECK(compact[1].GetString("type") == "url" &&
+            compact[1].Find("source")->GetString("url") ==
+                "https://q4t.example/r");
+  return true;
+}
+
+Q4T_TEST(chatkit_generation_numbers_only_visible_citations_per_item_and_part) {
+  chatkit_detail::GenerationStream stream;
+  auto event =
+      Object({{"type", String("response.output_text.annotation.added")},
+              {"item_id", String("msg_a")},
+              {"content_index", Number(0)},
+              {"annotation_index", Number(9)}});
+  auto raw = Object({{"type", String("file_citation")},
+                     {"filename", String("")},
+                     {"index", Number(7)}});
+  Set(&event, "annotation", raw);
+  Q4T_CHECK(stream.Event(event, "cthr_1", 1).IsNull());
+  Set(&raw, "filename", String("run.md"));
+  Set(&event, "annotation", raw);
+  auto check = [&](const char* item, int part, int next) {
+    Set(&event, "item_id", String(item));
+    Set(&event, "content_index", Number(part));
+    auto projected = stream.Event(event, "cthr_1", 1);
+    const auto* update = projected.Find("update");
+    return projected.GetString("type") == "thread.item.updated" &&
+           projected.GetString("item_id") == item && update &&
+           update->GetString("type") ==
+               "assistant_message.content_part.annotation_added" &&
+           update->GetInt("content_index") == part &&
+           update->GetInt("annotation_index", -1) == next &&
+           update->Find("annotation")->GetInt("index") == 7;
+  };
+  Q4T_CHECK(check("msg_a", 0, 0) && check("msg_b", 0, 0) &&
+            check("msg_a", 1, 0) && check("msg_a", 0, 1));
+  Set(&event, "type", String("response.content_part.done"));
+  Set(&event, "part",
+      Object({{"type", String("output_text")},
+              {"text", String("answer")},
+              {"annotations", Array({raw})}}));
+  const auto done = stream.Event(event, "cthr_1", 1);
+  const auto* part = done.Find("update")->Find("content");
+  Q4T_CHECK(part->GetArray("annotations")->array.at(0).GetInt("index") == 7);
+  return true;
+}
+
+Q4T_TEST(chatkit_browser_exceptions_emit_one_valid_terminal_even_without_heap) {
+  for (int variant : {0, 1, 2}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    detail::HttpResponseContext http(fd[0]);
+    http.SetChatKitStream();
+    Q4T_CHECK(detail::BeginStreamingResponse(fd[0], http.State()));
+    if (variant == 0)
+      detail::SendError(fd[0], 400, "invalid input");
+    else
+      detail::SendExceptionResponse(fd[0], *http.State(),
+                                    variant == 1
+                                        ? detail::ExceptionKind::kHostMemory
+                                        : detail::ExceptionKind::kInternal);
+    detail::SendExceptionResponse(fd[0], *http.State());
+    char bytes[4096];
+    const auto n = recv(fd[1], bytes, sizeof(bytes), MSG_DONTWAIT);
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(n > 0 && *http.State() == detail::ResponseState::kComplete);
+    const std::string wire(bytes, n);
+    const auto start = wire.find("data: ");
+    Q4T_CHECK(start != wire.npos &&
+              wire.find("data: ", start + 1) == wire.npos);
+    Json event;
+    Q4T_CHECK(io::ParseJson(wire.substr(start + 6), &event) &&
+              event.GetString("type") == "error" &&
+              event.GetString("code") ==
+                  (variant ? "stream.error" : "custom") &&
+              event.GetBool("allow_retry") == (variant != 0));
+  }
+  return true;
+}
+
+Q4T_TEST(chatkit_generation_errors_finish_only_a_delivered_browser_stream) {
+  for (bool connected : {true, false}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    detail::HttpResponseContext http(fd[0]);
+    Q4T_CHECK(detail::BeginStreamingResponse(fd[0], http.State()));
+    int terminals = 0, status = 0;
+    http.SetBeforeTerminal([](void* p) noexcept { ++*static_cast<int*>(p); },
+                           &terminals);
+    http.SetErrorObserver(
+        [](void* p, int s, std::string_view, std::string_view) noexcept {
+          *static_cast<int*>(p) = s;
+        },
+        &status);
+    if (!connected) shutdown(fd[1], SHUT_RDWR);
+    chatkit_detail::FinishStreamError(
+        fd[0], Access(),
+        Error(503, "chatkit_thread_invalid", "Invalid stored ChatKit thread"),
+        true);
+    const auto state = *http.State();
+    std::string wire;
+    if (connected) {
+      char buf[4096];
+      const auto size = recv(fd[1], buf, sizeof(buf), MSG_DONTWAIT);
+      if (size > 0) wire.assign(buf, size);
+    }
+    close(fd[0]);
+    close(fd[1]);
+    Q4T_CHECK(terminals == 1 && status == 503);
+    Q4T_CHECK(state == (connected ? detail::ResponseState::kComplete
+                                  : detail::ResponseState::kTerminal));
+    if (connected) {
+      const auto pos = wire.find("data: ");
+      Q4T_CHECK(pos != wire.npos && wire.find("data: ", pos + 1) == wire.npos);
+      Json event;
+      Q4T_CHECK(io::ParseJson(wire.substr(pos + 6), &event));
+      Q4T_CHECK(event.GetString("type") == "error" &&
+                event.GetString("message") == "Invalid stored ChatKit thread" &&
+                event.GetBool("allow_retry"));
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes) {
   Json response;
   Q4T_CHECK(io::ParseJson(

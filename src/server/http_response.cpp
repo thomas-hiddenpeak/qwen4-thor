@@ -90,6 +90,13 @@ void SendExceptionResponse(int fd, ResponseState state,
           code, static_cast<long long>(sequence));
       if (sequence < INT64_MAX) ++sequence;
     } else if (state == ResponseState::kStreaming && context &&
+               context->ChatKitStream()) {
+      // Exceptions can escape while allocating a normal browser event.
+      size =
+          std::snprintf(response, sizeof(response),
+                        "data: {\"type\":\"error\",\"code\":\"stream.error\","
+                        "\"allow_retry\":true}\r\n\r\n");
+    } else if (state == ResponseState::kStreaming && context &&
                context->TranscriptionStream()) {
       size = std::snprintf(
           response, sizeof(response),
@@ -116,7 +123,10 @@ void SendExceptionResponse(int fd, ResponseState state,
       context->BeforeTerminal();
       *context->State() = ResponseState::kTerminal;
     }
-    WriteAll(fd, response, static_cast<size_t>(size), terminal);
+    if (WriteAll(fd, response, static_cast<size_t>(size), terminal) &&
+        context && state == ResponseState::kStreaming &&
+        context->ChatKitStream())
+      *context->State() = ResponseState::kComplete;
   } catch (...) {
     // No allocation, second error response, or exception may escape fallback.
   }
@@ -841,7 +851,13 @@ std::string HttpResponseContext::StreamError(int status,
                                              const std::string& message,
                                              std::string_view code,
                                              std::string_view param) {
-  if (transcription_stream_)
+  if (ChatKitStream()) {
+    const bool retry = status >= 500 || status == 409 || status == 429;
+    return "data: {\"type\":\"error\",\"code\":\"custom\",\"message\":\"" +
+           JsonEscape(message) +
+           "\",\"allow_retry\":" + (retry ? "true" : "false") + "}\r\n\r\n";
+  }
+  if (TranscriptionStream())
     return "event: error\r\ndata: {\"type\":\"error\",\"code\":\"" +
         JsonEscape(std::string(code)) + "\",\"message\":\"" +
         JsonEscape(message) + "\",\"param\":" +
@@ -869,7 +885,8 @@ void SendError(int fd, int code, const std::string& message,
           context->StreamError(code, message, error_code, param);
       context->BeforeTerminal();
       *context->State() = ResponseState::kTerminal;
-      WriteAll(fd, tail, options);
+      if (WriteAll(fd, tail, options) && context->ChatKitStream())
+        *context->State() = ResponseState::kComplete;
       return;
     }
     if (*context->State() != ResponseState::kUnsent) return;

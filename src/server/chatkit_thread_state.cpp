@@ -6,6 +6,7 @@
 #include <ctime>
 
 #include "object_protocol.h"
+#include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 #include "chatkit_credentials.h"
 
@@ -80,11 +81,66 @@ ObjectReply AppendUserContent(const Json& parts, Json* content, Json* model) {
   return {};
 }
 
+Json BrowserAnnotation(const Json& citation) {
+  const auto type = citation.GetString("type");
+  const bool url = type == "url_citation";
+  if (!url && type != "file_citation" && type != "container_file_citation")
+    return {};
+  const auto* location = citation.Find(url ? "url" : "filename");
+  const auto* title = url ? citation.Find("title") : location;
+  const auto* index =
+      citation.Find(type == "file_citation" ? "index" : "end_index");
+  if (!location || !location->IsString() || location->str.empty() || !title ||
+      !title->IsString() || !index || !IsInputInteger(*index))
+    return {};
+  auto source = Object({{"type", String(url ? "url" : "file")},
+                        {"title", *title},
+                        {url ? "url" : "filename", *location}});
+  return Object({{"type", String("annotation")},
+                 {"index", *index},
+                 {"source", std::move(source)}});
+}
+
+Json AssistantContent(const Json& part) {
+  const bool refusal = part.GetString("type") == "refusal";
+  if (!refusal && part.GetString("type") != "output_text") return {};
+  auto annotations = Array();
+  if (!refusal) {
+    if (const auto* refs = part.GetArray("annotations")) {
+      for (const auto& ref : refs->array) {
+        auto converted = BrowserAnnotation(ref);
+        if (!converted.IsNull())
+          annotations.array.push_back(std::move(converted));
+      }
+    }
+  }
+  return Object({{"type", String("output_text")},
+                 {"text", String(part.GetString(refusal ? "refusal" : "text"))},
+                 {"annotations", std::move(annotations)}});
+}
+
 void ProjectManagementItem(Json* item) {
   // Management exposes the original typed function call and its result.
   std::erase_if(item->object, [](const auto& field) {
     return field.first == "browser_form";
   });
+  if (item->GetString("type") == "chatkit.assistant_message") {
+    // Management uses file/url discriminators and has no browser title/index.
+    for (auto& part : Field(*item, "content").array) {
+      for (auto& ref : Field(part, "annotations").array) {
+        const auto* source = ref.Find("source");
+        if (ref.GetString("type") != "annotation" || !source) continue;
+        const auto type = source->GetString("type");
+        const char* key = type == "url" ? "url" : "filename";
+        const auto* value = source->Find(key);
+        if ((type != "url" && type != "file") || !value) continue;
+        ref = Object(
+            {{"type", String(type)},
+             {"source", Object({{"type", String(type)}, {key, *value}})}});
+      }
+    }
+    return;
+  }
   if (item->GetString("type") != "chatkit.user_message") return;
   for (auto& part : Field(*item, "content").array) {
     const auto* text = part.Find("text");
@@ -132,12 +188,8 @@ ObjectReply ProjectOutput(const Json& response, const std::string& id,
     if (!content) return Corrupt();
     Json parts = Array();
     for (const auto& part : content->array) {
-      const bool refusal = part.GetString("type") == "refusal";
-      if (!refusal && part.GetString("type") != "output_text") continue;
-      parts.array.push_back(Object(
-          {{"type", String("output_text")},
-           {"text", String(part.GetString(refusal ? "refusal" : "text"))},
-           {"annotations", Array()}}));
+      auto converted = AssistantContent(part);
+      if (!converted.IsNull()) parts.array.push_back(std::move(converted));
     }
     if (parts.array.empty()) continue;
     items.array.push_back(

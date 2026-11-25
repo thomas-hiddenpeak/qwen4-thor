@@ -1,4 +1,5 @@
 #include "q4t/server/agent_session.h"
+#include "q4t/server/agent_registration.h"
 
 #include <algorithm>
 #include <ctime>
@@ -70,20 +71,8 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
       continue;
     }
     if (tool.GetString("type") == "web_search") {
-      const auto mode = tool.GetString("mode");
-      if (mode == "disabled") continue;
-      auto native = Object({{"type", String("web_search")},
-                            {"external_web_access", Boolean(mode == "live")},
-                            {"search_context_size", Copy(tool, "context_size")}});
-      if (Nonnull(tool, "allowed_domains"))
-        Set(&native, "filters",
-            Object({{"allowed_domains", Copy(tool, "allowed_domains")}}));
-      if (Nonnull(tool, "location")) {
-        auto location = Copy(tool, "location");
-        Set(&location, "type", String("approximate"));
-        Set(&native, "user_location", std::move(location));
-      }
-      tools.array.push_back(std::move(native));
+      auto native = NativeAgentWebSearch(tool);
+      if (!native.IsNull()) tools.array.push_back(std::move(native));
       continue;
     }
     if (tool.GetString("type") == "mcp") {

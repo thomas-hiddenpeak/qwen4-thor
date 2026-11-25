@@ -211,10 +211,18 @@ class HttpResponseContext {
     responses_sequence_ = enabled ? sequence : nullptr;
   }
   int64_t* ResponsesSequence() const { return responses_sequence_; }
-  void SetTranscriptionStream() noexcept { transcription_stream_ = true; }
+  void SetTranscriptionStream() noexcept {
+    stream_format_ = StreamFormat::kAudio;
+  }
   // Speech and transcription share the named audio SSE error envelope.
-  void SetSpeechStream() noexcept { transcription_stream_ = true; }
-  bool TranscriptionStream() const { return transcription_stream_; }
+  void SetSpeechStream() noexcept { stream_format_ = StreamFormat::kAudio; }
+  bool TranscriptionStream() const {
+    return stream_format_ == StreamFormat::kAudio;
+  }
+  void SetChatKitStream() noexcept { stream_format_ = StreamFormat::kChatKit; }
+  bool ChatKitStream() const {
+    return stream_format_ == StreamFormat::kChatKit;
+  }
   std::string StreamError(int status, const std::string& message,
                           std::string_view code, std::string_view param = {});
   void StartHeartbeats(
@@ -293,7 +301,8 @@ class HttpResponseContext {
   StreamErrorRenderer stream_error_renderer_ = nullptr;
   void* stream_error_owner_ = nullptr;
   int64_t* responses_sequence_ = nullptr;
-  bool transcription_stream_ = false;
+  enum class StreamFormat : uint8_t { kDefault, kAudio, kChatKit };
+  StreamFormat stream_format_ = StreamFormat::kDefault;
   std::mutex write_mu_;
   std::condition_variable wake_;
   std::thread heartbeat_;

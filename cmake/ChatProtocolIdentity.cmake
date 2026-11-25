@@ -537,6 +537,7 @@ set(protocol_inputs
   src/server/chatkit_retry.cpp
   src/server/chatkit_actions.cpp
   src/server/chatkit_structured.cpp
+  src/server/chatkit_generation_stream.h
   src/server/chatkit_thread_state.h
   src/server/chatkit_retry.h
   src/server/chatkit_actions.h

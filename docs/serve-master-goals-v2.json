@@ -1262,6 +1262,11 @@
         "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
         "revision": 510,
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_citations_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
       }
     },
     {
@@ -2792,6 +2797,11 @@
         "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
         "revision": 510,
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_citations_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
       }
     },
     {
@@ -3350,6 +3360,11 @@
         "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
         "revision": 510,
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_citations_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
       }
     },
     {
@@ -7057,6 +7072,11 @@
       "cosine_delivery_20261125": {
         "revision": 482,
         "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
+      },
+      "chatkit_generation_citations_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
       }
     },
     {
@@ -8140,6 +8160,11 @@
         "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
         "revision": 510,
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_citations_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
       }
     },
     {
@@ -10973,6 +10998,11 @@
         "profiles": "evidence/serve-chatkit-browser-output-20261125/profiles.json",
         "revision": 510,
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_citations_20261125": {
+        "stage": "candidate_http",
+        "issued": false,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
       }
     },
     {
