@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v60' and
+              value['reused_business'].get('format') == 'q4t-chatkit-browser-output-source-v1') or
              (value.get('format') == 'q4t-profile-business-v59' and
               value['reused_business'].get('format') == 'q4t-chatkit-actions-source-v1') or
              (value.get('format') == 'q4t-profile-business-v58' and
@@ -171,6 +173,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
         'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
         'ACCEPT_AUTOMATION_PRIMARY_LIGHT': 'q4t-agent-automation-source-v1',
+        'ACCEPT_CHATKIT_BROWSER_PRIMARY_LIGHT': 'q4t-chatkit-browser-output-source-v1',
         'ACCEPT_CHATKIT_ACTIONS_PRIMARY_LIGHT': 'q4t-chatkit-actions-source-v1',
         'ACCEPT_CHATKIT_RETRY_PRIMARY_LIGHT': 'q4t-chatkit-retry-source-v1',
         'ACCEPT_STORED_REFUSAL_PRIMARY_LIGHT': 'q4t-stored-refusal-source-v1',

@@ -37,3 +37,20 @@ class ChatKitActionsHandoff(unittest.TestCase):
             profiles.check_result(row, self.primary)
         with self.assertRaises(RuntimeError):
             profiles.check_result(dict(self.primary, chat='wrong'))
+
+
+class BrowserOutputHandoff(unittest.TestCase):
+    def test_recovery_matches_the_registered_primary_and_visible_state(self):
+        rows = package.read(profiles.BROWSER_PROOF.with_name('profiles.json'))['profiles']
+        before = rows['primary']['sdk']
+        after = rows['light']['sdk']
+        profiles.check_browser_result(before)
+        profiles.check_browser_result(after, before)
+        for key, value in [('removed', before['source']['form']), ('late_error','success'),
+                           ('title','Pending 508'), ('answer','999'), ('call','call_unrelated'),
+                           ('events',after['recovered']['events'][:-1]), ('ids',[]),
+                           ('answered_form','fc_unrelated'), ('missing',200), ('duplicate',200)]:
+            with self.subTest(key=key), self.assertRaises(RuntimeError):
+                changed = deepcopy(after)
+                changed['recovered'][key] = value
+                profiles.check_browser_result(changed, before)

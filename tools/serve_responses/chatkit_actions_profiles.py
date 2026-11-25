@@ -1,8 +1,10 @@
 """Qualify a widget and pending form across primary and light profiles."""
+from dataclasses import dataclass
 import json
 import os
 from pathlib import Path
 import subprocess
+from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import environment_lifecycle_profiles as lifecycle
@@ -18,6 +20,26 @@ KEY = 'chatkit_actions_handoff'
 RECEIPT = reuse.CHATKIT_ACTIONS_RECEIPT
 
 
+BROWSER_RELEASE = ROOT / 'docs/evidence/serve-chatkit-actions-20261125/delivery.json'
+BROWSER_PROOF = ROOT / 'docs/evidence/serve-chatkit-browser-output-20261125/business.json'
+BROWSER_ACTOR = Path(__file__).with_name('chatkit_browser_profile_sdk.mjs').resolve()
+BROWSER_KEY = 'chatkit_browser_output_handoff'
+
+
+def prepare_browser(out, build, deployment):
+    proof = package.read(BROWSER_PROOF)
+    final = proof['runs']['02']
+    package.require(final['run']['status'] == 'PASS' and final['run']['unchanged_default'] and
+                    final['binary'] == package.sha(build/'q4t') and
+                    len(set(final['review']['actual_event_kinds'])) == 12 and
+                    final['review']['previous_counterexamples'] == 4 and
+                    proof['cancel']['committed_cancelled_title'] is False,
+                    'current engine lacks qualified browser output and cancellation')
+    lifecycle.prepare_candidate(out, build, deployment, BROWSER_RELEASE, reuse.CHATKIT_ACTIONS_REVIEWED,
+                                BROWSER_KEY, [BROWSER_PROOF, BROWSER_RELEASE, BROWSER_ACTOR,
+                                              Path(__file__), Path(lifecycle.__file__)])
+
+
 def prepare(out, build, deployment):
     proof = package.read(PROOF)
     combined = proof['combined']
@@ -31,8 +53,8 @@ def prepare(out, build, deployment):
                                 KEY, [PROOF, FORM, RELEASE, ACTOR, Path(__file__), Path(lifecycle.__file__)])
 
 
-def check_result(row, previous=None):
-    expected = str(package.read(RELEASE)['publication']['publication_revision'])
+def check_source(row, release):
+    expected = str(package.read(release)['publication']['publication_revision'])
     package.require(row['sdk'] == '7.47.0' and row['chat'] == '42' and row['revision'] == expected,
                     'unexpected SDK, core chat or release')
     source = row['source']
@@ -41,6 +63,11 @@ def check_result(row, previous=None):
     package.require(all(source[k].startswith(prefix) for k, prefix in identifiers.items())
                     and len({source[k] for k in identifiers}) == len(identifiers),
                     'missing original workflow, thread, widget or tool identity')
+    return expected, source
+
+
+def check_result(row, previous=None):
+    expected, source = check_source(row, RELEASE)
     if previous is None:
         package.require(row['phase'] == 'primary' and 'recovered' not in row,
                         'primary must leave the form pending')
@@ -57,34 +84,74 @@ def check_result(row, previous=None):
                     and ids[3].startswith('msg_'), 'persisted widget, form identity or answer changed')
 
 
+def check_browser_result(row, previous=None):
+    expected, source = check_source(row, BROWSER_RELEASE)
+    if previous is None:
+        package.require(row['phase'] == 'primary' and 'recovered' not in row,
+                        'primary must leave the release question pending')
+        return
+    check_browser_result(previous)
+    r = row['recovered']
+    ids = r['ids']
+    package.require(row['phase'] == 'light' and source == previous['source'] and
+                    r['title'] == 'Verified ' + expected and r['answer'] == expected and
+                    r['removed'] == source['widget'] and r['answered_form'] == source['form'] and
+                    r['call'] == source['call'] and len(ids) == len(set(ids)) == 3 and
+                    ids[:2] == [source['user'], source['form']] and ids[2].startswith('msg_') and
+                    r['events'] == ['stream_options','progress_update','notice','thread.item.removed','thread.updated']
+                    and r['late_error'] == 'error' and r['peer'] == r['missing'] == 404 and r['duplicate'] == 409,
+                    'browser stream, committed title, removed widget or completed form changed')
+
+
+@dataclass(frozen=True)
+class Handoff:
+    key: str
+    release: Path
+    actor: Path
+    receipt: str
+    predecessor: str
+    reviewed: dict
+    check: Callable
+
+
+def handoff(plan):
+    if BROWSER_KEY in plan:
+        return Handoff(BROWSER_KEY, BROWSER_RELEASE, BROWSER_ACTOR, reuse.CHATKIT_BROWSER_RECEIPT,
+                       reuse.CHATKIT_ACTIONS_RECEIPT, reuse.CHATKIT_ACTIONS_REVIEWED, check_browser_result)
+    return Handoff(KEY, RELEASE, ACTOR, RECEIPT, reuse.CHATKIT_RETRY_RECEIPT, reuse.CHATKIT_RETRY_REVIEWED,
+                   check_result)
+
+
 def verify(phase, plan, capabilities):
+    spec = handoff(plan)
     prior_file = phase / 'previous-profile.json'
     prior = profile_record.read(prior_file)
-    name, change = plan['name'], plan[KEY]
+    name, change = plan['name'], plan[spec.key]
     expected = dict(prior['capabilities'], protocol_source_sha256=change['protocol'])
-    package.require(package.sha(prior_file) == change['previous'] == reuse.CHATKIT_RETRY_REVIEWED[name]
-                    and plan['selected_sha256'] == change['release'] == package.read(RELEASE)['publication']['primary']
+    package.require(package.sha(prior_file) == change['previous'] == spec.reviewed[name]
+                    and plan['selected_sha256'] == change['release'] == package.read(spec.release)['publication']['primary']
                     and prior['capacity'] == plan['capacity'] and package.same_json(expected, capabilities),
                     'unexpected change in release identity, capacity or runtime declarations')
-    previous = package.read(phase.parent / 'primary' / RECEIPT) if name == 'light' else None
-    check_result(package.read(phase / RECEIPT), previous)
+    previous = package.read(phase.parent / 'primary' / spec.receipt) if name == 'light' else None
+    spec.check(package.read(phase / spec.receipt), previous)
     inherited = prior['business']['live']['evidence_sha256']
-    package.require(COMMON <= inherited.keys() and reuse.CHATKIT_RETRY_RECEIPT in inherited,
+    package.require(COMMON <= inherited.keys() and spec.predecessor in inherited,
                     'missing reviewed predecessor evidence')
-    return {**{k:v for k,v in inherited.items() if k not in COMMON}, RECEIPT: package.sha(phase / RECEIPT)}
+    return {**{k:v for k,v in inherited.items() if k not in COMMON}, spec.receipt: package.sha(phase / spec.receipt)}
 
 
 def business(stage, capabilities):
     plan = stage.plan
+    spec = handoff(plan)
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
     if plan['name'] == 'light':
-        params['previous'] = package.read(stage.out.parent / 'primary' / RECEIPT)
+        params['previous'] = package.read(stage.out.parent / 'primary' / spec.receipt)
     with (stage.out / 'chatkit-actions-sdk.stderr').open('xb') as err:
-        run = subprocess.run(['node', ACTOR], input=json.dumps(params), text=True,
+        run = subprocess.run(['node', spec.actor], input=json.dumps(params), text=True,
                              stdout=subprocess.PIPE, stderr=err, timeout=150,
                              env=dict(os.environ, NODE_EXTRA_CA_CERTS=plan['tls']['certificate']))
     package.require(run.returncode == 0, 'ChatKit SDK failed; see chatkit-actions-sdk.stderr')
-    package.save(stage.out / RECEIPT, json.loads(run.stdout))
+    package.save(stage.out / spec.receipt, json.loads(run.stdout))
     verify(stage.out, plan, capabilities)

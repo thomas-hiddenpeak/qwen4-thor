@@ -1,0 +1,109 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 508,
+  "build": {
+    "engine": "16c04c1ad01570ba100ba221312915691296a7b4676dbb7ed39089f769e17181",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "openapi_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "primary",
+        "source": {
+          "workflow": "agent_c2a21797d28edac4781990372a7cf903",
+          "file": "file_b6b773ec02f0a9ea483a043774230481",
+          "thread": "cthr_0cf4f9218be0da7c856f9d046242523d",
+          "form": "fc_bbe2a6f697ce9306ca7879040f4ac553",
+          "widget": "item_3d3fb7448cbb1c8cef4daebcabae1403",
+          "call": "call_resp_0da4cde4521ad0e0083aa32e6c786af4_0",
+          "user": "item_425ee71754d66cd2b41d402e4e491f1b"
+        },
+        "revision": "508",
+        "chat": "42"
+      },
+      "seconds": 45.359,
+      "starts": 1,
+      "record_sha256": "acdcd284eb75f69e9dc7f0b85e75d4146edf049868b367e7935be4703d2fa34b",
+      "predecessor": "634261efdd85893eb3c778c59f7648e1f897b222826c871a30b3278a5bafdabc"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "light",
+        "source": {
+          "workflow": "agent_c2a21797d28edac4781990372a7cf903",
+          "file": "file_b6b773ec02f0a9ea483a043774230481",
+          "thread": "cthr_0cf4f9218be0da7c856f9d046242523d",
+          "form": "fc_bbe2a6f697ce9306ca7879040f4ac553",
+          "widget": "item_3d3fb7448cbb1c8cef4daebcabae1403",
+          "call": "call_resp_0da4cde4521ad0e0083aa32e6c786af4_0",
+          "user": "item_425ee71754d66cd2b41d402e4e491f1b"
+        },
+        "recovered": {
+          "answer": "508",
+          "title": "Verified 508",
+          "removed": "item_3d3fb7448cbb1c8cef4daebcabae1403",
+          "answered_form": "fc_bbe2a6f697ce9306ca7879040f4ac553",
+          "call": "call_resp_0da4cde4521ad0e0083aa32e6c786af4_0",
+          "ids": [
+            "item_425ee71754d66cd2b41d402e4e491f1b",
+            "fc_bbe2a6f697ce9306ca7879040f4ac553",
+            "msg_db150ade6fcc1b1fae655fd6c50f2746"
+          ],
+          "events": [
+            "stream_options",
+            "progress_update",
+            "notice",
+            "thread.item.removed",
+            "thread.updated"
+          ],
+          "late_error": "error",
+          "peer": 404,
+          "missing": 404,
+          "duplicate": 409
+        },
+        "revision": "508",
+        "chat": "42"
+      },
+      "seconds": 38.745,
+      "starts": 1,
+      "record_sha256": "ce580aca9e8f74bba813d7bc9bec97e2668278c54564db66d47601e84c4b5933",
+      "predecessor": "95156e11971866c4e86909838931857929931f6a94bc4638d3cc3f1869626892"
+    }
+  },
+  "decision": {
+    "status": "ACCEPT_CHATKIT_BROWSER_PRIMARY_LIGHT",
+    "registry_sha256": "7ae4da1ac2c8c144a12e6928136b6dd98133a082b1b062274ab5c9ffbfb6f942",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 80,
+      "cleanup_complete": true,
+      "lease_result_sha256": "30fe93686ff9c75820724eca5da3f124df403113afcc65ea5064d2a4734b7d35"
+    },
+    "migration_permit_sha256": "9596aa904234ee958e18a61cf5d343fefe0cd77371e091f0655afac7cfccbbbd",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "qualification_sha256": "2b3afaaaba1b2e9d8e8a2f7f7325f1b63cd4983f22189c64ebadc44d314c236a",
+  "predecessors": {
+    "primary": {
+      "predecessor": "634261efdd85893eb3c778c59f7648e1f897b222826c871a30b3278a5bafdabc",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    },
+    "light": {
+      "predecessor": "95156e11971866c4e86909838931857929931f6a94bc4638d3cc3f1869626892",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    }
+  },
+  "targeted_cpu_tests": 43
+}
