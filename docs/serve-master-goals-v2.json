@@ -3049,9 +3049,14 @@
         "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       },
       "meteor_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-evals-20261125/meteor.json",
-        "profiles": "evidence/serve-evals-20261125/meteor-profiles.json"
+        "profiles": "evidence/serve-evals-20261125/meteor-profiles.json",
+        "delivery": "evidence/serve-evals-20261125/meteor-delivery.json"
+      },
+      "meteor_delivery_20261125": {
+        "revision": 488,
+        "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
       },
       "chatkit_feedback_20261125": {
         "stage": "targeted_native_cpu_verified",
@@ -8871,8 +8876,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 486,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev486-preflight.json",
+        "revision": 488,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev488-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9216,6 +9221,10 @@
       "history_arguments_delivery_20261125": {
         "revision": 486,
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "meteor_delivery_20261125": {
+        "revision": 488,
+        "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
       }
     },
     {
@@ -10353,12 +10362,16 @@
       "history_arguments_delivery_20261125": {
         "revision": 486,
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "meteor_delivery_20261125": {
+        "revision": 488,
+        "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev486_delivered_remaining_deliveries",
+      "state": "rev488_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11590,6 +11603,10 @@
       "history_arguments_delivery_20261125": {
         "revision": 486,
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "meteor_delivery_20261125": {
+        "revision": 488,
+        "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
       }
     },
     {
@@ -12057,11 +12074,15 @@
       "history_arguments_delivery_20261125": {
         "revision": 486,
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "meteor_delivery_20261125": {
+        "revision": 488,
+        "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
       }
     }
   ],
-  "next_task": "Complete METEOR, media/provenance methods and the remaining resource and recovery compositions.",
-  "next": "完成 METEOR 评分、其余媒体与来源验证方法，并继续资源和恢复组合。",
+  "next_task": "Complete remaining ChatKit browser behavior, media, provenance and resource recovery.",
+  "next": "继续 ChatKit 浏览器、媒体生成、来源验证和资源恢复验收。",
   "media_state_business_review_20261117": {
     "status": "PARTIAL_ACCEPTANCE_ORIGINAL_DRIVER_FAILED",
     "evidence": "evidence/serve-media-state-cache-business-review-20261117/README.md",
