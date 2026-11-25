@@ -83,8 +83,8 @@ void ProjectManagementItem(Json* item) {
   for (auto& part : Field(*item, "content").array) {
     const auto* text = part.Find("text");
     if (part.GetString("type") == "input_tag" && text && text->IsString())
-      part = Object({{"type", String("input_text")},
-                     {"text", String("@" + text->str)}});
+      part = Object(
+          {{"type", String("input_text")}, {"text", String("@" + text->str)}});
   }
 }
 

@@ -154,7 +154,9 @@ ObjectReply ClientPage(const Json& rows, const Json& params, bool threads) {
 // public item objects so project and browser history retain their wire shape.
 ObjectReply RecordFeedback(ObjectStore& objects, const StateAccess& access,
                            const Grant& grant, const Json& params) {
-  const auto id = params.GetString("thread_id");
+  const auto* thread = params.Find("thread_id");
+  if (!thread || !thread->IsString())
+    return Invalid("thread_id", "Expected a thread ID");
   const auto kind = params.GetString("kind");
   const auto* targets = params.GetArray("item_ids");
   if (!targets || (kind != "positive" && kind != "negative"))
@@ -165,7 +167,7 @@ ObjectReply RecordFeedback(ObjectStore& objects, const StateAccess& access,
   ObjectReply accepted;
   accepted.value = Object();
   for (int attempt = 0; attempt < 4; ++attempt) {
-    auto row = ReadThread(objects, access, id, &grant);
+    auto row = ReadThread(objects, access, thread->str, &grant);
     if (!row.ok()) return row;
     auto& data = Field(row.value, "data");
     std::unordered_set<std::string> items;
@@ -202,7 +204,7 @@ ObjectReply RecordFeedback(ObjectStore& objects, const StateAccess& access,
     write.kind = ObjectKind::kChatKitThread;
     write.operation = ObjectOperation::kPut;
     write.scope = access.scope;
-    write.id = id;
+    write.id = thread->str;
     write.expected_revision = row.value.GetInt("revision");
     write.expires_at = row.value.GetInt("expires_at");
     write.data = std::move(data);

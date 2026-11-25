@@ -295,6 +295,15 @@ Q4T_TEST(chatkit_feedback_is_atomic_tenant_scoped_and_durable) {
   const auto ids = Array({String("msg_a"), String("msg_b")});
   {
     ObjectStore objects(fixture.options);
+    auto missing_thread =
+        Object({{"item_ids", ids}, {"kind", String("positive")}});
+    auto invalid_thread = [&] {
+      return chatkit_detail::BrowserOperation(objects, access, grant,
+                                              "items.feedback", missing_thread);
+    };
+    Q4T_CHECK(invalid_thread().http_status == 400);
+    Set(&missing_thread, "thread_id", Number(1));
+    Q4T_CHECK(invalid_thread().http_status == 400);
     auto session = Create(objects, access, 32);
     Q4T_CHECK(session.ok() &&
               chatkit_detail::Redeem(objects, access,
@@ -393,22 +402,29 @@ Q4T_TEST(chatkit_keeps_original_journal_until_thread_advances_or_is_deleted) {
   return true;
 }
 Q4T_TEST(chatkit_entity_mentions_preserve_browser_sdk_and_model_contracts) {
-  auto text = Object({{"type", String("input_text")}, {"text", String("see ")}});
-  auto tag = Object({{"type", String("input_tag")}, {"id", String("release")},
-                     {"text", String("版本")}, {"data", Object({{"n", Number(7)}})}});
+  auto text =
+      Object({{"type", String("input_text")}, {"text", String("see ")}});
+  auto tag = Object({{"type", String("input_tag")},
+                     {"id", String("release")},
+                     {"text", String("版本")},
+                     {"data", Object({{"n", Number(7)}})}});
   Json content = Array(), model = Array();
   Q4T_CHECK(chatkit_detail::AppendUserContent(Array({text, tag, text}),
-                                              &content, &model).ok());
+                                              &content, &model)
+                .ok());
   Q4T_CHECK(model.array.size() == 1 &&
             model.array[0].GetString("text") == "see @版本see ");
   auto& rich = content.array.at(1);
   Q4T_CHECK(rich.GetString("id") == "release" &&
-            rich.Find("data")->GetInt("n") == 7 && rich.Find("group")->IsNull() &&
-            !rich.GetBool("interactive"));
+            rich.Find("data")->GetInt("n") == 7 &&
+            rich.Find("group")->IsNull() && !rich.GetBool("interactive"));
   auto item = Object({{"type", String("chatkit.user_message")},
-                      {"content", content}, {"created_at", Number(100)},
+                      {"content", content},
+                      {"created_at", Number(100)},
                       {"inference_options", {}}});
-  Q4T_CHECK(chatkit_detail::ClientItem(item).GetArray("content")->array.at(1)
+  Q4T_CHECK(chatkit_detail::ClientItem(item)
+                .GetArray("content")
+                ->array.at(1)
                 .GetString("type") == "input_tag");
   chatkit_detail::ProjectManagementItem(&item);
   const auto& wire = item.GetArray("content")->array.at(1);
@@ -417,19 +433,22 @@ Q4T_TEST(chatkit_entity_mentions_preserve_browser_sdk_and_model_contracts) {
   for (const auto& key : {"text", "id", "data", "group", "interactive"}) {
     auto wrong = tag;
     Set(&wrong, key, Number(3));
-    Q4T_CHECK(chatkit_detail::AppendUserContent(Array({wrong}), &content,
-                                                &model).http_status == 400);
+    Q4T_CHECK(
+        chatkit_detail::AppendUserContent(Array({wrong}), &content, &model)
+            .http_status == 400);
   }
   Set(&tag, "interactive", Boolean(true));
   Set(&tag, "group", String("docs"));
-  Q4T_CHECK(chatkit_detail::AppendUserContent(Array({tag}), &content,
-                                              &model).ok());
+  Q4T_CHECK(
+      chatkit_detail::AppendUserContent(Array({tag}), &content, &model).ok());
   Q4T_CHECK(content.array.back().GetBool("interactive") &&
             content.array.back().GetString("group") == "docs");
   model = Array();
-  Q4T_CHECK(chatkit_detail::AppendUserContent(Array({text, text}), &content,
-                                              &model).ok());
-  Q4T_CHECK(model.array.size() == 2 && model.array[1].GetString("text") == "see ");
+  Q4T_CHECK(
+      chatkit_detail::AppendUserContent(Array({text, text}), &content, &model)
+          .ok());
+  Q4T_CHECK(model.array.size() == 2 &&
+            model.array[1].GetString("text") == "see ");
   return true;
 }
 Q4T_TEST(chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes) {

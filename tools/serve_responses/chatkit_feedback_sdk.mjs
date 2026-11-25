@@ -103,6 +103,7 @@ async function exercise() {
   const [firstVote, secondVote] = plan.previous ? ['negative','positive'] : ['positive','negative'];
   assert.deepEqual(await vote(reader,thread,ids,firstVote),{});
   assert.deepEqual(await vote(reader,thread,ids,firstVote),{});
+  await rpc(reader.client_secret,'items.feedback',{item_ids:ids,kind:secondVote},400);
   await vote(reader,thread,[ids[0],'msg_missing'],secondVote,404);
   await vote(sibling,thread,ids,secondVote,404);
   await vote(reader,thread,ids,'unknown',400);

@@ -12,7 +12,7 @@
     "tests/server_chatkit_test.cpp": "8fdc8be2363c920c4b55ac5f45df0f0f6a1f8923dd99c064fc9f2c853c5ae804"
   },
   "host_binary": "8b850bbc120be6fb4ae86b10db429b5686129d80ea5d3aa062fdc51a854ba349",
-  "sdk_driver": "95d8b8ef77bc38fb01c08a638d97568b92bd40b837627517707642103256253f",
+  "sdk_driver": "e4526b1ab61d6a1a12b20b14bf3cca9200c9a2b36bca425cc53e4b432e49bdef",
   "pending": [
     "Targeted C++ entity, feedback and history tests",
     "Actual TLS schema, model and storage checks",
@@ -49,5 +49,6 @@
       "src/server/chatkit_thread_state.h": "639a75366df639e9d954fad25e52da784ab693128cd4fe2260019e813060348b"
     },
     "host_binary": "2a8191c3dd2405ea11a2b7bba1f2d9cc0ab604430d563cbb25b4f2383ef48bd1"
-  }
+  },
+  "input_contract": "A missing or non-string feedback thread ID is a malformed request (400). A well-typed inaccessible thread or absent item returns 404."
 }
