@@ -58996,6 +58996,7 @@
                   "threads.add_user_message",
                   "threads.add_client_tool_output",
                   "threads.retry_after_item",
+                  "threads.add_structured_input",
                   "threads.get_by_id",
                   "threads.list",
                   "threads.delete",
@@ -59188,6 +59189,65 @@
                       },
                       "required": [
                         "thread_id"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "threads.add_structured_input"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "params": {
+                      "type": "object",
+                      "properties": {
+                        "thread_id": {
+                          "type": "string"
+                        },
+                        "item_id": {
+                          "type": "string"
+                        },
+                        "input": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "enum": [
+                                "answered",
+                                "skipped"
+                              ]
+                            },
+                            "answers": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                  "values": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string"
+                                    }
+                                  },
+                                  "skipped": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": []
+                              }
+                            }
+                          },
+                          "required": []
+                        }
+                      },
+                      "required": [
+                        "thread_id",
+                        "item_id",
+                        "input"
                       ]
                     }
                   }

@@ -139,6 +139,8 @@ q4t safety publish --object-store-dir /srv/q4t/objects --client-id alpha < appro
 
 ChatKit 的管理 SDK 与浏览器 POST 共用存储。rev506 已验证 21 条消息分页，也能从原用户消息重试，保留此前上下文及附件快照，通过原线程提交新生成的工具结果。固定参考的 16 种浏览器操作中，rev506 声明 13 种。结构化输入回填、流式和同步自定义动作仍待实现。 [分页回执](evidence/serve-chatkit-page-defaults-20261125/business.json) [重试回执](evidence/serve-chatkit-retry-20261125/business.json) [恢复与发行](evidence/serve-chatkit-retry-20261125/delivery.json)
 
+工作流可用 Agent metadata 的 `q4t_chatkit_structured_input_tool` 指定一个已注册函数。当该函数返回含 `inputs` 的有效提问参数时，浏览器收到带稳定 ID 的 `structured_input`，可用 `threads.add_structured_input` 回填选择或自由文本。管理 SDK 可按同一 ID 查看原函数调用及结果。历史工作流继续使用普通工具输出。该能力已完成候选业务短验。[业务回执](evidence/serve-chatkit-structured-20261125/business.json)
+
 本项目支持的完整输入见[38字段schema](serve-chat-request-v1.schema.json)
 与[必需原生语义](serve-input-semantics-v1.json)；10条路由见
 [OpenAPI](serve-openapi-v1.json)。下表按调用者可见行为分组，不以静态

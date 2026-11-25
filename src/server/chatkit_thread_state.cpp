@@ -1,5 +1,7 @@
 #include "chatkit_thread_state.h"
 
+#include "chatkit_structured.h"
+
 #include <algorithm>
 #include <ctime>
 
@@ -79,6 +81,10 @@ ObjectReply AppendUserContent(const Json& parts, Json* content, Json* model) {
 }
 
 void ProjectManagementItem(Json* item) {
+  // Management exposes the original typed function call and its result.
+  std::erase_if(item->object, [](const auto& field) {
+    return field.first == "browser_form";
+  });
   if (item->GetString("type") != "chatkit.user_message") return;
   for (auto& part : Field(*item, "content").array) {
     const auto* text = part.Find("text");
@@ -88,7 +94,8 @@ void ProjectManagementItem(Json* item) {
   }
 }
 
-ObjectReply ProjectOutput(const Json& response, const std::string& id) {
+ObjectReply ProjectOutput(const Json& response, const std::string& id,
+                          std::string_view form_tool) {
   const auto* output = response.GetArray("output");
   if (!output) return Corrupt();
   auto items = Array();
@@ -111,6 +118,11 @@ ObjectReply ProjectOutput(const Json& response, const std::string& id) {
                   {"arguments", String(item.GetString("arguments"))},
                   {"call_id", String(item.GetString("call_id"))},
                   {"output", {}}}));
+      if (!form_tool.empty() && item.GetString("name") == form_tool) {
+        auto form = PendingStructuredInput(arguments);
+        if (!form.IsNull())
+          Set(&items.array.back(), "browser_form", std::move(form));
+      }
       continue;
     }
     if (item.GetString("type") != "message" ||
@@ -225,12 +237,16 @@ ObjectReply ReadThread(ObjectStore& objects, const StateAccess& access,
     if (status != "completed" && status != "incomplete" && status != "failed" &&
         status != "cancelled")
       return Corrupt();
-    auto projected = ProjectOutput(response.value, id);
+    auto projected =
+        ProjectOutput(response.value, id, data.GetString("pending_form_tool"));
     if (!projected.ok()) return projected;
     auto& items = Field(data, "items").array;
     for (auto& item : projected.value.array) items.push_back(std::move(item));
     Set(&data, "last_response", String(pending));
     Set(&data, "pending_response", {});
+    std::erase_if(data.object, [](const auto& field) {
+      return field.first == "pending_form_tool";
+    });
     auto request = read;
     request.operation = ObjectOperation::kPut;
     request.expected_revision = found.value.GetInt("revision");
@@ -250,6 +266,15 @@ io::Json ClientItem(io::Json item) {
   if (type.starts_with("chatkit.")) type.erase(0, 8);
   Set(&item, "type", String(type));
   Set(&item, "created_at", String(Date(item.GetInt("created_at"))));
+  if (const auto* form = item.Find("browser_form");
+      form && form->Find("status") && form->GetArray("inputs")) {
+    return Object({{"type", String("structured_input")},
+                   {"id", String(item.GetString("id"))},
+                   {"thread_id", String(item.GetString("thread_id"))},
+                   {"created_at", String(item.GetString("created_at"))},
+                   {"status", *form->Find("status")},
+                   {"inputs", *form->Find("inputs")}});
+  }
   if (type == "client_tool_call") {
     Json arguments, output;
     io::ParseJson(item.GetString("arguments"), &arguments, true,

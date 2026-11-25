@@ -1,0 +1,70 @@
+{
+  "stage": "candidate_http_and_offline_reference_verified",
+  "issued_revision": 506,
+  "issued_browser_operations": 13,
+  "candidate_browser_operations": 14,
+  "reference_browser_operations": 16,
+  "remaining_browser_operations": [
+    "threads.custom_action",
+    "threads.sync_custom_action"
+  ],
+  "engine_sha256": "1b309d1f1b1576a143947dd42398eaf5b5b7abc6e45f01cd07a6401703aaf15e",
+  "schema_sha256": "efe46f004ea4f1293127d0ac40b1b5fe1ecf42e6e536fb101d3e53555556927b",
+  "sdk": "7.47.0",
+  "thread": "cthr_359c9d7c0dc68825d6dcf3db3e9d9f0e",
+  "item": "fc_a780e089e3d70d6d6c6a461fbf5639d5",
+  "call": "call_resp_b64921aaf8fd310f1104f78a2fc5703f_0",
+  "expected": "29484",
+  "answer": "29484",
+  "independent_chat": "42",
+  "sibling": 404,
+  "peer": 404,
+  "consumed": 409,
+  "untyped_result": 409,
+  "malformed_submission": 400,
+  "wrong_item": 400,
+  "missing_item": 404,
+  "pending_and_answered_management": "chatkit.client_tool_call",
+  "management_item_ids": [
+    "fc_a780e089e3d70d6d6c6a461fbf5639d5",
+    "fc_a780e089e3d70d6d6c6a461fbf5639d5"
+  ],
+  "browser_statuses": [
+    "pending",
+    "answered"
+  ],
+  "upstream_check": {
+    "types": {
+      "repository": "openai/chatkit-python",
+      "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+      "files": {
+        "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+        "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+        "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+      }
+    },
+    "accepted_vectors": 6,
+    "malformed_upstream": 3,
+    "consumed_states": 2,
+    "additional_native_invalid_and_form_cases": 6,
+    "persisted_rows_validated": 2
+  },
+  "targeted_native_tests": 5,
+  "contract_test": 1,
+  "inventory_mutations": 40,
+  "starts": 1,
+  "seconds": 45.2,
+  "protected_hashes_unchanged": true,
+  "raw_result_sha256": "98645ff693fd45858ea3e44d9aa91e26d41ac921509e23266b122b6a78f03297",
+  "raw_sdk_sha256": "830c0a737798f4d54e99c1a9eb47070799bd9a0dc075902458429d549e155c15",
+  "lease_sha256": "4f54b0f500d92774807c374a450f7e46602745bbef269ad5f5a239a84b386eb3",
+  "model_process_exit_and_port_checks": "cleanup ran after SDK and both management-item validations; original driver then propagated the offline import failure",
+  "original_driver_status": "COMMAND_FAILED",
+  "original_driver_failure": "The independent Python checker could not import the local pinned reference source in isolated mode after the Node SDK succeeded. Original status and wire evidence retained.",
+  "offline_recheck": "Explicitly load the SHA-verified source and validate both original browser items; validate both management items with the pinned OpenAPI schema. No repeat GPU run.",
+  "guard_command_path_preflight": {
+    "starts": 0,
+    "receipt_sha256": "6c5ed7c746c6b391ebb3f79547f63513cbc06baf12a79544f8997ac03d3586fc"
+  },
+  "profile_delivery": "pending"
+}

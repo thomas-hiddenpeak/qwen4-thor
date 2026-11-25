@@ -161,7 +161,7 @@ def schema(graph):
         query['properties']['limit']['default'] = 20
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
         'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output',
-        'threads.retry_after_item', 'threads.get_by_id',
+        'threads.retry_after_item', 'threads.add_structured_input', 'threads.get_by_id',
         'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.create', 'attachments.delete', 'input.transcribe']),
         params=dict(type='object'), metadata=dict(type='object')), ['type', 'params'])
     string = dict(type='string')
@@ -178,6 +178,10 @@ def schema(graph):
         attachments=dict(type='array', items=string), quoted_text=nullable(string),
         inference_options=dict(type='object')), ['content', 'attachments', 'inference_options'])
     message = ref('chatkit_browser_message')
+    form_answer = browser_fields(dict(values=dict(type='array', items=string),
+                                      skipped=dict(type='boolean')), [])
+    form_input = browser_fields(dict(status=dict(enum=['answered', 'skipped']),
+        answers=dict(type='object', additionalProperties=form_answer)), [])
     feedback = browser_fields(dict(thread_id=string, item_ids=dict(type='array', items=string),
                                    kind=dict(enum=['positive', 'negative'])), ['thread_id', 'item_ids', 'kind'])
     browser_page = dict(
@@ -197,6 +201,9 @@ def schema(graph):
                 ['audio_base64', 'mime_type'])),
             ('threads.list', browser_fields(browser_page, [])),
             ('items.list', browser_fields(dict(browser_page, thread_id=string), ['thread_id'])),
+            ('threads.add_structured_input', browser_fields(
+                dict(thread_id=string, item_id=string, input=form_input),
+                ['thread_id', 'item_id', 'input'])),
             ('threads.retry_after_item', browser_fields(
                 dict(thread_id=string, item_id=string), ['thread_id', 'item_id'])),
             ('items.feedback', feedback), ('threads.create', browser_fields({'input': message}, ['input'])),
