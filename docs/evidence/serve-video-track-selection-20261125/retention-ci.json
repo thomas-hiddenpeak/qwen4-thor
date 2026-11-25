@@ -1,0 +1,10 @@
+{
+  "failure": "Read-only recovery inspection after an intentionally interrupted collection reused the 250 ms fault-injection timeout, producing object_timeout in the PR check. The push check passed.",
+  "run": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45582405614",
+  "failed_log_sha256": "10a89a225a0524ee80293b84aaf9616f83d2d8806dbeadd0b2825d227d2a93c1",
+  "target": "object_retention_partial_atomic_collection_recovers_without_replay",
+  "fix": "Set the short deadline only on the deliberately paused collection. Check exactly one remaining record and the durable transaction prior to recovery; verify both objects removed, a new worker, and rejection of stale replay.",
+  "targeted_runs": 3,
+  "cpu_sha256": "9307f6463453b8db1b619ba3ceacf85534637f89385165672b131cf6bc4f17d0",
+  "product_code_changed": false
+}

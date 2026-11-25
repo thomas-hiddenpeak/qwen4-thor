@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR 检查中，对象回收发生预期中断后，新的存储进程仍被夹具限制在 250 毫秒内完成只读恢复，导致超时。现只对注入中断的操作设置短时限，并断言恰好留下一条未回收记录。针对性主机用例连续三次通过。等待当前提交的远程检查。[验证记录](evidence/serve-video-track-selection-20261125/retention-ci.json)
+
 管理员只读检查已确认 rev500 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev500-preflight.json)
 
 模型进程退出与主网关失效后，Node 和 Python 均读取原角色，Python 也读取了自己先前上传的另一角色。五个应用列表的页长声明已包含在发行包中。默认服务停在 rev500，独立回退已登记，13 份保护记录原样保留。24 小时计划已预检，实跑由用户安排。[验证记录](evidence/serve-video-track-selection-20261125/delivery.json)
