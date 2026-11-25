@@ -4,6 +4,8 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |
 |---|---|---|
+| Assistants SDK 轮询与分页（rev494） | 单客户只有一个生成名额时，可在运行中读取状态、消息和步骤。四类列表的非空游标取自对应对象 ID，空页返回空字符串。 | 容量切换、模型退出和独立回退包接管后，原客户端均能读取同一 Run 的历史。跨客户读取返回 404。[发行回执](evidence/serve-assistant-pagination-20261125/delivery.json) |
+| Chat 语音与审核响应（rev494） | 发行 OpenAPI 覆盖音频输出、通过音频 ID 续聊，以及内容过滤结束原因和审核流式块。 | 已用原始 HTTP 与 SSE 记录核对官方和发行 schema。[语音记录](evidence/serve-chat-audio-wire-20261125/wire.json) · [审核记录](evidence/serve-chat-audio-wire-20261125/moderation.json) |
 | Evals 余弦评分（rev482） | 选择 `text_similarity` 和 `evaluation_metric: "cosine"` 后，运行会用同一客户的嵌入配额计算候选文本与参考文本的相似度。分数为 0 到 1，每次评分的 token 用量记入 `per_model_usage`。 | 通过 `--embedding-model-dir` 配置 Qwen3-Embedding-0.6B，在 `/v1/capabilities` 查看启用状态。使用本地标注样本校准通过阈值。OpenAI 托管评分使用 text-embedding-3-large，两种模型的得分可能不同。[OpenAI 评分文档](https://developers.openai.com/api/docs/guides/graders) |
 | Evals 英文 METEOR | rev488 已发行 | 按词对齐、词干和 WordNet 同义词计算分数；复用隔离评分进程、客户取消、截止时间和逐行工作预算。词库随包分发。云端的分词与词库版本未公开，该实现已与 NLTK 3.9.2 做差分。[发行回执](evidence/serve-evals-20261125/meteor-delivery.json) |
 | Evals 运行报告（rev482） | 从创建、读取、列表或取消响应的 `report_url` 获取 HTML，可查看运行状态、成败计数和各评分项结果。使用同一项目的认证头访问。报告只展示前 100 项评分，完整数据仍可从页面中的两个 JSON 链接读取。 | 原生前置按已验证的 Host、协议和部署前缀生成绝对地址。匹配客户端策略的可选 nginx 前置转发外部地址。旧式匿名上游或固定外部地址的部署可在模型进程设置 `Q4T_EVAL_PUBLIC_BASE=https://llm.example/tenant`。地址只含协议、主机、可选端口与路径前缀，末尾省略斜杠。 |
