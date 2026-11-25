@@ -789,6 +789,10 @@
         "stage": "sdk_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
         "issued": false
+      },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       }
     },
     {
@@ -1168,6 +1172,10 @@
         "stage": "sdk_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
         "issued": false
+      },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       }
     },
     {
@@ -3110,8 +3118,9 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/empty.json"
       },
       "assistant_pagination_handoff_20261125": {
-        "stage": "profile_verified",
-        "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json",
+        "delivery": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "upload_delivery_20261125": {
         "revision": 492,
@@ -3126,6 +3135,10 @@
         "stage": "http_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
+      },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "eval_cancel_admission_20261125": {
         "stage": "targeted_device_verified",
@@ -5869,6 +5882,10 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
         "issued": false
       },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
       "chatkit_composer_20261125": {
         "stage": "targeted_cpu_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/cpu.json"
@@ -7762,8 +7779,9 @@
         "pending": "Publish corrected Chat response declarations alongside pagination and audio"
       },
       "assistant_pagination_handoff_20261125": {
-        "stage": "profile_verified",
-        "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json",
+        "delivery": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "combined_chat_pages_20261125": {
         "stage": "sdk_verified",
@@ -7774,6 +7792,10 @@
         "stage": "http_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
+      },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "eval_cancel_admission_20261125": {
         "stage": "targeted_device_verified",
@@ -9003,8 +9025,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 492,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev492-preflight.json",
+        "revision": 494,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev494-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9360,6 +9382,10 @@
       "upload_delivery_20261125": {
         "revision": 492,
         "receipt": "evidence/serve-chatkit-20261125/upload-delivery.json"
+      },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       }
     },
     {
@@ -10515,6 +10541,10 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
       },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
       "eval_cancel_admission_20261125": {
         "stage": "targeted_device_verified",
         "receipt": "evidence/serve-observation-admission-20261125/business.json"
@@ -10527,7 +10557,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev492_delivered_remaining_deliveries",
+      "state": "rev494_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11769,8 +11799,9 @@
         "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       },
       "assistant_pagination_handoff_20261125": {
-        "stage": "profile_verified",
-        "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json",
+        "delivery": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "upload_delivery_20261125": {
         "revision": 492,
@@ -11780,6 +11811,10 @@
         "stage": "sdk_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
         "issued": false
+      },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "eval_cancel_admission_20261125": {
         "stage": "targeted_device_verified",
@@ -12263,6 +12298,10 @@
       "upload_delivery_20261125": {
         "revision": 492,
         "receipt": "evidence/serve-chatkit-20261125/upload-delivery.json"
+      },
+      "pagination_delivery_20261125": {
+        "revision": 494,
+        "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       }
     }
   ],
