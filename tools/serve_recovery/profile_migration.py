@@ -526,6 +526,18 @@ def extends(previous, target):
 
 def explicit_extension(previous, target):
     """Compare qualified semantics when a declared pending capability ships."""
+    old_tools = previous.get('tools', {})
+    new_tools = target.get('tools', {})
+    old_history = old_tools.get('history', {})
+    new_history = new_tools.get('history', {})
+    if ('non_mapping_text' not in old_history and
+            ('non_mapping_text' in new_history or 'unidentified_arguments' in new_history)):
+        from tools.serve_recovery import profile_live_reuse as live
+        if (not package.same_json(old_history, live.ISSUED_TOOL_HISTORY)
+                or not package.same_json(new_history, live.REPAIRED_TOOL_HISTORY)
+                or not package.same_json(previous.get('project_safety'), live.SAFETY_CAPABILITY)):
+            return False
+        previous = dict(previous, tools=dict(old_tools, history=new_history))
     if 'project_safety' not in previous and 'project_safety' in target:
         from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['project_safety'], live.SAFETY_CAPABILITY)

@@ -382,9 +382,7 @@ Q4T_TEST(chat_tool_history_no_silent_argument_loss) {
   for (const auto* fields :
        {R"("name":"lookup")", R"("name":"lookup","argumnts":{})",
         R"("name":"lookup","arguments":null)",
-        R"("name":"lookup","arguments":"")",
-        R"("name":"lookup","arguments":"[]")",
-        R"("name":"lookup","arguments":"{\"x\":1,\"x\":2}")",
+        R"("name":"lookup","arguments":[])",
         R"("name":"lookup","arguments":{},"extra":1)"}) {
     for (const bool ids : {false, true}) {
       const auto call = std::string(R"({"role":"assistant","tool_calls":[{)") +
@@ -403,9 +401,53 @@ Q4T_TEST(chat_tool_history_no_silent_argument_loss) {
   }
   for (const auto* content : {"", R"(,"content":null)", R"(,"content":1)"}) {
     Q4T_CHECK(Reject(List({kUser, Call("a"),
-        std::string(R"({"role":"tool","tool_call_id":"a")") + content + '}'})));
-    Q4T_CHECK(Reject(List({kUser, kLegacy,
-        std::string(R"({"role":"tool")") + content + '}'})));
+                           std::string(R"({"role":"tool","tool_call_id":"a")") +
+                               content + '}'})));
+    Q4T_CHECK(Reject(List(
+        {kUser, kLegacy, std::string(R"({"role":"tool")") + content + '}'})));
+  }
+  return true;
+}
+
+Q4T_TEST(chat_tool_history_preserves_rejected_argument_text_for_repair) {
+  const auto feedback = Result("a", "Please supply an integer.");
+  for (const std::string arguments :
+       {R"("")", R"("[]")", R"("0")", R"("{\"x\":1,\"x\":2}")",
+        R"("{\"date\":\"<date>\"")", R"("line one\n第二行")"}) {
+    const auto payload =
+        R"("type":"function","function":{"name":"lookup","arguments":)" +
+        arguments + "}}]}";
+    const auto call =
+        R"({"role":"assistant","tool_calls":[{"id":"a",)" + payload;
+    const auto history = List({kUser, call, feedback});
+    Json request;
+    Q4T_CHECK(ParseRequest(history, &request));
+    Q4T_CHECK(q4t::server::ValidateChatContract(request, "m", false));
+    std::string prompt;
+    Q4T_CHECK(q4t::server::RenderChatPrompt(
+        request, {"q", "", "Please supply an integer."}, &prompt));
+    const std::string marker =
+        "[Historical function call arguments as received]\n";
+    auto start = prompt.find(marker);
+    Q4T_CHECK(start != std::string::npos);
+    start += marker.size();
+    const auto end = prompt.find("<|im_end|>", start);
+    Q4T_CHECK(end != std::string::npos);
+    const auto encoded = prompt.substr(start, end - start);
+    Q4T_CHECK(encoded.find('<') == std::string::npos);
+    Json observed, expected;
+    Q4T_CHECK(q4t::io::ParseJson(encoded, &observed));
+    Q4T_CHECK(q4t::io::ParseJson(arguments, &expected));
+    Q4T_CHECK(observed.GetString("name") == "lookup");
+    Q4T_CHECK(observed.Find("arguments") &&
+              observed.Find("arguments")->IsString());
+    Q4T_CHECK(observed.GetString("arguments") == expected.str);
+    Q4T_CHECK(prompt.find("Please supply an integer.", end) !=
+              std::string::npos);
+    Q4T_CHECK(Reject(List({kUser, call, Result("missing")})));
+    const auto legacy = R"({"role":"assistant","tool_calls":[{)" + payload;
+    Q4T_CHECK(
+        Reject(List({kUser, legacy, R"({"role":"tool","content":"error"})"})));
   }
   return true;
 }

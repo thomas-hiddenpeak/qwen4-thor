@@ -55,6 +55,13 @@ Status ValidateCall(const io::Json& call, bool identified) {
   const auto* args = fn->Find("arguments");
   io::Json decoded;
   if (args && args->IsString()) {
+    // A completed API call can carry the exact text a tool rejected. Decode
+    // mappings in the renderer; other identified history stays opaque there.
+    if (identified) {
+      if (args->str.size() > kSchemaJsonLimits.max_string_bytes)
+        return Status::Fail("historical arguments exceed the text budget");
+      return Status();
+    }
     status = io::ParseJson(args->str, &decoded, true, kSchemaJsonLimits);
     if (!status) return Status::Fail("invalid historical arguments JSON");
     args = &decoded;

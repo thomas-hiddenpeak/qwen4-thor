@@ -510,6 +510,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   std::unordered_map<std::string, bool> expected;
   std::unordered_map<std::string, std::pair<std::string, std::string>> names;
   std::unordered_set<std::string> returned, call_ids, item_ids, async_ids;
+  std::vector<size_t> async_function_inputs;
   std::unordered_set<std::string> program_ids, program_results;
   std::unordered_map<std::string, std::pair<std::string, Json>> agent_actions;
   std::unordered_map<std::string, std::string> program_children;
@@ -1085,17 +1086,15 @@ Status NormalizeResponsesInput(const io::Json& request,
       if (dynamic && !custom)
         plan.tool_call_formats.push_back({id, call_formats[model_name]});
       names.emplace(id, std::make_pair(name, space));
-      Json payload = Object({{"name", String(model_name)},
-                             {custom ? "input" : "arguments",
-                              *item.Find(custom ? "input" : "arguments")}});
+      const char* field = custom ? "input" : "arguments";
+      const auto& raw = *item.Find(field);
       if (!custom) {
-        Json arguments;
-        status = io::ParseJson(item.GetString("arguments"), &arguments, true,
-                               kSchemaJsonLimits);
-        if (!status || !arguments.IsObject())
+        if (raw.str.size() > kSchemaJsonLimits.max_string_bytes)
           return Invalid(error, path + ".arguments",
-                         "expected JSON object text");
+                         "argument text exceeds the request budget");
+        if (item.GetBool("async")) async_function_inputs.push_back(i);
       }
+      Json payload = Object({{"name", String(model_name)}, {field, raw}});
       if (assistant_path.empty()) assistant_path = path;
       calls.array.push_back(
           Object({{"id", String(id)},
@@ -1142,6 +1141,18 @@ Status NormalizeResponsesInput(const io::Json& request,
   }
   auto status = flush();
   if (!status) return status;
+  // Completed calls are historical model output, including text rejected by
+  // the client. Only still-pending async functions need executable arguments.
+  for (const auto index : async_function_inputs) {
+    const auto& item = plan.items.array[index];
+    if (returned.contains(item.GetString("call_id"))) continue;
+    Json arguments;
+    if (!io::ParseJson(item.Find("arguments")->str, &arguments, true,
+                       kSchemaJsonLimits) ||
+        !arguments.IsObject())
+      return Invalid(error, "input[" + std::to_string(index) + "].arguments",
+                     "pending function call requires JSON object text");
+  }
   if (!allow_empty && plan.messages.array.empty())
     return Invalid(error, "input", "input or instructions required");
   *result = std::move(plan);

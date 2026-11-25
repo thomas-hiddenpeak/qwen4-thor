@@ -23,6 +23,18 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+HISTORY_RECORD = 'q4t-profile-business-v48'
+HISTORY_FORMAT = 'q4t-historical-arguments-source-v1'
+HISTORY_REVIEWED = {}
+ISSUED_TOOL_HISTORY = dict(identified_results='complete_unique_batch',
+    unordered_text_results=True, unordered_media_results=False,
+    legacy_without_ids=True, legacy_shape_validation=True,
+    arguments='required_object_or_json_object_text',
+    result_content='required_string_or_array')
+REPAIRED_TOOL_HISTORY = dict(ISSUED_TOOL_HISTORY,
+    arguments='object_or_original_identified_argument_text',
+    unidentified_arguments=ISSUED_TOOL_HISTORY['arguments'],
+    non_mapping_text='quoted_assistant_history')
 SAFETY_RECORD = 'q4t-profile-business-v47'
 SAFETY_FORMAT = 'q4t-project-safety-source-v1'
 SAFETY_CAPABILITY = dict(alerts=True, cases=True, publication='local_operator')
@@ -255,7 +267,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 WEBHOOK_RECORD: WEBHOOK_FORMAT, HOSTED_LIFECYCLE_RECORD: HOSTED_LIFECYCLE_FORMAT,
                 PREPARATION_RECORD: PREPARATION_FORMAT, CHATKIT_RECORD: CHATKIT_FORMAT,
                 EVAL_RECORD: EVAL_FORMAT, COSINE_RECORD: COSINE_FORMAT,
-                SAFETY_RECORD: SAFETY_FORMAT}
+                SAFETY_RECORD: SAFETY_FORMAT, HISTORY_RECORD: HISTORY_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -356,6 +368,14 @@ def automation_session():
 
 
 def format_for(capabilities):
+    tools = capabilities.get('tools', {})
+    history = tools.get('history', {})
+    if 'non_mapping_text' in history or 'unidentified_arguments' in history:
+        prior = dict(capabilities, tools=dict(tools, history=ISSUED_TOOL_HISTORY))
+        ledger.require(ledger.canonical(history) == ledger.canonical(REPAIRED_TOOL_HISTORY)
+                       and format_for(prior) == SAFETY_RECORD,
+                       'tool history requires its complete repair contract and issued predecessor')
+        return HISTORY_RECORD
     if 'project_safety' in capabilities:
         prior = dict(capabilities)
         safety = prior.pop('project_safety')
@@ -541,8 +561,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            HISTORY_RECORD: (SAFETY_RECORD, SAFETY_REVIEWED, None, 'history-arguments-handoff.json'),
             SAFETY_RECORD: (COSINE_RECORD, COSINE_REVIEWED, 'project_safety', 'project-safety-handoff.json'),
             COSINE_RECORD: (EVAL_RECORD, EVAL_REVIEWED, 'eval_embedding_grader', 'eval-cosine-handoff.json'),
             EVAL_RECORD: (CHATKIT_RECORD, CHATKIT_REVIEWED, 'evals', 'eval-handoff.json'),
@@ -556,6 +577,19 @@ def attach(value, prior):
         }
         previous_format, reviewed, added, receipt = predecessors[value['format']]
         changed = {'protocol_source_sha256'}
+        if value['format'] == HISTORY_RECORD:
+            changed.update(('template', 'tools'))
+            template = dict(before['template'])
+            for field in ('renderer_source_sha256', 'tool_history_source_sha256'):
+                fingerprint = after['template'].get(field)
+                ledger.require(type(fingerprint) is str and ledger.HASH.fullmatch(fingerprint),
+                               'missing qualified tool history implementation')
+                template[field] = fingerprint
+            ledger.require(before['tools']['history'] == ISSUED_TOOL_HISTORY
+                           and ledger.canonical(dict(before['tools'], history=REPAIRED_TOOL_HISTORY))
+                           == ledger.canonical(after['tools'])
+                           and ledger.canonical(template) == ledger.canonical(after['template']),
+                           'unreviewed tool or template behavior changed')
         if value['format'] == COSINE_RECORD:
             changed.add('evals')
         if value['format'] == AUTOMATION_RECORD:
@@ -564,7 +598,7 @@ def attach(value, prior):
         old = prior['business']['live']['evidence_sha256']
         ledger.require(prior['format'] == previous_format and
                        record_hash(prior) == reviewed.get(prior['profile']) and
-                       previous['added'] == [added] and
+                       previous['added'] == ([added] if added else []) and
                        set(previous['capabilities']) == changed and
                        format_for(after) == value['format'] and
                        old.keys() | {receipt} == proofs.keys() and
@@ -738,7 +772,7 @@ def attach(value, prior):
         ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
         del previous['capabilities']['responses']
     envelope = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']])
-    if value['format'] in (COSINE_RECORD, SAFETY_RECORD):
+    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD):
         # Prior releases already compressed their history. Keep those signed
         # bytes once and compress only this release's reconstruction fields.
         envelope['history'] = previous.pop('reused_business')
@@ -750,7 +784,7 @@ def attach(value, prior):
 
 def previous_record(value):
     reuse = value['reused_business']
-    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD)
+    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD)
     ledger.keys(reuse, ('format', 'previous', 'history') if separate_history else ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
@@ -761,9 +795,11 @@ def previous_record(value):
                    'incorrect Live qualification source')
     previous = codec.unpack(reuse['previous'])
     if separate_history:
-        history_format, history_keys = (
-            (COSINE_FORMAT, ('format', 'previous', 'history'))
-            if value['format'] == SAFETY_RECORD else (EVAL_FORMAT, ('format', 'previous')))
+        history_format, history_keys = {
+            HISTORY_RECORD: (SAFETY_FORMAT, ('format', 'previous', 'history')),
+            SAFETY_RECORD: (COSINE_FORMAT, ('format', 'previous', 'history')),
+            COSINE_RECORD: (EVAL_FORMAT, ('format', 'previous')),
+        }[value['format']]
         ledger.require('reused_business' not in previous and
                        type(reuse['history']) is dict and
                        reuse['history'].get('format') == history_format,
@@ -795,8 +831,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            HISTORY_RECORD: (HISTORY_REVIEWED, SAFETY_REVIEWED),
             SAFETY_RECORD: (SAFETY_REVIEWED, COSINE_REVIEWED),
             COSINE_RECORD: (COSINE_REVIEWED, EVAL_REVIEWED),
             EVAL_RECORD: (EVAL_REVIEWED, CHATKIT_REVIEWED),

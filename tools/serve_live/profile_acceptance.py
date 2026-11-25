@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'history_arguments_handoff' in self.plan:
+            from tools.serve_protocol import history_argument_profiles
+            history_argument_profiles.business(self, capabilities)
         if 'project_safety_handoff' in self.plan:
             from tools.serve_responses import safety_profiles
             safety_profiles.business(self, capabilities)

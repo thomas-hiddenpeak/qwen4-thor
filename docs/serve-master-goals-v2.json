@@ -1124,6 +1124,10 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "invalid_historical_arguments_20261125": {
+        "stage": "device_verified",
+        "receipt": "evidence/serve-chat-history-arguments-20261125/business.json"
       }
     },
     {
