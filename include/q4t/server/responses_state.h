@@ -48,6 +48,7 @@ struct ResponseStatePlan {
   std::string eval_run_id;
   bool eval_shutdown = false;
   std::string chatkit_thread_id;
+  io::Json chatkit_item_times;  // First journal observation, by output item ID.
   std::optional<ObjectRequest> chatkit_thread_write;
   // Couples one Eval row's pending sample to the first durable response.
   std::optional<ObjectRequest> eval_sampling_write;
@@ -129,7 +130,8 @@ class ResponsesState {
   ObjectReply FailWithinReservation(const io::Json& snapshot,
                                     const StateAccess& access,
                                     ResponseStatePlan* plan);
-  ObjectReply Retrieve(std::string id, const StateAccess& access);
+  ObjectReply Retrieve(std::string id, const StateAccess& access,
+                       io::Json* chatkit_item_times = nullptr);
   // Internal authorized state, including history/events; never send this
   // record directly over HTTP. The API must project the public resource.
   ObjectReply ReadRecord(const std::string& id, const StateAccess& access);

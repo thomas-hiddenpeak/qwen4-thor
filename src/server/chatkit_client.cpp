@@ -14,6 +14,7 @@
 #include "chatkit_structured.h"
 #include "chatkit_attachments.h"
 #include "chatkit_thread_state.h"
+#include "chatkit_workflow.h"
 #include "object_protocol.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/http_response.h"
@@ -81,8 +82,8 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
                    const ChatPlanConfig& config, const StateAccess& access,
                    const Grant& grant, const Json& params,
                    std::string_view operation, std::string* thread_id,
-                   std::string* response_id, std::string* form_tool,
-                   Json* user) {
+                   std::string* response_id, std::string* form_tool, Json* user,
+                   Json* previous_workflow) {
   const auto& session = *grant.data.Find("session");
   const auto& workflow = *session.Find("workflow");
   const auto* features = session.Find("chatkit_configuration");
@@ -141,7 +142,8 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   // The latest conversation item owns admission of the next model turn.
   auto latest =
       std::find_if(items.rbegin(), items.rend(), [](const Json& item) {
-        return item.GetString("type") != "chatkit.widget";
+        const auto type = item.GetString("type");
+        return type != "chatkit.widget" && type != "chatkit.task_group";
       });
   const bool waiting =
       latest != items.rend() &&
@@ -298,6 +300,11 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
       --bytes;
     Set(&Field(write.data, "thread"), "title", String(title.substr(0, bytes)));
   }
+  if (const auto* previous =
+          chatkit_detail::ResumableWorkflow(Field(write.data, "items"))) {
+    *previous_workflow = *previous;
+    Set(&write.data, "pending_workflow_id", *previous->Find("id"));
+  }
   auto run = std::make_unique<ResponsesExecution>(objects, &jobs, true);
   auto result = run->Prepare(request, config, access, now, true, nullptr,
                              nullptr, retry ? &prefix : nullptr, write.id);
@@ -325,9 +332,9 @@ bool Emit(int fd, const Json& event, const StateAccess& access) {
 }
 }  // namespace
 
-Json chatkit_detail::GenerationStream::Event(const Json& event,
-                                             const std::string& thread,
-                                             int64_t created) {
+Json chatkit_detail::GenerationStream::MessageEvent(const Json& event,
+                                                    const std::string& thread,
+                                                    int64_t created) {
   const auto type = event.GetString("type");
   if (type == "response.output_item.added") {
     const auto* item = event.Find("item");
@@ -375,6 +382,91 @@ Json chatkit_detail::GenerationStream::Event(const Json& event,
   return Object({{"type", String("thread.item.updated")},
                  {"item_id", String(event.GetString("item_id"))},
                  {"update", std::move(update)}});
+}
+
+bool chatkit_detail::GenerationStream::EmitEvent(const Json& event,
+                                                 const std::string& thread,
+                                                 int64_t created,
+                                                 const Json* times,
+                                                 const Emitter& emit) {
+  const auto type = event.GetString("type");
+  if (type == "response.output_item.added") {
+    const auto* item = event.Find("item");
+    if (!item) return true;
+    const auto kind = item->GetString("type");
+    const auto at = WorkflowItemTime(times, item->GetString("id"));
+    if (kind == "reasoning") {
+      const auto id = item->GetString("id");
+      if (id.empty()) return true;
+      reasoning_ids_.insert(id);
+      if (!workflow_.IsNull()) return true;
+      workflow_ = NewWorkflow(*item, thread, at ? at : created);
+      return emit(Object({{"type", String("thread.item.added")},
+                          {"item", ClientItem(workflow_)}}));
+    }
+    if (kind == "message" && !workflow_.IsNull()) {
+      CloseWorkflow(workflow_, at);
+      if (!emit(Object({{"type", String("thread.item.done")},
+                        {"item", ClientItem(std::move(workflow_))}})))
+        return false;
+      workflow_ = {};
+      reasoning_ids_.clear();
+      streaming_item_.clear();
+    }
+  }
+  if (type == "response.output_item.done") {
+    const auto* item = event.Find("item");
+    if (!item || item->GetString("type") != "message") return true;
+    const auto response =
+        Object({{"created_at", Number(created)}, {"output", Array({*item})}});
+    auto projected = ProjectOutput(response, thread);
+    if (!projected.ok() || projected.value.array.empty()) return true;
+    const auto id = item->GetString("id");
+    if (!finished_messages_.insert(id).second) return true;
+    return emit(Object(
+        {{"type", String("thread.item.done")},
+         {"item", ClientItem(std::move(projected.value.array.front()))}}));
+  }
+  const bool delta = type == "response.reasoning_summary_text.delta";
+  if (delta || type == "response.reasoning_summary_text.done") {
+    if (workflow_.IsNull()) return true;
+    const auto item = event.GetString("item_id");
+    const auto index = event.GetInt("summary_index", -1);
+    if (!reasoning_ids_.contains(item) || index < 0) return true;
+    auto& tasks = WorkflowTasks(workflow_).array;
+    const bool streaming = !streaming_item_.empty() &&
+                           item == streaming_item_ && index == streaming_index_;
+    if (delta && !streaming && !tasks.empty()) return true;
+    const auto* text = event.Find(delta ? "delta" : "text");
+    if (!text || !text->IsString()) return true;
+    size_t task_index = 0;
+    if (streaming) {
+      auto& content = Field(tasks.front(), "content").str;
+      if (delta)
+        content.append(text->str);
+      else
+        content = text->str;
+    } else {
+      task_index = tasks.size();
+      tasks.push_back(PublicThought(text->str));
+    }
+    if (delta) {
+      streaming_item_ = item;
+      streaming_index_ = index;
+    } else if (streaming) {
+      streaming_item_.clear();
+    }
+    return emit(Object({
+        {"type", String("thread.item.updated")},
+        {"item_id", *workflow_.Find("id")},
+        {"update", Object({{"type", String(streaming ? "workflow.task.updated"
+                                                     : "workflow.task.added")},
+                           {"task_index", Number(task_index)},
+                           {"task", tasks[task_index]}})},
+    }));
+  }
+  auto message = MessageEvent(event, thread, created);
+  return message.IsNull() || emit(message);
 }
 
 void chatkit_detail::FinishStreamError(int fd, const StateAccess& access,
@@ -503,10 +595,11 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
          Error(503, "background_unavailable", "Session executor unavailable"));
     return;
   }
-  Json user;
+  Json user, previous_workflow;
   std::string id, response_id, form_tool;
-  auto submitted = Submit(fd, objects, *jobs, config, access, grant, params,
-                          type, &id, &response_id, &form_tool, &user);
+  auto submitted =
+      Submit(fd, objects, *jobs, config, access, grant, params, type, &id,
+             &response_id, &form_tool, &user, &previous_workflow);
   if (!submitted.ok()) {
     Fail(fd, access, submitted);
     return;
@@ -569,7 +662,8 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                      Object({{"allow_cancel", Boolean(true)}})}}),
             access))
     return;
-  chatkit_detail::GenerationStream stream;
+  chatkit_detail::GenerationStream stream(previous_workflow);
+  const auto send = [&](const Json& event) { return Emit(fd, event, access); };
   size_t next = 0;
   ResponsesState state(objects);
   auto heartbeat = Clock::now() + std::chrono::seconds(5);
@@ -585,9 +679,9 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     const auto& response = *record.value.Find("response");
     const auto& events = record.value.GetArray("events")->array;
     while (next < events.size()) {
-      auto wire =
-          stream.Event(events[next++], id, response.GetInt("created_at"));
-      if (!wire.IsNull() && !Emit(fd, wire, access)) return;
+      if (!stream.EmitEvent(events[next++], id, response.GetInt("created_at"),
+                            record.value.Find("chatkit_item_times"), send))
+        return;
     }
     const auto status = response.GetString("status");
     if (status != "queued" && status != "in_progress") {
@@ -596,13 +690,17 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
         chatkit_detail::FinishStreamError(fd, access, row, true);
         return;
       }
-      auto projected = chatkit_detail::ProjectOutput(response, id, form_tool);
+      auto projected = chatkit_detail::ProjectOutput(
+          response, id, form_tool, record.value.Find("chatkit_item_times"),
+          previous_workflow.IsNull() ? nullptr : &previous_workflow);
       if (!projected.ok()) {
         chatkit_detail::FinishStreamError(fd, access, projected, true);
         return;
       }
       for (const auto& item : projected.value.array)
-        if (!done(item)) return;
+        if (item.GetString("type") != "chatkit.task_group" &&
+            !stream.FinishedMessage(item.GetString("id")) && !done(item))
+          return;
       if (status != "completed") {
         const auto error = Error(502, "chatkit_generation_failed",
                                  "Model response ended before completion");

@@ -1,5 +1,6 @@
 #include "q4t/server/responses_plan.h"
 #include "q4t/server/chat_prompt.h"
+#include "q4t/server/chat_response_parser.h"
 
 #include <cmath>
 #include <filesystem>
@@ -118,6 +119,34 @@ Q4T_TEST(responses_summary_plan_uses_actual_reasoning_and_shared_budget) {
   }
   Q4T_CHECK(prompts[0] != prompts[1] && prompts[1] != prompts[2] &&
             prompts[0] != prompts[2]);
+  return true;
+}
+
+Q4T_TEST(responses_summary_forwards_only_public_text_after_nested_thinking) {
+  ResponsesEnvelope envelope;
+  ChatPlanError error;
+  Q4T_CHECK(Envelope(R"({"input":"review","reasoning":{"summary":"concise"}})",
+                     &envelope, &error));
+  const auto snapshot = Read(R"({"output":[
+    {"type":"reasoning","content":[{"type":"reasoning_text","text":"review"}]}
+  ]})");
+  ResponsesSummaryPlan plan;
+  Q4T_CHECK(PlanResponsesSummary(envelope, snapshot, 100, 30, Config(), &plan,
+                                 &error));
+  ChatResponseParser parser;
+  Q4T_CHECK(
+      parser.Init(plan.request, "<think>\n\n</think>\n\n", "summary", false));
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Append("<thi", &deltas));
+  Q4T_CHECK(parser.Append("nk>private analysis</th", &deltas));
+  Q4T_CHECK(parser.Append("ink>Checked the record.", &deltas));
+  Q4T_CHECK(parser.Finish(false, &deltas));
+  std::string text;
+  for (const auto& delta : deltas) {
+    Q4T_CHECK(delta.kind == ResponseDelta::Kind::kContent);
+    text += delta.text;
+  }
+  Q4T_CHECK(text == "Checked the record.");
   return true;
 }
 

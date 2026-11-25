@@ -1,0 +1,223 @@
+{
+  "stage": "candidate_business",
+  "issued": false,
+  "published_revision": 512,
+  "candidate": "038b672632aeea5137872fdebc77ef5f3e9ee6a108cf1d74ad983f4eabd1c1b3",
+  "business_answers_pass": true,
+  "native_ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+  "actor_sha256": "89fcdc6b2d90bbc78724bc602e7028f280b604e4e43e537c9e2c335666771081",
+  "targeted_cpu": 20,
+  "cpu_logs": {
+    "native": "ebce66b32938e2749597a0594f05678f5ef026922653ed1e832ad7cce1afe847",
+    "state": "c23c8f9005d5f14128521e6906d962fd96c1b47d0052bbfbf4c6753067167876",
+    "summary-before": "9b89888bed76b691613e682549b506f5d9c9dc850e4ba76addaefa14dffac3ee",
+    "summary-after": "38aa96ce7bc427b325b9a27f9766206a30ca51d83a68f944c0e8feb13545ea9a"
+  },
+  "upstream": {
+    "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "converter_sha256": "5d83facb3089135d52d6469e459c1986f0cd76061b725e2fe53178ad49bf0df0",
+    "rows": [
+      {
+        "input_sha256": "d0ba7c68f4a728053b7817ea1926a3bbf4a2f408c89ef5706958c906b9ce9715",
+        "name": "detailed-replay.sdk.json",
+        "response": "resp_cdaf06e65ae683fc563342267504c28f",
+        "status": "completed",
+        "input_events": 120,
+        "native_wire_events": 77,
+        "compared_workflow_events": 70,
+        "workflows": 2,
+        "public_summaries": 1
+      },
+      {
+        "input_sha256": "f6add3a33a02ff24604d6533f064f0d8abb6d0adf86a0903810a74d9aed30f2c",
+        "name": "incomplete.sdk.json",
+        "response": "resp_4bbd20a9378cfcb24eceab22936664bb",
+        "status": "incomplete",
+        "input_events": 9,
+        "native_wire_events": 1,
+        "compared_workflow_events": 1,
+        "workflows": 1,
+        "public_summaries": 0
+      },
+      {
+        "input_sha256": "ede8506bc9796c74832ea77f44512ef4fc395a2b9e0d2bfea727d2fca7b98dca",
+        "name": "tool.sdk.json",
+        "response": "resp_e037e4f1142292aed7aadcae1be3a085",
+        "status": "completed",
+        "input_events": 127,
+        "native_wire_events": 51,
+        "compared_workflow_events": 46,
+        "workflows": 2,
+        "public_summaries": 1
+      },
+      {
+        "input_sha256": "06f4c0d9fc7ab4d6b52b36af3d8f29edb096891120304237435e40d763806654",
+        "name": "no_analysis.sdk.json",
+        "response": "resp_f6f3a77525e11513c9e5db5e005ec547",
+        "status": "completed",
+        "input_events": 0,
+        "native_wire_events": 0,
+        "compared_workflow_events": 0,
+        "workflows": 0,
+        "public_summaries": 0
+      }
+    ]
+  },
+  "wire": {
+    "actual_events": 59,
+    "history_pages": 3,
+    "groups": 3,
+    "events_by_type": {
+      "thread.created": 2,
+      "thread.item.done": 9,
+      "stream_options": 3,
+      "thread.item.added": 6,
+      "thread.item.updated": 38,
+      "thread.item.replaced": 1
+    },
+    "sdk": "7.47.0",
+    "schema_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+    "wire_sha256": "803154103eb1b2c7437a6b092deb9fb3f29a8d06329e7fc79660692bafae13d7",
+    "upstream_revision": "dacc133c280b39b9334d06ea73f0f1c199e59927"
+  },
+  "live": {
+    "revision": 510,
+    "sdk": "7.47.0",
+    "journals": [
+      {
+        "response": "resp_bc3c4189250973df4951bf62393bcc2b",
+        "journal_sha256": "b6f45fdc55522820ae659ef0ac694d807d9cf436ae942e55cd4fbdefac8c2ab7",
+        "observed_clocks": 3,
+        "public_summaries": 1
+      },
+      {
+        "response": "resp_94507ac4e8319a4e8503062995598359",
+        "journal_sha256": "c397b185e83475879e97dfbde4df1d40304046f476876e982bcdc1da2d8c0302",
+        "observed_clocks": 2,
+        "public_summaries": 0
+      }
+    ],
+    "renewed": true,
+    "independent": "42",
+    "foreign": [
+      404,
+      404
+    ],
+    "stream_events": [
+      38,
+      10
+    ],
+    "items": 6,
+    "workflows": 2,
+    "public_summaries": 1,
+    "control_public_summaries": 0,
+    "generated_positive": true,
+    "stream_task_updated": true,
+    "all_match": true,
+    "tool_numerical_answer": true,
+    "math_correct": true
+  },
+  "model_starts": 1,
+  "seconds": 54.417,
+  "old_attempts": [
+    {
+      "attempt": "01",
+      "seconds": 40.418,
+      "statuses": [
+        "failed"
+      ],
+      "error_codes": [
+        "response_parse_failed"
+      ],
+      "journal_count": 1,
+      "run_sha256": "2c5a87ef3ed51451e8af091de619cae63045fa6b071f6c4146428bce5c9b4113",
+      "client_stderr_sha256": "c6758bda88271e836a03d9e374a357dcfae3b578119d550c3ec1dc2f8a73bc34"
+    },
+    {
+      "attempt": "02",
+      "seconds": 42.837,
+      "statuses": [
+        "failed"
+      ],
+      "error_codes": [
+        "response_parse_failed"
+      ],
+      "journal_count": 1,
+      "run_sha256": "f9007b03417fd4d0931e823c39e92fedc4afc6992f70daaa6312c9d1af34f87b",
+      "client_stderr_sha256": "c6758bda88271e836a03d9e374a357dcfae3b578119d550c3ec1dc2f8a73bc34"
+    },
+    {
+      "attempt": "03",
+      "seconds": 47.112,
+      "statuses": [
+        "completed",
+        "completed"
+      ],
+      "error_codes": [],
+      "journal_count": 2,
+      "run_sha256": "5942d5cab99f24bfa308bf9ad01ebdab29b7a5e4e7f46a90093935c336f06135",
+      "client_stderr_sha256": "3f93b662e866010633e1244fa9df67fab2c0d1b62c424223fa4d8f330f6c379f",
+      "tool_result_revision": 510,
+      "model_answer": "510",
+      "temperature": 1
+    },
+    {
+      "attempt": "04",
+      "seconds": 46.078,
+      "statuses": [
+        "completed",
+        "completed"
+      ],
+      "error_codes": [],
+      "journal_count": 2,
+      "run_sha256": "254237faebe038ced264348870d5dc7ea548e8f9dc6d8ecbb8513c89fa9aa16a",
+      "client_stderr_sha256": "06beb9229961b891fb858755fcd94bac083de10c020f47e1b7b027cce5946147",
+      "tool_result_revision": 510,
+      "model_answer": "5",
+      "temperature": 1
+    }
+  ],
+  "exact_failed_prompt_probe": {
+    "journal_sha256": "502e8770d63a395cf9274f47bae3d2e565091324980cccde52cd7e2a30eee67b",
+    "finish": "stop",
+    "public_characters": 0,
+    "private_characters": 0,
+    "tool_calls": 0,
+    "refusal": true
+  },
+  "independent_cleanup": {
+    "original_guard": "COMMAND_FAILED",
+    "guard_released": true,
+    "no_reported_conflict": true,
+    "cleanup_error": "summary variable shadowed the TLS port in the validation driver after model and ingress shutdown",
+    "listener_ports_rebound": [
+      49723,
+      56239,
+      55877
+    ],
+    "owned_processes": [],
+    "protected_files_unchanged": true,
+    "new_model_starts": 0,
+    "data_requests": 0,
+    "graceful_shutdown": true,
+    "model_log_sha256": "3d15ce935742d4e066e3e05eb6c320b9fc09ebcad0f7ce8c41dbb8cbca4b5a64",
+    "original_lease_sha256": "4ff77802e340c3c5183a92e65cc3cb55fe40762794c772dcbba421a5fceb364e"
+  },
+  "protected_default_unchanged": true,
+  "lease_sha256": "4ff77802e340c3c5183a92e65cc3cb55fe40762794c772dcbba421a5fceb364e",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 245,
+    "native_routes": 406,
+    "reviewed_source_anchors": 1386,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "remaining": [
+    "cross-profile and managed recovery",
+    "issued primary and fallback"
+  ]
+}

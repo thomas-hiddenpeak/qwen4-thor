@@ -137,6 +137,8 @@ q4t safety publish --object-store-dir /srv/q4t/objects --client-id alpha < appro
 
 ## API 兼容矩阵
 
+ChatKit 候选通过浏览器的 workflow 和管理 SDK 的 chatkit.task_group 提供同一份公开摘要。流式更新、终态和线程历史使用同一条目 ID。摘要步骤拒答时保留原业务答案，摘要可以为空。定向短验中，模型新生成了 1 份公开摘要。[业务回执](evidence/serve-chatkit-reasoning-workflow-20261126/business.json)
+
 ChatKit 的管理 SDK 与浏览器 POST 共用存储。rev506 已验证 21 条消息分页，也能从原用户消息重试，保留此前上下文及附件快照，通过原线程提交新生成的工具结果。rev508 首次实现固定参考的全部 16 个浏览器操作名。新增结构化输入回填、流式和同步自定义动作，已验证同一工作流在模型和网关故障后继续。[rev508 发行回执](evidence/serve-chatkit-actions-20261125/delivery.json) [分页回执](evidence/serve-chatkit-page-defaults-20261125/business.json) [重试回执](evidence/serve-chatkit-retry-20261125/business.json) [恢复与发行](evidence/serve-chatkit-retry-20261125/delivery.json)
 
 工作流可用 Agent metadata 的 `q4t_chatkit_structured_input_tool` 指定一个已注册函数。当该函数返回含 `inputs` 的有效提问参数时，浏览器收到带稳定 ID 的 `structured_input`，可用 `threads.add_structured_input` 回填选择或自由文本。管理 SDK 可按同一 ID 查看原函数调用及结果。历史工作流继续使用普通工具输出。该能力已在 rev508 发行。[业务回执](evidence/serve-chatkit-structured-20261125/business.json)

@@ -2834,6 +2834,12 @@
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
         "revision": 512,
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_public_summary_20261126": {
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
+        "stage": "candidate_business",
+        "issued": false,
+        "fresh_public_summaries": 1
       }
     },
     {
@@ -3412,6 +3418,12 @@
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
         "revision": 512,
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_public_summary_20261126": {
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
+        "stage": "candidate_business",
+        "issued": false,
+        "fresh_public_summaries": 1
       }
     },
     {
@@ -8243,6 +8255,12 @@
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
         "revision": 512,
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_public_summary_20261126": {
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
+        "stage": "candidate_business",
+        "issued": false,
+        "fresh_public_summaries": 1
       }
     },
     {
@@ -11101,6 +11119,12 @@
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
         "revision": 512,
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_public_summary_20261126": {
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
+        "stage": "candidate_business",
+        "issued": false,
+        "fresh_public_summaries": 1
       }
     },
     {
@@ -12410,6 +12434,12 @@
       "chatkit_generation_delivery_20261125": {
         "revision": 512,
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_public_summary_20261126": {
+        "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
+        "stage": "candidate_business",
+        "issued": false,
+        "fresh_public_summaries": 1
       }
     },
     {

@@ -19,7 +19,9 @@ io::Json BrowserAnnotation(const io::Json& annotation);
 io::Json AssistantContent(const io::Json& part);
 ObjectReply ProjectOutput(const io::Json& response,
                           const std::string& thread_id,
-                          std::string_view form_tool = {});
+                          std::string_view form_tool = {},
+                          const io::Json* times = nullptr,
+                          const io::Json* previous_workflow = nullptr);
 // Preserve rich browser parts while supplying the model with user-visible text.
 ObjectReply AppendUserContent(const io::Json& parts, io::Json* content,
                               io::Json* model);
