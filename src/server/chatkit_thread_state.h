@@ -14,7 +14,8 @@ ObjectReply BrowserOperation(ObjectStore& objects, const StateAccess& access,
                              const Grant& grant, std::string_view operation,
                              const io::Json& params);
 ObjectReply ProjectOutput(const io::Json& response,
-                          const std::string& thread_id);
+                          const std::string& thread_id,
+                          std::string_view form_tool = {});
 // Preserve rich browser parts while supplying the model with user-visible text.
 ObjectReply AppendUserContent(const io::Json& parts, io::Json* content,
                               io::Json* model);

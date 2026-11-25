@@ -1,3 +1,4 @@
+#include "../src/server/chatkit_structured.h"
 #include "../src/server/chatkit_credentials.h"
 #include "../src/server/chatkit_retry.h"
 #include "../src/server/chatkit_attachments.h"
@@ -640,6 +641,64 @@ Q4T_TEST(chatkit_entity_mentions_preserve_browser_sdk_and_model_contracts) {
           .ok());
   Q4T_CHECK(model.array.size() == 2 &&
             model.array[1].GetString("text") == "see ");
+  return true;
+}
+Q4T_TEST(chatkit_structured_answers_keep_browser_and_management_identity) {
+  Json args;
+  Q4T_CHECK(io::ParseJson(
+      R"({"inputs":[{"id":"pick","type":"multiple_choice","question":"Record?","options":[{"value":"release"}]},{"id":"notes","type":"freeform","question":"Details?"}]})",
+      &args, true));
+  auto call = Object({{"type", String("function_call")},
+                      {"name", String("ask")},
+                      {"id", String("fc_form")},
+                      {"call_id", String("call_form")},
+                      {"arguments", String(OutputJson(args))}});
+  const auto response =
+      Object({{"created_at", Number(17)}, {"output", Array({call})}});
+  const auto plain = chatkit_detail::ProjectOutput(response, "cthr_project");
+  Q4T_CHECK(plain.ok() && !plain.value.array.at(0).Has("browser_form"));
+  auto rows = chatkit_detail::ProjectOutput(response, "cthr_project", "ask");
+  Q4T_CHECK(rows.ok() && rows.value.array.size() == 1);
+  auto& item = rows.value.array.front();
+  const auto pending = chatkit_detail::ClientItem(item);
+  Q4T_CHECK(pending.GetString("type") == "structured_input" &&
+            pending.GetString("status") == "pending" &&
+            pending.GetString("id") == "fc_form" && !pending.Has("call_id"));
+  auto& form = Field(item, "browser_form");
+  const auto before = OutputJson(form);
+  Json invalid;
+  Q4T_CHECK(io::ParseJson(R"({"answers":{"unknown":{"values":[7]}}})", &invalid,
+                          true));
+  Q4T_CHECK(chatkit_detail::SubmitStructuredInput(invalid, &form).http_status ==
+                400 &&
+            OutputJson(form) == before);
+  Json input;
+  Q4T_CHECK(io::ParseJson(
+      R"({"answers":{"pick":{"values":["unlisted","ignore"]},"notes":{"values":["rev","506"]}}})",
+      &input, true));
+  Q4T_CHECK(chatkit_detail::SubmitStructuredInput(input, &form).ok());
+  const auto answered = chatkit_detail::ClientItem(item);
+  const auto& inputs = answered.GetArray("inputs")->array;
+  Q4T_CHECK(inputs.at(0).Find("answer")->GetArray("values")->array.size() ==
+                1 &&
+            inputs.at(0).Find("answer")->GetArray("values")->array.at(0).str ==
+                "unlisted" &&
+            inputs.at(1).Find("answer")->GetArray("values")->array.size() == 2);
+  Q4T_CHECK(chatkit_detail::SubmitStructuredInput(input, &form).http_status ==
+            409);
+  Set(&item, "output", String(OutputJson(form)));
+  Set(&item, "status", String("completed"));
+  chatkit_detail::ProjectManagementItem(&item);
+  Q4T_CHECK(!item.Has("browser_form") &&
+            item.GetString("type") == "chatkit.client_tool_call" &&
+            item.GetString("id") == "fc_form" &&
+            item.GetString("call_id") == "call_form" &&
+            item.GetString("status") == "completed");
+  Set(&call, "arguments", String(R"({"inputs":[]})"));
+  const auto invalid_form = chatkit_detail::ProjectOutput(
+      Object({{"output", Array({call})}}), "cthr_project", "ask");
+  Q4T_CHECK(invalid_form.ok() &&
+            !invalid_form.value.array.at(0).Has("browser_form"));
   return true;
 }
 Q4T_TEST(chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes) {

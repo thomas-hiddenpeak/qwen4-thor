@@ -1,0 +1,270 @@
+{
+  "reference": {
+    "repository": "openai/chatkit-python",
+    "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "files": {
+      "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+      "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+      "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+    }
+  },
+  "dependencies": {
+    "pydantic": "2.13.4",
+    "openai": "2.34.0",
+    "openai-agents": "0.15.3"
+  },
+  "pending": {
+    "id": "form_scope",
+    "thread_id": "cthr_lookup",
+    "created_at": "2026-11-25T00:00:00Z",
+    "type": "structured_input",
+    "status": "pending",
+    "inputs": [
+      {
+        "id": "record",
+        "question": "Which record?",
+        "type": "multiple_choice",
+        "options": [
+          {
+            "value": "release"
+          },
+          {
+            "value": "acceptance"
+          }
+        ],
+        "multiple": false
+      },
+      {
+        "id": "components",
+        "question": "Which components?",
+        "type": "multiple_choice",
+        "options": [
+          {
+            "value": "runtime"
+          },
+          {
+            "value": "gateway"
+          }
+        ],
+        "multiple": true
+      },
+      {
+        "id": "query",
+        "question": "What should be looked up?",
+        "type": "freeform"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "mixed",
+      "submitted": {
+        "answers": {
+          "record": {
+            "values": [
+              "release",
+              "acceptance"
+            ]
+          },
+          "components": {
+            "values": [
+              "gateway",
+              "runtime"
+            ]
+          },
+          "query": {
+            "values": [
+              "rev506",
+              "日志"
+            ]
+          }
+        }
+      },
+      "status": "answered",
+      "answers": {
+        "record": {
+          "values": [
+            "release"
+          ],
+          "skipped": false
+        },
+        "components": {
+          "values": [
+            "gateway",
+            "runtime"
+          ],
+          "skipped": false
+        },
+        "query": {
+          "values": [
+            "rev506",
+            "日志"
+          ],
+          "skipped": false
+        }
+      }
+    },
+    {
+      "name": "custom_choice",
+      "submitted": {
+        "answers": {
+          "record": {
+            "values": [
+              "local review"
+            ]
+          }
+        }
+      },
+      "status": "answered",
+      "answers": {
+        "record": {
+          "values": [
+            "local review"
+          ],
+          "skipped": false
+        },
+        "components": {
+          "values": [],
+          "skipped": true
+        },
+        "query": {
+          "values": [],
+          "skipped": true
+        }
+      }
+    },
+    {
+      "name": "missing_and_unknown",
+      "submitted": {
+        "answers": {
+          "unknown": {
+            "values": [
+              "ignore"
+            ]
+          }
+        }
+      },
+      "status": "answered",
+      "answers": {
+        "record": {
+          "values": [],
+          "skipped": true
+        },
+        "components": {
+          "values": [],
+          "skipped": true
+        },
+        "query": {
+          "values": [],
+          "skipped": true
+        }
+      }
+    },
+    {
+      "name": "explicit_skip",
+      "submitted": {
+        "answers": {
+          "record": {
+            "values": [
+              "release"
+            ],
+            "skipped": true
+          }
+        }
+      },
+      "status": "answered",
+      "answers": {
+        "record": {
+          "values": [],
+          "skipped": true
+        },
+        "components": {
+          "values": [],
+          "skipped": true
+        },
+        "query": {
+          "values": [],
+          "skipped": true
+        }
+      }
+    },
+    {
+      "name": "empty_values",
+      "submitted": {
+        "answers": {
+          "query": {
+            "values": []
+          }
+        }
+      },
+      "status": "answered",
+      "answers": {
+        "record": {
+          "values": [],
+          "skipped": true
+        },
+        "components": {
+          "values": [],
+          "skipped": true
+        },
+        "query": {
+          "values": [],
+          "skipped": true
+        }
+      }
+    },
+    {
+      "name": "skip_all",
+      "submitted": {
+        "status": "skipped",
+        "answers": {
+          "query": {
+            "values": [
+              "do not retain"
+            ]
+          }
+        }
+      },
+      "status": "skipped",
+      "answers": {
+        "record": {
+          "values": [],
+          "skipped": true
+        },
+        "components": {
+          "values": [],
+          "skipped": true
+        },
+        "query": {
+          "values": [],
+          "skipped": true
+        }
+      }
+    }
+  ],
+  "malformed": [
+    {
+      "status": "pending"
+    },
+    {
+      "answers": {
+        "record": {
+          "values": "release"
+        }
+      }
+    },
+    {
+      "answers": {
+        "query": {
+          "values": [
+            17
+          ]
+        }
+      }
+    }
+  ],
+  "rejected_existing_states": [
+    "answered",
+    "skipped"
+  ]
+}

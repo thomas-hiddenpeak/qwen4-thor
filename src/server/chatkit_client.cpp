@@ -6,6 +6,7 @@
 
 #include "chatkit_credentials.h"
 #include "chatkit_retry.h"
+#include "chatkit_structured.h"
 #include "chatkit_attachments.h"
 #include "chatkit_thread_state.h"
 #include "object_protocol.h"
@@ -74,25 +75,27 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
                    const ChatPlanConfig& config, const StateAccess& access,
                    const Grant& grant, const Json& params,
                    std::string_view operation, std::string* thread_id,
-                   std::string* response_id, Json* user) {
+                   std::string* response_id, std::string* form_tool,
+                   Json* user) {
   const auto& session = *grant.data.Find("session");
   const auto& workflow = *session.Find("workflow");
   const auto* features = session.Find("chatkit_configuration");
   const bool create = operation == "threads.create";
   const bool tool_output = operation == "threads.add_client_tool_output";
+  const bool structured = operation == "threads.add_structured_input";
   const bool retry = operation == "threads.retry_after_item";
   const auto* input = params.Find("input");
-  if (retry) {
+  if (retry || structured) {
     for (const auto* field : {"thread_id", "item_id"}) {
       const auto* value = params.Find(field);
       if (!value || !value->IsString()) {
-        auto error = Invalid("Expected a retry identifier");
+        auto error = Invalid("Expected a thread item identifier");
         error.value = Object({{"param", String(field)}});
         return error;
       }
     }
   }
-  if (!retry && !tool_output && (!input || !input->IsObject()))
+  if (!retry && !structured && !tool_output && (!input || !input->IsObject()))
     return Invalid("Missing user message");
   ObjectRequest write;
   write.kind = ObjectKind::kChatKitThread;
@@ -145,12 +148,38 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     // belong to the server and cannot be sent as new client input fields.
     model_message = Object({{"type", String("item_reference")},
                             {"id", *prefix.items.array.back().Find("id")}});
-  } else if (tool_output) {
+  } else if (tool_output || structured) {
+    if (structured) {
+      const auto item_id = params.GetString("item_id");
+      const auto it = std::ranges::find_if(items, [&](const Json& row) {
+        return row.GetString("id") == item_id;
+      });
+      if (it == items.end())
+        return Error(404, "chatkit_item_not_found", "Thread item not found");
+      if (!it->Has("browser_form")) {
+        auto error = Invalid("Expected a structured input item");
+        error.value = Object({{"param", String("item_id")}});
+        return error;
+      }
+      if (!waiting || &*it != &items.back() ||
+          it->GetString("status") != "in_progress")
+        return Error(409, "chatkit_input_not_pending", "Input is not pending");
+    }
     if (!waiting)
       return Error(409, "chatkit_no_pending_tool", "No pending client tool");
-    const auto* result = params.Find("result");
-    if (!result) return Invalid("Missing client tool result");
     auto& last = items.back();
+    const auto* result = params.Find("result");
+    if (structured) {
+      if (!input) return Invalid("Missing structured input");
+      auto& form = Field(last, "browser_form");
+      auto answered = chatkit_detail::SubmitStructuredInput(*input, &form);
+      if (!answered.ok()) return answered;
+      result = &form;
+    } else if (last.Has("browser_form")) {
+      return Error(409, "chatkit_structured_input_pending",
+                   "Submit the pending structured input first");
+    }
+    if (!result) return Invalid("Missing client tool result");
     const auto output = OutputJson(*result);
     model_message =
         Object({{"type", String("function_call_output")},
@@ -182,6 +211,18 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   CryptoWipe(&plain);
   if (!parsed || definition.GetString("id") != workflow.GetString("id"))
     return Error(503, "workflow_record_invalid", "Invalid workflow snapshot");
+  if (const auto* metadata = definition.Find("metadata")) {
+    const auto tool = metadata->GetString("q4t_chatkit_structured_input_tool");
+    const auto* tools = definition.GetArray("tools");
+    if (!tool.empty() && tools &&
+        std::ranges::any_of(tools->array, [&](const Json& item) {
+          return item.GetString("type") == "function" &&
+                 item.GetString("name") == tool;
+        })) {
+      *form_tool = tool;
+      Set(&write.data, "pending_form_tool", String(tool));
+    }
+  }
   auto request = Object({{"model", String(definition.GetString("model"))},
                          {"background", Boolean(true)},
                          {"store", Boolean(true)},
@@ -202,7 +243,9 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   const auto* supplied_options =
       retry ? user->Find("inference_options") :
       input ? input->Find("inference_options") : nullptr;
-  const auto& supplied = supplied_options && !tool_output ? *supplied_options : empty;
+  const auto& supplied = supplied_options && !structured && !tool_output
+                             ? *supplied_options
+                             : empty;
   if (const auto* model = supplied.Find("model");
       model && !model->IsNull() &&
       (!model->IsString() || model->str != definition.GetString("model")))
@@ -326,7 +369,8 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   }
   const bool create = type == "threads.create";
   const bool retry = type == "threads.retry_after_item";
-  if (!create && !retry && type != "threads.add_user_message" &&
+  if (!create && !retry && type != "threads.add_structured_input" &&
+      type != "threads.add_user_message" &&
       type != "threads.add_client_tool_output") {
     auto result = type == "attachments.create"
                       ? chatkit_detail::ReserveAttachment(objects, access, grant,
@@ -347,9 +391,9 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     return;
   }
   Json user;
-  std::string id, response_id;
+  std::string id, response_id, form_tool;
   auto submitted = Submit(fd, objects, *jobs, config, access, grant, params,
-                          type, &id, &response_id, &user);
+                          type, &id, &response_id, &form_tool, &user);
   if (!submitted.ok()) {
     Fail(fd, access, submitted);
     return;
@@ -385,7 +429,8 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                         {"item", chatkit_detail::ClientItem(item)}}),
                 access);
   };
-  if (type == "threads.add_client_tool_output") {
+  if (type == "threads.add_client_tool_output" ||
+      type == "threads.add_structured_input") {
     if (!Emit(fd,
               Object({{"type", String("thread.item.replaced")},
                       {"item", chatkit_detail::ClientItem(user)}}),
@@ -429,7 +474,7 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
              access);
         return;
       }
-      auto projected = chatkit_detail::ProjectOutput(response, id);
+      auto projected = chatkit_detail::ProjectOutput(response, id, form_tool);
       if (!projected.ok()) return;
       for (const auto& item : projected.value.array)
         if (!done(item)) return;

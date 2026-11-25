@@ -143,6 +143,23 @@ class ApplicationContract(unittest.TestCase):
         self.assertTrue(errors(dict(limit=101), 'input_items_query'))
         self.assertTrue(errors(dict(starting_after=1), 'response_retrieve'))
 
+    def test_chatkit_browser_submits_structured_answers(self):
+        def validate(value, **fields):
+            params = dict(thread_id='cthr_a', item_id='fc_a', input=value, **fields)
+            return not errors(dict(type='threads.add_structured_input', params=params),
+                              'chatkit_client_request')
+        for data in [{}, {'status':'skipped'}, {'answers':{'key':{'values':['a','b']}}},
+                     {'answers':{'key':{'skipped':True}}}]:
+            self.assertTrue(validate(data), data)
+        for data in [{'status':'pending'}, {'answers':{'q':{'values':'text'}}},
+                     {'answers':{'q':{'values':[3]}}}, None]:
+            self.assertFalse(validate(data), data)
+        for key in ['thread_id','item_id','input']:
+            params = dict(thread_id='cthr_a', item_id='fc_a', input={})
+            del params[key]
+            self.assertTrue(errors(dict(type='threads.add_structured_input', params=params),
+                                   'chatkit_client_request'))
+
     def test_compact_has_its_own_closed_stateless_contract(self):
         for request in [dict(model=None), dict(model='cpu', input='hi'),
                         dict(model='cpu', previous_response_id='resp_previous')]:
