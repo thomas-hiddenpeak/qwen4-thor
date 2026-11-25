@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+主配置发出空值和同形字符串两次工具调用；轻配置取回前一配置持久化的两条记录，用同一调用 ID 和原始参数重新回答。两次启动中 JSON、SSE 以及客户隔离均通过，留下已发行的 rev500 恢复前驱。下一步验证故障接管与可回退发布。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)
+
 53 项 CPU 检查通过。覆盖两份发行前驱的复原、拒绝串换类型与会话、错误资料计数，以及未审查配置不可登记。下一步由轻配置读取主配置已保存的两段工具历史并回放。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)
 
 模型经官方 Node SDK 两次发出项目资料查询，参数分别是空值和字符串 null。去掉工具声明并回填同一条真实资料后，JSON 和流式回答均给出正确类型及 157 条路径。持久化消息保留原始参数，跨客户读取返回 404。下一步核验两种恢复容量接管同一历史。[验证记录](evidence/serve-history-argument-types-20261125/business.json)

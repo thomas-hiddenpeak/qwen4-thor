@@ -1,5 +1,5 @@
 {
-  "stage": "qualification_prepared",
+  "stage": "profile_verified",
   "issued": false,
   "prior_revision": 500,
   "predecessors": {
@@ -24,5 +24,213 @@
     ],
     "log_sha256": "d65030fa642ffc4eb95cfea254a50ba8ada91318ec2727d3801713adf4e08db7"
   },
-  "scope": "Both capacities use the same stored function call identities; the light profile fetches both primary completions and replays their original messages."
+  "scope": "Both capacities use the same stored function call identities; the light profile fetches both primary completions and replays their original messages.",
+  "build": {
+    "engine": "24a17b3e8a08c6ac10d1749d8c81e3149e6f0209c3fa17821bf1124692e25bdd",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "openapi_sha256": "3740e9282c89f12abf460d0353a8fe6b6e7c4af735ad9a3a2548beede0ae55be",
+  "runs": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "cases": [
+          {
+            "expected": "null",
+            "arguments": "{\"selector\":null}",
+            "call_id": "call_chatcmpl-auto-1095f902dcae22d90e025b37352294b7_0",
+            "id": "chatcmpl-auto-5be10f6c630188d4d0d8da8bde833fcd",
+            "answer": {
+              "selector_type": "null",
+              "required_paths": 157
+            },
+            "terminal": "stop",
+            "prompt_tokens": 323
+          },
+          {
+            "expected": "string",
+            "arguments": "{\"selector\":\"null\"}",
+            "call_id": "call_chatcmpl-auto-82e90d58876de4a403f6081246e52cb6_0",
+            "id": "chatcmpl-auto-8fbc8985910a95c165c9ecd9c44e177a",
+            "answer": {
+              "selector_type": "string",
+              "required_paths": 157
+            },
+            "terminal": "stop",
+            "prompt_tokens": 322
+          }
+        ],
+        "source_paths": 157,
+        "protected_peer": 404
+      },
+      "raw_sha256": "d627b68cd179f5195022939ad199f09d663c39e66fd03ef61f451e5908e0d7e8"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "cases": [
+          {
+            "expected": "null",
+            "arguments": "{\"selector\":null}",
+            "call_id": "call_chatcmpl-auto-1095f902dcae22d90e025b37352294b7_0",
+            "id": "chatcmpl-auto-003b08121e2e6e82eebb15b5d97dcab8",
+            "answer": {
+              "selector_type": "null",
+              "required_paths": 157
+            },
+            "terminal": "stop",
+            "prompt_tokens": 323,
+            "recovered_from": "chatcmpl-auto-5be10f6c630188d4d0d8da8bde833fcd"
+          },
+          {
+            "expected": "string",
+            "arguments": "{\"selector\":\"null\"}",
+            "call_id": "call_chatcmpl-auto-82e90d58876de4a403f6081246e52cb6_0",
+            "id": "chatcmpl-auto-413bbb2a995a3653cbfcc49c78274bea",
+            "answer": {
+              "selector_type": "string",
+              "required_paths": 157
+            },
+            "terminal": "stop",
+            "prompt_tokens": 322,
+            "recovered_from": "chatcmpl-auto-8fbc8985910a95c165c9ecd9c44e177a"
+          }
+        ],
+        "source_paths": 157,
+        "protected_peer": 404
+      },
+      "raw_sha256": "7ce866b13446839747a471b7fbfbe813d92b7797826ee7dc3feee5bbc54ea8d4"
+    }
+  },
+  "registry": {
+    "status": "ACCEPT_TYPED_HISTORY_PRIMARY_LIGHT",
+    "registry_sha256": "cc3380ff312945e37e28c191a432a0dcf99f997a5155144ce300f97c4775556a",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 80,
+      "cleanup_complete": true,
+      "lease_result_sha256": "316523c37ec82c07f575a5880b6568c9287db2ecdd6c6f432f4a941ee9e3e459"
+    },
+    "migration_permit_sha256": "6885fa7f2edb8422cb94dc59b2635d47f48ef6e07fd429e71c12c38cbf80a593",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "review": {
+    "pins": {
+      "primary": "a20dcaffedf0867ddbf7a0db9ab85fc96a9a626dfd61f1d7716b31f21272b057",
+      "light": "aaf1cffc4688eac8ecfb65185606db573ee85b49e55507ec245fa5756aa931ad"
+    },
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "acceptance": "e92ebe71f86d0d9e993650fef5f66e2ce9b0c3e59227f191b38f563535384b89"
+  },
+  "device": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 80,
+      "cleanup_complete": true
+    },
+    "results": [
+      {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 72
+        },
+        "seconds": 46.87813573516905,
+        "binary_sha256": "24a17b3e8a08c6ac10d1749d8c81e3149e6f0209c3fa17821bf1124692e25bdd"
+      },
+      {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 69
+        },
+        "seconds": 36.87795732868835,
+        "binary_sha256": "24a17b3e8a08c6ac10d1749d8c81e3149e6f0209c3fa17821bf1124692e25bdd"
+      }
+    ],
+    "profiles": {
+      "primary": {
+        "profile": "primary",
+        "protocol": "e111f8b9bc3b81da5b7ebd448980a5c1347b26ec090d694d3f6705e45ec3c08f",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": true,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": true,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "created",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      },
+      "light": {
+        "profile": "light",
+        "protocol": "e111f8b9bc3b81da5b7ebd448980a5c1347b26ec090d694d3f6705e45ec3c08f",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": false,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": false,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "recovered",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      }
+    },
+    "engine_sha256": "24a17b3e8a08c6ac10d1749d8c81e3149e6f0209c3fa17821bf1124692e25bdd",
+    "ingress_sha256": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "disclosure_update": null
+  },
+  "lease_sha256": "316523c37ec82c07f575a5880b6568c9287db2ecdd6c6f432f4a941ee9e3e459"
 }
