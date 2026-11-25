@@ -1,0 +1,106 @@
+{
+  "date": "2026-11-25",
+  "user_decision": "暂未准备资源，保留这 12 项待交付",
+  "release_revision": 504,
+  "sha256": {
+    "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+    "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued": "d81f55f87a2cc6211331b29c566147a9df33e1beccca75ac7ba6304dac7b9240"
+  },
+  "required_methods": 231,
+  "methods_with_matching_success_declarations": 219,
+  "resource_status": "awaiting real generation models or service and a supported OpenAI provenance verifier",
+  "remains_in_scope": [
+    {
+      "method": "POST",
+      "path": "/content_provenance_checks",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/images/edits",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/images/generations",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/images/variations",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/videos",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/videos",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/videos/edits",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/videos/extensions",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/videos/{video_id}",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/videos/{video_id}",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/videos/{video_id}/content",
+      "tasks": [
+        "A10"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/videos/{video_id}/remix",
+      "tasks": [
+        "A10"
+      ]
+    }
+  ],
+  "dependent_work": [
+    "A08 generated video state",
+    "A09 image/video Batch",
+    "A10 media backends",
+    "A12 SDK business acceptance"
+  ],
+  "restart": "Use a configured real backend and verify output, ownership, failures, recovery and delivery. Resume the relevant subset as its resources become available."
+}

@@ -201,6 +201,30 @@ class ApplicationContract(unittest.TestCase):
                     self.assertEqual(validator.is_valid(value), accepted)
                     self.assertEqual(not errors({'limit': value}, definition), accepted)
 
+    def test_application_list_defaults_survive_bundling(self):
+        paths = app.standalone_openapi(api.openapi())['paths']
+        session = '/v1/agents/sessions/{session_id}'
+        for route, key, expected in (
+            ('/v1/agents', 'order', 'desc'),
+            ('/v1/agents/automations/{automation_id}/invocations', 'order', 'desc'),
+            ('/v1/agents/environments', 'order', 'desc'),
+            (session + '/artifacts', 'order', 'desc'),
+            (session + '/subagents/{subagent_id}/items', 'order', 'desc'),
+            ('/v1/assistants', 'order', 'desc'),
+            ('/v1/threads/{thread_id}/runs/{run_id}/steps', 'order', 'desc'),
+            ('/v1/containers/{container_id}/files', 'order', 'desc'),
+            ('/v1/vaults/{vault_id}/credentials', 'order', 'desc'),
+            ('/v1/evals', 'order', 'asc'),
+            ('/v1/evals', 'order_by', 'created_at'),
+            ('/v1/evals/{eval_id}/runs/{run_id}/output_items', 'order', 'asc'),
+            ('/v1/conversations/{conversation_id}/items', 'limit', 20),
+            ('/v1/responses/{response_id}/input_items', 'limit', 20),
+        ):
+            with self.subTest(route=route, key=key):
+                param = next(p for p in paths[route]['get']['parameters'] if p['name'] == key)
+                self.assertFalse(param['required'])
+                self.assertEqual(param['schema']['default'], expected)
+
     def test_skill_content_representations_uploads_and_zero_page(self):
         paths = api.openapi()['paths']
         for route, query in [('/v1/skills', 'skill_query'),

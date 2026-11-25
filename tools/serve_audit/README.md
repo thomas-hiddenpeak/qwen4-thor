@@ -54,3 +54,11 @@ IO 库需要 CUDA runtime 链接依赖，但不执行 CUDA API。
 更改源码后必须重新评审受影响合同、更新结论及来源身份；禁止只为
 通过检查盲目刷新 hash。该检查不理解业务语义，也不代替人工审查和
 真实业务验收；OpenAI / vLLM 外部协议变化仍需定期人工核对。
+
+对冻结的官方 OpenAPI 运行以下命令，可检查已声明方法的查询默认值。
+报告区分匹配、缺失、不同和多义的默认值，保留原路径和字段。
+省略参数的运行结果由对应的原生用例验证。
+
+```bash
+python3 -B -m tools.serve_audit.scope_queries /path/to/official-openapi.json --defaults
+```

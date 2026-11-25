@@ -4775,7 +4775,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -5129,7 +5130,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -5414,7 +5416,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -5867,7 +5870,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -6491,7 +6495,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -6968,7 +6973,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -7548,7 +7554,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -7964,7 +7971,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -8336,7 +8344,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -8638,7 +8647,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_73"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_73",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -9083,7 +9093,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -9740,7 +9751,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131",
+              "default": "asc"
             },
             "style": "form",
             "explode": true
@@ -9750,7 +9762,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_134"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_134",
+              "default": "created_at"
             },
             "style": "form",
             "explode": true
@@ -10076,7 +10089,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131",
+              "default": "asc"
             },
             "style": "form",
             "explode": true
@@ -10509,7 +10523,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131",
+              "default": "asc"
             },
             "style": "form",
             "explode": true
@@ -11910,7 +11925,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -12436,7 +12452,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -12701,7 +12718,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -13177,7 +13195,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -13358,7 +13377,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -13459,7 +13479,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -13646,7 +13667,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -13756,7 +13778,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -13961,7 +13984,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -14072,7 +14096,8 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -14397,7 +14422,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -14510,7 +14536,8 @@
               "enum": [
                 "asc",
                 "desc"
-              ]
+              ],
+              "default": "desc"
             },
             "style": "form",
             "explode": true
@@ -15699,7 +15726,8 @@
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 100
+              "maximum": 100,
+              "default": 20
             },
             "style": "form",
             "explode": true
@@ -16164,7 +16192,8 @@
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 100
+              "maximum": 100,
+              "default": 20
             },
             "style": "form",
             "explode": true
@@ -44000,7 +44029,8 @@
               "limit": {
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 100
+                "maximum": 100,
+                "default": 20
               },
               "order": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1136"
@@ -44213,7 +44243,8 @@
               "limit": {
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 100
+                "maximum": 100,
+                "default": 20
               },
               "order": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1136"
@@ -51915,7 +51946,8 @@
                 "enum": [
                   "asc",
                   "desc"
-                ]
+                ],
+                "default": "desc"
               }
             },
             "required": [],
@@ -51933,7 +51965,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131",
+                "default": "asc"
               },
               "status": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_488"
@@ -52263,7 +52296,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131",
+                "default": "asc"
               },
               "status": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_468"
@@ -56408,10 +56442,12 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_131",
+                "default": "asc"
               },
               "order_by": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_134"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/eval_134",
+                "default": "created_at"
               }
             },
             "required": [],
@@ -64903,7 +64939,8 @@
                 "enum": [
                   "asc",
                   "desc"
-                ]
+                ],
+                "default": "desc"
               },
               "session_id": {
                 "type": "string"
@@ -64931,7 +64968,8 @@
                 "enum": [
                   "asc",
                   "desc"
-                ]
+                ],
+                "default": "desc"
               }
             },
             "required": [],
@@ -66166,7 +66204,8 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_26"
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51",
+                "default": "desc"
               }
             },
             "required": [],
@@ -66315,7 +66354,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/container_51",
+                "default": "desc"
               }
             },
             "required": [],
@@ -68101,7 +68141,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+                "default": "desc"
               }
             },
             "required": [],
@@ -69317,7 +69358,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+                "default": "desc"
               },
               "run_id": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_114"
@@ -70467,7 +70509,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+                "default": "desc"
               }
             },
             "required": [],
@@ -71458,7 +71501,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/assistant_183",
+                "default": "desc"
               }
             },
             "required": [],
@@ -72994,7 +73038,8 @@
                 "enum": [
                   "asc",
                   "desc"
-                ]
+                ],
+                "default": "desc"
               },
               "metadata": {
                 "type": "object",
@@ -75346,7 +75391,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_73"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_73",
+                "default": "desc"
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/hosted_108"
@@ -78634,7 +78680,8 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_250"
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+                "default": "desc"
               }
             },
             "required": [],
@@ -82129,7 +82176,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+                "default": "desc"
               }
             },
             "required": [],
@@ -82148,7 +82196,8 @@
                 "default": 20
               },
               "order": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_252",
+                "default": "desc"
               }
             },
             "required": [],

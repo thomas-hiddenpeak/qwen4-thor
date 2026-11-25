@@ -15234,7 +15234,8 @@
         "limit": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 100
+          "maximum": 100,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/1136"
@@ -15447,7 +15448,8 @@
         "limit": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 100
+          "maximum": 100,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/1136"
@@ -23149,7 +23151,8 @@
           "enum": [
             "asc",
             "desc"
-          ]
+          ],
+          "default": "desc"
         }
       },
       "required": [],
@@ -23167,7 +23170,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/eval_131"
+          "$ref": "#/$defs/eval_131",
+          "default": "asc"
         },
         "status": {
           "$ref": "#/$defs/eval_488"
@@ -23497,7 +23501,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/eval_131"
+          "$ref": "#/$defs/eval_131",
+          "default": "asc"
         },
         "status": {
           "$ref": "#/$defs/eval_468"
@@ -27642,10 +27647,12 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/eval_131"
+          "$ref": "#/$defs/eval_131",
+          "default": "asc"
         },
         "order_by": {
-          "$ref": "#/$defs/eval_134"
+          "$ref": "#/$defs/eval_134",
+          "default": "created_at"
         }
       },
       "required": [],
@@ -36137,7 +36144,8 @@
           "enum": [
             "asc",
             "desc"
-          ]
+          ],
+          "default": "desc"
         },
         "session_id": {
           "type": "string"
@@ -36165,7 +36173,8 @@
           "enum": [
             "asc",
             "desc"
-          ]
+          ],
+          "default": "desc"
         }
       },
       "required": [],
@@ -37400,7 +37409,8 @@
           "$ref": "#/$defs/container_26"
         },
         "order": {
-          "$ref": "#/$defs/container_51"
+          "$ref": "#/$defs/container_51",
+          "default": "desc"
         }
       },
       "required": [],
@@ -37549,7 +37559,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/container_51"
+          "$ref": "#/$defs/container_51",
+          "default": "desc"
         }
       },
       "required": [],
@@ -39335,7 +39346,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/assistant_183"
+          "$ref": "#/$defs/assistant_183",
+          "default": "desc"
         }
       },
       "required": [],
@@ -40551,7 +40563,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/assistant_183"
+          "$ref": "#/$defs/assistant_183",
+          "default": "desc"
         },
         "run_id": {
           "$ref": "#/$defs/assistant_114"
@@ -41701,7 +41714,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/assistant_183"
+          "$ref": "#/$defs/assistant_183",
+          "default": "desc"
         }
       },
       "required": [],
@@ -42692,7 +42706,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/assistant_183"
+          "$ref": "#/$defs/assistant_183",
+          "default": "desc"
         }
       },
       "required": [],
@@ -44228,7 +44243,8 @@
           "enum": [
             "asc",
             "desc"
-          ]
+          ],
+          "default": "desc"
         },
         "metadata": {
           "type": "object",
@@ -46580,7 +46596,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/hosted_73"
+          "$ref": "#/$defs/hosted_73",
+          "default": "desc"
         },
         "type": {
           "$ref": "#/$defs/hosted_108"
@@ -49868,7 +49885,8 @@
           "$ref": "#/$defs/agent_session_250"
         },
         "order": {
-          "$ref": "#/$defs/agent_session_252"
+          "$ref": "#/$defs/agent_session_252",
+          "default": "desc"
         }
       },
       "required": [],
@@ -53363,7 +53381,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/agent_session_252"
+          "$ref": "#/$defs/agent_session_252",
+          "default": "desc"
         }
       },
       "required": [],
@@ -53382,7 +53401,8 @@
           "default": 20
         },
         "order": {
-          "$ref": "#/$defs/agent_session_252"
+          "$ref": "#/$defs/agent_session_252",
+          "default": "desc"
         }
       },
       "required": [],

@@ -1,4 +1,4 @@
-"""Compare query parameter names on each declared in-scope HTTP method."""
+"""Compare query names and optional explicit defaults on declared in-scope methods."""
 import argparse
 import hashlib
 import json
@@ -50,17 +50,89 @@ def compare(scope, official, issued):
                         for state in ('declared','bracket_name_only','missing')}, rows=rows)
 
 
+
+def json_value_key(value):
+    # JSON has a single number type and distinct boolean values.
+    if isinstance(value, (float, int)) and not isinstance(value, bool):
+        return ('number', value)
+    if isinstance(value, list):
+        return ('array', tuple(json_value_key(x) for x in value))
+    if isinstance(value, dict):
+        return ('object', tuple((k, json_value_key(v)) for k, v in sorted(value.items())))
+    return (type(value).__name__, value)
+
+
+def schema_defaults(document, schema):
+    """Collect unconditional JSON Schema default annotations on a parameter."""
+    values = {}
+    refs = set()
+    pending = [schema]
+    while pending:
+        node = pending.pop()
+        if not isinstance(node, dict):
+            continue
+        if 'default' in node:
+            value = node['default']
+            values[json_value_key(value)] = value
+        pending.extend(node.get('allOf', []))
+        ref = node.get('$ref')
+        if ref is None or ref in refs:
+            continue
+        if not ref.startswith('#/'):
+            raise ValueError(f'Use a bundled OpenAPI for schema defaults: {ref}')
+        refs.add(ref)
+        target = document
+        for key in ref[2:].split('/'):
+            target = target[key.replace('~1', '/').replace('~0', '~')]
+        pending.append(target)
+    return [values[key] for key in sorted(values)]
+
+
+def compare_defaults(scope, official, issued):
+    routes = {r['path']:r for r in scope_routes.compare(scope, issued)}
+    rows = []
+    name_report = compare(scope, official, issued)
+    for parameter in name_report['rows']:
+        path, method, name = parameter['path'], parameter['method'].lower(), parameter['query']
+        upstream = parameters(official, path, method)[name]
+        expected = schema_defaults(official, upstream.get('schema', {}))
+        if not expected:
+            continue
+        current = parameters(issued, routes[path]['issued_path'], method)
+        wire_name = name + '[]' if parameter['state'] == 'bracket_name_only' else name
+        actual = schema_defaults(issued, current.get(wire_name, {}).get('schema', {}))
+        if len(expected) != 1 or len(actual) > 1:
+            state = 'ambiguous'
+        elif not actual:
+            state = 'missing'
+        elif json_value_key(actual[0]) == json_value_key(expected[0]):
+            state = 'matching'
+        else:
+            state = 'different'
+        rows.append(dict(method=method.upper(), path=path, query=name,
+                         official=expected, issued=actual, state=state))
+    return dict(query_parameters=name_report['official_query_parameters'],
+                explicit_defaults=len(rows), counts={state:sum(r['state'] == state for r in rows)
+                    for state in ('matching', 'missing', 'different', 'ambiguous')}, rows=rows)
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('official', type=Path)
-    parser.add_argument('--issued', type=Path, default=scope_routes.ISSUED)
+    parser.add_argument('--issued', type=Path)
+    parser.add_argument('--defaults', action='store_true',
+                        help='Compare explicit unconditional defaults using bundled documents.')
     args = parser.parse_args()
-    files = dict(scope=scope_routes.SCOPE, official=args.official, issued=args.issued)
+    issued = args.issued or (scope_routes.ROOT / 'docs/serve-openapi-bundle-v1.json'
+                             if args.defaults else scope_routes.ISSUED)
+    files = dict(scope=scope_routes.SCOPE, official=args.official, issued=issued)
     data = {k:p.read_bytes() for k,p in files.items()}
-    report = compare(**{k:json.loads(raw) for k,raw in data.items()})
+    audit = compare_defaults if args.defaults else compare
+    report = audit(**{k:json.loads(raw) for k,raw in data.items()})
+    measurement = ('Explicit schema defaults on declared methods; execution requires separate verification.'
+                   if args.defaults else 'Official query parameter names on declared methods. Types, defaults, '
+                                         'serialization and execution require separate verification.')
     print(json.dumps(dict(sources_sha256={k:hashlib.sha256(raw).hexdigest() for k,raw in data.items()},
-                          measurement='Official query parameter names on declared methods. Types, defaults, '
-                                      'serialization and execution require separate verification.',
+                          measurement=measurement,
                           **report), indent=2))
 
 

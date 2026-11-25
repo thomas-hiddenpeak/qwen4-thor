@@ -130,8 +130,9 @@ def schema(graph):
         first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string'))),
         ('object', 'data', 'has_more', 'first_id', 'last_id'))
     page_limit = dict(type='integer', minimum=1, maximum=100, default=20)
+    descending_order = dict(enum=['asc', 'desc'], default='desc')
     definitions['agents_query'] = obj(dict(limit=page_limit,
-        after=dict(type='string'), order=dict(enum=['asc', 'desc'])))
+        after=dict(type='string'), order=descending_order))
     evals = json.loads((ROOT/'src/server/contracts/openai_eval_types_v1.json').read_text())
     if evals['profile'] != 'q4t-openai-eval-types-v1':
         raise ValueError('Unexpected Evals type graph')
@@ -140,7 +141,11 @@ def schema(graph):
     # exact integers and all three Eval listings allow an empty page.
     for name in ('query', 'run_query', 'output_query'):
         query = definitions['eval_' + str(evals['roots'][name])]
-        query['properties']['limit'] = dict(type='integer', minimum=0, default=20)
+        fields = query['properties']
+        fields['limit'] = dict(type='integer', minimum=0, default=20)
+        fields['order']['default'] = 'asc'
+        if name == 'query':
+            fields['order_by']['default'] = 'created_at'
     for name, item in (('eval_list', 'eval_eval'), ('eval_run_list', 'eval_run'),
                        ('eval_output_list', 'eval_output_item')):
         definitions[name] = obj(dict(object=dict(const='list'),
@@ -235,7 +240,7 @@ def schema(graph):
         definitions[page]['properties']['data']['items'] = ref(item)
     for name in ('query', 'invocation_query'):
         properties = dict(limit=page_limit, after=dict(type='string'),
-                          order=dict(enum=['asc', 'desc']))
+                          order=descending_order)
         if name == 'query':
             properties['session_id'] = dict(type='string')
         definitions['automation_' + name] = obj(properties)
@@ -267,7 +272,9 @@ def schema(graph):
     assert containers['profile'] == 'q4t-openai-container-types-v1'
     definitions.update(graph_definitions(containers, 'container_'))
     for query in ('query', 'file_query'):
-        definitions['container_' + str(containers['roots'][query])]['properties']['limit'] = page_limit
+        fields = definitions['container_' + str(containers['roots'][query])]['properties']
+        fields['limit'] = page_limit
+        fields['order']['default'] = 'desc'
     for name, item in [('container_list','container_list_item'),('container_file_list','container_file_list_item')]:
         definitions[name] = copy.deepcopy(definitions['agents_list'])
         fields = definitions[name]['properties']
@@ -298,17 +305,15 @@ def schema(graph):
     create_assistant['properties']['tool_resources'].update(inline_search)
     thread_create = definitions['assistant_' + str(assistants['roots']['thread_create'])]
     thread_create['properties']['tool_resources'].update(inline_search)
-    msg_query = definitions['assistant_' + str(assistants['roots']['message_query'])]
-    msg_query['properties']['limit'] = page_limit
+    for name in ('query', 'message_query', 'run_list_query', 'step_list_query'):
+        fields = definitions['assistant_' + str(assistants['roots'][name])]['properties']
+        fields['limit'] = page_limit
+        fields['order']['default'] = 'desc'
     for family in ('run', 'step'):
         definitions['assistant_'+family+'_list'] = copy.deepcopy(definitions['agents_list'])
         definitions['assistant_'+family+'_list']['properties']['data']['items'] = ref('assistant_'+family+'_resource')
-        graph_query = definitions['assistant_' + str(assistants['roots'][family+'_list_query'])]
-        graph_query['properties']['limit'] = page_limit
     definitions['assistant_message_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['assistant_message_list']['properties']['data']['items'] = ref('assistant_message_resource')
-    assistant_query = definitions['assistant_' + str(assistants['roots']['query'])]
-    assistant_query['properties']['limit'] = page_limit
     definitions['assistant_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['assistant_list']['properties']['data']['items'] = ref('assistant_resource')
     for family in ('assistant_list', 'assistant_message_list', 'assistant_run_list', 'assistant_step_list'):
@@ -353,6 +358,8 @@ def schema(graph):
     for query, limit in [('environment_query', page_limit), ('file_query', nullable(page_limit))]:
         node = environment_types['hosted_' + str(environment['roots'][query])]
         node['properties']['limit'] = limit
+    environment_list = environment_types['hosted_' + str(environment['roots']['environment_query'])]
+    environment_list['properties']['order']['default'] = 'desc'
     definitions.update(environment_types)
     definitions['hosted_environment_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['hosted_environment_list']['properties']['data']['items'] = ref('hosted_environment_resource')
@@ -369,6 +376,7 @@ def schema(graph):
     for query in ('query', 'artifact_query', 'subagent_query'):
         node = definitions['agent_session_' + str(sessions['roots'][query])]
         node['properties']['limit'] = page_limit
+        node['properties']['order']['default'] = 'desc'
     trace = dict(id=dict(type='string'), session_id=dict(type='string'),
                  object=dict(const='agent.session.trace'), created_at=dict(type='integer'),
                  otlp=dict(type='object', required=['resourceSpans'],
@@ -510,7 +518,7 @@ def schema(graph):
     for name in ('response_retrieve', 'input_items_query', 'conversation_items_query'):
         value = root(name)
         if 'limit' in value['properties']:
-            value['properties']['limit'] = dict(type='integer', minimum=1, maximum=100)
+            value['properties']['limit'] = page_limit
         if 'starting_after' in value['properties']:
             value['properties']['starting_after'] = dict(type='integer', minimum=0)
             value['allOf'] = [{'if': dict(required=['starting_after']),

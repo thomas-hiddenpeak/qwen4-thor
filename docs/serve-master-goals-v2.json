@@ -817,6 +817,10 @@
         "business": "evidence/serve-history-argument-types-20261125/business.json",
         "profiles": "evidence/serve-history-argument-types-20261125/profiles.json",
         "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
+      },
+      "query_defaults_20261125": {
+        "stage": "candidate_declarations_cpu_verified",
+        "receipt": "evidence/serve-application-query-20261125/defaults.json"
       }
     },
     {
@@ -3506,7 +3510,7 @@
         }
       ],
       "standalone_moderation_required": "Implemented, targeted CPU/native TLS SDK/real text and image/Batch accepted; delivered with feature-capable fallback. Does not complete remaining A10.",
-      "next": "Implement the 12 remaining media methods listed in the rev498 receipt with actual image/video inference and provenance backends; also qualify the outstanding accepted-path media semantics.",
+      "next": "Resume the 12 retained media methods with actual backend resources when available. Continue independently testable existing media, application and recovery work.",
       "moderations_cpu_evidence": "evidence/serve-moderations-cpu-20261111/README.md",
       "moderations_plan": "SERVE_MODERATIONS_API_2026-11-11.md",
       "moderations_business_evidence": "evidence/serve-moderations-business-20261111/README.md",
@@ -5974,6 +5978,11 @@
         "business": "evidence/serve-video-track-selection-20261125/business.json",
         "profiles": "evidence/serve-video-track-selection-20261125/profiles.json",
         "delivery": "evidence/serve-video-track-selection-20261125/delivery.json"
+      },
+      "media_backend_decision_20261125": {
+        "stage": "awaiting_resources_in_scope",
+        "methods": 12,
+        "decision": "evidence/serve-scope-decision-20261120/media-backends-20261125.json"
       }
     },
     {
@@ -7928,6 +7937,10 @@
       "archived_resource_client_20261125": {
         "stage": "sdk_cpu_replay",
         "receipt": "evidence/serve-stored-message-projection-20261125/python-resource-replay.json"
+      },
+      "query_defaults_20261125": {
+        "stage": "candidate_declarations_cpu_verified",
+        "receipt": "evidence/serve-application-query-20261125/defaults.json"
       }
     },
     {
