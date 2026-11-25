@@ -120,12 +120,32 @@ process.stdout.write(JSON.stringify(withJsonSchema(makeRequest(row.messages,
         events = []
         for choice in value['choices']:
             events.append(dict(envelope, choices=[dict(index=choice['index'],
-                delta=dict(role='assistant'), finish_reason=None)]))
+                delta=dict(role='assistant'), finish_reason=None, logprobs=None)]))
             events.append(dict(envelope, choices=[dict(index=choice['index'],
-                delta={}, finish_reason=choice['finish_reason'])]))
+                delta={}, finish_reason=choice['finish_reason'], logprobs=None)]))
         metadata = dict(envelope, choices=[], moderation=value['moderation'],
                         q4t_moderation_usage=value['q4t_moderation_usage'])
         events.extend([metadata, dict(envelope, choices=[], usage=value['usage'])])
+        definitions = json.loads((ROOT / 'docs/serve-transport-v1.schema.json')
+                                 .read_text())['$defs']
+        complete = Validator(dict(definitions['completion'], **{'$defs': definitions}))
+        stream = Validator(dict(definitions['chunk'], **{'$defs': definitions}))
+        complete.validate(value)
+        for event in events:
+            stream.validate(event)
+        stream.validate(dict(metadata, usage=None))
+        for validator, source in ((complete, value), (stream, events[1])):
+            invalid = copy.deepcopy(source)
+            invalid['choices'][0]['finish_reason'] = 'unknown_reason'
+            self.assertFalse(validator.is_valid(invalid))
+        for invalid in (dict(envelope, choices=[]),
+                        dict(envelope, choices=[], usage=None),
+                        dict(envelope, choices=[], moderation=value['moderation']),
+                        dict(metadata, moderation={}),
+                        dict(metadata, q4t_moderation_usage={}),
+                        dict(metadata, q4t_moderation_usage=dict(
+                            value['q4t_moderation_usage'], output_tokens=1025))):
+            self.assertFalse(stream.is_valid(invalid))
         encode = lambda rows: (''.join('data: '+json.dumps(x)+'\r\n\r\n' for x in rows)+
                                'data: [DONE]\r\n\r\n').encode()
         raw, wire = json.dumps(value).encode(), encode(events)

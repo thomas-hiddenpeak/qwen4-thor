@@ -24,9 +24,17 @@ const endpoints = {
 };
 const wire = [];
 
-async function page(request, path, empty) {
+async function page(request, path, empty, ids = {}) {
   const response = await request.asResponse();
   assert.equal(response.status, 200);
+  const actual = new URL(response.url);
+  const route = path.replace(/\{(\w+)\}/g, (_, name) => {
+    assert.equal(typeof ids[name], 'string');
+    return encodeURIComponent(ids[name]);
+  });
+  assert.equal(actual.origin, base.origin);
+  assert.equal(actual.pathname, base.pathname.replace(/\/$/, '') + route);
+  assert.equal(response.headers.get('content-type')?.split(';')[0], 'application/json');
   const body = await response.json();
   assert.equal(body.object, 'list');
   assert.equal(body.has_more, false);
@@ -51,12 +59,13 @@ const assistant = await assistants.create({model:plan.model, temperature:0,
   reasoning_effort:'none', instructions:'Answer arithmetic with only the integer.'});
 const thread = await threads.create();
 const options = {thread_id:thread.id};
-await page(messages.list(thread.id), endpoints.messages, true);
-await page(runs.list(thread.id), endpoints.runs, true);
+await page(messages.list(thread.id), endpoints.messages, true, options);
+await page(runs.list(thread.id), endpoints.runs, true, options);
 await messages.create(thread.id, {role:'user', content:'Return only the product of 6 and 7.'});
 const run = await runs.createAndPoll(thread.id, {assistant_id:assistant.id},
   {pollIntervalMs:300});
 assert.equal(run.status, 'completed');
+const ids = {...options, run_id:run.id};
 const calls = [
   [query => assistants.list(query), endpoints.assistants],
   [query => messages.list(thread.id, query), endpoints.messages],
@@ -64,9 +73,9 @@ const calls = [
   [query => runs.steps.list(run.id, {...options, ...query}), endpoints.steps],
 ];
 for (const [list, path] of calls) {
-  const entries = await page(list({order:'asc'}), path, false);
+  const entries = await page(list({order:'asc'}), path, false, ids);
   if (path === endpoints.messages)
     assert.equal(entries.data.at(-1).content[0].text.value.trim(), '42');
-  await page(list({order:'asc', after:entries.last_id}), path, true);
+  await page(list({order:'asc', after:entries.last_id}), path, true, ids);
 }
 process.stdout.write(JSON.stringify({sdk:version, answer:'42', wire}));

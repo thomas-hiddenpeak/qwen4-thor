@@ -1,0 +1,111 @@
+{
+  "stage": "schema_verified",
+  "issued": false,
+  "observations": {
+    "archive": "docs/evidence/serve-chat-moderation-business-20261117/business.tar.gz",
+    "archive_sha256": "da78a30426b8d46548845e996d9250a26fdfa178cde5cfe4f1ab8db14ad76ae8",
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "issued_sha256": "a9dac7e81f76de67d3d30288313d6c9e2fd8a953e319dbc39b318b9c1be6bb26",
+    "candidate_sha256": "76e59a5572eec51f7c38bf8d54bd42e72233e1b38bd931553a13934737948a50",
+    "observations": [
+      {
+        "member": "modern-business-01/execution/approved-sse.wire",
+        "sha256": "6fe66c750be55f505352003df1158d9f9db407fc6b8dcbf5df3ab94f3c7b8037",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": true,
+        "payloads": 10,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "modern-business-01/execution/blocked-input.wire",
+        "sha256": "4629d3914e376be96167fe470c533ae239e1f54576999961a3d18244b30b42e0",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "profiles-01/primary-blocked-stored.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "status": 200,
+        "method": "get",
+        "path": "/chat/completions/{completion_id}",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "profiles-01/primary-blocked.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "profiles-01/restart-primary-blocked-stored.wire",
+        "sha256": "680b954faaf3b891f0768e37950be92357febc5bce954b91dafdedc04b97ebfb",
+        "status": 200,
+        "method": "get",
+        "path": "/chat/completions/{completion_id}",
+        "sse": false,
+        "payloads": 1,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      },
+      {
+        "member": "retained-business-01/execution/approved-sse.wire",
+        "sha256": "57919a0b8aaf3e62b27d0362fd77ddb62a76f440af32b09ecc2f4dfa095b74b0",
+        "status": 200,
+        "method": "post",
+        "path": "/chat/completions",
+        "sse": true,
+        "payloads": 10,
+        "issued_rejected": 1,
+        "official_rejected": 0,
+        "candidate_rejected": 0
+      }
+    ],
+    "model_starts": 0
+  },
+  "model_starts": 0,
+  "targeted": {
+    "passed": 26,
+    "sha256": "a08f96d6de436aac02e13ea9b61c38d74a9ffdbabd731bbb0c14030def916372",
+    "initial": {
+      "sha256": "eccc2e5784984ba238c4bce98827af6f728f41577bb19e09fcd53b9785499cfe",
+      "detail": "Initial host run used a worktree without the SDK and synthesized choices lacked logprobs. Reran with the installed SDK and native choice shape."
+    }
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 242,
+    "native_routes": 400,
+    "reviewed_source_anchors": 1373,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "sources": {
+    "docs/serve-transport-v1.schema.json": "7e53c99ace0af7b4e74edd3e1b5494c0832ee1861dac98e69150a2a5c913848c",
+    "docs/serve-openapi-bundle-v1.json": "76e59a5572eec51f7c38bf8d54bd42e72233e1b38bd931553a13934737948a50",
+    "tools/serve_protocol/test_chat_moderation.py": "1c876337eb700b04ba251b7ec94928e99c2834eb17dcf5dc1d083db1bd6db770"
+  }
+}
