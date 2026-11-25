@@ -7,7 +7,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
-随包视觉客户端曾在读取能力后拒绝已启用媒体的主配置，OpenAPI 也误写为必须关闭 MTP。现按 runtime.media_enabled 进入预检；单槽服务可加载文本草稿，含视觉 token 的请求使用主模型逐步解码。已从主、轻配置的真实能力记录核对两个模式。12 项 CPU 检查通过，公开合同已同步生成。下一步用随包客户端经原生 TLS 请求图像。[核验记录](evidence/serve-visual-frame-parts-20261126/client-discovery.json)
+仓库中的视觉示例客户端曾在读取能力后拒绝已启用媒体的主配置，OpenAPI 也误写为必须关闭 MTP。现按 runtime.media_enabled 进入预检；单槽服务可加载文本草稿，含视觉 token 的请求使用主模型逐步解码。已从主、轻配置的真实能力记录核对两个模式。12 项 CPU 检查通过，公开合同已同步生成。下一步用该示例经原生 TLS 请求图像。[核验记录](evidence/serve-visual-frame-parts-20261126/client-discovery.json)
 
 同一条真实 Responses 响应在 Python SDK 2.8.1、3.42.1、3.55.1 的常规类型化取回路径都能读出 Blue。离线回放还发现，2.8.1 的私有严格验证会拒绝响应字段 `prompt_cache_retention` 的值 `in_memory`；两版 3.x 严格验证通过。后续在同一次视频短验中让三个版本从原生 TLS 取回 Node 创建的回答并检查客户隔离。[回放结果](evidence/serve-visual-frame-parts-20261126/python-replay.json)
 
