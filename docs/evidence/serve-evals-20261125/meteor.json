@@ -1,5 +1,5 @@
 {
-  "stage": "lexical_oracle_verified",
+  "stage": "native_tls_verified",
   "issued": false,
   "metric": "English METEOR using NLTK 3.9.2 alignment, its Porter stemmer and WordNet 3.0.",
   "semantic_reference": "Whitespace-separated Unicode words with lowercasing; exact, stem and single-token lexical matches, followed by fragmentation penalty. Cloud tokenization and exact grader scores are not published.",
@@ -58,9 +58,8 @@
     }
   ],
   "pending": [
-    "Actual native worker tests: score threshold, capacity and cancellation",
-    "Official SDK over TLS, real model sample and cross-client read",
-    "Qualified profiles and usable rollback package"
+    "Primary/light handoff of real committed scores",
+    "Managed restart, independent fallback and publication"
   ],
   "migration": {
     "format": "q4t-profile-business-v49",
@@ -74,5 +73,56 @@
       "reason": "Sparse checkout omitted historical embedding input JSON. Rehydrated the exact tracked fixture files.",
       "sha256": "2f1e0fcbbc22928c3cc1b1d52279ddc93a71beea26003dc043eee2337037b09b"
     }
+  },
+  "cpu": {
+    "evals_cosine_scores_": {
+      "passed": 1,
+      "sha256": "f2370a62d76da7e6d5bbb5b746e9317319f93d755fdfe600bbccef7ed79108be"
+    },
+    "evals_meteor_": {
+      "passed": 1,
+      "sha256": "7e051d996f7d41c2e9c2073c2126b83157f9d00187d57bbb699ee2c7f05c60f1"
+    },
+    "evals_text_similarity_": {
+      "passed": 1,
+      "sha256": "4f973cd0c3166106557f6c329b3d8ec784ef1fd6ba834e5cbae54b67956e3752"
+    },
+    "hosted_python_worker_reads_skill_": {
+      "passed": 1,
+      "sha256": "880131a3888ad0dd0428fa8a9c54b154cf7daef5eed7d87284965aef4ea363b1"
+    }
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.987,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "eval_id": "eval_0f8d9a7af4665eb50a77627fc3b07608",
+    "run_id": "evalrun_aecf196f661a4f4b3f4ec51881584585",
+    "output": "outputitem_ed002246dd10a083c84cd4aab8148043",
+    "model_answer": "157",
+    "scores": [
+      0.9814814814814815,
+      0.9814814814814815,
+      0,
+      0.8518518518518519
+    ],
+    "foreign_status": 404,
+    "independent_chat": "42",
+    "wire_objects": 4,
+    "driver_sha256": "77ba5ae16466efe4ec8b69d97e42d2ff2b3d9c83ae54771169bc275e0a2ff328"
+  },
+  "raw": {
+    "meteor-business-lease-01/exit.json": "b9e8511da08ce21747823e450fd8932270f4a8fa8922506b1ad0c62ee01356df",
+    "meteor-business-01/result.json": "896d34dbc43880297bcf4d703f53df664287b97b0afd386d265f4ab83409028f",
+    "meteor-business-01/plan.json": "fa82c38d23cbafda39288800af5f4bd1280c7ce003c72523c35fd74dfb644cfd",
+    "meteor-business-01/create/sdk-result.json": "8d9118833bc63bb1e69b22432808bdd7a1965c4ee54046769e1aee6f8098d5cc",
+    "meteor-business-01/create/sdk-observations.json": "bc0d7880bf482e021f1580dccff2318645e3ee109ae1fd527f114c88e0ca8956"
   }
 }
