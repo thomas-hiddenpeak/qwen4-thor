@@ -784,6 +784,11 @@
         "stage": "schema_verified",
         "receipt": "evidence/serve-chat-audio-wire-20261125/moderation.json",
         "pending": "Publish corrected Chat response declarations alongside pagination and audio"
+      },
+      "combined_chat_pages_20261125": {
+        "stage": "sdk_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
       }
     },
     {
@@ -1158,6 +1163,11 @@
         "stage": "schema_verified",
         "receipt": "evidence/serve-chat-audio-wire-20261125/moderation.json",
         "pending": "Publish corrected Chat response declarations alongside pagination and audio"
+      },
+      "combined_chat_pages_20261125": {
+        "stage": "sdk_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
       }
     },
     {
@@ -3106,6 +3116,11 @@
       "upload_delivery_20261125": {
         "revision": 492,
         "receipt": "evidence/serve-chatkit-20261125/upload-delivery.json"
+      },
+      "combined_chat_pages_20261125": {
+        "stage": "sdk_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
       }
     },
     {
@@ -5835,6 +5850,11 @@
         "stage": "schema_verified",
         "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
         "pending": "Publish corrected client declarations with the next package"
+      },
+      "combined_chat_pages_20261125": {
+        "stage": "sdk_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
       }
     },
     {
@@ -7727,6 +7747,11 @@
       "assistant_pagination_handoff_20261125": {
         "stage": "targeted_cpu_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/profiles.json"
+      },
+      "combined_chat_pages_20261125": {
+        "stage": "sdk_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
       }
     },
     {
@@ -11702,6 +11727,11 @@
       "upload_delivery_20261125": {
         "revision": 492,
         "receipt": "evidence/serve-chatkit-20261125/upload-delivery.json"
+      },
+      "combined_chat_pages_20261125": {
+        "stage": "sdk_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
+        "issued": false
       }
     },
     {

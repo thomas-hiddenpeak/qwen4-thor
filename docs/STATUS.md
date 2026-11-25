@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Node SDK 经原生 TLS 建立线程并运行 6 × 7，模型回答 42。四类 Assistants 分页和 ChatKit 对照共 12 个 HTTP 200，均通过官方与候选 schema，末页和非空游标与对应资源一致。相同候选声明同步复核语音及内容过滤归档。下一步验证容量交接和可回退发行。[验证记录](evidence/serve-assistant-pagination-20261125/http.json)
+
 管理员只读检查已确认 rev492 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev492-preflight.json)
 
 两种容量和两项受监护故障实测均保留同一份文件与原对话。新会话取回文件并在原线程回答 157，另一客户回答 42。发布保持 STOPPED，受保护记录一致。24 小时计划通过预检，实跑由用户安排。下一步继续 SDK 空页和剩余媒体接口。[验证记录](evidence/serve-chatkit-20261125/upload-delivery.json)
