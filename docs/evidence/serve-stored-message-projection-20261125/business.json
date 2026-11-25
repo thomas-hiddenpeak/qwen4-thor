@@ -1,0 +1,97 @@
+{
+  "stage": "device_verified",
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 37.051,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "cases": [
+      {
+        "id": "chatcmpl-auto-88b8e49885753b909586d8bd4f528c39",
+        "message_id": "chatmsg_793d44b1186addc11407ca47f5c5391eb1a2d66c1e6686b3bb91aef210d4820e",
+        "refusal": "未授权修改项目资料。",
+        "original_content_parts": [
+          {
+            "type": "refusal",
+            "refusal": "未授权修改项目资料。"
+          }
+        ],
+        "last_id": "chatmsg_d1947c752aa71e9bc9f5da317d05be5794bd799a578ee6a54aa16767cd9dab3f",
+        "peer": 404,
+        "recovered": false
+      },
+      {
+        "id": "chatcmpl-auto-687f2eba6b66f02774067ee627106576",
+        "message_id": "chatmsg_abcd8c7d023f29cc34b91229ad27e8492336d3154948636611f35a4df206dad5",
+        "refusal": "单独记录的拒答说明。",
+        "original_content_parts": [
+          {
+            "type": "refusal",
+            "refusal": "原始拒答片段。"
+          }
+        ],
+        "last_id": "chatmsg_376ba827e60306e3ab6135a18b7e8b76b9425a10ecfdf77c6eb29587f24fb91a",
+        "peer": 404,
+        "recovered": false
+      }
+    ]
+  },
+  "python": {
+    "version": "3.42.1",
+    "cases": [
+      {
+        "id": "chatcmpl-auto-88b8e49885753b909586d8bd4f528c39",
+        "message_id": "chatmsg_793d44b1186addc11407ca47f5c5391eb1a2d66c1e6686b3bb91aef210d4820e",
+        "roles": [
+          "user",
+          "assistant",
+          "user"
+        ],
+        "wire": true,
+        "peer": 404
+      },
+      {
+        "id": "chatcmpl-auto-687f2eba6b66f02774067ee627106576",
+        "message_id": "chatmsg_abcd8c7d023f29cc34b91229ad27e8492336d3154948636611f35a4df206dad5",
+        "roles": [
+          "user",
+          "assistant",
+          "user"
+        ],
+        "wire": true,
+        "peer": 404
+      }
+    ],
+    "reader_sha256": "e0e3e54f83fcc665a7ee8e8656fc1e999f3f105632dc9630637279630eaffd2a"
+  },
+  "driver_sha256": "3ae56cd426f414db12a947d7cbd135bff4553f96a7ec6fc32a33bd65707a333b",
+  "serving": {
+    "binary": "0983ab4de1346cc7a02ea14c1000f38cb89d98c7113866962e735f9375d1c362",
+    "protocol_sha256": "7a77ae92e0de97eea63353bc745d5363f67669f3431905509a266c33deea6621"
+  },
+  "changed_runtime_sources": [
+    "src/server/chat_storage.cpp"
+  ],
+  "protected_release": {
+    "revision": 502,
+    "manifest": "6cef03abb1b3b0625e8c69c2f1763553006bcf0ad9d01f602b4761d50e7d457d"
+  },
+  "lease_sha256": "b5fd0579ae91d98684def363ad0dc04e1c819adf3306e6f70621d2489b39b8d1",
+  "scope": "Two actual model completions returned 42 with different saved historical refusals. Both official clients retrieved the same row and cursor over native TLS. Python validated the actual page against local and upstream schemas.",
+  "sources": {
+    "stored-refusal-business-02/plan.json": "dacc6a836c576dd97198a13cbcce84f79fa79408906c08458a72c40dc61d9dc7",
+    "stored-refusal-business-02/result.json": "b8b5b713207f7f8b64d560bcc4e523988dd25513422f50166d660cdbe14fb6b5",
+    "stored-refusal-business-02/create/sdk-observations.json": "a1d75a249e59a03cfd9d4d816e28b1839740aa7386935984d154374d54907d56",
+    "stored-refusal-business-02/create/sdk-result.json": "ae71d16bad6fc5bdb0398ac34284f119165466016aa45c12f05efd3f9b703728",
+    "stored-refusal-business-02/create/python.json": "550eb8b7284c86644edadf050ee69536f4f8e6fbca8bcded1ded5cdb86e78a60",
+    "stored-refusal-business-02/create/serving-identity.json": "545303e539a1a13363d64a2218235167b967011f84edfc7ba99a9c299d40c78e",
+    "stored_refusal_device_business.py": "1892f152e4e2e942e7360d3695468ca378a2e7af752548ad5a7717dccd2dda5c",
+    "webhook-dev/stored_refusal_tls_reader.py": "e0e3e54f83fcc665a7ee8e8656fc1e999f3f105632dc9630637279630eaffd2a"
+  }
+}

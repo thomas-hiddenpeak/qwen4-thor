@@ -315,6 +315,49 @@ Q4T_TEST(chat_storage_original_messages_preserve_parts_and_tool_history) {
   return true;
 }
 
+Q4T_TEST(chat_storage_reopens_original_refusals_and_pages_without_mutation) {
+  Fixture fixture;
+  const auto messages = Parse(R"([
+    {"role":"assistant","content":[{"type":"refusal","refusal":"只读"}]},
+    {"role":"assistant","refusal":"field","content":[
+      {"type":"refusal","refusal":"part"}]},
+    {"role":"assistant","refusal":"field only","content":null}])");
+  std::string original;
+  {
+    ObjectStore objects(fixture.options);
+    auto input = Input();
+    Set(&input, "messages", messages);
+    Q4T_CHECK(Ok(StoredChats(objects).Save(input, Output(), Access())));
+    original = OutputJson(ReadRecord(objects, "chatcmpl_test").value);
+  }
+  ObjectStore objects(fixture.options);
+  StoredChats chats(objects);
+  ChatListOptions options;
+  options.limit = 1;
+  const std::string expected[] = {"只读", "field", "field only"};
+  for (size_t i = 0; i < messages.array.size(); ++i) {
+    auto page = chats.Messages("chatcmpl_test", options, Access());
+    Q4T_CHECK(Ok(page) && page.value.GetArray("data")->array.size() == 1);
+    const auto& item = page.value.GetArray("data")->array.front();
+    Q4T_CHECK(item.GetString("refusal") == expected[i]);
+    Q4T_CHECK(item.Find("content_parts") &&
+              item.Find("content_parts")->IsNull());
+    const auto* parts = item.Find("original_content_parts");
+    if (i < 2) {
+      Q4T_CHECK(parts && OutputJson(*parts) ==
+                             OutputJson(*messages.array[i].Find("content")));
+    } else {
+      Q4T_CHECK(!parts);
+    }
+    options.after = page.value.GetString("last_id");
+    Q4T_CHECK(page.value.GetBool("has_more") == (i < 2));
+  }
+  Q4T_CHECK(chats.Messages("chatcmpl_test", {}, Access("client:b")).http_status ==
+            404);
+  Q4T_CHECK(OutputJson(ReadRecord(objects, "chatcmpl_test").value) == original);
+  return true;
+}
+
 Q4T_TEST(chat_storage_incomplete_or_quota_refusal_never_publishes) {
   Fixture f;
   f.options.max_client_objects = 1;

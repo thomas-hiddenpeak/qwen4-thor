@@ -61053,9 +61053,6 @@
                     "$ref": "#/$defs/chat_input_textPart"
                   },
                   {
-                    "$ref": "#/$defs/chat_input_refusalPart"
-                  },
-                  {
                     "$ref": "#/$defs/chat_input_imagePart"
                   },
                   {
@@ -61071,13 +61068,21 @@
               }
             }
           ]
+        },
+        "original_content_parts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/chat_input_refusalPart"
+          }
         }
       },
       "required": [
         "id",
         "role",
         "content",
-        "name"
+        "content_parts"
       ],
       "additionalProperties": false
     },

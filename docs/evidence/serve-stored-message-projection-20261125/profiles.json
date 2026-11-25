@@ -1,0 +1,238 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 502,
+  "tests": {
+    "passed": 52,
+    "modules": [
+      "tools.serve_recovery.test_profile_migration",
+      "tools.serve_chat_storage.test_refusal_profiles"
+    ],
+    "sha256": "0d3da33e9791ee309a67b78ed834bf805d902314b8299188bcea8249158c7ff8"
+  },
+  "predecessors": {
+    "primary": {
+      "predecessor": "a20dcaffedf0867ddbf7a0db9ab85fc96a9a626dfd61f1d7716b31f21272b057",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    },
+    "light": {
+      "predecessor": "aaf1cffc4688eac8ecfb65185606db573ee85b49e55507ec245fa5756aa931ad",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    }
+  },
+  "scope": "The light capacity must retrieve primary completion IDs and identical refusal fields, including the conflicting original part.",
+  "build": {
+    "engine": "0983ab4de1346cc7a02ea14c1000f38cb89d98c7113866962e735f9375d1c362",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "openapi_sha256": "d81f55f87a2cc6211331b29c566147a9df33e1beccca75ac7ba6304dac7b9240",
+  "runs": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "cases": [
+          {
+            "id": "chatcmpl-auto-d55e449fe649d28599674ab0f5f4ace5",
+            "message_id": "chatmsg_bbef577a3cc1e8dffd29d12140255faca2b02f6dc579c4dec83e893960657a0c",
+            "refusal": "未授权修改项目资料。",
+            "original_content_parts": [
+              {
+                "type": "refusal",
+                "refusal": "未授权修改项目资料。"
+              }
+            ],
+            "last_id": "chatmsg_26e179449ea0ec45afb4b8e12fa07c9a9b1d98fba765c0b04ace39047ef8bbd6",
+            "peer": 404,
+            "recovered": false
+          },
+          {
+            "id": "chatcmpl-auto-b1e932ad0ca76106bea5f0d5b3b32b79",
+            "message_id": "chatmsg_3a1af1479cb37da7145d9bae1e838ded98924d0efeca9b7b36cf0a1d10d4c7cd",
+            "refusal": "单独记录的拒答说明。",
+            "original_content_parts": [
+              {
+                "type": "refusal",
+                "refusal": "原始拒答片段。"
+              }
+            ],
+            "last_id": "chatmsg_367bea5cab30b200a554f12a30e13ca6a163c881d8ff90ee01d875a526107eab",
+            "peer": 404,
+            "recovered": false
+          }
+        ]
+      },
+      "raw_sha256": "9c2c580013f2cacaa5a66d2bb2c4c3dbcc64d93d258e2cb6364c40ba8c75aa2b"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "cases": [
+          {
+            "id": "chatcmpl-auto-d55e449fe649d28599674ab0f5f4ace5",
+            "message_id": "chatmsg_bbef577a3cc1e8dffd29d12140255faca2b02f6dc579c4dec83e893960657a0c",
+            "refusal": "未授权修改项目资料。",
+            "original_content_parts": [
+              {
+                "type": "refusal",
+                "refusal": "未授权修改项目资料。"
+              }
+            ],
+            "last_id": "chatmsg_26e179449ea0ec45afb4b8e12fa07c9a9b1d98fba765c0b04ace39047ef8bbd6",
+            "peer": 404,
+            "recovered": true
+          },
+          {
+            "id": "chatcmpl-auto-b1e932ad0ca76106bea5f0d5b3b32b79",
+            "message_id": "chatmsg_3a1af1479cb37da7145d9bae1e838ded98924d0efeca9b7b36cf0a1d10d4c7cd",
+            "refusal": "单独记录的拒答说明。",
+            "original_content_parts": [
+              {
+                "type": "refusal",
+                "refusal": "原始拒答片段。"
+              }
+            ],
+            "last_id": "chatmsg_367bea5cab30b200a554f12a30e13ca6a163c881d8ff90ee01d875a526107eab",
+            "peer": 404,
+            "recovered": true
+          }
+        ]
+      },
+      "raw_sha256": "01ae3cf893fef403ab775f3abcc6c9a7fb612d48fc7d925a29a10f87454f9787"
+    }
+  },
+  "registry": {
+    "status": "ACCEPT_STORED_REFUSAL_PRIMARY_LIGHT",
+    "registry_sha256": "dee6dc969c1c591658ed81087c1931a6b3d7743a62e4ce2e35e96b0a572c0d55",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 78,
+      "cleanup_complete": true,
+      "lease_result_sha256": "ae927618237026e3aa71477d7afe4eff8dd6070044c9239d19fc10db1f48bc93"
+    },
+    "migration_permit_sha256": "3c1fdaa8f9d69114cc97a817a7c1c12cebb9ac7f81ed81c0a030b11ce16be63c",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "review": {
+    "pins": {
+      "primary": "111af0f29262039f80b38f93f3dec904f0245f22655f827f96eb3cccd7d2775a",
+      "light": "dc83d48ae79f951b0b3c9ebdf957f7e6c29459b2eda52c97adb397286e4f6961"
+    },
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "acceptance": "5943cfda1ccef482417efc40e33f7cac49d727eec8e3347aec2a36a1c443c940"
+  },
+  "device": {
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 78,
+      "cleanup_complete": true
+    },
+    "results": [
+      {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 78
+        },
+        "seconds": 47.18488496495411,
+        "binary_sha256": "0983ab4de1346cc7a02ea14c1000f38cb89d98c7113866962e735f9375d1c362"
+      },
+      {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 70
+        },
+        "seconds": 35.005470398813486,
+        "binary_sha256": "0983ab4de1346cc7a02ea14c1000f38cb89d98c7113866962e735f9375d1c362"
+      }
+    ],
+    "profiles": {
+      "primary": {
+        "profile": "primary",
+        "protocol": "7a77ae92e0de97eea63353bc745d5363f67669f3431905509a266c33deea6621",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": true,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": true,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "created",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      },
+      "light": {
+        "profile": "light",
+        "protocol": "7a77ae92e0de97eea63353bc745d5363f67669f3431905509a266c33deea6621",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": false,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": false,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "recovered",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      }
+    },
+    "engine_sha256": "0983ab4de1346cc7a02ea14c1000f38cb89d98c7113866962e735f9375d1c362",
+    "ingress_sha256": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+    "disclosure_update": null
+  },
+  "lease_sha256": "ae927618237026e3aa71477d7afe4eff8dd6070044c9239d19fc10db1f48bc93"
+}

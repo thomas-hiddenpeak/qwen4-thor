@@ -1,0 +1,432 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 504,
+    "version_revision": 181,
+    "profile_revision": 71,
+    "previous_profile_revision": 70,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "e0ce664056e74c87421514ac6105ef9d162316589022a9be241d4f7e31174a93",
+    "fallback": "365351cf375d7a50ee11eadf575b7420ab350d0c9608928703a9f5418850e855",
+    "engine": "0983ab4de1346cc7a02ea14c1000f38cb89d98c7113866962e735f9375d1c362",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "6cef03abb1b3b0625e8c69c2f1763553006bcf0ad9d01f602b4761d50e7d457d",
+  "recovery": {
+    "fallback": {
+      "seconds": 149.113,
+      "starts": 2,
+      "unchanged_default": true,
+      "clean": true,
+      "sdk": "7.47.0",
+      "recovered": [
+        {
+          "id": "chatcmpl-auto-d655bbab28f0e5bfd7f35e21bd034004",
+          "message_id": "chatmsg_a5d5d7af891992a5e4b4f8907e244f33eaba5fa34a75e94914cacda05d25c63b",
+          "refusal": "未授权修改项目资料。",
+          "original_content_parts": [
+            {
+              "type": "refusal",
+              "refusal": "未授权修改项目资料。"
+            }
+          ],
+          "last_id": "chatmsg_7950a24079e320a8349cc9e1d87def817428cb49c3ca95043d31e907044bba59",
+          "peer": 404,
+          "recovered": true
+        },
+        {
+          "id": "chatcmpl-auto-61d6c4805bf53a84a6abbf29f6dd77b0",
+          "message_id": "chatmsg_2482b36a6da0dee6d381cdb73af3de01e790fe4f557781d863b98ff7cedcda1b",
+          "refusal": "单独记录的拒答说明。",
+          "original_content_parts": [
+            {
+              "type": "refusal",
+              "refusal": "原始拒答片段。"
+            }
+          ],
+          "last_id": "chatmsg_84e8d03a261aa7e1ecd307b24530187731557f15c046297a4a6bcb2873a3c764",
+          "peer": 404,
+          "recovered": true
+        }
+      ],
+      "peer": [
+        404,
+        404
+      ],
+      "independent": "42",
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 211.873,
+      "starts": 2,
+      "unchanged_default": true,
+      "clean": true,
+      "sdk": "7.47.0",
+      "recovered": [
+        {
+          "id": "chatcmpl-auto-5316fe6991945e964af79b27cf9ee846",
+          "message_id": "chatmsg_c125d6697f3120f1bb1988a79a3305f3e4e1c9fee9c4cc9607155a491e087a7c",
+          "refusal": "未授权修改项目资料。",
+          "original_content_parts": [
+            {
+              "type": "refusal",
+              "refusal": "未授权修改项目资料。"
+            }
+          ],
+          "last_id": "chatmsg_d2aefb52edc1bb0a1a6326d08f98b78f0fc7c57b6bdb28cc7bbb5c05effc88ba",
+          "peer": 404,
+          "recovered": true
+        },
+        {
+          "id": "chatcmpl-auto-498e9f59721709693ff985ec6199d808",
+          "message_id": "chatmsg_281d97c6f1dc5d10fe1cfd0a116ea916770c3a4aaf24c0b60a29b87b71c4eaad",
+          "refusal": "单独记录的拒答说明。",
+          "original_content_parts": [
+            {
+              "type": "refusal",
+              "refusal": "原始拒答片段。"
+            }
+          ],
+          "last_id": "chatmsg_723536a502a0acada37a05164c1305bda7aed70550a1ebf187f6389049bd9a9f",
+          "peer": 404,
+          "recovered": true
+        }
+      ],
+      "peer": [
+        404,
+        404
+      ],
+      "independent": "42",
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "archived_six_role_cpu_http": {
+    "2.8.1": {
+      "sdk": "2.8.1",
+      "roles": [
+        "assistant",
+        "developer",
+        "function",
+        "system",
+        "tool",
+        "user"
+      ],
+      "conversations": [
+        {
+          "id": "chatcmpl_17a85d611366d5c28d1188b9eb2fb0e1",
+          "roles": [
+            "system",
+            "developer",
+            "user",
+            "assistant",
+            "function",
+            "user"
+          ],
+          "preserved_inputs": true,
+          "reverse_pages": true,
+          "peer": 404,
+          "upstream_strict_errors": [
+            [
+              "data",
+              0,
+              "role"
+            ],
+            [
+              "data",
+              1,
+              "role"
+            ],
+            [
+              "data",
+              2,
+              "role"
+            ],
+            [
+              "data",
+              4,
+              "role"
+            ],
+            [
+              "data",
+              5,
+              "role"
+            ]
+          ]
+        },
+        {
+          "id": "chatcmpl_a4b17f78ffcec205e697131514ebc054",
+          "roles": [
+            "user",
+            "assistant",
+            "tool",
+            "user"
+          ],
+          "preserved_inputs": true,
+          "reverse_pages": true,
+          "peer": 404,
+          "upstream_strict_errors": [
+            [
+              "data",
+              0,
+              "role"
+            ],
+            [
+              "data",
+              2,
+              "role"
+            ],
+            [
+              "data",
+              3,
+              "role"
+            ]
+          ]
+        }
+      ],
+      "http_sha256": "e32ec93c5d7f5af33fda13dc8964a73407ad75c0c613f9b598dd695b2edfc8c8",
+      "generated_text_fixture": true
+    },
+    "3.42.1": {
+      "sdk": "3.42.1",
+      "roles": [
+        "assistant",
+        "developer",
+        "function",
+        "system",
+        "tool",
+        "user"
+      ],
+      "conversations": [
+        {
+          "id": "chatcmpl_bb9050532b5086526e57587513d97f69",
+          "roles": [
+            "system",
+            "developer",
+            "user",
+            "assistant",
+            "function",
+            "user"
+          ],
+          "preserved_inputs": true,
+          "reverse_pages": true,
+          "peer": 404,
+          "upstream_strict_errors": [
+            [
+              "data",
+              0,
+              "role"
+            ],
+            [
+              "data",
+              1,
+              "role"
+            ],
+            [
+              "data",
+              2,
+              "role"
+            ],
+            [
+              "data",
+              4,
+              "role"
+            ],
+            [
+              "data",
+              5,
+              "role"
+            ]
+          ]
+        },
+        {
+          "id": "chatcmpl_a086164885f78d0ae800264a0492baee",
+          "roles": [
+            "user",
+            "assistant",
+            "tool",
+            "user"
+          ],
+          "preserved_inputs": true,
+          "reverse_pages": true,
+          "peer": 404,
+          "upstream_strict_errors": [
+            [
+              "data",
+              0,
+              "role"
+            ],
+            [
+              "data",
+              2,
+              "role"
+            ],
+            [
+              "data",
+              3,
+              "role"
+            ]
+          ]
+        }
+      ],
+      "http_sha256": "9ff238a91afbc613c478791530fe3bfe75d6c7458b91f398c685b436e93722ad",
+      "generated_text_fixture": true
+    },
+    "3.55.1": {
+      "sdk": "3.55.1",
+      "roles": [
+        "assistant",
+        "developer",
+        "function",
+        "system",
+        "tool",
+        "user"
+      ],
+      "conversations": [
+        {
+          "id": "chatcmpl_ec2510cb3074b2711e6d78bf8d377f37",
+          "roles": [
+            "system",
+            "developer",
+            "user",
+            "assistant",
+            "function",
+            "user"
+          ],
+          "preserved_inputs": true,
+          "reverse_pages": true,
+          "peer": 404,
+          "upstream_strict_errors": [
+            [
+              "data",
+              0,
+              "role"
+            ],
+            [
+              "data",
+              1,
+              "role"
+            ],
+            [
+              "data",
+              2,
+              "role"
+            ],
+            [
+              "data",
+              4,
+              "role"
+            ],
+            [
+              "data",
+              5,
+              "role"
+            ]
+          ]
+        },
+        {
+          "id": "chatcmpl_dafa5e86ce08277d04c92a1d5e2e651a",
+          "roles": [
+            "user",
+            "assistant",
+            "tool",
+            "user"
+          ],
+          "preserved_inputs": true,
+          "reverse_pages": true,
+          "peer": 404,
+          "upstream_strict_errors": [
+            [
+              "data",
+              0,
+              "role"
+            ],
+            [
+              "data",
+              2,
+              "role"
+            ],
+            [
+              "data",
+              3,
+              "role"
+            ]
+          ]
+        }
+      ],
+      "http_sha256": "a121d8b5ea50638ac8da5530a7a25d599072949daea3478b07434e050a5949a5",
+      "generated_text_fixture": true
+    }
+  },
+  "soak": {
+    "source_commit": "e14a6e633950567280c6e960e76a571a0f751d13",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stored-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stored-client-primary-01/bundle",
+      "manifest_sha256": "e0ce664056e74c87421514ac6105ef9d162316589022a9be241d4f7e31174a93"
+    },
+    "revision": 504,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stored-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "a37bbd43ba84ff0e1d9753876fc8cb36199263eb3c7165ec592c23fa29924e9c",
+    "handoff_sha256": "149765b668c4e789ef6d358dbbaec9ff738a5b7e75313ea300cdf09f40fdc110",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "openapi_sha256": "d81f55f87a2cc6211331b29c566147a9df33e1beccca75ac7ba6304dac7b9240",
+  "method_declarations": {
+    "required": 231,
+    "matched": 219,
+    "remaining": 12
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/stored-delivery-delivery/result.json": "97018034502536814021d3e628150768c05b6057224d8940e3e587d0f24a2c4b",
+    ".q4t-work/serve-responses-agents-20261123/stored-delivery-delivery/plan.json": "8887a34f606184258bc4aa47479e6a37b5e97536a5369c1c8944f873284b99a0",
+    ".q4t-work/serve-responses-agents-20261123/stored-delivery-delivery/check.stdout": "89c54a86ce1152cd13c26441289868116607624bbcab2074f0f0c846b5f4ec09",
+    ".q4t-work/serve-responses-agents-20261123/stored-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/stored-delivery-delivery/version-status.stdout": "1a154aec1381d8397cddbc9358480a8f6769e9a7f74df66fffd931c7e31b0621",
+    ".q4t-work/serve-responses-agents-20261123/stored-chat-src/docs/evidence/serve-stored-message-projection-20261125/cursor.json": "58b955828bdd4b26e0729864da49b4f4e07063168489ff898e8baa99484b9be0",
+    ".q4t-work/serve-responses-agents-20261123/stored-chat-src/docs/evidence/serve-stored-message-projection-20261125/business.json": "ba7803b7c13b7058693213f879568294cf54b36916789fa8ed2a216c1309a1ea",
+    ".q4t-work/serve-responses-agents-20261123/stored-chat-src/docs/evidence/serve-stored-message-projection-20261125/profiles.json": "d9d6b1f6b86d00b993dc668486b7a27622824a4fd7643f7a0594c55008ee1b32",
+    ".q4t-work/serve-responses-agents-20261123/stored-release-methods.json": "3f013f2ad062b86c6b1e48f13f0342946bc2eb5dae9f164ab967a08a8b712d63",
+    ".q4t-work/serve-responses-agents-20261123/stored-delivery-day.json": "325f574d79aa74e77e7e5f6987fd7c288585c23a4aa05a7a47f35c922be6afe3",
+    ".q4t-work/serve-responses-agents-20261123/stored-delivery-maintenance-01/result.json": "b4fed494990605c12aacbdf8f2792d745d8c30e239fcd2531dc5f7c62f2395fd",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/previous-soak-retained-504.json": "c333fd3f2a8b89636d90db6a3244a2291cf2eb71fe3129ceff4cd2f77f13639d",
+    ".q4t-work/serve-responses-agents-20261123/stored-maintenance-lease-01/exit.json": "02d50fc4764aa616d6bab2b3033914a85824bccbba6dec2f298689ff8b9558ec",
+    ".q4t-work/serve-responses-agents-20261123/stored-publish-lease-01/exit.json": "65f22528c33fa0280f431166b89cabea72ecbecda85988e11bcabfd3d6c1db1d",
+    ".q4t-work/serve-responses-agents-20261123/stored-fallback-lease-01/exit.json": "a1925cf0018ba000ad44638cc6605f3ad5a65595dee017adccf1f20b95cbbdb4",
+    ".q4t-work/serve-responses-agents-20261123/stored-fallback-business-01/ready.json": "3427e11ed8bcc8865565e0d45e39361e8d1192df61bb9d5b15f5466829a703c9",
+    ".q4t-work/serve-responses-agents-20261123/stored-fallback-business-01/prepare-run.json": "f846376deef31c8e9fdc4b3544fce24d3262c6018972a29687376ba7ab7a2496",
+    ".q4t-work/serve-responses-agents-20261123/stored-fallback-business-01/restore-run.json": "a3108bb77ca949901ab53c3ecbcc0ff407b8bf2e3593419e5cd5faa68954cd74",
+    ".q4t-work/serve-responses-agents-20261123/stored-fallback-business-01/interruption.json": "c0c0c62318f8ecfda5acb1acbfb87ad7612c3f8e5174442d9f1504286f7e01f0",
+    ".q4t-work/serve-responses-agents-20261123/stored-fallback-business-01/result.json": "acabd89f26b8567f0f9c517b9a929fa2826e9f1abfe76259f23aefcd3565febd",
+    ".q4t-work/serve-responses-agents-20261123/stored-fallback-business-01/chat-after.wire": "48121d29350c1a7caa03dff7cf646f144de3be9049c5bc002a2b4b609776b431",
+    ".q4t-work/serve-responses-agents-20261123/stored-client-fallback-01/origin.json": "0bbeb9b2054b4edc9eada69ae495bb8fd0f94920ba2a4bcf989f8fa9bae8cfee",
+    ".q4t-work/serve-responses-agents-20261123/stored-client-fallback-01/service.release.json": "56a7dedd0c9db6b6f023fa28096d4e0cd9ab67f2547168598947d05088cba2e0",
+    ".q4t-work/serve-responses-agents-20261123/stored-client-fallback-01/service-acceptance.json": "8ee78717df4692d4bf71a7f9bfe60ae619ebb4a115f714a86a9a7fc4aca17cf3",
+    ".q4t-work/serve-responses-agents-20261123/stored-primary-lease-01/exit.json": "1b2519ef23683640b240bceddc0d37adcd9b104ee0b44f45fe8383105d87524c",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/ready.json": "3427e11ed8bcc8865565e0d45e39361e8d1192df61bb9d5b15f5466829a703c9",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/prepare-run.json": "ce4c19ab1e8d14398d50313dad101ce1842dff9782a9a14427c890f143752763",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/restore-run.json": "7f3164149e31506768635a1045f57b2e117036cd06067696761cc02c740ebce8",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/interruption.json": "5e91ae62efaaa667c20222db0de91f02da99196a37854b2735d5fac545455bf1",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/result.json": "952707ed90a6fee252daa96c0d222f57f41b3c86879072b59d9fb8571bdf19ea",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/chat-after.wire": "50af682f24a1134ca51eb692bf7a15f428ca558f9d8dac3c6b9dd86f96b1fb28",
+    ".q4t-work/serve-responses-agents-20261123/stored-client-primary-01/origin.json": "629b3fe2a41061b6cbfb94d647c4b73a81464dbeacf463589f261b984f78eedc",
+    ".q4t-work/serve-responses-agents-20261123/stored-client-primary-01/service.release.json": "99a6c3a703f615e5364310bc1567890b18809ea363c5408a272e06803fe8f310",
+    ".q4t-work/serve-responses-agents-20261123/stored-client-primary-01/service-acceptance.json": "5b68d59a783a233a3a39d9ecfe19f7cff97a41cbd7ac87fc72c8c5a505d6fc6f",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/takeover.json": "11fd1e39702e5660fa051b3d1012aaa6d53d8815dafa5f9555bd7b3faa3294ba",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-stored-01/startup-progress.jsonl": "be3574dd679d34404d9c14ba35858f368bb9eb3bb7f1966e19c1f751cf7cc409",
+    ".q4t-work/serve-responses-agents-20261123/stored-sdk-six-roles-2.8.1/result.json": "ef72b11a1b3554300888b23538ba81098504d86baa281c201be0eda79facec50",
+    ".q4t-work/serve-responses-agents-20261123/stored-sdk-six-roles-3.42.1/result.json": "6348711f3724531bbe4cd4e0da78d5cf86d381c374f5d30d36e9f403e96100c4",
+    ".q4t-work/serve-responses-agents-20261123/stored-sdk-six-roles-3.55.1/result.json": "caf2cb6e5b87dc55e36c98815c20800d0362325e251f592d1465dd8593cfa279",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/stored_sdk_all_roles.py": "79cce37542bfd671b7c59dd1c78170d851952748182de1706f87226288642950"
+  }
+}

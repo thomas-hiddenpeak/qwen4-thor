@@ -1,0 +1,345 @@
+{
+  "scope": "Strict Python resource method serialization (verb and path) and lossless decoding of real Node JSON response bodies. Mock transport; only successful response bodies were included. Exact original HTTP status is not claimed for threads and runs.",
+  "source": {
+    "skill-business-02/create/run-wire.json": "bdfb0c2c3471e4f7fe36b02da14ee63757e2f0eb95c8b2af8e2eb5668f918744",
+    "threads-business-02/create/thread-wire.json": "a9ec301914ba51686017e9397331b384c31b504b289003f10856212898db3593",
+    "runs-business-02/create/run-wire.json": "95e3d88ebceebc2a0d208f3231908f9a9c7b5cdfd3e0050cf8ab3f3041d7ed1e"
+  },
+  "driver_sha256": "b9a9352f3c6369b9c2b6be677f557d79296bb1bb0f65fe73c966a735c41e0b6c",
+  "replay_status": 200,
+  "sdk": {
+    "2.8.1": {
+      "parsed": 53,
+      "unavailable": 11,
+      "operations": {
+        "DELETE /v1/skills/{skill_id}": {
+          "parsed": 0,
+          "unavailable": 1
+        },
+        "DELETE /v1/skills/{skill_id}/versions/{version}": {
+          "parsed": 0,
+          "unavailable": 1
+        },
+        "DELETE /v1/threads/{thread_id}": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "DELETE /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/skills": {
+          "parsed": 0,
+          "unavailable": 2
+        },
+        "GET /v1/skills/{skill_id}": {
+          "parsed": 0,
+          "unavailable": 1
+        },
+        "GET /v1/skills/{skill_id}/versions": {
+          "parsed": 0,
+          "unavailable": 2
+        },
+        "GET /v1/skills/{skill_id}/versions/{version}": {
+          "parsed": 0,
+          "unavailable": 1
+        },
+        "GET /v1/threads/{thread_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/messages": {
+          "parsed": 6,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}": {
+          "parsed": 24,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}/steps": {
+          "parsed": 4,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/skills": {
+          "parsed": 0,
+          "unavailable": 1
+        },
+        "POST /v1/skills/{skill_id}": {
+          "parsed": 0,
+          "unavailable": 1
+        },
+        "POST /v1/skills/{skill_id}/versions": {
+          "parsed": 0,
+          "unavailable": 1
+        },
+        "POST /v1/threads": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/threads/runs": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/messages": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs/{run_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs/{run_id}/cancel": {
+          "parsed": 1,
+          "unavailable": 0
+        }
+      },
+      "trace_sha256": "3d25bfeb2808e24fe2e8ebb8e9a937f4aeb7f19e155d95fd4b90ff11d66c3a5f"
+    },
+    "3.42.1": {
+      "parsed": 64,
+      "unavailable": 0,
+      "operations": {
+        "DELETE /v1/skills/{skill_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "DELETE /v1/skills/{skill_id}/versions/{version}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "DELETE /v1/threads/{thread_id}": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "DELETE /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/skills": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "GET /v1/skills/{skill_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/skills/{skill_id}/versions": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "GET /v1/skills/{skill_id}/versions/{version}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/messages": {
+          "parsed": 6,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}": {
+          "parsed": 24,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}/steps": {
+          "parsed": 4,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/skills": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/skills/{skill_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/skills/{skill_id}/versions": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/threads/runs": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/messages": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs/{run_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs/{run_id}/cancel": {
+          "parsed": 1,
+          "unavailable": 0
+        }
+      },
+      "trace_sha256": "035c83010308628587ee8202d23d422f228fbb3cf8278a9cb60f86dc15c70ed8"
+    },
+    "3.55.1": {
+      "parsed": 64,
+      "unavailable": 0,
+      "operations": {
+        "DELETE /v1/skills/{skill_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "DELETE /v1/skills/{skill_id}/versions/{version}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "DELETE /v1/threads/{thread_id}": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "DELETE /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/skills": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "GET /v1/skills/{skill_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/skills/{skill_id}/versions": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "GET /v1/skills/{skill_id}/versions/{version}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/messages": {
+          "parsed": 6,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}": {
+          "parsed": 24,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}/steps": {
+          "parsed": 4,
+          "unavailable": 0
+        },
+        "GET /v1/threads/{thread_id}/runs/{run_id}/steps/{step_id}": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/skills": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/skills/{skill_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/skills/{skill_id}/versions": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/threads/runs": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/messages": {
+          "parsed": 2,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/messages/{message_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs/{run_id}": {
+          "parsed": 1,
+          "unavailable": 0
+        },
+        "POST /v1/threads/{thread_id}/runs/{run_id}/cancel": {
+          "parsed": 1,
+          "unavailable": 0
+        }
+      },
+      "trace_sha256": "feb05e71695dc30a424ce74393a42248e134b480fda77532a8e05010f9d1d1cf"
+    }
+  }
+}

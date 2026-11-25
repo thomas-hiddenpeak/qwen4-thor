@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import unittest
+from unittest.mock import Mock
 
 from jsonschema import Draft202012Validator
 from tools.serve_gateway import gateway
@@ -31,6 +32,40 @@ class StoredChatContract(unittest.TestCase):
         self.assertFalse(errors(dict(metadata=None), 'stored_chat_update'))
         self.assertTrue(errors({}, 'stored_chat_update'))
         self.assertTrue(errors(dict(metadata={}, store=True), 'stored_chat_update'))
+
+    def test_stored_refusal_has_a_lossless_public_projection(self):
+        part = dict(type='refusal', refusal='原始')
+        msg = dict(id='chatmsg_1', role='assistant', refusal='field',
+                   content=None, content_parts=None, original_content_parts=[part])
+        self.assertFalse(errors(msg, 'stored_chat_message'))
+        self.assertFalse(errors(dict(msg, name=None), 'stored_chat_message'))
+        for invalid in (dict(msg, content_parts=[part]),
+                        dict(msg, original_content_parts=[part, part]),
+                        {k: v for k, v in msg.items() if k != 'content_parts'}):
+            self.assertTrue(errors(invalid, 'stored_chat_message'))
+
+    def test_raw_sdk_page_checks_schema_cursors_and_empty_pages(self):
+        from jsonschema import ValidationError
+        from tools.serve_chat_storage.python_client import (
+            list_stored_messages, stored_messages_validator)
+
+        validator = stored_messages_validator()
+        client = Mock()
+        call = client.chat.completions.messages.with_raw_response.list
+        response = call.return_value.http_response
+        empty = dict(object='list', data=[], first_id=None, last_id=None, has_more=False)
+        response.json.return_value = empty
+        self.assertEqual(list_stored_messages(client, 'chatcmpl_a', validator=validator,
+                                              after='chatmsg_b', order='desc'), empty)
+        call.assert_called_once_with('chatcmpl_a', after='chatmsg_b', order='desc')
+        response.raise_for_status.assert_called_once_with()
+        for page in (dict(empty, first_id='wrong'), dict(empty, has_more=True)):
+            response.json.return_value = page
+            with self.assertRaisesRegex(ValueError, 'cursors'):
+                list_stored_messages(client, 'chatcmpl_a', validator=validator)
+        response.json.return_value = dict(empty, data=[dict(role='unknown')])
+        with self.assertRaises(ValidationError):
+            list_stored_messages(client, 'chatcmpl_a', validator=validator)
 
     def test_actual_sdk_http_resources_match_declared_shapes(self):
         checked = {}

@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+管理员只读检查已确认 rev504 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev504-preflight.json)
+
+主包和独立回退均按原消息 ID 取回同一拒答；客户单独提交的字段与数组内容各自保留，另一个客户收到 404。模型退出和网关故障后，独立 Chat 均答 42。默认版本停在 rev504，13 份保护记录保持一致，24 小时计划已完成预检。[验证记录](evidence/serve-stored-message-projection-20261125/delivery.json)
+
+主配置通过模型完成两个带拒答历史的 Chat；轻配置打开同一存储，取回相同的 Chat、消息与分页游标。两个独立拒答字段及跨客户隔离均通过。下一步验证托管恢复和可回退发行。[验证记录](evidence/serve-stored-message-projection-20261125/profiles.json)
+
+52 项主机检查通过，覆盖原记录复原、拒绝串换拒答正文与消息 ID、客户隔离失效及未审查配置登记。下一步由轻配置接手主配置持久化的两个真实 Chat。[验证记录](evidence/serve-stored-message-projection-20261125/profiles.json)
+
+单次模型启动完成了两条带历史拒答的 Chat，两次都回答 42。Node 和 Python 经原生 HTTPS 取回同一消息 ID；Python 实际响应通过冻结官方 schema，反向分页和不同客户的 404 均通过。下一步验证容量切换和监督器恢复。[验证记录](evidence/serve-stored-message-projection-20261125/business.json)
+
+首次设备验证中，模型答对 42，拒答字段也已取回；反向分页读取了首行。Node CursorPage 没有顶层 last_id，驱动因而漏发 after。三条历史记录的实际 HTTP 请求复现了该问题，并验证最后一条消息的 ID 与响应正文游标一致。下一步重验受影响业务。[验证记录](evidence/serve-stored-message-projection-20261125/cursor.json)
+
+旧发行的两种合法拒答输入在读取时违反公开 schema。修复后原有三种记录均能按原 ID 分页读取，文件字节保持一致。三版 Python SDK 经公开的原始响应方法与同一份 schema 取回原角色和拒答内容，跨客户请求返回 404。已有 64 份 Skills、Threads、Runs 响应的严格离线回放也已登记。下一步验证实际模型和托管服务。[验证记录](evidence/serve-stored-message-projection-20261125/cpu.json)
+
 管理员只读检查已确认 rev502 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev502-preflight.json)
 
 同一 Guardian 在模型退出后重新启动服务；主网关失效后，一次探测切到已登记的独立包。两次故障后均取回原始调用 ID 与参数，JSON 和 SSE 均区分空值与字符串，独立 Chat 答 42。默认版本已停在 rev502，发布保护的 13 份记录保持一致，24 小时交接预检通过。[验证记录](evidence/serve-history-argument-types-20261125/delivery.json)

@@ -50,6 +50,24 @@ Json Page(Json values, bool more) {
                  {"last_id", std::move(last)},
                  {"has_more", Boolean(more)}});
 }
+// Stored input arrays predate the public response projection. Project refusal
+// parts when reading so earlier conversations keep their original disk bytes.
+Json PublicStoredMessage(Json message) {
+  const auto* parts = message.GetArray("content_parts");
+  if (message.GetString("role") != "assistant" || !parts ||
+      parts->array.size() != 1 ||
+      parts->array.front().GetString("type") != "refusal")
+    return message;
+
+  const auto* text = parts->array.front().Find("refusal");
+  if (!text || !text->IsString()) return message;
+  auto original = *parts;
+  const auto* refusal = message.Find("refusal");
+  if (!refusal || refusal->IsNull()) Set(&message, "refusal", *text);
+  Set(&message, "content_parts", Json());
+  Set(&message, "original_content_parts", std::move(original));
+  return message;
+}
 bool ValidOptions(const ChatListOptions& options, bool messages) {
   std::string param;
   return options.limit >= 1 && options.limit <= 100 &&
@@ -326,7 +344,7 @@ ObjectReply StoredChats::Messages(const std::string& id,
   for (; index < messages.array.size() &&
          page.array.size() < static_cast<size_t>(options.limit);
        ++index)
-    page.array.push_back(std::move(messages.array[index]));
+    page.array.push_back(PublicStoredMessage(std::move(messages.array[index])));
   return Result(Page(std::move(page), index < messages.array.size()));
 }
 

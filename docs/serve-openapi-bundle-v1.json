@@ -89819,9 +89819,6 @@
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_textPart"
                         },
                         {
-                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_refusalPart"
-                        },
-                        {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_imagePart"
                         },
                         {
@@ -89837,13 +89834,21 @@
                     }
                   }
                 ]
+              },
+              "original_content_parts": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 1,
+                "items": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_input_refusalPart"
+                }
               }
             },
             "required": [
               "id",
               "role",
               "content",
-              "name"
+              "content_parts"
             ],
             "additionalProperties": false
           },
