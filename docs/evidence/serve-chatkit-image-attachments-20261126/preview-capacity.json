@@ -1,0 +1,33 @@
+{
+  "stage": "preview_budget_separate_from_storage_and_model",
+  "issued": false,
+  "baseline": "2f5f32556beed3dbb1bccc45e9d7b168204399cb",
+  "case": "chatkit_preview_capacity_keeps_upload_and_model_admission_independent",
+  "image": {
+    "path": "tests/fixtures/file_images/preview-wide.png",
+    "dimensions": [
+      32768,
+      1
+    ],
+    "sha256": "72378676cb6b06605c91198a39530f26417e8e2738c8c6570375af8e6dee82b4"
+  },
+  "failed_test_sha256": "92a5dba03cb95c4b3f1566422745e3bd56f87953f58477594a6c59f1bf5ccf40",
+  "passing_test_sha256": "050cf7a30be43b4fa3fb424df7642b9642a374a6b46e7d724cfc731670481ed1",
+  "native_cases": 12,
+  "upload": "stored under the session file limit",
+  "model_input_status": 413,
+  "engine": "c4ee75984852249592d158bdaa0a45c3b117cd8cbc89fe598319eeaecc9223e6",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 245,
+    "native_routes": 406,
+    "reviewed_source_anchors": 1386,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "previous_https": "completed-previews.json",
+  "this_check": "private binary store, ChatKit publication and normal model file reader on Thor CPU"
+}

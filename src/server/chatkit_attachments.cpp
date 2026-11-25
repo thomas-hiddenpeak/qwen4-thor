@@ -278,6 +278,7 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
                     [&](const auto& item) { return item.first == id; });
     }
     if (!preview_checked &&
+        stage->manifest.bytes <= FileImageLimits{}.max_bytes &&
         AttachmentModelInput(resource).GetString("type") == "input_image") {
       std::string source, png, encoded;
       auto read = binary.ReadStage(access, *stage, FileImageLimits{}.max_bytes,
@@ -290,11 +291,11 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
         Set(&resource, "type", String("image"));
         Set(&resource, "preview_url",
             String("data:image/png;base64," + encoded));
-      } else if (preview.http_status != 503) {
+      } else if (preview.http_status != 503 && preview.http_status != 413) {
         return preview;
       }
-      // A missing or busy preview codec leaves the original usable for
-      // inference. The reservation and file still commit atomically.
+      // Storage uses the session upload limit. Preview capacity and codec
+      // availability do not remove a valid source from the Files interface.
       preview_checked = true;
     }
     auto file = File(state, id);

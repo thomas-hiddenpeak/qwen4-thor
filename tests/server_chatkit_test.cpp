@@ -1342,6 +1342,45 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(
+    chatkit_preview_capacity_keeps_upload_and_model_admission_independent) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto access = Access();
+  const BinaryAccess binary{access.scope, access.deadline, access.cancelled};
+  auto session = Create(objects, access, 16, true);
+  chatkit_detail::Grant owner;
+  Q4T_CHECK(session.ok() &&
+            chatkit_detail::Redeem(objects, access,
+                                   session.value.GetString("client_secret"),
+                                   std::time(nullptr), &owner)
+                .ok());
+  // A real 32768 x 1 PNG fits the upload limit and exceeds the source
+  // edge supported by both the previewer and model input.
+  const auto path = std::filesystem::path(__FILE__).parent_path() /
+                    "fixtures/file_images/preview-wide.png";
+  std::ifstream input(path, std::ios::binary);
+  Q4T_CHECK(input);
+  const std::string original(std::istreambuf_iterator<char>(input), {});
+  BinaryStore store(objects);
+  BinaryStage stage;
+  Q4T_CHECK(store.Begin(binary, 1U << 20, 60, &stage).ok() &&
+            store.Append(binary, &stage, original).ok());
+  auto upload = chatkit_detail::PublishAttachment(
+      objects, binary, owner, &stage, "wide.png", "image/png");
+  Q4T_CHECK(upload.ok() && upload.value.GetString("type") == "file");
+  FileInputSource source;
+  auto model = chatkit_detail::AttachmentModelInput(upload.value);
+  Q4T_CHECK(ParseImageInputSource(model, FileInputProfile::kResponses,
+                                  "input[0]", &source)
+                .ok());
+  FileInputBudget budget;
+  FileImageInput image;
+  Q4T_CHECK(ReadFileImage(&objects, binary, source, {}, {}, &budget, &image)
+                .http_status == 413);
+  return true;
+}
+
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 Q4T_TEST(chatkit_preview_codec_outage_keeps_scoped_image_input) {
   Fixture fixture;

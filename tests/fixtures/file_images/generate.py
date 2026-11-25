@@ -18,3 +18,6 @@ image.save(root / "original.jpg", quality=90, subsampling=0, optimize=False)
     "sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                for p in (root / "original.png", root / "original.jpg")},
 }, indent=2) + "\n")
+
+# Valid attachment with a source edge beyond visual-admission limits.
+Image.new("RGB", (32768, 1), (21, 139, 177)).save(root / "preview-wide.png", compress_level=6)
