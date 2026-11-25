@@ -811,7 +811,8 @@
       },
       "typed_tool_history_20261125": {
         "stage": "cpu_verified",
-        "evidence": "evidence/serve-history-argument-types-20261125/cpu.json"
+        "evidence": "evidence/serve-history-argument-types-20261125/cpu.json",
+        "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json"
       }
     },
     {
@@ -1202,7 +1203,8 @@
       },
       "typed_tool_history_20261125": {
         "stage": "cpu_verified",
-        "evidence": "evidence/serve-history-argument-types-20261125/cpu.json"
+        "evidence": "evidence/serve-history-argument-types-20261125/cpu.json",
+        "native_token_evidence": "evidence/serve-history-argument-types-20261125/native-tokens.json"
       }
     },
     {

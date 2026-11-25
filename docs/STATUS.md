@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+43 次生产 CPU 预检使用了实际模型词表。33 种文本与历史消息完成规划和逐 token 独立对照，五对参数在去掉工具定义后均得到不同的 token 序列。额外五种依赖实际媒体的形状只比对了两套请求 schema。下一步经 HTTPS 执行真实资料工具并读取保存的历史。[验证记录](evidence/serve-history-argument-types-20261125/native-tokens.json)
+
 对五组仅类型不同的历史参数做了实际模板对照。缺少工具定义时，旧实现把字符串与同形的空值、布尔值、数字、数组和对象各渲染成相同字节。关闭额外字段的字符串 schema 下，历史错类型值也会与正确值重合。修复后每对均可区分，普通字符串、精确小数和旧格式对照同步通过。工具历史套件旧版 16/17、候选 17/17。下一步通过实际 HTTP 回放验证模型处理。[验证记录](evidence/serve-history-argument-types-20261125/cpu.json)
 
 Python SDK 3.42.1 和 3.55.1 各通过五次本地请求回放，核对了严格响应类型、multipart 的名称与完整视频字节；2.8.1 缺少这两个类型化方法。后续将用 3.42.1 实际读取 Node 建立的角色，并验证 Python 自建角色在恢复前后仍能读取。[验证记录](evidence/serve-video-track-selection-20261125/python-sdk.json)
