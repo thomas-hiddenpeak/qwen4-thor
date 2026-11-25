@@ -94,7 +94,7 @@ ObjectReply Dispatch(ObjectStore& objects, ResponsesJobs* jobs, int fd,
         rows.array.push_back(*entry.Find("run"));
       }
     }
-    auto page = PageAssistantRows(rows, query.value);
+    auto page = AssistantListResult(PageAssistantRows(rows, query.value));
     if (!page.ok()) return page;
     for (auto& row : Field(page.value, "data").array) {
       const auto id = row.GetString("id");
@@ -130,7 +130,7 @@ ObjectReply Dispatch(ObjectStore& objects, ResponsesJobs* jobs, int fd,
     const auto* fields = query.value.GetArray("include");
     SelectSearchContent(&view.steps, fields && !fields->array.empty());
     if (route.kind == Kind::kSteps)
-      return PageAssistantRows(view.steps, query.value);
+      return AssistantListResult(PageAssistantRows(view.steps, query.value));
     for (auto& row : view.steps.array)
       if (row.GetString("id") == route.step) return Result(std::move(row));
     return Error(404, "run_step_not_found", "Step not found in this run");

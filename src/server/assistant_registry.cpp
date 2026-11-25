@@ -111,7 +111,7 @@ ObjectReply List(ObjectStore& objects, ObjectRequest page, std::string_view raw,
     if (!checked.ok()) return checked;
     record = std::move(row);
   }
-  return result;
+  return assistant_detail::AssistantListResult(std::move(result));
 }
 
 }  // namespace

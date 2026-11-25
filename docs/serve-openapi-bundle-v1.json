@@ -71775,24 +71775,10 @@
                 "type": "boolean"
               },
               "first_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               },
               "last_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               }
             },
             "required": [
@@ -71820,24 +71806,10 @@
                 "type": "boolean"
               },
               "first_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               },
               "last_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               }
             },
             "required": [
@@ -71865,24 +71837,10 @@
                 "type": "boolean"
               },
               "first_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               },
               "last_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               }
             },
             "required": [
@@ -71910,24 +71868,10 @@
                 "type": "boolean"
               },
               "first_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               },
               "last_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               }
             },
             "required": [

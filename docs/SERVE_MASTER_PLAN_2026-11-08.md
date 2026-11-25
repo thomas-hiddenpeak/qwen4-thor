@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+官方 schema 复核发现两条已记录的消息空页含有 null 游标。现已修正助手、消息、运行与步骤的空页返回，保留非空页首末对象 ID 和 ChatKit 可空游标。5 项本机测试通过，含运行与步骤的 HTTP 写出检查。下一步使用官方 SDK 通过原生 TLS 复核。[验证记录](evidence/serve-assistant-pagination-20261125/empty.json)
+
 管理员只读检查已确认 rev490 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev490-preflight.json)
 
 模型退出及主包故障后，接管服务均在处理新请求前读回同一条原始反馈记录。用户接续原线程的提及后答出项目版本 488，修改评价后管理 SDK 仍可读取原消息。发布保持 STOPPED，13 份受保护记录一致，24 小时预检已完成。下一步继续浏览器上传、媒体及恢复工作。[验证记录](evidence/serve-chatkit-20261125/feedback-delivery.json)

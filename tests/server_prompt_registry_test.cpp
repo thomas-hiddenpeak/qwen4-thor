@@ -20,6 +20,9 @@
 #include "q4t/server/state_cipher.h"
 #include "q4t/server/vector_stores.h"
 
+#include <sys/socket.h>
+#include <unistd.h>
+
 #include <algorithm>
 #include <array>
 #include <ctime>
@@ -3839,6 +3842,41 @@ Q4T_TEST(assistant_inline_vector_store_commits_with_owner_or_leaves_neither) {
   return true;
 }
 
+Q4T_TEST(assistant_empty_pages_preserve_public_cursor_types) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  auto access = Access();
+  auto empty = [](const ObjectReply& reply) {
+    return reply.ok() && reply.value.GetArray("data") &&
+           reply.value.GetArray("data")->array.empty() &&
+           !reply.value.GetBool("has_more") &&
+           reply.value.GetString("first_id", "invalid").empty() &&
+           reply.value.GetString("last_id", "invalid").empty();
+  };
+  Q4T_CHECK(empty(HandleAssistantRegistry(objects, "GET", "/v1/assistants", "",
+                                          Config(), access, false)));
+  auto thread = HandleAssistantThreads(objects, "POST", "/v1/threads", "{}",
+                                       access, false);
+  Q4T_CHECK(Ok(thread));
+  const auto path = "/v1/threads/" + thread.value.GetString("id") + "/messages";
+  Q4T_CHECK(
+      empty(HandleAssistantThreads(objects, "GET", path, "", access, false)));
+  auto message = HandleAssistantThreads(
+      objects, "POST", path, R"({"role":"user","content":"actual message"})",
+      access, false);
+  Q4T_CHECK(Ok(message));
+  auto id = message.value.GetString("id");
+  auto first = HandleAssistantThreads(objects, "GET", path, "", access, false);
+  Q4T_CHECK(Ok(first) && first.value.GetString("first_id") == id &&
+            first.value.GetString("last_id") == id);
+  Q4T_CHECK(empty(HandleAssistantThreads(objects, "GET", path + "?after=" + id,
+                                         "", access, false)));
+  auto shared = assistant_detail::PageAssistantRows(Parse("[]"), Parse("{}"));
+  Q4T_CHECK(Ok(shared) && shared.value.Find("first_id")->IsNull() &&
+            shared.value.Find("last_id")->IsNull());
+  return true;
+}
+
 Q4T_TEST(assistant_threads_reopen_keep_order_metadata_and_message_ownership) {
   Fixture f;
   std::string path, first;
@@ -4063,6 +4101,31 @@ Q4T_TEST(assistant_run_queues_thread_atomically_and_projects_real_tool_state) {
             calls->array[0].GetString("id") == "call_local");
   Q4T_CHECK(view.steps.array.size() == 1 &&
             view.steps.array[0].GetString("status") == "in_progress");
+  // Read past each last row through the same HTTP writer used by the service.
+  const std::string runs_path = path + "/runs";
+  const auto step_id = view.steps.array[0].GetString("id");
+  for (const auto& target : {runs_path + "?after=run_cpu",
+                             runs_path + "/run_cpu/steps?after=" + step_id}) {
+    int sockets[2];
+    Q4T_CHECK(::socketpair(AF_UNIX, SOCK_STREAM, 0, sockets) == 0);
+    ServeAssistantRun(sockets[0], objects, nullptr, "GET", target, "", Access(),
+                      config, false);
+    ::close(sockets[0]);
+    std::string response;
+    char buffer[1024];
+    ssize_t count;
+    while ((count = ::read(sockets[1], buffer, sizeof(buffer))) > 0)
+      response.append(buffer, static_cast<size_t>(count));
+    ::close(sockets[1]);
+    Q4T_CHECK(count == 0 && response.starts_with("HTTP/1.1 200 "));
+    const auto boundary = response.find("\r\n\r\n");
+    Q4T_CHECK(boundary != response.npos);
+    const auto page = Parse(response.substr(boundary + 4));
+    Q4T_CHECK(page.GetArray("data") && page.GetArray("data")->array.empty() &&
+              !page.GetBool("has_more") &&
+              page.GetString("first_id", "invalid").empty() &&
+              page.GetString("last_id", "invalid").empty());
+  }
   for (const auto& [key, used] : {std::pair{"max_prompt_tokens", 260},
                                   std::pair{"max_completion_tokens", 256}}) {
     auto capped = entry;

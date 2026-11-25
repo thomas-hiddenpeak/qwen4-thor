@@ -90,7 +90,15 @@ ObjectReply ListMessages(const Json& messages, std::string_view raw) {
   ChatPlanError error;
   auto valid = ValidateAssistant(page, AssistantShape::kMessageQuery, &error);
   if (!valid) return Invalid(valid.message(), error.param);
-  return PageAssistantRows(messages, page);
+  return AssistantListResult(PageAssistantRows(messages, page));
+}
+
+ObjectReply AssistantListResult(ObjectReply page) {
+  if (page.ok() && Field(page.value, "data").array.empty()) {
+    Set(&page.value, "first_id", String(""));
+    Set(&page.value, "last_id", String(""));
+  }
+  return page;
 }
 
 ObjectReply PageAssistantRows(const Json& messages, const Json& page,

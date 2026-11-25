@@ -285,6 +285,9 @@ def schema(graph):
     assistant_query['properties']['limit'] = page_limit
     definitions['assistant_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['assistant_list']['properties']['data']['items'] = ref('assistant_resource')
+    for family in ('assistant_list', 'assistant_message_list', 'assistant_run_list', 'assistant_step_list'):
+        fields = definitions[family]['properties']
+        fields.update(first_id=dict(type='string'), last_id=dict(type='string'))
     definitions['vault_list'] = copy.deepcopy(definitions['agents_list'])
     definitions['vault_list']['properties']['data']['items'] = ref('vault')
     definitions['vault_query'] = copy.deepcopy(definitions['agents_query'])
