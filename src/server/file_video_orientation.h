@@ -91,11 +91,24 @@ class MovieDisplay {
     return direction;
   }
   std::optional<DisplayMatrices> ReadMatrices(std::string_view bytes) {
+    const auto selected = SelectTrack(bytes);
+    if (!selected) return std::nullopt;
+    return selected->matrices;
+  }
+
+  struct SelectedTrack {
+    DisplayMatrices matrices;
+    bool has_alternates;
+    std::optional<uint64_t> duration_ns;
+  };
+  std::optional<SelectedTrack> SelectTrack(std::string_view bytes) {
     nodes_ = 0;
     if (bytes.size() < 12 || bytes.substr(4, 4) != "ftyp") return std::nullopt;
     const auto movie = Find(bytes, "moov");
-    const auto global = Matrix(Find(movie, "mvhd"), 36, 48);
-    std::optional<DisplayMatrices> selected;
+    const auto header = Find(movie, "mvhd");
+    const auto global = Matrix(header, 36, 48);
+    size_t count = 0;
+    std::string_view only_track, enabled;
     auto remaining = movie;
     while (!remaining.empty()) {
       const auto box = Next(&remaining);
@@ -103,12 +116,33 @@ class MovieDisplay {
       const auto handler = Find(Find(box.data, "mdia"), "hdlr");
       Require(handler.size() >= 12);
       if (handler.substr(8, 4) != "vide") continue;
-      Require(!selected);
-      const auto track = Matrix(Find(box.data, "tkhd"), 40, 52);
-      selected = DisplayMatrices{global, track};
+      only_track = Find(box.data, "tkhd");
+      Require(only_track.size() >= 4);
+      ++count;
+      if ((static_cast<unsigned char>(only_track[3]) & 1) != 0) {
+        Require(enabled.empty());
+        enabled = only_track;
+      }
     }
-    Require(selected.has_value());
-    return selected;
+    // Preserve single-track playback for older files with no enabled flag.
+    const auto track = count == 1 ? only_track : enabled;
+    Require(!track.empty());
+    SelectedTrack result{{global, Matrix(track, 40, 52)}, count > 1, {}};
+    if (result.has_alternates) {
+      const auto scale = Big(header.substr(header[0] == 0 ? 12 : 20, 4));
+      const auto duration =
+          track[0] == 0 ? track.substr(20, 4) : track.substr(28, 8);
+      const auto ticks = Big(duration);
+      Require(scale != 0);
+      // A fragmented movie can defer track duration to the demuxer.
+      if (ticks && ticks != (duration.size() == 4 ? UINT32_MAX : UINT64_MAX)) {
+        const auto ns =
+            static_cast<unsigned __int128>(ticks) * 1000000000 / scale;
+        Require(ns > 0 && ns <= UINT64_MAX);
+        result.duration_ns = static_cast<uint64_t>(ns);
+      }
+    }
+    return result;
   }
 
  private:

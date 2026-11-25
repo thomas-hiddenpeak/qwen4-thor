@@ -5936,6 +5936,10 @@
         "receipt": "evidence/serve-video-characters-20261125/cpu.json",
         "business": "evidence/serve-video-characters-20261125/business.json",
         "profiles": "evidence/serve-video-characters-20261125/profiles.json"
+      },
+      "alternate_track_selection_20261125": {
+        "stage": "cpu_verified",
+        "receipt": "evidence/serve-video-track-selection-20261125/selection.json"
       }
     },
     {

@@ -263,6 +263,52 @@ Q4T_TEST(file_video_display_metadata_is_validated_before_frozen_replay) {
   }
   return true;
 }
+Q4T_TEST(file_video_alternate_track_selection_keeps_pixels_and_timeline) {
+  const auto input = Bytes("alternate-tracks.mp4");
+  const auto first = input.find("tkhd");
+  const auto second = input.find("tkhd", first + 4);
+  Q4T_CHECK(first != input.npos && second != input.npos &&
+            input.find("tkhd", second + 4) == input.npos);
+  const FileVideoLimits limits;
+  for (unsigned selection = 0; selection < 4; ++selection) {
+    auto movie = input;
+    for (const auto& [offset, mask] :
+         {std::pair{first, 1u}, std::pair{second, 2u}}) {
+      auto& flags = movie[offset + 7];
+      flags =
+          (static_cast<unsigned char>(flags) & ~1u) | ((selection & mask) != 0);
+    }
+    auto control = Control();
+    FileVideoPixels actual;
+    const auto reply =
+        DecodeVideoContainer(movie, limits, Access(), &actual, control);
+    Q4T_CHECK(Clean(control));
+    if (selection == 0 || selection == 3) {
+      Q4T_CHECK(reply.http_status == 400);
+      continue;
+    }
+    Q4T_CHECK(Ok(reply) && Ok(ValidateVideoPixels(movie, limits, actual)));
+    const auto reference = Bytes(selection == 1 ? "h264.mp4" : "rotate-90.mp4");
+    FileVideoPixels expected;
+    auto baseline = Control();
+    Q4T_CHECK(Ok(DecodeVideoContainer(reference, limits, Access(), &expected,
+                                      baseline)) &&
+              Clean(baseline));
+    Q4T_CHECK(actual.width == expected.width &&
+              actual.height == expected.height &&
+              actual.duration_ns == expected.duration_ns &&
+              actual.scanned_frames == expected.scanned_frames &&
+              actual.frames.size() == expected.frames.size());
+    for (size_t i = 0; i < actual.frames.size(); ++i) {
+      const auto& a = actual.frames[i];
+      const auto& b = expected.frames[i];
+      Q4T_CHECK(a.png == b.png && a.timestamp_ns == b.timestamp_ns &&
+                a.source_index == b.source_index &&
+                a.duration_ns == b.duration_ns);
+    }
+  }
+  return true;
+}
 Q4T_TEST(file_video_display_matrix_bounds_versions_and_composition) {
   using namespace video_detail;
   Q4T_CHECK(!MovieDisplay().Read(Bytes("vp8.webm")));

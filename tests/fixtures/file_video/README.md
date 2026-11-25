@@ -32,3 +32,15 @@ exact bytes; no color labels or expected answers are placed in the clip.
 覆盖2:1和1:2像素比例，`wide-rotate-90`覆盖比例与旋转组合。
 实际媒体身份和生成命令见`geometry-identity.json`。没有GPU/模型访问，
 未使用第三方图片或视频；生成器及产物均属项目测试资料。
+
+## MP4 alternate tracks
+
+`alternate-tracks.mp4` contains the original three-second colour sequence and
+the two-second rotated quadrants from this directory. The test toggles only
+the enabled flags and compares decoded frames and timing to each original.
+Reproduce it with FFmpeg stream copy from the fixture directory.
+
+```sh
+ffmpeg -nostdin -v error -i h264.mp4 -i rotate-90.mp4 -map 0:v:0 -map 1:v:0 \
+  -c copy -disposition:v:0 default -disposition:v:1 0 -fflags +bitexact alternate-tracks.mp4
+```
