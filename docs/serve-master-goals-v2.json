@@ -3380,12 +3380,13 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_widget_stream_20261126": {
-        "stage": "candidate_http",
+        "stage": "profile_verified",
         "issued": false,
         "receipt": "evidence/serve-chatkit-widget-stream-20261126/business.json",
         "component_receipt": "evidence/serve-chatkit-widget-stream-20261126/components.json",
+        "profiles": "evidence/serve-chatkit-widget-stream-20261126/profiles.json",
         "updates": ["widget.streaming_text.value_delta", "widget.root.updated", "widget.component.updated"],
-        "next": "profile handoff and recoverable delivery"
+        "next": "managed fault recovery and recoverable delivery"
       },
       "chatkit_browser_operations_20261125": {
         "reference": 16,
@@ -8254,12 +8255,13 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_widget_stream_20261126": {
-        "stage": "candidate_http",
+        "stage": "profile_verified",
         "issued": false,
         "receipt": "evidence/serve-chatkit-widget-stream-20261126/business.json",
         "component_receipt": "evidence/serve-chatkit-widget-stream-20261126/components.json",
+        "profiles": "evidence/serve-chatkit-widget-stream-20261126/profiles.json",
         "updates": ["widget.streaming_text.value_delta", "widget.root.updated", "widget.component.updated"],
-        "next": "profile handoff and recoverable delivery"
+        "next": "managed fault recovery and recoverable delivery"
       },
       "chatkit_browser_operations_20261125": {
         "reference": 16,

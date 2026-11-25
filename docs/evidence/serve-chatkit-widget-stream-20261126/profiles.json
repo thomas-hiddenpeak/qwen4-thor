@@ -1,0 +1,81 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 516,
+  "build": {
+    "engine": "756f7950b494436f1a1e6796724af96e289ab9c847f6a569df5b9817dfeb57e3",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "phase": "primary",
+        "sdk": "7.47.0",
+        "revision": "516",
+        "source": {
+          "workflow": "agent_5d679c60b09ae2efedffd2233019e135",
+          "file": "file_25f65e824a76af07b52abcda127dade8",
+          "thread": "cthr_7fd2e310dbc45b745479d53b8f32a562",
+          "user": "item_d20cfc92475d059c3a01b91a7c1161e5",
+          "answer": "msg_66f8a10b9b1020b03c296d7f4d485c68",
+          "widget": "item_aadb36e9c1dad3c1ae2ec6c7a65088b9"
+        },
+        "before": [
+          "rev516",
+          "待复核"
+        ],
+        "sibling": 404,
+        "peer": 404,
+        "chat": "42"
+      },
+      "seconds": 40.572,
+      "starts": 1,
+      "record_sha256": "a4fe7f963ef2c7735699f03e2a56c756e53d534f3fb7f113aa02cc318cd7491a",
+      "receipt_sha256": "a7f33cbf964f9c800fd621919397a008e94755a0e9f7ab2c319900a8fee6dc16",
+      "predecessor": "5bf8d9d0665c87064807973f340efdb2b451b3a7b62875bc8d341f1685cdb19d"
+    },
+    "light": {
+      "sdk": {
+        "phase": "light",
+        "sdk": "7.47.0",
+        "revision": "516",
+        "source": {
+          "workflow": "agent_5d679c60b09ae2efedffd2233019e135",
+          "file": "file_25f65e824a76af07b52abcda127dade8",
+          "thread": "cthr_7fd2e310dbc45b745479d53b8f32a562",
+          "user": "item_d20cfc92475d059c3a01b91a7c1161e5",
+          "answer": "msg_66f8a10b9b1020b03c296d7f4d485c68",
+          "widget": "item_aadb36e9c1dad3c1ae2ec6c7a65088b9"
+        },
+        "before": [
+          "rev516",
+          "待复核"
+        ],
+        "sibling": 404,
+        "peer": 404,
+        "chat": "42",
+        "recovered": {
+          "item": "item_aadb36e9c1dad3c1ae2ec6c7a65088b9",
+          "after": [
+            "rev516",
+            "已复核"
+          ],
+          "component": "review",
+          "duplicate": 502,
+          "deleted": 404
+        }
+      },
+      "seconds": 35.464,
+      "starts": 1,
+      "record_sha256": "cbd157c6529affc3563089ac7861dbfa6fca647b48ac7d50f9bc0562fe621924",
+      "receipt_sha256": "cee9ee1148ab91c418e7cf3ec9300c603168ab569f5720281e9a59e5c97a85a1",
+      "predecessor": "74a820ae18b2231ea817fe7c1307a2f6db685f4e87e8d0919d73e68b9b20746a"
+    }
+  },
+  "component_evidence": "661ef7e01130dd5ec237b23dacc7259ecc6af8089b5c839819023ccafd7c7163",
+  "lease_exit": "5c46da35614d5ba84aec52fd7e421fbb85da713f58f84c40c2f72d6735d9faaa",
+  "acceptance": "1d6734458a00a8a250270f5dffb914be0ab8de44555f7adab33880ec7b9f1123",
+  "qualification": "d6e0f27fb3481c6f3da5b5ff4cced0a2edd0dd334c338a356eeb9dd45ea0245c",
+  "default_preserved": true
+}

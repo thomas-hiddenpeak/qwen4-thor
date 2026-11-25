@@ -8,6 +8,7 @@ from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import chatkit_image_profiles as images
+from tools.serve_responses import chatkit_widget_profiles as widgets
 from tools.serve_responses import chatkit_workflow_profiles as workflows
 from tools.serve_responses import environment_lifecycle_profiles as lifecycle
 from tools.serve_responses.assistant_profiles import COMMON
@@ -159,6 +160,9 @@ class Handoff:
 
 
 def handoff(plan):
+    if widgets.KEY in plan:
+        return Handoff(widgets.KEY, widgets.RELEASE, widgets.ACTOR, widgets.RECEIPT,
+                       reuse.CHATKIT_IMAGE_RECEIPT, reuse.CHATKIT_IMAGE_REVIEWED, widgets.check)
     if images.KEY in plan:
         return Handoff(images.KEY, images.RELEASE, images.ACTOR, images.RECEIPT,
                        reuse.CHATKIT_WORKFLOW_RECEIPT, reuse.CHATKIT_WORKFLOW_REVIEWED, images.check)

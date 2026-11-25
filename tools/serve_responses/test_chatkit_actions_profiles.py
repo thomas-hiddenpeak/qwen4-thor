@@ -153,3 +153,38 @@ class ImageAttachmentHandoff(unittest.TestCase):
         for key in ('peer', 'sibling', 'source_deleted'):
             with self.subTest(key=key), self.assertRaises(RuntimeError):
                 images.check(dict(after, **{key:200}), before)
+
+
+class WidgetComponentHandoff(unittest.TestCase):
+    def test_profile_handoff_rejects_wrong_thread_state_or_scope(self):
+        from tools.serve_responses import chatkit_widget_profiles as widgets
+        rows = package.read(widgets.PROOF.with_name('profiles.json'))['profiles']
+        before, after = rows['primary']['sdk'], rows['light']['sdk']
+        widgets.check(after, before)
+        mutations = [
+            ('source', 'thread', 'cthr_' + '0' * 32),
+            ('source', 'widget', after['source']['user']),
+            ('recovered', 'item', after['source']['answer']),
+            ('recovered', 'component', 'version'),
+            ('recovered', 'after', after['before']),
+            ('recovered', 'duplicate', 200),
+        ]
+        for section, key, value in mutations:
+            with self.subTest(section=section, key=key), self.assertRaises(RuntimeError):
+                changed = deepcopy(after)
+                changed[section][key] = value
+                widgets.check(changed, before)
+        for key in ('sibling', 'peer'):
+            with self.subTest(key=key), self.assertRaises(RuntimeError):
+                widgets.check(dict(after, **{key: 200}), before)
+
+    def test_large_widget_record_requires_its_own_source_format(self):
+        from tools.serve_recovery import ledger, profile_live_reuse as reuse, profile_record as record
+        value = dict(format=reuse.CHATKIT_WIDGET_RECORD,
+                     reused_business=dict(format=reuse.CHATKIT_WIDGET_FORMAT))
+        record.shape(value, record.LEGACY_BYTES + 1)
+        with self.assertRaises(ledger.LedgerError):
+            record.shape(value, record.MAX_BYTES + 1)
+        value['reused_business']['format'] = reuse.CHATKIT_IMAGE_FORMAT
+        with self.assertRaises(ledger.LedgerError):
+            record.shape(value, record.LEGACY_BYTES + 1)
