@@ -1710,6 +1710,43 @@ Q4T_TEST(agent_session_turn_shares_queue_receipt_and_reopens_native_output) {
   return true;
 }
 
+Q4T_TEST(agent_session_enforces_its_own_json_schema_in_responses) {
+  Fixture f;
+  ObjectStore store(f.options);
+  auto config = Config();
+  config.structured = true;
+  auto body = Parse(R"({"agent":{"model":"cpu","text":{"format":{
+    "type":"json_schema","schema":{"type":"object","properties":{
+    "value":{"type":"integer"}},"required":["value"],"additionalProperties":false}
+    }}},"environment":{"type":"none"},"input":"Return the current revision."})");
+  ResponsesExecution run(store);
+  auto created = PrepareAgentSessionExecution(store, body, config, Access(),
+                                              std::time(nullptr), run);
+  Q4T_CHECK(Ok(created) && run.Prepared());
+  const auto* supplied = body.Find("agent")->Find("text")->Find("format");
+  const auto* published =
+      created.value.Find("agent")->Find("text")->Find("format");
+  Q4T_CHECK(OutputJson(*published) == OutputJson(*supplied));
+  const auto* native = run.Envelope().request.Find("text")->Find("format");
+  Q4T_CHECK(native->GetBool("strict") && !native->GetString("name").empty());
+  Q4T_CHECK(OutputJson(*native->Find("schema")) ==
+            OutputJson(*supplied->Find("schema")));
+  auto extra = *supplied;
+  Set(&extra, "name", Parse(R"("client-name")"));
+  auto invalid = body;
+  auto agent = *body.Find("agent");
+  auto text = *agent.Find("text");
+  Set(&text, "format", extra);
+  Set(&agent, "text", text);
+  Set(&invalid, "agent", agent);
+  ResponsesExecution rejected(store);
+  auto denied = PrepareAgentSessionExecution(store, invalid, config, Access(),
+                                             std::time(nullptr), rejected);
+  Q4T_CHECK(denied.http_status == 400 &&
+            denied.value.GetString("param") == "agent.text.format.name");
+  return true;
+}
+
 Q4T_TEST(agent_session_keeps_rejected_model_output_out_of_the_next_turn) {
   Fixture f;
   auto config = Config();

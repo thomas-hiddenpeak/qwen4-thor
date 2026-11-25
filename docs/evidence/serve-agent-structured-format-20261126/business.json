@@ -1,0 +1,242 @@
+{
+  "stage": "native_https_candidate",
+  "issued": false,
+  "default_revision": 518,
+  "identity": {
+    "binary": "4d89b7ddee7c08f788eb1fae07e35125f56617e6c082961df73f7db6f0b6c7f1",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "previous_candidate": {
+    "binary": "c3b7c1649c1e2443d227c8db17297674602ebbd0314a987d2a67b09ac376c477",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "https": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 38.191,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "public_sdk": {
+    "phase": "primary",
+    "sdk": "7.47.0",
+    "revision": "518",
+    "source": {
+      "session": "agent_session_e6338e771f79ed1f2a751b7db7c2e333",
+      "turn": "turn_d3c1620d6f1140bed80dd7c410aa8ad8",
+      "item": "msg_018cbdcaf3fd796c7bb7d4a37ee4314e"
+    },
+    "historical": {
+      "session": "agent_session_5edc2bcfd0a679bb06ab4bf20f53e31f",
+      "turn": "turn_2534a9920e21601d2eb0cd7a3d33460b",
+      "response": "resp_3918b1a8ed426181d5204f58e7cf12da"
+    },
+    "format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "restored_ttl": "12h",
+    "peer": 404,
+    "padded": false,
+    "deltas": 8,
+    "chat": "42"
+  },
+  "recovered_sdk": {
+    "phase": "light",
+    "sdk": "7.47.0",
+    "revision": "518",
+    "source": {
+      "session": "agent_session_e6338e771f79ed1f2a751b7db7c2e333",
+      "turn": "turn_d3c1620d6f1140bed80dd7c410aa8ad8",
+      "item": "msg_018cbdcaf3fd796c7bb7d4a37ee4314e"
+    },
+    "historical": {
+      "session": "agent_session_5edc2bcfd0a679bb06ab4bf20f53e31f",
+      "turn": "turn_2534a9920e21601d2eb0cd7a3d33460b",
+      "response": "resp_3918b1a8ed426181d5204f58e7cf12da"
+    },
+    "format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "restored_ttl": "12h",
+    "peer": 404,
+    "padded": true,
+    "deltas": 7,
+    "chat": "42",
+    "resumed": {
+      "turn": "turn_28275bcf63dc8573ec8552c6fd37fd5f",
+      "item": "msg_fe24be484895d8a43a5605642a3a5f43",
+      "answer": "42",
+      "ttl": "30m",
+      "cleared": true
+    }
+  },
+  "verified": {
+    "original_failed_turn_unchanged": {
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_3918b1a8ed426181d5204f58e7cf12da.json": "e579fa44503156a548f7b58bc33425a1a98da326c7904212c91a07f1e04e3d71",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.agent_session.agent_session_5edc2bcfd0a679bb06ab4bf20f53e31f.json": "b314ec40354e75708890b7ef9742f4e70ed1bd9667a87f56250c908be3a28726"
+    },
+    "stored": [
+      {
+        "response": "resp_70231e3dd5c5302eecf7892ea8707e2c",
+        "record_sha256": "eb5096d5092892a0e04b8083515f2e546a772c7e3744b158ebd61634d38d720e",
+        "text": "{\"value\": 518}",
+        "ttl": "12h"
+      },
+      {
+        "response": "resp_0bfd0c16d54a5a0ba9fae0bc0a1236a9",
+        "record_sha256": "c49f4a17f14dfdde619bb1821f9507065ed5faa54756da21e996713a1ce5a6ed",
+        "text": "{\"value\": 42}",
+        "ttl": "30m"
+      }
+    ],
+    "private_name": "agent_output",
+    "public_format": {
+      "type": "json_schema",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "binary": "4d89b7ddee7c08f788eb1fae07e35125f56617e6c082961df73f7db6f0b6c7f1",
+    "driver_sha256": "8332a4e2bcac1a377cbc50999a4eba1789fc19b9514d942bbc19ce658a9255a9"
+  },
+  "targeted_cpu": {
+    "passed": 3,
+    "predecessor_error": "invalid_request text.format.name",
+    "invalid_public_name": "agent.text.format.name"
+  },
+  "original_unseeded_failures": [
+    {
+      "stage": "original_model_output",
+      "record": "evidence/serve-agent-turn-output-recovery-20261126/business.json",
+      "kind": "incomplete_refusal"
+    },
+    {
+      "stage": "ordinary_lookup",
+      "managed": {
+        "status": "FAIL",
+        "seconds": 112.92204641411081,
+        "model_starts": 1,
+        "stop_returncode": 0,
+        "supervisor_exit": 0,
+        "remaining": [],
+        "adopted_reaped": 0,
+        "ports_free": true,
+        "unchanged_default": true,
+        "receipt_sha256": "eecd019101d2b9f6a3a955c1a088719bd6dac59af625b71eb6f8efcd779bc813"
+      },
+      "response_sha256": "b3a6d43154eba5b9b883361c17c51e167adf37b3bf34fbc73f372296ca149de2",
+      "stored_status": "completed",
+      "part": "refusal",
+      "semantic_correct": false
+    }
+  ],
+  "diagnostic": {
+    "compared": {
+      "status": "OBSERVED",
+      "starts": 2,
+      "seconds": 70.819,
+      "unchanged_default": true,
+      "comparisons": [
+        {
+          "kind": "greedy",
+          "same_parts": true,
+          "same_usage": true,
+          "cold_type": [
+            "output_text"
+          ],
+          "warm_type": [
+            "output_text"
+          ],
+          "cold_correct": true,
+          "warm_correct": true,
+          "tokens": 107,
+          "first_logprob_same": true,
+          "captured_logprobs": true
+        },
+        {
+          "kind": "sample",
+          "same_parts": true,
+          "same_usage": true,
+          "cold_type": [
+            "output_text"
+          ],
+          "warm_type": [
+            "output_text"
+          ],
+          "cold_correct": true,
+          "warm_correct": true,
+          "tokens": 107,
+          "first_logprob_same": true,
+          "captured_logprobs": true
+        }
+      ]
+    },
+    "lease_sha256": "0708007c389dd5ab1aa40a4fbca123320615c2c5e4f70a68dd02fcf5789ebc60",
+    "requests_sha256": "6800b7ae51439bdfad9ceecbed34747f48035f8b8b01c47b427f42e419335a1d",
+    "first_incomplete_driver": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 34.175,
+      "unchanged_default": true,
+      "comparisons": []
+    },
+    "first_driver_error": "Python HTTP response name shadowed the http module on the second probe",
+    "scope": "same 107-token Responses input on cold and self-checked starts with explicit seed and returned log probabilities"
+  },
+  "incorrect_test_request": {
+    "managed": {
+      "status": "FAIL",
+      "seconds": 98.10466007096693,
+      "model_starts": 1,
+      "stop_returncode": 0,
+      "supervisor_exit": 0,
+      "remaining": [],
+      "adopted_reaped": 0,
+      "ports_free": true,
+      "unchanged_default": true,
+      "receipt_sha256": "eecd019101d2b9f6a3a955c1a088719bd6dac59af625b71eb6f8efcd779bc813"
+    },
+    "http": 400,
+    "param": "agent.text.format.name",
+    "actual_request_shape": "Responses format sent to Agents"
+  },
+  "sources": {
+    "src/server/agent_session_turn.cpp": "1a15e70c58de41ded85d4fa57b75595a63e7d2a101c3624c529c6056e15c98a3",
+    "tools/serve_responses/managed_session_recovery_sdk.mjs": "8332a4e2bcac1a377cbc50999a4eba1789fc19b9514d942bbc19ce658a9255a9"
+  }
+}

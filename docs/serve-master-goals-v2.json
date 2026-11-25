@@ -3495,6 +3495,11 @@
         "issued": false,
         "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json",
         "profiles": "evidence/serve-agent-turn-output-recovery-20261126/profiles.json"
+      },
+      "agent_structured_format_20261126": {
+        "stage": "native_https_candidate",
+        "issued": false,
+        "receipt": "evidence/serve-agent-structured-format-20261126/business.json"
       }
     },
     {
@@ -8387,6 +8392,11 @@
         "issued": false,
         "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json",
         "profiles": "evidence/serve-agent-turn-output-recovery-20261126/profiles.json"
+      },
+      "agent_structured_format_20261126": {
+        "stage": "native_https_candidate",
+        "issued": false,
+        "receipt": "evidence/serve-agent-structured-format-20261126/business.json"
       }
     },
     {
@@ -11277,6 +11287,11 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "agent_structured_format_20261126": {
+        "stage": "native_https_candidate",
+        "issued": false,
+        "receipt": "evidence/serve-agent-structured-format-20261126/business.json"
       }
     },
     {

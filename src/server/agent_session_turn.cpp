@@ -107,6 +107,15 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
   for (const auto* key :
        {"model", "instructions", "text", "reasoning", "service_tier"})
     if (Nonnull(agent, key)) Set(&result.value, key, *agent.Find(key));
+  // Agents supply only the schema. Responses also names the format and
+  // distinguishes strict generation. Keep those adapter fields private.
+  if (const auto* text = result.value.Find("text");
+      text && text->Find("format") &&
+      text->Find("format")->GetString("type") == "json_schema") {
+    auto& format = Field(Field(result.value, "text"), "format");
+    Set(&format, "name", String("agent_output"));
+    Set(&format, "strict", Boolean(true));
+  }
   return result;
 }
 
