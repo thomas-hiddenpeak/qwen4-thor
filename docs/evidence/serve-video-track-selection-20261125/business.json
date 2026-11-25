@@ -1,0 +1,99 @@
+{
+  "stage": "device_verified",
+  "issued": false,
+  "prior_revision": 498,
+  "build": {
+    "engine": "cf51df04e6cadca4d1c9c3815d7ff8a7ba303c0b83354a0c22f3cbb64aeb2329",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "fixture": {
+    "encoded_sha256": "a6b375f255596f8ad1c758aa352799c6044bdf31acba9cdf0cdeb97728e3616a",
+    "source_sha256": "a79c1f52be40a74e85a796053d54c45f2ca7600dfd819e7722f3d01768b99916",
+    "changed_bytes": [
+      1177,
+      1788
+    ],
+    "selected": "rotate-90.mp4",
+    "expected_dimensions": [
+      64,
+      128
+    ],
+    "expected_duration_ns": 2000000000
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 40.413,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "stored": {
+    "bytes": 2417,
+    "sha256": "a6b375f255596f8ad1c758aa352799c6044bdf31acba9cdf0cdeb97728e3616a",
+    "width": 64,
+    "height": 128,
+    "duration_ns": 2000000000,
+    "chunks": 1,
+    "verified_against_original": true
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "resource": {
+      "id": "char_dffebe5425ed143260f7c313713fbb0d",
+      "name": "项目视频角色",
+      "created_at": 1795593356
+    },
+    "independent": "42",
+    "capability": {
+      "endpoint": "/v1/videos/characters",
+      "operations": [
+        "create",
+        "retrieve"
+      ],
+      "scope": "authenticated_client",
+      "source": "original_encoded_clip",
+      "max_name_characters": 80,
+      "max_source_bytes": 33554432,
+      "decoder_compiled": true
+    },
+    "lookup": {
+      "function": "get_video_character",
+      "argument_id": "char_dffebe5425ed143260f7c313713fbb0d",
+      "resolved": {
+        "name": "项目视频角色"
+      }
+    },
+    "clip_sha256": "a6b375f255596f8ad1c758aa352799c6044bdf31acba9cdf0cdeb97728e3616a",
+    "foreign": 404,
+    "corrupt": 400,
+    "long_name": 400,
+    "driver_sha256": "404f3ddec4b31b6f7de13bb22ac77a85aa048139240b5046d480b9f682be2bb0",
+    "receipts": 2
+  },
+  "wire": [
+    {
+      "method": "POST",
+      "path": "/videos/characters",
+      "status": 200,
+      "json_sha256": "f819807c3a8c8e6bb16522dfa7361ff61b5840c2fc0f7beee886f5a163401924"
+    },
+    {
+      "method": "GET",
+      "path": "/videos/characters/{character_id}",
+      "status": 200,
+      "json_sha256": "f819807c3a8c8e6bb16522dfa7361ff61b5840c2fc0f7beee886f5a163401924"
+    }
+  ],
+  "lease_sha256": "0b29c73fc25cfe464685cda51b8dbd64fb09303f58d751f6388f24a95be9ca04",
+  "sources": {
+    "track-business-01/plan.json": "29f09cb219c7db99fc5ca58334f462cbb3aa21826aa6dd7a8f6a7ff622be940d",
+    "track-business-01/result.json": "18408c195ad2b65298537e0a8d12eb807de1017fd5d719a32fb3013f287e0481",
+    "track-business-01/create/serving-identity.json": "5de8ee3863a79d79cc16e9205218de964b7ae6096177a9157d0fea090da9af0c",
+    "track-business-01/create/stored-clip.json": "f5fcb0f1769252b8d1640bcef783d7c815c7e395ef4125238b2e01e8bd3c4368",
+    "track-business-01/create/wire-receipts.json": "8967e11de1c811450398bad43c9aeb8845d45d02af7917eb6a313aeca4ac9174",
+    "track-business-01/create/sdk-result.json": "9fb8afcafd84c55ba1c46af6a7eaabcfb0828431af6d0c9932009c3befc4cbdc",
+    "video_track_business.py": "b25e709e80f2f35166eaae5d7140ad0c78ecb79689be9972bb86ae32d9eb7f78"
+  }
+}

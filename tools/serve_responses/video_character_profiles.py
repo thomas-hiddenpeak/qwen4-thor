@@ -56,14 +56,14 @@ def check_result(row, proof, previous=None):
                             for r in row['wire']), 'invalid character response sequence')
 
 
-def exercise(out, params, env, previous=None):
-    payload = dict(params, clip=str(CLIP), previous=previous['resource'] if previous else None)
+def exercise(out, params, env, previous=None, *, clip=CLIP, proof=PROOF):
+    payload = dict(params, clip=str(clip), previous=previous['resource'] if previous else None)
     with (out/'character-sdk.stderr').open('xb') as err:
         run = subprocess.run(['node', ACTOR], input=json.dumps(payload), text=True,
                              stdout=subprocess.PIPE, stderr=err, timeout=160, env=env)
     package.require(run.returncode == 0, 'video character client failed')
     result = json.loads(run.stdout)
-    check_result(result, package.read(PROOF), previous)
+    check_result(result, package.read(proof), previous)
     return result
 
 

@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+56 项 CPU 检查通过，包括两处轨道启用标志逐字节对照、错误轨道反例与前驱恢复记录还原。主、轻配置将接管同一份用户上传的双轨视频。[验证记录](evidence/serve-video-track-selection-20261125/profiles.json)
+
+官方 SDK 经原生 HTTPS 上传两轨 MP4，文件顺序在前的三秒轨已禁用。引擎记录启用轨旋转后的 64×128 尺寸和两秒时长，保存的整个双轨原片与上传字节一致。模型按 ID 调用工具并从回填返回角色名。另一客户收到 404，独立 Chat 答 42。继续恢复配置和发行交接。[验证记录](evidence/serve-video-track-selection-20261125/business.json)
+
 已用完整发行 schema 复核，Evals 的评估、运行、输出条目三项原先允许 1.5，原生服务会拒绝。ChatKit 两项原来就区分整数，现补上默认页长 20。Evals 同时补上非负范围与默认值。两组定向测试通过，包含可取零值、范围外和错误类型；等待随下一包发行。[验证记录](evidence/serve-application-query-20261125/page-limits.json)
 
 一段真实 MP4 包含三秒的彩色序列和两秒的旋转画面。切换唯一启用的视频轨后，原生工作进程的帧像素、方向、时间戳和时长分别与两份单轨原片一致。零条和两条启用均得到 400。旧单轨显示矩阵回归通过。下一步经实际 HTTP 上传验证元数据和原片。[验证记录](evidence/serve-video-track-selection-20261125/selection.json)

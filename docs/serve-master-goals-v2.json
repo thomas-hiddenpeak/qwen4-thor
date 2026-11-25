@@ -5945,8 +5945,9 @@
         "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "alternate_track_selection_20261125": {
-        "stage": "cpu_verified",
-        "receipt": "evidence/serve-video-track-selection-20261125/selection.json"
+        "stage": "device_verified",
+        "receipt": "evidence/serve-video-track-selection-20261125/selection.json",
+        "business": "evidence/serve-video-track-selection-20261125/business.json"
       }
     },
     {

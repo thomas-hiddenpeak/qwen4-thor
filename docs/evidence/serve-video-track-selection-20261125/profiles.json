@@ -1,0 +1,41 @@
+{
+  "stage": "qualification_prepared",
+  "prior_revision": 498,
+  "issued": false,
+  "tests": {
+    "passed": 56,
+    "command": [
+      "tools.serve_recovery.test_profile_migration",
+      "tools.serve_responses.test_video_character_profiles",
+      "tools.serve_responses.test_video_track_profiles",
+      "tools.serve_gateway.test_application_capacity"
+    ],
+    "log_sha256": "f5729a6c2aa9abc3e852b0441369b3525eecf5b54f55781de0c1e97cc8949748",
+    "issued_predecessors": {
+      "primary": {
+        "predecessor": "0383b5f9b4029b4df1d5f2d17d1d605c213cfb8e025fd55d9a309c16cf82c9de",
+        "prior_reconstructed": true,
+        "removed_receipt_or_changed_limit_rejected": 5,
+        "unreviewed_candidate_rejected": true
+      },
+      "light": {
+        "predecessor": "d86869c161d3c401ed6a70278644983d9dba262439b2842d45fec11154f03518",
+        "prior_reconstructed": true,
+        "removed_receipt_or_changed_limit_rejected": 5,
+        "unreviewed_candidate_rejected": true
+      }
+    },
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 245,
+      "native_routes": 406,
+      "reviewed_source_anchors": 1376,
+      "mutation_checks": 40,
+      "errors": []
+    }
+  },
+  "scope": "Both capacities retrieve the enabled second video track with the original source and the same tenant-scoped tool lookup."
+}
