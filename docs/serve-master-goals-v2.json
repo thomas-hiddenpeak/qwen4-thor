@@ -9710,10 +9710,11 @@
         "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
       },
       "managed_startup_memory_20261126": {
-        "stage": "targeted_cpu_verified",
+        "stage": "targeted_cpu_and_real_native_cli_verified",
         "issued": false,
         "receipt": "evidence/serve-managed-startup-memory-20261126/cpu.json",
-        "next": "native CLI and managed integrated release"
+        "next": "managed integrated release",
+        "cli_receipt": "evidence/serve-managed-startup-memory-20261126/cli.json"
       }
     },
     {

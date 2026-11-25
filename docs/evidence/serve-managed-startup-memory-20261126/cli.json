@@ -1,0 +1,68 @@
+{
+  "source_commit": "77fdf5951ad90bd6cf17ddde3d225a2e247cd9ba",
+  "result": {
+    "status": "PASS",
+    "processes": 4,
+    "model_loads": 0,
+    "engine_sha256": "45b51e0d25b584bce4b7e1129697a0d1bafb4478b4d182db51c1e77e631445c7",
+    "standalone_and_managed": [
+      {
+        "mode": "standalone",
+        "code": 1,
+        "model_loaded": false,
+        "admission": {
+          "state": "startup_memory_insufficient",
+          "estimate_bytes": null,
+          "headroom_bytes": 1099511627776,
+          "required_bytes": 1099511627776,
+          "observed_total_bytes": 131920637952,
+          "observed_available_bytes": 123862691840
+        }
+      },
+      {
+        "mode": "managed",
+        "code": 75,
+        "model_loaded": false,
+        "admission": {
+          "state": "startup_memory_insufficient",
+          "estimate_bytes": null,
+          "headroom_bytes": 1099511627776,
+          "required_bytes": 1099511627776,
+          "observed_total_bytes": 131920637952,
+          "observed_available_bytes": 123846819840
+        },
+        "native_floor_matches": true
+      },
+      {
+        "mode": "observer_absent",
+        "code": 75,
+        "model_loaded": false,
+        "admission": {
+          "state": "startup_memory_insufficient",
+          "estimate_bytes": null,
+          "headroom_bytes": 1099511627776,
+          "required_bytes": 1099511627776,
+          "observed_total_bytes": 131920637952,
+          "observed_available_bytes": 123846823936
+        }
+      },
+      {
+        "mode": "invalid_option",
+        "code": 2,
+        "model_loaded": false
+      }
+    ],
+    "unchanged_default": true
+  },
+  "lease": {
+    "backend": "nvml",
+    "status": "COMPLETED",
+    "inherited": true
+  },
+  "first_attempt": {
+    "status": "COMMAND_FAILED",
+    "model_starts": 0,
+    "cause": "The device lease child starts in the common root. The first driver derived its scratch directory from cwd and exited before invoking the candidate. The passing driver resolves its worktree from its own file."
+  },
+  "scope": "Real executable pre-allocation admission and real owner-bound socket report. The controlled low/high transition under the native Guardian is recorded separately in cpu.json."
+}
