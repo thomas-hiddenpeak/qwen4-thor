@@ -7886,6 +7886,10 @@
       "application_page_limits_20261125": {
         "stage": "targeted_schema_verified",
         "receipt": "evidence/serve-application-query-20261125/page-limits.json"
+      },
+      "video_character_python_20261125": {
+        "stage": "cpu_wire_replay",
+        "evidence": "evidence/serve-video-track-selection-20261125/python-sdk.json"
       }
     },
     {

@@ -1,0 +1,33 @@
+{
+  "stage": "cpu_wire_replay",
+  "scope": "Typed methods, strict response parsing and multipart serialization. The source display name is adapted in the creation replay. Actual managed service recovery is pending.",
+  "sdk": {
+    "3.42.1": {
+      "version": "3.42.1",
+      "methods_available": true,
+      "strict_positive_requests": 5,
+      "round_trip": true,
+      "clip_sha256": "a6b375f255596f8ad1c758aa352799c6044bdf31acba9cdf0cdeb97728e3616a"
+    },
+    "2.8.1": {
+      "version": "2.8.1",
+      "methods_available": false,
+      "strict_positive_requests": 0,
+      "round_trip": false,
+      "clip_sha256": "a6b375f255596f8ad1c758aa352799c6044bdf31acba9cdf0cdeb97728e3616a"
+    },
+    "3.55.1": {
+      "version": "3.55.1",
+      "methods_available": true,
+      "strict_positive_requests": 5,
+      "round_trip": true,
+      "clip_sha256": "a6b375f255596f8ad1c758aa352799c6044bdf31acba9cdf0cdeb97728e3616a"
+    }
+  },
+  "driver": "tools/serve_responses/video_character_python_client.py",
+  "driver_sha256": "8cb9b9846c0b29e7c8a9523fe96c7747cc8667ccbd638e6be1abfd7f0d289575",
+  "captures": {
+    "character-business-01/create/character-http.json": "9e77d986563e5ecbe75e063a3b56bcc883acb66181298fba6c90325808c9843f",
+    "track-business-01/create/character-http.json": "e583ee5a32231ff78fe7b599997db851e484a0c0141eb131682a6569a483c6a4"
+  }
+}
