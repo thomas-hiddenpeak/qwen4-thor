@@ -7,6 +7,7 @@ import subprocess
 from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
+from tools.serve_responses import chatkit_workflow_profiles as workflows
 from tools.serve_responses import environment_lifecycle_profiles as lifecycle
 from tools.serve_responses.assistant_profiles import COMMON
 from tools.serve_service import package
@@ -157,6 +158,9 @@ class Handoff:
 
 
 def handoff(plan):
+    if workflows.KEY in plan:
+        return Handoff(workflows.KEY, workflows.RELEASE, workflows.ACTOR, reuse.CHATKIT_WORKFLOW_RECEIPT,
+                       reuse.CHATKIT_GENERATION_RECEIPT, reuse.CHATKIT_GENERATION_REVIEWED, workflows.check)
     if GENERATION_KEY in plan:
         return Handoff(GENERATION_KEY, GENERATION_RELEASE, GENERATION_ACTOR, reuse.CHATKIT_GENERATION_RECEIPT,
                        reuse.CHATKIT_BROWSER_RECEIPT, reuse.CHATKIT_BROWSER_REVIEWED, check_generation_result)

@@ -534,11 +534,13 @@ set(protocol_inputs
   src/server/chatkit_transcription.cpp
   src/server/chatkit_attachments.h
   src/server/chatkit_thread_state.cpp
+  src/server/chatkit_workflow.cpp
   src/server/chatkit_retry.cpp
   src/server/chatkit_actions.cpp
   src/server/chatkit_structured.cpp
   src/server/chatkit_generation_stream.h
   src/server/chatkit_thread_state.h
+  src/server/chatkit_workflow.h
   src/server/chatkit_retry.h
   src/server/chatkit_actions.h
   src/server/chatkit_structured.h

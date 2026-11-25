@@ -259,6 +259,39 @@ Q4T_TEST(responses_state_chatkit_cancelled_context_is_bound_to_original_thread) 
   return true;
 }
 
+Q4T_TEST(responses_state_tracks_chatkit_item_times_in_private_journal_only) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState state(objects);
+  for (const bool chatkit : {false, true}) {
+    ResponseStatePlan plan;
+    Q4T_CHECK(
+        Ok(state.Resolve(Envelope(R"({"input":"hello"})"), Access(), &plan)));
+    if (chatkit) plan.chatkit_thread_id = "cthr_times";
+    Q4T_CHECK(Ok(state.Begin(Snapshot(plan, "in_progress"), Access(), &plan)));
+    const auto output = Answer();
+    Q4T_CHECK(Ok(state.Checkpoint(Snapshot(plan, "in_progress", output),
+                                  Parse("[]"), Access(), &plan)));
+    Json times;
+    auto before = state.Retrieve(plan.id, Access(), &times);
+    Q4T_CHECK(Ok(before) && !before.value.Has("chatkit_item_times"));
+    if (chatkit) {
+      Q4T_CHECK(times.GetInt("msg_answer") > 0);
+    } else {
+      Q4T_CHECK(times.IsNull());
+    }
+    Q4T_CHECK(Ok(state.Finish(Snapshot(plan, "completed", output), Parse("[]"),
+                              Access(), &plan)));
+    Json saved;
+    auto after = state.Retrieve(plan.id, Access(), &saved);
+    Q4T_CHECK(Ok(after) && !after.value.Has("chatkit_item_times") &&
+              OutputJson(saved) == OutputJson(times));
+    Q4T_CHECK(state.Retrieve(plan.id, Access("client:b"), &saved).http_status ==
+              404);
+  }
+  return true;
+}
+
 Q4T_TEST(refusal_state_persistence_restart_history_and_client_isolation) {
   Fixture f;
   std::string id, original;

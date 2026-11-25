@@ -1,5 +1,6 @@
 #include "../src/server/chatkit_actions.h"
 #include "../src/server/chatkit_generation_stream.h"
+#include "../src/server/chatkit_workflow.h"
 #include "q4t/server/http_response.h"
 #include "../src/server/chatkit_structured.h"
 #include "../src/server/chatkit_credentials.h"
@@ -931,8 +932,143 @@ Q4T_TEST(chatkit_generation_preserves_browser_and_management_citation_sources) {
   return true;
 }
 
+Q4T_TEST(chatkit_reasoning_workflow_updates_only_public_summaries) {
+  using chatkit_detail::GenerationStream;
+  Json response;
+  Q4T_CHECK(io::ParseJson(R"({
+    "created_at":7,"output":[
+      {"type":"reasoning","id":"rs_a","encrypted_content":"hidden encrypted",
+       "content":[{"type":"reasoning_text","text":"hidden plain"}],
+       "summary":[{"type":"summary_text","text":"公开摘要"}]},
+      {"type":"reasoning","id":"rs_b","summary":[
+        {"type":"summary_text","text":"second"}]},
+      {"type":"message","id":"msg_m","role":"assistant","content":[
+        {"type":"output_text","text":"42","annotations":[]}]}]})",
+                          &response));
+  const auto& raw = response.GetArray("output")->array;
+  const auto times = Object(
+      {{"rs_a", Number(10)}, {"rs_b", Number(11)}, {"msg_m", Number(14)}});
+  auto projected =
+      chatkit_detail::ProjectOutput(response, "cthr_a", {}, &times);
+  Q4T_CHECK(projected.ok() && projected.value.array.size() == 2);
+  auto group = projected.value.array[0];
+  const auto browser = chatkit_detail::ClientItem(group);
+  Q4T_CHECK(browser.GetString("type") == "workflow" &&
+            browser.GetString("id") == "wf_rs_a" &&
+            !browser.Has("workflow_closed"));
+  const auto* workflow = browser.Find("workflow");
+  Q4T_CHECK(workflow->Find("summary")->GetInt("duration") == 4 &&
+            workflow->GetArray("tasks")->array.size() == 2);
+  chatkit_detail::ProjectManagementItem(&group);
+  Q4T_CHECK(group.GetString("type") == "chatkit.task_group" &&
+            !group.Has("workflow") && !group.Has("workflow_closed"));
+  const auto& tasks = group.GetArray("tasks")->array;
+  Q4T_CHECK(tasks.size() == 2 && tasks[0].GetString("summary") == "公开摘要" &&
+            tasks[1].GetString("summary") == "second");
+  GenerationStream stream;
+  Json observed = Array();
+  auto emit = [&](const Json& event) {
+    observed.array.push_back(event);
+    return true;
+  };
+  const auto item_event = [&](std::string type, const Json& item) {
+    return stream.EmitEvent(
+        Object({{"type", String(std::move(type))}, {"item", item}}), "cthr_a",
+        7, &times, emit);
+  };
+  const auto part_event = [&](const std::string& type, const std::string& id,
+                              const std::string& text) {
+    return stream.EmitEvent(
+        Object({{"type", String(type)},
+                {"item_id", String(id)},
+                {"summary_index", Number(0)},
+                {type.ends_with(".delta") ? "delta" : "text", String(text)}}),
+        "cthr_a", 7, &times, emit);
+  };
+  Q4T_CHECK(item_event("response.output_item.added", raw[0]));
+  Q4T_CHECK(part_event("response.reasoning_text.delta", "rs_a", "hidden raw"));
+  Q4T_CHECK(
+      part_event("response.reasoning_summary_text.delta", "rs_a", "公开"));
+  Q4T_CHECK(
+      part_event("response.reasoning_summary_text.done", "rs_a", "公开摘要"));
+  Q4T_CHECK(item_event("response.output_item.added", raw[1]));
+  Q4T_CHECK(part_event("response.reasoning_summary_text.delta", "rs_b", "sec"));
+  Q4T_CHECK(
+      part_event("response.reasoning_summary_text.done", "rs_b", "second"));
+  Q4T_CHECK(item_event("response.output_item.added", raw[2]));
+  Q4T_CHECK(part_event("response.reasoning_summary_text.done", "rs_b", "late"));
+  Q4T_CHECK(item_event("response.output_item.done", raw[2]));
+  Q4T_CHECK(item_event("response.output_item.done", raw[2]));
+  Q4T_CHECK(observed.array.size() == 7 && stream.FinishedMessage("msg_m"));
+  Q4T_CHECK(observed.array[1].Find("update")->GetString("type") ==
+            "workflow.task.added");
+  Q4T_CHECK(observed.array[2].Find("update")->GetString("type") ==
+            "workflow.task.updated");
+  Q4T_CHECK(observed.array[3].Find("update")->GetInt("task_index") == 1);
+  Q4T_CHECK(observed.array[4].GetString("type") == "thread.item.done" &&
+            OutputJson(*observed.array[4].Find("item")) == OutputJson(browser));
+  Q4T_CHECK(observed.array[5].GetString("type") == "thread.item.added" &&
+            observed.array[6].GetString("type") == "thread.item.done");
+  Q4T_CHECK(OutputJson(observed).find("hidden") == std::string::npos &&
+            OutputJson(group).find("hidden") == std::string::npos &&
+            OutputJson(browser).find("hidden") == std::string::npos);
+  return true;
+}
+
+Q4T_TEST(
+    chatkit_open_workflow_resumes_before_original_tool_and_drops_pending_cancel) {
+  Json response;
+  Q4T_CHECK(io::ParseJson(R"({"created_at":12,"output":[
+    {"id":"fc_1","type":"function_call","call_id":"call_1","name":"read","arguments":"{}"},
+    {"id":"rs_1","type":"reasoning","summary":[{"type":"summary_text","text":"first"}]}
+  ]})",
+                          &response));
+  auto first = chatkit_detail::ProjectOutput(response, "cthr_a");
+  Q4T_CHECK(first.ok() && first.value.array.size() == 2);
+  const auto* seed = chatkit_detail::ResumableWorkflow(first.value);
+  Q4T_CHECK(seed && seed->GetString("id") == "wf_rs_1" &&
+            first.value.array.back().GetString("type") ==
+                "chatkit.client_tool_call");
+  auto next = response;
+  auto& output = Field(next, "output").array;
+  output.erase(output.begin());
+  Set(&output.front(), "id", String("rs_next"));
+  Set(&Field(output.front(), "summary").array.front(), "text", String("new"));
+  const auto open =
+      chatkit_detail::ProjectOutput(next, "cthr_a", {}, nullptr, seed);
+  Q4T_CHECK(
+      open.ok() && open.value.array.size() == 1 &&
+      open.value.array[0].GetString("id") == seed->GetString("id") &&
+      open.value.array[0].Find("workflow")->GetArray("tasks")->array.size() ==
+          2);
+  Set(&next, "status", String("cancelled"));
+  const auto cancelled =
+      chatkit_detail::ProjectOutput(next, "cthr_a", {}, nullptr, seed);
+  Q4T_CHECK(cancelled.ok() && cancelled.value.array.empty());
+  Json msg;
+  Q4T_CHECK(io::ParseJson(R"({"type":"message","role":"assistant","id":"msg_1",
+    "content":[{"type":"output_text","text":"offered","annotations":[]}]})",
+                          &msg));
+  Field(next, "output").array.push_back(msg);
+  const auto closed =
+      chatkit_detail::ProjectOutput(next, "cthr_a", {}, nullptr, seed);
+  Q4T_CHECK(closed.ok() && closed.value.array.size() == 2);
+  Q4T_CHECK(closed.value.array[0].GetBool("workflow_closed") &&
+            closed.value.array[0].Find("workflow")->Find("summary")->IsNull());
+  Q4T_CHECK(chatkit_detail::ResumableWorkflow(closed.value) == nullptr);
+  return true;
+}
+
 Q4T_TEST(chatkit_generation_numbers_only_visible_citations_per_item_and_part) {
   chatkit_detail::GenerationStream stream;
+  const auto project = [&](const Json& e) {
+    Json output;
+    stream.EmitEvent(e, "cthr_1", 1, nullptr, [&](const Json& item) {
+      output = item;
+      return true;
+    });
+    return output;
+  };
   auto event =
       Object({{"type", String("response.output_text.annotation.added")},
               {"item_id", String("msg_a")},
@@ -942,13 +1078,13 @@ Q4T_TEST(chatkit_generation_numbers_only_visible_citations_per_item_and_part) {
                      {"filename", String("")},
                      {"index", Number(7)}});
   Set(&event, "annotation", raw);
-  Q4T_CHECK(stream.Event(event, "cthr_1", 1).IsNull());
+  Q4T_CHECK(project(event).IsNull());
   Set(&raw, "filename", String("run.md"));
   Set(&event, "annotation", raw);
   auto check = [&](const char* item, int part, int next) {
     Set(&event, "item_id", String(item));
     Set(&event, "content_index", Number(part));
-    auto projected = stream.Event(event, "cthr_1", 1);
+    auto projected = project(event);
     const auto* update = projected.Find("update");
     return projected.GetString("type") == "thread.item.updated" &&
            projected.GetString("item_id") == item && update &&
@@ -965,7 +1101,7 @@ Q4T_TEST(chatkit_generation_numbers_only_visible_citations_per_item_and_part) {
       Object({{"type", String("output_text")},
               {"text", String("answer")},
               {"annotations", Array({raw})}}));
-  const auto done = stream.Event(event, "cthr_1", 1);
+  const auto done = project(event);
   const auto* part = done.Find("update")->Find("content");
   Q4T_CHECK(part->GetArray("annotations")->array.at(0).GetInt("index") == 7);
   return true;

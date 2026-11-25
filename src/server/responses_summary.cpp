@@ -69,6 +69,9 @@ Status PlanResponsesSummary(const ResponsesEnvelope& envelope,
        {"messages", std::move(messages)},
        {"max_completion_tokens", Number(output_limit - output_used)},
        {"enable_thinking", Boolean(false)},
+       // A model may open a fresh thinking block after the no-thinking prefix.
+       // Keep that private pass out of the public summary stream.
+       {"include_reasoning", Boolean(false)},
        {"temperature", Number(0)},
        {"stream", Boolean(envelope.stream)}});
   auto status =

@@ -334,6 +334,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_attachments.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_transcription.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_thread_state.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_workflow.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_actions.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_structured.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/chatkit_retry.cpp

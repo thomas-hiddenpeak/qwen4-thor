@@ -1,0 +1,21 @@
+{
+  "thread": "cthr_f5123e881fb018a0f2122427e0740c9d",
+  "agent": "agent_74bafd7a327d77baf752d45c042834c0",
+  "user": "release-reviewer",
+  "groups_sha256": "8b2128e5dd7ae0492f8ee60b962bc53bfc18202a35645d5344763f5eb1191946",
+  "public_summaries": 1,
+  "items": [
+    "item_8b696cb1e11d32a3d96157a4fc0160aa",
+    "wf_rs_f3997b63e7205f243c4ba57ea236f3f9",
+    "msg_35a6b6265666f4e41b314b34569678c2",
+    "wf_rs_9ca268a7dfb7cdeaeda8e9250d3d0780",
+    "fc_28ab2a01ef501d938df96fde384e882f",
+    "msg_f4202a821a8eaa839b082f1be381dcd8"
+  ],
+  "records": {
+    ".q4t-format": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.chatkit_thread.cthr_f5123e881fb018a0f2122427e0740c9d.json": "f537a9cb0c245760398a333b65d5baa94d009197ffdaefb4a7884bc3074c7f2e",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.agent.agent_74bafd7a327d77baf752d45c042834c0.json": "77b5503a87696b711db39464f49de5e016f38e93fff05968ed9179c29b11f94f"
+  },
+  "wire_sha256": "803154103eb1b2c7437a6b092deb9fb3f29a8d06329e7fc79660692bafae13d7"
+}

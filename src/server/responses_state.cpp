@@ -97,8 +97,21 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
   if (!plan.eval_run_id.empty())
     Set(&result, "eval_run_id", String(plan.eval_run_id));
   if (plan.eval_shutdown) Set(&result, "eval_shutdown", Boolean(true));
-  if (!plan.chatkit_thread_id.empty())
+  if (!plan.chatkit_thread_id.empty()) {
     Set(&result, "chatkit_thread_id", String(plan.chatkit_thread_id));
+    if (!plan.chatkit_item_times.IsObject()) plan.chatkit_item_times = Object();
+    const auto now = std::time(nullptr);
+    if (const auto* items = response.GetArray("output")) {
+      for (const auto& item : items->array) {
+        const auto type = item.GetString("type");
+        if (type != "reasoning" && type != "message") continue;
+        const auto id = item.GetString("id");
+        if (!id.empty() && !plan.chatkit_item_times.Has(id))
+          Set(&plan.chatkit_item_times, id, Number(now));
+      }
+    }
+    Set(&result, "chatkit_item_times", plan.chatkit_item_times);
+  }
   if (!plan.assistant_thread_id.empty()) {
     if (!plan.assistant_started_at && response.GetString("status") == "in_progress")
       plan.assistant_started_at = std::time(nullptr);
@@ -587,6 +600,11 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
         !ValidId(thread->str) || !response->GetBool("background"))
       return StateError("Invalid stored ChatKit thread binding");
     plan->chatkit_thread_id = thread->str;
+    if (const auto* times = data->Find("chatkit_item_times")) {
+      if (!times->IsObject())
+        return StateError("Invalid ChatKit item timestamps");
+      plan->chatkit_item_times = *times;
+    }
   }
   if (data->Has("assistant_thread_id") || data->Has("assistant_run_id")) {
     auto thread = data->GetString("assistant_thread_id");
@@ -1087,10 +1105,16 @@ ObjectReply ResponsesState::FailWithinReservation(const Json& snapshot,
   return Finish(minimal, Array(), access, plan);
 }
 
-ObjectReply ResponsesState::Retrieve(std::string id,
-                                     const StateAccess& access) {
-  auto result = Data(Get(ObjectKind::kResponse, id, access), "response");
-  if (result.ok()) result.value = ResponsesPublicValue(std::move(result.value));
+ObjectReply ResponsesState::Retrieve(std::string id, const StateAccess& access,
+                                     Json* chatkit_item_times) {
+  auto stored = Get(ObjectKind::kResponse, id, access);
+  auto result = Data(stored, "response");
+  if (!result.ok()) return result;
+  if (chatkit_item_times) {
+    const auto* times = stored.value.Find("data")->Find("chatkit_item_times");
+    *chatkit_item_times = times ? *times : Json{};
+  }
+  result.value = ResponsesPublicValue(std::move(result.value));
   return result;
 }
 ObjectReply ResponsesState::ReadRecord(const std::string& id,

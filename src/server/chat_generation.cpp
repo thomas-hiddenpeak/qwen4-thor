@@ -3597,6 +3597,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
               if (response_status) pro_notes += delta.text;
             }
           } else if (summary_step) {
+            // The separate summarizer may decline. Its refusal is private.
+            // Finish the original model output after validating the frame.
+            if (delta.kind == ResponseDelta::Kind::kRefusal) continue;
             response_status =
                 delta.kind == ResponseDelta::Kind::kContent
                     ? responses->AppendSummary(delta.text, &response_chunk)
@@ -4825,7 +4828,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       }
       const ResponsesUsage step_usage{
           T, restored_prefix, static_cast<int64_t>(generated.size()),
-          internal_step && !response_parser.HasRefusal()
+          (summary_step || (internal_step && !response_parser.HasRefusal()))
               ? static_cast<int64_t>(generated.size())
               : thinking_budget.ReasoningTokens(),
           std::max(0, cache_written_tokens - restored_prefix)};
@@ -5166,7 +5169,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
       }
       if (summary_step && finish_reason != "length" &&
-          !responses->Output().HasSummary()) {
+          !response_parser.HasRefusal() && !responses->Output().HasSummary()) {
         err_guard.ok = false;
         SendError(fd, 502, "Summary executor returned no summary", {},
                   "response_summary_empty", "reasoning.summary");

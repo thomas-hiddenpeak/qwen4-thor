@@ -245,7 +245,7 @@ class Stage(workers.ice.Stage):
         self.core('core-after')
         self.snapshot('drained')
         if {'chatkit_actions_handoff', 'chatkit_browser_output_handoff',
-            'chatkit_generation_handoff'}.intersection(self.plan):
+            'chatkit_generation_handoff', 'chatkit_workflow_handoff'}.intersection(self.plan):
             from tools.serve_responses import chatkit_actions_profiles
             chatkit_actions_profiles.business(self, capabilities)
         if 'chatkit_retry_handoff' in self.plan:

@@ -1,9 +1,11 @@
 #include "chatkit_thread_state.h"
 
 #include "chatkit_structured.h"
+#include "chatkit_workflow.h"
 
 #include <algorithm>
 #include <ctime>
+#include <optional>
 
 #include "object_protocol.h"
 #include "q4t/server/input_contract.h"
@@ -159,6 +161,10 @@ void ProjectManagementItem(Json* item) {
   std::erase_if(item->object, [](const auto& field) {
     return field.first == "browser_form";
   });
+  if (item->GetString("type") == "chatkit.task_group") {
+    ManagementWorkflow(*item);
+    return;
+  }
   if (item->GetString("type") == "chatkit.assistant_message") {
     // Management uses file/url discriminators and has no browser title/index.
     for (auto& part : Field(*item, "content").array) {
@@ -186,12 +192,41 @@ void ProjectManagementItem(Json* item) {
 }
 
 ObjectReply ProjectOutput(const Json& response, const std::string& id,
-                          std::string_view form_tool) {
+                          std::string_view form_tool, const Json* times,
+                          const Json* previous_workflow) {
   const auto* output = response.GetArray("output");
   if (!output) return Corrupt();
   auto items = Array();
   const bool cancelled = response.GetString("status") == "cancelled";
+  std::optional<size_t> open;
+  if (previous_workflow) {
+    items.array.push_back(*previous_workflow);
+    open = 0;
+  }
   for (const auto& item : output->array) {
+    const auto type = item.GetString("type");
+    const auto at = WorkflowItemTime(times, item.GetString("id"));
+    if (type == "reasoning") {
+      if (item.GetString("id").empty()) return Corrupt();
+      if (!open) {
+        open = items.array.size();
+        items.array.push_back(
+            NewWorkflow(item, id, at ? at : response.GetInt("created_at")));
+      }
+      if (const auto* parts = item.GetArray("summary")) {
+        for (const auto& part : parts->array) {
+          if (part.GetString("type") == "summary_text" && part.Find("text") &&
+              part.Find("text")->IsString())
+            WorkflowTasks(items.array[*open])
+                .array.push_back(PublicThought(part.GetString("text")));
+        }
+      }
+      continue;
+    }
+    if (type == "message" && open) {
+      CloseWorkflow(items.array[*open], at);
+      open.reset();
+    }
     if (cancelled && !HasPartialAssistantText(item)) continue;
     if (item.GetString("type") == "function_call") {
       Json arguments;
@@ -236,6 +271,20 @@ ObjectReply ProjectOutput(const Json& response, const std::string& id,
                 {"type", String("chatkit.assistant_message")},
                 {"created_at", Number(response.GetInt("created_at"))},
                 {"content", std::move(parts)}}));
+  }
+  // The upstream converter stores a trailing open workflow before handing
+  // pending client calls back to the browser.
+  if (open && cancelled) {
+    // Retain workflows closed before a delivered message. An interruption
+    // drops the pending workflow updates; its earlier durable seed survives.
+    items.array.erase(items.array.begin() + *open);
+  } else if (open && (!previous_workflow || *open != 0)) {
+    auto begin = items.array.begin();
+    auto first = begin + *open;
+    while (first != begin &&
+           (first - 1)->GetString("type") == "chatkit.client_tool_call")
+      --first;
+    std::rotate(first, begin + *open, begin + *open + 1);
   }
   ObjectReply result;
   result.value = std::move(items);
@@ -319,22 +368,39 @@ ObjectReply ReadThread(ObjectStore& objects, const StateAccess& access,
     const auto pending = data.GetString("pending_response");
     if (pending.empty()) return found;
     ResponsesState state(objects);
-    auto response = state.Retrieve(pending, access);
-    if (!response.ok()) return response;
-    const auto status = response.value.GetString("status");
+    Json times;
+    auto retrieved = state.Retrieve(pending, access, &times);
+    if (!retrieved.ok()) return retrieved;
+    const auto& response = retrieved.value;
+    const auto status = response.GetString("status");
     if (status == "queued" || status == "in_progress") return found;
     if (status != "completed" && status != "incomplete" && status != "failed" &&
         status != "cancelled")
       return Corrupt();
-    auto projected =
-        ProjectOutput(response.value, id, data.GetString("pending_form_tool"));
-    if (!projected.ok()) return projected;
     auto& items = Field(data, "items").array;
-    for (auto& item : projected.value.array) items.push_back(std::move(item));
+    const auto previous_id = data.GetString("pending_workflow_id");
+    auto previous =
+        std::find_if(items.begin(), items.end(), [&](const Json& v) {
+          return !previous_id.empty() && v.GetString("id") == previous_id;
+        });
+    const size_t previous_index = previous - items.begin();
+    auto projected =
+        ProjectOutput(response, id, data.GetString("pending_form_tool"), &times,
+                      previous == items.end() ? nullptr : &*previous);
+    if (!projected.ok()) return projected;
+    for (auto& item : projected.value.array) {
+      if (!previous_id.empty() && item.GetString("id") == previous_id) {
+        if (previous_index >= items.size()) return Corrupt();
+        items[previous_index] = std::move(item);
+      } else {
+        items.push_back(std::move(item));
+      }
+    }
     Set(&data, "last_response", String(pending));
     Set(&data, "pending_response", {});
     std::erase_if(data.object, [](const auto& field) {
-      return field.first == "pending_form_tool";
+      return field.first == "pending_form_tool" ||
+             field.first == "pending_workflow_id";
     });
     auto request = read;
     request.operation = ObjectOperation::kPut;
@@ -363,6 +429,13 @@ io::Json ClientItem(io::Json item) {
                    {"created_at", String(item.GetString("created_at"))},
                    {"status", *form->Find("status")},
                    {"inputs", *form->Find("inputs")}});
+  }
+  if (type == "task_group" && item.Has("workflow")) {
+    Set(&item, "type", String("workflow"));
+    std::erase_if(item.object, [](const auto& field) {
+      return field.first == "workflow_closed";
+    });
+    return item;
   }
   if (type == "widget") {
     Json widget;

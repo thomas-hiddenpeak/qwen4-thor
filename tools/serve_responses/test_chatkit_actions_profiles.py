@@ -80,3 +80,51 @@ class GenerationHandoff(unittest.TestCase):
                         <= reuse.PACKED_DUPLEX_RECORDS)
         self.assertTrue({reuse.RECORD_FORMAT, reuse.BETA_RECORD_FORMAT, reuse.AGENT_RECORD_FORMAT}
                         .isdisjoint(reuse.PACKED_DUPLEX_RECORDS))
+
+
+class PublicSummaryHandoff(unittest.TestCase):
+    def test_changed_historical_digest_call_or_followup_is_rejected(self):
+        from tools.serve_responses import chatkit_workflow_profiles as workflows
+        rows = package.read(workflows.PROOF.with_name('profiles.json'))['profiles']
+        before, after = rows['primary']['sdk'], rows['light']['sdk']
+        workflows.check(after, before)
+        for where, key, value in [
+                ('archive', 'groups_sha256', '0' * 64),
+                ('archive', 'items', before['archive']['items'][1:]),
+                ('source', 'thread', before['archive']['thread']),
+                ('source', 'groups', []),
+                ('recovered', 'before_sha256', '0' * 64),
+                ('recovered', 'answer', '5'),
+                ('recovered', 'item', 'fc_unrelated'),
+                ('recovered', 'call', 'call_unrelated'),
+                ('recovered', 'ids', list(reversed(after['recovered']['ids']))),
+                ('recovered', 'duplicate', 200),
+                ('recovered', 'peer', 200),
+                ('recovered', 'sibling', 200)]:
+            with self.subTest(where=where, key=key), self.assertRaises(RuntimeError):
+                changed = deepcopy(after)
+                changed[where][key] = value
+                workflows.check(changed, before)
+
+    def test_unverified_history_does_not_create_a_partial_store(self):
+        from pathlib import Path
+        from tempfile import TemporaryDirectory
+        from tools.serve_responses import chatkit_workflow_profiles as workflows
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'source'
+            state = root / 'state'
+            source.mkdir()
+            state.mkdir()
+            for name in package.read(workflows.HISTORY)['records']:
+                (source / name).write_bytes(b'modified history')
+            with self.assertRaises(RuntimeError):
+                workflows.restore_history(state, source)
+            self.assertEqual(list(state.iterdir()), [])
+            store = state / 'application-objects'
+            store.mkdir()
+            sentinel = store / 'retained'
+            sentinel.write_bytes(b'existing')
+            with self.assertRaises(RuntimeError):
+                workflows.restore_history(state, source)
+            self.assertEqual(sentinel.read_bytes(), b'existing')
