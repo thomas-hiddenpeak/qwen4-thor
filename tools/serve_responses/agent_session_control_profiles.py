@@ -7,6 +7,7 @@ from tools.serve_responses import environment_lifecycle_profiles as lifecycle
 from tools.serve_service import package
 
 PROOF = lifecycle.ROOT / 'docs/evidence/serve-agent-session-controls-20261126/business.json'
+RECOVERY = lifecycle.ROOT / 'docs/evidence/serve-agent-turn-output-recovery-20261126/business.json'
 RELEASE = lifecycle.ROOT / 'docs/evidence/serve-chatkit-widget-stream-20261126/delivery.json'
 ACTOR = Path(__file__).with_name('agent_session_control_profile_sdk.mjs')
 KEY = 'agent_session_control_handoff'
@@ -15,12 +16,22 @@ RECEIPT = 'agent-session-control-handoff.json'
 
 def prepare(out, build, deployment):
     proof = package.read(PROOF)
-    package.require(proof['identity'] == dict(binary=package.sha(build/'q4t'), ingress=package.sha(build/'q4t-ingress'))
-                    and proof['https']['status'] == 'PASS' and proof['stored_policies']['request_and_effective_ttl']
+    identity = dict(binary=package.sha(build/'q4t'), ingress=package.sha(build/'q4t-ingress'))
+    package.require(proof['https']['status'] == 'PASS' and proof['stored_policies']['request_and_effective_ttl']
                     == [[{'ttl':'12h'}, '12h'], [{'ttl':'30m'}, '30m'], [None,'30m']],
-                    'session profiles require the engine that recorded the three turn lifetimes')
+                    'session profiles require recorded request and effective lifetimes')
+    drivers = [PROOF, RELEASE, ACTOR, Path(__file__), Path(lifecycle.__file__)]
+    if identity != proof['identity']:
+        recovery = package.read(RECOVERY)
+        accepted = recovery['accepted']
+        package.require(recovery['previous_candidate'] == proof['identity']
+                        and recovery['identity'] == identity and accepted['https']['status'] == 'PASS'
+                        and accepted['storage']['failed_record_identical']
+                        and accepted['sdk']['peer'] == 404 and accepted['sdk']['answer'] == '42',
+                        'session profiles require a verified candidate and its failed-turn replay')
+        drivers.append(RECOVERY)
     lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.CHATKIT_WIDGET_REVIEWED,
-                                KEY, [PROOF, RELEASE, ACTOR, Path(__file__), Path(lifecycle.__file__)])
+                                KEY, drivers)
 
 
 def check(row, previous=None):
