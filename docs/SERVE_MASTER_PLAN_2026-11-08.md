@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+两次候选启动都在首个模型启动前失败。相同登记的独立 CPU 校验用时 30.74 秒，超过 Guardian 的 30 秒事务时限。一次登记内只复用内容相同且已通过的历史证明后，用时 8.41 秒，许可摘要相同。24 项登记与恢复测试通过。下一步重新封包，按原时限验证实际启动和网关接管。[验证记录](evidence/serve-history-argument-types-20261125/registration-startup.json)
+
 主配置发出空值和同形字符串两次工具调用；轻配置取回前一配置持久化的两条记录，用同一调用 ID 和原始参数重新回答。两次启动中 JSON、SSE 以及客户隔离均通过，留下已发行的 rev500 恢复前驱。下一步验证故障接管与可回退发布。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)
 
 53 项 CPU 检查通过。覆盖两份发行前驱的复原、拒绝串换类型与会话、错误资料计数，以及未审查配置不可登记。下一步由轻配置读取主配置已保存的两段工具历史并回放。[验证记录](evidence/serve-history-argument-types-20261125/profiles.json)

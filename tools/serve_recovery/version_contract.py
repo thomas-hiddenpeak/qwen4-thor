@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from tools.serve_recovery import bundle, ledger, profile_contract, profile_manager
-from tools.serve_recovery import profile_compat, profile_migration, store, version_policy
+from tools.serve_recovery import profile_compat, profile_evidence, profile_migration, store, version_policy
 from tools.serve_service import package as engine
 
 FORMAT = 'q4t-version-registration-v1'
@@ -174,6 +174,7 @@ def prepare(root, primary, fallback, cycle_id, *, fallback_acceptance,
         read_bundle=read_bundle).registration
 
 
+@profile_evidence.qualification_scope()
 def qualify(root, primary, fallback, cycle_id, *, fallback_acceptance,
             bootstrap_boot_id=None, read_bundle=bundle.verify):
     """Pure registration representation after full package verification.
