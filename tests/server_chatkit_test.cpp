@@ -675,6 +675,16 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
          {type:'Text',id:'label',value,streaming:true}]});
          streamWidget(w('北')); progress('step'); streamWidget(w('北京'));
          streamWidget(w('京')); text({state:'done'}))")},
+       {"invalid_final",
+        String("streamWidget({type:'Card'});text({widget:[]})")},
+       {"deep_component", String(R"(let node={type:'Text',value:'deep'};
+         for(let i=0;i<60;i++) node={type:'Box',children:node};
+         streamWidget({type:'Card',children:{type:'Box',children:{type:'Box',
+           children:{type:'Box',children:{type:'Box',id:'target'}}}}});
+         streamWidgetComponent('target', node))")},
+       {"component",
+        String(R"(streamWidgetComponent(actionContext.action.payload.target,
+         actionContext.action.payload.node))")},
        {"duplicate", String(R"(streamWidget({type:'Basic',children:[
          {type:'Text',id:'t',value:'A'},{type:'Text',id:'t',value:'B'}]});
          text({state:'wrong'}))")},
@@ -859,6 +869,56 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
             OutputJson(chatkit_detail::ClientItem(
                 record.GetArray("items")->array.front())) ==
                 OutputJson(*complete.Find("item")));
+  live.clear();
+  const auto component =
+      Object({{"type", String("Box")},
+              {"id", String("group")},
+              {"children", Object({{"type", String("Text")},
+                                   {"id", String("detail")},
+                                   {"value", String("已核验")}})}});
+  auto replace = [&](const Json& sender, std::string target, const Json& node) {
+    return dispatch(
+        access, "component",
+        Object({{"target", String(std::move(target))}, {"node", node}}), sender,
+        true, collect);
+  };
+  Q4T_CHECK(
+      dispatch(access, "invalid_final", {}, {}, true, collect).http_status ==
+      502);
+  Q4T_CHECK(live.size() == 1 && item_count() == 1);
+  live.clear();
+  auto branch = replace(new_id, "label", component);
+  Q4T_CHECK(branch.ok() && live.size() == 1);
+  const auto& change = *live.front().Find("update");
+  Q4T_CHECK(live.front().GetString("type") == "thread.item.updated" &&
+            live.front().GetString("item_id") == new_id.str &&
+            change.GetString("type") == "widget.component.updated" &&
+            change.GetString("component_id") == "label" &&
+            OutputJson(*change.Find("component")) == OutputJson(component));
+  auto committed_widget = [&]() {
+    auto read = chatkit_detail::ReadThread(objects, access, put.id, &grant);
+    return chatkit_detail::ClientItem(
+        read.value.Find("data")->GetArray("items")->array.front());
+  };
+  Q4T_CHECK(OutputJson(committed_widget()) ==
+            OutputJson(*branch.value.array.front().Find("item")));
+  live.clear();
+  auto leaf = Object({{"type", String("Text")}, {"value", String("final")}});
+  auto nested = replace(new_id, "detail", leaf);
+  Q4T_CHECK(nested.ok() && live.size() == 1 &&
+            live.front().Find("update")->GetString("component_id") == "detail");
+  const auto saved_branch = OutputJson(committed_widget());
+  Q4T_CHECK(saved_branch.find("final") != std::string::npos);
+  live.clear();
+  Q4T_CHECK(replace(new_id, "detail", leaf).http_status == 502);
+  Q4T_CHECK(replace({}, "group", leaf).http_status == 502);
+  auto clash = component;
+  Set(&Field(clash, "children"), "id", String("group"));
+  Q4T_CHECK(replace(new_id, "group", clash).http_status == 502);
+  Q4T_CHECK(live.empty());
+  Q4T_CHECK(dispatch(access, "deep_component", {}, new_id, true, collect)
+                .http_status == 502);
+  Q4T_CHECK(live.size() == 1 && saved_branch == OutputJson(committed_widget()));
   live.clear();
   const auto changed =
       dispatch(access, "final_widget", {}, new_id, true, collect);

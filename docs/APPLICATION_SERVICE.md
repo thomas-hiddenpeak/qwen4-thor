@@ -169,6 +169,8 @@ streamWidget(card("发行"));
 streamWidget(card("发行 " + actionContext.state_variables.revision));
 ```
 
+要替换单个后代组件，调用 `streamWidgetComponent("release", {type: "Text", id: "release", value: "复核通过"})`。目标取自当前动作的快照或其发送者。浏览器收到 `widget.component.updated`，事件中的 `component_id` 标明旧位置。新组件可以改用另一个 ID 或省略 ID；后续动作按更新后的树查找目标。组件 ID 冲突、目标不存在或合并后的树超过读取预算都会终止动作。
+
 只更新组件时，处理程序正常返回即可。还需修改状态时，在结尾调用一次 `text({state: ...})`。工作者成功退出并提交线程修订后，浏览器会收到新条目的 `thread.item.done` 或已有条目的 `thread.item.replaced`。在此之前看到的快照是临时结果，若收到错误或连接中断，可重新读取线程来恢复已提交内容。`progress` 和 `streamWidget` 共用 64 帧及 512 KiB 的工作者消息预算，单个组件快照最多 64 KiB，每条进度文本最多 4096 个 UTF-8 字节。
 
 模型替换及网关换包后均从原附件答出发行号 510。[rev512 发行回执](evidence/serve-chatkit-generation-stream-20261125/delivery.json)

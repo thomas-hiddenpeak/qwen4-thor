@@ -236,26 +236,39 @@ ObjectReply DispatchAction(ObjectStore& objects, const StateAccess& access,
     }
     return !item.GetString("id").empty();
   };
-  auto publish = [&](const Json& widget) -> ObjectReply {
-    if (!ValidWidget(widget, true)) return BadOutput();
-    auto encoded = OutputJson(widget);
-    if (encoded.size() > detail::kMaxActionFrameBytes) return BadOutput();
+  auto publish = [&](const Json& node,
+                     const Json* target = nullptr) -> ObjectReply {
     if (!ensure_item())
       return Error(503, "chatkit_id_unavailable", "No widget ID");
+    Json widget = target ? current : node;
+    if (target && !ReplaceWidgetComponent(&widget, target->str, node))
+      return BadOutput();
+    if (!target && !ValidWidget(widget, true)) return BadOutput();
+    auto encoded = OutputJson(widget);
+    if (encoded.size() > detail::kMaxActionFrameBytes) return BadOutput();
+    // A valid subtree can exceed the storage reader's depth or node budget
+    // once grafted onto an existing tree.
+    if (target &&
+        !io::ParseJson(encoded, &widget, true, kApplicationJsonLimits))
+      return BadOutput();
     Set(&item, "widget", String(std::move(encoded)));
     if (current.IsNull()) {
       if (!emit(Object({{"type", String("thread.item.added")},
                         {"item", ClientItem(item)}})))
         return Error(499, "request_cancelled", "Widget stream cancelled");
     } else {
-      const auto updates = WidgetUpdates(current, widget);
+      const auto updates =
+          target ? Array({Object({{"type", String("widget.component.updated")},
+                                  {"component_id", *target},
+                                  {"component", node}})})
+                 : WidgetUpdates(current, widget);
       for (const auto& update : updates.array)
         if (!emit(Object({{"type", String("thread.item.updated")},
                           {"item_id", *item.Find("id")},
                           {"update", update}})))
           return Error(499, "request_cancelled", "Widget stream cancelled");
     }
-    current = widget;
+    current = std::move(widget);
     return {};
   };
   ObjectReply frame_error;
@@ -265,7 +278,8 @@ ObjectReply DispatchAction(ObjectStore& objects, const StateAccess& access,
       if (frame.IsString())
         return emit(
             Object({{"type", String("progress_update")}, {"text", frame}}));
-      frame_error = publish(frame);
+      frame_error = frame.IsArray() ? publish(frame.array[1], &frame.array[0])
+                                    : publish(frame);
       return frame_error.ok();
     };
   }

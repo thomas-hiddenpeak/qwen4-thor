@@ -86,10 +86,16 @@ ObjectReply Execute(const io::Json& input, const BinaryAccess& access,
                             control.compile_deadline, control.cancelled))
         return Failure(worker->Failure());
       Json frame;
-      if (!io::ParseJson(encoded, &frame, true, kApplicationJsonLimits) ||
-          (!frame.IsObject() &&
-           (!frame.IsString() ||
-            frame.str.size() > detail::kMaxActionProgressBytes)))
+      if (!io::ParseJson(encoded, &frame, true, kApplicationJsonLimits))
+        return Error(502, "chatkit_action_invalid_result",
+                     "The workflow returned an invalid streaming frame");
+      const bool component = frame.IsArray() && frame.array.size() == 2 &&
+                             frame.array[0].IsString() &&
+                             !frame.array[0].str.empty() &&
+                             frame.array[1].IsObject();
+      if (!frame.IsObject() && !component &&
+          (!frame.IsString() ||
+           frame.str.size() > detail::kMaxActionProgressBytes))
         return Error(502, "chatkit_action_invalid_result",
                      "The workflow returned an invalid streaming frame");
       if (!progress(frame)) return Failure(GrammarFailure::kCancelled);

@@ -161,22 +161,33 @@ JSValue Emit(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
   }
 }
 
-// Only streamed ChatKit handlers receive this function. Replies and durable
+enum class ActionFrame { kProgress, kWidget, kComponent };
+
+// Only streamed ChatKit handlers receive these functions. Replies and durable
 // changes still go through the ordinary, checked program result.
 JSValue Progress(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
-                 int widget, JSValue*) {
+                 int kind, JSValue*) {
   try {
     auto& run = *static_cast<Execution*>(JS_GetContextOpaque(context));
-    if (!run.fault.empty() || argc != 1 ||
+    const auto frame_kind = static_cast<ActionFrame>(kind);
+    const bool component = frame_kind == ActionFrame::kComponent;
+    if (!run.fault.empty() || argc != (component ? 2 : 1) ||
         run.progress_count >= kMaxActionProgressFrames)
       return Fail(context, "program_progress_failed");
     ++run.progress_count;
     Json frame;
     std::string bytes;
-    if (widget) {
-      if (!JS_IsObject(argv[0])) return Fail(context, "program_widget_invalid");
+    if (frame_kind != ActionFrame::kProgress) {
+      const auto node = argv[component ? 1 : 0];
+      std::string target;
+      if (component &&
+          (!JS_IsString(argv[0]) ||
+           !CopyString(context, argv[0], &target, kMaxActionFrameBytes) ||
+           target.empty()))
+        return Fail(context, "program_widget_invalid");
+      if (!JS_IsObject(node)) return Fail(context, "program_widget_invalid");
       JSValue encoded =
-          JS_JSONStringify(context, argv[0], JS_UNDEFINED, JS_UNDEFINED);
+          JS_JSONStringify(context, node, JS_UNDEFINED, JS_UNDEFINED);
       const bool valid =
           JS_IsString(encoded) &&
           CopyString(context, encoded, &bytes, kMaxActionFrameBytes);
@@ -185,6 +196,8 @@ JSValue Progress(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
           !io::ParseJson(bytes, &frame, true, kApplicationJsonLimits) ||
           !frame.IsObject())
         return Fail(context, "program_widget_invalid");
+      if (component)
+        frame = Array({String(std::move(target)), std::move(frame)});
     } else {
       if (!JS_IsString(argv[0]) ||
           !CopyString(context, argv[0], &bytes, kMaxActionProgressBytes))
@@ -377,12 +390,17 @@ bool Install(Execution& run) {
     okay = JS_DefinePropertyValueStr(context, global, i ? "image" : "text",
                                      function, JS_PROP_ENUMERABLE) >= 0;
   }
-  for (int widget = 0; okay && run.progress && widget < 2; ++widget) {
-    auto function =
-        JS_NewCFunctionData(context, Progress, 1, widget, 0, nullptr);
-    okay = JS_DefinePropertyValueStr(context, global,
-                                     widget ? "streamWidget" : "progress",
-                                     function, JS_PROP_ENUMERABLE) >= 0;
+  if (run.progress) {
+    static constexpr const char* names[] = {"progress", "streamWidget",
+                                            "streamWidgetComponent"};
+    for (int kind = 0; okay && kind < 3; ++kind) {
+      const int arity =
+          kind == static_cast<int>(ActionFrame::kComponent) ? 2 : 1;
+      auto function =
+          JS_NewCFunctionData(context, Progress, arity, kind, 0, nullptr);
+      okay = JS_DefinePropertyValueStr(context, global, names[kind], function,
+                                       JS_PROP_ENUMERABLE) >= 0;
+    }
   }
   JS_FreeValue(context, global);
   if (!okay) return false;

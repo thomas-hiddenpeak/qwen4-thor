@@ -27,6 +27,18 @@ bool Component(const Json& node, std::unordered_set<std::string>* ids) {
          });
 }
 
+Json* FindComponent(Json* node, const std::string& id) {
+  if (node->IsArray()) {
+    for (auto& child : node->array)
+      if (auto* match = FindComponent(&child, id)) return match;
+  } else if (node->IsObject()) {
+    if (node->GetString("id") == id) return node;
+    if (node->Has("children"))
+      return FindComponent(&Field(*node, "children"), id);
+  }
+  return nullptr;
+}
+
 bool AppendDeltas(const Json& before, const Json& after, Json* updates) {
   if (before.type != after.type) return false;
   if (after.IsNull()) return true;
@@ -79,6 +91,16 @@ bool ValidWidget(const io::Json& root, bool require_unique_ids) {
   std::unordered_set<std::string> ids;
   return (type == "Card" || type == "Basic" || type == "ListView") &&
          Component(root, require_unique_ids ? &ids : nullptr);
+}
+
+bool ReplaceWidgetComponent(io::Json* root, const std::string& target,
+                            const io::Json& replacement) {
+  if (target.empty() || !ValidWidget(*root, true) || !root->Has("children"))
+    return false;
+  auto* match = FindComponent(&object_detail::Field(*root, "children"), target);
+  if (!match) return false;
+  *match = replacement;
+  return ValidWidget(*root, true);
 }
 
 io::Json WidgetUpdates(const io::Json& before, const io::Json& after) {

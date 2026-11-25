@@ -70,6 +70,10 @@ if (plan.widget_stream) {
     streamWidget(card('发行')); progress('Reading version');
     streamWidget(card('发行 '+actionContext.state_variables.revision));
     streamWidget(card('已核验')); text({state:{...actionContext.state,reviewed:true}});`;
+  source.replace_component = `const {target, component} = actionContext.action.payload;
+    streamWidgetComponent(target, component);`;
+  source.component_failure = `streamWidgetComponent('release', {type:'Text',id:'attempt',value:'pending'});
+    streamWidgetComponent('missing', {type:'Text',value:'invalid'});`;
   source.card_failure = `streamWidget({type:'Card',children:[]});text({title:2})`;
   source.card_cancel = `streamWidget({type:'Card',children:[]});
     let checksum=1;
@@ -225,7 +229,39 @@ if (plan.widget_stream) {
   await body.cancel().catch(()=>{});
   await new Promise(resolve=>setTimeout(resolve,2100));
   assert.deepEqual(await snapshot(),beforeFailure);
-  widgetStream={frames,failed,management,client_cancelled_after_added:true};
+  const branch = {type:'Box',id:'release',children:[
+    {type:'Text',id:'revision',value:String(revision)},
+    {type:'Text',id:'status',value:'待复核'}]};
+  async function replace(target,component) {
+    const events = await act(reader,true,'replace_component',{target,component},id);
+    assert.deepEqual(events.map(e=>e.type),
+      ['stream_options','thread.item.updated','thread.item.replaced']);
+    assert.equal(events[1].item_id,id);
+    assert.deepEqual(events[1].update,
+      {type:'widget.component.updated',component_id:target,component});
+    assert.equal(events[2].item.id,id);
+    return events;
+  }
+  const inserted = await replace('summary',branch);
+  const leaf = {type:'Text',value:'复核通过'};
+  const changed = await replace('status',leaf);
+  const final = structuredClone(last);
+  const expected = structuredClone(branch);
+  expected.children[1] = leaf;
+  final.widget.children[0].children[0] = expected;
+  assert.deepEqual(changed[2].item,final);
+  const durable = await snapshot();
+  assert.deepEqual(durable.items.data.at(-1),final);
+  const page = await (await owner.beta.chatkit.threads.listItems(thread,{order:'asc'}).asResponse()).json();
+  assert.equal(page.data.at(-1).id,id);
+  assert.deepEqual(JSON.parse(page.data.at(-1).widget),final.widget);
+  await act(sibling,true,'replace_component',{target:'release',component:leaf},id,404);
+  await act(reader,true,'replace_component',{target:'status',component:leaf},id,502);
+  const rolledBack = await act(reader,true,'component_failure',{},id);
+  assert.deepEqual(rolledBack.map(e=>e.type),['stream_options','thread.item.updated','error']);
+  assert.deepEqual(await snapshot(),durable);
+  widgetStream={frames,failed,management,client_cancelled_after_added:true,
+    component:{inserted,changed,rolledBack,final,management:page.data.at(-1),sibling:404,missing:502}};
 }
 await owner.beta.chatkit.sessions.cancel(reader.id);
 await act(reader,false,'inspect',{},widget.id,401);
