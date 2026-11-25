@@ -9,6 +9,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 Agents 的结构化输出格式只有 type 和 schema。原版本把该配置直接交给 Responses，合法请求会因缺少 text.format.name 失败。现由内部适配器命名并开启严格校验。官方 SDK 通过原生 TLS 收到整数 518 与 42，持久配置保留客户原始 schema，后端两回合均实际启用 strict。模型此前两次对普通发行号查询拒答，保留质量失败。用同一 107-token 请求做两次独立启动，贪心和固定种子采样的正文、逐 token 概率及用量各自相同，均得到 518。 默认仍为 rev518，下一步验证修订包的配置和托管交接。[业务与对照记录](evidence/serve-agent-structured-format-20261126/business.json)
 
+已在 #154 来源清单修正之上核对 Agent 改动的 11 份来源。两份候选包的运行时来源逐项一致；用 Node SDK 7.47.0 和 TypeScript 5.9.3 重新生成的会话类型图逐字节相同。 托管验证仍在进行。[来源核对](evidence/serve-agent-turn-output-recovery-20261126/source-inventory.json)
+
+PR #154 的两项主机检查都报告 13 份来源摘要过期。逐项与 rev518 主、回退包中的运行时来源清单及 Python 文件核对一致，已更新服务清单，40 项变异检查通过。 接续远端检查和 main 合入。[来源核对](evidence/serve-chatkit-widget-stream-20261126/source-inventory.json)
+
 隔离失败回合后的修订程序通过主、轻配置交接。主配置查到真实发行号 518，创建流关闭填充。轻配置按原会话、回合和回答 ID 读回记录，订阅恢复默认填充，下一回合答出 42。独立检查两个持久 Responses 的请求与生效缓存寿命分别为 12h 和 30m。清除设置后可读回模型默认状态，两个配置的跨客户读取均为 404。每种配置各启动一次模型，分别耗时 40.430 和 35.715 秒。两份 v65 记录均逐字节还原各自的 v64 前驱。 下一步是托管服务故障接手及可回退发行。[配置交接回执](evidence/serve-agent-turn-output-recovery-20261126/profiles.json)
 
 第一次托管短验留下了真实的拒答格式错误。修复后，失败回合保留原错误，Agent 会话返回 idle，下一回合继承原用户输入和缓存寿命，并在模型历史中标明前一回合已失败。首次复放有两个连续用户输入，模型在拒答字段返回了上一题的发行号；增加回合边界后，SDK 从同一失败记录恢复，后续算术题和独立 Chat 均答 42，原失败记录逐字节一致，跨客户读取为 404。仅对三种模型输出格式错误应用此规则，依赖和运行时错误继续走原故障路径。 当前默认仍是 rev518，接续修订版的配置交接及托管恢复。[复放回执](evidence/serve-agent-turn-output-recovery-20261126/business.json)
