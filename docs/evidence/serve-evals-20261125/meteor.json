@@ -61,5 +61,18 @@
     "Actual native worker tests: score threshold, capacity and cancellation",
     "Official SDK over TLS, real model sample and cross-client read",
     "Qualified profiles and usable rollback package"
-  ]
+  ],
+  "migration": {
+    "format": "q4t-profile-business-v49",
+    "predecessor": "q4t-profile-business-v48",
+    "device_qualified": false,
+    "cpu": {
+      "passed": 48,
+      "sha256": "6f1aad655391f727342058e58f9c89972566a79946d630faa736bd929c118c99"
+    },
+    "initial_fixture": {
+      "reason": "Sparse checkout omitted historical embedding input JSON. Rehydrated the exact tracked fixture files.",
+      "sha256": "2f1e0fcbbc22928c3cc1b1d52279ddc93a71beea26003dc043eee2337037b09b"
+    }
+  }
 }

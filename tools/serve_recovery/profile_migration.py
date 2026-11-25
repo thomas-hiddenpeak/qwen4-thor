@@ -530,22 +530,26 @@ def explicit_extension(previous, target):
     new_tools = target.get('tools', {})
     old_history = old_tools.get('history', {})
     new_history = new_tools.get('history', {})
+    from tools.serve_recovery import profile_live_reuse as live
+    if not live.has_meteor(previous) and live.has_meteor(target):
+        if (not package.same_json(previous.get('evals'), live.COSINE_EVALS)
+                or not package.same_json(target['evals'], live.METEOR_EVALS)
+                or not package.same_json(old_history, live.REPAIRED_TOOL_HISTORY)):
+            return False
+        previous = dict(previous, evals=live.METEOR_EVALS)
     if ('non_mapping_text' not in old_history and
             ('non_mapping_text' in new_history or 'unidentified_arguments' in new_history)):
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(old_history, live.ISSUED_TOOL_HISTORY)
                 or not package.same_json(new_history, live.REPAIRED_TOOL_HISTORY)
                 or not package.same_json(previous.get('project_safety'), live.SAFETY_CAPABILITY)):
             return False
         previous = dict(previous, tools=dict(old_tools, history=new_history))
     if 'project_safety' not in previous and 'project_safety' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['project_safety'], live.SAFETY_CAPABILITY)
                 or not package.same_json(previous.get('eval_embedding_grader'), live.COSINE_GRADER)
                 or not package.same_json(previous.get('evals'), live.COSINE_EVALS)):
             return False
     if 'eval_embedding_grader' not in previous and 'eval_embedding_grader' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(previous.get('evals'), live.EVAL_CAPABILITY)
                 or not package.same_json(target.get('evals'), live.COSINE_EVALS)
                 or target.get('vector_stores', {}).get('native_embedding_configured') is not True
@@ -553,32 +557,26 @@ def explicit_extension(previous, target):
             return False
         previous = dict(previous, evals=live.COSINE_EVALS)
     if 'evals' not in previous and 'evals' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['evals'], live.EVAL_CAPABILITY) or
                 not package.same_json(previous.get('chatkit'), live.CHATKIT_CAPABILITY)):
             return False
     if 'chatkit' not in previous and 'chatkit' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['chatkit'], live.CHATKIT_CAPABILITY) or
                 not package.same_json(previous.get('hosted_environment_preparation'), live.PREPARATION_CAPABILITY)):
             return False
     if 'hosted_environment_preparation' not in previous and 'hosted_environment_preparation' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['hosted_environment_preparation'], live.PREPARATION_CAPABILITY) or
                 not package.same_json(previous.get('hosted_environment_lifecycle'), live.HOSTED_LIFECYCLE_CAPABILITY)):
             return False
     if 'hosted_environment_lifecycle' not in previous and 'hosted_environment_lifecycle' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['hosted_environment_lifecycle'], live.HOSTED_LIFECYCLE_CAPABILITY) or
                 not package.same_json(previous.get('webhooks'), live.WEBHOOK_CAPABILITY)):
             return False
     if 'webhooks' not in previous and 'webhooks' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['webhooks'], live.WEBHOOK_CAPABILITY) or
                 not package.same_json(previous.get('agent_automations'), live.AUTOMATION_CAPABILITY)):
             return False
     if 'agent_automations' not in previous and 'agent_automations' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['agent_automations'], live.AUTOMATION_CAPABILITY) or
                 not package.same_json(previous.get('agent_sessions'), live.MANAGED_TOOL_SESSION) or
                 not package.same_json(target.get('agent_sessions'), live.automation_session()) or
@@ -590,32 +588,26 @@ def explicit_extension(previous, target):
     new_realtime = target.get('realtime', {})
     if (isinstance(new_realtime, dict) and 'translations' in new_realtime and
             (not isinstance(old_realtime, dict) or 'translations' not in old_realtime)):
-        from tools.serve_recovery import profile_live_reuse as live
         if (not isinstance(old_realtime, dict) or
                 not package.same_json(previous.get('hosted_python'), live.CODE_CAPABILITY) or
                 not package.same_json(new_realtime['translations'], live.TRANSLATOR_CAPABILITY)):
             return False
     if 'hosted_python' not in previous and 'hosted_python' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['hosted_python'], live.CODE_CAPABILITY) or
                 not package.same_json(previous.get('container_workspaces'), live.SKILLS_CAPABILITY)):
             return False
     if 'container_workspaces' not in previous and 'container_workspaces' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['container_workspaces'], live.SKILLS_CAPABILITY) or
                 not package.same_json(previous.get('assistants'), live.ASSISTANTS_CAPABILITY)):
             return False
     if 'assistants' not in previous and 'assistants' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['assistants'], live.ASSISTANTS_CAPABILITY) or
                 not package.same_json(previous.get('translations'), live.TRANSLATION_CAPABILITY)):
             return False
     if 'translations' not in previous and 'translations' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if not package.same_json(target['translations'], live.TRANSLATION_CAPABILITY):
             return False
     if 'agent_session_subagents' not in previous and 'agent_session_subagents' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(target['agent_session_subagents'], live.SUBAGENT_CAPABILITY) or
                 any(not package.same_json(contract.get('agent_sessions'), live.MANAGED_TOOL_SESSION)
                     or not package.same_json(contract.get('agent_session_artifacts'), live.ARTIFACT_CAPABILITY)
@@ -624,7 +616,6 @@ def explicit_extension(previous, target):
     requested = target.get('agent_sessions')
     if (isinstance(requested, dict) and 'time_awareness' in requested and
             not package.same_json(previous.get('agent_sessions'), requested)):
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(previous.get('agent_sessions'), live.WORKSPACE_SESSION) or
                 not package.same_json(requested, live.MANAGED_TOOL_SESSION) or
                 any(not package.same_json(contract.get('agent_session_artifacts'), live.ARTIFACT_CAPABILITY)
@@ -633,13 +624,11 @@ def explicit_extension(previous, target):
             return False
         previous = dict(previous, agent_sessions=requested)
     if 'agent_session_artifacts' not in previous and 'agent_session_artifacts' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (not package.same_json(previous.get('agent_environments'), live.WORKSPACE_CAPABILITY) or
                 not package.same_json(previous.get('agent_sessions'), live.WORKSPACE_SESSION) or
                 not package.same_json(target['agent_session_artifacts'], live.ARTIFACT_CAPABILITY)):
             return False
     if 'agent_environments' not in previous and 'agent_environments' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (package.same_json(previous.get('agent_sessions'), live.OAUTH_SESSION)
                 and package.same_json(target.get('agent_sessions'), live.WORKSPACE_SESSION)
                 and package.same_json(target.get('agent_environments'), live.WORKSPACE_CAPABILITY)
@@ -648,14 +637,12 @@ def explicit_extension(previous, target):
             previous = dict(previous, agent_sessions=live.WORKSPACE_SESSION,
                             agent_environments=live.WORKSPACE_CAPABILITY)
     if 'agent_vaults' in previous and 'agent_vaults' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (package.same_json(previous['agent_vaults'], live.VAULT_CAPABILITY)
                 and package.same_json(target['agent_vaults'], live.VAULT_CAPABILITY)
                 and package.same_json(previous.get('agent_sessions'), live.VAULT_SESSION)
                 and package.same_json(target.get('agent_sessions'), live.OAUTH_SESSION)):
             previous = dict(previous, agent_sessions=live.OAUTH_SESSION)
     if 'agent_vaults' not in previous and 'agent_vaults' in target:
-        from tools.serve_recovery import profile_live_reuse as live
         if (package.same_json(previous.get('agent_sessions'), live.SESSION_CAPABILITY)
                 and package.same_json(target.get('agent_sessions'), live.VAULT_SESSION)
                 and package.same_json(target['agent_vaults'], live.VAULT_CAPABILITY)):
