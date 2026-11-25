@@ -867,6 +867,27 @@ Q4T_TEST(chatkit_registered_web_search_preserves_scope_and_access_mode) {
   return true;
 }
 
+Q4T_TEST(chatkit_cancelled_generation_keeps_only_nonempty_assistant_output) {
+  Json response;
+  Q4T_CHECK(io::ParseJson(R"({
+    "status":"cancelled","output":[
+    {"id":"fc1","type":"function_call","arguments":"{","name":"search"},
+    {"id":"msg_empty","type":"message","role":"assistant","content":[
+      {"type":"output_text","text":" \u0085\u00a0\u2002\u3000"}]},
+    {"id":"msg_partial","type":"message","role":"assistant","content":[
+      {"type":"output_text","text":"部分𐀀"}]},
+    {"id":"msg_refusal","type":"message","role":"assistant","content":[
+      {"type":"refusal","refusal":"declined"}]}]})",
+                          &response));
+  auto projected = chatkit_detail::ProjectOutput(response, "cthr_job");
+  Q4T_CHECK(projected.ok() && projected.value.array.size() == 2);
+  Q4T_CHECK(projected.value.array[0].GetString("id") == "msg_partial" &&
+            projected.value.array[1].GetString("id") == "msg_refusal");
+  Set(&response, "status", String("completed"));
+  Q4T_CHECK(!chatkit_detail::ProjectOutput(response, "cthr_job").ok());
+  return true;
+}
+
 Q4T_TEST(chatkit_generation_preserves_browser_and_management_citation_sources) {
   Json response;
   Q4T_CHECK(io::ParseJson(R"({

@@ -222,6 +222,43 @@ Q4T_TEST(responses_state_previous_history_does_not_inherit_instructions) {
   return true;
 }
 
+Q4T_TEST(responses_state_chatkit_cancelled_context_is_bound_to_original_thread) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState states(objects);
+  ResponseStatePlan first, second;
+  Q4T_CHECK(Ok(states.Resolve(Envelope(R"({"input":"first"})"),
+                              Access(), &first)));
+  first.chatkit_thread_id = "cthr_reader";
+  Q4T_CHECK(Ok(states.Begin(Snapshot(first, "in_progress"), Access(), &first)));
+  auto output = Answer();
+  Set(&output.array.front(), "status", String("incomplete"));
+  auto blank = output.array.front();
+  Set(&blank, "id", String("msg_blank"));
+  Set(&blank, "content", Parse(R"([{"type":"output_text","text":"  ",
+                                    "annotations":[]}])"));
+  output.array.push_back(std::move(blank));
+  Q4T_CHECK(Ok(states.Finish(Snapshot(first, "cancelled", output),
+                             Parse("[]"), Access(), &first)));
+  auto next = Envelope(R"({"input":"next"})");
+  next.previous_response_id = first.id;
+  Q4T_CHECK(!states.Resolve(next, Access(), &second, nullptr, {},
+                            "cthr_other").ok());
+  Q4T_CHECK(states.Resolve(next, Access("client:b"), &second, nullptr, {},
+                           "cthr_reader").http_status == 404);
+  Q4T_CHECK(Ok(states.Resolve(next, Access(), &second, nullptr, {},
+                              "cthr_reader")));
+  const auto& history = second.history.array;
+  Q4T_CHECK(history.size() == 4 && history[1].GetString("id") == "msg_answer");
+  Q4T_CHECK(history[2].GetString("role") == "developer" &&
+            history[3].GetString("role") == "user");
+  Q4T_CHECK(OutputJson(history[2]).find("user cancelled") != std::string::npos);
+  Q4T_CHECK(Ok(states.Resolve(next, Access(), &second)));
+  Q4T_CHECK(second.own_input.array.size() == 1 &&
+            second.history.array[2].GetString("id") == "msg_blank");
+  return true;
+}
+
 Q4T_TEST(refusal_state_persistence_restart_history_and_client_isolation) {
   Fixture f;
   std::string id, original;

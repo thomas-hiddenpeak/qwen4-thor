@@ -888,22 +888,13 @@ void ResponsesJobs::Worker() noexcept {
   }
 }
 
-ObjectReply ResponsesJobs::Cancel(const std::string& id,
-                                  const StateAccess& access) {
-  ResponsesState states(state_->objects);
-  auto current = states.Retrieve(id, access);
-  if (!current.ok()) return current;
-  if (!current.value.GetBool("background"))
-    return Error(400, "response_not_background",
-                 "Only background responses can be cancelled");
-  if (Terminal(current.value)) return current;
+bool ResponsesJobs::RequestCancel(const std::string& scope,
+                                  const std::string& id) {
   std::shared_ptr<Job> queued;
   {
     const std::lock_guard lock(state_->mutex);
-    const auto found = state_->jobs.find(Key(access.scope, id));
-    if (found == state_->jobs.end())
-      return Error(503, "response_recovery_pending",
-                   "Response awaits owner recovery");
+    const auto found = state_->jobs.find(Key(scope, id));
+    if (found == state_->jobs.end()) return false;
     const auto& job = found->second;
     job->control->Cancel();
     if (job->stage == Job::Stage::kQueued) {
@@ -913,6 +904,21 @@ ObjectReply ResponsesJobs::Cancel(const std::string& id,
     }
   }
   if (queued) Execute(queued);
+  return true;
+}
+
+ObjectReply ResponsesJobs::Cancel(const std::string& id,
+                                  const StateAccess& access) {
+  ResponsesState states(state_->objects);
+  auto current = states.Retrieve(id, access);
+  if (!current.ok()) return current;
+  if (!current.value.GetBool("background"))
+    return Error(400, "response_not_background",
+                 "Only background responses can be cancelled");
+  if (Terminal(current.value)) return current;
+  if (!RequestCancel(access.scope, id))
+    return Error(503, "response_recovery_pending",
+                 "Response awaits owner recovery");
   while (Clock::now() < access.deadline) {
     if (access.cancelled && access.cancelled())
       return Error(408, "response_cancel_wait_ended",

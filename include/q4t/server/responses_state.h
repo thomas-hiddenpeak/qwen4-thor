@@ -98,7 +98,8 @@ class ResponsesState {
   ObjectReply Resolve(const ResponsesEnvelope& envelope,
                       const StateAccess& access, ResponseStatePlan* plan,
                       const CancelledAgentHistory* cancelled = nullptr,
-                      std::string_view agent_session = {});
+                      std::string_view agent_session = {},
+                      std::string_view chatkit_thread = {});
   // Loads authoritative inputs and revision, without rerunning resolution or
   // any tool/model. The result is the internal stored record, never an API
   // body.

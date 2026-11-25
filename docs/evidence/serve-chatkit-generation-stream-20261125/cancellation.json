@@ -1,0 +1,110 @@
+{
+  "stage": "candidate_http",
+  "issued": false,
+  "issued_revision": 510,
+  "reference": {
+    "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "path": "chatkit/server.py",
+    "sha256": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+    "behavior": "allow_cancel, retain nonblank pending assistant text, hide interruption from visible thread"
+  },
+  "runs": {
+    "defect": {
+      "run": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 65.15,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "lease_sha256": "01540e24ec028f019ab99b5d2076cc9c3854927f7c89ce6e1211f3476761ac35",
+      "binary": "68b83bcbbd3295ccd18b2f9b3068010061adbbdfbb7381aa1f6a5194088f4be0",
+      "protocol": "ee651d2ae4e2896d158c9311d511135814afd790a98c92877bd2b19811b7859b",
+      "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+      "actor_sha256": "03e44ae7d730bdfdb668d6c81b24c6cb7b10eee2a06e9e1bd7975e38561ac56a",
+      "wire_and_journal": {
+        "response": "resp_95b9872f2c000d2f61520a0446601082",
+        "status": "incomplete",
+        "observed_chars": 1878,
+        "received_chars": 1,
+        "extended": true,
+        "stream_options": null,
+        "thread": "cthr_d032a95d23bd523e2f53445179f34ab3",
+        "item": "msg_eacfa091930f988819e283cc1f636d30",
+        "journal_sha256": "237865fcea50e1347631ba515c4e638efa838b35478078b023c9c4c848a742d9"
+      },
+      "sdk": "7.47.0",
+      "independent_chat": "42"
+    },
+    "candidate": {
+      "run": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 37.103,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "lease_sha256": "bb91dbf32f15efe2d44372d665e2f090f5118dae3bc096c662488c12c7df5283",
+      "binary": "dfbc7b0ac5fcbc5bd4fcc627f8071fe1dcc71ef8caf47f5453dde3164c3a9d89",
+      "protocol": "49295d12fec8bd297fe14b83bfe66715d7cc8c199b23ff00b6dc29e4165f745f",
+      "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+      "actor_sha256": "5e3ebc578e6406ae2c281350329ef2e3d5a5e0f41f46067f65d3dc1c5a5c0fc4",
+      "wire_and_journal": {
+        "response": "resp_53d648d5942d0923375df3b7834117b1",
+        "status": "cancelled",
+        "observed_chars": 19,
+        "received_chars": 1,
+        "extended": true,
+        "stream_options": {
+          "allow_cancel": true
+        },
+        "thread": "cthr_bdfaf018a69a5f06aedd7de29c61d1c2",
+        "item": "msg_788cb35a122693024426bafc5646d452",
+        "journal_sha256": "b26f58bcdd61fa3ff1985bbc6bb49b7a207874bc14ab28bb7579b5239818767a",
+        "next_response": "resp_9cb5c8ec86fee6bdb5a448bf65301c8a",
+        "next_answer": "42",
+        "hidden_cancel_notes": 1,
+        "visible": [
+          "item_0859202c29688a14fb8b8399ace69193",
+          "msg_788cb35a122693024426bafc5646d452",
+          "item_79fc787ec18d3809144c0ebabb7f64c5",
+          "msg_38c4a0d3b49d5bc997cd48efcd6bd41b"
+        ]
+      },
+      "sdk": "7.47.0",
+      "independent_chat": "42"
+    }
+  },
+  "host": {
+    "cases": [
+      "chatkit_thread_history_enforces_identity_workflow_retention_and_cursors",
+      "chatkit_structured_answers_keep_browser_and_management_identity",
+      "chatkit_registered_web_search_preserves_scope_and_access_mode",
+      "chatkit_cancelled_generation_keeps_only_nonempty_assistant_output",
+      "chatkit_generation_preserves_browser_and_management_citation_sources",
+      "chatkit_generation_numbers_only_visible_citations_per_item_and_part",
+      "chatkit_browser_exceptions_emit_one_valid_terminal_even_without_heap",
+      "chatkit_generation_errors_finish_only_a_delivered_browser_stream",
+      "chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes",
+      "server_terminal_handoff_precedes_wire_and_preserves_cleanup",
+      "server_http_context_identity_and_single_terminal",
+      "server_http_stream_error_is_single_terminal",
+      "server_http_exception_terminal_states",
+      "server_http_host_memory_identity_and_terminal",
+      "server_http_host_memory_does_not_append_after_partial_or_terminal",
+      "http_speech_sse_errors_have_no_success_event_or_chat_done",
+      "asr_stream_error_and_heap_failure_never_emit_chat_done_or_success",
+      "responses_state_previous_history_does_not_inherit_instructions",
+      "responses_state_chatkit_cancelled_context_is_bound_to_original_thread",
+      "responses_jobs_http_stream_disconnect_retains_job_and_original_replay",
+      "responses_jobs_queued_cancel_skips_executor_and_remains_client_scoped",
+      "responses_jobs_cancel_wins_against_late_success_commit"
+    ],
+    "inventory_mutations": 40
+  },
+  "boundary": "The stored partial includes server-generated text through cancellation. Socket buffers can contain more than the text already rendered by the browser. Explicit background Responses keep running when their observer disconnects."
+}
