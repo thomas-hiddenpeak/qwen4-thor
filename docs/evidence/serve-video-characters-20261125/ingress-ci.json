@@ -1,0 +1,44 @@
+{
+  "corrected_repository_semantics_anchor": {
+    "src/server/http_request.cpp": "0acafee4405e85a41b3790ed480d51c094fce9b920f3fe719eca290a8b973b02"
+  },
+  "previous_failures": {
+    "45564840427": {
+      "log_sha256": "39abdfbc68b2d92228698073a4418e44523eb7e015bb116e2f7f127f3648f2f7",
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45564840427"
+    },
+    "45564393495": {
+      "log_sha256": "fefa7841d1651cdb70c6a18cddbe18730ab09342e562fd92ea47d8a15b19240b",
+      "url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45564393495"
+    }
+  },
+  "scope": "Shared ingress CPU peer and forwarding fixture; gateway and engine product bytes retain their qualified identities.",
+  "fixes": [
+    "Route collection and item to the mock application backend",
+    "Bind the character_id path parameter",
+    "Forward a two-field character multipart body and compare exact body, route, identity and upstream port"
+  ],
+  "routes": [
+    [
+      "POST",
+      "/v1/videos/characters"
+    ],
+    [
+      "GET",
+      "/v1/videos/characters/{character_id}"
+    ]
+  ],
+  "passed": {
+    "native": {
+      "test": "test_application_routes_preserve_methods_queries_and_identity",
+      "log_sha256": "b4cc4efde5dd93c5374e3af26f97d78d5cc0af8a88c08b719808779daeb98487",
+      "routes_exercised": 224
+    },
+    "nginx": {
+      "test": "test_application_routes_preserve_methods_queries_and_identity",
+      "log_sha256": "a567c157898ad14d2f8be94acb1fcc24cb8f1cb56036a50c06a2801ddd1685e3",
+      "routes_exercised": 224
+    }
+  },
+  "fixture_sha256": "b679582c427625cf4fbe74bf15fab84d3aeda1ff51c788a1c12b63cc3651f0f3"
+}
