@@ -821,6 +821,13 @@
       "query_defaults_20261125": {
         "stage": "candidate_declarations_cpu_verified",
         "receipt": "evidence/serve-application-query-20261125/defaults.json"
+      },
+      "chatkit_browser_page_defaults_20261125": {
+        "state": "cpu_verified",
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
+        "stage": "candidate_https_verified",
+        "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -3212,6 +3219,24 @@
         "business": "evidence/serve-stored-message-projection-20261125/business.json",
         "profiles": "evidence/serve-stored-message-projection-20261125/profiles.json",
         "delivery": "evidence/serve-stored-message-projection-20261125/delivery.json"
+      },
+      "chatkit_browser_page_defaults_20261125": {
+        "state": "cpu_verified",
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
+        "stage": "candidate_https_verified",
+        "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "issued": false
+      },
+      "chatkit_browser_operations_20261125": {
+        "reference": 16,
+        "declared": 12,
+        "remaining": [
+          "threads.add_structured_input",
+          "threads.custom_action",
+          "threads.retry_after_item",
+          "threads.sync_custom_action"
+        ],
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json"
       }
     },
     {
@@ -7941,6 +7966,24 @@
       "query_defaults_20261125": {
         "stage": "candidate_declarations_cpu_verified",
         "receipt": "evidence/serve-application-query-20261125/defaults.json"
+      },
+      "chatkit_browser_page_defaults_20261125": {
+        "state": "cpu_verified",
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/cpu.json",
+        "stage": "candidate_https_verified",
+        "business_receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "issued": false
+      },
+      "chatkit_browser_operations_20261125": {
+        "reference": 16,
+        "declared": 12,
+        "remaining": [
+          "threads.add_structured_input",
+          "threads.custom_action",
+          "threads.retry_after_item",
+          "threads.sync_custom_action"
+        ],
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json"
       }
     },
     {

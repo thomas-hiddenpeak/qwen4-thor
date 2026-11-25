@@ -201,6 +201,19 @@ class ApplicationContract(unittest.TestCase):
                     self.assertEqual(validator.is_valid(value), accepted)
                     self.assertEqual(not errors({'limit': value}, definition), accepted)
 
+    def test_chatkit_browser_pagination_fields(self):
+        for operation in ('threads.list', 'items.list'):
+            base = {'thread_id': 'cthr_own'} if operation == 'items.list' else {}
+            def accepted(**kwargs):
+                return not errors(dict(type=operation, params=dict(base, **kwargs)), 'chatkit_client_request')
+            self.assertTrue(accepted() and accepted(order='asc', after=None))
+            for value in (0, None, 1, 20, 100):
+                self.assertTrue(accepted(limit=value))
+            for value in (-1, False, 1.5, 101, '20'):
+                self.assertFalse(accepted(limit=value))
+            self.assertFalse(accepted(order=None))
+        self.assertTrue(errors(dict(type='items.list', params={}), 'chatkit_client_request'))
+
     def test_application_list_defaults_survive_bundling(self):
         paths = app.standalone_openapi(api.openapi())['paths']
         session = '/v1/agents/sessions/{session_id}'
