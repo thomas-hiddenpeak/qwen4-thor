@@ -1,0 +1,71 @@
+{
+  "stage": "targeted_schema_verified",
+  "issued": false,
+  "prior_revision": 498,
+  "reference": {
+    "date": "2026-11-07T19:24:53Z",
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a"
+  },
+  "source_sha256": {
+    "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "qualified_previous_contract": "5d244546b8498b66382275810a5a324525966f1035b28e3f4e17b4ebe11abd04",
+    "candidate_contract": "3740e9282c89f12abf460d0353a8fe6b6e7c4af735ad9a3a2548beede0ae55be"
+  },
+  "cases": {
+    "/chatkit/threads": {
+      "prior_accepted_fraction": false,
+      "official_accepted_fraction": false,
+      "candidate_accepted_fraction": false,
+      "default": 20,
+      "allows_zero": true,
+      "allows_101": false
+    },
+    "/chatkit/threads/{thread_id}/items": {
+      "prior_accepted_fraction": false,
+      "official_accepted_fraction": false,
+      "candidate_accepted_fraction": false,
+      "default": 20,
+      "allows_zero": true,
+      "allows_101": false
+    },
+    "/evals": {
+      "prior_accepted_fraction": true,
+      "official_accepted_fraction": false,
+      "candidate_accepted_fraction": false,
+      "default": 20,
+      "allows_zero": true,
+      "allows_101": true
+    },
+    "/evals/{eval_id}/runs": {
+      "prior_accepted_fraction": true,
+      "official_accepted_fraction": false,
+      "candidate_accepted_fraction": false,
+      "default": 20,
+      "allows_zero": true,
+      "allows_101": true
+    },
+    "/evals/{eval_id}/runs/{run_id}/output_items": {
+      "prior_accepted_fraction": true,
+      "official_accepted_fraction": false,
+      "candidate_accepted_fraction": false,
+      "default": 20,
+      "allows_zero": true,
+      "allows_101": true
+    }
+  },
+  "cpu": {
+    "tests": 2,
+    "log_sha256": "6da97cf4ccd653647c057b7a7c155455f4de0becfde64fc21fdcf030b6c6c81e",
+    "initial": "Prior application schema was still on disk when the transport schema was first regenerated. The negative test caught the stale build order.",
+    "initial_log_sha256": "8982724b1901ea888da98fab4bf532782efb41fa080fce2a1acaa7d3ff449d9c",
+    "prior_comparison": "The first private shape comparison dropped schema constraints beside JSON Schema $ref. Validation with the full issued document confirms ChatKit already rejected nonintegers; only the three Evals lists admitted them."
+  },
+  "native_sources": [
+    "src/server/application_query.cpp",
+    "src/server/assistant_messages.cpp",
+    "src/server/chatkit_threads.cpp",
+    "src/server/evals.cpp",
+    "src/server/eval_runs.cpp"
+  ],
+  "scope": "Stored application and standalone API schemas match the existing native integer parsing. No inference or transport change."
+}

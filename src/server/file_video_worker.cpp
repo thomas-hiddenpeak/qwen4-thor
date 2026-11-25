@@ -206,6 +206,7 @@ struct Pipeline {
   size_t offset = 0;
   std::atomic<Failure> failure{Failure::kNone};
   bool video = false;
+  bool has_alternates = false;
   DisplayGeometry Geometry() {
     std::lock_guard lock(geometry_mutex);
     return geometry;
@@ -337,6 +338,20 @@ struct Pipeline {
     const auto* shape = api.gst_caps_get_structure_fn(caps, 0);
     const char* mime = api.gst_structure_get_name_fn(shape);
     if (!mime || !std::string_view(mime).starts_with("video/")) return;
+    if (has_alternates) {
+      // qtdemux marks disabled tracks in the stream-start sticky event
+      // before exposing the pad. Pad order need not match the default track.
+      auto* start =
+          api.gst_pad_get_sticky_event_fn(pad, GST_EVENT_STREAM_START, 0);
+      if (!start) {
+        failure = Failure::kInvalid;
+        return;
+      }
+      GstStreamFlags flags = GST_STREAM_FLAG_NONE;
+      api.gst_event_parse_stream_flags_fn(start, &flags);
+      api.Mini(start);
+      if (flags & GST_STREAM_FLAG_UNSELECT) return;
+    }
     if (video) {
       failure = Failure::kInvalid;
       return;
@@ -412,7 +427,8 @@ struct Pipeline {
 };
 Failure Decode(Runtime& api, const Request& request, const std::string& source,
                FileVideoPixels* output) {
-  const auto matrices = MovieDisplay().ReadMatrices(source);
+  const auto track = MovieDisplay().SelectTrack(source);
+  const auto* matrices = track ? &track->matrices : nullptr;
   const auto direction = matrices ? matrices->Direction() : std::nullopt;
   const bool transformed = matrices && !direction;
   const bool projective = matrices &&
@@ -437,6 +453,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
     elements.push_back(node);
   }
   Pipeline state{api, request, source};
+  state.has_alternates = track && track->has_alternates;
   state.pipeline = pipeline;
   state.convert = elements[2];
   state.square_caps = elements[4];
@@ -517,14 +534,18 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
       return Failure::kInvalid;
     previous = timestamp;
     if (!count) {
-      gint64 duration = 0;
-      if (!api.gst_element_query_duration_fn(pipeline, GST_FORMAT_TIME,
-                                             &duration) ||
-          duration <= 0)
-        return Failure::kInvalid;
-      if (static_cast<uint64_t>(duration) > request.limits.max_duration_ns)
+      if (track && track->duration_ns) {
+        output->duration_ns = *track->duration_ns;
+      } else {
+        gint64 duration = 0;
+        if (!api.gst_element_query_duration_fn(pipeline, GST_FORMAT_TIME,
+                                               &duration) ||
+            duration <= 0)
+          return Failure::kInvalid;
+        output->duration_ns = duration;
+      }
+      if (output->duration_ns > request.limits.max_duration_ns)
         return Failure::kCapacity;
-      output->duration_ns = duration;
     }
     if (timestamp >= output->duration_ns) return Failure::kInvalid;
     uint64_t frame_duration = 0;

@@ -23162,7 +23162,9 @@
           "$ref": "#/$defs/eval_21"
         },
         "limit": {
-          "$ref": "#/$defs/eval_84"
+          "type": "integer",
+          "minimum": 0,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/eval_131"
@@ -23490,7 +23492,9 @@
           "$ref": "#/$defs/eval_21"
         },
         "limit": {
-          "$ref": "#/$defs/eval_84"
+          "type": "integer",
+          "minimum": 0,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/eval_131"
@@ -27633,7 +27637,9 @@
           "$ref": "#/$defs/eval_21"
         },
         "limit": {
-          "$ref": "#/$defs/eval_84"
+          "type": "integer",
+          "minimum": 0,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/eval_131"
@@ -29475,7 +29481,8 @@
             "integer"
           ],
           "minimum": 0,
-          "maximum": 100
+          "maximum": 100,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/chatkit_57"
@@ -29520,7 +29527,8 @@
             "integer"
           ],
           "minimum": 0,
-          "maximum": 100
+          "maximum": 100,
+          "default": 20
         },
         "order": {
           "$ref": "#/$defs/chatkit_57"

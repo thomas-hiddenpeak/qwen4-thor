@@ -136,6 +136,11 @@ def schema(graph):
     if evals['profile'] != 'q4t-openai-eval-types-v1':
         raise ValueError('Unexpected Evals type graph')
     definitions.update(graph_definitions(evals, 'eval_', tuple(evals['roots'])))
+    # TypeScript's number includes fractions. The HTTP query parser accepts
+    # exact integers and all three Eval listings allow an empty page.
+    for name in ('query', 'run_query', 'output_query'):
+        query = definitions['eval_' + str(evals['roots'][name])]
+        query['properties']['limit'] = dict(type='integer', minimum=0, default=20)
     for name, item in (('eval_list', 'eval_eval'), ('eval_run_list', 'eval_run'),
                        ('eval_output_list', 'eval_output_item')):
         definitions[name] = obj(dict(object=dict(const='list'),
@@ -146,6 +151,9 @@ def schema(graph):
     if chatkit['profile'] != 'q4t-openai-chatkit-types-v1':
         raise ValueError('Unexpected ChatKit type graph')
     definitions.update(graph_definitions(chatkit, 'chatkit_'))
+    for name in ('thread_query', 'item_query'):
+        query = definitions['chatkit_' + str(chatkit['roots'][name])]
+        query['properties']['limit']['default'] = 20
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
         'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output', 'threads.get_by_id',
         'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.create', 'attachments.delete', 'input.transcribe']),

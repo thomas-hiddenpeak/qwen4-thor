@@ -44,6 +44,8 @@ struct Runtime {
   API(gst_pad_chain);
   API(gst_pad_add_probe);
   API(gst_pad_get_current_caps);
+  API(gst_pad_get_sticky_event);
+  API(gst_event_parse_stream_flags);
   API(gst_event_parse_caps);
   API(gst_caps_get_structure);
   API(gst_structure_get_name);
@@ -141,6 +143,10 @@ struct Runtime {
     LOAD(core, gst_pad_chain);
     LOAD(core, gst_pad_add_probe);
     LOAD(core, gst_pad_get_current_caps);
+    if (domain == CodecDomain::kVideo) {
+      LOAD(core, gst_pad_get_sticky_event);
+      LOAD(core, gst_event_parse_stream_flags);
+    }
     LOAD(core, gst_event_parse_caps);
     LOAD(core, gst_caps_get_structure);
     LOAD(core, gst_structure_get_name);

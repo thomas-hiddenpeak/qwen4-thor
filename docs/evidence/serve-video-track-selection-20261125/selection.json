@@ -1,0 +1,65 @@
+{
+  "stage": "cpu_verified",
+  "issued": false,
+  "fixture": {
+    "path": "tests/fixtures/file_video/alternate-tracks.mp4",
+    "sha256": "a79c1f52be40a74e85a796053d54c45f2ca7600dfd819e7722f3d01768b99916",
+    "sources": {
+      "h264.mp4": "abf7b4793b0c02e7df9e8100b814135fc6c7bbbf17474f76a0e5553ded426e8b",
+      "rotate-90.mp4": "64e21e5972576623a576e2a9eada3ca21e5dcfd015fa4752e8752b41d3e40511"
+    }
+  },
+  "oracle": "The selected stream must match its single-track original in PNG bytes, decoded size, scan count, selected frame indices, PTS, frame duration and total track duration.",
+  "cases": [
+    {
+      "selected": "first",
+      "size": [
+        96,
+        64
+      ],
+      "duration_ns": 3000000000
+    },
+    {
+      "selected": "second",
+      "size": [
+        64,
+        128
+      ],
+      "duration_ns": 2000000000
+    },
+    {
+      "enabled": "both",
+      "http_status": 400
+    },
+    {
+      "enabled": "neither",
+      "http_status": 400
+    }
+  ],
+  "indexed_sources": [
+    "https://developer.apple.com/documentation/quicktime-file-format/track_header_atom/flags",
+    "https://gitlab.freedesktop.org/gstreamer/gstreamer/-/blob/1.24.2/subprojects/gst-plugins-good/gst/isomp4/qtdemux.c"
+  ],
+  "system_qtdemux_version": "1.24.2",
+  "tests": {
+    "passed": 2,
+    "log_sha256": "a1a2b94eaf21f4357a859d38c240a43dfa1195916d1f01ea009cbf6da4ec7add",
+    "initial_link_error": "The private test executable omitted the existing grammar test hooks. Compiling its test and hooks with the same target definitions fixed the link.",
+    "initial_log_sha256": "08a16b303b853b8e4c3ed518eb1e66660d0179d558b955873ffa2d9ac52037ae"
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 245,
+    "native_routes": 406,
+    "reviewed_source_anchors": 1376,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "remaining": [
+    "Real HTTP upload and read of a track-selected clip",
+    "A composed multi-layer movie or a number of active views requires an explicit rendering policy."
+  ]
+}

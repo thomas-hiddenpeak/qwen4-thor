@@ -23,6 +23,13 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+TRACK_RECORD = 'q4t-profile-business-v55'
+TRACK_FORMAT = 'q4t-video-track-source-v1'
+TRACK_RECEIPT = 'alternate-track-handoff.json'
+TRACK_REVIEWED = {
+    'primary': 'f8c40e77e4eb07b40db75cbb2dc6c7a335a890eba18edd9872f5e0bea72147e8',
+    'light': '0f5f5681a84f223721d9c64aaab1276fcf10f293c04dbf078a97254fb3a4fbc1',
+}
 CHARACTER_RECORD = 'q4t-profile-business-v54'
 CHARACTER_FORMAT = 'q4t-video-character-source-v1'
 CHARACTER_RECEIPT = 'video-character-handoff.json'
@@ -319,7 +326,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 SAFETY_RECORD: SAFETY_FORMAT, HISTORY_RECORD: HISTORY_FORMAT,
                 METEOR_RECORD: METEOR_FORMAT, FEEDBACK_RECORD: FEEDBACK_FORMAT,
                 UPLOAD_RECORD: UPLOAD_FORMAT, PAGINATION_RECORD: PAGINATION_FORMAT,
-                COMPOSER_RECORD: COMPOSER_FORMAT, CHARACTER_RECORD: CHARACTER_FORMAT}
+                COMPOSER_RECORD: COMPOSER_FORMAT, CHARACTER_RECORD: CHARACTER_FORMAT, TRACK_RECORD: TRACK_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -341,6 +348,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '41fe013b5c5bf84c6c9ddb0434e81f6f6d403172beb9ffeda8cf734cab89cdaa':
+        '3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87',
     '09f823b3e0a2cdb7ed841f66085f1eb3875c050ee80151f4352f2d1782079533':
         '3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87',
     '608fc278b963de946a12f658cb749b330686de151472292bf5d23d6f36628502':
@@ -463,7 +472,7 @@ def format_for(capabilities, evidence=None):
                        and CHARACTER_RECEIPT in (evidence or {})
                        and format_for(prior, evidence) == COMPOSER_RECORD,
                        'character qualification requires a verified reference and the issued dictation handoff')
-        return CHARACTER_RECORD
+        return TRACK_RECORD if TRACK_RECEIPT in evidence else CHARACTER_RECORD
     if 'input_transcribe' in capabilities.get('chatkit', {}):
         prior = dict(capabilities, chatkit=UPLOAD_CHATKIT)
         ledger.require(ledger.canonical(capabilities['chatkit']) == ledger.canonical(composer_capability(capabilities))
@@ -686,8 +695,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            TRACK_RECORD: (CHARACTER_RECORD, CHARACTER_REVIEWED, None, TRACK_RECEIPT),
             CHARACTER_RECORD: (COMPOSER_RECORD, COMPOSER_REVIEWED, 'video_characters', CHARACTER_RECEIPT),
             COMPOSER_RECORD: (PAGINATION_RECORD, PAGINATION_REVIEWED, None, COMPOSER_RECEIPT),
             PAGINATION_RECORD: (UPLOAD_RECORD, UPLOAD_REVIEWED, None, PAGINATION_RECEIPT),
@@ -905,7 +915,7 @@ def attach(value, prior):
         ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
         del previous['capabilities']['responses']
     envelope = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']])
-    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD):
+    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD):
         # Prior releases already compressed their history. Keep those signed
         # bytes once and compress only this release's reconstruction fields.
         envelope['history'] = previous.pop('reused_business')
@@ -917,7 +927,7 @@ def attach(value, prior):
 
 def previous_record(value):
     reuse = value['reused_business']
-    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD)
+    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD)
     ledger.keys(reuse, ('format', 'previous', 'history') if separate_history else ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
@@ -929,6 +939,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            TRACK_RECORD: (CHARACTER_FORMAT, ('format', 'previous', 'history')),
             CHARACTER_RECORD: (COMPOSER_FORMAT, ('format', 'previous', 'history')),
             COMPOSER_RECORD: (PAGINATION_FORMAT, ('format', 'previous', 'history')),
             PAGINATION_RECORD: (UPLOAD_FORMAT, ('format', 'previous', 'history')),
@@ -970,8 +981,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            TRACK_RECORD: (TRACK_REVIEWED, CHARACTER_REVIEWED),
             CHARACTER_RECORD: (CHARACTER_REVIEWED, COMPOSER_REVIEWED),
             COMPOSER_RECORD: (COMPOSER_REVIEWED, PAGINATION_REVIEWED),
             PAGINATION_RECORD: (PAGINATION_REVIEWED, UPLOAD_REVIEWED),

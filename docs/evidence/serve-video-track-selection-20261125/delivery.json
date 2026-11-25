@@ -1,0 +1,167 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 500,
+    "version_revision": 179,
+    "profile_revision": 69,
+    "previous_profile_revision": 68,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "8ff0add0f894d7837a75d6f09ba565b8d09e8c000cccad606a6644d2be150e5b",
+    "fallback": "18e7ae678c1776168cad8bd81eb8f7638df7d45e85f93f675daca5c6ac58ecdb",
+    "engine": "cf51df04e6cadca4d1c9c3815d7ff8a7ba303c0b83354a0c22f3cbb64aeb2329",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "f76a8645a93a832fb2188c6ba749256236b3cd9afe6db5cacc1db18a7d91fbdb",
+  "recovery": {
+    "fallback": {
+      "python_sdk": {
+        "version": "3.42.1",
+        "node_resource": {
+          "id": "char_a053b43ed7cbae8623c39c98b91dd829",
+          "name": "项目视频角色",
+          "created_at": 1795594319
+        },
+        "python_resource": {
+          "id": "char_0a31378ae0db6c528bfa534fd2a2912e",
+          "created_at": 1795594326,
+          "name": "Python 双轨参考"
+        },
+        "retrieved_type": "VideoGetCharacterResponse"
+      },
+      "seconds": 157.559,
+      "starts": 2,
+      "sdk": "7.47.0",
+      "resource": {
+        "id": "char_a053b43ed7cbae8623c39c98b91dd829",
+        "name": "项目视频角色",
+        "created_at": 1795594319
+      },
+      "lookup": {
+        "function": "get_video_character",
+        "argument_id": "char_a053b43ed7cbae8623c39c98b91dd829",
+        "resolved": {
+          "name": "项目视频角色"
+        }
+      },
+      "peer": 404,
+      "independent_chat": "42",
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "python_sdk": {
+        "version": "3.42.1",
+        "node_resource": {
+          "id": "char_9ca7e9c6e7140ed141c941c1f4724776",
+          "name": "项目视频角色",
+          "created_at": 1795594687
+        },
+        "python_resource": {
+          "id": "char_3fd659b60330a42c09792f0a4db12e00",
+          "created_at": 1795594695,
+          "name": "Python 双轨参考"
+        },
+        "retrieved_type": "VideoGetCharacterResponse"
+      },
+      "seconds": 373.37,
+      "starts": 2,
+      "sdk": "7.47.0",
+      "resource": {
+        "id": "char_9ca7e9c6e7140ed141c941c1f4724776",
+        "name": "项目视频角色",
+        "created_at": 1795594687
+      },
+      "lookup": {
+        "function": "get_video_character",
+        "argument_id": "char_9ca7e9c6e7140ed141c941c1f4724776",
+        "resolved": {
+          "name": "项目视频角色"
+        }
+      },
+      "peer": 404,
+      "independent_chat": "42",
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "soak": {
+    "source_commit": "ccf42c554e08c1ad25fab013365335535288b0d1",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/track-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/track-client-primary-01/bundle",
+      "manifest_sha256": "8ff0add0f894d7837a75d6f09ba565b8d09e8c000cccad606a6644d2be150e5b"
+    },
+    "revision": 500,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/track-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "13fe3cf1ce562751d67f27f5f0cf28047967b957681d1e062c9fbc0597ca8567",
+    "handoff_sha256": "2505006be06982608256cd94efa3f1504097e4f9abdba63fa91ac4f7c8c11670",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "openapi_sha256": "3740e9282c89f12abf460d0353a8fe6b6e7c4af735ad9a3a2548beede0ae55be",
+  "method_declarations": {
+    "required": 231,
+    "matched": 219,
+    "remaining": 12,
+    "missing": [
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "GET /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "GET /videos/{video_id}",
+      "DELETE /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /videos/{video_id}/remix"
+    ]
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/track-delivery-delivery/result.json": "a4d8779ed53b2beacde9f0d94005042ddd0434c222b7ab0d4e1c4d82f183bb90",
+    ".q4t-work/serve-responses-agents-20261123/track-delivery-delivery/plan.json": "799fc31125255fa091b4aa068eda93defc47a76a9a5217cf1d00034f65545641",
+    ".q4t-work/serve-responses-agents-20261123/track-delivery-delivery/check.stdout": "cb9c6e8b0eb9361e4cce79c3cc91f0099c1fb2411a0c889fc1b31b504f806db8",
+    ".q4t-work/serve-responses-agents-20261123/track-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/track-delivery-delivery/version-status.stdout": "f267a3fae612b37016271bd54bfd07ef7e83eb6f8c06f4534d81fc199cb92d48",
+    ".q4t-work/serve-responses-agents-20261123/video-track-src/docs/evidence/serve-video-track-selection-20261125/business.json": "89ed20519a969c431f09f60df40eafef615a79e5326321d9ad2a115cafaedb26",
+    ".q4t-work/serve-responses-agents-20261123/video-track-src/docs/evidence/serve-video-track-selection-20261125/profiles.json": "b9f21777bd2d0af74018719b4fbd2cfc72503781e7d06b3b19dca6533058b250",
+    ".q4t-work/serve-responses-agents-20261123/track-release-methods.json": "cb96d2fa4868f113ba8d81a950efadc7e15385cb8770c78d9a86c765799b85a7",
+    ".q4t-work/serve-responses-agents-20261123/track-delivery-day.json": "4a7e3843459b0e643577720bf30ab3216a6be03b02c721da89bcf06e43338528",
+    ".q4t-work/serve-responses-agents-20261123/track-delivery-maintenance-01/result.json": "af3ee50da6b498f6b1557279afa726aba74de2d1a4aaf342a92ccd641917fb2e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/previous-soak-retained-500.json": "c5b6038d81b485765edd990b9a63dabf7939340faa2613121a127d534b090f28",
+    ".q4t-work/serve-responses-agents-20261123/track-maintenance-lease-01/exit.json": "8f1becdc052d94e6c86f63109ea3207d087f6fb79c7741cd8b32ec1c224eb3fc",
+    ".q4t-work/serve-responses-agents-20261123/track-publish-lease-01/exit.json": "382bc3a27452240d45f34073ba60240e381a1fe5bbffcf4c463a7fb2e1f8f690",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-business-01/prepare/python.json": "ba0074f6fe461687c5ffe88b1db09daf0145675ad2b061bbe3654c73ddb22670",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-business-01/restore/python.json": "ba0074f6fe461687c5ffe88b1db09daf0145675ad2b061bbe3654c73ddb22670",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-lease-01/exit.json": "2bcd4d8e5121396703f85a7939a0b7cf228997820ab45473cf41a489a0d30254",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-business-01/prepare-run.json": "4385c25a9a6087dcb1f63bc979ceca1896a84ce135c4f5f07b10a3a18c6e619e",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-business-01/restore-run.json": "b0420e22b576cbff834c0dd86d07241a026f2274a0cd9ba6c28f7028e518f33e",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-business-01/interruption.json": "84d76ec2634bb0e9d696f65b2d53fb5f4bc46f8c58481da1eff347a52f9bc749",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-business-01/result.json": "a981db22d02754d854d8690b0d694ddf44d837b781c613f6cf3c7471e934b204",
+    ".q4t-work/serve-responses-agents-20261123/track-fallback-business-01/chat-after.wire": "7a1e794b05a230bd81d24c7322693fbfd21b960046b2ab3403f1a6be5c2cadb6",
+    ".q4t-work/serve-responses-agents-20261123/track-client-fallback-01/origin.json": "7c38e8dfd7d97d190348a6f662e7de2bda7846f23cf7b21318a3f1283adf7b11",
+    ".q4t-work/serve-responses-agents-20261123/track-client-fallback-01/service.release.json": "297d44812effd12623066b9bc4c71c7fb237c15a96004d2d71db5c47bd4e69c7",
+    ".q4t-work/serve-responses-agents-20261123/track-client-fallback-01/service-acceptance.json": "a6ce3333f25686cec9158f2e175755fe19ee8d90e03cb231e29e35d68630f465",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/prepare/python.json": "acee40d7be846b01a6f0d5ea9eddb32afa593b9a07924ab68d3edc2250156e31",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/restore/python.json": "acee40d7be846b01a6f0d5ea9eddb32afa593b9a07924ab68d3edc2250156e31",
+    ".q4t-work/serve-responses-agents-20261123/track-primary-lease-01/exit.json": "602a70fe2edb364f2887541fd54832bccf5343b8115b9648110084128fa6951a",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/prepare-run.json": "46b327274dcfd0c665189bcc15d7af5d96c60d27de4a8cbbf40a8149cce36bfe",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/restore-run.json": "82ca0b9c4797e66dc6a5515bdb312baf76d924514ad6bcf8eb8312f8d300057d",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/interruption.json": "5023bbf0cbcb7a7ad59148a702f188f366c04ce07820de135d6e45cea414da19",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/result.json": "282fbded58e714701bf4a71e4f7a359ebd1756d4d042e32e39402d059aa75f6f",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/chat-after.wire": "f16861092bbda8d593723c85083c9861f59c01d6a42e4608d4feb8d9c5aa2a17",
+    ".q4t-work/serve-responses-agents-20261123/track-client-primary-01/origin.json": "f4853bdfa7bf7f97e4649cb5b5c97fc34bf0d5231936c1cbcc825e0840a44f74",
+    ".q4t-work/serve-responses-agents-20261123/track-client-primary-01/service.release.json": "dab0107b3e46556d01ce30da1c2ffa3e7d33434f22ef6d5174d72b1dfc355e8f",
+    ".q4t-work/serve-responses-agents-20261123/track-client-primary-01/service-acceptance.json": "bae0806d1309af0607c50d8050b0b90ed52b0928f0a1ad36116b8c4efac8b21b",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-track-01/takeover.json": "351fad3df5fc15c25f0617dfe974c39bbbc2b643ac0c25edb7f8b60f15f31f0b"
+  }
+}

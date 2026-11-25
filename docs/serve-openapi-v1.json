@@ -9728,7 +9728,9 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "serve-application-v1.schema.json#/$defs/eval_84"
+              "type": "integer",
+              "minimum": 0,
+              "default": 20
             },
             "style": "form",
             "explode": true
@@ -10062,7 +10064,9 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "serve-application-v1.schema.json#/$defs/eval_84"
+              "type": "integer",
+              "minimum": 0,
+              "default": 20
             },
             "style": "form",
             "explode": true
@@ -10493,7 +10497,9 @@
             "in": "query",
             "required": false,
             "schema": {
-              "$ref": "serve-application-v1.schema.json#/$defs/eval_84"
+              "type": "integer",
+              "minimum": 0,
+              "default": 20
             },
             "style": "form",
             "explode": true
@@ -11031,7 +11037,8 @@
                 "integer"
               ],
               "minimum": 0,
-              "maximum": 100
+              "maximum": 100,
+              "default": 20
             },
             "style": "form",
             "explode": true
@@ -11287,7 +11294,8 @@
                 "integer"
               ],
               "minimum": 0,
-              "maximum": 100
+              "maximum": 100,
+              "default": 20
             },
             "style": "form",
             "explode": true

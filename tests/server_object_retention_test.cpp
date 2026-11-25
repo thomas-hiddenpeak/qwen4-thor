@@ -508,7 +508,6 @@ Q4T_TEST(
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
 Q4T_TEST(object_retention_partial_atomic_collection_recovers_without_replay) {
   Fixture f;
-  f.options.io_timeout_ms = 250;
   struct Reset {
     ~Reset() { ObjectWorkerEntryForTesting({}); }
   } reset;
@@ -519,14 +518,21 @@ Q4T_TEST(object_retention_partial_atomic_collection_recovers_without_replay) {
   const auto cutoff = std::time(nullptr);
   const auto plan = Inspect(objects, cutoff);
   Q4T_CHECK(Ok(plan));
-  const auto lost =
-      Inspect(objects, cutoff, plan.value.GetString("plan_sha256"));
+  // Limit only the interrupted collection. Opening the replacement worker
+  // and replaying the journal use the ordinary storage I/O budget.
+  const auto lost = objects.Retention(
+      cutoff, 128, plan.value.GetString("plan_sha256"), Clock::now() + 250ms);
   Q4T_CHECK(!lost.ok() && lost.commit_unknown);
   const auto deadline = Clock::now() + 1s;
   while (objects.Health().pending && Clock::now() < deadline)
     std::this_thread::sleep_for(1ms);
   Q4T_CHECK(std::filesystem::exists(std::filesystem::path(f.options.directory) /
                                     ".q4t-transaction"));
+  size_t remaining = 0;
+  for (const auto& file :
+       std::filesystem::directory_iterator(f.options.directory))
+    if (file.path().extension() == ".json") ++remaining;
+  Q4T_CHECK(remaining == 1);
   auto recovered = Inspect(objects, cutoff);
   Q4T_CHECK(Ok(recovered) && recovered.value.GetInt("eligible_objects") == 0 &&
             objects.Health().workers_started == 2);
