@@ -1,6 +1,7 @@
 #include "q4t/server/responses_state.h"
 
 #include "agent_artifact_internal.h"
+#include "agent_session_internal.h"
 #include "chatkit_thread_state.h"
 #include "agent_workspace_copy.h"
 
@@ -500,6 +501,20 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
     } else if (cancelled) {
       auto appended = AppendCancelledAgentHistory(*cancelled, *data, &plan->history);
       if (!appended.ok()) return appended;
+    } else if (!agent_session.empty() &&
+               agent_detail::RejectedTurnOutput(*response)) {
+      // Keep the failed turn inspectable. Two adjacent user messages would
+      // otherwise look like one outstanding request to the model.
+      auto boundary = ResolveItems(
+          Array({Object({{"type", String("message")},
+                         {"role", String("developer")},
+                         {"content", String("The preceding turn ended with "
+                                            "invalid model output. The next "
+                                            "user message is a new request. "
+                                            "Answer that request.")}})}),
+          access, 1);
+      if (!boundary.ok()) return boundary;
+      plan->history.array.push_back(std::move(boundary.value.array.front()));
     } else {
       plan->history.array.insert(plan->history.array.end(), output.begin(), output.end());
     }

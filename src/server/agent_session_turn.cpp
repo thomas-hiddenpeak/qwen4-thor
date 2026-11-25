@@ -112,6 +112,14 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
 
 }  // namespace
 namespace agent_detail {
+bool RejectedTurnOutput(const Json& response) {
+  const auto* error = response.Find("error");
+  if (!error || response.GetString("status") != "failed") return false;
+  const auto code = error->GetString("code");
+  return code == "response_parse_failed" || code == "structured_output_invalid" ||
+         code == "structured_output_incomplete";
+}
+
 // A session may replace functions between model calls. Rebind only the
 // model's view of previously loaded functions. The stored Responses records
 // and the output contract of a pending function call keep their originals.
@@ -416,7 +424,8 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
   // return to idle before it will submit the next turn on the same history.
   const auto category = error.GetString("code");
   const bool session_failed =
-      failed && category != "rate_limit_exceeded" &&
+      failed && !RejectedTurnOutput(response) &&
+      category != "rate_limit_exceeded" &&
       category != "server_overloaded" && category != "request_timeout" &&
       category != "invalid_request";
   const auto usage = Usage(response);

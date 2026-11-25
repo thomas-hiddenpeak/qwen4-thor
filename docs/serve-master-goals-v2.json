@@ -3489,6 +3489,11 @@
         "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
         "issued": false,
         "profiles": "evidence/serve-agent-session-controls-20261126/profiles.json"
+      },
+      "agent_turn_output_recovery_20261126": {
+        "stage": "native_https_candidate",
+        "issued": false,
+        "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json"
       }
     },
     {
@@ -8375,6 +8380,11 @@
         "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
         "issued": false,
         "profiles": "evidence/serve-agent-session-controls-20261126/profiles.json"
+      },
+      "agent_turn_output_recovery_20261126": {
+        "stage": "native_https_candidate",
+        "issued": false,
+        "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json"
       }
     },
     {
@@ -9026,6 +9036,11 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "agent_turn_output_recovery_20261126": {
+        "stage": "native_https_candidate",
+        "issued": false,
+        "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json"
       }
     },
     {

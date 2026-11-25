@@ -1710,6 +1710,63 @@ Q4T_TEST(agent_session_turn_shares_queue_receipt_and_reopens_native_output) {
   return true;
 }
 
+Q4T_TEST(agent_session_keeps_rejected_model_output_out_of_the_next_turn) {
+  Fixture f;
+  auto config = Config();
+  auto now = std::time(nullptr);
+  std::string id, response_id, turn;
+  {
+    ObjectStore store(f.options);
+    ResponsesExecution run(store);
+    auto create = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"none"},
+      "input":"first lookup","prompt_cache_options":{"ttl":"12h"}})");
+    auto prepared = PrepareAgentSessionExecution(store, create, config, Access(), now, run);
+    Q4T_CHECK(Ok(prepared));
+    id = prepared.value.GetString("id");
+    response_id = run.Id();
+    run.BindBackgroundControl(std::make_shared<RequestControl>(response_id, "", Clock::now() + 5s));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+    ResponseDelta refused;
+    refused.kind = ResponseDelta::Kind::kRefusal;
+    refused.text = "rejected fragment./q4t_refusal>";
+    Q4T_CHECK(run.Append(refused, "null", &wire));
+    ResponsesExecution::ObserveError(&run, 502, "incomplete refusal frame", "response_parse_failed");
+    Q4T_CHECK(Ok(run.CloseUnfinished()));
+  }
+  ObjectStore reopened(f.options);
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(reopened, id, "", Access(), &view)));
+  Q4T_CHECK(view.turn.GetString("status") == "failed" && view.session.GetString("status") == "idle");
+  turn = view.turn.GetString("id");
+  const auto previous = ResponsesState(reopened).Retrieve(response_id, Access());
+  Q4T_CHECK(Ok(previous) && previous.value.GetString("status") == "failed" &&
+            OutputJson(*previous.value.Find("output")).find("rejected fragment") != std::string::npos);
+  auto follow = Parse(R"({"events":[{"type":"agent.session.input.message",
+    "input":[{"role":"user","content":[{"type":"input_text","text":"second lookup"}]}]}]})");
+  ResponsesExecution next(reopened);
+  bool replay = false;
+  Q4T_CHECK(Ok(PrepareAgentSessionEvents(reopened, id, follow, "next-lookup", config,
+                                        Access(), next, &replay)) && !replay);
+  const auto prompt = OutputJson(*next.Generation().generation_request.Find("messages"));
+  const auto boundary = prompt.find("The preceding turn ended with invalid model output");
+  Q4T_CHECK(boundary != std::string::npos && prompt.find("first lookup") < boundary &&
+            prompt.find("second lookup") != std::string::npos && prompt.find("second lookup") > boundary &&
+            prompt.find("rejected fragment") == std::string::npos &&
+            next.Envelope().cache.ttl_seconds == 43200);
+  next.BindBackgroundControl(std::make_shared<RequestControl>(next.Id(), "", Clock::now() + 5s));
+  std::string wire;
+  Q4T_CHECK(Ok(next.Begin(&wire)) && Ok(next.StartRunning(&wire)));
+  ResponseDelta answer;
+  answer.kind = ResponseDelta::Kind::kContent;
+  answer.text = "42";
+  Q4T_CHECK(next.Append(answer, "null", &wire) && Ok(next.Finish(false, 0, {4,0,1,0}, now, &wire)));
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(reopened, id, turn, Access(), &view)) &&
+            view.turn.GetString("status") == "failed" && view.turns.array.size() == 2);
+  Q4T_CHECK(ReadAgentSessionTurn(reopened, id, turn, Access("client:other"), &view).http_status == 404);
+  return true;
+}
+
 Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
   Fixture f;
   ObjectStore store(f.options);
@@ -1730,6 +1787,10 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
       {400, "context_length_exceeded", "context_length_exceeded", false},
       {503, "service_draining", "server_overloaded", true},
       {429, "client_capacity_exhausted", "server_overloaded", true},
+      {502, "response_parse_failed", "server_error", true},
+      {502, "structured_output_invalid", "server_error", true},
+      {502, "structured_output_incomplete", "server_error", true},
+      {503, "constraint_dependency_unavailable", "server_error", false},
       {500, "client_rate_invalid", "server_error", false},
   };
   for (const auto& item : cases) {
