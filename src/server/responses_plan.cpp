@@ -376,7 +376,7 @@ Status ParseResponsesEnvelope(const io::Json& request,
   // Count/compact normalize their own nullable defaults before reaching here.
   for (const auto* key :
        {"access_programs", "input", "model", "prompt_cache_options", "text",
-        "tool_choice", "tools", "user"})
+        "tool_choice", "tools"})
     if (const auto* value = request.Find(key); value && value->IsNull())
       return Invalid(error, key, "field must not be null");
   if (const auto* input = request.Find("input");

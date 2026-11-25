@@ -37922,7 +37922,15 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
               },
               "user": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "deprecated": true
               },
               "image": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/image_options"
@@ -100981,7 +100989,15 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
               },
               "user": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "deprecated": true
               },
               "image": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/image_options"

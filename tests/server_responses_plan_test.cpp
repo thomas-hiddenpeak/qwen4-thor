@@ -55,16 +55,37 @@ Q4T_TEST(responses_plan_sdk_field_nullability_and_tier_oracle) {
     ChatPlanError error;
     const auto status = ParseResponsesEnvelope(*row.Find("request"), Config(),
                                                &envelope, &error);
-    if (status.ok() != row.GetBool("accepted"))
+    const bool expected = row.GetBool("wire_accepted", row.GetBool("accepted"));
+    if (status.ok() != expected)
       std::fprintf(stderr, "%s: native=%d expected=%d %s %s\n",
                    row.GetString("name").c_str(), status.ok(),
-                   row.GetBool("accepted"), error.param.c_str(),
-                   status.message().c_str());
-    Q4T_CHECK(status.ok() == row.GetBool("accepted"));
+                   expected, error.param.c_str(), status.message().c_str());
+    Q4T_CHECK(status.ok() == expected);
     if (!status)
       Q4T_CHECK(error.http_status == 400 &&
                 error.param == row.GetString("param"));
   }
+  return true;
+}
+
+Q4T_TEST(responses_nullable_user_preserves_the_envelope_and_generation) {
+  ResponsesEnvelope omitted, supplied;
+  ChatPlanError error;
+  Q4T_CHECK(Envelope(R"({"input":"hi","safety_identifier":"client"})",
+                     &omitted, &error));
+  Q4T_CHECK(Envelope(R"({"input":"hi","safety_identifier":"client",
+      "user":null})", &supplied, &error));
+  Q4T_CHECK(!omitted.request.Has("user") && supplied.request.Has("user"));
+  Q4T_CHECK(supplied.request.Find("user")->IsNull());
+  Q4T_CHECK(OutputJson(omitted.options) == OutputJson(supplied.options));
+  Q4T_CHECK(supplied.options.GetString("safety_identifier") == "client");
+  ResponsesGenerationPlan first, second;
+  Q4T_CHECK(PrepareResponsesGeneration(omitted, *omitted.request.Find("input"),
+                                       Config(), &first, &error));
+  Q4T_CHECK(PrepareResponsesGeneration(supplied, *supplied.request.Find("input"),
+                                       Config(), &second, &error));
+  Q4T_CHECK(OutputJson(first.generation_request) ==
+            OutputJson(second.generation_request));
   return true;
 }
 

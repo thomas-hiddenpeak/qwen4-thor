@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+Responses 已在候选中接受官方 HTTP 合同允许的 user:null。省略和显式 null 产生相同的生成请求与执行选项，原请求仍可区分两者。原生 TLS 下，stable 和 beta 客户端都成功生成并取回图像回答，保留独立的 safety_identifier，跨客户读取均为 404。两个入口传入数值 user 均先返回 400 并定位到该字段。7 项原生、5 项协议检查通过，单次 GPU 启动用时 61.657 秒。默认包为 rev522，下一步检验候选的托管交接。[回执](evidence/serve-visual-answer-encoding-20261126/nullable-user.json)
+
 普通视觉回答已通过真实 SDK 验证。相同蓝图在已发行程序中给出正确描述却被标成 refusal，候选通过原生 TLS 返回单词 Blue；另一张绿图通过 beta SSE 返回单词 Green。两者作为 output_text 保存、取回，跨客户均返回 404。要求披露测试标记的带图请求仍给出 refusal，独立 Chat 答 42。短验启动一次模型，耗时 61.189 秒。下一步验证托管包交接。[业务回执](evidence/serve-visual-answer-encoding-20261126/business.json)
 
 普通视觉回答曾把正确的蓝色描述发成 refusal。候选在已解析的图像和视频请求中为普通文本补充输出说明。工具、结构化格式和原始输出沿用原模板。原有非视觉用例及拒答分片、边界、来源检查共 8 项通过，新增用例在旧程序上失败；来源核验的 40 项变异检查通过。下一步以两张不同颜色的图像、真实拒答和独立 Chat 检验模型输出。[CPU 回执](evidence/serve-visual-answer-encoding-20261126/cpu.json)

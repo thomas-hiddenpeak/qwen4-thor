@@ -1317,6 +1317,11 @@
         "stage": "native_tls_sdk_business_passed",
         "issued": false,
         "receipt": "evidence/serve-visual-answer-encoding-20261126/business.json"
+      },
+      "nullable_responses_user_20261126": {
+        "stage": "native_tls_sdk_validated",
+        "issued": false,
+        "receipt": "evidence/serve-visual-answer-encoding-20261126/nullable-user.json"
       }
     },
     {
@@ -2890,6 +2895,11 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "nullable_responses_user_20261126": {
+        "stage": "native_tls_sdk_validated",
+        "issued": false,
+        "receipt": "evidence/serve-visual-answer-encoding-20261126/nullable-user.json"
       }
     },
     {
@@ -8629,6 +8639,11 @@
         "stage": "http_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
+      },
+      "nullable_responses_user_20261126": {
+        "stage": "native_tls_sdk_validated",
+        "issued": false,
+        "receipt": "evidence/serve-visual-answer-encoding-20261126/nullable-user.json"
       }
     },
     {
@@ -11373,6 +11388,11 @@
         "stage": "native_tls_sdk_business_passed",
         "issued": false,
         "receipt": "evidence/serve-visual-answer-encoding-20261126/business.json"
+      },
+      "nullable_responses_user_20261126": {
+        "stage": "native_tls_sdk_validated",
+        "issued": false,
+        "receipt": "evidence/serve-visual-answer-encoding-20261126/nullable-user.json"
       }
     },
     {

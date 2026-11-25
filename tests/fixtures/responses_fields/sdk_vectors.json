@@ -328,7 +328,9 @@
         "user": null
       },
       "accepted": false,
-      "param": "user"
+      "param": "user",
+      "wire_accepted": true,
+      "wire_source": "openai/openai-openapi@926a7b8133226630bac025350e84b0ca5c31d45a#/components/schemas/ModelResponseProperties/properties/user"
     },
     {
       "name": "reasoning.context-null",

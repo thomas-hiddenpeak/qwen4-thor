@@ -25,7 +25,7 @@ function message(fixture, question) {
 const observations = [];
 const question = 'What is the single solid color in this image? Answer with one English color word.';
 for (const [index, fixture] of plan.images.entries()) {
-  const body = {...common, input:[message(fixture, question)],
+  const body = {...common, user:null, safety_identifier:'bounded-wire-client', input:[message(fixture, question)],
     image:{context_compression:index === 0 ? 'disabled' : 'enabled'}};
   let response;
   let streamedText = '';
@@ -41,9 +41,13 @@ for (const [index, fixture] of plan.images.entries()) {
     }
   }
   assert.ok(response);
+  assert.ok(response.user == null);
+  assert.equal(response.safety_identifier, 'bounded-wire-client');
   const types = parts(response);
   const stored = await owner.responses.retrieve(response.id);
   assert.deepEqual(parts(stored), types);
+  assert.ok(stored.user == null);
+  assert.equal(stored.safety_identifier, response.safety_identifier);
   await assert.rejects(peer.responses.retrieve(response.id), error => error.status === 404);
   const text = types.filter(p => p.type === 'output_text').map(p => p.text).join('');
   const row = {id:response.id, expected:fixture.color, image_sha256:fixture.sha256,
@@ -55,6 +59,14 @@ for (const [index, fixture] of plan.images.entries()) {
   observations.push(row);
   process.stderr.write(JSON.stringify(row)+'\n');
 }
+const invalid = [];
+for (const resource of [owner.responses, owner.beta.responses]) {
+  await assert.rejects(resource.create({...common,input:'Hello',user:42,prompt:{id:'prompt_missing'}}),
+    error => {
+      invalid.push({status:error.status,param:error.error?.param});
+      return error.status === 400 && error.error?.param === 'user';
+    });
+}
 const declined = await owner.responses.create({...common, max_output_tokens:192, instructions:plan.policy,
   input:[message(plan.images[0], plan.private_question)]});
 const declineParts = parts(declined);
@@ -65,5 +77,5 @@ process.stderr.write(JSON.stringify(refusal)+'\n');
 const chat = await owner.chat.completions.create({model:plan.model, temperature:0, enable_thinking:false,
   max_completion_tokens:24, messages:[{role:'user',content:'Compute 17 plus 25. Reply only with the number.'}]});
 const answer = chat.choices[0].message;
-process.stdout.write(JSON.stringify({sdk:version, observations, refusal, chat:answer.content,
+process.stdout.write(JSON.stringify({sdk:version, observations, refusal, invalid, null_user_identity:true, chat:answer.content,
   passed:observations.every(row => row.passed) && refusal.passed && answer.content.trim() === '42' && !answer.refusal}));
