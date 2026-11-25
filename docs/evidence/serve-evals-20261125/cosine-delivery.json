@@ -1,0 +1,177 @@
+{
+  "status": "ACCEPT_ISSUED_EVAL_COSINE_REPORTS_AND_RECOVERY",
+  "previous_revision": 480,
+  "previous_manifest": "783ccb40ac667d5378208731cd53e3cf3fb31dc3e247fcf67b3bb8f8b4b5b755",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 482,
+    "version_revision": 170,
+    "profile_revision": 60,
+    "previous_profile_revision": 59,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "a5e061b8a33a550e104b320dca0dae24564f7ce364e143527bf45687bf229cef",
+    "fallback": "571e530e89c031041fedf2ea802bae709c3d7e1d4294f818a73c1237a466c76d",
+    "engine": "6caf7555c0ebe92a0530e708c7aa0704e39d4d38ba0c33bf51ea24848564fb20",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "engine_source": "861d71230590e2d830eef5f84fc91824bc7599a8",
+  "handoff": {
+    "source_commit": "861d71230590e2d830eef5f84fc91824bc7599a8",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/bundle",
+      "manifest_sha256": "a5e061b8a33a550e104b320dca0dae24564f7ce364e143527bf45687bf229cef"
+    },
+    "revision": 482,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "7ece2cb3afee956dfad3f6e9816ff43e900f9095a590fc76999330f3b21efc53",
+    "handoff_sha256": "d38f7c6894ff12b8e15e996daaae9d37d84e276d39a169525f4b447129b4f831",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "profiles": "cosine-profiles.json",
+  "maintenance": {
+    "initial_inspection_expected_revision": 478,
+    "observed_revision": 480,
+    "first_attempt_mutations": 0,
+    "applied_reviewed_archives": {
+      "status": "PASS",
+      "pools": {
+        "generations": {
+          "before": 32,
+          "archived": [
+            "7c1eb223765d2275564e7d08725bbb725fa6591a11fd54b77ad946068bbee3e9"
+          ],
+          "sha256": "a9f3778489d25472d643c593ba92b35c834023859714702d691a74813c8afce8",
+          "unchanged_bytes_and_inodes": true
+        },
+        "versions": {
+          "before": 18,
+          "archived": [
+            "20422e4f-7a48-4b82-9c53-e92e8098352b"
+          ],
+          "sha256": "24debabeaccd3bb5317ecb343fe4acf14db85973d23210e77daa68331573eafc",
+          "unchanged_bytes_and_inodes": true
+        },
+        "intents": {
+          "before": 128,
+          "archived": [
+            "0bb57ecf-ea52-4789-8434-5d2184d1cb02"
+          ],
+          "sha256": "9e5f8a302ad7b991c29ad004da1a8d2efe9e56cb087db6bf1bcc8b862f610122",
+          "unchanged_bytes_and_inodes": true
+        }
+      },
+      "protected_files": 8,
+      "unchanged": true,
+      "model_starts": 0
+    },
+    "original_receipt": "d4e16e57954005905bc2358ec9bca879028630cb3279e30e0fcb662ee4742125"
+  },
+  "focused_runtime": [
+    "tool-trajectories.json",
+    "frozen-file-inputs.json",
+    "run-reports.json",
+    "trained-cosine.json"
+  ],
+  "managed_recovery": {
+    "fallback": {
+      "starts": 2,
+      "seconds": 132.203,
+      "run": "evalrun_36106434ff5c46e28ae4713a2bc38eb4",
+      "preserved": 1,
+      "cosine": {
+        "model": "qwen3-embedding-0.6b",
+        "baseline": [
+          1,
+          0.47933263119300346
+        ],
+        "tokens": [
+          8,
+          19
+        ],
+        "owner_report": 200,
+        "peer_report": 404
+      },
+      "inputs": 81,
+      "result_counts": {
+        "total": 6,
+        "errored": 0,
+        "passed": 3,
+        "failed": 3
+      },
+      "cleanup_verified": true
+    },
+    "primary": {
+      "starts": 2,
+      "seconds": 252.766,
+      "run": "evalrun_beebd5b55be32a979d622c4a4269afe9",
+      "preserved": 1,
+      "cosine": {
+        "model": "qwen3-embedding-0.6b",
+        "baseline": [
+          1,
+          0.47933263119300346
+        ],
+        "tokens": [
+          8,
+          19
+        ],
+        "owner_report": 200,
+        "peer_report": 404
+      },
+      "inputs": 81,
+      "result_counts": {
+        "total": 6,
+        "errored": 0,
+        "passed": 3,
+        "failed": 3
+      },
+      "cleanup_verified": true
+    }
+  },
+  "declarations": {
+    "required": 231,
+    "matching_success": 215,
+    "missing": 16
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/eval3-delivery-delivery/plan.json": "f8840cd51e03297437fcb9c23e45bad6530e3655b92450be9b84329cfd55e6b7",
+    ".q4t-work/serve-responses-agents-20261123/eval3-delivery-delivery/result.json": "ee39266e7c77021af9605da8dbcf35dc99ac45a549425813f21ac29efc87777f",
+    ".q4t-work/serve-responses-agents-20261123/eval3-delivery-delivery/check.stdout": "5d73d1b41cbb20da12192b338e1c0ed8a215f308717cb569f598a14603a98fcb",
+    ".q4t-work/serve-responses-agents-20261123/eval3-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/eval3-delivery-delivery/version-status.stdout": "f67117a2b8170608ce65a1062e68ae5e7ea61246ec3140ad82948a1252fc878e",
+    ".q4t-work/serve-responses-agents-20261123/eval3-delivery-day.json": "8d3a1e528a7e1bd7a703449d7368c5192ebc88aeb4078bdcb204f15f17a96219",
+    ".q4t-work/serve-responses-agents-20261123/eval3-release-methods.json": "520192886051f13c4f2885119306b3142a368dd85a7cb2d9d07ab3efab13e5e1",
+    ".q4t-work/serve-responses-agents-20261123/eval3-delivery-maintenance-01/result.json": "6665a14fa3ba6331fa27bfb3cd7babc41248c27a4dbbd2cb77d52f1b799277b1",
+    ".q4t-work/serve-responses-agents-20261123/eval-reports-src/docs/evidence/serve-evals-20261125/cosine-profiles.json": "f274637e59de094179e79bb2983d7adce190e70bf917fea1c0b11a79cc0b29dc",
+    ".q4t-work/serve-responses-agents-20261123/eval-reports-src/docs/evidence/serve-evals-20261125/trained-cosine.json": "0e8ecda34024276f3d2ff7045dc9ff1b21737d33805e58f81a728ca5ccca70b3",
+    ".q4t-work/serve-responses-agents-20261123/eval-reports-src/docs/evidence/serve-evals-20261125/tool-trajectories.json": "15a82a6cbc296216baf31fccf64a21ffbb1ab8a411f30045fa3d6f064f156eb2",
+    ".q4t-work/serve-responses-agents-20261123/eval-reports-src/docs/evidence/serve-evals-20261125/frozen-file-inputs.json": "aaf495427c0fb338b527d2b91aa644152b366e596b3027dbe7dafbb45b8686ba",
+    ".q4t-work/serve-responses-agents-20261123/eval-reports-src/docs/evidence/serve-evals-20261125/run-reports.json": "c41e5153228b2607d7d0735ae1904b87e218bea4babcc580dc326e214597e981",
+    ".q4t-work/serve-responses-agents-20261123/eval3-maintenance-lease-02/exit.json": "4362a8e3bc59f471e2d49b02ebab680086fae57ddab899cf157adbdaeb09f2ab",
+    ".q4t-work/serve-responses-agents-20261123/eval3-publish-lease-01/exit.json": "83dd0e0d57a13b0260c4ff7077926f6be0c18267be10c3336a502fa730697243",
+    ".q4t-work/serve-responses-agents-20261123/eval3-fallback-lease-01/exit.json": "6afc082daa7360b1ce1498f3c435afd854da728e35e0093fb319fb092ba16898",
+    ".q4t-work/serve-responses-agents-20261123/eval3-fallback-business-01/result.json": "d7f1b4da03554d0d6065c78d1d8f3c85e3051c459c00b217a0de3e8e3c803c08",
+    ".q4t-work/serve-responses-agents-20261123/eval3-fallback-business-01/interruption.json": "96dc5b7105a7496423631781496c928ac999d49533aa9fa6b7ab672ac3432639",
+    ".q4t-work/serve-responses-agents-20261123/eval3-fallback-business-01/prepare-run.json": "3b13a631b5dd4b64896e4426256ed98cdb736179693852c1fc02603520cb8849",
+    ".q4t-work/serve-responses-agents-20261123/eval3-fallback-business-01/restore-run.json": "a83c261ea13ef09320dba9333a213226a859beff5c0d1c14042a40b96ff94a62",
+    ".q4t-work/serve-responses-agents-20261123/eval3-fallback-business-01/chat-after.wire": "eca055356559649f8e8ada744ab9a09520e9200ab4b803037138c024e10a8a05",
+    ".q4t-work/serve-responses-agents-20261123/eval3-client-fallback-01/origin.json": "6247f2bcf7ce9c68800f0a828f04e305206752df711597deb93922813aac1353",
+    ".q4t-work/serve-responses-agents-20261123/eval3-client-fallback-01/service-acceptance.json": "325cbe93cffecbc53823610a6652aabdec89cb3006a172410165437bce548f06",
+    ".q4t-work/serve-responses-agents-20261123/eval3-client-fallback-01/service.release.json": "fbd5971193315e3f576fe3a5a8e172bfc54bffb035dbb4725754cc556365714b",
+    ".q4t-work/serve-responses-agents-20261123/eval3-primary-lease-01/exit.json": "7751de288c112cb72e65b2b6c934502470b329c00099863d44ba3109ebde05cb",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval3-01/result.json": "ed29ce477e1f44468d5ac7d1efb9165e3ced5d22900451cd3b922a6f478dc846",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval3-01/interruption.json": "795b2002371646c9689c02453618eb536efa73e03f3b79e0091a896fd4f56df5",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval3-01/prepare-run.json": "314ce5555c3fa4033a29b02d8901ffc21a47ea41026b3bcac0af4b56fa701eda",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval3-01/restore-run.json": "59c3ac80bf325644278c3c40bc5973e5d63a08163758f6e60f2ee0494c7a2bb1",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval3-01/chat-after.wire": "0831035866cce8601ebfadbe99eb7d67bed7643fefb531d2bd0fdc786cd9d66c",
+    ".q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/origin.json": "015d6b5222b992ea3a70b38b4199423426a6522e85986ca397649093297694a4",
+    ".q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/service-acceptance.json": "3a8f4af48f054fc7446296a1ac8554c62686e74217fecf312136c634c31d90a5",
+    ".q4t-work/serve-responses-agents-20261123/eval3-client-primary-01/service.release.json": "9d3a0cbc86c57daf83ac3a1d2181f31d29133253e58e2ef34c32896db94e5d72",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-eval3-01/takeover.json": "d22e4cb84776ddcce4b7c0e63c2e2419fcd75146a54f0745085e6419f030dfeb"
+  }
+}
