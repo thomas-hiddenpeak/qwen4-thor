@@ -3924,10 +3924,11 @@
     "duplicate_keys": "reject at every JSON object, including historical argument text",
     "server_flags": [
       "--allow-media",
-      "--no-mtp",
       "--max-seq",
       "1"
     ],
+    "text_mtp_may_be_loaded": true,
+    "visual_decode": "target_only",
     "acceptance": "separate release attestation",
     "temporal_patch_size": 2,
     "max_media_items": 8,
@@ -3935,8 +3936,8 @@
     "state_cache": "actual source/processor identity, complete visual blocks, target state and three-axis RoPE/delta",
     "media_chunked_prefill": true,
     "unsupported": [
-      "video_container_on_server",
-      "MTP",
+      "direct_chat_video_container_part",
+      "visual_request_mtp",
       "multiple_execution_slots"
     ]
   }

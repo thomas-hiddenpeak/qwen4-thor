@@ -838,6 +838,11 @@
         "stage": "public_input_regression_verified",
         "issued": false,
         "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
       }
     },
     {
@@ -1332,6 +1337,11 @@
         "stage": "public_input_regression_verified",
         "issued": false,
         "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
       }
     },
     {
@@ -6352,6 +6362,11 @@
         "stage": "public_input_regression_verified",
         "issued": false,
         "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
       }
     },
     {
@@ -8477,6 +8492,11 @@
         "stage": "managed_profiles_validated",
         "issued": false,
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
       }
     },
     {
@@ -11413,6 +11433,11 @@
         "stage": "public_input_regression_verified",
         "issued": false,
         "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
       }
     },
     {

@@ -5,13 +5,13 @@ from unittest.mock import Mock, patch
 
 from jsonschema import Draft202012Validator
 from tools.examples import chat_client as c, vision_query as q
-from tools.vision_service import stage as s
 from tools.serve_protocol import build_contract as contract
 
 
 class Query(unittest.TestCase):
     def setUp(self):
-        self.body=q.build_request('Read the table.',[s.BASE/'fixtures/document.png'])
+        self.image = contract.ROOT / 'tests/fixtures/file_images/original.png'
+        self.body=q.build_request('Read the table.',[self.image])
         self.client=Mock()
         self.client.capabilities.return_value=dict(runtime=dict(media_enabled=True,mtp_enabled=False),
                                                   protocol_source_sha256='a'*64)
@@ -26,8 +26,14 @@ class Query(unittest.TestCase):
         self.assertEqual(result['completion']['message']['content'],'12')
         self.assertFalse(result['automatic_retry'])
 
+    def test_media_enabled_with_a_loaded_text_draft(self):
+        self.client.capabilities.return_value['runtime']['mtp_enabled'] = True
+        result = q.query(self.client, self.body)
+        self.assertEqual(result['completion']['message']['content'], '12')
+        self.client.complete.assert_called_once_with(self.body)
+
     def test_discovery_stops_unsupported_profile_before_post(self):
-        self.client.capabilities.return_value['runtime']['mtp_enabled']=True
+        self.client.capabilities.return_value['runtime']['media_enabled'] = False
         with self.assertRaises(c.ProtocolError):q.query(self.client,self.body)
         self.client.preflight.assert_not_called();self.client.complete.assert_not_called()
 
@@ -41,7 +47,7 @@ class Query(unittest.TestCase):
         with self.assertRaises(c.ProtocolError):q.query(self.client,self.body)
 
     def test_configurable_output_and_truncation_fail_closed(self):
-        body=q.build_request('Read the table.',[s.BASE/'fixtures/document.png'],max_tokens=768)
+        body=q.build_request('Read the table.',[self.image],max_tokens=768)
         self.assertEqual(body['max_tokens'],768)
         self.client.complete.return_value=replace(self.client.complete.return_value,
                                                  finish_reason='length')
@@ -50,7 +56,7 @@ class Query(unittest.TestCase):
 
     def test_cli_forwards_explicit_budget(self):
         import io
-        argv=['vision_query','--image',str(s.BASE/'fixtures/document.png'),
+        argv=['vision_query','--image',str(self.image),
               '--question','Read the table.','--max-tokens','768']
         with patch('sys.argv',argv),patch.object(q,'ChatClient'),\
                 patch.object(q,'query',return_value={}) as query,\
@@ -61,7 +67,7 @@ class Query(unittest.TestCase):
     def test_schema_meaning_is_in_prompt_without_mutating_input(self):
         import copy
         import json
-        schema = json.loads((s.ROOT/'tools/examples/vision_direction.schema.json').read_text())
+        schema = json.loads((contract.ROOT/'tools/examples/vision_direction.schema.json').read_text())
         before = copy.deepcopy(self.body)
         changed = q.with_json_schema(self.body, schema)
         self.assertEqual(self.body, before)
@@ -74,8 +80,13 @@ class Query(unittest.TestCase):
     def test_schema_rejects_overwrite_and_excess_size(self):
         with self.assertRaises(c.ProtocolError):
             q.with_json_schema(dict(self.body,response_format={}),dict(type='object'))
+        schema = dict(type='object', description='')
+        available = 2 * 1024 * 1024 - len(c.dump_json(schema).encode('utf-8'))
+        schema['description'] = 'x' * available
+        q.with_json_schema(self.body, schema)
+        schema['description'] += 'x'
         with self.assertRaises(c.ProtocolError):
-            q.with_json_schema(self.body,dict(type='object',description='x'*65536))
+            q.with_json_schema(self.body, schema)
         with self.assertRaises(c.ProtocolError):q.with_json_schema(self.body,dict(type='array'))
 
     def test_openapi_includes_explicit_media_for_both_routes(self):
@@ -84,7 +95,14 @@ class Query(unittest.TestCase):
         pre=paths['/v1/chat/preflight']['post']['requestBody']['content']['application/json']['schema']['properties']['request']
         self.assertEqual(chat,pre)
         self.assertIn({'$ref':'serve-vision-request-v1.schema.json'},chat['anyOf'])
-        self.assertIn('--no-mtp',chat['x-q4t-media-profile'])
+        profile = contract.vision_schema()['x-q4t']
+        self.assertEqual(profile['server_flags'], ['--allow-media', '--max-seq', '1'])
+        self.assertTrue(profile['text_mtp_may_be_loaded'])
+        self.assertEqual(profile['visual_decode'], 'target_only')
+        self.assertIn('visual_request_mtp', profile['unsupported'])
+        self.assertNotIn('MTP', profile['unsupported'])
+        self.assertNotIn('--no-mtp', chat['x-q4t-media-profile'])
+        self.assertIn('target-only', chat['x-q4t-media-profile'])
 
 
 if __name__=='__main__':unittest.main()

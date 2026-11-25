@@ -1,0 +1,48 @@
+{
+  "stage": "client_discovery_and_declarations_verified",
+  "issued": false,
+  "schemas": {
+    "docs/serve-vision-request-v1.schema.json": "7a1935992b0ebaf9711e5c5ee880c9e320bbb52f00e9c03386a257a8a049ca9e",
+    "docs/serve-openapi-v1.json": "05a4fd4d18a1c10f2d25ed0bbea2849659456dee32c2600cb1605bf02c51afeb",
+    "docs/serve-openapi-bundle-v1.json": "1107caed5d15aefc5f519501b97cc62b3fbfb32992596ded503bc042eb002f72"
+  },
+  "patterns": "Chat validates media_enabled before preview, generation requires expanded visual token accounting",
+  "capabilities": {
+    "primary": {
+      "capabilities_sha256": "e98d253628f594ffdeffdeed271ed8f6d28b5935d6c8489f4be7f318b6e8b561",
+      "runtime": {
+        "media_enabled": true,
+        "mtp_enabled": true
+      },
+      "media_mtp": false,
+      "max_execution_slots": 1,
+      "observations": [
+        "Blue",
+        "Green"
+      ]
+    },
+    "light": {
+      "capabilities_sha256": "5853d0a0c06dbe1a78cb53ea0201f6bc0651ad1cb530b2cc8e15449d0d184a91",
+      "runtime": {
+        "media_enabled": true,
+        "mtp_enabled": false
+      },
+      "media_mtp": false,
+      "max_execution_slots": 1,
+      "observations": [
+        "Blue",
+        "Green"
+      ]
+    }
+  },
+  "example_sha256": "a770a522b8571ba14e13ab85ccb0e35dc50e68037adbb15f439cf28b4d45c7a0",
+  "executor_source_sha256": "cef6818b31daabda4175717cae1a43b1f8eaadd8756a2d642f6bdc1ff5f4220b",
+  "cpu_tests": 12,
+  "old_regression_sha256": "08a369cde20ede3a1a9831301be9b479b15abef2161e368fd4f6075be2d2ee6a",
+  "candidate_log_sha256": "8701b20bcb98b21a68674a5aef172b5a0397d0c5cf4c1f402469c2a5963cd545",
+  "other_findings": [
+    "The previous test required an untracked image under .q4t-work. The updated fixture is a tracked PNG.",
+    "A previous 64 KiB negative fixture was legal under the actual 2 MiB client schema limit. Exactly 2 MiB and one byte beyond it are checked."
+  ],
+  "pending": "Live shipped example through native TLS on primary with a loaded text draft."
+}

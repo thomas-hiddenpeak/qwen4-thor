@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+随包视觉客户端曾在读取能力后拒绝已启用媒体的主配置，OpenAPI 也误写为必须关闭 MTP。现按 runtime.media_enabled 进入预检；单槽服务可加载文本草稿，含视觉 token 的请求使用主模型逐步解码。已从主、轻配置的真实能力记录核对两个模式。12 项 CPU 检查通过，公开合同已同步生成。下一步用随包客户端经原生 TLS 请求图像。[核验记录](evidence/serve-visual-frame-parts-20261126/client-discovery.json)
+
 同一条真实 Responses 响应在 Python SDK 2.8.1、3.42.1、3.55.1 的常规类型化取回路径都能读出 Blue。离线回放还发现，2.8.1 的私有严格验证会拒绝响应字段 `prompt_cache_retention` 的值 `in_memory`；两版 3.x 严格验证通过。后续在同一次视频短验中让三个版本从原生 TLS 取回 Node 创建的回答并检查客户隔离。[回放结果](evidence/serve-visual-frame-parts-20261126/python-replay.json)
 
 复查发现此前的 video_url 用例直接调用渲染器，绕过了 Chat 对该输入的拒绝。真实入口按 image_url 和 video_frames 内容字段接收媒体，type 可省略。候选依照相同字段生成普通视觉回答的提示；新用例经过公开请求校验及媒体准备，检查有类型和无类型的图像与视频、原始模式、工具和 JSON。旧程序在该用例失败，候选 8 项原生用例及 40 项来源变异检查通过。下一步对真实视频帧和 H.264 文件做原生 TLS 短验。[CPU 回执](evidence/serve-visual-frame-parts-20261126/cpu.json)

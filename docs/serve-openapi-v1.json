@@ -163,7 +163,7 @@
                     "$ref": "serve-vision-request-v1.schema.json"
                   }
                 ],
-                "x-q4t-media-profile": "Explicit --allow-media --no-mtp --max-seq 1; check runtime capabilities. video_frames/video_timestamps are Q4T extensions. Structural validity does not establish model task accuracy."
+                "x-q4t-media-profile": "Enable media with --allow-media --max-seq 1 and check runtime.media_enabled. The text MTP draft can be loaded. Requests with visual tokens use target-only decoding. video_frames and video_timestamps are Q4T extensions."
               }
             }
           }
@@ -362,7 +362,7 @@
                         "$ref": "serve-vision-request-v1.schema.json"
                       }
                     ],
-                    "x-q4t-media-profile": "Explicit --allow-media --no-mtp --max-seq 1; check runtime capabilities. video_frames/video_timestamps are Q4T extensions. Structural validity does not establish model task accuracy."
+                    "x-q4t-media-profile": "Enable media with --allow-media --max-seq 1 and check runtime.media_enabled. The text MTP draft can be loaded. Requests with visual tokens use target-only decoding. video_frames and video_timestamps are Q4T extensions."
                   },
                   "include_prompt": {
                     "type": "boolean",
