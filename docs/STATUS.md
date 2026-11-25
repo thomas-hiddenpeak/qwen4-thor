@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+公开 JSON Schema 已在主、轻配置间实际生效。主配置查到真实发行号 518，创建流关闭填充。轻配置按原会话、回合和回答 ID 读回记录，订阅恢复默认填充，下一回合答出 42。独立检查两个持久 Responses 的请求与生效缓存寿命分别为 12h 和 30m。清除设置后可读回模型默认状态，两个配置的跨客户读取均为 404。每种配置各启动一次模型，分别耗时 41.504 和 35.994 秒。两份 v65 记录均逐字节还原各自的 v64 前驱。 下一步是托管服务故障接手及可回退发行。[配置交接回执](evidence/serve-agent-structured-format-20261126/profiles.json)
+
 Agents 的结构化输出格式只有 type 和 schema。原版本把该配置直接交给 Responses，合法请求会因缺少 text.format.name 失败。现由内部适配器命名并开启严格校验。官方 SDK 通过原生 TLS 收到整数 518 与 42，持久配置保留客户原始 schema，后端两回合均实际启用 strict。模型此前两次对普通发行号查询拒答，保留质量失败。用同一 107-token 请求做两次独立启动，贪心和固定种子采样的正文、逐 token 概率及用量各自相同，均得到 518。 默认仍为 rev518，下一步验证修订包的配置和托管交接。[业务与对照记录](evidence/serve-agent-structured-format-20261126/business.json)
 
 已在 #154 来源清单修正之上核对 Agent 改动的 11 份来源。两份候选包的运行时来源逐项一致；用 Node SDK 7.47.0 和 TypeScript 5.9.3 重新生成的会话类型图逐字节相同。 托管验证仍在进行。[来源核对](evidence/serve-agent-turn-output-recovery-20261126/source-inventory.json)

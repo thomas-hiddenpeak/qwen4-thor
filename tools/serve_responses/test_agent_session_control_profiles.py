@@ -25,6 +25,19 @@ class AgentSessionControlProfiles(unittest.TestCase):
                 target[path[-1]] = value
                 controls.check(changed, before)
 
+    def test_structured_handoff_requires_public_schema_and_original_failed_turn(self):
+        proof = package.read(controls.STRUCTURED)
+        before, after = proof['public_sdk'], proof['recovered_sdk']
+        controls.check_structured(after, before)
+        altered = deepcopy(after)
+        altered['format']['schema']['properties']['value'] = {'const': 42}
+        with self.assertRaises(RuntimeError):
+            controls.check_structured(altered, before)
+        altered = deepcopy(after)
+        altered['historical']['turn'] = altered['source']['turn']
+        with self.assertRaises(RuntimeError):
+            controls.check_structured(altered, before)
+
     def test_record_requires_matching_source_and_size(self):
         value = dict(format=reuse.SESSION_CONTROL_RECORD,
                      reused_business=dict(format=reuse.SESSION_CONTROL_FORMAT))

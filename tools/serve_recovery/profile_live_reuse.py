@@ -31,9 +31,14 @@ SESSION_CONTROL_PILOT_REVIEWED = {
     'light': '786810a13ebf613cbca5027f05a3e6c1265f8ee238a35734b203aa364d45fbc2',
 }
 
-SESSION_CONTROL_REVIEWED = {
+SESSION_CONTROL_RECOVERY_REVIEWED = {
     'primary': 'c08b3f86473596fbc84bb1a12faa802bdc27f7476e0cee11a6e0cc4cffee7e07',
     'light': 'eb90580a6d0b0a7068ac53b94c2ae0efb0dfa51949ef95796a8106f9112ee998',
+}
+
+SESSION_CONTROL_REVIEWED = {
+    'primary': '68f7313537f01bae223b8735e4d7514753a743acd4b259b94ccc12e350549ce4',
+    'light': '5f92707475a6a04a32ccc13d3b9eeb64cf8eef141c545fa375749fd03c54adc2',
 }
 
 CHATKIT_WIDGET_RECORD = 'q4t-profile-business-v64'
@@ -448,6 +453,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '5b0f2cce0ac0fdeeac3d897b029f0c3aa6d7b907adec6407054e32c4628345f9':
+        '666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8',
     'ba548f84528f29b1b7e755ae1895f79926de8fca3352766702ef4084d44241f9':
         '666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8',
     'f564dd1996222e4e60c473c1c253d72fb91696a3f566a43e8d3b6b8a25abba4b':
@@ -1209,7 +1216,8 @@ def validate(value):
         digest = record_hash(value)
         allowed = {current.get(value['profile'])}
         if value['format'] == SESSION_CONTROL_RECORD:
-            allowed.add(SESSION_CONTROL_PILOT_REVIEWED.get(value['profile']))
+            allowed.update(pins.get(value['profile']) for pins in
+                           (SESSION_CONTROL_PILOT_REVIEWED, SESSION_CONTROL_RECOVERY_REVIEWED))
         ledger.require(digest in allowed, 'profile differs from the qualified delivery handoff')
         prior = previous_record(value)
         ledger.require(record_hash(prior) == previous.get(value['profile']),
