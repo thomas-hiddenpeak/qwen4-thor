@@ -40,6 +40,8 @@ struct HttpRequestHeaders {
   std::string agent_event_key;
   std::string client_id;
   std::string gateway_token;
+  // Set only after the gateway attestation and issuing key have been verified.
+  std::string chatkit_issuer;
   std::string tunnel_instance;
   std::string tunnel_shard_token;
   std::string origin;

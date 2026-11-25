@@ -208,6 +208,8 @@ class Stack:
                     return
                 self.response(200, dict(cpu_fixture=True, method=method,
                                         path=self.path, client=row['client']))
+            def do_PUT(self):
+                self.application('PUT')
             def do_DELETE(self):
                 if self.application_path('DELETE'):
                     self.application('DELETE')
@@ -369,8 +371,8 @@ class Stack:
         raise AssertionError('CPU gateway fixture deadline: '+
             (self.directory/'worker.log').read_text())
 
-    def request(self, body=None, *, key='A'*40, path=None, extra=None):
-        method = 'POST' if body is not None else 'GET'
+    def request(self, body=None, *, key='A'*40, path=None, extra=None, method=None):
+        method = method or ('POST' if body is not None else 'GET')
         path = path or ('/v1/chat/completions' if body is not None else '/v1/models')
         host = self.value['policy']['listen_host']
         connection = (http.client.HTTPSConnection(host, self.value['policy']['listen_port'],
@@ -379,7 +381,7 @@ class Stack:
         try:
             headers = {'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}
             headers.update(extra or {})
-            connection.request(method, path, json.dumps(body) if body is not None else None, headers)
+            connection.request(method, path, body if isinstance(body, bytes) else json.dumps(body) if body is not None else None, headers)
             response = connection.getresponse()
             return response.status, dict(response.getheaders()), json.loads(response.read())
         finally:
@@ -449,6 +451,9 @@ class NginxTests(unittest.TestCase):
                 identities['id'] = 'alert_' + 'a'*32
             if template.startswith('/v1/chatkit/'):
                 identities.update(session_id='cksess_1', thread_id='cthr_1')
+            transfer = template == '/v1/chatkit/attachments/{session_id}/{file_id}'
+            if transfer:
+                identities.update(session_id='cksess_'+'a'*64, file_id='file_'+'b'*32)
             if template.startswith('/v1/agents/sessions/'):
                 identities['session_id'] = 'agent_session_1'
             if template.startswith('/v1/containers/'):
@@ -471,11 +476,12 @@ class NginxTests(unittest.TestCase):
             create_call = method == 'POST' and template in ('/v1/realtime/calls', '/v1/realtime/translations/calls')
             if create_call:
                 content_type, body = 'application/sdp', 'v=0\r\ns=fixture\r\n'
-            browser = path in ('/v1/chatkit', '/v1/chatkit/attachments')
+            browser = transfer or path in ('/v1/chatkit', '/v1/chatkit/attachments')
             issuer = hashlib.sha256(b'A'*40).hexdigest()
             token = 'A'*40
             if browser:
-                payload = 'cksec_q4t1.alpha.'+str(int(time.time())+120)+'.'+'a'*64
+                prefix = 'ckup_' if transfer else 'cksec_'
+                payload = prefix+'q4t1.alpha.'+str(int(time.time())+120)+'.'+'a'*64
                 signature = hmac.digest(b'e'*64, ('q4t.realtime.client_secret.v1/'+issuer+'/'+payload).encode(), 'sha256')
                 token = payload+'.'+base64.urlsafe_b64encode(signature).decode().rstrip('=')
             with self.subTest(method=method, path=path):
@@ -501,7 +507,7 @@ class NginxTests(unittest.TestCase):
                         self.stack.value['policy']['upstream_operations_port'
                             if lane == 'control' else 'upstream_port'])
                     if browser:
-                        expected = 'Bearer '+token if self.stack.native_ingress else 'Q4T-ChatKit '+issuer+' Bearer '+token
+                        expected = 'Q4T-ChatKit '+issuer+' Bearer '+token
                         self.assertEqual(row['authorization'], expected)
                     elif path in ('/v1/chatkit/sessions', '/v1/realtime/client_secrets', '/v1/realtime/translations/client_secrets', '/v1/realtime/transcription_sessions', '/v1/realtime/sessions'):
                         self.assertEqual(row['authorization'], 'Q4T-Issuer ' +
@@ -639,17 +645,30 @@ class NginxTests(unittest.TestCase):
         issued = self.stack.application_requests[-1]
         self.assertEqual((issued['client'], issued['openai_beta'], issued['authorization']),
                          ('alpha', 'chatkit_beta=v1', 'Q4T-Issuer '+issuer))
-        payload = 'cksec_q4t1.alpha.' + str(int(time.time())+120) + '.' + 'a'*64
-        signature = hmac.digest(b'e'*64, ('q4t.realtime.client_secret.v1/'+issuer+'/'+payload).encode(), 'sha256')
-        token = payload + '.' + base64.urlsafe_b64encode(signature).decode().rstrip('=')
-        self.assertEqual(self.stack.request({}, key=token, path='/v1/chatkit')[0], 200)
-        received = self.stack.application_requests[-1]
-        forwarded = 'Bearer '+token
-        if not self.stack.native_ingress:
-            forwarded = 'Q4T-ChatKit '+issuer+' '+forwarded
-        self.assertEqual((received['client'], received['authorization']), ('alpha', forwarded))
-        self.assertEqual(self.stack.request({}, path='/v1/chatkit')[0], 401)
-        self.assertEqual(self.stack.request(key=token, path='/v1/chatkit/threads')[0], 401)
+        def ticket(prefix):
+            payload = prefix + 'q4t1.alpha.' + str(int(time.time())+120) + '.' + 'a'*64
+            message = ('q4t.realtime.client_secret.v1/'+issuer+'/'+payload).encode()
+            signature = hmac.digest(b'e'*64, message, 'sha256')
+            return payload + '.' + base64.urlsafe_b64encode(signature).decode().rstrip('=')
+
+        session = ticket('cksec_')
+        upload = ticket('ckup_')
+        transfer = '/v1/chatkit/attachments/cksess_' + 'a'*64 + '/file_' + 'b'*32
+        for token, method, path, body in [(session, 'POST', '/v1/chatkit', {}),
+                                          (upload, 'PUT', transfer, b'project record')]:
+            with self.subTest(method=method):
+                self.assertEqual(self.stack.request(body, key=token, method=method, path=path)[0], 200)
+                received = self.stack.application_requests[-1]
+                self.assertEqual((received['method'],received['client'],received['authorization']),
+                                 (method,'alpha','Q4T-ChatKit '+issuer+' Bearer '+token))
+                if method == 'PUT':
+                    self.assertEqual(received['body'], 'project record')
+        before = len(self.stack.application_requests)
+        for token, method, path in [('A'*40, 'POST', '/v1/chatkit'), (session, 'GET', '/v1/chatkit/threads'),
+                                    (session, 'PUT', transfer), (upload, 'POST', '/v1/chatkit'),
+                                    (upload, 'POST', '/v1/chatkit/attachments')]:
+            self.assertEqual(self.stack.request(key=token, method=method, path=path)[0], 401)
+        self.assertEqual(len(self.stack.application_requests), before)
 
     def test_automation_paths_preserve_owner_selector_and_nested_id(self):
         self.ready()

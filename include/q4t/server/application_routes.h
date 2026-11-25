@@ -535,16 +535,38 @@ inline bool IsMultipartForm(std::string_view type) {
   return true;
 }
 
+struct ChatKitTransfer {
+  std::string_view session, file;
+};
+
+inline ChatKitTransfer ParseChatKitTransfer(std::string_view method,
+                                           std::string_view target) {
+  constexpr std::string_view prefix = "/v1/chatkit/attachments/";
+  constexpr std::string_view hex = "0123456789abcdef";
+  if (method != "PUT" || !target.starts_with(prefix)) return {};
+  target.remove_prefix(prefix.size());
+  const auto slash = target.find('/');
+  if (slash == target.npos) return {};
+  const auto session = target.substr(0, slash), file = target.substr(slash + 1);
+  if (!session.starts_with("cksess_") || session.size() != 71 ||
+      session.substr(7).find_first_not_of(hex) != target.npos ||
+      !file.starts_with("file_") || file.size() != 37 ||
+      file.substr(5).find_first_not_of(hex) != target.npos)
+    return {};
+  return {session, file};
+}
+
 inline bool IsChatKitUpload(std::string_view method, std::string_view target) {
-  return method == "POST" && target == "/v1/chatkit/attachments";
+  return (method == "POST" && target == "/v1/chatkit/attachments") ||
+         !ParseChatKitTransfer(method, target).file.empty();
 }
 
 inline bool IsBinaryUpload(std::string_view method, std::string_view target,
                            std::string_view content_type = {}) {
   const auto path = target.substr(0, target.find('?'));
-  return (method == "POST" &&
+  return IsChatKitUpload(method, target) ||
+         (method == "POST" &&
           (path == "/v1/files" || IsTranscriptionTarget(target) ||
-           IsChatKitUpload(method, target) ||
            IsVoiceCreation(method, target) ||
            (IsSkillCreation(method,target) && IsMultipartForm(content_type)) ||
            (ParseContainerRoute(target).kind == ContainerRouteKind::kFiles &&

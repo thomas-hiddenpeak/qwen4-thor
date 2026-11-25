@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v51' and
+              value['reused_business'].get('format') == 'q4t-chatkit-upload-source-v1') or
              (value.get('format') == 'q4t-profile-business-v50' and
               value['reused_business'].get('format') == 'q4t-chatkit-feedback-source-v1') or
              (value.get('format') == 'q4t-profile-business-v49' and
@@ -153,6 +155,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
         'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
         'ACCEPT_AUTOMATION_PRIMARY_LIGHT': 'q4t-agent-automation-source-v1',
+        'ACCEPT_CHATKIT_UPLOAD_PRIMARY_LIGHT': 'q4t-chatkit-upload-source-v1',
         'ACCEPT_CHATKIT_FEEDBACK_PRIMARY_LIGHT': 'q4t-chatkit-feedback-source-v1',
         'ACCEPT_EVAL_METEOR_PRIMARY_LIGHT': 'q4t-eval-meteor-source-v1',
         'ACCEPT_HISTORY_ARGUMENTS_PRIMARY_LIGHT': 'q4t-historical-arguments-source-v1',

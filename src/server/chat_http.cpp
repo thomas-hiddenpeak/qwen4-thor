@@ -378,21 +378,26 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         return false;
       }
       const bool chatkit_client = IsChatKitClient(method, path);
+      const bool transfer = !ParseChatKitTransfer(method, path).file.empty();
       if (headers.authorization.starts_with("Q4T-ChatKit ")) {
         std::string bearer;
         if (!chatkit_client || headers.client_id.empty() ||
             !clients_.Authenticate(headers.client_id, headers.gateway_token).Allowed() ||
             !ResolveForwardedChatKit(headers.authorization, headers.client_id,
-                                     headers.gateway_token, std::time(nullptr), &bearer)) {
+                                     headers.gateway_token, std::time(nullptr), &bearer,
+                                     transfer ? ClientTicketAudience::kChatKitUpload
+                                              : ClientTicketAudience::kChatKit)) {
           failure_status = 401;
           headers.error_code = "invalid_client_secret";
           headers.failure = HttpReceiveFailure::kAdmission;
           return false;
         }
+        headers.chatkit_issuer = headers.authorization.substr(std::string_view("Q4T-ChatKit ").size(), 64);
         headers.authorization = std::move(bearer);
       }
       const auto credential = BearerCredential(headers.authorization);
-      if (chatkit_client != credential.starts_with("cksec_")) {
+      if (credential.starts_with("ckup_") != transfer ||
+          credential.starts_with("cksec_") != (chatkit_client && !transfer)) {
         failure_status = 401;
         headers.error_code = "invalid_client_secret";
         headers.failure = HttpReceiveFailure::kAdmission;
@@ -495,7 +500,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         return false;
       }
       admission = &counter;
-      if ((method == "POST" && !IsCancellationRequest(method, path) &&
+      if (transfer || (method == "POST" && !IsCancellationRequest(method, path) &&
            (path == "/v1/chat/completions" || path == "/v1/chat/preflight" ||
             path == "/v1/completions" || path == "/v1/moderations" ||
             path == "/v1/decisions" || path == "/v1/embeddings" ||
@@ -546,7 +551,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         const auto ready =
             IsChatKitUpload(method, path)
                 ? file_request->PrepareChatKit(credential, headers.content_type,
-                                               &body_stream)
+                                               &body_stream, ParseChatKitTransfer(method, path))
                 : file_request->Prepare(method, path, headers.content_type,
                                         &body_stream, headers.accept);
         if (!ready.ok()) {
@@ -879,8 +884,12 @@ void ChatServer::Dispatch(int fd, const std::string& method,
       return;
     }
     if (IsChatKitClient(method, path)) {
-      ServeChatKitClient(fd, *objects_, background_.Get(), PlanningConfig(fd),
-                         access, BearerCredential(headers.authorization), body);
+      const char* configured = std::getenv("Q4T_CHATKIT_PUBLIC_BASE");
+      const auto origin = EvalReportBase(headers, client.Scoped(),
+          "127.0.0.1:" + std::to_string(port_), configured ? configured : "");
+      ServeChatKitClient(fd, *objects_, background_.Get(), PlanningConfig(fd), access,
+                         BearerCredential(headers.authorization), body,
+                         {headers.gateway_token, headers.chatkit_issuer}, origin);
       return;
     }
     if (IsResponsesTarget(path)) {

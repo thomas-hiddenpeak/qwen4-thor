@@ -364,6 +364,7 @@ def current_surface(root):
     for method, path in (
             ('POST', '/v1/chatkit'),
             ('POST', '/v1/chatkit/attachments'),
+            ('PUT', '/v1/chatkit/attachments/{session_id}/{file_id}'),
             ('POST', '/v1/chatkit/sessions'),
             ('POST', '/v1/chatkit/sessions/{session_id}/cancel'),
             ('GET', '/v1/chatkit/threads'),
@@ -371,7 +372,8 @@ def current_surface(root):
             ('DELETE', '/v1/chatkit/threads/{thread_id}'),
             ('GET', '/v1/chatkit/threads/{thread_id}/items')):
         routes.append((path, method))
-        native_routes.append((method, path, 'false' if path in ('/v1/chatkit', '/v1/chatkit/attachments', '/v1/chatkit/sessions') else 'true'))
+        native_routes.append((method, path, 'false' if path in ('/v1/chatkit', '/v1/chatkit/attachments',
+            '/v1/chatkit/attachments/{session_id}/{file_id}', '/v1/chatkit/sessions') else 'true'))
     if ('HandleEval(*objects_, access' not in dispatch or
             'server::EvalMethodAllowed(method, path)' not in native or
             'server::IsEvalObservation(method, path)' not in native):

@@ -1,0 +1,136 @@
+{
+  "stage": "qualified",
+  "status": "ACCEPT_CHATKIT_UPLOAD_PRIMARY_LIGHT",
+  "issued": false,
+  "profiles": {
+    "primary": {
+      "seconds": 40.947,
+      "starts": 1,
+      "profile_sha256": "ba60a7d3382d53de343add8600da9e35b71165744f946b8fed89e3ad1a1c9ead",
+      "restored_predecessor": "b669f8e7ca99498b93481f15aab01544a42f8779ae81abf77cf3d10d0683953a",
+      "observed": {
+        "sdk": "7.47.0",
+        "workflow": "agent_ed028ffa8b326f83719758face40a3d1",
+        "thread": "cthr_bf275a153022a0ee513c766baf8576dd",
+        "file": "file_8340effa3cbf1ae2df59bb4202fe4773",
+        "answers": [
+          "157",
+          "157"
+        ],
+        "peer": 404,
+        "other_user": 404,
+        "disabled": 403,
+        "revoked": 401,
+        "project_file_import": 400,
+        "count_limit": 409,
+        "source_deleted": null,
+        "reused_slot": false,
+        "items": 4,
+        "independent_chat": "42",
+        "upload_mode": "two_phase",
+        "reservation_checks": {
+          "pending_file": 404,
+          "pending_model": 404,
+          "replay": 401,
+          "discarded": 401,
+          "revoked_upload": 401,
+          "short": 400,
+          "wrong_mime": 415,
+          "wrong_session": 401,
+          "full_session_on_upload": 401,
+          "upload_on_browser": 401,
+          "origin_verified": true
+        },
+        "source_bytes": 830,
+        "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+        "wire_receipts": [
+          {
+            "method": "GET",
+            "path": "/chatkit/threads/{thread_id}/items",
+            "status": 200,
+            "json_sha256": "76139dee5d00ce52339af5bad145fc31a5bdcc14c8c03634a8e4586b88549541"
+          }
+        ],
+        "stored": {
+          "file_revision": 3,
+          "file_identity": "5d0eec97d52bf6c869d42250c0d8d80aee84d3c01760bbdaf9e62ae53855ea5b",
+          "file": "5844b46677e62f2237d1c8c6b4f0b4cfd63c7cce384eadc748a6e8a13d30f8f6",
+          "thread": "46ca2f5f7267706dc8bc7cc8fa8a297a7565d4213621642b90caf86a546e2ac7"
+        }
+      }
+    },
+    "light": {
+      "seconds": 35.578,
+      "starts": 1,
+      "profile_sha256": "24d393e5ae0b296c417dabc6e321cf81eb2fdfbb2f1d5d41c7f0ff9373b42876",
+      "restored_predecessor": "b8c53412e568c6a9e8cd60914c2a5050114310f0118ddfd5d6ebfa8f5e11b82f",
+      "observed": {
+        "sdk": "7.47.0",
+        "workflow": "agent_ed028ffa8b326f83719758face40a3d1",
+        "thread": "cthr_bf275a153022a0ee513c766baf8576dd",
+        "file": "file_8340effa3cbf1ae2df59bb4202fe4773",
+        "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+        "source_bytes": 830,
+        "answers": [
+          "157"
+        ],
+        "items": 6,
+        "peer": 404,
+        "independent_chat": "42",
+        "upload_mode": "restored",
+        "stored": {
+          "file_revision": 4,
+          "file_identity": "5d0eec97d52bf6c869d42250c0d8d80aee84d3c01760bbdaf9e62ae53855ea5b",
+          "file": "b0362d8badb86c68bc3be491995a14e5f84d44f44f63d03658f3c2c007811a44",
+          "thread": "4367a6d01e788ebf598d6dc332b0d60006c0c751d6af3546b231474d04263ae8"
+        },
+        "stored_before": {
+          "file_revision": 3,
+          "file_identity": "5d0eec97d52bf6c869d42250c0d8d80aee84d3c01760bbdaf9e62ae53855ea5b",
+          "file": "5844b46677e62f2237d1c8c6b4f0b4cfd63c7cce384eadc748a6e8a13d30f8f6",
+          "thread": "46ca2f5f7267706dc8bc7cc8fa8a297a7565d4213621642b90caf86a546e2ac7"
+        }
+      }
+    }
+  },
+  "original_failed_check": {
+    "stage": "upload-profiles-01",
+    "original_status": "COMMAND_FAILED",
+    "primary": "PASS",
+    "light": "FAIL",
+    "before": 3,
+    "after": 4,
+    "before_full_sha256": "f65587f72bb39ee35769d1bbdc3bf3a76f6a9adbce35002244ad7ed71702604d",
+    "after_full_sha256": "654dfb4250cc768e0d8c238022c4e74b152e6ed8df0dfb8f733dafd99e626512",
+    "identical_at_handoff": true,
+    "other_fields_identical": true,
+    "logical_bytes_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "results": {
+      "primary": "b626083009193c4eb2436153202ca9e5edfe3b3d186438bca369d2fdc1a65826",
+      "light": "d03392854575917af61f313ba1cb5b8ba1eb730c0448ea1c820a329048565b2f"
+    },
+    "lease_sha256": "19a21727b80d7b5fadbc666f62d232530e33c9c21d7847d9efd830c10c32adb0"
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/acceptance.json": "3b8c313babf2e7ff4e5c8988c55c6269fcf7f6ec2bf6ca15d797260822255ccd",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-qualified-01/acceptance.json": "b8b920a1b24c5acd35d1adcf809cf614ca208d7aefff7aafc85267c7232b851b",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-qualified-01/qualified/registry.json": "944102274fb5b688ffbfbfd0bc0ec57a947dc68baf0527026cb2eaa57bffdb58",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/profile-observations.json": "43f73579b2c2b687070d9a04794ac355d9d34d4d7b5630b97966cf91e88dbe7b",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/lease/exit.json": "ff1d5f5322e9d372b5304fae0e77d4c6b49cae90e91afcadf82078b4180eb652",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/upload-profile-pin-inventory.json": "91443c0fbe9f6ae18e99615041eff08850dc2f24d570d7671e3b3d3e481c8ec1",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/primary/plan.json": "8f61acff9ae66c17ad69441eddb531e0ee9870016535859047d299b629595f4f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/primary/configuration.wire": "8cee77fd69ef07962e3e5214027adc4cfaf77b10849d43f2be5e6a6e856c2a90",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/primary/result.json": "f919d6d2d24e8c735845eacd7fe19026b38d21e811e3b17fffc4bcfb9792b04f",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/primary/cleanup.json": "c1534913d5e6d9335a8ce5c190fe55c80f11f76ba8908aa33ab145735fc9e2d5",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/primary/chatkit-upload-handoff.json": "42316e4e16991c9a8b04bac9581df129f27245ba7296320578312700e7da7d1d",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/light/plan.json": "22f65fbbec2f63aec86646a265661a4287d02e44de3865605537acb30cbcbaf2",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/light/configuration.wire": "c7914d0a43449acb47771672a45bd7100b1ef3cb920e93c2ff953412214ca6fe",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/light/result.json": "1fb69a3fd2a12261bcc16a8076e62a29e6157e2bfe248bd06bc41b5db78f68dc",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/light/cleanup.json": "3665f03e6787496f342d2b9ba1c1e68952cce8fbba1cfb988e6777dd02c2fbfa",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/upload-profiles-02/light/chatkit-upload-handoff.json": "40dbe540ed373a2918288afb9ecf1614ad03aa14769f1074197d9cf88a9ea45a"
+  },
+  "pending": [
+    "Model restart, independent fallback and stopped release"
+  ],
+  "rejected_mutations": 7
+}

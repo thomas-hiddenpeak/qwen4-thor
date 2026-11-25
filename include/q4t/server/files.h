@@ -20,6 +20,10 @@ class FileUpload {
   FileUpload(ObjectStore& objects, BinaryAccess access,
              std::string_view content_type, ContainerSink container_sink = {},
              uint64_t max_file_bytes = kFileBytes);
+  // Raw content for a pre-authorized attachment. Publish only after the HTTP
+  // reader confirms complete framing, using the same chunk store as multipart.
+  FileUpload(ObjectStore& objects, BinaryAccess access, MultipartPart raw_file,
+             ContainerSink sink, uint64_t max_file_bytes);
   const ObjectReply& Result() const { return result_; }
   ObjectReply Feed(std::string_view bytes,
                    std::chrono::steady_clock::time_point deadline);
