@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-25",
+  "updated": "2026-11-26",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -1264,19 +1264,25 @@
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       },
       "chatkit_generation_citations_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_disconnect_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_profiles_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
@@ -2809,19 +2815,25 @@
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       },
       "chatkit_generation_citations_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_disconnect_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_profiles_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
@@ -3336,15 +3348,14 @@
         "reference": 16,
         "declared": 16,
         "remaining": [],
-        "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json",
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json",
         "candidate_declared": 16,
         "candidate_receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued_revision": 510,
+        "issued_revision": 512,
         "issued_declared": 16,
         "candidate_remaining": [],
         "event_work": [
-          "additional thread item kinds and nested item updates",
-          "ordinary model generation cancellation and disconnect semantics"
+          "additional thread item kinds and nested item updates"
         ]
       },
       "chatkit_retry_20261125": {
@@ -3382,19 +3393,25 @@
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       },
       "chatkit_generation_citations_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_disconnect_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_profiles_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
@@ -7104,19 +7121,25 @@
         "evidence": "evidence/serve-evals-20261125/cosine-delivery.json"
       },
       "chatkit_generation_citations_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_disconnect_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_profiles_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
@@ -8156,15 +8179,14 @@
         "reference": 16,
         "declared": 16,
         "remaining": [],
-        "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json",
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json",
         "candidate_declared": 16,
         "candidate_receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued_revision": 510,
+        "issued_revision": 512,
         "issued_declared": 16,
         "candidate_remaining": [],
         "event_work": [
-          "additional thread item kinds and nested item updates",
-          "ordinary model generation cancellation and disconnect semantics"
+          "additional thread item kinds and nested item updates"
         ]
       },
       "chatkit_retry_20261125": {
@@ -8202,19 +8224,25 @@
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       },
       "chatkit_generation_citations_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_disconnect_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_profiles_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
@@ -9835,6 +9863,10 @@
       "chatkit_browser_delivery_20261125": {
         "revision": 510,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_delivery_20261125": {
+        "revision": 512,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
@@ -11050,25 +11082,31 @@
         "delivery": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
       },
       "chatkit_generation_citations_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/business.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_disconnect_20261125": {
-        "stage": "candidate_http",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/cancellation.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_generation_profiles_20261125": {
-        "stage": "profile_verified",
-        "issued": false,
-        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json"
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
+        "revision": 512,
+        "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev510_delivered_remaining_deliveries",
+      "state": "rev512_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12368,6 +12406,10 @@
       "chatkit_browser_delivery_20261125": {
         "revision": 510,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_delivery_20261125": {
+        "revision": 512,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     },
     {
@@ -12883,6 +12925,10 @@
       "chatkit_browser_delivery_20261125": {
         "revision": 510,
         "receipt": "evidence/serve-chatkit-browser-output-20261125/delivery.json"
+      },
+      "chatkit_generation_delivery_20261125": {
+        "revision": 512,
+        "receipt": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       }
     }
   ],
