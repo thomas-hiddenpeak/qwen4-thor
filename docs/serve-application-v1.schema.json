@@ -30200,6 +30200,8 @@
             "threads.create",
             "threads.add_user_message",
             "threads.add_client_tool_output",
+            "threads.custom_action",
+            "threads.sync_custom_action",
             "threads.retry_after_item",
             "threads.add_structured_input",
             "threads.get_by_id",
@@ -30394,6 +30396,102 @@
                 },
                 "required": [
                   "thread_id"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "threads.custom_action"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "properties": {
+                  "thread_id": {
+                    "type": "string"
+                  },
+                  "item_id": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "action": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "payload": {}
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                },
+                "required": [
+                  "thread_id",
+                  "action"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "threads.sync_custom_action"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "params": {
+                "type": "object",
+                "properties": {
+                  "thread_id": {
+                    "type": "string"
+                  },
+                  "item_id": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "action": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "payload": {}
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  }
+                },
+                "required": [
+                  "thread_id",
+                  "action"
                 ]
               }
             }

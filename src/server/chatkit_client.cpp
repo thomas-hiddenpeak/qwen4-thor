@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "chatkit_credentials.h"
+#include "chatkit_actions.h"
 #include "chatkit_retry.h"
 #include "chatkit_structured.h"
 #include "chatkit_attachments.h"
@@ -131,10 +132,16 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
                    "A thread response is in progress");
   }
   auto& items = Field(write.data, "items").array;
+  // Workflow widgets can be appended between a model call and its result.
+  // The latest conversation item owns admission of the next model turn.
+  auto latest =
+      std::find_if(items.rbegin(), items.rend(), [](const Json& item) {
+        return item.GetString("type") != "chatkit.widget";
+      });
   const bool waiting =
-      !items.empty() &&
-      items.back().GetString("type") == "chatkit.client_tool_call" &&
-      items.back().GetString("status") == "in_progress";
+      latest != items.rend() &&
+      latest->GetString("type") == "chatkit.client_tool_call" &&
+      latest->GetString("status") == "in_progress";
   Json model_message;
   chatkit_detail::RetryHistory prefix;
   if (retry) {
@@ -161,13 +168,13 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
         error.value = Object({{"param", String("item_id")}});
         return error;
       }
-      if (!waiting || &*it != &items.back() ||
+      if (!waiting || &*it != &*latest ||
           it->GetString("status") != "in_progress")
         return Error(409, "chatkit_input_not_pending", "Input is not pending");
     }
     if (!waiting)
       return Error(409, "chatkit_no_pending_tool", "No pending client tool");
-    auto& last = items.back();
+    auto& last = *latest;
     const auto* result = params.Find("result");
     if (structured) {
       if (!input) return Invalid("Missing structured input");
@@ -200,17 +207,10 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     if (!prepared.ok()) return prepared;
     items.push_back(*user);
   }
-  StateCipher cipher(objects);
-  std::string plain;
-  auto opened = cipher.Open(
-      grant.data.GetString("workflow_snapshot"),
-      {"q4t.chatkit", "workflow", "snapshot", grant.session}, access, &plain);
-  if (!opened.ok()) return opened;
   Json definition;
-  auto parsed = io::ParseJson(plain, &definition, true, kApplicationJsonLimits);
-  CryptoWipe(&plain);
-  if (!parsed || definition.GetString("id") != workflow.GetString("id"))
-    return Error(503, "workflow_record_invalid", "Invalid workflow snapshot");
+  auto opened =
+      chatkit_detail::OpenWorkflow(objects, access, grant, &definition);
+  if (!opened.ok()) return opened;
   if (const auto* metadata = definition.Find("metadata")) {
     const auto tool = metadata->GetString("q4t_chatkit_structured_input_tool");
     const auto* tools = definition.GetArray("tools");
@@ -365,6 +365,27 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   const auto type = input.GetString("type");
   if (type == "input.transcribe") {
     transcribe(params);
+    return;
+  }
+  const bool stream_action = type == "threads.custom_action";
+  if (stream_action || type == "threads.sync_custom_action") {
+    auto result = chatkit_detail::DispatchAction(objects, access, grant, params,
+                                                 stream_action);
+    if (!result.ok()) {
+      Fail(fd, access, result);
+      return;
+    }
+    if (!stream_action) {
+      detail::SendSimple(fd, 200, "OK", OutputJson(result.value),
+                         "application/json", {access.deadline});
+      return;
+    }
+    if (!detail::BeginStreamingResponse(fd, http->State(), {access.deadline}))
+      return;
+    for (const auto& event : result.value.array)
+      if (!Emit(fd, event, access)) return;
+    http->BeforeTerminal();
+    *http->State() = detail::ResponseState::kComplete;
     return;
   }
   const bool create = type == "threads.create";

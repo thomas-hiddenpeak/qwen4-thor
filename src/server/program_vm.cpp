@@ -317,6 +317,18 @@ bool Install(Execution& run) {
     JS_FreeValue(context, owner);
   }
   JS_FreeValue(context, serialize);
+  // Install the authorized handler inputs as data, separately from the
+  // deployed source. Payload text is never parsed as program source.
+  if (okay) {
+    if (const auto* input = run.input->Find("action_context")) {
+      const auto wire = OutputJson(*input);
+      JSValue data =
+          JS_ParseJSON(context, wire.data(), wire.size(), "action-context");
+      okay = !JS_IsException(data) &&
+             JS_DefinePropertyValueStr(context, global, "actionContext", data,
+                                       JS_PROP_ENUMERABLE) >= 0;
+    }
+  }
   okay = okay && JS_DefinePropertyValueStr(context, global, "tools", tools,
                                            JS_PROP_ENUMERABLE) >= 0;
   for (int i = 0; okay && i < 2; ++i) {

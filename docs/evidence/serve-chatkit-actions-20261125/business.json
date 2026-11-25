@@ -1,0 +1,135 @@
+{
+  "stage": "candidate_http",
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 37.805,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "engine": "cd3c1aafa62378436c46bd4ea6bf5909ba22870ee136c57f549df3ce47c1617d",
+  "actor": "4522da036130107e2b9e75e7a9994a35e4cb96163cc9c08ac11607bc3d874190",
+  "lease_sha256": "152b0696acafe8d3ad041d03486d9613e545a7004dfd223ee50d79eb67025569",
+  "sdk_sha256": "b0143c1f618e9e10e05a6fe5023d77ad65cdc2c919ccda07cd5653713531bcac",
+  "reference": {
+    "reference": {
+      "repository": "openai/chatkit-python",
+      "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+      "files": {
+        "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+        "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+        "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+      }
+    },
+    "events": 6,
+    "synchronous": 3,
+    "requests": 16
+  },
+  "sdk": "7.47.0",
+  "source_release": 506,
+  "methods": 219,
+  "thread": "cthr_38c8685f864c3d70d3ad93fe71383702",
+  "widget": "item_4d4649b1dbe26266effaf1ae967819ff",
+  "workflow": "agent_a041d993c40726bc3d22edeedc897548",
+  "events": [
+    "error",
+    "progress_update",
+    "client_effect",
+    "thread.item.added",
+    "thread.item.done",
+    "thread.item.replaced"
+  ],
+  "synchronous_nullable": {
+    "updated_item": null
+  },
+  "management_widget_serialized": true,
+  "observed": {
+    "persisted_views": 2,
+    "foreign": 404,
+    "revoked": 401,
+    "deleted": 404,
+    "invalid_output": 502,
+    "independent_chat": "42"
+  },
+  "tenant_code_file": 404,
+  "new_session_after_source_delete": 404,
+  "reference_operations": 16,
+  "candidate_operations": [
+    "attachments.create",
+    "attachments.delete",
+    "input.transcribe",
+    "items.feedback",
+    "items.list",
+    "threads.add_client_tool_output",
+    "threads.add_structured_input",
+    "threads.add_user_message",
+    "threads.create",
+    "threads.custom_action",
+    "threads.delete",
+    "threads.get_by_id",
+    "threads.list",
+    "threads.retry_after_item",
+    "threads.sync_custom_action",
+    "threads.update"
+  ],
+  "issued_operations": 13,
+  "native_tests": 6,
+  "schema_tests": 2,
+  "mutation_checks": 40,
+  "recovery": "pending",
+  "issued": false,
+  "combined": {
+    "engine": "536f91c65daacaae906bd836561c5a536157e08c52e5c8e013e2c11acccbfe22",
+    "actor": "872f66c820c735d7789c35a8c63d1f19c18ec4b015a88c666b6d26051c63cd78",
+    "lease_sha256": "4e3c56e9ab9200203936c2edb97cd2b97927aec1708b3f4f8ac01caf6c7ed359",
+    "run": {
+      "status": "PASS",
+      "starts": 1,
+      "seconds": 45.263,
+      "unchanged_default": true,
+      "phases": [
+        "create"
+      ]
+    },
+    "sdk": {
+      "sdk": "7.47.0",
+      "phase": "both",
+      "source": {
+        "workflow": "agent_0d2dab47a29ab5aad2e2a23839ab25dd",
+        "file": "file_8b51bfe75174b752b541f0ad0d019de2",
+        "thread": "cthr_a782460537dccc299fca6028d621b339",
+        "form": "fc_2e66ea6442d6f7a77eedbdadb1db2553",
+        "widget": "item_f7aeb57d90bae2eb2b60d9aa02994354",
+        "call": "call_resp_b4d5d2d7c6c20985732be427987615e4_0",
+        "user": "item_029de9e53417562c4d7fdee2df72362f"
+      },
+      "recovered": {
+        "answer": "506",
+        "widget_label": "verified 506",
+        "answered_form": "fc_2e66ea6442d6f7a77eedbdadb1db2553",
+        "ids": [
+          "item_029de9e53417562c4d7fdee2df72362f",
+          "fc_2e66ea6442d6f7a77eedbdadb1db2553",
+          "item_f7aeb57d90bae2eb2b60d9aa02994354",
+          "msg_cf2c74218f8adf86044fcc34d7e44e6b"
+        ],
+        "call": "call_resp_b4d5d2d7c6c20985732be427987615e4_0",
+        "foreign": 404,
+        "deleted": 404,
+        "duplicate": 409,
+        "new_turn": 409,
+        "untyped": 409
+      },
+      "revision": "506",
+      "chat": "42"
+    },
+    "wire_sha256": "45ace29fed49728b5a50a667ab35b1e5c2e7adfb5badc371a656e60a8fe2a717"
+  },
+  "worker_regressions": 3,
+  "remaining_handler_scope": [
+    "incremental events before action completion",
+    "additional native action output and thread-event variants"
+  ]
+}

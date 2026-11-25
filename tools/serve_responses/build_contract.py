@@ -161,6 +161,7 @@ def schema(graph):
         query['properties']['limit']['default'] = 20
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
         'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output',
+        'threads.custom_action', 'threads.sync_custom_action',
         'threads.retry_after_item', 'threads.add_structured_input', 'threads.get_by_id',
         'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.create', 'attachments.delete', 'input.transcribe']),
         params=dict(type='object'), metadata=dict(type='object')), ['type', 'params'])
@@ -178,6 +179,9 @@ def schema(graph):
         attachments=dict(type='array', items=string), quoted_text=nullable(string),
         inference_options=dict(type='object')), ['content', 'attachments', 'inference_options'])
     message = ref('chatkit_browser_message')
+    action_params = browser_fields(dict(thread_id=string, item_id=nullable(string),
+        action=browser_fields(dict(type=dict(type='string', minLength=1), payload={}), ['type'])),
+        ['thread_id', 'action'])
     form_answer = browser_fields(dict(values=dict(type='array', items=string),
                                       skipped=dict(type='boolean')), [])
     form_input = browser_fields(dict(status=dict(enum=['answered', 'skipped']),
@@ -201,6 +205,8 @@ def schema(graph):
                 ['audio_base64', 'mime_type'])),
             ('threads.list', browser_fields(browser_page, [])),
             ('items.list', browser_fields(dict(browser_page, thread_id=string), ['thread_id'])),
+            ('threads.custom_action', action_params),
+            ('threads.sync_custom_action', action_params),
             ('threads.add_structured_input', browser_fields(
                 dict(thread_id=string, item_id=string, input=form_input),
                 ['thread_id', 'item_id', 'input'])),

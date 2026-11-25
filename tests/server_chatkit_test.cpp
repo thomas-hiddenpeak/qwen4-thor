@@ -1,3 +1,4 @@
+#include "../src/server/chatkit_actions.h"
 #include "../src/server/chatkit_structured.h"
 #include "../src/server/chatkit_credentials.h"
 #include "../src/server/chatkit_retry.h"
@@ -643,6 +644,86 @@ Q4T_TEST(chatkit_entity_mentions_preserve_browser_sdk_and_model_contracts) {
             model.array[1].GetString("text") == "see ");
   return true;
 }
+Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto access = Access();
+  const auto now = std::time(nullptr);
+  const auto workflow = String("agent_app");
+  const auto session =
+      Object({{"user", String("reader")},
+              {"workflow", Object({{"id", workflow}})},
+              {"chatkit_configuration",
+               Object({{"history", Object({{"enabled", Boolean(true)}})}})}});
+  chatkit_detail::Grant grant{"cksess_local", Object({{"session", session}})};
+  const auto handlers = Object(
+      {{"show", String("text({state:actionContext.action.payload,widget:{type:'"
+                       "Card',children:[]}})")},
+       {"invalid",
+        String("text({state:'wrong',widget:{type:'Card',children:[17]}})")},
+       {"read", String("text({effects:[{name:'read',data:{answer:actionContext."
+                       "state}}]})")}});
+  const auto definition =
+      Object({{"id", workflow}, {"chatkit_actions", handlers}});
+  std::string sealed;
+  Q4T_CHECK(StateCipher(objects)
+                .Seal(OutputJson(definition),
+                      {"q4t.chatkit", "workflow", "snapshot", grant.session},
+                      access, &sealed)
+                .ok());
+  Set(&grant.data, "workflow_snapshot", String(sealed));
+  ObjectRequest put;
+  put.scope = access.scope;
+  put.operation = ObjectOperation::kPut;
+  put.kind = ObjectKind::kChatKitThread;
+  put.id = "cthr_actions";
+  put.data = Object(
+      {{"thread", Object({{"id", String(put.id)},
+                          {"user", String("reader")},
+                          {"object", String("chatkit.thread")},
+                          {"created_at", Number(now)},
+                          {"title", {}},
+                          {"status", Object({{"type", String("active")}})}})},
+       {"items", Array()},
+       {"workflow", workflow},
+       {"created_by", String(grant.session)}});
+  Q4T_CHECK(objects.Execute(put, access.deadline, {}).ok());
+  auto dispatch = [&](const StateAccess& who, std::string name, Json payload,
+                      Json sender, bool streaming) {
+    auto params = Object({{"thread_id", String(put.id)},
+                          {"item_id", sender},
+                          {"action", Object({{"type", String(std::move(name))},
+                                             {"payload", payload}})}});
+    return chatkit_detail::DispatchAction(objects, who, grant, params,
+                                          streaming);
+  };
+  Q4T_CHECK(
+      dispatch(Access("client:other"), "show", {}, {}, false).http_status ==
+      404);
+  Q4T_CHECK(dispatch(access, "unknown", {}, {}, false).http_status == 404);
+  const auto shown = dispatch(access, "show", String("record B"), {}, false);
+  Q4T_CHECK(shown.ok());
+  const auto& widget = *shown.value.Find("updated_item");
+  Q4T_CHECK(widget.GetString("type") == "widget" &&
+            widget.Find("widget")->IsObject());
+  const auto id = *widget.Find("id");
+  Q4T_CHECK(dispatch(access, "invalid", {}, id, false).http_status == 502);
+  Q4T_CHECK(dispatch(access, "read", {}, id, false).http_status == 502);
+  auto check = dispatch(access, "read", {}, id, true);
+  Q4T_CHECK(check.ok() && check.value.array.size() == 1 &&
+            check.value.array.front().Find("data")->GetString("answer") ==
+                "record B");
+  Q4T_CHECK(
+      dispatch(access, "show", {}, String("item_missing"), true).http_status ==
+      404);
+  auto next = dispatch(access, "show", Number(2), id, true);
+  Q4T_CHECK(next.ok() && next.value.array.size() == 1 &&
+            next.value.array.front().GetString("type") ==
+                "thread.item.replaced" &&
+            next.value.array.front().Find("item")->GetString("id") == id.str);
+  return true;
+}
+
 Q4T_TEST(chatkit_structured_answers_keep_browser_and_management_identity) {
   Json args;
   Q4T_CHECK(io::ParseJson(

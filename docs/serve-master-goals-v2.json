@@ -1241,6 +1241,11 @@
         "stage": "candidate_http_and_offline_reference_verified",
         "issued": false,
         "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+      },
+      "chatkit_workflow_actions_20261125": {
+        "stage": "candidate_http",
+        "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -2750,6 +2755,11 @@
         "stage": "candidate_http_and_offline_reference_verified",
         "issued": false,
         "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+      },
+      "chatkit_workflow_actions_20261125": {
+        "stage": "candidate_http",
+        "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -3269,14 +3279,11 @@
           "threads.sync_custom_action"
         ],
         "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
-        "candidate_declared": 14,
+        "candidate_declared": 16,
         "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json",
         "issued_revision": 506,
         "issued_declared": 13,
-        "candidate_remaining": [
-          "threads.custom_action",
-          "threads.sync_custom_action"
-        ]
+        "candidate_remaining": []
       },
       "chatkit_retry_20261125": {
         "stage": "issued",
@@ -3290,6 +3297,11 @@
         "stage": "candidate_http_and_offline_reference_verified",
         "issued": false,
         "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+      },
+      "chatkit_workflow_actions_20261125": {
+        "stage": "candidate_http",
+        "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -8041,14 +8053,11 @@
           "threads.sync_custom_action"
         ],
         "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
-        "candidate_declared": 14,
+        "candidate_declared": 16,
         "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json",
         "issued_revision": 506,
         "issued_declared": 13,
-        "candidate_remaining": [
-          "threads.custom_action",
-          "threads.sync_custom_action"
-        ]
+        "candidate_remaining": []
       },
       "chatkit_retry_20261125": {
         "stage": "issued",
@@ -8062,6 +8071,11 @@
         "stage": "candidate_http_and_offline_reference_verified",
         "issued": false,
         "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+      },
+      "chatkit_workflow_actions_20261125": {
+        "stage": "candidate_http",
+        "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -10866,6 +10880,11 @@
         "stage": "candidate_http_and_offline_reference_verified",
         "issued": false,
         "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+      },
+      "chatkit_workflow_actions_20261125": {
+        "stage": "candidate_http",
+        "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
+        "issued": false
       }
     },
     {
