@@ -1,5 +1,8 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+管理员只读检查已确认 rev492 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev492-preflight.json)
+
+两种容量和两项受监护故障实测均保留同一份文件与原对话。新会话取回文件并在原线程回答 157，另一客户回答 42。发布保持 STOPPED，受保护记录一致。24 小时计划通过预检，实跑由用户安排。下一步继续 SDK 空页和剩余媒体接口。[验证记录](evidence/serve-chatkit-20261125/upload-delivery.json)
 主配置会创建真实 Run，轻配置必须用同一客户读取相同线程、消息、步骤和末页。两端均核对另一客户的隔离与独立 Chat。53 项 CPU 检查通过，两份已发行 v51 记录均可完整重建，替换前驱、历史证据或能力会被拒绝。下一步执行实际 SDK 请求与容量交接。[验证记录](evidence/serve-assistant-pagination-20261125/profiles.json)
 
 已发行 schema 会拒绝被过滤的 Chat 回复，以及先于 token 用量到达的审核报告流式块。补齐 JSON、存储回读与流式结束原因、报告和分类用量。原始真机归档的四个 JSON 响应与两条 SSE 流（共 20 个块）都通过官方和候选声明；26 项针对性测试通过。下一步随分页和语音声明一起打包。[验证记录](evidence/serve-chat-audio-wire-20261125/moderation.json)
