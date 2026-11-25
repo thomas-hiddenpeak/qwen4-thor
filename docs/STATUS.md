@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+模型读到项目发行标签并答出 488。浏览器读回原始标签，官方 SDK 历史显示对应文本。独立存储核对两项反馈，跨用户和租户返回 404，撤销的会话返回 401。六项 ChatKit 管理方法的真实成功响应均通过官方 schema。下一步验证主轻配置交接及受监护恢复。[验证记录](evidence/serve-chatkit-20261125/feedback.json)
+
 四个原生用例验证浏览器标签保真、模型提及文本、管理 SDK 历史、逐项反馈与已有工具回填行为。下一步通过原生 TLS 验证实际项目版本、客户隔离及存储。[验证记录](evidence/serve-chatkit-20261125/feedback.json)
 
 管理员只读检查已确认 rev488 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev488-preflight.json)

@@ -3059,9 +3059,9 @@
         "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
       },
       "chatkit_feedback_20261125": {
-        "stage": "targeted_native_cpu_verified",
+        "stage": "native_tls_verified",
         "receipt": "evidence/serve-chatkit-20261125/feedback.json",
-        "entity_mentions": "targeted_native_cpu_verified"
+        "entity_mentions": "native_tls_verified"
       }
     },
     {
