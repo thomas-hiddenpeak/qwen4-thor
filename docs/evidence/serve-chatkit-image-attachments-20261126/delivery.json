@@ -1,0 +1,225 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 516,
+    "version_revision": 187,
+    "profile_revision": 77,
+    "previous_profile_revision": 76,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "f513c6eb40b0e3b861599283eff2ee866a34f97a609511629dad349c955ce365",
+    "fallback": "5547d1d72f69ff146c3406e748ceafb0dd3d31f82874da8c3c74e55f9de889f4",
+    "engine": "f3f750b909537f54edab559e6117e648a32abc9be0682f230cc9603923048841",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 514,
+  "previous_primary": "632753c79db391af24e61164ba708acaab73c43b454e593aa61b40fe41d0915c",
+  "source_commit": "dd5bf18a3e429ef65e81dcf702a9c2a1ec26a1ab",
+  "recovery": {
+    "fallback": {
+      "seconds": 167.895,
+      "starts": 2,
+      "lease_exit_sha256": "fe0ef06db3c6cc40682b182bfa43b5c58bc10207f2eeb9455b5386d32adf114e",
+      "decision_sha256": "b16763c29a5b413155e6317eb87cc02110555e24082de004bfada78684cca8b2",
+      "history": {
+        "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+        "item": "item_173590506ab4d32f47cdac6a91efa2c2",
+        "file": "file_81442a23b931eab36b1fc79232306ac7",
+        "items": [
+          "item_173590506ab4d32f47cdac6a91efa2c2",
+          "msg_d22a33a2693275225a0a0a4fed3a3636"
+        ],
+        "preview_sha256": "9e5b38333efd46fbbcc951382eaddbdccc1972cd10d832a99baa47ed4cd92ac4"
+      },
+      "recovered": {
+        "file": "file_de387fdb1b1ba094949477ef449c9578",
+        "source_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+        "peer": 404,
+        "after_delete": 404
+      },
+      "sibling": 404,
+      "peer": 404,
+      "chat_before": "42",
+      "chat_after": "42",
+      "extra_chat": "42",
+      "old_model_generation": 1,
+      "new_model_generation": 2,
+      "cleanup": true
+    },
+    "primary": {
+      "seconds": 241.893,
+      "starts": 2,
+      "lease_exit_sha256": "ba69e0a55602ed92badc7d909f6b0ae73898c40158ba91271b55feab33b5078c",
+      "decision_sha256": "6c32f704f5f941a964e500ec2f2bda14022f85d9533e3e0c36ccc41837b9106d",
+      "history": {
+        "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+        "item": "item_173590506ab4d32f47cdac6a91efa2c2",
+        "file": "file_81442a23b931eab36b1fc79232306ac7",
+        "items": [
+          "item_173590506ab4d32f47cdac6a91efa2c2",
+          "msg_d22a33a2693275225a0a0a4fed3a3636"
+        ],
+        "preview_sha256": "9e5b38333efd46fbbcc951382eaddbdccc1972cd10d832a99baa47ed4cd92ac4"
+      },
+      "recovered": {
+        "file": "file_9edff07f5d722055c501153f6ad4d8e6",
+        "source_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+        "peer": 404,
+        "after_delete": 404
+      },
+      "sibling": 404,
+      "peer": 404,
+      "chat_before": "42",
+      "chat_after": "42",
+      "extra_chat": "42",
+      "old_model_generation": 1,
+      "new_model_generation": 2,
+      "cleanup": true,
+      "takeover": {
+        "selected": "fallback",
+        "probe_count": 1,
+        "fault_signal": 6
+      }
+    }
+  },
+  "wire": {
+    "status": "PASS",
+    "wire_sha256": "e4e0426bee9784138f057f26b95ce7d78adeb5921e47e2a84b6ed44e65a00688",
+    "packages": [
+      {
+        "slot": "fallback",
+        "manifest_sha256": "5547d1d72f69ff146c3406e748ceafb0dd3d31f82874da8c3c74e55f9de889f4",
+        "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+        "rows": [
+          {
+            "mode": "direct",
+            "upload": true,
+            "browser_page": true,
+            "management_page": true,
+            "both_renewed_thumbnails": true
+          },
+          {
+            "mode": "two_phase",
+            "upload": true,
+            "browser_page": true,
+            "management_page": true,
+            "both_renewed_thumbnails": true
+          }
+        ]
+      },
+      {
+        "slot": "primary",
+        "manifest_sha256": "f513c6eb40b0e3b861599283eff2ee866a34f97a609511629dad349c955ce365",
+        "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+        "rows": [
+          {
+            "mode": "direct",
+            "upload": true,
+            "browser_page": true,
+            "management_page": true,
+            "both_renewed_thumbnails": true
+          },
+          {
+            "mode": "two_phase",
+            "upload": true,
+            "browser_page": true,
+            "management_page": true,
+            "both_renewed_thumbnails": true
+          }
+        ]
+      }
+    ]
+  },
+  "profiles_sha256": "7661ad89ea32b446accf9e0aced051a136f3d9d47468e21c6b56746d331152ee",
+  "reservation_sha256": "48ce2d9394b4299ef0598955d9ab0b1f55aa4c1eddfcdb9754da1913170b2c76",
+  "history_sha256": "0b4ff06f249c769a14c517bc55263570ff2a82d921da84ece388ae4d3fbe212e",
+  "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+  "application_sha256": "0cac96397e48d5ae63686f6c1fab2352328c26ebbeb4d5572ff2bafb5507e60a",
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "b168dcea2ac72d1be76725345fce2013e428d4d4ddc373005c5b5d0fb3bbd65e"
+        ],
+        "sha256": "67fc9d0f8852841c5d02a609942c2b06c0b161bcc8e3a4f29e5a1802105eb4d3",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "14cf1d8e-d40b-4a4b-b87c-b5c0bfa42c26"
+        ],
+        "sha256": "7d3d3cec4988a76b246bd466bb7a9537848eb28113be6b7a98f831f9702200f9",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "bf1bb053-c6fd-4bc6-a3ad-a841fcf7c948"
+        ],
+        "sha256": "c5ab5c4fca19cb72d58cbd27f10f692a237b4b56a52efb420622402c99ed0dd8",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71
+  },
+  "soak": {
+    "source_commit": "dd5bf18a3e429ef65e81dcf702a9c2a1ec26a1ab",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-image-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-image-client-primary-01/bundle",
+      "manifest_sha256": "f513c6eb40b0e3b861599283eff2ee866a34f97a609511629dad349c955ce365"
+    },
+    "revision": 516,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-image-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "f8a661dfa5da233093ec74079b5645324fd66e20bd5b238a15e5b3595d8df4b7",
+    "handoff_sha256": "8f6426c626ac0b22b055e2e5819ca7f46f196e06f5ce1172dd4e6a79f0149f58",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev516-preflight.json",
+  "quality_limits": "On the opt-in media profile the original red-image refusals and 6×7 text control answer of 49 remain recorded. A second wording returned 42 before and after the same visual requests. Managed recovery checked file contents, authorization, preview and independent Chat. No full model quality or performance claim.",
+  "retained_day_plan": {
+    "status": "PASS",
+    "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-delivery-soak-src",
+    "generation": "b168dcea2ac72d1be76725345fce2013e428d4d4ddc373005c5b5d0fb3bbd65e",
+    "manifest": "783ccb40ac667d5378208731cd53e3cf3fb31dc3e247fcf67b3bb8f8b4b5b755",
+    "unchanged_plan": "38c94f5f9fafc57273ab1a45cda5ce405c5f95a2e8da1936e625ff9844591901",
+    "protected_raw_files": 28,
+    "executed_hours": 0,
+    "bindings": {
+      "q4t": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b168dcea2ac72d1be76725345fce2013e428d4d4ddc373005c5b5d0fb3bbd65e/q4t",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/bundle/engine/q4t",
+        "sha256": "47f1e846dca2f7bf628ec32d572c2e105a0f4c871b9dbaf56d8609ad0d32500e"
+      },
+      "q4t.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b168dcea2ac72d1be76725345fce2013e428d4d4ddc373005c5b5d0fb3bbd65e/q4t.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/bundle/engine/q4t.release.json",
+        "sha256": "ed937149a4577100f5d401fcff0dc596f4fd073b82956c0d3ffeb806b24ce0dd"
+      },
+      "service.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/b168dcea2ac72d1be76725345fce2013e428d4d4ddc373005c5b5d0fb3bbd65e/service.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval2-client-primary-01/service.release.json",
+        "sha256": "e094464fdf26ce4d0ed8be732af685dc890dec6a04b95064476c0bf0ff20a559"
+      }
+    }
+  }
+}

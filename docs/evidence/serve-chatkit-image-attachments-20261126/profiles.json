@@ -1,0 +1,109 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 514,
+  "build": {
+    "engine": "f3f750b909537f54edab559e6117e648a32abc9be0682f230cc9603923048841",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "openapi_sha256": "6dcf68dd4da2a3a315e8ea4b0f1f24fbb9e17d2dd42742154e0d165a382d7a5b",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "phase": "primary",
+        "sdk": "7.47.0",
+        "archive": {
+          "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+          "item": "item_173590506ab4d32f47cdac6a91efa2c2",
+          "file": "file_81442a23b931eab36b1fc79232306ac7",
+          "items": [
+            "item_173590506ab4d32f47cdac6a91efa2c2",
+            "msg_d22a33a2693275225a0a0a4fed3a3636"
+          ],
+          "preview_sha256": "9e5b38333efd46fbbcc951382eaddbdccc1972cd10d832a99baa47ed4cd92ac4"
+        },
+        "source_deleted": 404,
+        "sibling": 404,
+        "peer": 404,
+        "upload": {
+          "file": "file_380f5e0f479feb30af91f7de786ce723",
+          "source_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+          "preview_sha256": "6c6c1364d2bcfea834e80eb828db25c1a913b7a1aa9ecae843bbd8c7204ef55f",
+          "before": 404,
+          "read": 200,
+          "peer": 404
+        },
+        "chat": "42"
+      },
+      "seconds": 39.142,
+      "starts": 1,
+      "record_sha256": "5bf8d9d0665c87064807973f340efdb2b451b3a7b62875bc8d341f1685cdb19d",
+      "receipt_sha256": "5038ed285a978e8a238364f6f8fc424933dfcef4fb267a4f44ca86f20bd5d46f",
+      "predecessor": "e7b73f093b01a9b74b97cad1417eb2df133ed447d4ee8c6b85e2f1a0af64e958"
+    },
+    "light": {
+      "sdk": {
+        "phase": "light",
+        "sdk": "7.47.0",
+        "archive": {
+          "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+          "item": "item_173590506ab4d32f47cdac6a91efa2c2",
+          "file": "file_81442a23b931eab36b1fc79232306ac7",
+          "items": [
+            "item_173590506ab4d32f47cdac6a91efa2c2",
+            "msg_d22a33a2693275225a0a0a4fed3a3636"
+          ],
+          "preview_sha256": "9e5b38333efd46fbbcc951382eaddbdccc1972cd10d832a99baa47ed4cd92ac4"
+        },
+        "source_deleted": 404,
+        "sibling": 404,
+        "peer": 404,
+        "upload": {
+          "file": "file_819b288b8a716c237557483f1608f77d",
+          "source_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+          "preview_sha256": "6c6c1364d2bcfea834e80eb828db25c1a913b7a1aa9ecae843bbd8c7204ef55f",
+          "before": 404,
+          "read": 200,
+          "peer": 404
+        },
+        "chat": "42",
+        "recovered": {
+          "file": "file_380f5e0f479feb30af91f7de786ce723",
+          "source_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+          "peer": 404,
+          "after_delete": 404
+        }
+      },
+      "seconds": 35.349,
+      "starts": 1,
+      "record_sha256": "74a820ae18b2231ea817fe7c1307a2f6db685f4e87e8d0919d73e68b9b20746a",
+      "receipt_sha256": "e78e15313c2a097eb9eea5c430670cd716652a5b1f5a218a5bb8fdaa1b9843bd",
+      "predecessor": "094242eb2be6752860004eb78f4442e4f0aa3dc45754c5fc55c5ac00b6810375"
+    }
+  },
+  "source_sha256": "0b4ff06f249c769a14c517bc55263570ff2a82d921da84ece388ae4d3fbe212e",
+  "fresh_preview_png_sha256": "6c6c1364d2bcfea834e80eb828db25c1a913b7a1aa9ecae843bbd8c7204ef55f",
+  "fresh_preview_rgba_sha256": "81f9834fdcb95b0f3de80778e522d8411b4f6ab00d7b8d270cc8522b510a0b25",
+  "reservation_evidence": "48ce2d9394b4299ef0598955d9ab0b1f55aa4c1eddfcdb9754da1913170b2c76",
+  "predecessor_checks": {
+    "primary": {
+      "predecessor": "e7b73f093b01a9b74b97cad1417eb2df133ed447d4ee8c6b85e2f1a0af64e958",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    },
+    "light": {
+      "predecessor": "094242eb2be6752860004eb78f4442e4f0aa3dc45754c5fc55c5ac00b6810375",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    }
+  },
+  "lease_exit": "394d1f677a371aa7c34ac97d36e4d893a80005f2b69ea1d590e95624308ae132",
+  "acceptance": "bb44d2fe8f26cdf0f8cf3c389e7d13b890b915b25a27e847c306e197d2c0c544",
+  "qualification": "e4d7d7064470aaae4ce361ca9b9140fe31f4411db3126efa7cf174af622f2261",
+  "selected_default_preserved": true,
+  "limits": "Real managed capacities, native TLS, one independent Chat per profile. Historical image bytes and live reads checked. Visual generation answers are recorded separately on the opt-in media profile. Model and gateway recovery and package publication pending.",
+  "cpu_contract_tests": 8,
+  "cpu_contract_log_sha256": "713972b30bbbb93930114261a846150033bb4ae557443bb0167e5db8710ff990"
+}

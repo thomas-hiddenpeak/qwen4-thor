@@ -21,8 +21,14 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
                               std::string_view name, std::string_view mime,
                               std::string_view reserved_id = {},
                               std::string_view token = {});
+ObjectReply ReadAttachmentPreview(ObjectStore& objects,
+                                  const StateAccess& access,
+                                  std::string_view session,
+                                  std::string_view file, std::string_view token,
+                                  std::string* png);
 ObjectReply RemoveAttachment(ObjectStore& objects, const StateAccess& access,
                              const Grant& grant, const std::string& id);
+io::Json AttachmentModelInput(const io::Json& resource);
 ObjectReply ResolveAttachments(ObjectStore& objects, const StateAccess& access,
                                const Grant& grant, const io::Json& ids,
                                io::Json* published, io::Json* model);

@@ -401,6 +401,35 @@ struct ProcessorOutput {
 
 }  // namespace
 
+bool DecodePreviewRgba(const uint8_t* bytes, size_t count, uint32_t width,
+                       uint32_t height, uint32_t preview_width,
+                       uint32_t preview_height, std::vector<uint8_t>* rgba) {
+  if (!rgba || !bytes || !count || count > INT_MAX || !width || !height ||
+      !preview_width || !preview_height || preview_width > width ||
+      preview_height > height || preview_width > 256 || preview_height > 256)
+    return false;
+  ProcessorOptions limits;
+  DecodeScope budget(limits);
+  int w = 0, h = 0, channels = 0;
+  std::unique_ptr<uint8_t, decltype(&stbi_image_free)> source(
+      stbi_load_from_memory(bytes, static_cast<int>(count), &w, &h, &channels,
+                            4),
+      stbi_image_free);
+  if (decode_allocation_failed || budget.budget.denied) throw std::bad_alloc();
+  if (!source || w != static_cast<int>(width) || h != static_cast<int>(height))
+    return false;
+  rgba->resize(size_t{preview_width} * preview_height * 4);
+  for (uint32_t y = 0; y < preview_height; ++y) {
+    const auto row = (2ULL * y + 1) * height / (2 * preview_height);
+    for (uint32_t x = 0; x < preview_width; ++x) {
+      const auto col = (2ULL * x + 1) * width / (2 * preview_width);
+      std::memcpy(rgba->data() + (size_t{y} * preview_width + x) * 4,
+                  source.get() + (row * width + col) * 4, 4);
+    }
+  }
+  return true;
+}
+
 // ---------------------------------------------------------------------------
 // ProcessImage: decode + resize + normalize + patchify.
 // ---------------------------------------------------------------------------

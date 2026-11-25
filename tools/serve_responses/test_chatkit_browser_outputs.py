@@ -30,6 +30,36 @@ class BrowserOutputTest(unittest.TestCase):
         self.assertTrue(all(ref == self.media['text/event-stream']['x-q4t-event-schema']
                             for ref in self.events.values()))
 
+    def test_upload_completion_accepts_file_or_image_with_preview(self):
+        document = dict(id='file_a', type='file', name='note.txt', mime_type='text/plain')
+        image = dict(id='file_b', type='image', name='picture.png', mime_type='image/png',
+                     preview_url='data:image/png;base64,iVBORw0KGgo=')
+        for path, verb in [('/v1/chatkit/attachments', 'post'),
+                           ('/v1/chatkit/attachments/{session_id}/{file_id}', 'put')]:
+            response = self.spec['paths'][path][verb]['responses']['200']['content']
+            schema = response['application/json']['schema']
+            self.assertTrue(self.valid(schema, document))
+            self.assertTrue(self.valid(schema, image))
+            self.assertFalse(self.valid(schema, dict(document, type='image')))
+            self.assertFalse(self.valid(schema, dict(image, preview_url='https://elsewhere.test/')))
+            self.assertFalse(self.valid(schema, dict(image, upload_descriptor={})))
+
+    def test_reservation_and_png_download_have_distinct_contracts(self):
+        reservation = self.results['attachments.create']
+        upload = dict(url='https://example.test/put', method='PUT',
+                      headers={'Authorization': 'Bearer write', 'Content-Type': 'image/png'})
+        resource = dict(id='file_image', type='image', name='image.png', mime_type='image/png',
+                        upload_descriptor=upload, preview_url='https://example.test/read')
+        self.assertTrue(self.valid(reservation, resource))
+        self.assertFalse(self.valid(reservation, {k:v for k,v in resource.items() if k!='preview_url'}))
+        self.assertTrue(self.valid(reservation, dict(
+            {k:v for k,v in resource.items() if k!='preview_url'}, type='file')))
+        path = '/v1/chatkit/attachments/{session_id}/{file_id}/preview'
+        op = self.spec['paths'][path]['get']
+        self.assertEqual(set(op['responses']['200']['content']), {'image/png'})
+        self.assertEqual({p['name'] for p in op['parameters']}, {'session_id', 'file_id', 'ticket'})
+        self.assertTrue(next(p for p in op['parameters'] if p['name']=='ticket')['required'])
+
     def test_json_bodies_are_selected_by_operation(self):
         empty_page = dict(data=[], has_more=False, after=None)
         for name in ('threads.list', 'items.list'):

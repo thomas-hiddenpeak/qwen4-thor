@@ -27,6 +27,25 @@ inline bool Base64DecodedSize(std::string_view text, size_t* bytes) {
   return true;
 }
 
+inline bool DecodeBase64(std::string_view text, size_t max_bytes,
+                         std::string* out) {
+  size_t count = 0;
+  if (!out || !Base64DecodedSize(text, &count) || count > max_bytes)
+    return false;
+  std::string decoded;
+  decoded.reserve(count);
+  for (size_t i = 0; i < text.size(); i += 4) {
+    uint32_t packed = 0;
+    for (char c : text.substr(i, 4))
+      packed = (packed << 6) | (c == '=' ? 0U : kBase64Alphabet.find(c));
+    for (int shift : {16, 8, 0})
+      if (decoded.size() < count)
+        decoded.push_back(static_cast<char>((packed >> shift) & 255));
+  }
+  *out = std::move(decoded);
+  return true;
+}
+
 inline Status EncodeBase64(std::string_view bytes, size_t max_output_bytes,
                            std::string* out) {
   // Divide before multiplying: both the bound and capacity calculation avoid

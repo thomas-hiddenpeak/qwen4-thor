@@ -1,0 +1,53 @@
+{
+  "stage": "native_http_quality_failure",
+  "issued": false,
+  "scope": "First ChatKit color answer, nominal image upload and Responses input. The SDK stopped before testing retry or the second image.",
+  "observed": {
+    "phase": "first",
+    "thread": "cthr_2bbba114bff6a789ea66ac78b6376224",
+    "file": "file_5dd0cc675a81136192e13e3b5ba422a8",
+    "answer": "refusal",
+    "expected": "RED"
+  },
+  "storage": {
+    "response_id": "resp_0de1a35741d97abeff1f0494ae67f883",
+    "status": "completed",
+    "public_output": [
+      {
+        "type": "refusal",
+        "refusal": "refusal"
+      }
+    ],
+    "usage": {
+      "input_tokens": 251,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 17,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 268
+    },
+    "input_image": {
+      "type": "input_image",
+      "file_id": "file_5dd0cc675a81136192e13e3b5ba422a8",
+      "detail": "auto"
+    },
+    "snapshot": {
+      "id": "input_snapshot_9fc728ec9b399cbb39fc4f9ddefe9272",
+      "sha256": "c3ea093eda87d29ddf1cbb0d597b69bcff02cec7a0f8447c4c5e9dfba814ba4b"
+    },
+    "journal_sha256": "8e93a7a57dcc92387293a44ef83f5eaafbafbabc03575984ec25b5183ee9a19d"
+  },
+  "result": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 32.325,
+    "unchanged_default": true,
+    "cleanup_ok": true,
+    "phases": []
+  },
+  "guard": "COMMAND_FAILED"
+}

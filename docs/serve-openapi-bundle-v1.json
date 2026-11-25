@@ -10727,7 +10727,7 @@
         "description": "Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.",
         "x-q4t-result-by-request-type": {
           "attachments.create": {
-            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_document"
+            "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_attachment"
           },
           "attachments.delete": {
             "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_empty_result"
@@ -10798,7 +10798,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_document_attachment"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_uploaded_attachment"
                 }
               }
             }
@@ -10825,7 +10825,7 @@
         },
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "one multipart file",
-        "description": "Upload a document with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.",
+        "description": "Upload an attachment with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.",
         "requestBody": {
           "required": true,
           "content": {
@@ -10888,7 +10888,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_document_attachment"
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_uploaded_attachment"
                 }
               }
             }
@@ -10915,7 +10915,7 @@
         },
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "raw bytes of the reserved size and media type",
-        "description": "Complete the reserved document with its upload credential and the media type returned by attachments.create.",
+        "description": "Complete the reserved attachment with its upload credential and the media type returned by attachments.create.",
         "requestBody": {
           "required": true,
           "content": {
@@ -10927,6 +10927,85 @@
             }
           }
         }
+      }
+    },
+    "/v1/chatkit/attachments/{session_id}/{file_id}/preview": {
+      "get": {
+        "operationId": "get_v1_chatkit_attachments_session_id_file_id_preview",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^cksess_[0-9a-f]{64}$"
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^file_[0-9a-f]{32}$"
+            }
+          },
+          {
+            "name": "ticket",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^ckpv_[A-Za-z0-9._-]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Completed raster preview",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Native error; unknown/other-client identities return 404",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/serve-transport-v1.schema.json/$defs/error"
+                }
+              }
+            }
+          }
+        },
+        "x-q4t-query-contract": "one attachment-scoped read ticket",
+        "x-q4t-body-contract": "empty body only",
+        "description": "Read the PNG from the reserved image URL after upload. The query ticket is bound to this file and the active session. Before publication or after file deletion the response is 404."
       }
     },
     "/v1/chatkit/sessions": {
@@ -68321,7 +68400,7 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_empty_result"
               },
               {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_document"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_attachment"
               },
               {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_transcription_result"
@@ -68363,6 +68442,43 @@
               "mime_type"
             ],
             "additionalProperties": false
+          },
+          "chatkit_uploaded_attachment": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_document_attachment"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "const": "image"
+                  },
+                  "mime_type": {
+                    "type": "string"
+                  },
+                  "preview_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^data:image/png;base64,"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "type",
+                  "mime_type",
+                  "preview_url"
+                ],
+                "additionalProperties": false
+              }
+            ]
           },
           "chatkit_reserved_document": {
             "type": "object",
@@ -68422,6 +68538,77 @@
               "upload_descriptor"
             ],
             "additionalProperties": false
+          },
+          "chatkit_reserved_attachment": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_document"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "const": "image"
+                  },
+                  "mime_type": {
+                    "type": "string"
+                  },
+                  "upload_descriptor": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "method": {
+                        "const": "PUT"
+                      },
+                      "headers": {
+                        "type": "object",
+                        "properties": {
+                          "Authorization": {
+                            "type": "string"
+                          },
+                          "Content-Type": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "Authorization",
+                          "Content-Type"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "url",
+                      "method",
+                      "headers"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "preview_url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "type",
+                  "mime_type",
+                  "upload_descriptor",
+                  "preview_url"
+                ],
+                "additionalProperties": false
+              }
+            ]
           },
           "chatkit_threads": {
             "type": "object",

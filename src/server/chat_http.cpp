@@ -39,6 +39,7 @@
 #include "q4t/server/agent_automation.h"
 #include "q4t/server/evals.h"
 #include "q4t/server/chatkit.h"
+#include "chatkit_attachments.h"
 #include "q4t/server/safety_records.h"
 #include "q4t/server/video_characters.h"
 #include "q4t/server/webhook.h"
@@ -370,14 +371,27 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       }
       const bool chatkit_client = IsChatKitClient(method, path);
       const bool transfer = !ParseChatKitTransfer(method, path).file.empty();
+      const bool preview = !ParseChatKitPreview(method, path).file.empty();
+      const auto mark = path.find('?');
+      std::string preview_ticket;
+      if (preview && mark != path.npos) {
+        preview_ticket =
+            path.substr(mark + 1 + std::string_view("ticket=").size());
+        path.resize(mark);
+        if (headers.authorization.empty())
+          headers.authorization = "Bearer " + preview_ticket;
+      }
       if (headers.authorization.starts_with("Q4T-ChatKit ")) {
         std::string bearer;
         if (!chatkit_client || headers.client_id.empty() ||
-            !clients_.Authenticate(headers.client_id, headers.gateway_token).Allowed() ||
-            !ResolveForwardedChatKit(headers.authorization, headers.client_id,
-                                     headers.gateway_token, std::time(nullptr), &bearer,
-                                     transfer ? ClientTicketAudience::kChatKitUpload
-                                              : ClientTicketAudience::kChatKit)) {
+            !clients_.Authenticate(headers.client_id, headers.gateway_token)
+                 .Allowed() ||
+            !ResolveForwardedChatKit(
+                headers.authorization, headers.client_id, headers.gateway_token,
+                std::time(nullptr), &bearer,
+                preview    ? ClientTicketAudience::kChatKitPreview
+                : transfer ? ClientTicketAudience::kChatKitUpload
+                           : ClientTicketAudience::kChatKit)) {
           failure_status = 401;
           headers.error_code = "invalid_client_secret";
           headers.failure = HttpReceiveFailure::kAdmission;
@@ -387,8 +401,11 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
         headers.authorization = std::move(bearer);
       }
       const auto credential = BearerCredential(headers.authorization);
-      if (credential.starts_with("ckup_") != transfer ||
-          credential.starts_with("cksec_") != (chatkit_client && !transfer)) {
+      if ((!preview_ticket.empty() && credential != preview_ticket) ||
+          credential.starts_with("ckpv_") != preview ||
+          credential.starts_with("ckup_") != transfer ||
+          credential.starts_with("cksec_") !=
+              (chatkit_client && !transfer && !preview)) {
         failure_status = 401;
         headers.error_code = "invalid_client_secret";
         headers.failure = HttpReceiveFailure::kAdmission;
@@ -873,6 +890,26 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     if (create_eval_run && !eval_dispatcher_) {
       SendError(fd, 503, "Evaluation worker is unavailable", {},
                 "eval_worker_unavailable");
+      return;
+    }
+    if (const auto preview = ParseChatKitPreview(method, path);
+        !preview.file.empty()) {
+      if (!body.empty()) {
+        SendError(fd, 400, "Attachment previews take no body", {},
+                  "invalid_request");
+        return;
+      }
+      std::string png;
+      const auto available = chatkit_detail::ReadAttachmentPreview(
+          *objects_, access, preview.session, preview.file,
+          BearerCredential(headers.authorization), &png);
+      if (!available.ok()) {
+        SendError(fd, available.http_status, available.ClientMessage(), {},
+                  available.ClientCode(), {}, {}, true);
+        return;
+      }
+      detail::SendSimple(fd, 200, "OK", png, "image/png", {access.deadline}, {},
+                         {}, true);
       return;
     }
     if (IsChatKitClient(method, path)) {

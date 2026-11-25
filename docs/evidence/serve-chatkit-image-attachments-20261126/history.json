@@ -1,0 +1,21 @@
+{
+  "thread": "cthr_6797b716cee79dc8a9a5c30d65b8401b",
+  "agent": "agent_26880b947c2a8b5d47199ef0a8cacfa5",
+  "user": "visual-reviewer",
+  "file": "file_81442a23b931eab36b1fc79232306ac7",
+  "item": "item_173590506ab4d32f47cdac6a91efa2c2",
+  "mime": "image/jpeg",
+  "items": [
+    "item_173590506ab4d32f47cdac6a91efa2c2",
+    "msg_d22a33a2693275225a0a0a4fed3a3636"
+  ],
+  "preview_sha256": "9e5b38333efd46fbbcc951382eaddbdccc1972cd10d832a99baa47ed4cd92ac4",
+  "preview_bytes": 254,
+  "fresh_source_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+  "completed_preview_receipt_sha256": "ff4f7b14f3ad3be5e32fba7b7c746df8acd316f75b1cb2e81a0550264417f7cc",
+  "records": {
+    ".q4t-format": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.chatkit_thread.cthr_6797b716cee79dc8a9a5c30d65b8401b.json": "921699f02ab0826c5ae2f422837159a40826eaa2a31b4761d025f0271f383833",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.agent.agent_26880b947c2a8b5d47199ef0a8cacfa5.json": "c14891efc87c907f63c0e4e26ffc092d81bcf6ff1c900c5be6620d2b80abdd8f"
+  }
+}

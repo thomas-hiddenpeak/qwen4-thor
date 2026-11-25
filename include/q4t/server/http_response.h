@@ -348,6 +348,9 @@ void SendError(int fd, int code, const std::string& message,
                const WriteOptions& options = {},
                std::string_view error_code = {}, std::string_view param = {},
                std::string_view allow = {});
+void SendError(int fd, int code, const std::string& message,
+               const WriteOptions& options, std::string_view error_code,
+               std::string_view param, std::string_view allow, bool no_store);
 // Stable Q4T codes inside the OpenAI error envelope. No retry guarantee.
 std::string ErrorJson(int status, const std::string& message,
                       std::string_view error_code = {},

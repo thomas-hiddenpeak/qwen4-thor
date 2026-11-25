@@ -11,7 +11,6 @@
 namespace q4t::server {
 namespace {
 using namespace object_detail;
-constexpr auto kBase64 = io::kBase64Alphabet;
 std::string Encode(std::string_view bytes) {
   std::string out;
   if (!io::EncodeBase64(bytes, (kBinaryChunkBytes + 2) / 3 * 4, &out))
@@ -22,24 +21,7 @@ bool Decode(std::string_view text, uint64_t expected, std::string* out) {
   if (!expected || expected > kBinaryChunkBytes ||
       text.size() != (expected + 2) / 3 * 4)
     return false;
-  std::string decoded;
-  decoded.reserve(expected);
-  for (size_t i = 0; i < text.size(); i += 4) {
-    uint32_t packed = 0;
-    for (size_t j = 0; j < 4; ++j) {
-      const auto c = text[i + j];
-      const auto digit = kBase64.find(c);
-      if (digit == kBase64.npos && c != '=') return false;
-      packed = (packed << 6) | (c == '=' ? 0 : digit);
-    }
-    for (int shift : {16, 8, 0})
-      if (decoded.size() < expected)
-        decoded += static_cast<char>((packed >> shift) & 255);
-  }
-  // Enforces canonical padding and unused bits, including '=' placement.
-  if (Encode(decoded) != text) return false;
-  *out = std::move(decoded);
-  return true;
+  return io::DecodeBase64(text, expected, out) && out->size() == expected;
 }
 bool Hex(std::string_view value) {
   return value.size() == 64 &&
@@ -377,7 +359,36 @@ ObjectReply BinaryStore::Read(const BinaryAccess& access,
   if (!checked.ok()) return checked;
   if (chunk >= read.manifest.chunks.size())
     return Invalid("Invalid binary chunk index");
-  const auto& entry = read.manifest.chunks[chunk];
+  return ReadChunk(access, read.manifest.chunks[chunk], bytes);
+}
+
+ObjectReply BinaryStore::ReadStage(const BinaryAccess& access,
+                                   const BinaryStage& stage, uint64_t max_bytes,
+                                   std::string* bytes) {
+  if (!bytes) return Invalid("Missing staging read buffer");
+  bytes->clear();
+  auto checked = State(access, stage.scope, stage.id, stage.expires,
+                       stage.closed, stage.commit_unknown);
+  if (!checked.ok()) return checked;
+  if (stage.manifest.bytes > max_bytes)
+    return Error(413, "file_image_capacity", "Image byte budget exceeded");
+  std::string source;
+  source.reserve(stage.manifest.bytes);
+  for (const auto& entry : stage.manifest.chunks) {
+    if (entry.bytes > stage.manifest.bytes - source.size()) return Corrupt();
+    std::string chunk;
+    auto read = ReadChunk(access, entry, &chunk);
+    if (!read.ok()) return read;
+    source.append(chunk);
+  }
+  if (source.size() != stage.manifest.bytes) return Corrupt();
+  *bytes = std::move(source);
+  return {};
+}
+
+ObjectReply BinaryStore::ReadChunk(const BinaryAccess& access,
+                                   const BinaryChunk& entry,
+                                   std::string* bytes) {
   auto reply =
       objects_.Execute(Request(access, entry.id, ObjectOperation::kGet),
                        access.deadline, access.cancelled);

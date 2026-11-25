@@ -367,12 +367,15 @@ def current_surface(root):
             (observation, 'IsChatKitObservation(method, path)'),
             (native, 'server::IsChatKitClient(method, path)'),
             (dispatch, 'file_request->PrepareChatKit(credential'),
+            (dispatch, 'chatkit_detail::ReadAttachmentPreview('),
+            (native, 'server::ClientTicketAudience::kChatKitPreview'),
             (native, 'server::ClientTicketAudience::kChatKit'))):
         raise ValueError('review ChatKit session, thread and native browser routing')
     for method, path in (
             ('POST', '/v1/chatkit'),
             ('POST', '/v1/chatkit/attachments'),
             ('PUT', '/v1/chatkit/attachments/{session_id}/{file_id}'),
+            ('GET', '/v1/chatkit/attachments/{session_id}/{file_id}/preview'),
             ('POST', '/v1/chatkit/sessions'),
             ('POST', '/v1/chatkit/sessions/{session_id}/cancel'),
             ('GET', '/v1/chatkit/threads'),
@@ -381,7 +384,8 @@ def current_surface(root):
             ('GET', '/v1/chatkit/threads/{thread_id}/items')):
         routes.append((path, method))
         native_routes.append((method, path, 'false' if path in ('/v1/chatkit', '/v1/chatkit/attachments',
-            '/v1/chatkit/attachments/{session_id}/{file_id}', '/v1/chatkit/sessions') else 'true'))
+            '/v1/chatkit/attachments/{session_id}/{file_id}', '/v1/chatkit/attachments/{session_id}/{file_id}/preview',
+            '/v1/chatkit/sessions') else 'true'))
     if ('HandleEval(*objects_, access' not in dispatch or
             'server::EvalMethodAllowed(method, path)' not in native or
             'IsEvalObservation(method, path)' not in observation):

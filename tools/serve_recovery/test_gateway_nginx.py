@@ -380,7 +380,9 @@ class Stack:
             timeout=4, context=self.ssl_context) if self.ssl_context else
             http.client.HTTPConnection(host, self.value['policy']['listen_port'], timeout=4))
         try:
-            headers = {'Authorization': 'Bearer '+key, 'Content-Type': 'application/json'}
+            headers = {'Content-Type': 'application/json'}
+            if key is not None:
+                headers['Authorization'] = 'Bearer '+key
             headers.update(extra or {})
             connection.request(method, path, body if isinstance(body, bytes) else json.dumps(body) if body is not None else None, headers)
             response = connection.getresponse()
@@ -454,7 +456,8 @@ class NginxTests(unittest.TestCase):
             if template.startswith('/v1/chatkit/'):
                 identities.update(session_id='cksess_1', thread_id='cthr_1')
             transfer = template == '/v1/chatkit/attachments/{session_id}/{file_id}'
-            if transfer:
+            preview = template == '/v1/chatkit/attachments/{session_id}/{file_id}/preview'
+            if transfer or preview:
                 identities.update(session_id='cksess_'+'a'*64, file_id='file_'+'b'*32)
             if template.startswith('/v1/agents/sessions/'):
                 identities['session_id'] = 'agent_session_1'
@@ -463,7 +466,7 @@ class NginxTests(unittest.TestCase):
             if template.startswith('/v1/evals/'):
                 identities['run_id'] = 'evalrun_1'
             path = template.format(**identities)
-            if method == 'GET' and template != '/v1/live/sessions/{session_id}/content':
+            if method == 'GET' and not preview and template != '/v1/live/sessions/{session_id}/content':
                 path += '?limit=1&metadata%5Btopic%5D=%E8%B5%84%E6%96%99'
             body = '{"cpu_fixture":true}' if method == 'POST' else ''
             content_type = 'application/json'
@@ -486,21 +489,24 @@ class NginxTests(unittest.TestCase):
             create_call = method == 'POST' and template in ('/v1/realtime/calls', '/v1/realtime/translations/calls')
             if create_call:
                 content_type, body = 'application/sdp', 'v=0\r\ns=fixture\r\n'
-            browser = transfer or path in ('/v1/chatkit', '/v1/chatkit/attachments')
+            browser = preview or transfer or path in ('/v1/chatkit', '/v1/chatkit/attachments')
             issuer = hashlib.sha256(b'A'*40).hexdigest()
             token = 'A'*40
             if browser:
-                prefix = 'ckup_' if transfer else 'cksec_'
+                prefix = 'ckpv_' if preview else 'ckup_' if transfer else 'cksec_'
                 payload = prefix+'q4t1.alpha.'+str(int(time.time())+120)+'.'+'a'*64
                 signature = hmac.digest(b'e'*64, ('q4t.realtime.client_secret.v1/'+issuer+'/'+payload).encode(), 'sha256')
                 token = payload+'.'+base64.urlsafe_b64encode(signature).decode().rstrip('=')
-            with self.subTest(method=method, path=path):
+            if preview:
+                path += '?ticket=' + token
+            with self.subTest(method=method, template=template):
                 connection = http.client.HTTPConnection('127.0.0.1',
                     self.stack.value['policy']['listen_port'], timeout=4)
                 try:
-                    connection.request(method, path, body, {
-                        'Authorization': 'Bearer '+token,
-                        'Content-Type': content_type})
+                    headers = {'Content-Type': content_type}
+                    if not preview:
+                        headers['Authorization'] = 'Bearer '+token
+                    connection.request(method, path, body, headers)
                     response = connection.getresponse()
                     wire = response.read()
                     self.assertEqual(response.status, 201 if create_call else 200, wire)
@@ -509,8 +515,10 @@ class NginxTests(unittest.TestCase):
                         self.assertEqual(response.getheader('Location'), '/v1/realtime/calls/rtc_fixture')
                         self.assertEqual(wire, body.encode())
                     row = self.stack.application_requests[-1]
+                    upstream_path = (path.partition('?')[0]
+                                     if preview and self.stack.native_ingress else path)
                     self.assertEqual((row['method'], row['path'], row['body']),
-                                     (method, path, body))
+                                     (method, upstream_path, body))
                     self.assertEqual((row['client'], row['token']),
                                      ('alpha', 'e'*64))
                     self.assertEqual(row['upstream_port'],
@@ -673,6 +681,12 @@ class NginxTests(unittest.TestCase):
                                  (method,'alpha','Q4T-ChatKit '+issuer+' Bearer '+token))
                 if method == 'PUT':
                     self.assertEqual(received['body'], 'project record')
+        preview = ticket('ckpv_')
+        url = transfer + '/preview?ticket=' + preview
+        self.assertEqual(self.stack.request(key=None, path=url)[0], 200)
+        self.assertEqual(self.stack.application_requests[-1]['authorization'],
+                         'Q4T-ChatKit '+issuer+' Bearer '+preview)
+        self.assertEqual(self.stack.request(key=upload, path=url)[0], 401)
         before = len(self.stack.application_requests)
         for token, method, path in [('A'*40, 'POST', '/v1/chatkit'), (session, 'GET', '/v1/chatkit/threads'),
                                     (session, 'PUT', transfer), (upload, 'POST', '/v1/chatkit'),

@@ -1,0 +1,183 @@
+{
+  "stage": "reserved_raster_preview_verified_in_chromium",
+  "issued": false,
+  "default_revision": 514,
+  "read_authority": "Dedicated preview ticket for one session and attachment, expires with the session. Returned before upload. Upload descriptor is independent.",
+  "source_fixture_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+  "browser_driver_sha256": "400458f9f9ec6ff12c0fb6f3a8c5712a7f2b5a54bfab2af2c80d4ac66a1df1ef",
+  "checked_in_native_https": [
+    "reservation shape validated",
+    "discard PUT response",
+    "no-store before upload, after upload and on core misses",
+    "PNG rendered by HTMLImageElement against a pinned TLS origin",
+    "all 8192 RGBA bytes matched",
+    "browser GET after deletion, revocation and real expiry"
+  ],
+  "cpu": {
+    "passed": 15,
+    "names": [
+      "chatkit_forwarded_ticket_binds_current_gateway_key_owner_and_expiry",
+      "chatkit_retry_selects_legacy_user_identity_and_discards_only_future",
+      "chatkit_image_attachment_resolves_original_pixels_and_scoped_file",
+      "chatkit_preview_preserves_alpha_aspect_ratio_and_rejects_invalid_images",
+      "chatkit_preview_capacity_keeps_upload_and_model_admission_independent",
+      "chatkit_preview_codec_outage_keeps_scoped_image_input",
+      "chatkit_retry_preserves_raster_and_legacy_document_identity",
+      "chatkit_attachment_publication_requires_a_live_owner_and_actual_binary",
+      "chatkit_reserved_image_preview_has_independent_authority_and_lifetime",
+      "chatkit_two_phase_document_binds_credential_bytes_and_publication",
+      "file_webp_container_validates_actual_formats_and_complete_lengths",
+      "file_webp_actual_owned_decode_matches_pillow_and_codec_identity",
+      "file_webp_budget_cancel_timeout_and_worker_failure_release_ownership",
+      "file_webp_missing_optional_codec_preserves_builtin_pixels_and_text",
+      "binary_inner_checksum_and_canonical_encoding_precede_output"
+    ],
+    "schema_tests": 5,
+    "contract_generators_current": true,
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 246,
+      "native_routes": 408,
+      "reviewed_source_anchors": 1386,
+      "mutation_checks": 40,
+      "errors": []
+    },
+    "log_sha256": {
+      "original_file_only_reservation": "93824ef505b61fef0bdfab3a1de3192656ee0629e0735a76403aa296e17b91a9",
+      "temporary_codec_error_before_fix": "a9e4eb904a90ace7729273b7f44f74fd967596b3684d760092626ede078f026f",
+      "passing_cpu": "f6e5852f3559b5fd248d5d6e786ca9abc7273e271c7f53ab095056a21828de24",
+      "native_mock_expected_query_before_correction": "f255e7c910e5e2932d5c8cd31a674a0de07601616d2be415a68d73bf988194dd",
+      "native_ingress_route_matrix": "6de0334b17e515debdae5fc977c6d03e3bb0defd8a4c6b527800312529482521",
+      "nginx_route_matrix": "b212af7a9811fc5cd2159432f703246e37595d96970bffb0d22bf066a9f02438"
+    }
+  },
+  "native_https": [
+    {
+      "stage": "before codec recovery",
+      "result": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 37.565,
+        "unchanged_default": true,
+        "cleanup_ok": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "serving": {
+        "binary": "00da2f161f3da5832106ca71171bd7d409a87c20c8dcdd5c296729df6b1662d3",
+        "protocol_sha256": "1f30bd2b69f4d155f4084bbaf13e080d0897f2ba8621e70782daf30d116bcbf2"
+      },
+      "ingress_sha256": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8",
+      "model_requests": 0,
+      "browser_result_sha256": "c1e072673cc20cf82d242e8347b83760fb4736b986b10df7e5fab45d4ecbfedc",
+      "lease_exit_sha256": "27bf75459db68e35ddf574a932f8b709819c50a3811416c2ea22717799d9ba5c",
+      "browser": {
+        "rows": [
+          {
+            "end": "delete",
+            "before": 404,
+            "completed": 200,
+            "terminal": 404,
+            "source_size": [
+              64,
+              32
+            ],
+            "decoded_rgba_sha256": "81f9834fdcb95b0f3de80778e522d8411b4f6ab00d7b8d270cc8522b510a0b25"
+          },
+          {
+            "end": "cancel",
+            "before": 404,
+            "completed": 200,
+            "terminal": 401,
+            "source_size": [
+              64,
+              32
+            ],
+            "decoded_rgba_sha256": "81f9834fdcb95b0f3de80778e522d8411b4f6ab00d7b8d270cc8522b510a0b25"
+          },
+          {
+            "end": "expire",
+            "before": 404,
+            "completed": 200,
+            "terminal": 401,
+            "source_size": [
+              64,
+              32
+            ],
+            "decoded_rgba_sha256": "81f9834fdcb95b0f3de80778e522d8411b4f6ab00d7b8d270cc8522b510a0b25"
+          }
+        ],
+        "chromium": "148.0.7778.0",
+        "preview_contract_checked": true
+      }
+    },
+    {
+      "stage": "final",
+      "result": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 37.969,
+        "unchanged_default": true,
+        "cleanup_ok": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "serving": {
+        "binary": "f3f750b909537f54edab559e6117e648a32abc9be0682f230cc9603923048841",
+        "protocol_sha256": "3438361dc0dbba83e542ac93de03db798b6c8bd5ba6bac0d092bf3bc3a423d5e"
+      },
+      "ingress_sha256": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8",
+      "model_requests": 0,
+      "browser_result_sha256": "c1e072673cc20cf82d242e8347b83760fb4736b986b10df7e5fab45d4ecbfedc",
+      "lease_exit_sha256": "64a9b8ced9471cad7c4dbe74ff1525c9e9baa9bf1dbeefa1b4e94bc1a813fcfa",
+      "browser": {
+        "rows": [
+          {
+            "end": "delete",
+            "before": 404,
+            "completed": 200,
+            "terminal": 404,
+            "source_size": [
+              64,
+              32
+            ],
+            "decoded_rgba_sha256": "81f9834fdcb95b0f3de80778e522d8411b4f6ab00d7b8d270cc8522b510a0b25"
+          },
+          {
+            "end": "cancel",
+            "before": 404,
+            "completed": 200,
+            "terminal": 401,
+            "source_size": [
+              64,
+              32
+            ],
+            "decoded_rgba_sha256": "81f9834fdcb95b0f3de80778e522d8411b4f6ab00d7b8d270cc8522b510a0b25"
+          },
+          {
+            "end": "expire",
+            "before": 404,
+            "completed": 200,
+            "terminal": 401,
+            "source_size": [
+              64,
+              32
+            ],
+            "decoded_rgba_sha256": "81f9834fdcb95b0f3de80778e522d8411b4f6ab00d7b8d270cc8522b510a0b25"
+          }
+        ],
+        "chromium": "148.0.7778.0",
+        "preview_contract_checked": true
+      }
+    }
+  ],
+  "open": [
+    "Cross-profile and managed recovery, rollback package and default publication.",
+    "See business.json and completed-previews.json for image answers and retained model quality failures; neither browser run generated a model response."
+  ]
+}

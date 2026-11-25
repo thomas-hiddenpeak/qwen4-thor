@@ -7,7 +7,12 @@
 #include <string_view>
 
 namespace q4t::server {
-enum class ClientTicketAudience { kRealtime, kChatKit, kChatKitUpload };
+enum class ClientTicketAudience {
+  kRealtime,
+  kChatKit,
+  kChatKitUpload,
+  kChatKitPreview
+};
 struct RealtimeClientTicket {
   std::string_view owner, nonce, signature;
   int64_t expires_at = 0;

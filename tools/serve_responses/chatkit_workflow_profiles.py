@@ -22,6 +22,12 @@ def restore_history(state, source):
     require = package.require
     require(fixture['wire_sha256'] == package.read(PROOF)['wire']['wire_sha256'] and
             fixture['public_summaries'] > 0, 'unqualified historical source')
+    restore_reviewed_thread(state, source, fixture)
+
+
+def restore_reviewed_thread(state, source, fixture):
+    """Copy one reviewed thread and its agent atomically, without old session credentials."""
+    require = package.require
     expected = fixture['records']
     require(len(expected) == 3 and '.q4t-format' in expected and
             all(Path(name).name == name for name in expected), 'invalid history file names')

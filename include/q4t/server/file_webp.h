@@ -18,6 +18,10 @@ struct FileWebpPixels {
   std::string png;
   io::Json conversion;
 };
+// ChatKit previews use a freshly encoded bounded PNG, independent of the
+// original file lifetime. The existing file parser child owns all decoding.
+ObjectReply MakeRasterPreview(std::string_view source,
+                              const BinaryAccess& access, std::string* png);
 bool IsWebpImage(std::string_view bytes);
 ObjectReply ReadWebpHeader(std::string_view bytes, WebpHeader* header);
 // Revalidates original container, actual PNG dimensions, identities and exact

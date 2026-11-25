@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <unordered_set>
 
+#include "chatkit_attachments.h"
 #include "chatkit_thread_state.h"
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
@@ -65,11 +66,19 @@ ObjectReply SelectRetryHistory(const Json& record, std::string_view item_id,
   const auto* parts = browser.GetArray("content");
   if (!parts || !attachments || !end->GetArray("content")) return Corrupt();
   auto model = Array(), public_parts = Array();
+  const auto& original = end->GetArray("content")->array;
+  if (attachments->array.size() > original.size()) return Corrupt();
   for (const auto& attachment : attachments->array) {
     const auto* id = attachment.Find("id");
     if (!id || !id->IsString()) return Corrupt();
-    model.array.push_back(
-        Object({{"type", String("input_file")}, {"file_id", *id}}));
+    // Early releases forwarded every generic browser file as a document.
+    // Keep its stored modality and verify the entire canonical message below.
+    if (attachment.GetString("type") == "file" &&
+        original[model.array.size()].GetString("type") == "input_file")
+      model.array.push_back(
+          Object({{"type", String("input_file")}, {"file_id", *id}}));
+    else
+      model.array.push_back(AttachmentModelInput(attachment));
   }
   if (const auto* quote = browser.Find("quoted_text"))
     model.array.push_back(

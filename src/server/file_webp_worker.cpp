@@ -18,6 +18,7 @@
 #include "q4t/server/file_document_worker.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/trace/sha256.h"
+#include "q4t/vision/media_plan.h"
 
 namespace q4t::server {
 namespace {
@@ -58,7 +59,7 @@ void* Library(const char* path, char (&sha)[65], int* retained_fd) {
   retain = true;
   return result;
 }
-bool Load(Runtime* api, Result* result, bool missing) {
+bool Load(Runtime* api, Result* result, bool missing, bool need_webp) {
   // Keep distinct /proc/self/fd names until both loads finish. Reusing a
   // closed descriptor's path would let dlopen return its previous handle.
   int webp_fd = -1, zlib_fd = -1;
@@ -66,30 +67,33 @@ bool Load(Runtime* api, Result* result, bool missing) {
     if (webp_fd >= 0) close(webp_fd);
     if (zlib_fd >= 0) close(zlib_fd);
   });
-  void* webp =
-      Library(missing ? "/q4t-no-such-webp-codec" : Q4T_SYSTEM_WEBP_LIBRARY,
-              result->decoder_sha256, &webp_fd);
   void* zlib =
       Library(Q4T_SYSTEM_ZLIB_LIBRARY, result->encoder_sha256, &zlib_fd);
-  if (!webp || !zlib) return false;
+  if (!zlib) return false;
 #define Q4T_WEBP_LOAD(handle, field, symbol)                                   \
   api->field = reinterpret_cast<decltype(api->field)>(dlsym(handle, #symbol)); \
   if (!api->field) return false
-  Q4T_WEBP_LOAD(webp, version, WebPGetDecoderVersion);
-  Q4T_WEBP_LOAD(webp, initialize, WebPInitDecoderConfigInternal);
-  Q4T_WEBP_LOAD(webp, features, WebPGetFeaturesInternal);
-  Q4T_WEBP_LOAD(webp, decode, WebPDecode);
-  Q4T_WEBP_LOAD(webp, release, WebPFreeDecBuffer);
+  if (need_webp) {
+    void* webp =
+        Library(missing ? "/q4t-no-such-webp-codec" : Q4T_SYSTEM_WEBP_LIBRARY,
+                result->decoder_sha256, &webp_fd);
+    if (!webp) return false;
+    Q4T_WEBP_LOAD(webp, version, WebPGetDecoderVersion);
+    Q4T_WEBP_LOAD(webp, initialize, WebPInitDecoderConfigInternal);
+    Q4T_WEBP_LOAD(webp, features, WebPGetFeaturesInternal);
+    Q4T_WEBP_LOAD(webp, decode, WebPDecode);
+    Q4T_WEBP_LOAD(webp, release, WebPFreeDecBuffer);
+    const int version = api->version();
+    if (version <= 0) return false;
+    std::snprintf(result->decoder_version, sizeof(result->decoder_version),
+                  "%d.%d.%d", (version >> 16) & 255, (version >> 8) & 255,
+                  version & 255);
+  }
   Q4T_WEBP_LOAD(zlib, zversion, zlibVersion);
   Q4T_WEBP_LOAD(zlib, bound, compressBound);
   Q4T_WEBP_LOAD(zlib, compress, compress2);
   Q4T_WEBP_LOAD(zlib, crc, crc32);
 #undef Q4T_WEBP_LOAD
-  const int version = api->version();
-  if (version <= 0) return false;
-  std::snprintf(result->decoder_version, sizeof(result->decoder_version),
-                "%d.%d.%d", (version >> 16) & 255, (version >> 8) & 255,
-                version & 255);
   const char* encoder = api->zversion();
   if (!encoder || strnlen(encoder, 64) >= 64) return false;
   std::memcpy(result->encoder_version, encoder, std::strlen(encoder) + 1);
@@ -109,13 +113,9 @@ void Chunk(const Runtime& api, std::string_view type, std::string_view value,
                     static_cast<uInt>(type.size() + value.size()))),
         png);
 }
-Failure Convert(const Runtime& api, const Request& request,
-                const std::string& source, std::string* png) {
-  WebpHeader header;
-  if (!ReadWebpHeader(source, &header).ok()) return Failure::kInvalid;
-  if (header.width > request.edge || header.height > request.edge ||
-      uint64_t{header.width} * header.height > request.pixels)
-    return Failure::kCapacity;
+Failure WebpPixels(const Runtime& api, const std::string& source,
+                   WebpHeader header, WebpHeader size, bool preview,
+                   std::vector<uint8_t>* rgb) {
   const auto* bytes = reinterpret_cast<const uint8_t*>(source.data());
   WebPDecoderConfig config;
   if (!api.initialize(&config, WEBP_DECODER_ABI_VERSION))
@@ -128,19 +128,59 @@ Failure Convert(const Runtime& api, const Request& request,
       config.input.width != static_cast<int>(header.width) ||
       config.input.height != static_cast<int>(header.height))
     return Failure::kInvalid;
-  const size_t stride = size_t{header.width} * 3;
-  std::vector<uint8_t> rgb(stride * header.height);
-  config.output.colorspace = MODE_RGB;
+  const size_t stride = size_t{size.width} * (preview ? 4 : 3);
+  rgb->resize(stride * size.height);
+  config.options.use_scaling =
+      size.width != header.width || size.height != header.height;
+  config.options.scaled_width = size.width;
+  config.options.scaled_height = size.height;
+  config.output.colorspace = preview ? MODE_RGBA : MODE_RGB;
   config.output.is_external_memory = 1;
-  config.output.u.RGBA = {rgb.data(), static_cast<int>(stride), rgb.size()};
+  config.output.u.RGBA = {rgb->data(), static_cast<int>(stride), rgb->size()};
   config.options.use_threads = 0;
   status = api.decode(bytes, source.size(), &config);
   if (status == VP8_STATUS_OUT_OF_MEMORY) return Failure::kCapacity;
-  if (status != VP8_STATUS_OK || config.output.width != config.input.width ||
-      config.output.height != config.input.height)
+  if (status != VP8_STATUS_OK ||
+      config.output.width != static_cast<int>(size.width) ||
+      config.output.height != static_cast<int>(size.height))
     return Failure::kInvalid;
-  // PNG keeps decoded RGB exactly. No resize, color-profile application,
-  // alpha compositing, executable metadata or original source mutation.
+  return Failure::kNone;
+}
+
+Failure Convert(const Runtime& api, const Request& request,
+                const std::string& source, std::string* png) {
+  const bool webp = IsWebpImage(source);
+  const bool preview = request.preview_edge != 0;
+  const auto* bytes = reinterpret_cast<const uint8_t*>(source.data());
+  WebpHeader original;
+  if (webp) {
+    if (!ReadWebpHeader(source, &original).ok()) return Failure::kInvalid;
+  } else {
+    vision::MediaHeader header;
+    if (!preview || !vision::ReadMediaHeader({bytes, source.size()}, &header))
+      return Failure::kInvalid;
+    original = {header.width, header.height};
+  }
+  if (original.width > request.edge || original.height > request.edge ||
+      uint64_t{original.width} * original.height > request.pixels)
+    return Failure::kCapacity;
+  WebpHeader header = original;
+  if (preview) {
+    const auto longest = std::max(original.width, original.height);
+    header = {PreviewDimension(original.width, longest),
+              PreviewDimension(original.height, longest)};
+  }
+  std::vector<uint8_t> rgb;
+  if (webp) {
+    const auto result =
+        WebpPixels(api, source, original, header, preview, &rgb);
+    if (result != Failure::kNone) return result;
+  } else if (!vision::DecodePreviewRgba(bytes, source.size(), original.width,
+                                        original.height, header.width,
+                                        header.height, &rgb)) {
+    return Failure::kInvalid;
+  }
+  const size_t stride = size_t{header.width} * (preview ? 4 : 3);
   std::string scanlines((stride + 1) * header.height, '\0');
   for (size_t row = 0; row < header.height; ++row)
     std::memcpy(scanlines.data() + row * (stride + 1) + 1,
@@ -160,7 +200,7 @@ Failure Convert(const Runtime& api, const Request& request,
   std::string ihdr;
   Big32(header.width, &ihdr);
   Big32(header.height, &ihdr);
-  ihdr.append("\x08\x02\x00\x00\x00", 5);
+  ihdr.append(preview ? "\x08\x06\0\0\0" : "\x08\x02\0\0\0", 5);
   Chunk(api, "IHDR", ihdr, png);
   Chunk(api, "IDAT", compressed, png);
   Chunk(api, "IEND", {}, png);
@@ -181,13 +221,15 @@ int Run(int argc, char** argv, bool missing) {
         request.bytes > kFileInputBytes || !request.pixels ||
         request.pixels > (256ULL << 20) || !request.edge ||
         request.edge > 65536 || request.output_bytes < 1024 ||
-        request.output_bytes > (256ULL << 20))
+        request.output_bytes > (256ULL << 20) ||
+        (request.preview_edge && request.preview_edge != kPreviewEdge))
       return 3;
     std::string source(request.bytes, '\0');
     if (!detail::WorkerTransfer(source.data(), source.size(), false)) return 3;
     Runtime api;
     Ready ready = Ready::kReady;
-    if (!Load(&api, &result, missing)) {
+    if (!Load(&api, &result, missing,
+              !request.preview_edge || IsWebpImage(source))) {
       ready = Ready::kDependency;
     } else if (!detail::EnterNativeDocumentSandbox()) {
       ready = Ready::kSandbox;

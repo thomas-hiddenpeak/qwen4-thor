@@ -1,0 +1,92 @@
+{
+  "stage": "cpu_verified",
+  "issued": false,
+  "baseline": {
+    "source_commit": "860a4734374433694c3b57a33977843fae7a5863",
+    "engine": "038b672632aeea5137872fdebc77ef5f3e9ee6a108cf1d74ad983f4eabd1c1b3",
+    "failed_cases": [
+      "chatkit_image_attachment_resolves_original_pixels_and_scoped_file",
+      "chatkit_retry_preserves_raster_and_legacy_document_identity"
+    ],
+    "log_sha256": "9d084a13caf3f7cfc9e4492a48985ae363435e4a87bcd2d5cce0cf6f25393722"
+  },
+  "candidate": {
+    "passed_cases": [
+      "chatkit_retry_selects_legacy_user_identity_and_discards_only_future",
+      "chatkit_image_attachment_resolves_original_pixels_and_scoped_file",
+      "chatkit_retry_preserves_raster_and_legacy_document_identity",
+      "chatkit_attachment_publication_requires_a_live_owner_and_actual_binary",
+      "chatkit_two_phase_document_binds_credential_bytes_and_publication"
+    ],
+    "log_sha256": "ea00d97fc71865c3f8fd2a4bcdf908365066ebc3e33c86d16c59c8fae58d6643",
+    "real_cpu_pixel_inputs": [
+      "image/png",
+      "image/jpeg",
+      "image/gif",
+      "application/octet-stream with .png filename"
+    ],
+    "original_identity": "file ID and original bytes, 64 x 32, 8 RGB temporal patches",
+    "history": "Input equality includes attachment ID, modality and all other canonical user content. History from an older release can retain input_file for a raster attachment exposed as a generic file.",
+    "ownership": "Other session cannot resolve the file.",
+    "formats_checked_in_retry": [
+      "image/png",
+      "image/jpeg",
+      "image/gif",
+      "image/webp"
+    ],
+    "test_source_sha256": "15e349de0fd3b2a40eaf52215ab1df0214651be14d170c3d05679004a83eb85b",
+    "engine_sha256": "2dabf1b37269ebea1da1df26e2edf096eca16e06b4819d439c55ee2a4128c72e",
+    "reviewed_protocol_sources": 1096,
+    "product_linked_cpu_log_sha256": "ea00d97fc71865c3f8fd2a4bcdf908365066ebc3e33c86d16c59c8fae58d6643",
+    "responses_contract": "The generated public input_image includes detail=auto and passes the normal Responses input-item validator."
+  },
+  "surface": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 245,
+    "native_routes": 406,
+    "reviewed_source_anchors": 1386,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "browser_reference": {
+    "commit": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "types_sha256": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+    "image_requires_nonempty_preview_url": true,
+    "two_phase_request_fields": [
+      "name",
+      "size",
+      "mime_type"
+    ],
+    "existing_reservation_schema": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_reserved_document",
+    "completed_upload_schema": "#/components/schemas/serve-application-v1.schema.json/$defs/chatkit_document_attachment"
+  },
+  "remaining": [
+    "Real model through both HTTP upload modes and retry after deletion",
+    "Browser image attachment, private preview before and after upload, and durable thread history",
+    "Cross-profile and managed delivery"
+  ],
+  "http_regression": {
+    "result": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 29.854,
+      "unchanged_default": true,
+      "cleanup_ok": true,
+      "phases": []
+    },
+    "status": 400,
+    "error_param": "input[0].content[0].detail",
+    "responses_created": 0,
+    "before_cpu_sha256": "cd617bac115948f5be3dc1fcd9c0c805af477cc8fa2f15096a7481caafd6d60a",
+    "guard_sha256": "43a6703e75c7feba18d525036fc005c6b7820a7150e48601f4b9e4a90ef40bde",
+    "before_engine": "3580a4cdcf53692942cefaff3bae03f97f91c8b251cd2b7dad24efa37937ac21"
+  },
+  "harness_failure": {
+    "guard_sha256": "189c530e617bce707e430ccafaa960c4ce0ba9f25a437cc69949eaacf2ce93a9",
+    "model_starts": 0,
+    "reason": "Relative driver path was resolved from the guard working directory. The retry uses the absolute driver path."
+  }
+}

@@ -39479,7 +39479,7 @@
           "$ref": "#/$defs/chatkit_empty_result"
         },
         {
-          "$ref": "#/$defs/chatkit_reserved_document"
+          "$ref": "#/$defs/chatkit_reserved_attachment"
         },
         {
           "$ref": "#/$defs/chatkit_transcription_result"
@@ -39521,6 +39521,43 @@
         "mime_type"
       ],
       "additionalProperties": false
+    },
+    "chatkit_uploaded_attachment": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/chatkit_document_attachment"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "const": "image"
+            },
+            "mime_type": {
+              "type": "string"
+            },
+            "preview_url": {
+              "type": "string",
+              "format": "uri",
+              "pattern": "^data:image/png;base64,"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "type",
+            "mime_type",
+            "preview_url"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "chatkit_reserved_document": {
       "type": "object",
@@ -39580,6 +39617,77 @@
         "upload_descriptor"
       ],
       "additionalProperties": false
+    },
+    "chatkit_reserved_attachment": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/chatkit_reserved_document"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "type": {
+              "const": "image"
+            },
+            "mime_type": {
+              "type": "string"
+            },
+            "upload_descriptor": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "method": {
+                  "const": "PUT"
+                },
+                "headers": {
+                  "type": "object",
+                  "properties": {
+                    "Authorization": {
+                      "type": "string"
+                    },
+                    "Content-Type": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "Authorization",
+                    "Content-Type"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "url",
+                "method",
+                "headers"
+              ],
+              "additionalProperties": false
+            },
+            "preview_url": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "type",
+            "mime_type",
+            "upload_descriptor",
+            "preview_url"
+          ],
+          "additionalProperties": false
+        }
+      ]
     },
     "chatkit_threads": {
       "type": "object",
