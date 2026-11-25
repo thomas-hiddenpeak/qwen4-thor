@@ -1596,6 +1596,25 @@ Q4T_TEST(agent_session_prepares_native_input_and_validates_public_snapshot) {
     Set(&bad, "input", Parse(invalid));
     Q4T_CHECK(begin(bad).http_status == 400);
   }
+  Set(&request, "stream_options", Parse(R"({"include_obfuscation":false})"));
+  Q4T_CHECK(begin(request).value.GetString("param") == "stream_options");
+  Set(&request, "stream", Parse("true"));
+  Set(&request, "prompt_cache_options", Parse("{}"));
+  Q4T_CHECK(Ok(begin(request)) && !start.session.Has("stream_options") &&
+            start.session.Find("prompt_cache_options")->GetString("ttl") == "30m");
+  for (const auto* invalid : {R"({"include_obfuscation":null})",
+                              R"({"include_obfuscation":"false"})", R"({"other":true})",
+                              "null"}) {
+    auto bad = request;
+    Set(&bad, "stream_options", Parse(invalid));
+    Q4T_CHECK(begin(bad).http_status == 400);
+  }
+  for (const auto* invalid : {R"({"ttl":"24h"})", R"({"ttl":null})",
+                              R"({"ttl":1800})", R"({"mode":"explicit"})"}) {
+    auto bad = request;
+    Set(&bad, "prompt_cache_options", Parse(invalid));
+    Q4T_CHECK(begin(bad).http_status == 400);
+  }
   Set(&request, "spend_control", Parse(R"({"limit":0})"));
   Q4T_CHECK(begin(request).http_status == 400);
   return true;
@@ -1691,6 +1710,100 @@ Q4T_TEST(agent_session_turn_shares_queue_receipt_and_reopens_native_output) {
   return true;
 }
 
+Q4T_TEST(agent_session_enforces_its_own_json_schema_in_responses) {
+  Fixture f;
+  ObjectStore store(f.options);
+  auto config = Config();
+  config.structured = true;
+  auto body = Parse(R"({"agent":{"model":"cpu","text":{"format":{
+    "type":"json_schema","schema":{"type":"object","properties":{
+    "value":{"type":"integer"}},"required":["value"],"additionalProperties":false}
+    }}},"environment":{"type":"none"},"input":"Return the current revision."})");
+  ResponsesExecution run(store);
+  auto created = PrepareAgentSessionExecution(store, body, config, Access(),
+                                              std::time(nullptr), run);
+  Q4T_CHECK(Ok(created) && run.Prepared());
+  const auto* supplied = body.Find("agent")->Find("text")->Find("format");
+  const auto* published =
+      created.value.Find("agent")->Find("text")->Find("format");
+  Q4T_CHECK(OutputJson(*published) == OutputJson(*supplied));
+  const auto* native = run.Envelope().request.Find("text")->Find("format");
+  Q4T_CHECK(native->GetBool("strict") && !native->GetString("name").empty());
+  Q4T_CHECK(OutputJson(*native->Find("schema")) ==
+            OutputJson(*supplied->Find("schema")));
+  auto extra = *supplied;
+  Set(&extra, "name", Parse(R"("client-name")"));
+  auto invalid = body;
+  auto agent = *body.Find("agent");
+  auto text = *agent.Find("text");
+  Set(&text, "format", extra);
+  Set(&agent, "text", text);
+  Set(&invalid, "agent", agent);
+  ResponsesExecution rejected(store);
+  auto denied = PrepareAgentSessionExecution(store, invalid, config, Access(),
+                                             std::time(nullptr), rejected);
+  Q4T_CHECK(denied.http_status == 400 &&
+            denied.value.GetString("param") == "agent.text.format.name");
+  return true;
+}
+
+Q4T_TEST(agent_session_keeps_rejected_model_output_out_of_the_next_turn) {
+  Fixture f;
+  auto config = Config();
+  auto now = std::time(nullptr);
+  std::string id, response_id, turn;
+  {
+    ObjectStore store(f.options);
+    ResponsesExecution run(store);
+    auto create = Parse(R"({"agent":{"model":"cpu"},"environment":{"type":"none"},
+      "input":"first lookup","prompt_cache_options":{"ttl":"12h"}})");
+    auto prepared = PrepareAgentSessionExecution(store, create, config, Access(), now, run);
+    Q4T_CHECK(Ok(prepared));
+    id = prepared.value.GetString("id");
+    response_id = run.Id();
+    run.BindBackgroundControl(std::make_shared<RequestControl>(response_id, "", Clock::now() + 5s));
+    std::string wire;
+    Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartRunning(&wire)));
+    ResponseDelta refused;
+    refused.kind = ResponseDelta::Kind::kRefusal;
+    refused.text = "rejected fragment./q4t_refusal>";
+    Q4T_CHECK(run.Append(refused, "null", &wire));
+    ResponsesExecution::ObserveError(&run, 502, "incomplete refusal frame", "response_parse_failed");
+    Q4T_CHECK(Ok(run.CloseUnfinished()));
+  }
+  ObjectStore reopened(f.options);
+  AgentSessionView view;
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(reopened, id, "", Access(), &view)));
+  Q4T_CHECK(view.turn.GetString("status") == "failed" && view.session.GetString("status") == "idle");
+  turn = view.turn.GetString("id");
+  const auto previous = ResponsesState(reopened).Retrieve(response_id, Access());
+  Q4T_CHECK(Ok(previous) && previous.value.GetString("status") == "failed" &&
+            OutputJson(*previous.value.Find("output")).find("rejected fragment") != std::string::npos);
+  auto follow = Parse(R"({"events":[{"type":"agent.session.input.message",
+    "input":[{"role":"user","content":[{"type":"input_text","text":"second lookup"}]}]}]})");
+  ResponsesExecution next(reopened);
+  bool replay = false;
+  Q4T_CHECK(Ok(PrepareAgentSessionEvents(reopened, id, follow, "next-lookup", config,
+                                        Access(), next, &replay)) && !replay);
+  const auto prompt = OutputJson(*next.Generation().generation_request.Find("messages"));
+  const auto boundary = prompt.find("The preceding turn ended with invalid model output");
+  Q4T_CHECK(boundary != std::string::npos && prompt.find("first lookup") < boundary &&
+            prompt.find("second lookup") != std::string::npos && prompt.find("second lookup") > boundary &&
+            prompt.find("rejected fragment") == std::string::npos &&
+            next.Envelope().cache.ttl_seconds == 43200);
+  next.BindBackgroundControl(std::make_shared<RequestControl>(next.Id(), "", Clock::now() + 5s));
+  std::string wire;
+  Q4T_CHECK(Ok(next.Begin(&wire)) && Ok(next.StartRunning(&wire)));
+  ResponseDelta answer;
+  answer.kind = ResponseDelta::Kind::kContent;
+  answer.text = "42";
+  Q4T_CHECK(next.Append(answer, "null", &wire) && Ok(next.Finish(false, 0, {4,0,1,0}, now, &wire)));
+  Q4T_CHECK(Ok(ReadAgentSessionTurn(reopened, id, turn, Access(), &view)) &&
+            view.turn.GetString("status") == "failed" && view.turns.array.size() == 2);
+  Q4T_CHECK(ReadAgentSessionTurn(reopened, id, turn, Access("client:other"), &view).http_status == 404);
+  return true;
+}
+
 Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
   Fixture f;
   ObjectStore store(f.options);
@@ -1711,6 +1824,10 @@ Q4T_TEST(agent_session_turn_reports_the_original_failure_category) {
       {400, "context_length_exceeded", "context_length_exceeded", false},
       {503, "service_draining", "server_overloaded", true},
       {429, "client_capacity_exhausted", "server_overloaded", true},
+      {502, "response_parse_failed", "server_error", true},
+      {502, "structured_output_invalid", "server_error", true},
+      {502, "structured_output_incomplete", "server_error", true},
+      {503, "constraint_dependency_unavailable", "server_error", false},
       {500, "client_rate_invalid", "server_error", false},
   };
   for (const auto& item : cases) {
@@ -1817,6 +1934,8 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(Ok(saved) && saved.value.GetArray("tools")->array.size() == 2);
     auto request = Parse(R"({"agent_id":"unused","environment":{"type":"none"},
                              "input":"Find and call read_release"})");
+    if (replace)
+      Set(&request, "prompt_cache_options", Parse(R"({"ttl":"12h"})"));
     Set(&request, "agent_id", *saved.value.Find("id"));
     const auto now = std::time(nullptr);
     ResponsesExecution run(store);
@@ -1864,13 +1983,16 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(calls == 1);
     AgentEventCursor live;
     Q4T_CHECK(Ok(OpenAgentEventSubscription(store, id, Access(), &live)));
-    const auto update = replace
+    auto update = replace
         ? Parse(R"({"agent":{"tools":[{"type":"function","name":"read_release",
                "defer_loading":true,"description":"Replacement description",
                "parameters":{"type":"object","properties":{"build":{"type":"integer"}}}}]}})")
         : Parse(R"({"agent":{"tools":[]}})");
+    Set(&update, "prompt_cache_options",
+        replace ? Json{} : Parse(R"({"ttl":"12h"})"));
     auto changed = UpdateAgentSession(store, id, update, config, Access());
-    Q4T_CHECK(Ok(changed));
+    Q4T_CHECK(Ok(changed) && changed.value.Has("prompt_cache_options") != replace);
+    Q4T_CHECK(run.Envelope().cache.ttl_seconds == (replace ? 43200 : 1800));
     auto results = Parse(R"({"events":[{"type":"agent.session.input.tool_result",
       "turn_id":"turn","call_id":"call_release","success":true,"output":"rev452"}]})");
     Set(&results.object[0].second.array[0], "turn_id", *view.turn.Find("id"));
@@ -1879,6 +2001,8 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, results, "fill-release", config,
                                           Access(), resumed, &replay)) &&
               resumed.HasToolSearch() == replace);
+    Q4T_CHECK(resumed.Envelope().cache.ttl_seconds == run.Envelope().cache.ttl_seconds);
+    Q4T_CHECK(resumed.Envelope().request.Has("prompt_cache_options") == replace);
     const auto* active = resumed.Generation().generation_request.GetArray("tools");
     if (replace) {
       Q4T_CHECK(active && active->array.size() == 2);
@@ -1914,6 +2038,15 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
     Q4T_CHECK(Ok(PrepareAgentSessionEvents(store, id, follow, "follow-release", config,
                                           Access(), next, &replay)) &&
               !next.HasToolSearch());
+    Q4T_CHECK(next.Envelope().cache.ttl_seconds == (replace ? 1800 : 43200));
+    Q4T_CHECK(next.Envelope().request.Has("prompt_cache_options") != replace);
+    const auto& configured = replace ? resumed.Envelope().cache : next.Envelope().cache;
+    const std::array points{
+        PromptCacheBoundary{1024, 0, PromptCacheBoundary::Kind::kEligibleMessage}};
+    PromptCachePlan cache;
+    Q4T_CHECK(configured.requested && PlanPromptCache(configured, points, 1200, &cache));
+    Q4T_CHECK(cache.writes.size() == 1 && cache.writes[0].ttl_seconds == 43200);
+
     const auto* remaining = next.Generation().generation_request.GetArray("tools");
     Q4T_CHECK(!remaining || remaining->array.empty());
   }

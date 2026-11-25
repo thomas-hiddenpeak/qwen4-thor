@@ -224,7 +224,7 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
                    ResponsesJobs* jobs, std::string_view method,
                    std::string_view target, const std::string& body,
                    const ChatPlanConfig& config, const StateAccess& access,
-                   bool* stream, bool* sent) {
+                   bool* stream, bool* include_obfuscation, bool* sent) {
   const auto route = ParseAgentSessionRoute(target);
   if (route.kind == Kind::kNone)
     return Error(404, "route_not_found", "Session route not found");
@@ -267,8 +267,7 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
     *stream = true;
     ObjectReply result;
     result.value = Object({{"id", String(std::string(route.session))}});
-    Set(&result.value, "include_obfuscation",
-        Boolean(query.value.GetBool("include_obfuscation", true)));
+    *include_obfuscation = query.value.GetBool("include_obfuscation", true);
     return result;
   }
   if (split != target.npos &&
@@ -302,6 +301,8 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
                                       request, http->AgentEventKey(), access);
     }
     *stream = route.kind == Kind::kCollection && request.GetBool("stream");
+    if (const auto* options = request.Find("stream_options"); *stream && options)
+      *include_obfuscation = options->GetBool("include_obfuscation", true);
     auto run = std::make_unique<ResponsesExecution>(objects, jobs, true);
     const bool event = route.kind == Kind::kEvents;
     bool replay = false;
@@ -402,13 +403,14 @@ void ServeAgentSession(int fd, ObjectStore& objects, ClientAdmission& clients,
                        const ChatPlanConfig& config,
                        const StateAccess& access) {
   bool stream = false;
+  bool include_obfuscation = true;
   bool sent = false;
   auto reply = Handle(fd, objects, clients, jobs, method, target, body, config,
-                      access, &stream, &sent);
+                      access, &stream, &include_obfuscation, &sent);
   if (sent) return;
   if (reply.ok() && stream) {
     Stream(fd, objects, reply.value.GetString("id"), method == "GET",
-           reply.value.GetBool("include_obfuscation", true), access);
+           include_obfuscation, access);
     return;
   }
   const auto kind = ParseAgentSessionRoute(target).kind;

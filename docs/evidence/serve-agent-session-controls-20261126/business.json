@@ -1,0 +1,144 @@
+{
+  "stage": "native_https_candidate",
+  "default_revision": 518,
+  "source_files": {
+    "tools/serve_responses/agent_session_controls_sdk.mjs": "6436ed733838f9b4ae3e59983365888745142d2dc0f793a2706e70dc227fc9fd",
+    "src/server/contracts/openai_agent_session_types_v1.json": "7ee8509a20198c94af1703b6889ade3ef9c5c40af754216791d363eecd53aeff",
+    "docs/serve-openapi-bundle-v1.json": "7136c4893e1775f510471b3e30a388f91c73e5ac4376eb820fdd62625263e977"
+  },
+  "upstream_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "predecessor_cpu": {
+    "failed": [
+      "unsupported stream_options",
+      "unsupported prompt_cache_options on update"
+    ],
+    "passed": 1
+  },
+  "candidate_cpu": {
+    "passed": 3,
+    "tests": [
+      "agent_session_prepares_native_input_and_validates_public_snapshot",
+      "agent_session_deferred_function_discovery_survives_turn_reconfiguration",
+      "agent_session_settings_use_cas_filtered_pages_and_immutable_step_settings"
+    ],
+    "real_write_plan_ttl_seconds": 43200,
+    "tool_continuation_preserves_start_settings": true
+  },
+  "schema": {
+    "create_update_stream_and_cache": true,
+    "publishers_reproduced": true
+  },
+  "https": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 38.018,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "protected": {
+    "build/q4t": "756f7950b494436f1a1e6796724af96e289ab9c847f6a569df5b9817dfeb57e3",
+    "build/service/manifest.json": "223c023b4278f35acfecf55b3ce8db47a5b52aaccf09572f8ccada9965873f15",
+    "build/service.release.json": "a6eafef670b07af4fb7b82ccdd1d617c25be7b694334d6cf22e82f44a2037940",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "first_attempt": {
+    "status": "FAIL",
+    "cause": "Expired private TLS fixture, no SDK request sent",
+    "starts": 1,
+    "seconds": 35.782,
+    "production_unchanged": true
+  },
+  "compute_lease": {
+    "status": "COMPLETED",
+    "backend": "nvml"
+  },
+  "sdk": {
+    "independent_chat": "42",
+    "plain_create_deltas": 2,
+    "masked_create_deltas": 2,
+    "fresh_subscription_default_padding": true,
+    "cached_initial_ttl": "12h",
+    "updated_ttl": "30m",
+    "cleared": true,
+    "rejected_invalid": true,
+    "cross_client_status": 404,
+    "driver_sha256": "6436ed733838f9b4ae3e59983365888745142d2dc0f793a2706e70dc227fc9fd"
+  },
+  "stored_policies": {
+    "turns": 3,
+    "request_and_effective_ttl": [
+      [
+        {
+          "ttl": "12h"
+        },
+        "12h"
+      ],
+      [
+        {
+          "ttl": "30m"
+        },
+        "30m"
+      ],
+      [
+        null,
+        "30m"
+      ]
+    ],
+    "scoped_responses": true,
+    "different_turn_ids": true
+  },
+  "field_inventory": {
+    "comparable_json_methods": 77,
+    "previous_literal_differences": 7,
+    "candidate_literal_differences": 5,
+    "remaining": [
+      {
+        "path": "/containers/{container_id}/files",
+        "method": "post",
+        "missing": [
+          "file"
+        ],
+        "issued_named": 1
+      },
+      {
+        "path": "/responses",
+        "method": "post",
+        "missing": [
+          "image"
+        ],
+        "issued_named": 38
+      },
+      {
+        "path": "/responses/compact",
+        "method": "post",
+        "missing": [
+          "image"
+        ],
+        "issued_named": 8
+      },
+      {
+        "path": "/responses/compact?beta=true",
+        "method": "post",
+        "missing": [
+          "image"
+        ],
+        "issued_named": 8
+      },
+      {
+        "path": "/responses?beta=true",
+        "method": "post",
+        "missing": [
+          "image"
+        ],
+        "issued_named": 38
+      }
+    ]
+  },
+  "identity": {
+    "binary": "b26f44fac01d5dcf6c432f2e670ab99648d1ee80c2ce0ad3b67895490843bc31",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "device_plan_sha256": "357929f1c86f6e13dd64d6d472d7fd6ec680aeecde103194e08dc7c0bcede66f"
+}

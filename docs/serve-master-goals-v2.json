@@ -3483,6 +3483,30 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "agent_session_controls_20261126": {
+        "stage": "issued",
+        "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
+        "issued": true,
+        "profiles": "evidence/serve-agent-session-controls-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "agent_turn_output_recovery_20261126": {
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json",
+        "profiles": "evidence/serve-agent-turn-output-recovery-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "agent_structured_format_20261126": {
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-agent-structured-format-20261126/business.json",
+        "profiles": "evidence/serve-agent-structured-format-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       }
     },
     {
@@ -8363,6 +8387,30 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "agent_session_controls_20261126": {
+        "stage": "issued",
+        "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
+        "issued": true,
+        "profiles": "evidence/serve-agent-session-controls-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "agent_turn_output_recovery_20261126": {
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json",
+        "profiles": "evidence/serve-agent-turn-output-recovery-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "agent_structured_format_20261126": {
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-agent-structured-format-20261126/business.json",
+        "profiles": "evidence/serve-agent-structured-format-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       }
     },
     {
@@ -9014,6 +9062,14 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "agent_turn_output_recovery_20261126": {
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-agent-turn-output-recovery-20261126/business.json",
+        "profiles": "evidence/serve-agent-turn-output-recovery-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       }
     },
     {
@@ -9584,8 +9640,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 518,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev518-preflight.json",
+        "revision": 520,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev520-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11247,12 +11303,20 @@
         "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
+      },
+      "agent_structured_format_20261126": {
+        "stage": "issued",
+        "issued": true,
+        "receipt": "evidence/serve-agent-structured-format-20261126/business.json",
+        "profiles": "evidence/serve-agent-structured-format-20261126/profiles.json",
+        "revision": 520,
+        "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev518_delivered_remaining_deliveries",
+      "state": "rev520_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12583,7 +12647,8 @@
         "revision": 516,
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       },
-      "current_widget_delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json"
+      "current_widget_delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json",
+      "current_agent_session_delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -12688,16 +12753,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "30e9173acdb51baf64c6b7f3fc623707f71ee873",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-delivery-soak-src",
+        "source_commit": "059cb52447bf3e5051df897865783358a441becf",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/agent-format-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-client-primary-01/bundle",
-          "manifest_sha256": "223c023b4278f35acfecf55b3ce8db47a5b52aaccf09572f8ccada9965873f15"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/agent-format-client-primary-01/bundle",
+          "manifest_sha256": "e7638c7cff1281def8072e43fddededf46e38e1b73bdab0a6cbbb93f9f996123"
         },
-        "revision": 518,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-widget-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "b6b25235eb348ae2774aa91c7d8802b196b40f7ae952a2ed99dcb1469236a154",
-        "handoff_sha256": "cd2318d5d5722c38a0bdbfd1f44b5c86ed256034d7dd283b69cb864fef5e4cca",
+        "revision": 520,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/agent-format-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "e9cda51b09f53a80df63a2745ca11cba8b63437c1c1d4b733fcbd64477b47a93",
+        "handoff_sha256": "bcd702d30994b6c1ee6d78cb5a23f57f4b283596f6030bf9dcab467128f4da9b",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13108,9 +13173,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 518,
-        "receipt": "evidence/serve-chatkit-widget-stream-20261126/delivery.json",
-        "plan_sha256": "b6b25235eb348ae2774aa91c7d8802b196b40f7ae952a2ed99dcb1469236a154",
+        "revision": 520,
+        "receipt": "evidence/serve-agent-structured-format-20261126/delivery.json",
+        "plan_sha256": "e9cda51b09f53a80df63a2745ca11cba8b63437c1c1d4b733fcbd64477b47a93",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

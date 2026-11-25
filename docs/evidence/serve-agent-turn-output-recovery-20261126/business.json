@@ -1,0 +1,100 @@
+{
+  "stage": "native_https_candidate",
+  "issued": false,
+  "default_revision": 518,
+  "identity": {
+    "binary": "c3b7c1649c1e2443d227c8db17297674602ebbd0314a987d2a67b09ac376c477",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "previous_candidate": {
+    "binary": "b26f44fac01d5dcf6c432f2e670ab99648d1ee80c2ce0ad3b67895490843bc31",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "proof_sha256": "afde9806bc63bbd31ae32f2b49a4dcab7bb0aa84a6022bfd6c9e03daec9895fe",
+  "original_failure": {
+    "result": {
+      "status": "FAIL",
+      "seconds": 105.29486725339666,
+      "model_starts": 1,
+      "stop_returncode": 0,
+      "supervisor_exit": 0,
+      "remaining": [],
+      "adopted_reaped": 0,
+      "ports_free": true,
+      "unchanged_default": true,
+      "receipt_sha256": "bb7f8694bc00ec0c58fad99f626c143ab54e16b4bbe371d8355a26a3c89b353d"
+    },
+    "response_code": "response_parse_failed",
+    "terminal_message": "incomplete refusal frame",
+    "stored_files": {
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_3918b1a8ed426181d5204f58e7cf12da.json": "e579fa44503156a548f7b58bc33425a1a98da326c7904212c91a07f1e04e3d71",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.agent_session.agent_session_5edc2bcfd0a679bb06ab4bf20f53e31f.json": "b314ec40354e75708890b7ef9742f4e70ed1bd9667a87f56250c908be3a28726"
+    },
+    "lease": "COMMAND_FAILED"
+  },
+  "first_correction": {
+    "result": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 37.178,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "answer": "The revision number is 518.",
+    "expected": "42",
+    "reason": "two adjacent user inputs, no turn boundary in the model history",
+    "stored_status": "completed",
+    "stored_content_type": "refusal"
+  },
+  "accepted": {
+    "https": {
+      "status": "PASS",
+      "starts": 1,
+      "seconds": 36.694,
+      "unchanged_default": true,
+      "phases": [
+        "create"
+      ]
+    },
+    "sdk": {
+      "session": "agent_session_5edc2bcfd0a679bb06ab4bf20f53e31f",
+      "old_turn": "turn_2534a9920e21601d2eb0cd7a3d33460b",
+      "next_turn": "turn_a2901ef5c800b41ff4b5eb4ac0290078",
+      "original_error": "response_parse_failed",
+      "failed_response": "resp_3918b1a8ed426181d5204f58e7cf12da",
+      "turn_error": "server_error",
+      "original_retained": true,
+      "initial_state": "idle",
+      "final_state": "idle",
+      "deltas": 2,
+      "answer": "42",
+      "peer": 404,
+      "independent_chat": "42",
+      "driver_sha256": "678da247d4602492ba55ddd94058269f0d3dfeb30d62b7aad16658acf966d975"
+    },
+    "storage": {
+      "original_files": {
+        "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_3918b1a8ed426181d5204f58e7cf12da.json": "e579fa44503156a548f7b58bc33425a1a98da326c7904212c91a07f1e04e3d71",
+        "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.agent_session.agent_session_5edc2bcfd0a679bb06ab4bf20f53e31f.json": "b314ec40354e75708890b7ef9742f4e70ed1bd9667a87f56250c908be3a28726"
+      },
+      "failed_record_identical": true,
+      "source_unchanged": true,
+      "next_turn": "turn_a2901ef5c800b41ff4b5eb4ac0290078",
+      "next_response_sha256": "732206d930691864877ef4d1edad2a604fbbf1b01735cd5ddc55f73c8c2f5028",
+      "retained_user_inputs": true,
+      "excluded_failed_output": true,
+      "request_and_effective_ttl": "12h"
+    },
+    "lease_sha256": "b4315a09a3db01c0ea599ccd62dca23a887eb8b2011753c62e14af396038c0eb"
+  },
+  "cpu": {
+    "failed_on_predecessor": 2,
+    "passed": 3,
+    "unclassified_and_dependency_errors_still_terminal": true
+  },
+  "sources": {
+    "tools/serve_responses/agent_failed_turn_sdk.mjs": "678da247d4602492ba55ddd94058269f0d3dfeb30d62b7aad16658acf966d975",
+    "src/server/agent_session_turn.cpp": "cb9d2a0e1d7720675b8771f7d6445132e0c524e1168fab033b72100f36fb486a",
+    "src/server/responses_state.cpp": "53e83ca4a1636a264cc019c72624c278a37a455544463f92d8599b424041883c"
+  }
+}

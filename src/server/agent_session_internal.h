@@ -3,6 +3,9 @@
 #include "q4t/server/agent_session.h"
 
 namespace q4t::server::agent_detail {
+// A failed output transaction leaves the model and the owning session usable.
+bool RejectedTurnOutput(const io::Json& response);
+void ApplyPromptCacheOptions(io::Json* session, const io::Json& request);
 ObjectReply SealAgentHttp(ObjectStore& objects, const StateAccess& access,
                           std::string_view session_id, const io::Json& settings,
                           std::string* sealed);

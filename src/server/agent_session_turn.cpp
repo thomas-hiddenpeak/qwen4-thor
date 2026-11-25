@@ -100,16 +100,35 @@ ObjectReply NativeRequest(const Json& session, Json input, bool tool_search) {
                          {"store", Boolean(true)},
                          {"input", std::move(input)},
                          {"tools", std::move(tools)}});
+  if (const auto* options = session.Find("prompt_cache_options"))
+    Set(&result.value, "prompt_cache_options", *options);
   if (agent.Find("multi_agent")->GetBool("enabled"))
     Set(&result.value, "multi_agent", *agent.Find("multi_agent"));
   for (const auto* key :
        {"model", "instructions", "text", "reasoning", "service_tier"})
     if (Nonnull(agent, key)) Set(&result.value, key, *agent.Find(key));
+  // Agents supply only the schema. Responses also names the format and
+  // distinguishes strict generation. Keep those adapter fields private.
+  if (const auto* text = result.value.Find("text");
+      text && text->Find("format") &&
+      text->Find("format")->GetString("type") == "json_schema") {
+    auto& format = Field(Field(result.value, "text"), "format");
+    Set(&format, "name", String("agent_output"));
+    Set(&format, "strict", Boolean(true));
+  }
   return result;
 }
 
 }  // namespace
 namespace agent_detail {
+bool RejectedTurnOutput(const Json& response) {
+  const auto* error = response.Find("error");
+  if (!error || response.GetString("status") != "failed") return false;
+  const auto code = error->GetString("code");
+  return code == "response_parse_failed" || code == "structured_output_invalid" ||
+         code == "structured_output_incomplete";
+}
+
 // A session may replace functions between model calls. Rebind only the
 // model's view of previously loaded functions. The stored Responses records
 // and the output contract of a pending function call keep their originals.
@@ -414,7 +433,8 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
   // return to idle before it will submit the next turn on the same history.
   const auto category = error.GetString("code");
   const bool session_failed =
-      failed && category != "rate_limit_exceeded" &&
+      failed && !RejectedTurnOutput(response) &&
+      category != "rate_limit_exceeded" &&
       category != "server_overloaded" && category != "request_timeout" &&
       category != "invalid_request";
   const auto usage = Usage(response);
@@ -570,7 +590,8 @@ ObjectReply ProjectHistory(ObjectStore& objects, const Json& data,
     return Error(404, "object_not_found", "Turn not found");
   auto latest = SessionSettings(data);
   if (!latest.ok()) return latest;
-  for (auto key : {"agent", "metadata", "review", "spend_control", "environment"}) {
+  for (auto key : {"agent", "metadata", "review", "spend_control", "environment",
+                   "prompt_cache_options"}) {
     if (const auto* value = latest.value.Find(key))
       Set(&result.session, key, *value);
     else
@@ -830,6 +851,12 @@ ObjectReply PrepareAgentSessionEvents(ObjectStore& objects,
     auto original = SessionSettings(data, &links.array.back());
     if (!original.ok()) return original;
     Set(&execution_settings, "review", Copy(original.value, "review"));
+    // A tool result resumes the same logical turn under its original TTL.
+    std::erase_if(execution_settings.object, [](const auto& field) {
+      return field.first == "prompt_cache_options";
+    });
+    if (const auto* options = original.value.Find("prompt_cache_options"))
+      Set(&execution_settings, "prompt_cache_options", *options);
     auto& current_agent = Field(execution_settings, "agent");
     const auto& original_agent = *original.value.Find("agent");
     Set(&current_agent, "model", Copy(original_agent, "model"));

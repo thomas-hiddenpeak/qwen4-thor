@@ -73,6 +73,7 @@ ObjectReply PrepareDirectAgentSession(ObjectStore& objects, const Json& request,
     if (!checked.ok()) return checked;
     Set(&session, "vault_ids", *vaults);
   }
+  agent_detail::ApplyPromptCacheOptions(&session, request);
   if (const auto* spending = request.Find("spend_control");
       spending && Nonnull(*spending, "limit")) {
     const auto* limit = spending->Find("limit");

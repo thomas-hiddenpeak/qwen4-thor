@@ -23,6 +23,24 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+SESSION_CONTROL_RECORD = 'q4t-profile-business-v65'
+SESSION_CONTROL_FORMAT = 'q4t-agent-session-control-source-v1'
+SESSION_CONTROL_RECEIPT = 'agent-session-control-handoff.json'
+SESSION_CONTROL_PILOT_REVIEWED = {
+    'primary': 'c19e8f803424de7b8f595afc4d8c67a172b79708ef9ec9b0a3efd900512c5fe8',
+    'light': '786810a13ebf613cbca5027f05a3e6c1265f8ee238a35734b203aa364d45fbc2',
+}
+
+SESSION_CONTROL_RECOVERY_REVIEWED = {
+    'primary': 'c08b3f86473596fbc84bb1a12faa802bdc27f7476e0cee11a6e0cc4cffee7e07',
+    'light': 'eb90580a6d0b0a7068ac53b94c2ae0efb0dfa51949ef95796a8106f9112ee998',
+}
+
+SESSION_CONTROL_REVIEWED = {
+    'primary': '68f7313537f01bae223b8735e4d7514753a743acd4b259b94ccc12e350549ce4',
+    'light': '5f92707475a6a04a32ccc13d3b9eeb64cf8eef141c545fa375749fd03c54adc2',
+}
+
 CHATKIT_WIDGET_RECORD = 'q4t-profile-business-v64'
 CHATKIT_WIDGET_FORMAT = 'q4t-chatkit-widget-source-v1'
 CHATKIT_WIDGET_RECEIPT = 'chatkit-widget-handoff.json'
@@ -398,7 +416,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 CHATKIT_GENERATION_RECORD: CHATKIT_GENERATION_FORMAT,
                 CHATKIT_WORKFLOW_RECORD: CHATKIT_WORKFLOW_FORMAT,
                 CHATKIT_IMAGE_RECORD: CHATKIT_IMAGE_FORMAT,
-                CHATKIT_WIDGET_RECORD: CHATKIT_WIDGET_FORMAT}
+                CHATKIT_WIDGET_RECORD: CHATKIT_WIDGET_FORMAT,
+                SESSION_CONTROL_RECORD: SESSION_CONTROL_FORMAT}
 # The registration migration packed the original duplex transcript. All
 # successors inherit it while the first three Live formats retained raw text.
 PACKED_DUPLEX_RECORDS = REUSE_FORMAT.keys() - {
@@ -411,7 +430,7 @@ SEPARATE_HISTORY_RECORDS = (
     UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD,
     TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD,
     CHATKIT_ACTIONS_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_WORKFLOW_RECORD,
-    CHATKIT_IMAGE_RECORD, CHATKIT_WIDGET_RECORD,
+    CHATKIT_IMAGE_RECORD, CHATKIT_WIDGET_RECORD, SESSION_CONTROL_RECORD,
 )
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
@@ -434,6 +453,12 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '5b0f2cce0ac0fdeeac3d897b029f0c3aa6d7b907adec6407054e32c4628345f9':
+        '666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8',
+    'ba548f84528f29b1b7e755ae1895f79926de8fca3352766702ef4084d44241f9':
+        '666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8',
+    'f564dd1996222e4e60c473c1c253d72fb91696a3f566a43e8d3b6b8a25abba4b':
+        '666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8',
     '1d6734458a00a8a250270f5dffb914be0ab8de44555f7adab33880ec7b9f1123':
         '666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8',
     'bb44d2fe8f26cdf0f8cf3c389e7d13b890b915b25a27e847c306e197d2c0c544':
@@ -576,6 +601,11 @@ def format_for(capabilities, evidence=None):
                        and CHARACTER_RECEIPT in (evidence or {})
                        and format_for(prior, evidence) == COMPOSER_RECORD,
                        'character qualification requires a verified reference and the issued dictation handoff')
+        if SESSION_CONTROL_RECEIPT in evidence:
+            previous = {k: v for k, v in evidence.items() if k != SESSION_CONTROL_RECEIPT}
+            ledger.require(format_for(capabilities, previous) == CHATKIT_WIDGET_RECORD,
+                           'missing issued widget qualification for session controls')
+            return SESSION_CONTROL_RECORD
         if CHATKIT_WIDGET_RECEIPT in evidence:
             previous = {k: v for k, v in evidence.items() if k != CHATKIT_WIDGET_RECEIPT}
             ledger.require(format_for(capabilities, previous) == CHATKIT_IMAGE_RECORD,
@@ -840,8 +870,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            SESSION_CONTROL_RECORD: (CHATKIT_WIDGET_RECORD, CHATKIT_WIDGET_REVIEWED, None, SESSION_CONTROL_RECEIPT),
             CHATKIT_WIDGET_RECORD: (CHATKIT_IMAGE_RECORD, CHATKIT_IMAGE_REVIEWED, None, CHATKIT_WIDGET_RECEIPT),
             CHATKIT_IMAGE_RECORD: (CHATKIT_WORKFLOW_RECORD, CHATKIT_WORKFLOW_REVIEWED, None, CHATKIT_IMAGE_RECEIPT),
             CHATKIT_WORKFLOW_RECORD: (CHATKIT_GENERATION_RECORD, CHATKIT_GENERATION_REVIEWED, None, CHATKIT_WORKFLOW_RECEIPT),
@@ -1101,6 +1132,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            SESSION_CONTROL_RECORD: (CHATKIT_WIDGET_FORMAT, ('format', 'previous', 'history')),
             CHATKIT_WIDGET_RECORD: (CHATKIT_IMAGE_FORMAT, ('format', 'previous', 'history')),
             CHATKIT_IMAGE_RECORD: (CHATKIT_WORKFLOW_FORMAT, ('format', 'previous', 'history')),
             CHATKIT_WORKFLOW_RECORD: (CHATKIT_GENERATION_FORMAT, ('format', 'previous', 'history')),
@@ -1152,8 +1184,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            SESSION_CONTROL_RECORD: (SESSION_CONTROL_REVIEWED, CHATKIT_WIDGET_REVIEWED),
             CHATKIT_WIDGET_RECORD: (CHATKIT_WIDGET_REVIEWED, CHATKIT_IMAGE_REVIEWED),
             CHATKIT_IMAGE_RECORD: (CHATKIT_IMAGE_REVIEWED, CHATKIT_WORKFLOW_REVIEWED),
             CHATKIT_WORKFLOW_RECORD: (CHATKIT_WORKFLOW_REVIEWED, CHATKIT_GENERATION_REVIEWED),
@@ -1180,8 +1213,12 @@ def validate(value):
             WEBHOOK_RECORD: (WEBHOOK_REVIEWED, AUTOMATION_REVIEWED),
             AUTOMATION_RECORD: (AUTOMATION_REVIEWED, TRANSLATOR_REVIEWED),
         }[value['format']]
-        ledger.require(record_hash(value) == current.get(value['profile']),
-                       'profile differs from the qualified delivery handoff')
+        digest = record_hash(value)
+        allowed = {current.get(value['profile'])}
+        if value['format'] == SESSION_CONTROL_RECORD:
+            allowed.update(pins.get(value['profile']) for pins in
+                           (SESSION_CONTROL_PILOT_REVIEWED, SESSION_CONTROL_RECOVERY_REVIEWED))
+        ledger.require(digest in allowed, 'profile differs from the qualified delivery handoff')
         prior = previous_record(value)
         ledger.require(record_hash(prior) == previous.get(value['profile']),
                        'delivery handoff lost its issued predecessor')

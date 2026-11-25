@@ -425,6 +425,9 @@ def schema(graph):
     sessions = json.loads((ROOT/'src/server/contracts/openai_agent_session_types_v1.json').read_text())
     assert sessions['profile'] == 'q4t-openai-agent-session-types-v1'
     definitions.update(graph_definitions(sessions, 'agent_session_'))
+    create = definitions['agent_session_' + str(sessions['roots']['create'])]
+    create['dependentSchemas'] = {
+        'stream_options': dict(required=['stream'], properties={'stream': dict(const=True)})}
     definitions['agent_session_event_query'] = obj(dict(
         include_obfuscation=dict(type='boolean', default=True)))
     for query in ('query', 'artifact_query', 'subagent_query'):

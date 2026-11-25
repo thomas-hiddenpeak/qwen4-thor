@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v65' and
+              value['reused_business'].get('format') == 'q4t-agent-session-control-source-v1') or
              (value.get('format') == 'q4t-profile-business-v64' and
               value['reused_business'].get('format') == 'q4t-chatkit-widget-source-v1') or
              (value.get('format') == 'q4t-profile-business-v63' and
@@ -181,6 +183,7 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
         'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
         'ACCEPT_AUTOMATION_PRIMARY_LIGHT': 'q4t-agent-automation-source-v1',
+        'ACCEPT_AGENT_SESSION_CONTROL_PRIMARY_LIGHT': 'q4t-agent-session-control-source-v1',
         'ACCEPT_CHATKIT_WIDGET_PRIMARY_LIGHT': 'q4t-chatkit-widget-source-v1',
         'ACCEPT_CHATKIT_IMAGE_PRIMARY_LIGHT': 'q4t-chatkit-image-source-v1',
         'ACCEPT_CHATKIT_WORKFLOW_PRIMARY_LIGHT': 'q4t-chatkit-workflow-source-v1',

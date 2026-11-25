@@ -367,7 +367,13 @@ Status ValidateAgentSession(const Json& value, AgentSessionShape shape,
     case AgentSessionShape::kTurn: root = "turn"; break;
     case AgentSessionShape::kSubagent: root = "subagent"; break;
   }
-  return Validate(graph, value, root, error, "");
+  auto valid = Validate(graph, value, root, error, "");
+  if (valid && shape == AgentSessionShape::kCreate &&
+      value.Has("stream_options") && !value.GetBool("stream")) {
+    *error = {"invalid_request", "stream_options", 400};
+    return Status::Fail("Session stream options require stream=true");
+  }
+  return valid;
 }
 
 Status ValidateSkill(const Json& value, SkillShape shape, ChatPlanError* error) {
