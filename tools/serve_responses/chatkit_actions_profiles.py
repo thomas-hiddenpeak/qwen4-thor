@@ -26,6 +26,48 @@ BROWSER_ACTOR = Path(__file__).with_name('chatkit_browser_profile_sdk.mjs').reso
 BROWSER_KEY = 'chatkit_browser_output_handoff'
 
 
+GENERATION_RELEASE = ROOT / 'docs/evidence/serve-chatkit-browser-output-20261125/delivery.json'
+GENERATION_PROOF = ROOT / 'docs/evidence/serve-chatkit-generation-stream-20261125/combined.json'
+GENERATION_ACTOR = Path(__file__).with_name('chatkit_generation_profile_sdk.mjs').resolve()
+GENERATION_KEY = 'chatkit_generation_handoff'
+
+
+def prepare_generation(out, build, deployment):
+    proof = package.read(GENERATION_PROOF)
+    binary = package.sha(build / 'q4t')
+    package.require(proof['binary'] == binary and proof['cancelled'] and
+                    proof['web_modes'] == ['live', 'cached'] and proof['web_requests'] == 1 and
+                    proof['source_citations'] == 2 and proof['terminal_errors'] == 1,
+                    'candidate lacks real interrupted generation and citation evidence')
+    lifecycle.prepare_candidate(out, build, deployment, GENERATION_RELEASE, reuse.CHATKIT_BROWSER_REVIEWED,
+                                GENERATION_KEY, [GENERATION_PROOF, GENERATION_RELEASE, GENERATION_ACTOR,
+                                                 Path(__file__), Path(lifecycle.__file__)])
+
+
+def check_generation_result(row, previous=None):
+    expected = str(package.read(GENERATION_RELEASE)['publication']['publication_revision'])
+    source = row['source']
+    ids = {'workflow': 'agent_', 'thread': 'cthr_', 'file': 'file_', 'item': 'msg_', 'user': 'item_'}
+    package.require(row['sdk'] == '7.47.0' and row['chat'] == '42' and row['revision'] == expected
+                    and all(source[key].startswith(prefix) for key, prefix in ids.items())
+                    and source['received'].strip() and source['partial'].startswith(source['received'])
+                    and len(source['document_sha256']) == 64, 'invalid original partial or source document')
+    if previous is None:
+        package.require(row['phase'] == 'primary' and 'recovered' not in row,
+                        'primary must leave the interrupted document review in its thread')
+        return
+    check_generation_result(previous)
+    result = row['recovered']
+    recovered_ids = result['ids']
+    package.require(row['phase'] == 'light' and source == previous['source'] and
+                    len(recovered_ids) == len(set(recovered_ids)) == 4 and
+                    recovered_ids[:2] == [source['user'], source['item']] and
+                    recovered_ids[2].startswith('item_') and recovered_ids[3].startswith('msg_') and
+                    result['answer'] == expected and result['file_sha256'] == source['document_sha256'] and
+                    result['peer'] == result['sibling'] == 404,
+                    'document, partial message, client isolation or continued answer changed')
+
+
 def prepare_browser(out, build, deployment):
     proof = package.read(BROWSER_PROOF)
     final = proof['runs']['02']
@@ -115,6 +157,9 @@ class Handoff:
 
 
 def handoff(plan):
+    if GENERATION_KEY in plan:
+        return Handoff(GENERATION_KEY, GENERATION_RELEASE, GENERATION_ACTOR, reuse.CHATKIT_GENERATION_RECEIPT,
+                       reuse.CHATKIT_BROWSER_RECEIPT, reuse.CHATKIT_BROWSER_REVIEWED, check_generation_result)
     if BROWSER_KEY in plan:
         return Handoff(BROWSER_KEY, BROWSER_RELEASE, BROWSER_ACTOR, reuse.CHATKIT_BROWSER_RECEIPT,
                        reuse.CHATKIT_ACTIONS_RECEIPT, reuse.CHATKIT_ACTIONS_REVIEWED, check_browser_result)

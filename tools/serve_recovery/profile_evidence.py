@@ -1673,20 +1673,8 @@ def validate(value, registry, name, digest):
     ledger.require(actual == registry['qualifications'][name],
                    'profile receipt does not match retained observations')
     observed = value['business']
-    if value['format'] in ('q4t-profile-business-v26', 'q4t-profile-business-v27',
-                           'q4t-profile-business-v28', 'q4t-profile-business-v29',
-                           'q4t-profile-business-v30', 'q4t-profile-business-v31',
-                           'q4t-profile-business-v32', 'q4t-profile-business-v33', 'q4t-profile-business-v34',
-                           'q4t-profile-business-v35', 'q4t-profile-business-v36',
-                           'q4t-profile-business-v37', 'q4t-profile-business-v38',
-                           'q4t-profile-business-v39', 'q4t-profile-business-v40',
-                           'q4t-profile-business-v41', 'q4t-profile-business-v42', 'q4t-profile-business-v43', 'q4t-profile-business-v44',
-                           'q4t-profile-business-v45', 'q4t-profile-business-v46', 'q4t-profile-business-v47',
-                           'q4t-profile-business-v48', 'q4t-profile-business-v49', 'q4t-profile-business-v50',
-                           'q4t-profile-business-v51', 'q4t-profile-business-v52', 'q4t-profile-business-v53', 'q4t-profile-business-v54', 'q4t-profile-business-v55',
-                           'q4t-profile-business-v56',
-                           'q4t-profile-business-v57',
-                           'q4t-profile-business-v58', 'q4t-profile-business-v59', 'q4t-profile-business-v60'):
+    from tools.serve_recovery import profile_live_reuse
+    if value['format'] in profile_live_reuse.PACKED_DUPLEX_RECORDS:
         from tools.serve_recovery import profile_duplex_reuse
         observed = dict(observed, realtime_duplex=profile_duplex_reuse.unpack_text(
             observed['realtime_duplex']))

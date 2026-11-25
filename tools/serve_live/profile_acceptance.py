@@ -244,7 +244,8 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
-        if 'chatkit_actions_handoff' in self.plan or 'chatkit_browser_output_handoff' in self.plan:
+        if {'chatkit_actions_handoff', 'chatkit_browser_output_handoff',
+            'chatkit_generation_handoff'}.intersection(self.plan):
             from tools.serve_responses import chatkit_actions_profiles
             chatkit_actions_profiles.business(self, capabilities)
         if 'chatkit_retry_handoff' in self.plan:
