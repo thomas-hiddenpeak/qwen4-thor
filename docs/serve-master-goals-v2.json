@@ -3207,10 +3207,11 @@
         "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "stored_message_projection_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-stored-message-projection-20261125/cpu.json",
         "business": "evidence/serve-stored-message-projection-20261125/business.json",
-        "profiles": "evidence/serve-stored-message-projection-20261125/profiles.json"
+        "profiles": "evidence/serve-stored-message-projection-20261125/profiles.json",
+        "delivery": "evidence/serve-stored-message-projection-20261125/delivery.json"
       }
     },
     {
@@ -7922,10 +7923,11 @@
         "delivery": "evidence/serve-video-track-selection-20261125/delivery.json"
       },
       "stored_message_projection_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-stored-message-projection-20261125/cpu.json",
         "business": "evidence/serve-stored-message-projection-20261125/business.json",
-        "profiles": "evidence/serve-stored-message-projection-20261125/profiles.json"
+        "profiles": "evidence/serve-stored-message-projection-20261125/profiles.json",
+        "delivery": "evidence/serve-stored-message-projection-20261125/delivery.json"
       },
       "archived_resource_client_20261125": {
         "stage": "sdk_cpu_replay",
@@ -9124,7 +9126,7 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Refresh old cold candidate source/package/driver and actual controlled NVML-unavailable qualification",
+        "Actual controlled NVML-unavailable cold startup against the verified current release",
         "Cold/resource/outer combined business and reversible release"
       ],
       "cold_refresh_20261116": {
@@ -9147,7 +9149,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required.",
+      "current_execution_prerequisite": "Use the verified plan for the currently issued package. Coordinate the active host camera and monitoring services before inducing a genuine cold NVML failure.",
       "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
       "rev484_cold_preflight_20261125": {
         "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
@@ -9155,8 +9157,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 502,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev502-preflight.json",
+        "revision": 504,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev504-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9538,6 +9540,10 @@
       "typed_history_delivery_20261125": {
         "revision": 502,
         "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
+      },
+      "stored_message_delivery_20261125": {
+        "revision": 504,
+        "receipt": "evidence/serve-stored-message-projection-20261125/delivery.json"
       }
     },
     {
@@ -10722,7 +10728,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev502_delivered_remaining_deliveries",
+      "state": "rev504_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12006,6 +12012,10 @@
       "typed_history_delivery_20261125": {
         "revision": 502,
         "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
+      },
+      "stored_message_delivery_20261125": {
+        "revision": 504,
+        "receipt": "evidence/serve-stored-message-projection-20261125/delivery.json"
       }
     },
     {
@@ -12505,6 +12515,10 @@
       "typed_history_delivery_20261125": {
         "revision": 502,
         "receipt": "evidence/serve-history-argument-types-20261125/delivery.json"
+      },
+      "stored_message_delivery_20261125": {
+        "revision": 504,
+        "receipt": "evidence/serve-stored-message-projection-20261125/delivery.json"
       }
     }
   ],
@@ -18626,6 +18640,13 @@
       "matching_success_sets": 219,
       "missing_declaration": 12,
       "evidence": "evidence/serve-history-argument-types-20261125/delivery.json"
+    },
+    "rev504": {
+      "required": 231,
+      "declared": 219,
+      "matching_success_sets": 219,
+      "missing_declaration": 12,
+      "evidence": "evidence/serve-stored-message-projection-20261125/delivery.json"
     }
   },
   "agent_hosted_workspace_20261124": {
