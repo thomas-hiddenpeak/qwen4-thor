@@ -27,7 +27,8 @@ ObjectReply BadOutput() {
 }
 
 ObjectReply Execute(const StateAccess& access, const Json& code, Json context,
-                    int64_t now) {
+                    int64_t now,
+                    const std::function<bool(std::string_view)>& progress) {
   auto input = Object({{"code", code},
                        {"action_context", std::move(context)},
                        {"tools", Array()},
@@ -35,8 +36,8 @@ ObjectReply Execute(const StateAccess& access, const Json& code, Json context,
                        {"results", Array()},
                        {"seed", Number(0)},
                        {"epoch_ms", Number(now * 1000)}});
-  auto run = ExecuteProgramWorker(
-      input, {access.scope, access.deadline, access.cancelled});
+  auto run = ExecuteActionWorker(
+      input, {access.scope, access.deadline, access.cancelled}, progress);
   if (!run.ok()) return run;
   const auto* output = run.value.GetArray("output");
   if (run.value.GetString("status") != "completed" || !output ||
@@ -50,7 +51,8 @@ ObjectReply Execute(const StateAccess& access, const Json& code, Json context,
     return BadOutput();
   for (const auto& [key, value] : result.object)
     if (key != "state" && key != "widget" && key != "effects" &&
-        key != "progress")
+        key != "progress" && key != "notices" && key != "title" &&
+        key != "remove_sender")
       return BadOutput();
   run.value = std::move(result);
   return run;
@@ -72,6 +74,23 @@ ObjectReply PrepareEvents(const Json& result, bool streaming, Json* events) {
       if (!text.IsString()) return BadOutput();
       events->array.push_back(
           Object({{"type", String("progress_update")}, {"text", text}}));
+    }
+  }
+  if (const auto* notices = result.Find("notices")) {
+    if (!streaming || !notices->IsArray()) return BadOutput();
+    for (const auto& notice : notices->array) {
+      const auto level = notice.GetString("level");
+      const auto* message = notice.Find("message");
+      const auto* title = notice.Find("title");
+      if ((level != "info" && level != "warning" && level != "danger") ||
+          !message || !message->IsString() ||
+          (title && !title->IsString() && !title->IsNull()))
+        return BadOutput();
+      auto event = Object({{"type", String("notice")},
+                           {"level", String(level)},
+                           {"message", *message}});
+      if (title) Set(&event, "title", *title);
+      events->array.push_back(std::move(event));
     }
   }
   if (const auto* effects = result.Find("effects")) {
@@ -147,9 +166,10 @@ ObjectReply BindActionFile(ObjectStore& objects, const StateAccess& access,
   return {};
 }
 
-ObjectReply DispatchAction(ObjectStore& objects, const StateAccess& access,
-                           const Grant& grant, const Json& params,
-                           bool streaming) {
+ObjectReply DispatchAction(
+    ObjectStore& objects, const StateAccess& access, const Grant& grant,
+    const Json& params, bool streaming,
+    const std::function<bool(std::string_view)>& progress) {
   const auto id = params.GetString("thread_id");
   const auto* sender_id = params.Find("item_id");
   const auto* action = params.Find("action");
@@ -201,13 +221,20 @@ ObjectReply DispatchAction(ObjectStore& objects, const StateAccess& access,
               {"state", state ? *state : Json{}},
               {"state_variables", variables ? *variables : Object()},
               {"streaming", Boolean(streaming)}});
-  auto run = Execute(access, *code, std::move(context), now);
+  auto run = Execute(access, *code, std::move(context), now, progress);
   if (!run.ok()) return run;
   Json events = Array(), visible;
   auto prepared = PrepareEvents(run.value, streaming, &events);
   if (!prepared.ok()) return prepared;
   const auto* widget = run.value.Find("widget");
   const bool update = widget && !widget->IsNull();
+  const auto* remove = run.value.Find("remove_sender");
+  if (remove && (!remove->IsBool() ||
+                 (remove->boolean && (!streaming || !sender || update))))
+    return BadOutput();
+  const bool erase = remove && remove->boolean;
+  const auto* title = run.value.Find("title");
+  if (title && !title->IsString() && !title->IsNull()) return BadOutput();
   if (update) {
     const auto type = widget->GetString("type");
     if ((type != "Card" && type != "Basic" && type != "ListView") ||
@@ -239,9 +266,23 @@ ObjectReply DispatchAction(ObjectStore& objects, const StateAccess& access,
            {"item", visible}}));
     }
   }
+  if (erase) {
+    const auto sender_key = *sender_id;
+    std::erase_if(items, [&](const Json& item) {
+      return item.GetString("id") == sender_key.str;
+    });
+    events.array.push_back(Object(
+        {{"type", String("thread.item.removed")}, {"item_id", sender_key}}));
+  }
+  if (title) {
+    Set(&Field(data, "thread"), "title", *title);
+    if (streaming)
+      events.array.push_back(Object({{"type", String("thread.updated")},
+                                     {"thread", ClientThread(data)}}));
+  }
   const auto* next_state = run.value.Find("state");
   if (next_state) Set(&data, "action_state", *next_state);
-  if (next_state || update) {
+  if (next_state || update || erase || title) {
     ObjectRequest put;
     put.kind = ObjectKind::kChatKitThread;
     put.operation = ObjectOperation::kPut;

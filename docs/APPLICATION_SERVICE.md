@@ -150,7 +150,7 @@ const value = String(actionContext.state_variables.revision);
 text({widget: {type: "Card", children: [{type: "Text", value}]}});
 ```
 
-处理程序调用一次 `text`，返回可选的 `widget` 和下一版 `state`。流式模式还能返回 `progress` 字符串数组及 `effects` 客户端事件数组。程序结束后，服务按原线程修订原子保存状态及组件，随后发送事件。同步调用返回 `updated_item` 或空值。带发送方 ID 的调用更新原组件，无发送方时可新增组件。无效输出返回 502；并发写入冲突返回 409，可重新读取线程。程序只能访问本次上下文，沿用现有 JavaScript 工作者的内存和执行时限。当前源码可发出固定参考中 12 种流事件的 8 种。动作执行期间发出进度，以及线程更新、移除条目、通知和流选项仍待实现。发行合同只为附件预留和转录指定了各自的 JSON 响应类型，SSE 只声明字符串。离线复核中，4 个不符合上游类型的样例通过了发行合同校验。本次已验证两种调用、组件历史、组件后表单回填和失败隔离。[业务回执](evidence/serve-chatkit-actions-20261125/business.json)
+工作流调用一次 `text` 提交状态和组件。同步动作返回 `updated_item` 或空值；流式动作可在工作者内调用 `progress("读取发行记录")`，浏览器收到进度后可以断开请求。每次动作最多发送 64 次实时进度，每次最多 4096 个 UTF-8 字节。结果中的 `progress` 和 `effects` 仍按原协议在提交后发出。结果可以附带 `notices`、字符串或空的 `title`，流式动作还可用 `remove_sender: true` 移除触发动作的组件。线程标题、组件和状态在同一修订上原子提交。写入冲突或无效结果在发出首条进度前返回 HTTP 错误，之后发出终止错误事件；此前已送达的进度不代表写入成功。rev508 声明所有操作名，候选进一步补齐了输出 schema 与上述行为。[动作与合同验收](evidence/serve-chatkit-browser-output-20261125/business.json)
 
 本项目支持的完整输入见[38字段schema](serve-chat-request-v1.schema.json)
 与[必需原生语义](serve-input-semantics-v1.json)；10条路由见

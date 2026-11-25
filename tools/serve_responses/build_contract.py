@@ -12,6 +12,25 @@ if str(ROOT) not in sys.path:
 DRAFT = 'https://json-schema.org/draft/2020-12/schema'
 
 
+# The browser POST multiplexes these JSON replies and six SSE operations.
+CHATKIT_BROWSER_JSON = {
+    'attachments.create': 'chatkit_reserved_document',
+    'attachments.delete': 'chatkit_empty_result',
+    'input.transcribe': 'chatkit_transcription_result',
+    'items.feedback': 'chatkit_empty_result',
+    'items.list': 'chatkit_browser_output_items_page',
+    'threads.delete': 'chatkit_empty_result',
+    'threads.get_by_id': 'chatkit_browser_output_thread',
+    'threads.list': 'chatkit_browser_output_threads_page',
+    'threads.sync_custom_action': 'chatkit_browser_output_sync',
+    'threads.update': 'chatkit_browser_output_thread',
+}
+CHATKIT_BROWSER_SSE = (
+    'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output',
+    'threads.retry_after_item', 'threads.add_structured_input', 'threads.custom_action',
+)
+
+
 def ref(name):
     return {'$ref': '#/$defs/'+str(name)}
 
@@ -214,7 +233,11 @@ def schema(graph):
                 dict(thread_id=string, item_id=string), ['thread_id', 'item_id'])),
             ('items.feedback', feedback), ('threads.create', browser_fields({'input': message}, ['input'])),
             ('threads.add_user_message', browser_fields(dict(input=message, thread_id=string), ['input', 'thread_id']))]]
-    definitions['chatkit_client_result'] = dict(type='object')
+    browser = json.loads((ROOT/'src/server/contracts/openai_chatkit_browser_output_v1.json').read_bytes())
+    definitions.update(browser['definitions'])
+    definitions['chatkit_empty_result'] = obj({})
+    definitions['chatkit_client_result'] = dict(anyOf=[
+        ref(name) for name in sorted(set(CHATKIT_BROWSER_JSON.values()))])
     definitions['chatkit_transcription_result'] = obj(dict(text=string), ['text'])
     definitions['chatkit_document_attachment'] = obj(dict(id=dict(type='string'),name=dict(type='string'),
         type=dict(const='file'),mime_type=dict(type='string')), ['id','name','type','mime_type'])
@@ -987,10 +1010,12 @@ def add_openapi(paths, response, error):
             operation['description'] = 'Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission.'
         if path == '/v1/chatkit':
             operation['description'] = 'Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.'
-            success['content']['text/event-stream'] = dict(schema=dict(type='string'))
+            event = external('chatkit_browser_output_event')
+            success['content']['text/event-stream'] = dict(schema=dict(type='string'),
+                **{'x-q4t-event-schema': event})
             operation['x-q4t-result-by-request-type'] = {
-                'attachments.create': external('chatkit_reserved_document'),
-                'input.transcribe': external('chatkit_transcription_result')}
+                name: external(result) for name, result in CHATKIT_BROWSER_JSON.items()}
+            operation['x-q4t-event-by-request-type'] = dict.fromkeys(CHATKIT_BROWSER_SSE, event)
         if body == 'video_character_create':
             operation['requestBody'] = dict(required=True, content={'multipart/form-data':
                 dict(schema=external('video_character_create'))})

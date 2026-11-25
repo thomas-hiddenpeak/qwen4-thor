@@ -10,11 +10,12 @@ const plan = JSON.parse(input);
 const {OpenAI, version} = loadSdk(plan.sdk);
 const client = key => new OpenAI({apiKey: key, baseURL: plan.base, maxRetries: 0});
 const owner = client(plan.key), peer = client(plan.other);
-const release = JSON.parse(readFileSync(new URL('../../docs/evidence/serve-chatkit-retry-20261125/delivery.json',import.meta.url)));
+const release = JSON.parse(readFileSync(new URL('../../docs/evidence/serve-chatkit-actions-20261125/delivery.json',import.meta.url)));
 const revision = release.publication.publication_revision;
 const count = release.method_declarations.exact_success_declarations;
 const model = plan.model;
 
+const observed = [];
 async function browser(grant, type, params, status = 200) {
   const res = await fetch(plan.base+'/chatkit', {method:'POST', signal:AbortSignal.timeout(45000),
     headers:{Authorization:'Bearer '+grant.client_secret,'Content-Type':'application/json'},
@@ -23,10 +24,16 @@ async function browser(grant, type, params, status = 200) {
     const info = await res.json();
     throw Error(type+' HTTP '+res.status+' '+info.error?.code+' '+info.error?.param);
   }
-  if (status !== 200 || !res.headers.get('content-type')?.includes('text/event-stream'))
-    return res.json();
-  return (await res.text()).split(/\r?\n/).filter(s=>s.startsWith('data: '))
+  if (status !== 200) return res.json();
+  if (!res.headers.get('content-type')?.includes('text/event-stream')) {
+    const body = await res.json();
+    observed.push({type, json:body});
+    return body;
+  }
+  const events = (await res.text()).split(/\r?\n/).filter(s=>s.startsWith('data: '))
     .map(s=>JSON.parse(s.slice(6)));
+  observed.push({type, events});
+  return events;
 }
 const source = {
   lookup: `const {action,state,state_variables,streaming} = actionContext;
@@ -40,6 +47,18 @@ if (streaming) {
   reply.effects=[{name:'record_selected',data:{views}}];
 }
 text(reply);`,
+  acknowledge: `progress('Reading the selected record');
+    text({notices:[{level:'info',title:'Project record',message:'Review complete'}],
+      title:actionContext.action.payload,remove_sender:true});`,
+  cancel_probe: `progress('cancel-window');
+    let value=1;
+    for(let chunk=0;chunk<12;++chunk) {
+      for(let i=0;i<80000;++i) value=Math.imul(value,33)+i|0;
+      progress(String(chunk));
+    }
+    text({title:actionContext.action.payload+String(value)});`,
+  bad_unicode: 'progress(String.fromCharCode(0xd800));text({})',
+  interrupted: `progress('Checking before commit');text({title:17,remove_sender:true});`,
   inspect: "text({widget:{type:'Basic',children:[{type:'Text',value:String(actionContext.state.views)}]}});",
   remember: "text({state:{...actionContext.state,note:actionContext.action.payload}});",
   broken: "text({state:{views:100000},widget:{type:'Text'}});",
@@ -77,8 +96,8 @@ assert.deepEqual(wrong,[{type:'error',code:'stream.error',allow_retry:false}]);
 await act(first,false,'lookup',{field:'revision'},user.id,400);
 await act(first,true,'lookup',{field:'revision'},'item_absent',404);
 const created = await act(first,true,'lookup',{field:'revision'},null);
-assert.deepEqual(created.map(e=>e.type),['progress_update','client_effect','thread.item.added','thread.item.done']);
-assert.equal(created[1].data.views,1);
+assert.deepEqual(created.map(e=>e.type),['stream_options','progress_update','client_effect','thread.item.added','thread.item.done']);
+assert.equal(created[2].data.views,1);
 const widget = created.at(-1).item;
 assert.equal(widget.widget.children[0].value,String(revision));
 const changed = await act(reader,false,'lookup',{field:'methods'},widget.id);
@@ -86,8 +105,8 @@ assert.equal(changed.updated_item.id,widget.id);
 assert.equal(changed.updated_item.widget.children[0].value,String(count));
 await act(reader,false,'broken',{},widget.id,502);
 const state=await act(reader,true,'inspect',{},widget.id);
-assert.deepEqual(state.map(e=>e.type),['thread.item.replaced']);
-assert.equal(state[0].item.widget.children[0].value,'2');
+assert.deepEqual(state.map(e=>e.type),['stream_options','thread.item.replaced']);
+assert.equal(state[1].item.widget.children[0].value,'2');
 const note="reader's \"release report\"\n二次复核";
 const empty=await act(reader,false,'remember',note,widget.id);
 assert.deepEqual(empty,{updated_item:null});
@@ -100,6 +119,55 @@ assert.equal(sdkPage.data[2].type,'chatkit.widget');
 assert.equal(sdkPage.data[2].id,widget.id);
 assert.deepEqual(JSON.parse(sdkPage.data[2].widget),echoed.updated_item.widget);
 assert.deepEqual(history.data[2],echoed.updated_item);
+const snapshot = () => browser(reader,'threads.get_by_id',{thread_id:thread});
+await act(reader,true,'bad_unicode',{},widget.id,502);
+// The same handler must complete and change the title when nobody disconnects.
+const control = await act(reader,true,'cancel_probe','completed-',widget.id);
+const controlTitle = control.at(-1).thread.title;
+assert.ok(controlTitle.startsWith('completed-'));
+const controller = new AbortController();
+const flight = await fetch(plan.base+'/chatkit',{method:'POST',
+  signal:AbortSignal.any([controller.signal,AbortSignal.timeout(10000)]),
+  headers:{Authorization:'Bearer '+reader.client_secret,'Content-Type':'application/json'},
+  body:JSON.stringify({type:'threads.custom_action',params:{thread_id:thread,item_id:widget.id,
+    action:{type:'cancel_probe',payload:'cancelled-'}}})});
+assert.equal(flight.status,200);
+const chunks = flight.body.getReader();
+let prefix='';
+const decoder = new TextDecoder();
+for (;;) {
+  const chunk=await chunks.read();
+  assert.equal(chunk.done,false,'handler ended before cancellation');
+  prefix+=decoder.decode(chunk.value,{stream:true});
+  if(prefix.includes('cancel-window')) break;
+}
+controller.abort();
+await chunks.cancel().catch(()=>{});
+// The worker and its parent have a two-second transaction deadline.
+await new Promise(resolve=>setTimeout(resolve,2100));
+assert.equal((await snapshot()).title,controlTitle);
+const before = await snapshot();
+const partial = await act(reader,true,'interrupted',{},widget.id);
+assert.deepEqual(partial.map(e=>e.type),['stream_options','progress_update','error']);
+assert.equal(partial[0].stream_options.allow_cancel,true);
+assert.equal(partial[1].text,'Checking before commit');
+assert.deepEqual(await snapshot(),before);
+const title = 'Verified project release '+revision;
+const finished = await act(reader,true,'acknowledge',title,widget.id);
+assert.deepEqual(finished.map(e=>e.type),
+  ['stream_options','progress_update','notice','thread.item.removed','thread.updated']);
+assert.equal(finished[1].text,'Reading the selected record');
+assert.equal(finished[2].level,'info');
+assert.equal(finished[3].item_id,widget.id);
+const committed = await snapshot();
+assert.equal(committed.title,title);
+assert.deepEqual(finished[4].thread,committed);
+assert.deepEqual(committed.items.data.map(item=>item.id),before.items.data.slice(0,-1).map(item=>item.id));
+const managed = await owner.beta.chatkit.threads.retrieve(thread);
+assert.equal(managed.title,title);
+const visible = await browser(reader,'threads.list',{});
+assert.equal(visible.data.find(t=>t.id===thread).title,title);
+await act(reader,true,'acknowledge',title,widget.id,404);
 await owner.beta.chatkit.sessions.cancel(reader.id);
 await act(reader,false,'inspect',{},widget.id,401);
 const health=await peer.chat.completions.create({model,temperature:0,max_tokens:16,
@@ -107,5 +175,5 @@ const health=await peer.chat.completions.create({model,temperature:0,max_tokens:
 assert.equal(health.choices[0].message.content.trim(),'42');
 process.stdout.write(JSON.stringify({sdk:version,thread,widget:widget.id,workflow:workflow.id,revision,
   methods:count,independent_chat:'42',foreign:404,deleted:404,revoked:401,invalid_output:502,
-  events:[...wrong,...created,...state],sync:[changed,empty,echoed],management:sdkPage,
+  cancelled_after_progress:true, completed_control:controlTitle, observed, events:[...wrong,...created,...state,...partial,...finished],sync:[changed,empty,echoed],management:sdkPage,
   persisted_views:2,updated_note:note}));

@@ -867,6 +867,7 @@ set(protocol_inputs
   cmake/chatkit_types.h.in
   include/q4t/server/chatkit.h
   src/server/contracts/openai_chatkit_types_v1.json
+  src/server/contracts/openai_chatkit_browser_output_v1.json
   cmake/webhook_types.h.in
   include/q4t/server/webhook.h
   src/server/contracts/openai_webhook_types_v1.json

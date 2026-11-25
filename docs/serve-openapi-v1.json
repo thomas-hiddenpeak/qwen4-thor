@@ -10685,6 +10685,9 @@
               "text/event-stream": {
                 "schema": {
                   "type": "string"
+                },
+                "x-q4t-event-schema": {
+                  "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
                 }
               }
             }
@@ -10726,8 +10729,52 @@
           "attachments.create": {
             "$ref": "serve-application-v1.schema.json#/$defs/chatkit_reserved_document"
           },
+          "attachments.delete": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_empty_result"
+          },
           "input.transcribe": {
             "$ref": "serve-application-v1.schema.json#/$defs/chatkit_transcription_result"
+          },
+          "items.feedback": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_empty_result"
+          },
+          "items.list": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_items_page"
+          },
+          "threads.delete": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_empty_result"
+          },
+          "threads.get_by_id": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_thread"
+          },
+          "threads.list": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_threads_page"
+          },
+          "threads.sync_custom_action": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_sync"
+          },
+          "threads.update": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_thread"
+          }
+        },
+        "x-q4t-event-by-request-type": {
+          "threads.create": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
+          },
+          "threads.add_user_message": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
+          },
+          "threads.add_client_tool_output": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
+          },
+          "threads.retry_after_item": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
+          },
+          "threads.add_structured_input": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
+          },
+          "threads.custom_action": {
+            "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
           }
         }
       }

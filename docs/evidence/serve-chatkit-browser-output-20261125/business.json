@@ -1,0 +1,131 @@
+{
+  "stage": "candidate_http",
+  "runs": {
+    "01": {
+      "run": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 38.413,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "binary": "8738f0b42edffd16c52e951b42f536ff36b5b37228a930a545ca7b1bbcad2024",
+      "actor": "0062ca5752494b979b0f3d94bf63dae1c17c7db7696a69fd68d02aaa21903e88",
+      "lease_sha256": "50933e27f531b825ae2bdf6c2b6878a73709a9d1ff8d6fb04a43ad512462a35b",
+      "wire_sha256": "7dbba6ceb0aa0335fdeecde0acc261563e431e57373e90efdc908c0ae4a5694a",
+      "review": {
+        "official_revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+        "actual_event_kinds": [
+          "client_effect",
+          "error",
+          "notice",
+          "progress_update",
+          "stream_options",
+          "thread.created",
+          "thread.item.added",
+          "thread.item.done",
+          "thread.item.removed",
+          "thread.item.replaced",
+          "thread.item.updated",
+          "thread.updated"
+        ],
+        "strict_event_objects": 23,
+        "strict_json_replies": 8,
+        "operations": {
+          "threads.create": 1,
+          "threads.custom_action": 5,
+          "threads.sync_custom_action": 3,
+          "items.list": 1,
+          "threads.get_by_id": 3,
+          "threads.list": 1
+        },
+        "previous_counterexamples": 4,
+        "source_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+        "wire_sha256": "7dbba6ceb0aa0335fdeecde0acc261563e431e57373e90efdc908c0ae4a5694a"
+      }
+    },
+    "02": {
+      "run": {
+        "status": "PASS",
+        "starts": 1,
+        "seconds": 39.024,
+        "unchanged_default": true,
+        "phases": [
+          "create"
+        ]
+      },
+      "binary": "16c04c1ad01570ba100ba221312915691296a7b4676dbb7ed39089f769e17181",
+      "actor": "182602c7e835c1fcf6611fb90293aeb67ce08413326a50ff3e1503eb5f36a778",
+      "lease_sha256": "d1395eaf876d8c98888796ca255414f700b59c210a2e65444b2afd564dcae828",
+      "wire_sha256": "ccb62b64929b50cbae81d05163e4a74ec16d6517339aadc762f072e6beb908f9",
+      "review": {
+        "official_revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+        "actual_event_kinds": [
+          "client_effect",
+          "error",
+          "notice",
+          "progress_update",
+          "stream_options",
+          "thread.created",
+          "thread.item.added",
+          "thread.item.done",
+          "thread.item.removed",
+          "thread.item.replaced",
+          "thread.item.updated",
+          "thread.updated"
+        ],
+        "strict_event_objects": 38,
+        "strict_json_replies": 9,
+        "operations": {
+          "threads.create": 1,
+          "threads.custom_action": 6,
+          "threads.sync_custom_action": 3,
+          "items.list": 1,
+          "threads.get_by_id": 4,
+          "threads.list": 1
+        },
+        "previous_counterexamples": 4,
+        "source_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+        "wire_sha256": "ccb62b64929b50cbae81d05163e4a74ec16d6517339aadc762f072e6beb908f9"
+      }
+    }
+  },
+  "engine": "16c04c1ad01570ba100ba221312915691296a7b4676dbb7ed39089f769e17181",
+  "issued_revision": 508,
+  "protected_primary": "65a636677f473b8069041d2fd38ec87928f9c3c86ba26519fbe6404a3f503ac0",
+  "sdk": "7.47.0",
+  "business_input": "issued project release 508",
+  "original_counterexamples": 4,
+  "schema_media": {
+    "json": 10,
+    "sse": 6
+  },
+  "cancel": {
+    "positive_control_title": "completed--1391383295",
+    "observed_progress": true,
+    "committed_cancelled_title": false
+  },
+  "failed_action": {
+    "headers_committed": true,
+    "terminal": "error",
+    "stored_thread_unchanged": true
+  },
+  "deleted_sender_readback": true,
+  "management_title_and_browser_checked": true,
+  "invalid_unicode_status": 502,
+  "quota": {
+    "max_progress_frames": 64,
+    "max_progress_utf8_bytes": 4096
+  },
+  "independent": "42",
+  "cpu_logs": {
+    "browser-transport-cpu.log": "86e242da218cdf370aa15eab60894a2b12bf5f72a79fbf6c2459eb0926931695",
+    "browser-worker-final.log": "01c3ba6410870eb664f8efe80dabcab7fcc5c9e4aa5f6e0ea96289ea9d0b9bbf",
+    "browser-schema-final.log": "55acadf0454ddcc94b077c0c2c736842df089ee096c225ff97919952791f409d",
+    "browser-unicode-before.log": "a1ef3f5572f951f34fd67e24deadaf4c4300f07d90d3924376840da05664c8f3"
+  },
+  "source_mutations": 40,
+  "issued": false
+}

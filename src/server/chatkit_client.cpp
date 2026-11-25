@@ -369,21 +369,60 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
   }
   const bool stream_action = type == "threads.custom_action";
   if (stream_action || type == "threads.sync_custom_action") {
+    bool started = false;
+    const auto begin = [&](bool options, const StateAccess& write_access) {
+      if (started) return true;
+      if (!detail::BeginStreamingResponse(fd, http->State(),
+                                          {write_access.deadline}))
+        return false;
+      started = true;
+      return !options ||
+             Emit(fd,
+                  Object({{"type", String("stream_options")},
+                          {"stream_options",
+                           Object({{"allow_cancel", Boolean(true)}})}}),
+                  write_access);
+    };
+    std::function<bool(std::string_view)> progress;
+    if (stream_action)
+      progress = [&](std::string_view text) {
+        auto write_access = access;
+        write_access.deadline =
+            std::min(access.deadline, Clock::now() + std::chrono::seconds(2));
+        return begin(true, write_access) &&
+               Emit(fd,
+                    Object({{"type", String("progress_update")},
+                            {"text", String(std::string(text))}}),
+                    write_access);
+      };
     auto result = chatkit_detail::DispatchAction(objects, access, grant, params,
-                                                 stream_action);
+                                                 stream_action, progress);
     if (!result.ok()) {
-      Fail(fd, access, result);
-      return;
-    }
-    if (!stream_action) {
+      if (!started) {
+        Fail(fd, access, result);
+        return;
+      }
+      // Once provisional progress is on the wire the status line is final.
+      // A failed action never sends a success item or a second HTTP response.
+      if (!Emit(fd,
+                Object({{"type", String("error")},
+                        {"code", String("custom")},
+                        {"message", String(result.ClientMessage())},
+                        {"allow_retry", Boolean(result.http_status == 409)}}),
+                access))
+        return;
+    } else if (stream_action) {
+      const auto& events = result.value.array;
+      const bool entered =
+          events.empty() || events.front().GetString("type") != "error";
+      if (!begin(entered, access)) return;
+      for (const auto& event : events)
+        if (!Emit(fd, event, access)) return;
+    } else {
       detail::SendSimple(fd, 200, "OK", OutputJson(result.value),
                          "application/json", {access.deadline});
       return;
     }
-    if (!detail::BeginStreamingResponse(fd, http->State(), {access.deadline}))
-      return;
-    for (const auto& event : result.value.array)
-      if (!Emit(fd, event, access)) return;
     http->BeforeTerminal();
     *http->State() = detail::ResponseState::kComplete;
     return;

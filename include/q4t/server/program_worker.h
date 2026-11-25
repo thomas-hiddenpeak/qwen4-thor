@@ -10,6 +10,11 @@ namespace q4t::server {
 ObjectReply ExecuteProgramWorker(const io::Json& input,
                                  const BinaryAccess& access,
                                  GrammarControl control = {});
+// Progress frames are provisional. Successful process exit authenticates the
+// terminal result before the caller can commit any application state.
+ObjectReply ExecuteActionWorker(
+    const io::Json& input, const BinaryAccess& access,
+    const std::function<bool(std::string_view)>& progress);
 ObjectReply ExecutePythonWorker(const io::Json& input,
                                 const BinaryAccess& access,
                                 GrammarControl control = {});

@@ -11,7 +11,8 @@ ObjectReply OpenWorkflow(ObjectStore& objects, const StateAccess& access,
                          const Grant& grant, io::Json* definition);
 // A sync request returns a single optional item. A stream returns the events
 // produced by the same committed application transition, in order.
-ObjectReply DispatchAction(ObjectStore& objects, const StateAccess& access,
-                           const Grant& grant, const io::Json& params,
-                           bool streaming);
+ObjectReply DispatchAction(
+    ObjectStore& objects, const StateAccess& access, const Grant& grant,
+    const io::Json& params, bool streaming,
+    const std::function<bool(std::string_view)>& progress = {});
 }  // namespace q4t::server::chatkit_detail

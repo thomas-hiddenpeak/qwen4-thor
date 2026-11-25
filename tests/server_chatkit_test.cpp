@@ -659,6 +659,14 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
   const auto handlers = Object(
       {{"show", String("text({state:actionContext.action.payload,widget:{type:'"
                        "Card',children:[]}})")},
+       {"finish",
+        String("progress('checking');text({notices:[{level:'info',"
+               "message:'saved'}],title:'Reviewed',remove_sender:true})")},
+       {"live_bad",
+        String("progress('checking');text({title:8,remove_sender:true})")},
+       {"bad_unicode",
+        String("progress(String.fromCharCode(0xd800));text({})")},
+       {"many", String("for(let i=0;i<65;i++) progress('x');text({})")},
        {"invalid",
         String("text({state:'wrong',widget:{type:'Card',children:[17]}})")},
        {"read", String("text({effects:[{name:'read',data:{answer:actionContext."
@@ -689,13 +697,15 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
        {"created_by", String(grant.session)}});
   Q4T_CHECK(objects.Execute(put, access.deadline, {}).ok());
   auto dispatch = [&](const StateAccess& who, std::string name, Json payload,
-                      Json sender, bool streaming) {
+                      Json sender, bool streaming,
+                      const std::function<bool(std::string_view)>& progress =
+                          {}) {
     auto params = Object({{"thread_id", String(put.id)},
                           {"item_id", sender},
                           {"action", Object({{"type", String(std::move(name))},
                                              {"payload", payload}})}});
     return chatkit_detail::DispatchAction(objects, who, grant, params,
-                                          streaming);
+                                          streaming, progress);
   };
   Q4T_CHECK(
       dispatch(Access("client:other"), "show", {}, {}, false).http_status ==
@@ -721,6 +731,56 @@ Q4T_TEST(chatkit_actions_bind_owner_and_commit_state_with_widget) {
             next.value.array.front().GetString("type") ==
                 "thread.item.replaced" &&
             next.value.array.front().Find("item")->GetString("id") == id.str);
+  std::vector<std::string> progress;
+  auto observe = [&](std::string_view text) {
+    progress.emplace_back(text);
+    return true;
+  };
+  Q4T_CHECK(dispatch(access, "live_bad", {}, id, true, observe).http_status ==
+            502);
+  Q4T_CHECK(progress == std::vector<std::string>{"checking"});
+  auto cancelled = dispatch(access, "finish", {}, id, true,
+                            [](std::string_view) { return false; });
+  Q4T_CHECK(cancelled.http_status == 499);
+  progress.clear();
+  Q4T_CHECK(dispatch(access, "many", {}, id, true, observe).http_status ==
+                502 &&
+            progress.size() == 64);
+  Q4T_CHECK(dispatch(access, "finish", {}, id, false).http_status == 502);
+  progress.clear();
+  Q4T_CHECK(
+      dispatch(access, "bad_unicode", {}, id, true, observe).http_status ==
+          502 &&
+      progress.empty());
+  // The worker is still waiting for acknowledgment. A real intervening
+  // thread write must win without erasing the widget.
+  bool renamed = false;
+  auto race = dispatch(access, "finish", {}, id, true, [&](std::string_view) {
+    auto params = Object(
+        {{"thread_id", String(put.id)}, {"title", String("Other writer")}});
+    renamed = chatkit_detail::BrowserOperation(objects, access, grant,
+                                               "threads.update", params)
+                  .ok();
+    return renamed;
+  });
+  Q4T_CHECK(renamed && race.http_status == 409);
+  auto after_bad = chatkit_detail::ReadThread(objects, access, put.id, &grant);
+  Q4T_CHECK(after_bad.ok() &&
+            after_bad.value.Find("data")->GetArray("items")->array.size() == 1);
+  progress.clear();
+  auto finish = dispatch(access, "finish", {}, id, true, observe);
+  Q4T_CHECK(finish.ok() && progress == std::vector<std::string>{"checking"});
+  const auto& events = finish.value.array;
+  Q4T_CHECK(events.size() == 3 && events[0].GetString("type") == "notice" &&
+            events[1].GetString("type") == "thread.item.removed" &&
+            events[1].GetString("item_id") == id.str &&
+            events[2].GetString("type") == "thread.updated");
+  auto saved = chatkit_detail::ReadThread(objects, access, put.id, &grant);
+  Q4T_CHECK(saved.ok());
+  const auto thread = chatkit_detail::ClientThread(*saved.value.Find("data"));
+  Q4T_CHECK(thread.GetString("title") == "Reviewed" &&
+            thread.Find("items")->GetArray("data")->array.empty() &&
+            OutputJson(thread) == OutputJson(*events[2].Find("thread")));
   return true;
 }
 
