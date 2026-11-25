@@ -50,7 +50,7 @@ while True:
                                 order="asc", limit=20, after=page["last_id"])
 ```
 
-候选实现按公开字段 `refusal` 返回拒答消息。调用方原先提供拒答数组时，读取结果在 `original_content_parts` 中保留原数组；若输入还提供了独立的 `refusal` 字段，该值也予以保留。
+rev504 按公开字段 `refusal` 返回拒答消息。调用方原先提供拒答数组时，读取结果在 `original_content_parts` 中保留原数组；若输入还提供了独立的 `refusal` 字段，该值也予以保留。[发行回执](evidence/serve-stored-message-projection-20261125/delivery.json)
 
 ## 2026-11-08 文本与视觉 v1 验收范围
 

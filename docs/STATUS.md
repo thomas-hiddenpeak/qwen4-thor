@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+管理员只读检查已确认 rev504 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev504-preflight.json)
+
+主包和独立回退均按原消息 ID 取回同一拒答；客户单独提交的字段与数组内容各自保留，另一个客户收到 404。模型退出和网关故障后，独立 Chat 均答 42。默认版本停在 rev504，13 份保护记录保持一致，24 小时计划已完成预检。[验证记录](evidence/serve-stored-message-projection-20261125/delivery.json)
+
 主配置通过模型完成两个带拒答历史的 Chat；轻配置打开同一存储，取回相同的 Chat、消息与分页游标。两个独立拒答字段及跨客户隔离均通过。下一步验证托管恢复和可回退发行。[验证记录](evidence/serve-stored-message-projection-20261125/profiles.json)
 
 52 项主机检查通过，覆盖原记录复原、拒绝串换拒答正文与消息 ID、客户隔离失效及未审查配置登记。下一步由轻配置接手主配置持久化的两个真实 Chat。[验证记录](evidence/serve-stored-message-projection-20261125/profiles.json)
