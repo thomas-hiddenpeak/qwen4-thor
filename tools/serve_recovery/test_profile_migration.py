@@ -219,6 +219,17 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ledger.LedgerError):
                     live.previous_record(current)
 
+    def test_feedback_requires_both_browser_contracts_and_the_issued_metrics(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(chatkit=live.CHATKIT_CAPABILITY, evals=live.METEOR_EVALS)
+        new = dict(old, chatkit=live.FEEDBACK_CHATKIT)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        for key in ('item_feedback', 'entity_mentions', 'direct_document_upload'):
+            self.assertFalse(migration.explicit_extension(
+                old, dict(new, chatkit=dict(live.FEEDBACK_CHATKIT, **{key: False}))))
+        self.assertFalse(migration.explicit_extension(dict(old, evals=live.COSINE_EVALS), new))
+
     def test_meteor_preserves_the_issued_grader_and_tool_history(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(evals=live.COSINE_EVALS, tools={'history': live.REPAIRED_TOOL_HISTORY})

@@ -1,0 +1,153 @@
+{
+  "stage": "issued",
+  "initial_publication_attempt": {
+    "status": "LEASE_BUSY",
+    "child_started": false,
+    "reason": "The targeted CPU fixture held the cooperative lock. No publication command executed."
+  },
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 490,
+    "version_revision": 174,
+    "profile_revision": 64,
+    "previous_profile_revision": 63,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "d5384687815af9b9018903f1e810dd1851c75bd04228ac54540997f3f486fc8f",
+    "fallback": "7661774fee049b51545540ffcccb918d8e6c4a1b95041204cc0a4bcd784bfcb8",
+    "engine": "a0e05459afeb3cde0cf7371695f55a71dc83b706dd2495c7b73bf169295c188d",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "7dfb9b72b077da248b1c2ec72f965d6b12f37fcd007a4e64460d19ff945f037c",
+  "recovery": {
+    "fallback": {
+      "seconds": 135.985,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "workflow": "agent_a05e267c34422dccbb9003277b3b17ef",
+        "thread": "cthr_8708922bb950db97a25a174fe2f6cd06",
+        "items": [
+          "item_1c389a560e8f23d11e92421963fc5a97",
+          "msg_bfd4bbab3293f71113ca9e114b314470"
+        ],
+        "expected_votes": [
+          "negative",
+          "positive"
+        ],
+        "model_answer": "488",
+        "continued": "488",
+        "entity_id": "q4t-current-release",
+        "browser_tag": true,
+        "sdk_mention": "@rev488",
+        "sibling": 404,
+        "peer": 404,
+        "missing_item": 404,
+        "revoked": 401,
+        "repeat": 200,
+        "public_rows_identical": true,
+        "store_sha256": "1e34bf853ea2287262b96ecf96cf2a3f787e60eb4ac95c44317e30a33cb6e165",
+        "previous_store_sha256": "65410230528553feb4020783158517450e78eddfb4618caa71d61e393e53c665"
+      },
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 277.602,
+      "starts": 2,
+      "recovered": {
+        "sdk": "7.47.0",
+        "workflow": "agent_23692ca9cdd410fc91f0e9ffc6cf10fe",
+        "thread": "cthr_32cf5efe9e5c081260e40c1b3ac9113a",
+        "items": [
+          "item_7e5bf6e15103f8fc17857d06ed25c2f0",
+          "msg_6224efc3a3f163d7065637a2650d05f0"
+        ],
+        "expected_votes": [
+          "negative",
+          "positive"
+        ],
+        "model_answer": "488",
+        "continued": "488",
+        "entity_id": "q4t-current-release",
+        "browser_tag": true,
+        "sdk_mention": "@rev488",
+        "sibling": 404,
+        "peer": 404,
+        "missing_item": 404,
+        "revoked": 401,
+        "repeat": 200,
+        "public_rows_identical": true,
+        "store_sha256": "11cc634319baaa7a15411c65f01826463df74e96cb6793c97699bbf4045e2b5e",
+        "previous_store_sha256": "edb4b2981600f51008992f71c33a995d60055ce4aa96a1899a700670e5297068"
+      },
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "licenses": {
+    "wordnet/LICENSE": "e95e845ba95cedf3fb62c96f656ab2d71e4404f3aa84741f1ec2862741965c98",
+    "wordnet/README.md": "97bb7f99cdba513e8a07ea014fb336d6ef64297cd9e885b5b2677465029d41d7",
+    "nltk-porter/LICENSE.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "nltk-porter/README.md": "8dea3dbffdaef73332cd58c073907d544f185a28a7f4c3bc697a1de01e02a13a"
+  },
+  "soak": {
+    "source_commit": "1e356c03572edf9ae1761cd73cc1061ba3d2d079",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/feedback-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/feedback-client-primary-01/bundle",
+      "manifest_sha256": "d5384687815af9b9018903f1e810dd1851c75bd04228ac54540997f3f486fc8f"
+    },
+    "revision": 490,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/feedback-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "b4c2ba144d2598f38c62fc674689533d0b77e4cd6b7b1786afd0006f84366126",
+    "handoff_sha256": "dbca0b036feaa44b72f3609fe87a4a368ad98964e85d39962deaab3dd3867ebc",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "method_declarations": {
+    "matched": 217,
+    "required": 231,
+    "remaining": 14
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/feedback-delivery-delivery/plan.json": "3415402504b86e19e367d33963a3d221fab7bf146d3a6c64c9ab27d2b648c04e",
+    ".q4t-work/serve-responses-agents-20261123/feedback-delivery-delivery/result.json": "60d1f488a899f98075be77654be8728eb90c375a74a2c24e8dfb519ff8b22d1c",
+    ".q4t-work/serve-responses-agents-20261123/feedback-delivery-delivery/check.stdout": "467fe8325afa2af2f2c1c50485aadf8443b631a56ecbacfaeeb04c85cf5e0015",
+    ".q4t-work/serve-responses-agents-20261123/feedback-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/feedback-delivery-delivery/version-status.stdout": "067bdf17abe1bdf97aa1cdeda7f62e45725ec4a8d340c9ebce42d607c95492c5",
+    ".q4t-work/serve-responses-agents-20261123/feedback-delivery-day.json": "0bda56eeb2265fb7fa879e4407d742d51c65697ffe331ad6dd219c829604dba5",
+    ".q4t-work/serve-responses-agents-20261123/feedback-release-methods.json": "2efe8f3f7d251979ada682b61a5ca6a680c77217b6d3c93cbe871206b0781aac",
+    ".q4t-work/serve-responses-agents-20261123/feedback-delivery-maintenance-01/result.json": "a68edc7325871aa5776a560fe7e1154a3782314ebd2cf41a026c39074a617197",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-chatkit-20261125/feedback-profiles.json": "674c464611f397756a196bdd184c96fbb747e6b4ca3eba5b7178902e558c745e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/docs/evidence/serve-chatkit-20261125/feedback.json": "162bb28a1b063cb97ccd592477b27a5118e99e9bcd22b5b0f733efa56660f7f4",
+    ".q4t-work/serve-responses-agents-20261123/feedback-maintenance-lease-01/exit.json": "a5a863ac104b9cdf5618437ae39164cbfa50f8aee0b8fde09b4cf2fe9d50b2fc",
+    ".q4t-work/serve-responses-agents-20261123/feedback-publish-lease-02/exit.json": "ef65657f4c6843eb5b0d714be96c0722a7319c8852711b1d9dcfb2ae22c6b873",
+    ".q4t-work/serve-responses-agents-20261123/feedback-publish-lease-01/exit.json": "e7beb5271f01a9c6705b3b572a358e3931e067441a4d8605e73d9556ae774c6e",
+    ".q4t-work/serve-responses-agents-20261123/feedback-fallback-lease-01/exit.json": "3bcccbe8228c60713e6bed00452f61943430ef379190fecf260ed76beecf5df9",
+    ".q4t-work/serve-responses-agents-20261123/feedback-fallback-business-01/prepare-run.json": "6e4232503d40a5381fa97acf10d1031bcba5b5a91943172040834fb99fe50214",
+    ".q4t-work/serve-responses-agents-20261123/feedback-fallback-business-01/restore-run.json": "c29c8ef5c989251d00b101622c22cc9e39b7853b1c1c9cda7eca6813f06ef31f",
+    ".q4t-work/serve-responses-agents-20261123/feedback-fallback-business-01/result.json": "fed1528a729fd79c6445b160b9c805ea370697faa6eb7dbd51019faca6bb30c4",
+    ".q4t-work/serve-responses-agents-20261123/feedback-fallback-business-01/interruption.json": "14abf37ecd113d0e80920727dcedbfe45bbcb7be0589e8e867f3f1d28c88d8c8",
+    ".q4t-work/serve-responses-agents-20261123/feedback-fallback-business-01/chat-after.wire": "57d77cfc226f2c526b81494f286898964c2a16d0a231a0624fa8491031ce0bb4",
+    ".q4t-work/serve-responses-agents-20261123/feedback-client-fallback-01/origin.json": "0ad09dee3e05035dbd36e9c70e76c1a372decc38118dbb261d7a57e2bd509fa4",
+    ".q4t-work/serve-responses-agents-20261123/feedback-client-fallback-01/service.release.json": "7691c108a1ef3e9b05a8fa767daf735231d6a1de99eb26c7bd345328a80ac1a6",
+    ".q4t-work/serve-responses-agents-20261123/feedback-client-fallback-01/service-acceptance.json": "a34dbc24c5ed8e93cefe4b09f9e1fb247587dd0e325f90aefa44a2e2a08067c2",
+    ".q4t-work/serve-responses-agents-20261123/feedback-primary-lease-01/exit.json": "0199803b6766d28ee8e4b5318075e7a6052ebf0d59fa6d3190307866ffaaef65",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-feedback-01/prepare-run.json": "9867580172198dbe455393159b39f6c45392cd2802f775a24304820c5d478e01",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-feedback-01/restore-run.json": "404fc4a5e16c4aeebd5cd7cf5027736d02673266e4ff24afaa6d649451b1e152",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-feedback-01/result.json": "62534eb593c106f10f43cd3a9ccffb122e4ad5d26e2144bce30a89e6027bd366",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-feedback-01/interruption.json": "a8817401ce2d9475b088f3f4e357d605c8951da431e98163eef10bc3b9cb312d",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-feedback-01/chat-after.wire": "ff0d58b1919c395750abb9bcd24b6cf22dcfc5db328033d748dbc4273e294959",
+    ".q4t-work/serve-responses-agents-20261123/feedback-client-primary-01/origin.json": "504bc0e91f96ec743f949b051d2d8fe3b47b3c662cf8bb7fb9ce70c3c4c30ed7",
+    ".q4t-work/serve-responses-agents-20261123/feedback-client-primary-01/service.release.json": "3863ed0674567da6ce36d08bd27ee51712ce0095aebbe1475b0d9742969348be",
+    ".q4t-work/serve-responses-agents-20261123/feedback-client-primary-01/service-acceptance.json": "4e1f7e972918680bf7be26fd1e1cebb937be130c54f0de5de49f88640b95a0ca",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-feedback-01/takeover.json": "bb821b38c31005fa831de7dba4df818349c583bd08ddd95b2bb74c6516453f7f"
+  }
+}

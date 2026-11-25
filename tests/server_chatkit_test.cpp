@@ -274,6 +274,101 @@ Q4T_TEST(
   return true;
 }
 
+Q4T_TEST(chatkit_feedback_is_atomic_tenant_scoped_and_durable) {
+  Fixture fixture;
+  const auto access = Access();
+  const std::string id = "cthr_feedback";
+  chatkit_detail::Grant grant;
+  auto vote = [&](ObjectStore& store, const StateAccess& identity,
+                  const chatkit_detail::Grant& user, Json targets,
+                  const std::string& kind) {
+    return chatkit_detail::BrowserOperation(
+        store, identity, user, "items.feedback",
+        Object({{"thread_id", String(id)},
+                {"item_ids", std::move(targets)},
+                {"kind", String(kind)}}));
+  };
+  ObjectRequest read;
+  read.scope = access.scope;
+  read.kind = ObjectKind::kChatKitThread;
+  read.id = id;
+  const auto ids = Array({String("msg_a"), String("msg_b")});
+  {
+    ObjectStore objects(fixture.options);
+    auto missing_thread =
+        Object({{"item_ids", ids}, {"kind", String("positive")}});
+    auto invalid_thread = [&] {
+      return chatkit_detail::BrowserOperation(objects, access, grant,
+                                              "items.feedback", missing_thread);
+    };
+    Q4T_CHECK(invalid_thread().http_status == 400);
+    Set(&missing_thread, "thread_id", Number(1));
+    Q4T_CHECK(invalid_thread().http_status == 400);
+    auto session = Create(objects, access, 32);
+    Q4T_CHECK(session.ok() &&
+              chatkit_detail::Redeem(objects, access,
+                                     session.value.GetString("client_secret"),
+                                     std::time(nullptr), &grant)
+                  .ok());
+    auto write = read;
+    write.operation = ObjectOperation::kPut;
+    auto thread = Object({{"id", String(id)},
+                          {"object", String("chatkit.thread")},
+                          {"created_at", Number(std::time(nullptr))},
+                          {"title", {}},
+                          {"status", Object({{"type", String("active")}})},
+                          {"user", String("reader")}});
+    auto items = Array();
+    for (const auto& target : ids.array) {
+      items.array.push_back(
+          Object({{"id", target},
+                  {"thread_id", String(id)},
+                  {"type", String("chatkit.assistant_message")},
+                  {"content", Array()}}));
+    }
+    write.data =
+        Object({{"thread", thread},
+                {"items", items},
+                {"created_by", String(grant.session)},
+                {"workflow",
+                 *grant.data.Find("session")->Find("workflow")->Find("id")}});
+    Q4T_CHECK(objects.Execute(write, access.deadline).ok());
+    const auto initial = vote(objects, access, grant, ids, "positive");
+    Q4T_CHECK(initial.ok() && OutputJson(initial.value) == "{}");
+    const auto before = objects.Execute(read, access.deadline);
+    Q4T_CHECK(before.ok());
+    Q4T_CHECK(vote(objects, access, grant, ids, "positive").ok());
+    Q4T_CHECK(vote(objects, access, grant, ids, "bad").http_status == 400);
+    Q4T_CHECK(vote(objects, access, grant, Array({Number(1)}), "negative")
+                  .http_status == 400);
+    Q4T_CHECK(vote(objects, access, grant,
+                   Array({String("msg_a"), String("msg_missing")}), "negative")
+                  .http_status == 404);
+    auto wrong = grant;
+    Set(&Field(wrong.data, "session"), "user", String("second"));
+    Q4T_CHECK(vote(objects, access, wrong, ids, "negative").http_status == 404);
+    Q4T_CHECK(vote(objects, Access("client:beta"), grant, ids, "negative")
+                  .http_status == 404);
+    Q4T_CHECK(objects.Execute(read, access.deadline).value.GetInt("revision") ==
+              before.value.GetInt("revision"));
+    Q4T_CHECK(vote(objects, access, grant,
+                   Array({String("msg_a"), String("msg_a")}), "negative")
+                  .ok());
+  }
+  ObjectStore reopened(fixture.options);
+  auto row = reopened.Execute(read, access.deadline);
+  Q4T_CHECK(row.ok());
+  const auto& data = Field(row.value, "data");
+  auto* feedback = data.Find("feedback");
+  Q4T_CHECK(feedback && feedback->object.size() == 2 &&
+            feedback->GetString("msg_a") == "negative" &&
+            feedback->GetString("msg_b") == "positive");
+  const auto history = chatkit_detail::ClientThread(data);
+  Q4T_CHECK(!history.Has("feedback") &&
+            OutputJson(history).find("negative") == std::string::npos);
+  return true;
+}
+
 Q4T_TEST(chatkit_keeps_original_journal_until_thread_advances_or_is_deleted) {
   Fixture f;
   ObjectStore objects(f.options);
@@ -304,6 +399,56 @@ Q4T_TEST(chatkit_keeps_original_journal_until_thread_advances_or_is_deleted) {
   Set(&thread.data, "last_response", String("resp_next"));
   Q4T_CHECK(objects.Execute(thread, access.deadline).ok());
   Q4T_CHECK(state.Erase(response.id, access).ok());
+  return true;
+}
+Q4T_TEST(chatkit_entity_mentions_preserve_browser_sdk_and_model_contracts) {
+  auto text =
+      Object({{"type", String("input_text")}, {"text", String("see ")}});
+  auto tag = Object({{"type", String("input_tag")},
+                     {"id", String("release")},
+                     {"text", String("版本")},
+                     {"data", Object({{"n", Number(7)}})}});
+  Json content = Array(), model = Array();
+  Q4T_CHECK(chatkit_detail::AppendUserContent(Array({text, tag, text}),
+                                              &content, &model)
+                .ok());
+  Q4T_CHECK(model.array.size() == 1 &&
+            model.array[0].GetString("text") == "see @版本see ");
+  auto& rich = content.array.at(1);
+  Q4T_CHECK(rich.GetString("id") == "release" &&
+            rich.Find("data")->GetInt("n") == 7 &&
+            rich.Find("group")->IsNull() && !rich.GetBool("interactive"));
+  auto item = Object({{"type", String("chatkit.user_message")},
+                      {"content", content},
+                      {"created_at", Number(100)},
+                      {"inference_options", {}}});
+  Q4T_CHECK(chatkit_detail::ClientItem(item)
+                .GetArray("content")
+                ->array.at(1)
+                .GetString("type") == "input_tag");
+  chatkit_detail::ProjectManagementItem(&item);
+  const auto& wire = item.GetArray("content")->array.at(1);
+  Q4T_CHECK(wire.GetString("type") == "input_text" &&
+            wire.GetString("text") == "@版本" && !wire.Has("data"));
+  for (const auto& key : {"text", "id", "data", "group", "interactive"}) {
+    auto wrong = tag;
+    Set(&wrong, key, Number(3));
+    Q4T_CHECK(
+        chatkit_detail::AppendUserContent(Array({wrong}), &content, &model)
+            .http_status == 400);
+  }
+  Set(&tag, "interactive", Boolean(true));
+  Set(&tag, "group", String("docs"));
+  Q4T_CHECK(
+      chatkit_detail::AppendUserContent(Array({tag}), &content, &model).ok());
+  Q4T_CHECK(content.array.back().GetBool("interactive") &&
+            content.array.back().GetString("group") == "docs");
+  model = Array();
+  Q4T_CHECK(
+      chatkit_detail::AppendUserContent(Array({text, text}), &content, &model)
+          .ok());
+  Q4T_CHECK(model.array.size() == 2 &&
+            model.array[1].GetString("text") == "see ");
   return true;
 }
 Q4T_TEST(chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes) {

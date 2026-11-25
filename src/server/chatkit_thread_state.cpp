@@ -39,6 +39,55 @@ ObjectReply Missing() {
 }
 }  // namespace
 
+ObjectReply AppendUserContent(const Json& parts, Json* content, Json* model) {
+  const bool tagged = std::ranges::any_of(parts.array, [](const Json& part) {
+    return part.GetString("type") == "input_tag";
+  });
+  std::string rendered;
+  for (const auto& part : parts.array) {
+    const auto type = part.GetString("type");
+    const auto* text = part.Find("text");
+    if (!text || !text->IsString() ||
+        (type != "input_text" && type != "input_tag"))
+      return Error(400, "invalid_request", "Expected a ChatKit text or tag");
+    auto wire = Object({{"type", String(type)}, {"text", *text}});
+    if (type == "input_tag") {
+      const auto* id = part.Find("id");
+      const auto* data = part.Find("data");
+      const auto* group = part.Find("group");
+      const auto* interactive = part.Find("interactive");
+      if (!id || !id->IsString() || !data || !data->IsObject() ||
+          (group && !group->IsNull() && !group->IsString()) ||
+          (interactive && !interactive->IsBool()))
+        return Error(400, "invalid_request", "Invalid ChatKit entity tag");
+      Set(&wire, "id", *id);
+      Set(&wire, "data", *data);
+      Set(&wire, "group", group ? *group : Json{});
+      Set(&wire, "interactive", interactive ? *interactive : Boolean(false));
+      rendered += '@';
+    }
+    if (tagged)
+      rendered += text->str;
+    else
+      model->array.push_back(wire);
+    content->array.push_back(std::move(wire));
+  }
+  if (tagged)
+    model->array.push_back(Object({{"type", String("input_text")},
+                                   {"text", String(std::move(rendered))}}));
+  return {};
+}
+
+void ProjectManagementItem(Json* item) {
+  if (item->GetString("type") != "chatkit.user_message") return;
+  for (auto& part : Field(*item, "content").array) {
+    const auto* text = part.Find("text");
+    if (part.GetString("type") == "input_tag" && text && text->IsString())
+      part = Object(
+          {{"type", String("input_text")}, {"text", String("@" + text->str)}});
+  }
+}
+
 ObjectReply ProjectOutput(const Json& response, const std::string& id) {
   const auto* output = response.GetArray("output");
   if (!output) return Corrupt();

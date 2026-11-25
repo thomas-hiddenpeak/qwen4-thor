@@ -23,6 +23,12 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+FEEDBACK_RECORD = 'q4t-profile-business-v50'
+FEEDBACK_FORMAT = 'q4t-chatkit-feedback-source-v1'
+FEEDBACK_REVIEWED = {
+    'primary': 'b669f8e7ca99498b93481f15aab01544a42f8779ae81abf77cf3d10d0683953a',
+    'light': 'b8c53412e568c6a9e8cd60914c2a5050114310f0118ddfd5d6ebfa8f5e11b82f',
+}
 METEOR_RECORD = 'q4t-profile-business-v49'
 METEOR_FORMAT = 'q4t-eval-meteor-source-v1'
 METEOR_REVIEWED = {
@@ -82,6 +88,7 @@ CHATKIT_FORMAT = 'q4t-chatkit-source-v1'
 CHATKIT_CAPABILITY = dict(selector='chatkit_beta=v1', client='/v1/chatkit',
     uploads='/v1/chatkit/attachments', grant_scope='project_user_workflow',
     client_tools='serial', thread_history=True, direct_document_upload=True)
+FEEDBACK_CHATKIT = dict(CHATKIT_CAPABILITY, item_feedback=True, entity_mentions=True)
 CHATKIT_REVIEWED = {
     'primary': '62288a6044e8239640fa01bc9b1d52c43baaeac60a21fd890e5dabd5dfafd994',
     'light': '5ba0f338da57899669e6db3954c4124c98ffdc5d602819dee9921ecb92aa716c',
@@ -279,7 +286,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 PREPARATION_RECORD: PREPARATION_FORMAT, CHATKIT_RECORD: CHATKIT_FORMAT,
                 EVAL_RECORD: EVAL_FORMAT, COSINE_RECORD: COSINE_FORMAT,
                 SAFETY_RECORD: SAFETY_FORMAT, HISTORY_RECORD: HISTORY_FORMAT,
-                METEOR_RECORD: METEOR_FORMAT}
+                METEOR_RECORD: METEOR_FORMAT, FEEDBACK_RECORD: FEEDBACK_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -301,6 +308,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'ff4424db6d0bda8b460b607fb83ac6aba9ce6862b578a2dca8b252b96539f9e9':
+        '842072a374fdc040504d96c2a16746772621860237478a4088b1de3b2c10ff65',
     'accd702f7be79eb0f5812abb98bf21caf9a821319f1f1ca825700196d1432eb3':
         '842072a374fdc040504d96c2a16746772621860237478a4088b1de3b2c10ff65',
     '6c06d216990981de14ee2c41023aadc89440610e73e3c7f0ee5cb43dbf4996fd':
@@ -389,7 +398,17 @@ def has_meteor(capabilities):
     return isinstance(metrics, list) and 'meteor' in metrics
 
 
+def has_feedback(capabilities):
+    chatkit = capabilities.get('chatkit')
+    return isinstance(chatkit, dict) and bool({'item_feedback', 'entity_mentions'} & chatkit.keys())
+
+
 def format_for(capabilities):
+    if has_feedback(capabilities):
+        ledger.require(ledger.canonical(capabilities['chatkit']) == ledger.canonical(FEEDBACK_CHATKIT)
+                       and format_for(dict(capabilities, chatkit=CHATKIT_CAPABILITY)) == METEOR_RECORD,
+                       'browser feedback requires the issued evaluation and ChatKit contract')
+        return FEEDBACK_RECORD
     if has_meteor(capabilities):
         ledger.require(ledger.canonical(capabilities['evals']) == ledger.canonical(METEOR_EVALS)
                        and format_for(dict(capabilities, evals=COSINE_EVALS)) == HISTORY_RECORD,
@@ -588,8 +607,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            FEEDBACK_RECORD: (METEOR_RECORD, METEOR_REVIEWED, None, 'chatkit-feedback-handoff.json'),
             METEOR_RECORD: (HISTORY_RECORD, HISTORY_REVIEWED, None, 'eval-meteor-handoff.json'),
             HISTORY_RECORD: (SAFETY_RECORD, SAFETY_REVIEWED, None, 'history-arguments-handoff.json'),
             SAFETY_RECORD: (COSINE_RECORD, COSINE_REVIEWED, 'project_safety', 'project-safety-handoff.json'),
@@ -618,6 +638,8 @@ def attach(value, prior):
                            == ledger.canonical(after['tools'])
                            and ledger.canonical(template) == ledger.canonical(after['template']),
                            'unreviewed tool or template behavior changed')
+        if value['format'] == FEEDBACK_RECORD:
+            changed.add('chatkit')
         if value['format'] in (COSINE_RECORD, METEOR_RECORD):
             changed.add('evals')
         if value['format'] == AUTOMATION_RECORD:
@@ -800,7 +822,7 @@ def attach(value, prior):
         ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
         del previous['capabilities']['responses']
     envelope = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']])
-    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD):
+    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD):
         # Prior releases already compressed their history. Keep those signed
         # bytes once and compress only this release's reconstruction fields.
         envelope['history'] = previous.pop('reused_business')
@@ -812,7 +834,7 @@ def attach(value, prior):
 
 def previous_record(value):
     reuse = value['reused_business']
-    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD)
+    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD)
     ledger.keys(reuse, ('format', 'previous', 'history') if separate_history else ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
@@ -824,6 +846,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            FEEDBACK_RECORD: (METEOR_FORMAT, ('format', 'previous', 'history')),
             METEOR_RECORD: (HISTORY_FORMAT, ('format', 'previous', 'history')),
             HISTORY_RECORD: (SAFETY_FORMAT, ('format', 'previous', 'history')),
             SAFETY_RECORD: (COSINE_FORMAT, ('format', 'previous', 'history')),
@@ -860,8 +883,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            FEEDBACK_RECORD: (FEEDBACK_REVIEWED, METEOR_REVIEWED),
             METEOR_RECORD: (METEOR_REVIEWED, HISTORY_REVIEWED),
             HISTORY_RECORD: (HISTORY_REVIEWED, SAFETY_REVIEWED),
             SAFETY_RECORD: (SAFETY_REVIEWED, COSINE_REVIEWED),

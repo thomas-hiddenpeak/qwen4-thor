@@ -1,0 +1,170 @@
+{
+  "stage": "native_tls_verified",
+  "issued": false,
+  "reference": "https://openai.github.io/chatkit-python/api/chatkit/types/#chatkit.types.ItemFeedbackParams",
+  "behavior": "Persist the latest positive/negative vote for each item in its own project, user, workflow and visible thread. Discard the entire change if any item is absent. Return an empty object on success. Private vote data stays outside public thread item objects.",
+  "targeted": {
+    "chatkit_feedback_": "fb1d60775e77aea47b86ebee3ef39fdb96caee76259fe5d79268e008fb95f258",
+    "chatkit_thread_history_": "a71bd504396e54c178f2bc8d265c93ea0ab0adcc29a289c47a9d7f7007ba47b9"
+  },
+  "source": {
+    "src/server/chatkit_threads.cpp": "74ed2a71a737f84c13d9b38e965a373b5d1f134c033f1e2d1de2dae863a31c78",
+    "tests/server_chatkit_test.cpp": "8fdc8be2363c920c4b55ac5f45df0f0f6a1f8923dd99c064fc9f2c853c5ae804"
+  },
+  "host_binary": "8b850bbc120be6fb4ae86b10db429b5686129d80ea5d3aa062fdc51a854ba349",
+  "sdk_driver": "e4526b1ab61d6a1a12b20b14bf3cca9200c9a2b36bca425cc53e4b432e49bdef",
+  "pending": [
+    "Two-capacity handoff and managed recovery",
+    "Stopped release and matching handoff"
+  ],
+  "entity_mentions": {
+    "stage": "native_tls_verified",
+    "reference": "https://openai.github.io/chatkit-python/concepts/entities/",
+    "management_reference": "UserMessageItem.content accepts UserMessageInputText and UserMessageQuotedText in the frozen OpenAPI.",
+    "behavior": "The browser stores and replays the scoped tag, its ID, text and metadata. The model receives the user-visible mention as text; the management history projects it into its official input_text type.",
+    "targeted_schema": {
+      "schema_views": 2,
+      "admitted": 4,
+      "rejected": 10,
+      "official_receipts_checked": 4,
+      "official_rejections": 2,
+      "scope": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "inputs": {
+        "serve-application-v1.schema.json": "1d4f5a56db94650889244a28dcad7bb1b775a934f795786d31445fbb3bffebac",
+        "serve-openapi-bundle-v1.json": "a9dac7e81f76de67d3d30288313d6c9e2fd8a953e319dbc39b318b9c1be6bb26",
+        "sdk-observations.json": "bc0d7880bf482e021f1580dccff2318645e3ee109ae1fd527f114c88e0ca8956",
+        "sdk_wire_receipt.py": "103b60239fd3d7f9f542df92cae5f576ad7fdfff73da183422e0a36577a58398"
+      }
+    },
+    "profile_migration": {
+      "passed": 49,
+      "sha256": "5ed8f3e62bce656ae905178c34b2bff6ff0461ff6c967c6d95ec5eae390a6d1a"
+    },
+    "native_sources": {
+      "src/server/chat_capabilities.cpp": "da0bf7f2f42d45133bdcbaa94efde26487a9b6d3d2cd01f08c5d9beb1327b064",
+      "src/server/chatkit_client.cpp": "230e9b395a5e660d505fd5e41fb8745617fd10492a4b49f95019c7430e7268d1",
+      "src/server/chatkit_threads.cpp": "129660fda24a4542dff5b6ee2e11417a2aa77e315049fe45a492fafc8c92aa94",
+      "src/server/chatkit_thread_state.cpp": "cb1b8bbd2f8c842849d8f9f9e0a7c2fd45ee5b58398b0d7afbea890edf2674a7",
+      "tests/server_chatkit_test.cpp": "078620cfd1c4bbf39500a56959782593917085fe402f384b45f8c72aca1b6b65",
+      "src/server/chatkit_thread_state.h": "639a75366df639e9d954fad25e52da784ab693128cd4fe2260019e813060348b"
+    },
+    "host_binary": "0b73695bded5e245889b8e93d840bacb99f45b57e73a474b89d9673b038f0c95",
+    "native_cases": {
+      "chatkit_entity_mentions_": "6046adadc55199d2422e48f46a52ab81d0bd338a55cd3df2a380423c88c26970",
+      "chatkit_feedback_": "fb1d60775e77aea47b86ebee3ef39fdb96caee76259fe5d79268e008fb95f258",
+      "chatkit_tool_call_preserves_": "45056d203f65739c981b581f5ce809c5a980a852d7991d5920575631aa0561c7",
+      "chatkit_thread_history_": "a71bd504396e54c178f2bc8d265c93ea0ab0adcc29a289c47a9d7f7007ba47b9"
+    }
+  },
+  "input_contract": "A missing or non-string feedback thread ID is a malformed request (400). A well-typed inaccessible thread or absent item returns 404.",
+  "sdk": {
+    "sdk": "7.47.0",
+    "workflow": "agent_1f17804d60db76300542f29cb6b12d05",
+    "thread": "cthr_94ea86b4fc226d46c51946b1a29f3367",
+    "items": [
+      "item_dc344431b28e429ee30338458256c32a",
+      "msg_02f349b46fc03e629b994456af805ab0"
+    ],
+    "expected_votes": [
+      "positive",
+      "negative"
+    ],
+    "model_answer": "488",
+    "entity_id": "q4t-current-release",
+    "browser_tag": true,
+    "sdk_mention": "@rev488",
+    "sibling": 404,
+    "peer": 404,
+    "missing_item": 404,
+    "revoked": 401,
+    "repeat": 200,
+    "public_rows_identical": true,
+    "wire": {
+      "spec_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "operations": [
+        {
+          "method": "POST",
+          "path": "/agents",
+          "status": 201,
+          "json_sha256": "112e20baf5a78b8dd842f50646b19c048f53f16dd3276e360b0b1b46052389ac"
+        },
+        {
+          "method": "POST",
+          "path": "/chatkit/sessions",
+          "status": 200,
+          "json_sha256": "14b7bb45f92bb68beae2eedb629bff473b65e39d409346d28e10881fd0964b63"
+        },
+        {
+          "method": "POST",
+          "path": "/chatkit/sessions",
+          "status": 200,
+          "json_sha256": "129c6220850c7ca54fafa519761b7790ca82e005e668db71fb6cda60bec63e42"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads/{thread_id}/items",
+          "status": 200,
+          "json_sha256": "0f6d061521401ddb175fc689e60e5bd74b797d9286d6a6d9da2f7d4cac8a1121"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads",
+          "status": 200,
+          "json_sha256": "d822f52dc52181c4d4aabbb8e9575e03cf7120dc68e961a5531b2ad7cba77a24"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads/{thread_id}",
+          "status": 200,
+          "json_sha256": "41293b9c64e71afbe86e036e66baebb690a96dd7c4690b1af00a234b7ad16f13"
+        },
+        {
+          "method": "GET",
+          "path": "/chatkit/threads/{thread_id}/items",
+          "status": 200,
+          "json_sha256": "0f6d061521401ddb175fc689e60e5bd74b797d9286d6a6d9da2f7d4cac8a1121"
+        },
+        {
+          "method": "POST",
+          "path": "/chatkit/sessions/{session_id}/cancel",
+          "status": 200,
+          "json_sha256": "afe581a73858863e0addc98e4d5b3d3a72a880c3a6498126e32b3ce7f72a6d6e"
+        },
+        {
+          "method": "DELETE",
+          "path": "/chatkit/threads/{thread_id}",
+          "status": 200,
+          "json_sha256": "efeb8546c390ecf73869269d286fdc863a76135bdde4b776a9b6d6adfd24740a"
+        }
+      ]
+    },
+    "store_sha256": "a4d945e08d2f08f36f99c93161643f14fd240c1b85cba017e471c46e8309138c",
+    "private_feedback": true,
+    "deleted": "cthr_94ea86b4fc226d46c51946b1a29f3367",
+    "driver_sha256": "e4526b1ab61d6a1a12b20b14bf3cca9200c9a2b36bca425cc53e4b432e49bdef"
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.673,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "management_methods": [
+    "DELETE /chatkit/threads/{thread_id}",
+    "GET /chatkit/threads",
+    "GET /chatkit/threads/{thread_id}",
+    "GET /chatkit/threads/{thread_id}/items",
+    "POST /chatkit/sessions",
+    "POST /chatkit/sessions/{session_id}/cancel"
+  ],
+  "raw": {
+    "chatkit-feedback-business-01/create/sdk-result.json": "3b335fcad532e4923366a00fee7d761a2dc399d8b3aedf2ea4eb4e49a4d91c1e",
+    "chatkit-feedback-business-01/create/sdk-observations.json": "06f411bf0744384c28954de8d12e06d9af00ebb5afb6988dd33fbb876e27095d",
+    "chatkit-feedback-lease-01/exit.json": "4ec8d088df9f2f125463ef53cc892c809c740f31e9bf938ccfd7f8f993fb31bf",
+    "chatkit-feedback-business-01/plan.json": "7dc5f08a9ea7c369eb30f37b84007b0a901bf81ed55d094379958de685d605c4",
+    "chatkit-feedback-business-01/result.json": "4427f822bbdf496497eacb52d65ac5d4a117e8d674b4dde8238b6eee6d6de99d"
+  }
+}

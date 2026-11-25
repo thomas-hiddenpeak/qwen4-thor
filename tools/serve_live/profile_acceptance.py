@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'chatkit_feedback_handoff' in self.plan:
+            from tools.serve_responses import chatkit_feedback_profiles
+            chatkit_feedback_profiles.business(self, capabilities)
         if 'eval_meteor_handoff' in self.plan:
             from tools.serve_responses import eval_meteor_profiles
             eval_meteor_profiles.business(self, capabilities)
