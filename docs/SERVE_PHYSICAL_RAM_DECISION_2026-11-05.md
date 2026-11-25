@@ -5,6 +5,10 @@
 交付关卡；不是对未来硬件/驱动或所有可能机制的不可能性证明，也不
 阻塞明确容量配置下的受控服务。没有新增GPU探针、压力或OOM测试。
 
+## 2026-11-25 平台复核
+
+本机运行 Jetson Linux R39.2.1、内核 6.8.12-1021-tegra 和 CUDA 13.3.0。cgroup v2 根层级列出了 cpuset、cpu、io、memory、hugetlb 和 pids；其中没有 dmem 或 misc。NVIDIA 的 MPS v3 设备内存分区要求 CUDA 13.4 以上（含 13.4）和非 MIG 设备，托管内存还有单独的计量条件。Jetson 示例中的 MIG 配置列出 0 GB 的专用内存。上述资料给出了后续板卡升级时可验证的候选机制；本机的 CUDA 申请额度、memcg 和全局水位仍应分别报告。[本机只读记录](evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json) · [NVIDIA MPS 内存分区](https://docs.nvidia.com/deploy/mps/latest/mpsv3-memory-partitioning.html) · [Jetson R39.2.1 MIG](https://docs.nvidia.com/jetson/archives/r39.2.1/DeveloperGuide/SD/MiG.html)
+
 ## 已有反例与代码覆盖
 
 [SRV-02e的实机分配](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md)已经给出

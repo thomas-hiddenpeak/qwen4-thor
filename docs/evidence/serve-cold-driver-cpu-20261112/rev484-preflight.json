@@ -1,0 +1,129 @@
+{
+  "status": "prepared_awaiting_authorized_maintenance_window",
+  "issued_plans": {
+    "482": {
+      "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/eval3-delivery-soak-src/.q4t-work/cold482-01/plan.json",
+      "source": "861d71230590e2d830eef5f84fc91824bc7599a8",
+      "sha256": "47bc94f064ad68e0d215de2c7b6e5fcf9b47664f185c9763814f51d917cfc10b",
+      "manifest": "a5e061b8a33a550e104b320dca0dae24564f7ce364e143527bf45687bf229cef",
+      "service_id": "4a9d9996-2d91-40c7-a1fa-082674be272a",
+      "limits": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 1,
+        "controls": 2000,
+        "seconds": 600
+      },
+      "sealed_check": "a71bf8fde27b25565ac600786f1d76d927aa92d32ea1d59bf8bfce3197431175",
+      "external_units": {
+        "jtop.service": "0134cb45752e7bd1961942506d2c5384b398ecde6d465ffbdfcb25b5c0da0a6b",
+        "nvargus-daemon.service": "58def8c2ac2873d2811ae586bd7a472e091ac3b859127184207f3b3dd24550ec"
+      }
+    },
+    "484": {
+      "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/safety-delivery-soak-src/.q4t-work/cold484-01/plan.json",
+      "source": "0e41dc4ba9d104e8eea13efe4dd944bece4dd2bc",
+      "sha256": "26e5be19e7c31c3490337dbe9883377f993d18b0a97293241192f9ab8f60572a",
+      "manifest": "8cdcad1c4d4dd40b0cf7a40f4ccc234c24b538984da2cdd7ed16e88d301fff67",
+      "service_id": "568be366-8479-476c-98c7-2bdfe5b63a87",
+      "limits": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 1,
+        "controls": 2000,
+        "seconds": 600
+      },
+      "sealed_check": "24b59749e00ad5dc57c09e0231ecc7d3fdaf4809f5aadafd0420cca597c7591c",
+      "external_units": {
+        "jtop.service": "0134cb45752e7bd1961942506d2c5384b398ecde6d465ffbdfcb25b5c0da0a6b",
+        "nvargus-daemon.service": "58def8c2ac2873d2811ae586bd7a472e091ac3b859127184207f3b3dd24550ec"
+      }
+    }
+  },
+  "cpu": {
+    "tests": 11,
+    "sha256": "becef7bd39179296d0f17b9214447a1d5c688e923c5fb982cdc232386302f22a"
+  },
+  "actual_controlled_cold_start": false,
+  "host_service_changes": 0,
+  "model_starts": 0,
+  "device_access_filter_installed": false,
+  "retained_reason": "Existing camera and monitoring services hold GPU device handles; temporary stop/restore awaits the operator-selected window.",
+  "physical_device_memory_observation": {
+    "stage": "read_only_platform_observation",
+    "sources": {
+      "jetson": {
+        "path": "/etc/nv_tegra_release",
+        "sha256": "07a60da5ee2c11ccad41bed2325d987508a55667a428f27b52cd5bd4162b2b66",
+        "value": "# R39 (release), REVISION: 2.1, GCID: 46758480, BOARD: generic, EABI: aarch64, DATE: Fri Aug  7 05:54:22 AM UTC 2026\n# KERNEL_VARIANT: oot\nTARGET_USERSPACE_LIB_DIR=nvidia\nTARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia"
+      },
+      "cuda": {
+        "path": "/usr/local/cuda/version.json",
+        "sha256": "d2454ef27430ce41a2b7f1c67b7779a1d718994fbe3f830ee5c898373b65ab94",
+        "value": "13.3.0"
+      },
+      "driver": {
+        "path": "/proc/driver/nvidia/version",
+        "sha256": "8afa46a125fedb92e08cd641cfa8e20b681390ddc48e76a82e8673a547c85a21",
+        "value": "NVRM version: NVIDIA UNIX Open Kernel Module for aarch64  TempVersion  Release Build  (r595_00)  (buildbrain@74e043fc-6c96-4a54-a660-50b30a72108d-97k4-j97dd)  Thu Aug  6 10:18:15 PM PDT 2026\nGCC version:  gcc version 13.2.0 (crosstool-NG 1.26.0)"
+      },
+      "kernel": {
+        "path": "/proc/sys/kernel/osrelease",
+        "sha256": "54c302772e9ea4a640998a4e3f23fed1cccafbc53c84c2c26d24b3616138a997",
+        "value": "6.8.12-1021-tegra"
+      },
+      "controllers": {
+        "path": "/sys/fs/cgroup/cgroup.controllers",
+        "sha256": "7705846fd66b27b90255284d08ddc804d01c49449134ec4ebddccc656fa068f6",
+        "value": "cpuset cpu io memory hugetlb pids"
+      },
+      "subtree": {
+        "path": "/sys/fs/cgroup/cgroup.subtree_control",
+        "sha256": "7705846fd66b27b90255284d08ddc804d01c49449134ec4ebddccc656fa068f6",
+        "value": "cpuset cpu io memory hugetlb pids"
+      }
+    },
+    "resource_controllers": [
+      "cpuset",
+      "cpu",
+      "io",
+      "memory",
+      "hugetlb",
+      "pids"
+    ],
+    "root_files": {
+      "dmem.current": false,
+      "dmem.max": false,
+      "misc.current": false,
+      "misc.capacity": false,
+      "misc.max": false,
+      "memory.current": false,
+      "memory.max": false
+    },
+    "observer_cgroup": {
+      "path": "/user.slice/user-2002.slice/session-3290.scope",
+      "files": {
+        "dmem.current": false,
+        "dmem.max": false,
+        "misc.current": false,
+        "misc.capacity": false,
+        "misc.max": false,
+        "memory.current": true,
+        "memory.max": true
+      }
+    },
+    "historical_charge_probe": {
+      "path": "docs/evidence/serve-startup-memory-20261103/result.json",
+      "sha256": "297a0f26304f6fb39d2ea282ffdf71fa9fc56b2952691c8b3ef22b5710ec786c"
+    },
+    "platform_qualification": "Current userspace is below the documented CUDA 13.4 minimum. The mounted cgroup does not expose dmem or misc. No new physical GPU limit was configured or verified.",
+    "next_platform_test": "With a supported driver/toolkit, a real device key and dedicated cgroup, measure touched device, managed, pinned and host memory separately and demonstrate rejection before claiming a bound.",
+    "vendor_references": [
+      "https://docs.nvidia.com/deploy/mps/latest/mpsv3-memory-partitioning.html",
+      "https://docs.nvidia.com/jetson/archives/r39.2.1/DeveloperGuide/SD/MiG.html"
+    ],
+    "gpu_queries": 0,
+    "model_starts": 0,
+    "host_writes": 0
+  }
+}

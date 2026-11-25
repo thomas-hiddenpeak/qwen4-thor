@@ -29,73 +29,97 @@ if (chatHistory) {
 }
 const filename = chatHistory ? 'project-scope.pdf' : 'scope-decision.txt';
 const mime = chatHistory ? 'application/pdf' : 'text/plain';
-const file = await owner.files.create({file: new File([bytes], filename, {type: mime}), purpose: 'user_data'});
 const metadata = {project: 'q4t', fixture: chatHistory ? 'frozen_chat_pdf' : 'frozen_file_evaluation'};
-const question = chatHistory ? 'Read the attached project record. Return only the integer labelled Scope total.' :
-  'Read the document. Return only the integer in counts.required_inference_or_application_service.';
-let first;
-if (chatHistory) {
-  first = await owner.chat.completions.create({model: p.model, store: true, metadata, temperature: 0,
-    max_completion_tokens: 48, reasoning_effort: 'none', messages: [{role: 'user', content: [
-      {type: 'file', file: {file_id: file.id}}, {type: 'text', text: question}]}]});
-  assert.equal(first.choices[0].message.content.trim(), answer);
+async function createHistory() {
+  const file = await owner.files.create({file: new File([bytes], filename, {type: mime}), purpose: 'user_data'});
+  const question = chatHistory ? 'Read the attached project record. Return only the integer labelled Scope total.' :
+    'Read the document. Return only the integer in counts.required_inference_or_application_service.';
+  let first;
+  if (chatHistory) {
+    first = await owner.chat.completions.create({model: p.model, store: true, metadata, temperature: 0,
+      max_completion_tokens: 48, reasoning_effort: 'none', messages: [{role: 'user', content: [
+        {type: 'file', file: {file_id: file.id}}, {type: 'text', text: question}]}]});
+    assert.equal(first.choices[0].message.content.trim(), answer);
+  } else {
+    first = await owner.responses.create({model: p.model, store: true, metadata, temperature: 0,
+      max_output_tokens: 48, reasoning: {effort: 'none'}, input: [{role: 'user', content: [
+        {type: 'input_file', file_id: file.id}, {type: 'input_text', text: question}]}]});
+    assert.equal(first.output_text.trim(), answer);
+  }
+  await owner.files.delete(file.id);
+  await assert.rejects(owner.files.retrieve(file.id), e => e.status === 404);
+  return {file: file.id, history: first.id};
+}
+const previous = p.previous;
+const fileDigest = createHash('sha256').update(bytes).digest('hex');
+let ids;
+if (previous) {
+  assert.equal(previous.sha256, fileDigest);
+  ids = {file: previous.source_file, history: previous.response};
+  const stored = await owner.chat.completions.retrieve(ids.history);
+  assert.equal(stored.choices[0].message.content.trim(), answer);
+  await assert.rejects(peer.chat.completions.retrieve(ids.history), e => e.status === 404);
+  await assert.rejects(owner.files.retrieve(ids.file), e => e.status === 404);
 } else {
-  first = await owner.responses.create({model: p.model, store: true, metadata, temperature: 0,
-    max_output_tokens: 48, reasoning: {effort: 'none'}, input: [{role: 'user', content: [
-      {type: 'input_file', file_id: file.id}, {type: 'input_text', text: question}]}]});
-  assert.equal(first.output_text.trim(), answer);
+  ids = await createHistory();
 }
-await owner.files.delete(file.id);
-await assert.rejects(owner.files.retrieve(file.id), e => e.status === 404);
-const ev = await owner.evals.create({data_source_config: {type: 'logs', metadata},
-  testing_criteria: [{name: 'Original attached scope', type: 'string_check',
-    input: '{{sample.output_text}}', reference: answer, operation: 'eq'}]});
-const wire = [];
-async function observe(path, method, status, call) {
-  const response = await call.asResponse();
-  assert.equal(response.status, status);
-  const value = await response.clone().json();
-  const parsed = await call;
-  assert.deepEqual(value.data ?? value, parsed.data ?? parsed);
-  wire.push({path, method, status, value});
-  return parsed;
+if (p.phase === 'primary') {
+  process.stdout.write(JSON.stringify({sdk: version, history_answer: answer, sha256: fileDigest,
+    source_file: ids.file, response: ids.history, source_deleted_before_selection: 404}));
+} else {
+  await replay();
 }
-const collection = '/evals/{eval_id}/runs', detail = collection + '/{run_id}';
-const source = {type: chatHistory ? 'stored_completions' : 'responses', model: p.model, metadata};
-const run = await observe(collection, 'post', 201, owner.evals.runs.create(ev.id, {
-  data_source: {type: chatHistory ? 'completions' : 'responses', model: p.model, source, sampling_params:
-    {temperature: 0, reasoning_effort: 'none', max_completion_tokens: 48}}}));
-const history = chatHistory ? owner.chat.completions : owner.responses;
-await history.delete(first.id);
-await assert.rejects(history.retrieve(first.id), e => e.status === 404);
-await assert.rejects(peer.evals.runs.retrieve(run.id, {eval_id: ev.id}), e => e.status === 404);
-const end = Date.now() + 60000;
-let state;
-do {
-  state = await owner.evals.runs.retrieve(run.id, {eval_id: ev.id});
-  if (!['queued', 'in_progress'].includes(state.status)) break;
-  await sleep(125);
-} while (Date.now() < end);
-assert.equal(state.status, 'completed', JSON.stringify(state.error));
-await observe(detail, 'get', 200, owner.evals.runs.retrieve(run.id, {eval_id: ev.id}));
-const results = await observe(detail + '/output_items', 'get', 200,
-  owner.evals.runs.outputItems.list(run.id, {eval_id: ev.id}));
-assert.equal(results.data.length, 1);
-const result = results.data[0];
-assert.equal(result.sample.output[0].content.trim(), answer);
-assert.equal(result.status, 'pass');
-assert.equal(result.results[0].score, 1);
-assert.equal(state.per_model_usage[0].invocation_count, 1);
-assert.equal(result.datasource_item.id, first.id);
-assert.ok(result.datasource_item.input_trajectory.some(m =>
-  Array.isArray(m.content) && m.content.some(part => (chatHistory ? part.file?.file_id : part.file_id) === file.id)));
-assert.ok(!JSON.stringify(result).includes('frozen_response_parts'));
-const independent = (await peer.chat.completions.create({model: p.model, temperature: 0,
-  max_tokens: 32, reasoning_effort: 'none', messages: [{role: 'user', content: 'Return only 6 times 7.'}]}))
-  .choices[0].message.content.trim();
-assert.equal(independent, '42');
-process.stdout.write(JSON.stringify({sdk: version, independent_chat: independent, history_answer: answer,
-  replay_answer: result.sample.output[0].content.trim(), score: result.results[0].score,
-  sha256: createHash('sha256').update(bytes).digest('hex'), source_file: file.id,
-  response: first.id, evaluation: ev.id, run: run.id, output: result.id, source_deleted_before_selection: 404, response_deleted: 404,
-  foreign_project: 404, wire}));
+async function replay() {
+  const ev = await owner.evals.create({data_source_config: {type: 'logs', metadata},
+    testing_criteria: [{name: 'Original attached scope', type: 'string_check',
+      input: '{{sample.output_text}}', reference: answer, operation: 'eq'}]});
+  const wire = [];
+  async function observe(path, method, status, call) {
+    const response = await call.asResponse();
+    assert.equal(response.status, status);
+    const value = await response.clone().json();
+    const parsed = await call;
+    assert.deepEqual(value.data ?? value, parsed.data ?? parsed);
+    wire.push({path, method, status, value});
+    return parsed;
+  }
+  const collection = '/evals/{eval_id}/runs', detail = collection + '/{run_id}';
+  const source = {type: chatHistory ? 'stored_completions' : 'responses', model: p.model, metadata};
+  const run = await observe(collection, 'post', 201, owner.evals.runs.create(ev.id, {
+    data_source: {type: chatHistory ? 'completions' : 'responses', model: p.model, source, sampling_params:
+      {temperature: 0, reasoning_effort: 'none', max_completion_tokens: 48}}}));
+  const history = chatHistory ? owner.chat.completions : owner.responses;
+  await history.delete(ids.history);
+  await assert.rejects(history.retrieve(ids.history), e => e.status === 404);
+  await assert.rejects(peer.evals.runs.retrieve(run.id, {eval_id: ev.id}), e => e.status === 404);
+  const end = Date.now() + 60000;
+  let state;
+  do {
+    state = await owner.evals.runs.retrieve(run.id, {eval_id: ev.id});
+    if (!['queued', 'in_progress'].includes(state.status)) break;
+    await sleep(125);
+  } while (Date.now() < end);
+  assert.equal(state.status, 'completed', JSON.stringify(state.error));
+  await observe(detail, 'get', 200, owner.evals.runs.retrieve(run.id, {eval_id: ev.id}));
+  const results = await observe(detail + '/output_items', 'get', 200,
+    owner.evals.runs.outputItems.list(run.id, {eval_id: ev.id}));
+  assert.equal(results.data.length, 1);
+  const result = results.data[0];
+  assert.equal(result.sample.output[0].content.trim(), answer);
+  assert.equal(result.status, 'pass');
+  assert.equal(result.results[0].score, 1);
+  assert.equal(state.per_model_usage[0].invocation_count, 1);
+  assert.equal(result.datasource_item.id, ids.history);
+  assert.ok(result.datasource_item.input_trajectory.some(m =>
+    Array.isArray(m.content) && m.content.some(part => (chatHistory ? part.file?.file_id : part.file_id) === ids.file)));
+  assert.ok(!JSON.stringify(result).includes('frozen_response_parts'));
+  const independent = (await peer.chat.completions.create({model: p.model, temperature: 0,
+    max_tokens: 32, reasoning_effort: 'none', messages: [{role: 'user', content: 'Return only 6 times 7.'}]}))
+    .choices[0].message.content.trim();
+  assert.equal(independent, '42');
+  process.stdout.write(JSON.stringify({sdk: version, independent_chat: independent, history_answer: answer,
+    replay_answer: result.sample.output[0].content.trim(), score: result.results[0].score,
+    sha256: fileDigest, source_file: ids.file,
+    response: ids.history, evaluation: ev.id, run: run.id, output: result.id, source_deleted_before_selection: 404, response_deleted: 404,
+    foreign_project: 404, wire}));
+}

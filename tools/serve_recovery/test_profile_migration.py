@@ -152,6 +152,37 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ledger.LedgerError):
                     live.previous_record(wrong)
 
+    def test_project_safety_requires_reviewed_capacities_and_local_publication(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(evals=live.COSINE_EVALS, eval_embedding_grader=live.COSINE_GRADER)
+        target = dict(old, project_safety=live.SAFETY_CAPABILITY)
+        self.assertTrue(migration.explicit_extension(old, target))
+        self.assertFalse(migration.explicit_extension(target, old))
+        self.assertFalse(migration.explicit_extension({}, target))
+        for key, changed in [('alerts', 1), ('cases', False), ('publication', 'public')]:
+            with self.subTest(field=key):
+                wrong = dict(live.SAFETY_CAPABILITY, **{key: changed})
+                self.assertFalse(migration.explicit_extension(old, dict(target, project_safety=wrong)))
+
+    def test_project_safety_reconstructs_both_older_history_envelopes(self):
+        from tools.serve_recovery import profile_live_reuse as live, profile_mcp_codec as codec
+        history = dict(format=live.COSINE_FORMAT, previous=codec.pack({'reviewed': 46}),
+                       history=dict(format=live.EVAL_FORMAT, previous=codec.pack({'reviewed': 45})))
+        metadata = dict(format=live.COSINE_RECORD, configuration={}, startup_memory={}, environment={},
+                        engine={'binary_sha256': 'a' * 64}, ctimes={}, capabilities={},
+                        added=['project_safety'], live={'checked': True})
+        current = dict(format=live.SAFETY_RECORD, capabilities={'project_safety': live.SAFETY_CAPABILITY},
+                       identity={'model_assets': {}}, business={'live': {}},
+                       reused_business=dict(format=live.SAFETY_FORMAT, history=history, previous=codec.pack(metadata)))
+        prior = live.previous_record(current)
+        self.assertEqual(prior['reused_business'], history)
+        self.assertNotIn('project_safety', prior['capabilities'])
+        for replacement in (history['history'], dict(format=live.COSINE_FORMAT, previous=history['previous'])):
+            with self.subTest(history_format=replacement['format']):
+                current['reused_business']['history'] = replacement
+                with self.assertRaises(ledger.LedgerError):
+                    live.previous_record(current)
+
     def test_trained_cosine_migration_requires_the_exact_model_and_metrics(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(evals=live.EVAL_CAPABILITY, vector_stores={'native_embedding_configured': True})
