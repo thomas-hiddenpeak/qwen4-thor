@@ -1238,14 +1238,16 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_structured_input_20261125": {
-        "stage": "candidate_http_and_offline_reference_verified",
+        "stage": "profile_verified",
         "issued": false,
-        "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+        "receipt": "evidence/serve-chatkit-structured-20261125/business.json",
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       },
       "chatkit_workflow_actions_20261125": {
-        "stage": "candidate_http",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       }
     },
     {
@@ -2752,14 +2754,16 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_structured_input_20261125": {
-        "stage": "candidate_http_and_offline_reference_verified",
+        "stage": "profile_verified",
         "issued": false,
-        "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+        "receipt": "evidence/serve-chatkit-structured-20261125/business.json",
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       },
       "chatkit_workflow_actions_20261125": {
-        "stage": "candidate_http",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       }
     },
     {
@@ -3294,14 +3298,16 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_structured_input_20261125": {
-        "stage": "candidate_http_and_offline_reference_verified",
+        "stage": "profile_verified",
         "issued": false,
-        "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+        "receipt": "evidence/serve-chatkit-structured-20261125/business.json",
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       },
       "chatkit_workflow_actions_20261125": {
-        "stage": "candidate_http",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       }
     },
     {
@@ -8068,14 +8074,16 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_structured_input_20261125": {
-        "stage": "candidate_http_and_offline_reference_verified",
+        "stage": "profile_verified",
         "issued": false,
-        "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+        "receipt": "evidence/serve-chatkit-structured-20261125/business.json",
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       },
       "chatkit_workflow_actions_20261125": {
-        "stage": "candidate_http",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       }
     },
     {
@@ -10877,14 +10885,16 @@
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
       },
       "chatkit_structured_input_20261125": {
-        "stage": "candidate_http_and_offline_reference_verified",
+        "stage": "profile_verified",
         "issued": false,
-        "receipt": "evidence/serve-chatkit-structured-20261125/business.json"
+        "receipt": "evidence/serve-chatkit-structured-20261125/business.json",
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       },
       "chatkit_workflow_actions_20261125": {
-        "stage": "candidate_http",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-actions-20261125/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-chatkit-actions-20261125/profiles.json"
       }
     },
     {

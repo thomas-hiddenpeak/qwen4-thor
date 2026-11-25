@@ -67,6 +67,10 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'chatkit_actions_handoff' in plan:
+            from tools.serve_responses import chatkit_actions_profiles
+            profiles[name]['evidence_sha256'].update(chatkit_actions_profiles.verify(phase, plan, declared))
+            continue
         if 'chatkit_retry_handoff' in plan:
             from tools.serve_responses import chatkit_retry_profiles
             profiles[name]['evidence_sha256'].update(chatkit_retry_profiles.verify(phase, plan, declared))

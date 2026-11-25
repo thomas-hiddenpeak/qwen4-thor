@@ -23,6 +23,13 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+CHATKIT_ACTIONS_RECORD = 'q4t-profile-business-v59'
+CHATKIT_ACTIONS_FORMAT = 'q4t-chatkit-actions-source-v1'
+CHATKIT_ACTIONS_RECEIPT = 'chatkit-actions-handoff.json'
+CHATKIT_ACTIONS_REVIEWED = {
+    'primary': '634261efdd85893eb3c778c59f7648e1f897b222826c871a30b3278a5bafdabc',
+    'light': '95156e11971866c4e86909838931857929931f6a94bc4638d3cc3f1869626892',
+}
 CHATKIT_RETRY_RECORD = 'q4t-profile-business-v58'
 CHATKIT_RETRY_FORMAT = 'q4t-chatkit-retry-source-v1'
 CHATKIT_RETRY_RECEIPT = 'chatkit-retry-handoff.json'
@@ -350,7 +357,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 COMPOSER_RECORD: COMPOSER_FORMAT, CHARACTER_RECORD: CHARACTER_FORMAT, TRACK_RECORD: TRACK_FORMAT,
                 TYPED_HISTORY_RECORD: TYPED_HISTORY_FORMAT,
                 STORED_REFUSAL_RECORD: STORED_REFUSAL_FORMAT,
-                CHATKIT_RETRY_RECORD: CHATKIT_RETRY_FORMAT}
+                CHATKIT_RETRY_RECORD: CHATKIT_RETRY_FORMAT,
+                CHATKIT_ACTIONS_RECORD: CHATKIT_ACTIONS_FORMAT}
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -372,6 +380,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'f8cf174d68360146f7671d4aba24bafe54744ce1cea1cbfcf8b4fe8cffa70ecd':
+        '3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87',
     '9e55d1861f434b4d0c3d7ef37ed25188625a2b659a71586bed396337a4b83ba4':
         '3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87',
     '5943cfda1ccef482417efc40e33f7cac49d727eec8e3347aec2a36a1c443c940':
@@ -502,6 +512,10 @@ def format_for(capabilities, evidence=None):
                        and CHARACTER_RECEIPT in (evidence or {})
                        and format_for(prior, evidence) == COMPOSER_RECORD,
                        'character qualification requires a verified reference and the issued dictation handoff')
+        if CHATKIT_ACTIONS_RECEIPT in evidence:
+            ledger.require(CHATKIT_RETRY_RECEIPT in evidence and STORED_REFUSAL_RECEIPT in evidence
+                           and TYPED_HISTORY_RECEIPT in evidence, 'missing issued ChatKit retry history')
+            return CHATKIT_ACTIONS_RECORD
         if CHATKIT_RETRY_RECEIPT in evidence:
             ledger.require(STORED_REFUSAL_RECEIPT in evidence and TYPED_HISTORY_RECEIPT in evidence,
                            'missing prior stored-message or tool-history evidence')
@@ -736,8 +750,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            CHATKIT_ACTIONS_RECORD: (CHATKIT_RETRY_RECORD, CHATKIT_RETRY_REVIEWED, None, CHATKIT_ACTIONS_RECEIPT),
             CHATKIT_RETRY_RECORD: (STORED_REFUSAL_RECORD, STORED_REFUSAL_REVIEWED, None, CHATKIT_RETRY_RECEIPT),
             STORED_REFUSAL_RECORD: (TYPED_HISTORY_RECORD, TYPED_HISTORY_REVIEWED, None, STORED_REFUSAL_RECEIPT),
             TYPED_HISTORY_RECORD: (TRACK_RECORD, TRACK_REVIEWED, None, TYPED_HISTORY_RECEIPT),
@@ -967,7 +982,7 @@ def attach(value, prior):
         ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
         del previous['capabilities']['responses']
     envelope = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']])
-    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD):
+    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD, CHATKIT_ACTIONS_RECORD):
         # Prior releases already compressed their history. Keep those signed
         # bytes once and compress only this release's reconstruction fields.
         envelope['history'] = previous.pop('reused_business')
@@ -979,7 +994,7 @@ def attach(value, prior):
 
 def previous_record(value):
     reuse = value['reused_business']
-    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD)
+    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD, CHATKIT_ACTIONS_RECORD)
     ledger.keys(reuse, ('format', 'previous', 'history') if separate_history else ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
@@ -991,6 +1006,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            CHATKIT_ACTIONS_RECORD: (CHATKIT_RETRY_FORMAT, ('format', 'previous', 'history')),
             CHATKIT_RETRY_RECORD: (STORED_REFUSAL_FORMAT, ('format', 'previous', 'history')),
             STORED_REFUSAL_RECORD: (TYPED_HISTORY_FORMAT, ('format', 'previous', 'history')),
             TYPED_HISTORY_RECORD: (TRACK_FORMAT, ('format', 'previous', 'history')),
@@ -1036,8 +1052,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            CHATKIT_ACTIONS_RECORD: (CHATKIT_ACTIONS_REVIEWED, CHATKIT_RETRY_REVIEWED),
             CHATKIT_RETRY_RECORD: (CHATKIT_RETRY_REVIEWED, STORED_REFUSAL_REVIEWED),
             STORED_REFUSAL_RECORD: (STORED_REFUSAL_REVIEWED, TYPED_HISTORY_REVIEWED),
             TYPED_HISTORY_RECORD: (TYPED_HISTORY_REVIEWED, TRACK_REVIEWED),
