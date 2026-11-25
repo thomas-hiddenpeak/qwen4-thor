@@ -1285,15 +1285,17 @@
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "chatkit_image_attachment_20261126": {
-        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
-        "issued": false,
+        "stage": "issued_with_original_model_quality_limits",
+        "issued": true,
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
         "browser_preview": "verified after upload and after source deletion",
         "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
         "reservation_preview": "evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json",
-        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json"
+        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
+        "revision": 516,
+        "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       }
     },
     {
@@ -2856,15 +2858,17 @@
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "chatkit_image_attachment_20261126": {
-        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
-        "issued": false,
+        "stage": "issued_with_original_model_quality_limits",
+        "issued": true,
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
         "browser_preview": "verified after upload and after source deletion",
         "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
         "reservation_preview": "evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json",
-        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json"
+        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
+        "revision": 516,
+        "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       }
     },
     {
@@ -3454,15 +3458,17 @@
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "chatkit_image_attachment_20261126": {
-        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
-        "issued": false,
+        "stage": "issued_with_original_model_quality_limits",
+        "issued": true,
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
         "browser_preview": "verified after upload and after source deletion",
         "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
         "reservation_preview": "evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json",
-        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json"
+        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
+        "revision": 516,
+        "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       }
     },
     {
@@ -6236,15 +6242,17 @@
         "decision": "evidence/serve-scope-decision-20261120/media-backends-20261125.json"
       },
       "chatkit_image_attachment_20261126": {
-        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
-        "issued": false,
+        "stage": "issued_with_original_model_quality_limits",
+        "issued": true,
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
         "browser_preview": "verified after upload and after source deletion",
         "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
         "reservation_preview": "evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json",
-        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json"
+        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
+        "revision": 516,
+        "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       }
     },
     {
@@ -8316,15 +8324,17 @@
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "chatkit_image_attachment_20261126": {
-        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
-        "issued": false,
+        "stage": "issued_with_original_model_quality_limits",
+        "issued": true,
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
         "browser_preview": "verified after upload and after source deletion",
         "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
         "reservation_preview": "evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json",
-        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json"
+        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
+        "revision": 516,
+        "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       }
     },
     {
@@ -11198,21 +11208,23 @@
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "chatkit_image_attachment_20261126": {
-        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
-        "issued": false,
+        "stage": "issued_with_original_model_quality_limits",
+        "issued": true,
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
         "browser_preview": "verified after upload and after source deletion",
         "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
         "reservation_preview": "evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json",
-        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json"
+        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
+        "revision": 516,
+        "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev514_delivered_remaining_deliveries",
+      "state": "rev516_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12531,15 +12543,17 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "chatkit_image_attachment_20261126": {
-        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
-        "issued": false,
+        "stage": "issued_with_original_model_quality_limits",
+        "issued": true,
         "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
         "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
         "visual_profile": "explicit media, MTP off",
         "browser_preview": "verified after upload and after source deletion",
         "completed_upload_preview": "evidence/serve-chatkit-image-attachments-20261126/completed-previews.json",
         "reservation_preview": "evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json",
-        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json"
+        "cross_profile": "evidence/serve-chatkit-image-attachments-20261126/profiles.json",
+        "revision": 516,
+        "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       }
     },
     {

@@ -1,0 +1,31 @@
+{
+  "status": "prepared_awaiting_authorized_maintenance_window",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/chatkit-image-delivery-soak-src/.q4t-work/cold516-01/plan.json",
+  "plan_sha256": "77e7d2d5701c4740bdf4bb18129ecce00710294c5ff632776705605151aa19f9",
+  "service_id": "6e876ecf-c773-4e1d-8597-1c82e9549d97",
+  "source": "dd5bf18a3e429ef65e81dcf702a9c2a1ec26a1ab",
+  "limits": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 1,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "publication": 516,
+  "registered_package": "f513c6eb40b0e3b861599283eff2ee866a34f97a609511629dad349c955ce365",
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "f3f750b909537f54edab559e6117e648a32abc9be0682f230cc9603923048841",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "6a3aafcaee312b7969a7cb33b56a11cc12d04d086ab909097199b62ac43b8eb7",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "f513c6eb40b0e3b861599283eff2ee866a34f97a609511629dad349c955ce365",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "c92e7f494b8f84d20e39c85051c6e3a3b1a15ce86c13284750aaa1cc98be9291",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "model_actions": 0,
+  "host_filter_installed": false,
+  "host_units_modified": false,
+  "check_sha256": "6317e0ba002c354190818bafc038e1a06d72cc31d6cd21bc088c2e9d3ba65073",
+  "host_unit_baseline": {
+    "jtop.service": "MainPID=2731017\nId=jtop.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled",
+    "nvargus-daemon.service": "MainPID=2750\nId=nvargus-daemon.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled"
+  }
+}
