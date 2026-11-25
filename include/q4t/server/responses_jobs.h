@@ -88,6 +88,9 @@ class ResponsesJobs : public IResponsesCleanup {
                      std::shared_ptr<ClientRateLease> rate = {});
   // Cancel returns a real persisted terminal response. A deadline can end the
   // caller's wait without undoing cancellation or releasing a running owner.
+  // Only a scoped, currently admitted job can be signalled. Queued jobs are
+  // removed and settled immediately; running jobs close in their own worker.
+  bool RequestCancel(const std::string& scope, const std::string& id);
   ObjectReply Cancel(const std::string& id, const StateAccess& access);
   // One bounded scanner, independent of request/model workers. Client policy
   // must remain immutable and outlive the manager. No process is signalled.

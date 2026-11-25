@@ -81,6 +81,41 @@ ObjectReply AppendUserContent(const Json& parts, Json* content, Json* model) {
   return {};
 }
 
+bool HasPartialAssistantText(const Json& item) {
+  if (item.GetString("type") != "message" ||
+      item.GetString("role") != "assistant")
+    return false;
+  const auto* content = item.GetArray("content");
+  if (!content) return false;
+  for (const auto& part : content->array) {
+    const auto type = part.GetString("type");
+    const auto* value = type == "output_text" ? part.Find("text")
+                        : type == "refusal"   ? part.Find("refusal")
+                                              : nullptr;
+    if (!value || !value->IsString()) continue;
+    // UTF-8 spellings of non-ASCII whitespace recognized by str.strip() in
+    // the reference client. The stored string was already validated as UTF-8.
+    std::string_view text = value->str;
+    while (!text.empty()) {
+      const auto c = static_cast<unsigned char>(text.front());
+      if (c == ' ' || (c >= 9 && c <= 13) || (c >= 0x1c && c <= 0x1f)) {
+        text.remove_prefix(1);
+        continue;
+      }
+      static constexpr std::string_view spaces[] = {
+          "\u0085", "\u00A0", "\u1680", "\u2000", "\u2001", "\u2002", "\u2003",
+          "\u2004", "\u2005", "\u2006", "\u2007", "\u2008", "\u2009", "\u200A",
+          "\u2028", "\u2029", "\u202F", "\u205F", "\u3000",
+      };
+      const auto it = std::ranges::find_if(
+          spaces, [&](auto space) { return text.starts_with(space); });
+      if (it == std::end(spaces)) return true;
+      text.remove_prefix(it->size());
+    }
+  }
+  return false;
+}
+
 Json BrowserAnnotation(const Json& citation) {
   const auto type = citation.GetString("type");
   const bool url = type == "url_citation";
@@ -155,7 +190,9 @@ ObjectReply ProjectOutput(const Json& response, const std::string& id,
   const auto* output = response.GetArray("output");
   if (!output) return Corrupt();
   auto items = Array();
+  const bool cancelled = response.GetString("status") == "cancelled";
   for (const auto& item : output->array) {
+    if (cancelled && !HasPartialAssistantText(item)) continue;
     if (item.GetString("type") == "function_call") {
       Json arguments;
       if (item.GetString("call_id").empty() || item.GetString("name").empty() ||

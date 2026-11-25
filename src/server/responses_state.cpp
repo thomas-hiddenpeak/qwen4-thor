@@ -1,6 +1,7 @@
 #include "q4t/server/responses_state.h"
 
 #include "agent_artifact_internal.h"
+#include "chatkit_thread_state.h"
 #include "agent_workspace_copy.h"
 
 #include <algorithm>
@@ -412,7 +413,8 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
                                     const StateAccess& access,
                                     ResponseStatePlan* plan,
                                     const CancelledAgentHistory* cancelled,
-                                    std::string_view agent_session) {
+                                    std::string_view agent_session,
+                                    std::string_view chatkit_thread) {
   *plan = {};
   if (access.scope.empty() || access.scope.size() > 256)
     return StateError("Authenticated state scope is unavailable");
@@ -457,8 +459,32 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
         return StateError("Previous response belongs to another Agent session");
       if (const auto* tree = data->Find("agent_tree")) plan->agent_tree = *tree;
     }
+    if (!chatkit_thread.empty() &&
+        data->GetString("chatkit_thread_id") != chatkit_thread)
+      return StateError("Previous response belongs to another ChatKit thread");
     const auto& output = response->GetArray("output")->array;
-    if (cancelled) {
+    if (!chatkit_thread.empty() &&
+        response->GetString("status") == "cancelled") {
+      for (const auto& row : output) {
+        if (!chatkit_detail::HasPartialAssistantText(row)) continue;
+        auto partial = row;
+        if (partial.GetString("status") == "in_progress")
+          Set(&partial, "status", String("incomplete"));
+        plan->history.array.push_back(std::move(partial));
+      }
+      // Use the terminal response itself so threads reconciled by an older
+      // build receive the same context on their next turn.
+      auto interruption = ResolveItems(
+          Array({Object({{"type", String("message")},
+                         {"role", String("developer")},
+                         {"content", String("The user cancelled the previous "
+                                            "response. Follow the latest user "
+                                            "request.")}})}),
+          access, 1);
+      if (!interruption.ok()) return interruption;
+      plan->own_input.array.insert(plan->own_input.array.begin(),
+                                   std::move(interruption.value.array.front()));
+    } else if (cancelled) {
       auto appended = AppendCancelledAgentHistory(*cancelled, *data, &plan->history);
       if (!appended.ok()) return appended;
     } else {

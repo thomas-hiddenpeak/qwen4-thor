@@ -54,16 +54,6 @@ using detail::SendError;
 using detail::SendSimple;
 
 namespace detail {
-// HTTP EOF ends the response lifetime, including TCP write-half-close. This
-// endpoint deliberately does not support half-close-and-wait clients.
-// Do not consume bytes: request parsing remains the sole socket reader.
-bool ClientConnectionFailed(int fd) {
-  if (fd < 0) return false;  // Explicit native background execution.
-  pollfd peer{fd, POLLRDHUP, 0};
-  return poll(&peer, 1, 0) > 0 &&
-         (peer.revents & (POLLRDHUP | POLLERR | POLLHUP)) != 0;
-}
-
 bool RequestCancelled(RequestControl* control, int fd) {
   if (control->Cancelled()) return true;
   if (ClientConnectionFailed(fd))

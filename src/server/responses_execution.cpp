@@ -274,13 +274,12 @@ size_t ResponsesExecution::RetainedInputBytes() const {
   return bytes;
 }
 
-ObjectReply ResponsesExecution::Prepare(const Json& request,
-                                        const ChatPlanConfig& config,
-                                        StateAccess access, int64_t created,
-                                        bool background_executor,
-                                        const CancelledAgentHistory* cancelled,
-                                        const Json* frozen_eval_parts,
-                                        const chatkit_detail::RetryHistory* retry) {
+ObjectReply ResponsesExecution::Prepare(
+    const Json& request, const ChatPlanConfig& config, StateAccess access,
+    int64_t created, bool background_executor,
+    const CancelledAgentHistory* cancelled, const Json* frozen_eval_parts,
+    const chatkit_detail::RetryHistory* retry,
+    std::string_view chatkit_thread) {
   if (prepared_ || begun_)
     return Error(500, "response_state_invalid", "Response already prepared");
   access_ = std::move(access);
@@ -322,7 +321,8 @@ ObjectReply ResponsesExecution::Prepare(const Json& request,
     if (!identity)
       return Error(413, "mcp_credential_source_capacity", identity.message());
   }
-  auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled, agent_session_id_);
+  auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled,
+                                 agent_session_id_, chatkit_thread);
   if (!resolved.ok()) return resolved;
   if (retry) {
     auto restored = chatkit_detail::ApplyRetryHistory(*retry, &plan_);

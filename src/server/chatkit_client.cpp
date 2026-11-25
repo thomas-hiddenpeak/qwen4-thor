@@ -5,6 +5,9 @@
 #include <thread>
 
 #include "chatkit_credentials.h"
+#include "q4t/server/lifetime.h"
+
+#include <cstdio>
 #include "chatkit_actions.h"
 #include "chatkit_generation_stream.h"
 #include "chatkit_retry.h"
@@ -297,7 +300,7 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   }
   auto run = std::make_unique<ResponsesExecution>(objects, &jobs, true);
   auto result = run->Prepare(request, config, access, now, true, nullptr,
-                             nullptr, retry ? &prefix : nullptr);
+                             nullptr, retry ? &prefix : nullptr, write.id);
   if (!result.ok()) return result;
   Set(&write.data, "pending_response", String(run->Id()));
   *thread_id = write.id;
@@ -515,6 +518,18 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     }
     return;
   }
+  // Submit transferred this admission to a durable Responses job. A closed
+  // browser socket cancels only that job; an ordinary background Responses
+  // request or a later turn on the same thread has a different owner/id.
+  ScopeExit cancel_on_disconnect([&]() noexcept {
+    if (!detail::ClientConnectionFailed(fd)) return;
+    try {
+      jobs->RequestCancel(access.scope, response_id);
+    } catch (...) {
+      std::fputs("[q4t][chatkit] failed to signal disconnected generation\n",
+                 stderr);
+    }
+  });
   auto row = chatkit_detail::ReadThread(objects, access, id, &grant);
   if (!row.ok()) {
     Fail(fd, access, row);
@@ -547,6 +562,12 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
               access))
       return;
   } else if (!retry && !done(user))
+    return;
+  if (!Emit(fd,
+            Object({{"type", String("stream_options")},
+                    {"stream_options",
+                     Object({{"allow_cancel", Boolean(true)}})}}),
+            access))
     return;
   chatkit_detail::GenerationStream stream;
   size_t next = 0;

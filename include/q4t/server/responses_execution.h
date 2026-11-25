@@ -65,7 +65,8 @@ class ResponsesExecution {
                       bool background_executor = false,
                       const CancelledAgentHistory* cancelled = nullptr,
                       const io::Json* frozen_eval_parts = nullptr,
-                      const chatkit_detail::RetryHistory* retry = nullptr);
+                      const chatkit_detail::RetryHistory* retry = nullptr,
+                      std::string_view chatkit_thread = {});
   ObjectReply RestoreQueued(const std::string& id, const ChatPlanConfig& config,
                             StateAccess access);
   // Private, unexecuted queue state. Freeze publishes no Response resource;

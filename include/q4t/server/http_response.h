@@ -320,6 +320,7 @@ class HttpResponseContext {
 // State tracks successful socket writes, including partial headers;
 // incomplete headers cannot be followed by another HTTP or SSE response.
 enum class StreamStatus { kOk, kCreated };
+bool ClientConnectionFailed(int fd);
 bool BeginStreamingResponse(int fd, ResponseState* state,
                             const WriteOptions& options = {},
                             StreamStatus status = StreamStatus::kOk);
