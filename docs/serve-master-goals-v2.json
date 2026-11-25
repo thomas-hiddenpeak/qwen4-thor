@@ -3070,8 +3070,9 @@
         "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       },
       "chatkit_two_phase_documents_20261125": {
-        "stage": "native_tls_verified",
-        "receipt": "evidence/serve-chatkit-20261125/upload.json"
+        "stage": "profile_verified",
+        "receipt": "evidence/serve-chatkit-20261125/upload.json",
+        "profiles": "evidence/serve-chatkit-20261125/upload-profiles.json"
       }
     },
     {

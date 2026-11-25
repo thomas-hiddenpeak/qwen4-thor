@@ -50,6 +50,11 @@ def stored_files(directory, row):
                             data['chatkit_attachment']['id'] == item and
                             'upload_descriptor' not in data['chatkit_attachment'],
                             'published file metadata differs')
+            # Opening a read lease CASes the file revision. All other fields,
+            # including the chunk manifest, owner and expiry, remain immutable.
+            hashes['file_revision'] = record['revision']
+            hashes['file_identity'] = reuse.record_hash(
+                {key: value for key, value in record.items() if key != 'revision'})
         else:
             package.require(data['items'][0]['attachments'][0]['id'] == row['file'],
                             'original thread lost its attachment')
@@ -99,7 +104,9 @@ def check_result(row, first, *, restored):
                     and row['peer'] == 404 and row['independent_chat'] == '42', 'file contents or tenant access differ')
     if restored:
         package.require(row['upload_mode'] == 'restored' and row['stored_before'] == first['stored']
-                        and row['stored']['file'] == first['stored']['file'] and row['items'] == first['items']+2
+                        and row['stored']['file_identity'] == first['stored']['file_identity']
+                        and row['stored']['file_revision'] > first['stored']['file_revision']
+                        and row['items'] == first['items']+2
                         and row['answers'] == [answer] and all(row[k] == first[k] for k in ('workflow','thread','file')),
                         'original document or conversation did not survive handoff')
     else:
