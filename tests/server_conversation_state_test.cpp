@@ -354,6 +354,36 @@ Q4T_TEST(conversation_state_include_projection_preserves_full_history) {
   return true;
 }
 
+Q4T_TEST(conversation_state_omitted_page_matches_explicit_defaults) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  ConversationState states(objects);
+  auto items = Items({});
+  for (int i = 0; i < 20; ++i)
+    items.array.push_back(Items({"msg_" + std::to_string(i)}).array.front());
+  const auto conversation = states.Create(Json(), items, Access());
+  Q4T_CHECK(Ok(conversation));
+  const auto id = conversation.value.GetString("id");
+  Q4T_CHECK(Ok(states.Append(id, Items({"msg_20"}), {}, Access())));
+  ItemViewOptions options;
+  ChatPlanError error;
+  Q4T_CHECK(ParseItemViewOptions(Parse("{}"), &options, &error));
+  const auto omitted = states.ListItems(id, options, Access());
+  Q4T_CHECK(Ok(omitted) && omitted.value.GetBool("has_more"));
+  Q4T_CHECK(omitted.value.GetArray("data")->array.size() == 20);
+  Q4T_CHECK(omitted.value.GetString("first_id") == "msg_20");
+  Q4T_CHECK(ParseItemViewOptions(Parse(R"({"limit":20,"order":"desc"})"),
+                                 &options, &error));
+  const auto explicit_page = states.ListItems(id, options, Access());
+  Q4T_CHECK(Ok(explicit_page));
+  Q4T_CHECK(OutputJson(omitted.value) == OutputJson(explicit_page.value));
+  Q4T_CHECK(ParseItemViewOptions(Parse(R"({"limit":1,"order":"asc"})"),
+                                 &options, &error));
+  const auto first = states.ListItems(id, options, Access());
+  Q4T_CHECK(Ok(first) && first.value.GetString("first_id") == "msg_0");
+  return true;
+}
+
 Q4T_TEST(conversation_state_metadata_and_query_contract) {
   Fixture f;
   ObjectStore objects(f.options);

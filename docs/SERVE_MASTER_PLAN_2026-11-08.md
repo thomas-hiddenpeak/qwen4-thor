@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+复核冻结官方合同的 173 处查询参数，其中 71 处明确指定默认值。rev502 声明符合 41 处，候选补齐 30 处后符合 71 处。21 条会话消息和两份更新时间交错的 Eval 记录验证了省略参数的顺序、页长和显式覆盖。5 项接口与 3 项原生检查通过，下一步随可回退包发行声明。[验证记录](evidence/serve-application-query-20261125/defaults.json)
+
 主配置通过模型完成两个带拒答历史的 Chat；轻配置打开同一存储，取回相同的 Chat、消息与分页游标。两个独立拒答字段及跨客户隔离均通过。下一步验证托管恢复和可回退发行。[验证记录](evidence/serve-stored-message-projection-20261125/profiles.json)
 
 52 项主机检查通过，覆盖原记录复原、拒绝串换拒答正文与消息 ID、客户隔离失效及未审查配置登记。下一步由轻配置接手主配置持久化的两个真实 Chat。[验证记录](evidence/serve-stored-message-projection-20261125/profiles.json)

@@ -817,6 +817,10 @@
         "business": "evidence/serve-history-argument-types-20261125/business.json",
         "profiles": "evidence/serve-history-argument-types-20261125/profiles.json",
         "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
+      },
+      "query_defaults_20261125": {
+        "stage": "candidate_declarations_cpu_verified",
+        "receipt": "evidence/serve-application-query-20261125/defaults.json"
       }
     },
     {
@@ -7926,6 +7930,10 @@
       "archived_resource_client_20261125": {
         "stage": "sdk_cpu_replay",
         "receipt": "evidence/serve-stored-message-projection-20261125/python-resource-replay.json"
+      },
+      "query_defaults_20261125": {
+        "stage": "candidate_declarations_cpu_verified",
+        "receipt": "evidence/serve-application-query-20261125/defaults.json"
       }
     },
     {

@@ -1,0 +1,237 @@
+{
+  "stage": "candidate_declarations_cpu_verified",
+  "delivered": false,
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "scope_sha256": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+  "predecessor": {
+    "publication_revision": 502,
+    "openapi_sha256": "3740e9282c89f12abf460d0353a8fe6b6e7c4af735ad9a3a2548beede0ae55be",
+    "matching_explicit_defaults": 41
+  },
+  "candidate": {
+    "openapi_sha256": "94448831848eaf9fd0d78d1b830b4d36eac00640164a3bb1f05d5285edc4be1e",
+    "scope_paths": 157,
+    "scope_methods": 231,
+    "matching_success_declarations": 219,
+    "missing_methods": 12,
+    "query_parameters_on_declared_methods": 173,
+    "official_explicit_defaults": 71,
+    "counts": {
+      "matching": 71,
+      "missing": 0,
+      "different": 0,
+      "ambiguous": 0
+    }
+  },
+  "filled_defaults": [
+    {
+      "path": "/agents",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/automations",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/automations/{automation_id}/invocations",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/environments",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/environments/templates",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/artifacts",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/items",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/items",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/traces",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/agents/sessions/{session_id}/turns/{turn_id}/items",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/assistants",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/containers",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/containers/{container_id}/files",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/conversations/{conversation_id}/items",
+      "method": "GET",
+      "query": "limit",
+      "default": 20
+    },
+    {
+      "path": "/evals",
+      "method": "GET",
+      "query": "order",
+      "default": "asc"
+    },
+    {
+      "path": "/evals",
+      "method": "GET",
+      "query": "order_by",
+      "default": "created_at"
+    },
+    {
+      "path": "/evals/{eval_id}/runs",
+      "method": "GET",
+      "query": "order",
+      "default": "asc"
+    },
+    {
+      "path": "/evals/{eval_id}/runs/{run_id}/output_items",
+      "method": "GET",
+      "query": "order",
+      "default": "asc"
+    },
+    {
+      "path": "/responses/{response_id}/input_items",
+      "method": "GET",
+      "query": "limit",
+      "default": 20
+    },
+    {
+      "path": "/responses/{response_id}/input_items?beta=true",
+      "method": "GET",
+      "query": "limit",
+      "default": 20
+    },
+    {
+      "path": "/threads/{thread_id}/messages",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/threads/{thread_id}/runs",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/threads/{thread_id}/runs/{run_id}/steps",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/vaults",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    },
+    {
+      "path": "/vaults/{vault_id}/credentials",
+      "method": "GET",
+      "query": "order",
+      "default": "desc"
+    }
+  ],
+  "schema_changes": "Three generated documents compare equal to their source predecessor after removing only default annotations.",
+  "native_review": {
+    "shared": "Agent lists, session and subagent views, vaults, Conversations and Responses share ItemViewOptions and ParseItemViewOptions. Artifacts and containers select desc directly. Assistants uses desc in the registry and PageAssistantRows. Evals uses asc for all three lists and created_us by default on definitions.",
+    "files": [
+      "include/q4t/server/conversation_state.h",
+      "src/server/conversation_state.cpp",
+      "src/server/agent_artifact_http.cpp",
+      "src/server/assistant_messages.cpp",
+      "src/server/assistant_registry.cpp",
+      "src/server/containers.cpp",
+      "src/server/container_files.cpp",
+      "src/server/evals.cpp",
+      "src/server/eval_runs.cpp"
+    ]
+  },
+  "targeted": {
+    "host_contract_tests": 5,
+    "host_log_sha256": "bf52072a3dd1c59f9bbb91cc9c69e7110090d9ab876448807f92d615168ba797",
+    "native_tests": 3,
+    "native_log_sha256": "66ccf55bc9cf81afd82f25bc0e5b5866d54ad6fd8849f16a688af1eb97c1ff52",
+    "model_starts": 0,
+    "cases": [
+      "21 stored items across two legal writes; omission equals limit=20 and desc. Ascending single-item page differs.",
+      "Two real Eval definitions with changed update order; omission equals created_at and asc, independent updated_at sort and tenant cursor negatives."
+    ],
+    "first_native_attempt": "21 items in one create exceeded the existing 20-item write bound. The corrected setup writes 20 then appends one.",
+    "negative_fixture_sha256": "2b955a82f1189f40aeba10c6512fb795aeb50392148a2b1ca2adfdc3b127a288"
+  },
+  "remaining": "Issue the corrected declarations with a qualified package. Query default coverage does not establish serialization, client or method behavior coverage."
+}

@@ -1353,6 +1353,10 @@ Q4T_TEST(evals_list_orders_by_actual_update_and_scopes_cursors) {
   auto page = Request(objects, "GET", "/v1/evals?limit=1");
   Q4T_CHECK(page.ok() && page.value.GetString("first_id") == first &&
             page.value.GetBool("has_more"));
+  const auto explicit_page =
+      Request(objects, "GET", "/v1/evals?limit=1&order=asc&order_by=created_at");
+  Q4T_CHECK(explicit_page.ok() &&
+            OutputJson(page.value) == OutputJson(explicit_page.value));
   page = Request(objects, "GET", "/v1/evals?order_by=updated_at&limit=1");
   Q4T_CHECK(page.ok() && page.value.GetString("last_id") == second &&
             page.value.GetBool("has_more"));
