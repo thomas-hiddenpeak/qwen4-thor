@@ -3145,8 +3145,8 @@
         "receipt": "evidence/serve-observation-admission-20261125/business.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_cpu_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/cpu.json"
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {
@@ -5887,8 +5887,8 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_cpu_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/cpu.json"
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {
@@ -7802,8 +7802,8 @@
         "receipt": "evidence/serve-observation-admission-20261125/business.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_cpu_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/cpu.json"
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {
@@ -10550,8 +10550,8 @@
         "receipt": "evidence/serve-observation-admission-20261125/business.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_cpu_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/cpu.json"
+        "stage": "targeted_device_verified",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
       }
     },
     {

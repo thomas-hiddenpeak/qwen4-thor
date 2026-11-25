@@ -1,0 +1,108 @@
+{
+  "stage": "targeted_device_verified",
+  "issued": false,
+  "source": "ea14aadf34a1f17565b7295e9cb67ff778ad9627",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 42.302,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "fixtures": {
+    "provenance": "Retained project-synthesized speech",
+    "pcm": "b0e25b48845225acd325f9647b347538fe085a74dd8b58826e9c9c951ab04483",
+    "wav": "3195ed0fec2e4ec7867d6c4b7528f390b390d4ff9d82af76a8e9ac40939c0282",
+    "webm": "ac04442880ca74bc2796acc23a2554d5fde9a4715cda2e437dc0ba1d85ef15a8",
+    "probe": {
+      "programs": [],
+      "stream_groups": [],
+      "streams": [
+        {
+          "codec_name": "opus",
+          "channels": 1
+        }
+      ],
+      "format": {
+        "duration": "2.888000"
+      }
+    },
+    "expected": "请查询当前项目版本号。",
+    "transcript_supplied_to_actor_or_asr": false
+  },
+  "identity": {
+    "binary": "368c6140ea8153ed25a94998c1e1a36b5a7143a18b060b2fd1b9f364e3574c86",
+    "protocol_sha256": "8cf719632c33f08930e48a3f386160401ad0f6661cb7ce454e9dbbdcdab58215"
+  },
+  "ingress": "3fc018c2dcfd69433ddff22ac2b4e99cbba525e72f26d0e56433967f86d92d4a",
+  "sdk": {
+    "sdk": "7.47.0",
+    "transcripts": {
+      "wav": "请查询当前项目版本号。",
+      "webm": "请查询当前项目版本号。"
+    },
+    "inputs": {
+      "wav": "3195ed0fec2e4ec7867d6c4b7528f390b390d4ff9d82af76a8e9ac40939c0282",
+      "webm": "ac04442880ca74bc2796acc23a2554d5fde9a4715cda2e437dc0ba1d85ef15a8"
+    },
+    "observations": [
+      {
+        "method": "POST",
+        "path": "/v1/chatkit",
+        "status": 400,
+        "mime": "audio/wav",
+        "body_sha256": "e1f5f3f19afd28666d93bb925bcc6bb875f9258549a5c13f622fd0e308b3b468"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/chatkit",
+        "status": 415,
+        "mime": "audio/webm",
+        "body_sha256": "162b1c6b89bb530d93ca2542dfcdf568c96de567c209872f4050e391ea33e200"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/chatkit",
+        "status": 401,
+        "mime": "audio/wav",
+        "body_sha256": "4e04b9ef51957352109caeda6aa6bd3f0de6d9ee8106e6c724188d1a884fc410"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/chatkit",
+        "status": 200,
+        "mime": "audio/wav",
+        "body_sha256": "e738e21415385fc7839cbf05c167e35e22dc6bd24a372eb13c992aea0840f720"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/chatkit",
+        "status": 200,
+        "mime": "audio/webm;codecs=opus",
+        "body_sha256": "e738e21415385fc7839cbf05c167e35e22dc6bd24a372eb13c992aea0840f720"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/chatkit",
+        "status": 401,
+        "mime": "audio/wav",
+        "body_sha256": "3538fbafa934cfc56e1fb17fdf2966e6897a1a661614875b1071b765e73f16a6"
+      }
+    ],
+    "independent": "42",
+    "driver_sha256": "963beedd5f7f226ebce7d9e6185fad442b77d7423e40ea0ce6855cdf06affb15"
+  },
+  "lease_sha256": "2b9ec40e83d9e588351b17a058bb05ab38ef6b5aa88888f785d1c05da7d4ac66",
+  "unchanged": {
+    "build/q4t": "655f31bf9864fd3c4d8f8f6625c5afb2ff551c80f6bb2091e2953be266fe20f7",
+    "build/service/manifest.json": "faf7f3e0bc257160aaed8279c9b435fada02957d2e532262c4163e6a6ce557aa",
+    "build/service.release.json": "383e44a4e78441c36cca5a6caebb04d0aba855338c604828f9332a2ed7222664",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "pending": [
+    "Release and rollback qualification"
+  ],
+  "setup": "First guard invocation used a relative output under the candidate checkout and was rejected before a lease or model start. The normal project guard then accepted the private absolute evidence path."
+}

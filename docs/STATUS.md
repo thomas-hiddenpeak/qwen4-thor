@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 SDK 签发的会话经原生 HTTPS 发送 WAV 和 WebM/Opus，两次均逐字返回“请查询当前项目版本号。”。音源为有记录的 2.88 秒合成语音，ASR 未收到原文。损坏编码、媒体类型不符、项目密钥和撤销的会话分别返回 400、415、401、401。另一客户 Chat 答 42，模型启动一次，42.302 秒，默认发行保持 rev494。[验证记录](evidence/serve-chatkit-composer-20261125/business.json)
+
 ChatKit 会话可以提交带媒体类型的 base64 录音，转写沿用原生 ASR 与客户配额，浏览器收到仅含 text 的 JSON。四项 CPU 回归、两项有效和七项无效 schema 输入均已验证。下一步通过实际 TLS 会话提交两种编码的同一段语音。[验证记录](evidence/serve-chatkit-composer-20261125/cpu.json)
 
 官方 Node SDK 通过原生 TLS 运行两种 Evals，各读出项目资料中的 157，正反评分分别为 1 和 0。第三个真实运行成功取消，跨客户访问返回 404，独立 Chat 答 42。数据与控制并发各限 1，单次模型启动共 39.033 秒。7 个响应同时通过官方和本地合同。[验证记录](evidence/serve-observation-admission-20261125/business.json)
