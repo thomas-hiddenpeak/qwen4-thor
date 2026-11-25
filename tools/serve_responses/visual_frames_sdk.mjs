@@ -60,6 +60,19 @@ const video = await owner.responses.create({model:plan.model, temperature:0,
     {type:'input_text',text:'What color fills the final frames of the video? Answer with one English color word.'}]}]});
 const parts = x => x.output.filter(item => item.type === 'message').flatMap(item => item.content);
 const clipParts = parts(video);
+let restored = null;
+if (plan.previous) {
+  const prior = plan.previous.file_video;
+  assert.match(prior.id, /^resp_[0-9a-f]{32}$/);
+  assert.notEqual(prior.id, video.id);
+  assert.equal(prior.sha256, plan.clip.sha256);
+  const saved = await owner.responses.retrieve(prior.id);
+  assert.equal(saved.id, prior.id);
+  assert.equal(saved.status, 'completed');
+  assert.deepEqual(parts(saved), prior.parts);
+  await assert.rejects(peer.responses.retrieve(prior.id), error => error.status === 404);
+  restored = {id:saved.id, parts:parts(saved), peer:404};
+}
 assert.deepEqual(parts(await owner.responses.retrieve(video.id)), clipParts);
 await assert.rejects(peer.responses.retrieve(video.id), error => error.status === 404);
 const independent = await owner.chat.completions.create({model:plan.model,temperature:0,
@@ -73,4 +86,4 @@ const controls = {templates:previews.every(v => v.guidance),
   independent:answer.content?.trim() === '42' && !answer.refusal};
 process.stdout.write(JSON.stringify({sdk:version,previews,invalid_video_url:400,chat_video:green,
   chat_untyped_image:{text:blue,refusal:streamedRefusal,finish},file_video:{id:video.id,parts:clipParts,peer:404,sha256:plan.clip.sha256},
-  independent:answer.content,controls,passed:Object.values(controls).every(Boolean)}));
+  independent:answer.content,restored,controls,passed:Object.values(controls).every(Boolean)}));
