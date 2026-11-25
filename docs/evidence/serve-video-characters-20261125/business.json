@@ -1,0 +1,99 @@
+{
+  "stage": "real_native_https_verified",
+  "issued": false,
+  "public_reference": {
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a",
+    "sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+  },
+  "deployment_revision": 496,
+  "request_identity": {
+    "engine": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 41.554,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "service_generation": {
+    "binary": "cfaf8d682f053bab3087f120b32f14e2974004007d32cde7929195cc4f80cd07",
+    "protocol_sha256": "0be00557a9481f70fe3a66e3668a6af61800148028606622c99aa37465369658"
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "resource": {
+      "id": "char_38011f5d82a44bd9ca7e5b07b113fc71",
+      "name": "项目视频角色",
+      "created_at": 1795589201
+    },
+    "independent": "42",
+    "capability": {
+      "endpoint": "/v1/videos/characters",
+      "operations": [
+        "create",
+        "retrieve"
+      ],
+      "scope": "authenticated_client",
+      "source": "original_encoded_clip",
+      "max_name_characters": 80,
+      "max_source_bytes": 33554432,
+      "decoder_compiled": true
+    },
+    "lookup": {
+      "function": "get_video_character",
+      "argument_id": "char_38011f5d82a44bd9ca7e5b07b113fc71",
+      "resolved": {
+        "name": "项目视频角色"
+      }
+    },
+    "clip_sha256": "9c520d80f7451718cdab6361e3bdc17af7a56cfd3e8443f9727d4fb312df3de7",
+    "foreign": 404,
+    "corrupt": 400,
+    "long_name": 400,
+    "driver_sha256": "404f3ddec4b31b6f7de13bb22ac77a85aa048139240b5046d480b9f682be2bb0",
+    "receipts": 2
+  },
+  "wire": [
+    {
+      "method": "POST",
+      "path": "/videos/characters",
+      "status": 200,
+      "json_sha256": "f33ef6e280bf6719143c205882048481ec12ab0aee8827b657bdcc20ae1b5206"
+    },
+    {
+      "method": "GET",
+      "path": "/videos/characters/{character_id}",
+      "status": 200,
+      "json_sha256": "f33ef6e280bf6719143c205882048481ec12ab0aee8827b657bdcc20ae1b5206"
+    }
+  ],
+  "fixture": "moving-robot.json",
+  "reproduction": "Copy moving_robot.py to a fresh directory under build/ and run it there with python3; it verifies all decoded frames.",
+  "stored": {
+    "bytes": 4468,
+    "sha256": "9c520d80f7451718cdab6361e3bdc17af7a56cfd3e8443f9727d4fb312df3de7",
+    "width": 128,
+    "height": 96,
+    "duration_ns": 2000000000,
+    "chunks": 1,
+    "verified_against_original": true
+  },
+  "candidate_schema_sha256": "5d244546b8498b66382275810a5a324525966f1035b28e3f4e17b4ebe11abd04",
+  "raw_sources": {
+    "character-business-01/plan.json": "8b26feeffdb73c92436bb49812bb003c71b5cb3b5aecc5bddc90099cbd6c13fb",
+    "character-business-01/result.json": "c835c15398cc927c2d7d5aa6b093e9cc8957a2024f3b62a04d7fd5a1c26bae46",
+    "character-business-lease-01/exit.json": "0f0f6450c1e3b6fd9feb45f88a152f53411663df997327ca1c11f883e7fe1b60",
+    "character-business-01/create/wire-receipts.json": "a5bf9f3393b5d3cc1cdc4a4ee7beb6cb45a77cd96ea44c39ef39c8825ee30a84",
+    "character-business-01/create/sdk-result.json": "3cdb96d54add8c9e1fb998408869aeea2909bae7b25dccd734a819f1f1d5d1fa",
+    "character-business-01/create/stored-clip.json": "199d3fc8456aadfaf00ea6a6e46428664d95a2e92656ef7000cfb179cced1bca",
+    "character-business-01/create/character-http.json": "9e77d986563e5ecbe75e063a3b56bcc883acb66181298fba6c90325808c9843f"
+  },
+  "pending": [
+    "Profile and recovery handoff",
+    "Default and rollback delivery"
+  ]
+}
