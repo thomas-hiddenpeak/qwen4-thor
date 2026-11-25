@@ -56,7 +56,8 @@ enum class ObjectKind {
   kEvalOutput,
   kSafetyAlert,
   kSafetyCase,
-  kSafetyDetail
+  kSafetyDetail,
+  kVideoCharacter
 };
 enum class ObjectOperation {
   kGet,

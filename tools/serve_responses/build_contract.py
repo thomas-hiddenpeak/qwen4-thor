@@ -195,6 +195,11 @@ def schema(graph):
     safety_text = dict(type='string')
     safety_base = dict(id=safety_text, created_at=dict(type='integer', format='unixtime'),
                        reason=nullable(safety_text))
+    definitions['video_character'] = obj(dict(id=nullable(dict(type='string')),
+        name=nullable(dict(type='string')), created_at=dict(type='integer', format='unixtime')),
+        ['id', 'name', 'created_at'])
+    definitions['video_character_create'] = obj(dict(video=dict(type='string', format='binary'),
+        name=dict(type='string', minLength=1, maxLength=80)), ['video','name'])
     safety_case = dict(safety_base, object=dict(const='safety.case'),
         entity_identifier=safety_text,
         notice=obj(dict(type=dict(enum=['warning', 'deactivation'])), ['type']))
@@ -740,6 +745,8 @@ def add_openapi(paths, response, error):
         ('/v1/agents/environments/templates/{environment_template_id}', 'get', None, 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'post', 'hosted_template_update', 'hosted_template_resource', None),
         ('/v1/agents/environments/templates/{environment_template_id}', 'delete', None, 'hosted_template_deleted', None),
+        ('/v1/videos/characters', 'post', 'video_character_create', 'video_character', None),
+        ('/v1/videos/characters/{character_id}', 'get', None, 'video_character', None),
         ('/v1/safety/alerts/{id}', 'get', None, 'safety_alert', None),
         ('/v1/safety/cases/{id}', 'get', None, 'safety_case', None),
         ('/v1/webhook_event_types', 'get', None, 'webhook_event_types', None),
@@ -946,6 +953,9 @@ def add_openapi(paths, response, error):
             operation['x-q4t-result-by-request-type'] = {
                 'attachments.create': external('chatkit_reserved_document'),
                 'input.transcribe': external('chatkit_transcription_result')}
+        if body == 'video_character_create':
+            operation['requestBody'] = dict(required=True, content={'multipart/form-data':
+                dict(schema=external('video_character_create'))})
         if path == '/v1/chatkit/attachments':
             operation['description'] = 'Upload a document with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.'
             operation['x-q4t-body-contract'] = 'one multipart file'

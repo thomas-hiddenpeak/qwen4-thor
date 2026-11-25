@@ -447,6 +447,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   }
   const size_t route_limit =
       streaming                      ? stream->max_bytes
+      : VideoCharacterMethodAllowed(*method, *path) && *method == "POST"
+          ? (32ULL << 20) + 65536
       : IsVoiceTarget(*path)         ? kVoiceFormBytes
       : IsTranscriptionTarget(*path) ? kTranscriptionBodyBytes
       : IsMcpTunnelResponse(*method, *path)

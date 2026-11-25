@@ -1,0 +1,69 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "methods": [
+    "POST /v1/videos/characters",
+    "GET /v1/videos/characters/{character_id}"
+  ],
+  "reference": {
+    "date": "2026-11-07T19:24:53Z",
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a",
+    "sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+  },
+  "schema_comparisons": [
+    7,
+    7
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 245,
+    "native_routes": 406,
+    "reviewed_source_anchors": 1376,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "build": {
+    "engine": "608bee9fb2f8b6d8569da25200601b2f5316ac208f85ea0a269b652d36ea5834",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "declarations": {
+    "required": 231,
+    "prior": 217,
+    "candidate": 219,
+    "remaining": 12
+  },
+  "native_tests": [
+    "video_character_keeps_original_clip_behind_scoped_metadata",
+    "video_character_reads_have_reserved_observation_capacity"
+  ],
+  "clip": {
+    "path": "tests/fixtures/file_video/h264.mp4",
+    "sha256": "abf7b4793b0c02e7df9e8100b814135fc6c7bbbf17474f76a0e5553ded426e8b",
+    "geometry": [
+      96,
+      64
+    ],
+    "source_bytes": 1361
+  },
+  "verified": [
+    "Persist original encoded clip across object store reopen",
+    "Reopen authenticates the owner and verifies byte SHA-256",
+    "Binary retention keeps the immutable source chunk referenced",
+    "Bounded UTF-8 names, duplicated and truncated form fields",
+    "Distinct upload and observed metadata admission",
+    "Optional nginx generation and real configuration parsing"
+  ],
+  "raw_sources": {
+    "build/character/gateway-02.log": "30a13b0230bd5281909c1cb0c751da8b678466bf25cd60b8bf661f4be044c325",
+    "build/character/native-check-02.log": "e6ca2d40cfa4e076dc2743960b2ffc9b56867c2e236d934a8ded897569fb2020",
+    "build/character/audit.json": "81378c820efcfc13520c31863bf380778981de887fe8e94127a622cd01b4a8c9",
+    "build/character/methods.json": "3b74ea6035bfc88c2acba67c2eb027e1f748bf3e1ba09c4e1e727ee47f2ac37f"
+  },
+  "pending": [
+    "Real SDK over native HTTPS",
+    "Release and recovery"
+  ]
+}

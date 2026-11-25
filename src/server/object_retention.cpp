@@ -659,6 +659,9 @@ ObjectRetentionInfo InspectObjectRetention(std::string_view kind,
              data.GetString("format") == "q4t.container_file.v1") {
     inspector.Blob(data);
     inspector.value.collect_when_unreferenced = true;
+  } else if (kind == "video_character" &&
+             data.GetString("format") == "q4t.video_character.v1") {
+    inspector.Blob(data);
   } else if (kind == "file" && data.GetString("format") == "q4t.file.v1") {
     inspector.Blob(data);
   } else if (kind == "input_snapshot" &&

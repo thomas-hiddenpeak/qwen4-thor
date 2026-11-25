@@ -793,6 +793,10 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "video_character_reference_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-video-characters-20261125/cpu.json"
       }
     },
     {
@@ -3151,6 +3155,10 @@
       "dictation_handoff_20261125": {
         "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json"
+      },
+      "video_character_reference_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-video-characters-20261125/cpu.json"
       }
     },
     {
@@ -5897,6 +5905,10 @@
       "dictation_handoff_20261125": {
         "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json"
+      },
+      "video_character_reference_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-video-characters-20261125/cpu.json"
       }
     },
     {
@@ -7816,6 +7828,10 @@
       "dictation_handoff_20261125": {
         "stage": "profile_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json"
+      },
+      "video_character_reference_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-video-characters-20261125/cpu.json"
       }
     },
     {
@@ -10564,6 +10580,10 @@
       "chatkit_composer_20261125": {
         "stage": "targeted_device_verified",
         "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
+      },
+      "video_character_reference_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-video-characters-20261125/cpu.json"
       }
     },
     {

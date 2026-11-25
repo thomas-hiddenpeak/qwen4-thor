@@ -561,12 +561,31 @@ inline bool IsChatKitUpload(std::string_view method, std::string_view target) {
          !ParseChatKitTransfer(method, target).file.empty();
 }
 
+inline constexpr std::string_view kVideoCharacters = "/v1/videos/characters";
+
+inline std::string_view VideoCharacterId(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  if (!path.starts_with(kVideoCharacters) ||
+      path.substr(kVideoCharacters.size(), 6) != "/char_")
+    return {};
+  const auto id = path.substr(kVideoCharacters.size() + 1);
+  return id.size() > 5 && ValidApplicationId(id) ? id : std::string_view{};
+}
+
+inline bool VideoCharacterMethodAllowed(std::string_view method,
+                                        std::string_view target) {
+  return (method == "POST" &&
+          target.substr(0, target.find('?')) == kVideoCharacters) ||
+         (method == "GET" && !VideoCharacterId(target).empty());
+}
+
 inline bool IsBinaryUpload(std::string_view method, std::string_view target,
                            std::string_view content_type = {}) {
   const auto path = target.substr(0, target.find('?'));
   return IsChatKitUpload(method, target) ||
          (method == "POST" &&
           (path == "/v1/files" || IsTranscriptionTarget(target) ||
+           path == kVideoCharacters ||
            IsVoiceCreation(method, target) ||
            (IsSkillCreation(method,target) && IsMultipartForm(content_type)) ||
            (ParseContainerRoute(target).kind == ContainerRouteKind::kFiles &&
@@ -1295,6 +1314,7 @@ inline bool IsApplicationObservation(std::string_view method,
          IsAssistantObservation(method, path) ||
          IsResponsesObservation(method, path) ||
          IsVectorStoreObservation(method, path) ||
+         (method == "GET" && !VideoCharacterId(path).empty()) ||
          IsEvalObservation(method, path) || IsSafetyRead(method, path) ||
          IsChatKitObservation(method, path) ||
          ((method == "GET" || method == "DELETE") &&
