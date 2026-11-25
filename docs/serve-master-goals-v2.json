@@ -3203,9 +3203,10 @@
         "delivery": "evidence/serve-video-characters-20261125/delivery.json"
       },
       "stored_message_projection_20261125": {
-        "stage": "device_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-stored-message-projection-20261125/cpu.json",
-        "business": "evidence/serve-stored-message-projection-20261125/business.json"
+        "business": "evidence/serve-stored-message-projection-20261125/business.json",
+        "profiles": "evidence/serve-stored-message-projection-20261125/profiles.json"
       }
     },
     {
@@ -7917,9 +7918,10 @@
         "delivery": "evidence/serve-video-track-selection-20261125/delivery.json"
       },
       "stored_message_projection_20261125": {
-        "stage": "device_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-stored-message-projection-20261125/cpu.json",
-        "business": "evidence/serve-stored-message-projection-20261125/business.json"
+        "business": "evidence/serve-stored-message-projection-20261125/business.json",
+        "profiles": "evidence/serve-stored-message-projection-20261125/profiles.json"
       },
       "archived_resource_client_20261125": {
         "stage": "sdk_cpu_replay",
