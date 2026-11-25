@@ -3059,10 +3059,15 @@
         "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
       },
       "chatkit_feedback_20261125": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-chatkit-20261125/feedback.json",
         "entity_mentions": "native_tls_verified",
-        "profiles": "evidence/serve-chatkit-20261125/feedback-profiles.json"
+        "profiles": "evidence/serve-chatkit-20261125/feedback-profiles.json",
+        "delivery": "evidence/serve-chatkit-20261125/feedback-delivery.json"
+      },
+      "feedback_delivery_20261125": {
+        "revision": 490,
+        "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       }
     },
     {
@@ -8877,8 +8882,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 488,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev488-preflight.json",
+        "revision": 490,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev490-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9226,6 +9231,10 @@
       "meteor_delivery_20261125": {
         "revision": 488,
         "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
+      },
+      "feedback_delivery_20261125": {
+        "revision": 490,
+        "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       }
     },
     {
@@ -10367,12 +10376,16 @@
       "meteor_delivery_20261125": {
         "revision": 488,
         "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
+      },
+      "feedback_delivery_20261125": {
+        "revision": 490,
+        "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev488_delivered_remaining_deliveries",
+      "state": "rev490_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11608,6 +11621,10 @@
       "meteor_delivery_20261125": {
         "revision": 488,
         "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
+      },
+      "feedback_delivery_20261125": {
+        "revision": 490,
+        "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       }
     },
     {
@@ -12079,6 +12096,10 @@
       "meteor_delivery_20261125": {
         "revision": 488,
         "receipt": "evidence/serve-evals-20261125/meteor-delivery.json"
+      },
+      "feedback_delivery_20261125": {
+        "revision": 490,
+        "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       }
     }
   ],
