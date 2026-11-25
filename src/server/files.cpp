@@ -87,6 +87,20 @@ FileUpload::FileUpload(ObjectStore& objects, BinaryAccess access,
   parser_ = std::make_unique<MultipartDecoder>(
       std::move(boundary), kFileWireBytes, 4, std::move(callbacks));
 }
+FileUpload::FileUpload(ObjectStore& objects, BinaryAccess access,
+                       MultipartPart raw_file, ContainerSink sink,
+                       uint64_t max_file_bytes)
+    : container_sink_(std::move(sink)),
+      max_file_bytes_(std::min<uint64_t>(max_file_bytes, kFileBytes)),
+      binary_(objects),
+      access_(std::move(access)) {
+  if (!container_sink_ || raw_file.name != "file") {
+    result_ = Invalid("Missing attachment reservation", "file");
+    return;
+  }
+  BeginPart(raw_file);
+}
+
 Status FileUpload::Failure(ObjectReply reply) {
   if (result_.ok()) result_ = std::move(reply);
   return Status::Fail(result_.message);
@@ -175,7 +189,7 @@ ObjectReply FileUpload::Feed(std::string_view bytes,
   if (!result_.ok()) return result_;
   if (finished_) return Invalid("File upload is already finished", "file");
   access_.deadline = std::min(access_.deadline, deadline);
-  const auto status = parser_->Feed(bytes);
+  const auto status = parser_ ? parser_->Feed(bytes) : Data(bytes);
   if (!status && result_.ok()) result_ = Invalid(status.message(), "body");
   return result_;
 }
@@ -183,7 +197,7 @@ ObjectReply FileUpload::Finish() {
   if (!result_.ok()) return result_;
   if (finished_) return Invalid("File upload is already finished", "file");
   finished_ = true;
-  const auto parsed = parser_->Finish();
+  const auto parsed = parser_ ? parser_->Finish() : EndPart();
   if (!parsed) {
     if (result_.ok()) result_ = Invalid(parsed.message(), "body");
     return result_;

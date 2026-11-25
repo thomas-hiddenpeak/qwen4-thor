@@ -1,0 +1,128 @@
+{
+  "stage": "native_tls_verified",
+  "issued": false,
+  "reference": {
+    "repository": "openai/chatkit-python",
+    "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "files": {
+      "chatkit/types.py": "9d604cb52a506525b5bda50b92b26c72ac0866f5ad35f28619da652a915adf56",
+      "chatkit/server.py": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+      "LICENSE": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1"
+    }
+  },
+  "schemas": {
+    "schema_views": 2,
+    "checks": {
+      "request": {
+        "accepted": 2,
+        "rejected": 6
+      },
+      "descriptor": {
+        "accepted": 1,
+        "rejected": 4
+      },
+      "file": {
+        "accepted": 1,
+        "rejected": 2
+      }
+    },
+    "path_parameters": 2,
+    "source_hashes": {
+      "serve-application-v1.schema.json": "cd5642343a68a3fddd309e53f32f7552856cef4949e6ac267b73e695324dc38f",
+      "serve-openapi-bundle-v1.json": "1518bf4a6b24f718f6130f0d428400c922e9a49fe9acc8c277397547f4a0b494"
+    }
+  },
+  "native": {
+    "chatkit_two_phase_document_": "d828fbcf89fcb2ff2e2c8b379a36290c6cc38d6b939cfcc49b744e12db9e580b",
+    "chatkit_attachment_publication_requires_": "cd08ad5b67b08b3ee39daae7e477e691e4316ff35ad80cbc2c31220a4b5519a0",
+    "chatkit_upload_enforces_session_bytes_": "e0f1e9e686c338190188af7c284e97f7e99cf7e6302a3553ed9915260efe7c76",
+    "chatkit_forwarded_ticket_binds_": "0525396fa515917a105b2449095c3eb1a84b79c6731a7bd27312d6fe45d8d978",
+    "chatkit_two_phase_expiry_": "8f4c2a121837335f8568c9c6fa986444155540e20fdb04c92b76d0a7f17cf022"
+  },
+  "ingress": {
+    "external-front": "de483381b4619200613a5a140f1e10d23ca973a9f3321c2cddeb1f7e964565f7",
+    "browser-ingress": "bad0af8192a30411ff4c31c4a06bb4b93a5d38d29080b892123fb8a32b2a8513"
+  },
+  "migration": {
+    "cases": 50,
+    "sha256": "5de0c77167ec2cb963359419657264e684bf9c6777b340324ec48ee21cf57440"
+  },
+  "inventory": {
+    "routes": 243,
+    "native_routes": 402,
+    "mutation_checks": 40
+  },
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "sources": {
+    "src/server/chat_http.cpp": "880d53483e9f54bc50ae1ea118dd9c56f2681109c80c13ea58dd0fc72306a702",
+    "src/server/chatkit_client.cpp": "cb84fcac926f60a2c9e0c832db7934b1ca32346b8361e5b6396a67ddd2bb07e7",
+    "src/server/chatkit_attachments.cpp": "349a0b1a64add2fcb3a79ed5eb36e58c8051215a42356cbec5d0a4894d5dc9ce",
+    "src/server/files_http.cpp": "a5ac0d520f1ecb393990d15f70890a958f96ccd94c677c0de65d0f64abc14ab2",
+    "src/server/realtime_client_ticket.cpp": "e95f7d207fcb8605614b4df0d3cfc41f0f466aef8c46e009650aa56610db32df",
+    "src/service/ingress_main.cpp": "04a4d20871cdd47099272f201ac8b1ad30ac6ab81e8f70c83ec94837b1e865be",
+    "tools/serve_gateway/gateway.py": "772c3bef8f2ed5d87f8d2e3878d7fc4c24547e5b57e80e1e032e89ace573975a",
+    "tests/server_chatkit_test.cpp": "1761550dbec02cc3133979282a4ef8412ed3359c66bde30ca3fb000cd0f15339",
+    "tools/serve_responses/chatkit_files_sdk.mjs": "85461ba890b158793e9bada408eb15b6500ce04a366c42e1e2a271afa058b16e",
+    "tools/serve_responses/chatkit_upload_profiles.py": "1cdba3bd350fe2a3a8709b05a11e0ab95bc69c220f16b2f67899949408fa84fa"
+  },
+  "pending": [
+    "Two capacities, managed recovery and recoverable issuance"
+  ],
+  "first_tls_attempt": {
+    "status": "FAIL",
+    "SDK_requests": 0,
+    "model_starts": 1,
+    "cause": "The inherited isolated test certificate expired at 2026-11-25T02:46:42Z. The ingress refused startup. The issued default is separate and uses native ingress with TLS disabled.",
+    "result_sha256": "f94aa1d6547344d1bb2296139e9bfde926d84e896a3e5ef30b8c0e94be742bd0",
+    "lease_sha256": "b022f9d2bf65caee0202c9107b29670f227a4077d40c6a758412515ad25f20cc",
+    "retry_certificate_sha256": "eab6fd3f4476d5125091430776ceea8d57c03ae7bc49953e1dbc4b1c4e90e285"
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.309,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "upload": {
+    "mode": "two_phase",
+    "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "source_bytes": 830,
+    "sdk": "7.47.0",
+    "original_answer": "157",
+    "continued_answer": "157",
+    "items": 4,
+    "peer": 404,
+    "independent": "42",
+    "controls": {
+      "pending_file": 404,
+      "pending_model": 404,
+      "replay": 401,
+      "discarded": 401,
+      "revoked_upload": 401,
+      "short": 400,
+      "wrong_mime": 415,
+      "wrong_session": 401,
+      "full_session_on_upload": 401,
+      "upload_on_browser": 401,
+      "origin_verified": true
+    },
+    "official_wire": [
+      {
+        "method": "GET",
+        "path": "/chatkit/threads/{thread_id}/items",
+        "status": 200,
+        "json_sha256": "227cc2833a844a0410a80fde7716553084372d425d11d684cd8376b23b19eea7"
+      }
+    ]
+  },
+  "device_sources": {
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/result.json": "a43d7e3265894f85ef55c936b18d5bd883af011a1139765d0fc835e302bedced",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/plan.json": "06ae91f4e73ff15c84ab0740d3d04e4bdc3694d69a046710a67f5a845be27710",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-lease-02/exit.json": "cafc973a8df7ef32725620adfd0620fc05e5347c5ef655a2dcddf0d5e6a7760c",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/create/sdk-result.json": "672fbf29fd7a10ef3acb03fe3113af965919c04f5f8c56e3970254d93726400c",
+    ".q4t-work/serve-responses-agents-20261123/chatkit-upload-business-02/create/wire-receipts.json": "6ca8b5c9c69baf21d92fe0cb1f8c904aac68638ea70daded8cf088a8c66b76fb"
+  }
+}

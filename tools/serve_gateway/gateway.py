@@ -164,6 +164,7 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/prompts/{prompt_id}/versions/{version}', 'control'),
     ('POST', '/v1/chatkit', 'data'),
     ('POST', '/v1/chatkit/attachments', 'data'),
+    ('PUT', '/v1/chatkit/attachments/{session_id}/{file_id}', 'data'),
     ('POST', '/v1/chatkit/sessions', 'data'),
     ('POST', '/v1/chatkit/sessions/{session_id}/cancel', 'control'),
     ('GET', '/v1/chatkit/threads', 'control'),
@@ -322,6 +323,9 @@ def route_map():
     # Keep this before the general Realtime primary rule (first regex wins).
     rows.append('    "~^GET:/v1/realtime[?]call_id=rtc_[A-Za-z0-9_-]{1,124}$" sideband;')
     for method, path, lane in APPLICATION_ROUTES:
+        if path == '/v1/chatkit/attachments/{session_id}/{file_id}':
+            rows.append(f'    "~^{CHATKIT_TRANSFER}$" {lane};')
+            continue
         pattern = '/'.join('agent_[A-Za-z0-9_-]{1,122}' if part == '{agent_id}' else
                            'eval_[A-Za-z0-9_-]{1,123}' if part == '{eval_id}' else
                            '[A-Za-z0-9_-]+' if part == '{id}' and path.startswith('/v1/safety/') else
@@ -491,34 +495,39 @@ def realtime_issuer_maps(clients):
             '    "POST:/v1/realtime/sessions" "Q4T-Issuer $q4t_issuer_digest";\n  }')
 
 
+CHATKIT_TRANSFER = 'PUT:/v1/chatkit/attachments/cksess_[0-9a-f]{64}/file_[0-9a-f]{32}'
+
+
 def chatkit_maps(clients, scoped):
-    # Routing reads only the configured owner. The engine verifies the signed
-    # ticket with this owner's active key digest before reserving its capacity.
+    # Core verifies the active issuer signature and the exact reservation
+    # before it accepts bytes. Each credential reaches only its own route.
     scheme = '[Bb][Ee][Aa][Rr][Ee][Rr] '
-    owner_rows, proof_rows = [], []
-    if scoped:
-        for entry in clients:
-            owner = entry['id']
-            pattern = scheme + r'cksec_q4t1\.' + owner + r'\.[1-9][0-9]{0,15}\.[0-9a-f]{64}\.[A-Za-z0-9_-]{43}'
-            owner_rows.append(f'    "~^{pattern}$" {owner};')
-            digest = hashlib.sha256(entry['api_key'].encode('ascii')).hexdigest()
-            proof_rows.append(f'    {owner} "Q4T-ChatKit {digest} $http_authorization";')
-    else:
-        owner_rows.append(f'    "~^{scheme}cksec_[0-9a-f]{{64}}$" local;')
-        proof_rows.append('    local $http_authorization;')
-    return ('  map $http_authorization $q4t_chatkit_owner {\n    default "";\n' +
-            '\n'.join(owner_rows) + '\n  }\n' +
-            '  map $q4t_chatkit_owner $q4t_chatkit_proof {\n    default "";\n' +
-            '\n'.join(proof_rows) + '\n  }\n' +
-            '  map "$request_method:$request_uri" $q4t_client {\n' +
-            '    default $q4t_key_client;\n' +
-            '    "POST:/v1/chatkit" $q4t_chatkit_owner;\n' +
-            '    "POST:/v1/chatkit/attachments" $q4t_chatkit_owner;\n  }\n' +
-            '  map "$request_method:$request_uri" $q4t_upstream_credential {\n' +
-            '    default $q4t_realtime_issuer;\n' +
-            '    "POST:/v1/chatkit/sessions" "Q4T-Issuer $q4t_issuer_digest";\n' +
-            '    "POST:/v1/chatkit" $q4t_chatkit_proof;\n' +
-            '    "POST:/v1/chatkit/attachments" $q4t_chatkit_proof;\n  }')
+    tables = []
+    for lane, prefix in [('chatkit', 'cksec_'), ('chatkit_upload', 'ckup_')]:
+        owners, proofs = [], []
+        if scoped:
+            for entry in clients:
+                owner = entry['id']
+                pattern = scheme + prefix + r'q4t1\.' + owner + r'\.[1-9][0-9]{0,15}\.[0-9a-f]{64}\.[A-Za-z0-9_-]{43}'
+                owners.append(f'    "~^{pattern}$" {owner};')
+                digest = hashlib.sha256(entry['api_key'].encode('ascii')).hexdigest()
+                proofs.append(f'    {owner} "Q4T-ChatKit {digest} $http_authorization";')
+        else:
+            owners.append(f'    "~^{scheme}{prefix}[0-9a-f]{{64}}$" local;')
+            proofs.append('    local $http_authorization;')
+        tables += [f'  map $http_authorization $q4t_{lane}_owner {{', '    default "";',
+                   *owners, '  }', f'  map $q4t_{lane}_owner $q4t_{lane}_proof {{',
+                   '    default "";', *proofs, '  }']
+    for field, default, value in [('client', 'key_client', 'owner'),
+                                  ('upstream_credential', 'realtime_issuer', 'proof')]:
+        tables += [f'  map "$request_method:$request_uri" $q4t_{field} {{',
+                   f'    default $q4t_{default};']
+        if field == 'upstream_credential':
+            tables.append('    "POST:/v1/chatkit/sessions" "Q4T-Issuer $q4t_issuer_digest";')
+        for path in ['/v1/chatkit', '/v1/chatkit/attachments']:
+            tables.append(f'    "POST:{path}" $q4t_chatkit_{value};')
+        tables += [f'    "~^{CHATKIT_TRANSFER}$" $q4t_chatkit_upload_{value};', '  }']
+    return '\n'.join(tables)
 
 
 def tunnel_headers():

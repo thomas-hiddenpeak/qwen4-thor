@@ -1,5 +1,7 @@
 #pragma once
 
+#include "q4t/server/application_routes.h"
+
 #include <memory>
 
 #include "q4t/server/files.h"
@@ -24,7 +26,8 @@ class FileHttpRequest {
                       std::string_view content_type, HttpBodyStream* stream, std::string_view accept = {});
   ObjectReply PrepareChatKit(std::string_view token,
                              std::string_view content_type,
-                             HttpBodyStream* stream);
+                             HttpBodyStream* stream,
+                             ChatKitTransfer transfer = {});
   uint64_t WireLimit() const { return wire_limit_; }
   const ObjectReply* UploadFailure() const {
     if (skill_upload_ && !skill_upload_->Result().ok()) return &skill_upload_->Result();

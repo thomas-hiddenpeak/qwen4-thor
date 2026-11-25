@@ -132,12 +132,42 @@ FileHttpRequest::~FileHttpRequest() {
 }
 ObjectReply FileHttpRequest::PrepareChatKit(std::string_view token,
                                             std::string_view content_type,
-                                            HttpBodyStream* stream) {
+                                            HttpBodyStream* stream,
+                                            ChatKitTransfer transfer) {
+  const StateAccess state{access_.scope, access_.deadline, access_.cancelled};
+  if (!transfer.file.empty()) {
+    chatkit_detail::Grant grant;
+    grant.session = transfer.session;
+    chatkit_detail::ReservedFile file;
+    auto reserved = chatkit_detail::ReadReservation(
+        objects_, state, &grant, transfer.file, token, &file);
+    if (!reserved.ok()) return reserved;
+    if (content_type != file.mime)
+      return Error(415, "unsupported_media_type",
+                   "Media type differs from attachment reservation");
+    wire_limit_ = file.bytes;
+    MultipartPart raw{"file", file.name, file.mime, true};
+    upload_ = std::make_unique<FileUpload>(
+        objects_, access_, std::move(raw),
+        [this, grant = std::move(grant), id = std::string(transfer.file),
+         token = std::string(token)](BinaryStage* stage, std::string_view name,
+                                     std::string_view) {
+          return chatkit_detail::PublishAttachment(
+              objects_, access_, grant, stage, name, upload_->MimeType(), id,
+              token);
+        },
+        std::max<uint64_t>(1, wire_limit_));
+    if (!upload_->Result().ok()) return upload_->Result();
+    PrepareFileStream(stream);
+    // The framing layer requires a positive streaming capacity. WireLimit()
+    // separately enforces an exact zero-byte ceiling for an empty document.
+    stream->max_bytes = std::max<uint64_t>(1, wire_limit_);
+    return {};
+  }
   if (!IsMultipartForm(content_type))
     return Error(415, "unsupported_media_type",
                  "Expected a multipart attachment");
   chatkit_detail::Grant grant;
-  const StateAccess state{access_.scope, access_.deadline, access_.cancelled};
   auto auth = chatkit_detail::Redeem(objects_, state, token, std::time(nullptr),
                                      &grant);
   if (!auth.ok()) return auth;

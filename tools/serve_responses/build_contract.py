@@ -148,7 +148,7 @@ def schema(graph):
     definitions.update(graph_definitions(chatkit, 'chatkit_'))
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
         'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output', 'threads.get_by_id',
-        'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.delete']),
+        'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.create', 'attachments.delete']),
         params=dict(type='object'), metadata=dict(type='object')), ['type', 'params'])
     string = dict(type='string')
     def browser_fields(properties, required):
@@ -170,11 +170,18 @@ def schema(graph):
         {'if': {'properties': {'type': {'const': name}}},
          'then': {'properties': {'params': params}}}
         for name, params in [
+            ('attachments.create', browser_fields(dict(name=dict(type='string', minLength=1),
+                size=dict(type='integer', minimum=0), mime_type=string), ['name', 'size', 'mime_type'])),
             ('items.feedback', feedback), ('threads.create', browser_fields({'input': message}, ['input'])),
             ('threads.add_user_message', browser_fields(dict(input=message, thread_id=string), ['input', 'thread_id']))]]
     definitions['chatkit_client_result'] = dict(type='object')
     definitions['chatkit_document_attachment'] = obj(dict(id=dict(type='string'),name=dict(type='string'),
         type=dict(const='file'),mime_type=dict(type='string')), ['id','name','type','mime_type'])
+    definitions['chatkit_reserved_document'] = obj(dict(
+        id=string, name=string, type=dict(const='file'), mime_type=string,
+        upload_descriptor=obj(dict(url=dict(type='string',format='uri'), method=dict(const='PUT'),
+            headers=obj({'Authorization': string, 'Content-Type': string}, ['Authorization','Content-Type'])),
+            ['url','method','headers'])), ['id','name','type','mime_type','upload_descriptor'])
     definitions['chatkit_threads'] = obj(dict(object=dict(const='list'),
         data=dict(type='array', items=ref('chatkit_thread')),
         first_id=nullable(dict(type='string')), last_id=nullable(dict(type='string')),
@@ -745,6 +752,7 @@ def add_openapi(paths, response, error):
         ('/v1/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id}', 'get', None, 'eval_output_item', None),
         ('/v1/chatkit', 'post', 'chatkit_client_request', 'chatkit_client_result', None),
         ('/v1/chatkit/attachments', 'post', None, 'chatkit_document_attachment', None),
+        ('/v1/chatkit/attachments/{session_id}/{file_id}', 'put', None, 'chatkit_document_attachment', None),
         ('/v1/chatkit/sessions', 'post', 'chatkit_create', 'chatkit_session', None),
         ('/v1/chatkit/sessions/{session_id}/cancel', 'post', None, 'chatkit_session', None),
         ('/v1/chatkit/threads', 'get', None, 'chatkit_threads', 'chatkit_thread_query'),
@@ -929,11 +937,21 @@ def add_openapi(paths, response, error):
         if path == '/v1/chatkit':
             operation['description'] = 'Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.'
             success['content']['text/event-stream'] = dict(schema=dict(type='string'))
+            operation['x-q4t-result-by-request-type'] = {'attachments.create': external('chatkit_reserved_document')}
         if path == '/v1/chatkit/attachments':
             operation['description'] = 'Upload a document with a ChatKit session secret. The session must enable files. The returned ID can be used in that session.'
             operation['x-q4t-body-contract'] = 'one multipart file'
             operation['requestBody'] = dict(required=True, content={'multipart/form-data':dict(
                 schema=obj(dict(file=dict(type='string',format='binary')), ['file']))})
+        elif path == '/v1/chatkit/attachments/{session_id}/{file_id}':
+            patterns = {'session_id': '^cksess_[0-9a-f]{64}$', 'file_id': '^file_[0-9a-f]{32}$'}
+            for param in operation['parameters']:
+                if param['in'] == 'path':
+                    param['schema']['pattern'] = patterns[param['name']]
+            operation['description'] = 'Complete the reserved document with its upload credential and the media type returned by attachments.create.'
+            operation['x-q4t-body-contract'] = 'raw bytes of the reserved size and media type'
+            operation['requestBody'] = dict(required=True, content={'*/*': dict(
+                schema=dict(type='string', format='binary'))})
         elif path.startswith('/v1/chatkit/'):
             operation.setdefault('parameters', []).append(dict(name='OpenAI-Beta',
                 **{'in':'header'}, required=True, schema=dict(type='string', const='chatkit_beta=v1')))

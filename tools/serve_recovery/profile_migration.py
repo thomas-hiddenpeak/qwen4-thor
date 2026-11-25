@@ -531,6 +531,12 @@ def explicit_extension(previous, target):
     old_history = old_tools.get('history', {})
     new_history = new_tools.get('history', {})
     from tools.serve_recovery import profile_live_reuse as live
+    if not live.has_upload_reservations(previous) and live.has_upload_reservations(target):
+        if (not package.same_json(previous.get('chatkit'), live.FEEDBACK_CHATKIT)
+                or not package.same_json(target['chatkit'], live.UPLOAD_CHATKIT)
+                or not package.same_json(previous.get('evals'), live.METEOR_EVALS)):
+            return False
+        previous = dict(previous, chatkit=live.UPLOAD_CHATKIT)
     if not live.has_feedback(previous) and live.has_feedback(target):
         if (not package.same_json(previous.get('chatkit'), live.CHATKIT_CAPABILITY)
                 or not package.same_json(target['chatkit'], live.FEEDBACK_CHATKIT)

@@ -3079,6 +3079,11 @@
         "revision": 490,
         "receipt": "evidence/serve-chatkit-20261125/feedback-delivery.json"
       },
+      "chatkit_two_phase_documents_20261125": {
+        "stage": "profile_verified",
+        "receipt": "evidence/serve-chatkit-20261125/upload.json",
+        "profiles": "evidence/serve-chatkit-20261125/upload-profiles.json"
+      },
       "assistant_pagination_20261125": {
         "stage": "targeted_cpu_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/empty.json"
@@ -7686,14 +7691,14 @@
         "publication": 484,
         "receipt": "evidence/serve-project-safety-20261125/delivery.json"
       },
-      "assistant_pagination_20261125": {
-        "stage": "targeted_cpu_verified",
-        "receipt": "evidence/serve-assistant-pagination-20261125/empty.json"
-      },
       "chat_audio_wire_schema_20261125": {
         "stage": "schema_verified",
         "receipt": "evidence/serve-chat-audio-wire-20261125/wire.json",
         "pending": "Publish corrected client declarations with the next package"
+      },
+      "assistant_pagination_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-assistant-pagination-20261125/empty.json"
       }
     },
     {

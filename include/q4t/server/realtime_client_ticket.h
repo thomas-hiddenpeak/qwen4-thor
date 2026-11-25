@@ -7,7 +7,7 @@
 #include <string_view>
 
 namespace q4t::server {
-enum class ClientTicketAudience { kRealtime, kChatKit };
+enum class ClientTicketAudience { kRealtime, kChatKit, kChatKitUpload };
 struct RealtimeClientTicket {
   std::string_view owner, nonce, signature;
   int64_t expires_at = 0;
@@ -27,7 +27,8 @@ bool SignRealtimeTicket(std::string_view binding, std::string_view issuer,
 // configured issuer key before admitting a browser on its owner's lane.
 bool ResolveForwardedChatKit(std::string_view authorization,
                              std::string_view owner, std::string_view binding,
-                             int64_t now, std::string* bearer);
+                             int64_t now, std::string* bearer,
+                             ClientTicketAudience audience = ClientTicketAudience::kChatKit);
 bool VerifyRealtimeTicket(const RealtimeClientTicket& ticket,
                           std::string_view binding, std::string_view issuer,
                           int64_t now);

@@ -13,6 +13,7 @@ bool Hex64(std::string_view value) {
          value.find_first_not_of("0123456789abcdef") == value.npos;
 }
 std::string_view Prefix(ClientTicketAudience audience) {
+  if (audience == ClientTicketAudience::kChatKitUpload) return "ckup_q4t1.";
   return audience == ClientTicketAudience::kChatKit ? kChatKitTicketPrefix
                                                    : kRealtimeTicketPrefix;
 }
@@ -108,7 +109,10 @@ bool SignRealtimeTicket(std::string_view binding, std::string_view issuer,
                         std::string_view owner, std::string_view opaque,
                         int64_t expiry, std::string* token,
                         ClientTicketAudience audience) {
-  const std::string_view prefix = audience == ClientTicketAudience::kChatKit ? "cksec_" : "ek_";
+  const std::string_view prefix =
+      audience == ClientTicketAudience::kChatKitUpload
+          ? "ckup_"
+          : (audience == ClientTicketAudience::kChatKit ? "cksec_" : "ek_");
   if (!ValidClientId(owner) || !opaque.starts_with(prefix) ||
       !Hex64(opaque.substr(prefix.size())) || expiry < 1 || expiry > 9007199254740991LL)
     return false;
@@ -137,7 +141,8 @@ bool VerifyRealtimeTicket(const RealtimeClientTicket& ticket,
 }
 bool ResolveForwardedChatKit(std::string_view authorization,
                              std::string_view owner, std::string_view binding,
-                             int64_t now, std::string* bearer) {
+                             int64_t now, std::string* bearer,
+                             ClientTicketAudience audience) {
   constexpr std::string_view prefix = "Q4T-ChatKit ";
   if (!bearer || !authorization.starts_with(prefix)) return false;
   authorization.remove_prefix(prefix.size());
@@ -146,10 +151,11 @@ bool ResolveForwardedChatKit(std::string_view authorization,
   const auto issuer = authorization.substr(0, split);
   const auto original = authorization.substr(split + 1);
   RealtimeClientTicket ticket;
-  if (!ReadRealtimeTicket(BearerCredential(original), &ticket,
-                          ClientTicketAudience::kChatKit) ||
+  if (audience == ClientTicketAudience::kRealtime ||
+      !ReadRealtimeTicket(BearerCredential(original), &ticket, audience) ||
       ticket.owner != owner ||
-      !VerifyRealtimeTicket(ticket, binding, issuer, now)) return false;
+      !VerifyRealtimeTicket(ticket, binding, issuer, now))
+    return false;
   *bearer = std::string(original);
   return true;
 }
