@@ -3485,9 +3485,10 @@
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       },
       "agent_session_controls_20261126": {
-        "stage": "native_https_candidate",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-agent-session-controls-20261126/profiles.json"
       }
     },
     {
@@ -8370,9 +8371,10 @@
         "delivery": "evidence/serve-chatkit-image-attachments-20261126/delivery.json"
       },
       "agent_session_controls_20261126": {
-        "stage": "native_https_candidate",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-agent-session-controls-20261126/business.json",
-        "issued": false
+        "issued": false,
+        "profiles": "evidence/serve-agent-session-controls-20261126/profiles.json"
       }
     },
     {

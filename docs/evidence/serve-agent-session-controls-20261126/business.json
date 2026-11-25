@@ -135,5 +135,10 @@
         "issued_named": 38
       }
     ]
-  }
+  },
+  "identity": {
+    "binary": "b26f44fac01d5dcf6c432f2e670ab99648d1ee80c2ce0ad3b67895490843bc31",
+    "ingress": "666d8c5fcef03dfa15ca0ece7c8e952c4f542449d817d357fd0f98adcbf049b8"
+  },
+  "device_plan_sha256": "357929f1c86f6e13dd64d6d472d7fd6ec680aeecde103194e08dc7c0bcede66f"
 }
