@@ -1,0 +1,33 @@
+{
+  "status": "prepared_awaiting_authorized_maintenance_window",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/dictation-delivery-soak-src/.q4t-work/cold496-01/plan.json",
+  "recovered_source": "ae019028392313a3cc6df510a32fc5896c3262a6",
+  "manifest": "1b36fe71a7de1f19b3e2fb5275d249c2cc66a635b956a6fb347943b8cd81f3c5",
+  "service_id": "93869209-0c95-4f78-8cea-85b1c3b53639",
+  "plan_sha256": "8346916987777f1949f14e2d39ecf1fa80745c4d3b1b102a67ac1a4b54ee599d",
+  "limits": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 1,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "5a1efb607c24879a262da84c8ec6cf0f3458dcb0e3e596113e2353355bdd0393",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "9cd51a9867d0b5b7ccb169376a92dc3a564fd4d02a7bc624a6d3a0e3bdb8c935",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "1b36fe71a7de1f19b3e2fb5275d249c2cc66a635b956a6fb347943b8cd81f3c5",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "0f534d64306fc5ab0f5eb143231bd09c43dbad1fc0a533d128ec59cb888710c0",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "model_actions": 0,
+  "host_units_modified": false,
+  "host_filter_installed": false,
+  "external_units": {
+    "jtop.service": "0134cb45752e7bd1961942506d2c5384b398ecde6d465ffbdfcb25b5c0da0a6b",
+    "nvargus-daemon.service": "58def8c2ac2873d2811ae586bd7a472e091ac3b859127184207f3b3dd24550ec"
+  },
+  "root_check_sha256": "c962c2c49418f1c719456d2753d2c1cd14d78ff2f4e3a41877257bc51856eea1",
+  "targeted_cpu_cases": 11,
+  "cpu_sha256": "becef7bd39179296d0f17b9214447a1d5c688e923c5fb982cdc232386302f22a",
+  "previous": "rev494-preflight.json"
+}

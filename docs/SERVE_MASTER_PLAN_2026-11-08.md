@@ -1,5 +1,15 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+管理员只读检查已确认 rev496 的独立服务身份、封包摘要和单次启动限额。外部相机与监控服务仍为运行状态。实际 NVML 失能冷启动待维护窗口。[验证记录](evidence/serve-cold-driver-cpu-20261112/rev496-preflight.json)
+
+模型退出和网关接管后，两次实际恢复均逐字转写两种中文录音，原 Eval 保持取消状态并只对所属客户可见，独立 Chat 各答 42。默认选择更新至 rev496，停服意图和 13 份受保护记录保持，发布启动模型 0 次。旧长稳入口改指向字节相同的原始封包，原计划和 28 项记录核验通过。已为用户准备 24 小时计划。[验证记录](evidence/serve-chatkit-composer-20261125/delivery.json)
+
+两套配置都返回相同的中文 WAV 和 WebM/Opus 转写，独立 Chat 各答 42。轻配置读取同一个已取消 Eval，跨客户返回 404，报告地址指向本次入口，其余响应字段摘要相同。配置登记已核实 56 项检查与两份 rev494 前驱还原。下一步封包验证进程退出后的恢复并登记独立回退版本。[验证记录](evidence/serve-chatkit-composer-20261125/profiles.json)
+
+第一次主轻交接在比较取消记录的完整摘要时失败。用同一份磁盘记录，分别填入两个服务的真实 TLS 端口，可逐字复算两份原摘要。验收客户端现逐端校验完整报告 URL，保留原始摘要，再比较同一路径和其余全部字段。两个错误地址反例已通过 CPU 验证。[验证记录](evidence/serve-chatkit-composer-20261125/report-origin.json)
+
+客户端可从 chatkit.input_transcribe.configured 得知当前原生 ASR 是否可用。两项 C++ 回归覆盖启用与关闭，55 项配置迁移及交接检查覆盖既有能力、录音身份和取消运行。设备转写至此次构建的协议源差异只有能力声明。下一步在主、轻两套容量中核对实际发现值、同一取消记录和两种音频。[验证记录](evidence/serve-chatkit-composer-20261125/profiles.json)
+
 官方 SDK 签发的会话经原生 HTTPS 发送 WAV 和 WebM/Opus，两次均逐字返回“请查询当前项目版本号。”。音源为有记录的 2.88 秒合成语音，ASR 未收到原文。损坏编码、媒体类型不符、项目密钥和撤销的会话分别返回 400、415、401、401。另一客户 Chat 答 42，模型启动一次，42.302 秒，默认发行保持 rev494。[验证记录](evidence/serve-chatkit-composer-20261125/business.json)
 
 ChatKit 会话可以提交带媒体类型的 base64 录音，转写沿用原生 ASR 与客户配额，浏览器收到仅含 text 的 JSON。四项 CPU 回归、两项有效和七项无效 schema 输入均已验证。下一步通过实际 TLS 会话提交两种编码的同一段语音。[验证记录](evidence/serve-chatkit-composer-20261125/cpu.json)

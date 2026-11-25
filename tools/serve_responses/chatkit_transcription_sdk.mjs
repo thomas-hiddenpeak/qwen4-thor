@@ -52,5 +52,41 @@ const chat = await peer.chat.completions.create({model: plan.model, temperature:
   reasoning_effort: 'none', messages: [{role: 'user', content: 'Return just the integer product of 6 and 7.'}]});
 const independent = chat.choices[0].message.content.trim();
 assert.equal(independent, '42');
-process.stdout.write(JSON.stringify({sdk: version, transcripts: {wav: wav.text, webm: webm.text},
+// A recovered profile must read the original cancelled Eval, including its owner
+// and terminal result counts. Only resource IDs and a digest cross the handoff.
+async function canceledRun(previous) {
+  let evalId = previous?.eval_id;
+  let runId = previous?.run_id;
+  if (!previous) {
+    const evaluation = await owner.evals.create({name: 'Dictation service cancellation',
+      data_source_config: {type: 'custom', item_schema: {type: 'object',
+        properties: {question: {type: 'string'}}, required: ['question']}},
+      testing_criteria: [{name: 'Arithmetic', type: 'string_check',
+        input: '{{sample.output_text}}', operation: 'eq', reference: '42'}]});
+    evalId = evaluation.id;
+    const item = {question: 'Return just the integer product of 6 and 7.'};
+    const run = await owner.evals.runs.create(evalId, {data_source: {type: 'responses',
+      model: plan.model, input_messages: {type: 'template',
+        template: [{role: 'user', content: '{{item.question}}'}]},
+      source: {type: 'file_content', content: Array.from({length: 12}, () => ({item}))}}});
+    runId = run.id;
+    const terminal = await owner.evals.runs.cancel(runId, {eval_id: evalId});
+    assert.equal(terminal.status, 'canceled');
+  }
+  const stored = await owner.evals.runs.retrieve(runId, {eval_id: evalId});
+  assert.equal(stored.status, 'canceled');
+  assert.equal(stored.id, runId);
+  assert.equal(stored.eval_id, evalId);
+  await assert.rejects(peer.evals.runs.retrieve(runId, {eval_id: evalId}), err => err.status === 404);
+  const expectedUrl = plan.base + '/evals/' + evalId + '/runs/' + runId + '/report';
+  assert.equal(stored.report_url, expectedUrl);
+  const digest = value => createHash('sha256').update(JSON.stringify(value)).digest('hex');
+  const resource = {...stored, report_url: new URL(stored.report_url).pathname};
+  const record = {eval_id: evalId, run_id: runId, status: stored.status, foreign_status: 404,
+    sha256: digest(resource)};
+  if (previous) assert.deepEqual(record, previous);
+  return {canceled_run: record, report_url: stored.report_url, wire_sha256: digest(stored)};
+}
+const handoff = plan.handoff ? await canceledRun(plan.previous) : {};
+process.stdout.write(JSON.stringify({...handoff, sdk: version, transcripts: {wav: wav.text, webm: webm.text},
   inputs: {wav: clips.wav.sha256, webm: clips.webm.sha256}, observations, independent}));

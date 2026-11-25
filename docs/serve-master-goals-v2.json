@@ -793,6 +793,10 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
@@ -1176,6 +1180,10 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
@@ -3141,12 +3149,23 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "eval_cancel_admission_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-observation-admission-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_handoff_20261125": {
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
@@ -5887,8 +5906,18 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_handoff_20261125": {
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
@@ -7798,12 +7827,23 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "eval_cancel_admission_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-observation-admission-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_handoff_20261125": {
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
@@ -9025,8 +9065,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 494,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev494-preflight.json",
+        "revision": 496,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev496-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -9386,6 +9426,10 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
@@ -10546,18 +10590,24 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "eval_cancel_admission_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-observation-admission-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
       },
       "chatkit_composer_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-chatkit-composer-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev494_delivered_remaining_deliveries",
+      "state": "rev496_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -11817,8 +11867,18 @@
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
       },
       "eval_cancel_admission_20261125": {
-        "stage": "targeted_device_verified",
-        "receipt": "evidence/serve-observation-admission-20261125/business.json"
+        "stage": "issued",
+        "receipt": "evidence/serve-observation-admission-20261125/business.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_handoff_20261125": {
+        "stage": "issued",
+        "receipt": "evidence/serve-chatkit-composer-20261125/profiles.json",
+        "delivery": "evidence/serve-chatkit-composer-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     },
     {
@@ -12302,6 +12362,10 @@
       "pagination_delivery_20261125": {
         "revision": 494,
         "receipt": "evidence/serve-assistant-pagination-20261125/delivery.json"
+      },
+      "dictation_delivery_20261125": {
+        "revision": 496,
+        "receipt": "evidence/serve-chatkit-composer-20261125/delivery.json"
       }
     }
   ],

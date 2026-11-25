@@ -505,7 +505,9 @@ std::string ChatCapabilitiesJson(
          R"(,"chatkit":{"selector":"chatkit_beta=v1","client":"/v1/chatkit",)"
          R"("uploads":"/v1/chatkit/attachments","grant_scope":"project_user_workflow",)"
          R"("client_tools":"serial","thread_history":true,"direct_document_upload":true,)"
-         R"("item_feedback":true,"entity_mentions":true,"two_phase_document_upload":true})"
+         R"("item_feedback":true,"entity_mentions":true,"two_phase_document_upload":true,)"
+         R"("input_transcribe":{"operation":"input.transcribe","configured":)" +
+         (native_asr ? "true}}" : "false}}") +
          R"(,"hosted_environment_preparation":{"min_file_entries":2,"max_files":50,)"
          R"("source_pin_seconds":3600,"worker_jobs":1,"tenant_rotation":true,)"
          R"("pending_attachment":true,"session_failure_events":true,)"

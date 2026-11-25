@@ -1,0 +1,130 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 496,
+    "version_revision": 177,
+    "profile_revision": 67,
+    "previous_profile_revision": 66,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "1b36fe71a7de1f19b3e2fb5275d249c2cc66a635b956a6fb347943b8cd81f3c5",
+    "fallback": "bae831f610faa978f671e8aa21c7f1ec572f2f99e45902cc434c83a5151d1f0a",
+    "engine": "5a1efb607c24879a262da84c8ec6cf0f3458dcb0e3e596113e2353355bdd0393",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous": "faf7f3e0bc257160aaed8279c9b435fada02957d2e532262c4163e6a6ce557aa",
+  "recovery": {
+    "fallback": {
+      "seconds": 158.872,
+      "starts": 2,
+      "sdk": "7.47.0",
+      "transcripts": {
+        "wav": "请查询当前项目版本号。",
+        "webm": "请查询当前项目版本号。"
+      },
+      "canceled_run": {
+        "eval_id": "eval_7b8c6cea65c198baae547f59adb1a1d3",
+        "run_id": "evalrun_3c8c8ffb9f086d38dcde681328bea0cf",
+        "status": "canceled",
+        "foreign_status": 404,
+        "sha256": "424b906ae32bb923caacc1250ce4b577c5ef32d054629b3b448e2dbf13001750"
+      },
+      "independent_chat": "42",
+      "report_url": "http://127.0.0.1:18161/v1/evals/eval_7b8c6cea65c198baae547f59adb1a1d3/runs/evalrun_3c8c8ffb9f086d38dcde681328bea0cf/report",
+      "generation": [
+        1,
+        2
+      ]
+    },
+    "primary": {
+      "seconds": 331.627,
+      "starts": 2,
+      "sdk": "7.47.0",
+      "transcripts": {
+        "wav": "请查询当前项目版本号。",
+        "webm": "请查询当前项目版本号。"
+      },
+      "canceled_run": {
+        "eval_id": "eval_cc186ca41527acc0ca605f13b0aedd0f",
+        "run_id": "evalrun_de314bb09b4b584dc98109de9b1b5551",
+        "status": "canceled",
+        "foreign_status": 404,
+        "sha256": "eff5564d6d359b91f3304d2e43fd698a3eb6f8bfc46367d70a91d05a1506e68e"
+      },
+      "independent_chat": "42",
+      "report_url": "http://127.0.0.1:18161/v1/evals/eval_cc186ca41527acc0ca605f13b0aedd0f/runs/evalrun_de314bb09b4b584dc98109de9b1b5551/report",
+      "generation": [
+        1,
+        2
+      ]
+    }
+  },
+  "retained_handoff": {
+    "generation": "ff85ca6ebc55ab72e21a00b63d07acb1054f28cc97dd5cc577df1194531da831",
+    "unchanged_plan": "ed1b667bdc28dd93916fc5da12f9354360a89c7a5511d6327731ed39b7e81120",
+    "protected_raw_files": 28,
+    "executed_hours": 0
+  },
+  "prior_failure": "report-origin.json",
+  "soak": {
+    "source_commit": "ae019028392313a3cc6df510a32fc5896c3262a6",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/dictation-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/dictation-client-primary-01/bundle",
+      "manifest_sha256": "1b36fe71a7de1f19b3e2fb5275d249c2cc66a635b956a6fb347943b8cd81f3c5"
+    },
+    "revision": 496,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/dictation-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "c9d7536c63f3a6401dbfb3e35c36e61c28a34065d434f056c9103b2b687631c5",
+    "handoff_sha256": "834930e94ca3d91dc1d7f83b3661636d134f5b813f795d05a3b1d0b661dd38c6",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "openapi_sha256": "117e721535352752ad6ec7a017d23f515717a17f23ee89eca1fed08feef085bf",
+  "method_declarations": {
+    "required": 231,
+    "matched": 217,
+    "remaining": 14
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/dictation-delivery-delivery/result.json": "3a928c59cf6235cfe3953c9147988535145c572c084b7a7e4f9818f0b3dd529c",
+    ".q4t-work/serve-responses-agents-20261123/dictation-delivery-delivery/plan.json": "ffd4d66ec7ca3251ebbf734c76a02cb97cf94b9efea78b599cc67469a7b469b0",
+    ".q4t-work/serve-responses-agents-20261123/dictation-delivery-delivery/status.stdout": "57564155b5015862866511a74ec52d45f5061024c39f6d4600af5c74a586ab9b",
+    ".q4t-work/serve-responses-agents-20261123/dictation-delivery-delivery/check.stdout": "0bee4578ad02307dbd38df37e636011f539257f3cd0ea1e66664bc45f687282c",
+    ".q4t-work/serve-responses-agents-20261123/dictation-delivery-delivery/version-status.stdout": "30692d80bc577d71086b47c155cacb5f02c75be3854e939a8a6a4406c07d02b1",
+    ".q4t-work/serve-responses-agents-20261123/dictation-delivery-day.json": "5b3730d5c378112b86c2c98e061ba89f783ebb4e549514bbc7413d8f7a7119bf",
+    ".q4t-work/serve-responses-agents-20261123/dictation-release-methods.json": "593e14d1cd45111f1220cd37bcfa1b4569726681b42ddbd503e25a9ae7295f8f",
+    ".q4t-work/serve-responses-agents-20261123/dictation-delivery-maintenance-02/result.json": "4d6d7b424b6f1114d736b9e895c425933587534df2e021a6c7d5a23cc8d04fbf",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/docs/evidence/serve-chatkit-composer-20261125/business.json": "ddceab00fd7efe315c2d787ba3dc76d843144fbd2557019df56cb78abf130f39",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/docs/evidence/serve-chatkit-composer-20261125/profiles.json": "fdaa63060ba34e980766985ea19819f85b6a835188bf2621c72acc57576e9154",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/docs/evidence/serve-chatkit-composer-20261125/report-origin.json": "6e77c2f8a11305d9e4002b178f236b57bc24a04e09dea66f242ff18fa7ed80e5",
+    ".q4t-work/serve-responses-agents-20261123/audio-contract-src/docs/evidence/serve-observation-admission-20261125/business.json": "a08e99780c9d0646652d3974f8cd87c5742733d60fa0e5f275ba22990009ae52",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/artifact-soak-retained-496.json": "9ce893556256517c139ed572d96b942c7ba5e6d9b6f1e321cc2576de2a777774",
+    ".q4t-work/serve-responses-agents-20261123/dictation-maintenance-lease-01/exit.json": "8cfa53b85b5055295cc000ef4945e467307b4959e0ccda2b01804ebc161bf0f1",
+    ".q4t-work/serve-responses-agents-20261123/dictation-publish-lease-01/exit.json": "fa065ee3e34aedc18adf18e9a3c16607d5c68a37dcfe0b7001ca01ee5c8d39fd",
+    ".q4t-work/serve-responses-agents-20261123/dictation-maintenance-lease-02/exit.json": "68c668d005a27a323a2693cd315adf5728b6ae153234807c4ee98e3d3f1c4f8d",
+    ".q4t-work/serve-responses-agents-20261123/dictation-publish-lease-02/exit.json": "ca7293aefdec33afaca04c63569329abcd16e56849490a4f30e98393161b80c6",
+    ".q4t-work/serve-responses-agents-20261123/dictation-fallback-lease-01/exit.json": "fe906cf481c6281747a0a0da5e9954ace46ae7536a5f3e9ffb6e6f99bcabcb80",
+    ".q4t-work/serve-responses-agents-20261123/dictation-fallback-business-01/prepare-run.json": "c22a51b4567e1d9b4a570c20e84491a44a73776f575577442b9297005edb9fbf",
+    ".q4t-work/serve-responses-agents-20261123/dictation-fallback-business-01/restore-run.json": "c22a51b4567e1d9b4a570c20e84491a44a73776f575577442b9297005edb9fbf",
+    ".q4t-work/serve-responses-agents-20261123/dictation-fallback-business-01/interruption.json": "2208ba24be9e6959bcc8c0d79123c87243c31fa80db7298575fb73c1da2d3474",
+    ".q4t-work/serve-responses-agents-20261123/dictation-fallback-business-01/result.json": "cb1b2c87915f81bdd8545678b6bece6a9352384e2c98ff4dfe8ba65558167c24",
+    ".q4t-work/serve-responses-agents-20261123/dictation-fallback-business-01/chat-after.wire": "3fc2415214a2790c2f39be4c08a9fc4a1321c6750effb91b48a1abea55a17257",
+    ".q4t-work/serve-responses-agents-20261123/dictation-client-fallback-01/origin.json": "dae70727b1baf574ec0e412decdec15b4ee6fc24efc88f2098a23eee75259047",
+    ".q4t-work/serve-responses-agents-20261123/dictation-client-fallback-01/service.release.json": "83dd4e59189ce09541096f7ee5b0cd7d0ad462311a6a47b2381bfc13436deb6d",
+    ".q4t-work/serve-responses-agents-20261123/dictation-client-fallback-01/service-acceptance.json": "23174c676d42dc309ce5a8493a85d943ae95f3953d61ee473a6c13b18ab38242",
+    ".q4t-work/serve-responses-agents-20261123/dictation-primary-lease-01/exit.json": "0a111f6a071031bf7649309133ee3a8a3bdc1c32a91169e125ad3d16f93e5b80",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-dictation-01/prepare-run.json": "5483dcf257a4078931b60baaaf855bbd5b4f98d49b3129724511fc8cab50dfe1",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-dictation-01/restore-run.json": "5483dcf257a4078931b60baaaf855bbd5b4f98d49b3129724511fc8cab50dfe1",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-dictation-01/interruption.json": "efd31c61d9503f951a198b29c5ef894e6504a1c4da00db415404db56e0f71059",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-dictation-01/result.json": "b32301b6c812a9533463091a7307f2c926ce215e9d6689710edaeacfafee1097",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-dictation-01/chat-after.wire": "49e3229f25b075d5b129ddb119c1a777bad62a92c07ceb71a18f22634e8bce98",
+    ".q4t-work/serve-responses-agents-20261123/dictation-client-primary-01/origin.json": "891d468c6da65146090f4682bc9333b65c8764ce109d87d0920febe8a0ded8ee",
+    ".q4t-work/serve-responses-agents-20261123/dictation-client-primary-01/service.release.json": "0f534d64306fc5ab0f5eb143231bd09c43dbad1fc0a533d128ec59cb888710c0",
+    ".q4t-work/serve-responses-agents-20261123/dictation-client-primary-01/service-acceptance.json": "71f2bb1c24a51ae3c15b253dfbea231a60c9662ee90422e4cb6062cb67c65c78",
+    ".q4t-work/serve-responses-agents-20261123/fatal-business-dictation-01/takeover.json": "cdd1b68f02a5697fff1446979f1a2e15ce64c69bd0ce00e538831920e2287a9c"
+  }
+}
