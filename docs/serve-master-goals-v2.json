@@ -8836,7 +8836,12 @@
         "owner_cpu_tests": 2
       },
       "current_execution_prerequisite": "Refresh exact cold qualification against rev366 or then-current default; pending host/camera maintenance handoff remains required.",
-      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md"
+      "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
+      "rev484_cold_preflight_20261125": {
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
+        "model_starts": 0,
+        "qualified_cold_run": false
+      }
     },
     {
       "id": "R08",
@@ -8904,7 +8909,12 @@
         "Cold and pressure composition beyond delivered normal-NVML resource subset"
       ],
       "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
-      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json"
+      "automation_capacity_handoff": "evidence/serve-agent-automations-20261124/profiles.json",
+      "rev484_cold_preflight_20261125": {
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
+        "model_starts": 0,
+        "qualified_cold_run": false
+      }
     },
     {
       "id": "R09",
@@ -9163,6 +9173,11 @@
       "project_safety_delivery_20261125": {
         "publication": 484,
         "receipt": "evidence/serve-project-safety-20261125/delivery.json"
+      },
+      "rev484_cold_preflight_20261125": {
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
+        "model_starts": 0,
+        "qualified_cold_run": false
       }
     },
     {
