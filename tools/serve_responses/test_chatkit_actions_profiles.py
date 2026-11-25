@@ -128,3 +128,28 @@ class PublicSummaryHandoff(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 workflows.restore_history(state, source)
             self.assertEqual(sentinel.read_bytes(), b'existing')
+
+
+class ImageAttachmentHandoff(unittest.TestCase):
+    def test_reject_changed_image_history_file_or_access(self):
+        from tools.serve_responses import chatkit_image_profiles as images
+        rows = package.read(images.PROOF.with_name('profiles.json'))['profiles']
+        before, after = rows['primary']['sdk'], rows['light']['sdk']
+        images.check(after, before)
+        for section, key, value in [
+                ('archive', 'preview_sha256', '0' * 64),
+                ('archive', 'items', list(reversed(after['archive']['items']))),
+                ('upload', 'preview_sha256', 'f' * 64),
+                ('upload', 'file', before['upload']['file']),
+                ('upload', 'source_sha256', 'f' * 64),
+                ('upload', 'before', 200), ('upload', 'peer', 200),
+                ('recovered', 'file', after['upload']['file']),
+                ('recovered', 'source_sha256', '0' * 64),
+                ('recovered', 'after_delete', 200), ('recovered', 'peer', 200)]:
+            with self.subTest(section=section, key=key), self.assertRaises(RuntimeError):
+                changed = deepcopy(after)
+                changed[section][key] = value
+                images.check(changed, before)
+        for key in ('peer', 'sibling', 'source_deleted'):
+            with self.subTest(key=key), self.assertRaises(RuntimeError):
+                images.check(dict(after, **{key:200}), before)
