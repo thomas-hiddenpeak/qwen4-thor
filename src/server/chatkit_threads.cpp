@@ -1,5 +1,8 @@
 #include "q4t/server/chatkit.h"
 
+#include <map>
+#include <unordered_set>
+
 #include "assistant_threads_internal.h"
 #include "chatkit_thread_state.h"
 #include "chatkit_credentials.h"
@@ -145,11 +148,76 @@ ObjectReply ClientPage(const Json& rows, const Json& params, bool threads) {
                        {"after", std::move(after)}});
   return page;
 }
+// Feedback belongs to the user/workflow-scoped thread. Keep it outside the
+// public item objects so project and browser history retain their wire shape.
+ObjectReply RecordFeedback(ObjectStore& objects, const StateAccess& access,
+                           const Grant& grant, const Json& params) {
+  const auto id = params.GetString("thread_id");
+  const auto kind = params.GetString("kind");
+  const auto* targets = params.GetArray("item_ids");
+  if (!targets || (kind != "positive" && kind != "negative"))
+    return Invalid("params", "Expected item IDs and a feedback kind");
+  for (const auto& target : targets->array) {
+    if (!target.IsString()) return Invalid("item_ids", "Expected an item ID");
+  }
+  ObjectReply accepted;
+  accepted.value = Object();
+  for (int attempt = 0; attempt < 4; ++attempt) {
+    auto row = ReadThread(objects, access, id, &grant);
+    if (!row.ok()) return row;
+    auto& data = Field(row.value, "data");
+    std::unordered_set<std::string> items;
+    for (const auto& item : data.GetArray("items")->array)
+      items.insert(item.GetString("id"));
+    std::map<std::string, std::string> votes;
+    if (const auto* prior = data.Find("feedback")) {
+      if (!prior->IsObject())
+        return Error(503, "chatkit_thread_invalid", "Invalid stored feedback");
+      for (const auto& [target, vote] : prior->object) {
+        if (!vote.IsString() ||
+            (vote.str != "positive" && vote.str != "negative"))
+          return Error(503, "chatkit_thread_invalid",
+                       "Invalid stored feedback");
+        votes.emplace(target, vote.str);
+      }
+    }
+    bool changed = false;
+    for (const auto& target : targets->array) {
+      if (!items.contains(target.str))
+        return Error(404, "object_not_found", "Thread item not found");
+      auto& vote = votes[target.str];
+      if (vote != kind) {
+        vote = kind;
+        changed = true;
+      }
+    }
+    if (!changed) return accepted;
+    auto feedback = Object();
+    for (const auto& [target, vote] : votes)
+      feedback.object.emplace_back(target, String(vote));
+    Set(&data, "feedback", std::move(feedback));
+    ObjectRequest write;
+    write.kind = ObjectKind::kChatKitThread;
+    write.operation = ObjectOperation::kPut;
+    write.scope = access.scope;
+    write.id = id;
+    write.expected_revision = row.value.GetInt("revision");
+    write.expires_at = row.value.GetInt("expires_at");
+    write.data = std::move(data);
+    auto result = objects.Execute(write, access.deadline, access.cancelled);
+    if (result.ok()) return accepted;
+    if (result.commit_unknown || result.code != "object_revision_conflict")
+      return result;
+  }
+  return Error(409, "chatkit_thread_busy", "Thread changed during feedback");
+}
 }  // namespace
 
 ObjectReply BrowserOperation(ObjectStore& objects, const StateAccess& access,
                              const Grant& grant, std::string_view operation,
                              const Json& params) {
+  if (operation == "items.feedback")
+    return RecordFeedback(objects, access, grant, params);
   if (operation == "attachments.delete")
     return RemoveAttachment(objects, access, grant,
                             params.GetString("attachment_id"));

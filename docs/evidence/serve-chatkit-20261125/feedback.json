@@ -1,0 +1,20 @@
+{
+  "stage": "targeted_native_cpu_verified",
+  "issued": false,
+  "reference": "https://openai.github.io/chatkit-python/api/chatkit/types/#chatkit.types.ItemFeedbackParams",
+  "behavior": "Persist the latest positive/negative vote for each item in its own project, user, workflow and visible thread. Discard the entire change if any item is absent. Return an empty object on success. Private vote data stays outside public thread item objects.",
+  "targeted": {
+    "chatkit_feedback_": "fb1d60775e77aea47b86ebee3ef39fdb96caee76259fe5d79268e008fb95f258",
+    "chatkit_thread_history_": "a71bd504396e54c178f2bc8d265c93ea0ab0adcc29a289c47a9d7f7007ba47b9"
+  },
+  "source": {
+    "src/server/chatkit_threads.cpp": "74ed2a71a737f84c13d9b38e965a373b5d1f134c033f1e2d1de2dae863a31c78",
+    "tests/server_chatkit_test.cpp": "8fdc8be2363c920c4b55ac5f45df0f0f6a1f8923dd99c064fc9f2c853c5ae804"
+  },
+  "host_binary": "8b850bbc120be6fb4ae86b10db429b5686129d80ea5d3aa062fdc51a854ba349",
+  "sdk_driver": "92ddcf0cee6abac938dd30dbf221debfef9e86554144234448cbfdab7f48fe51",
+  "pending": [
+    "Real browser request using a model-generated thread and independently stored votes",
+    "Recovery qualification and release"
+  ]
+}

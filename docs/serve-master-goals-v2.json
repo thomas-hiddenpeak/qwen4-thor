@@ -3038,6 +3038,10 @@
       "meteor_20261125": {
         "stage": "lexical_oracle_verified",
         "receipt": "evidence/serve-evals-20261125/meteor.json"
+      },
+      "chatkit_feedback_20261125": {
+        "stage": "targeted_native_cpu_verified",
+        "receipt": "evidence/serve-chatkit-20261125/feedback.json"
       }
     },
     {
