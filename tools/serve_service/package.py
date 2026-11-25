@@ -1091,6 +1091,11 @@ def verify(package, digest):
     verify_declarations(metadata, package/'declarations',
                         required='release_declarations' in manifest)
     check_media_declaration(metadata, config['profile'])
+    metrics = metadata.get('chat_protocol', {}).get('evals', {}).get('text_similarity', [])
+    if 'meteor' in metrics:
+        require({'wordnet/LICENSE', 'nltk-porter/LICENSE.txt'} <=
+                set(manifest.get('third_party_notices', {}).get('files', [])),
+                'METEOR lexical data or stemmer license missing')
     program = metadata.get('chat_protocol', {}).get('responses', {}).get(
         'programmatic_tools', {})
     if program.get('profile') == 'q4t-programmatic-tools-v1':

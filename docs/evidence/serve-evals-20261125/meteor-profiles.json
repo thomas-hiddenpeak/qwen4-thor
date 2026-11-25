@@ -1,0 +1,69 @@
+{
+  "stage": "qualified",
+  "status": "ACCEPT_EVAL_METEOR_PRIMARY_LIGHT",
+  "issued": false,
+  "profiles": {
+    "primary": {
+      "seconds": 40.389,
+      "starts": 1,
+      "profile_sha256": "d6c855feb1a35f78850a47153d5f619bf85fa9d390a14de9ab3682f78c20d658",
+      "restored_predecessor": "953bcf79d1190b8e7e138ffbd146ebed89d58a472ad792fcfd099717bdce772c",
+      "observed": {
+        "sdk": "7.47.0",
+        "eval_id": "eval_93aa19a07418137b485c2fffe5c8a2b2",
+        "run_id": "evalrun_3d84401538f1df98e9d53cc9b4dbc0f8",
+        "output": "outputitem_51c5f00ba7b335baff57f568c5be6dcc",
+        "model_answer": "157",
+        "scores": [
+          0.9814814814814815,
+          0.9814814814814815,
+          0,
+          0.8518518518518519
+        ],
+        "foreign_status": 404
+      }
+    },
+    "light": {
+      "seconds": 41.545,
+      "starts": 1,
+      "profile_sha256": "79cb68f51944eeca14ca6c5b30e39ab97ec7851d06f33141827b3377951dc965",
+      "restored_predecessor": "8480702068d8d07cc56c9ce3a9560ebf3b5725e5e585d53ad71c7134fd43888f",
+      "observed": {
+        "sdk": "7.47.0",
+        "eval_id": "eval_93aa19a07418137b485c2fffe5c8a2b2",
+        "run_id": "evalrun_3d84401538f1df98e9d53cc9b4dbc0f8",
+        "output": "outputitem_51c5f00ba7b335baff57f568c5be6dcc",
+        "model_answer": "157",
+        "scores": [
+          0.9814814814814815,
+          0.9814814814814815,
+          0,
+          0.8518518518518519
+        ],
+        "foreign_status": 404,
+        "independent_chat": "42"
+      }
+    }
+  },
+  "sources": {
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/acceptance.json": "accd702f7be79eb0f5812abb98bf21caf9a821319f1f1ca825700196d1432eb3",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-qualified-01/acceptance.json": "c8f8e165d28b62212599f23f5895850350f42312b34e512b22890c65732f3593",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-qualified-01/qualified/registry.json": "eb6add0941bb77876615114532f793a0d8038e2d62cd729fd04159d20ef938b8",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/profile-observations.json": "d978d57f16ed2897a5845b4931bf3a3b6a8430c05e2176b769d3cbd4fb258211",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/lease/exit.json": "1f032784cd86c59b490319ae51150d0b5f5e82c8d1880058e24af570ee6c9165",
+    ".q4t-work/serve-responses-agents-20261123/webhook-dev/meteor-profile-pin-inventory.json": "4fe78948137b0946b1a7137595c52d6b92a1d75f1659a60cf31a20a0ba24683e",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/primary/plan.json": "c992aaf0f3aa99f05da0e9087d5c201484a714208a046080236445e039175eb6",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/primary/configuration.wire": "495749d41a4879503c21170f33224562fdff4dca47b886b10f9825e6d47fdc0c",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/primary/result.json": "ae604b47981f3d7b2268daae5b1f50b0858be719b79ec7fcd52b948ed5ac891c",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/primary/cleanup.json": "1d41a8c4a8220bdf1a3494f20ad58d4f35f813ae6f047d12f785ed9f72d62c63",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/primary/eval-meteor-handoff.json": "4eadd21e61cc432d03b98fd633e36e246edb579b8d43f088267bb605d303ac77",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/light/plan.json": "4c6fc9669fc68068678fb674611fc8f9a02e630540a1a0c6212ea9261c9fe895",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/light/configuration.wire": "ec1d5e3895ddc12ad1ca467f444f880ec53522ca698e738c74c5d27bcd51dd68",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/light/result.json": "55f839f31c58f9946a478dd333c7d35b4467ed90562b2d80d2cc7e19ced011fc",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/light/cleanup.json": "40dbacf9e2ba550b8b92ed8484e66693a51a363301896b68fde784fccb0aa770",
+    ".q4t-work/serve-responses-agents-20261123/webhook-src/.q4t-work/meteor-profiles-01/light/eval-meteor-handoff.json": "5044b6784237b2501cdc5efaa647368259db8ecb937054a822321100adcea66b"
+  },
+  "pending": [
+    "Model restart, independent fallback and stopped release"
+  ]
+}

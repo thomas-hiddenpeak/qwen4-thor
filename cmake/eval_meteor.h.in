@@ -1,0 +1,9 @@
+#pragma once
+
+namespace q4t::server::detail {
+inline constexpr char kMeteorPython[] = R"q4tmeteor(
+@Q4T_PORTER_PYTHON@
+@Q4T_METEOR_PYTHON@
+LEXICON = Lexicon(bytes.fromhex('@Q4T_METEOR_LEXICON@'))
+)q4tmeteor";
+}  // namespace q4t::server::detail

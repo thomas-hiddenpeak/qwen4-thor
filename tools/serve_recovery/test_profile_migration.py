@@ -219,6 +219,20 @@ class MigrationTests(unittest.TestCase):
                 with self.assertRaises(ledger.LedgerError):
                     live.previous_record(current)
 
+    def test_meteor_preserves_the_issued_grader_and_tool_history(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(evals=live.COSINE_EVALS, tools={'history': live.REPAIRED_TOOL_HISTORY})
+        new = dict(old, evals=live.METEOR_EVALS)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        for metrics in [['meteor'], [*live.METEOR_EVALS['text_similarity'], 'other']]:
+            self.assertFalse(migration.explicit_extension(
+                old, dict(new, evals=dict(live.METEOR_EVALS, text_similarity=metrics))))
+        self.assertFalse(migration.explicit_extension(
+            old, dict(new, evals=dict(live.METEOR_EVALS, row_checkpoints=False))))
+        self.assertFalse(migration.explicit_extension(
+            dict(old, tools={'history': live.ISSUED_TOOL_HISTORY}), new))
+
     def test_trained_cosine_migration_requires_the_exact_model_and_metrics(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(evals=live.EVAL_CAPABILITY, vector_stores={'native_embedding_configured': True})

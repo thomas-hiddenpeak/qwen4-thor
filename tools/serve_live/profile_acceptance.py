@@ -244,6 +244,9 @@ class Stage(workers.ice.Stage):
             vault_profile_acceptance.business(self, capabilities)
         self.core('core-after')
         self.snapshot('drained')
+        if 'eval_meteor_handoff' in self.plan:
+            from tools.serve_responses import eval_meteor_profiles
+            eval_meteor_profiles.business(self, capabilities)
         if 'history_arguments_handoff' in self.plan:
             from tools.serve_protocol import history_argument_profiles
             history_argument_profiles.business(self, capabilities)
