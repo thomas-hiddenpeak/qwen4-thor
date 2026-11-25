@@ -15,6 +15,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 | ChatKit 语音输入 | 浏览器使用有效的会话密钥向 `/v1/chatkit` 发送 `input.transcribe`，得到 `{"text":"…"}`。部署须配置原生 ASR 模型。 | rev496 已用 WAV、WebM/Opus 验证中文录音、错误处理和接管后的转写。[发行回执](evidence/serve-chatkit-composer-20261125/delivery.json) |
 | ChatKit 消息反馈和实体提及 | rev490 已发行。浏览器保留评价与标签，管理 SDK 显示提及文本。 | 两份公开 schema 与 49 项配置迁移检查已通过。模型、持久化和恢复验收见[记录](evidence/serve-chatkit-20261125/feedback.json)。 |
 | ChatKit 文档两步上传 | 浏览器调用 `attachments.create`，随后按返回地址、凭证和媒体类型 PUT 原始字节。完成前无法引用文件。有效期为 5 分钟或剩余会话时间中的较短者。 | 原生前置采用外部 Host、协议和部署前缀。自定义公开地址可设置 `Q4T_CHATKIT_PUBLIC_BASE`。原生 TLS 实机已用该文档完成两轮问答，rev492 验收了配置切换、模型重启与回退接管。[验证记录](evidence/serve-chatkit-20261125/upload.json) |
+| ChatKit 图片附件 | 候选支持视觉模型按文件 ID 读取图片及源文件删除后的重试。直接上传 PNG、两阶段上传 JPEG 已核对真实像素、模型答案与快照；短验记录有间歇拒答。 | 视觉配置使用 `--allow-media --no-mtp`。浏览器仍以普通文件显示，图片预览待实现。[业务回执](evidence/serve-chatkit-image-attachments-20261126/business.json) |
 | ChatKit 文档直传 | 浏览器按会话配置分段上传文件，模型读取真实文件，同一线程可在删除上传源后续谈。 | 已验收权限、容量、附件删除和标准历史返回。rev478 已验收部署接管后的原附件与工具回填。两阶段文档上传见上一行。图片预览待实现。[业务回执](evidence/serve-chatkit-20261125/attachments.json) |
 | ChatKit 会话与线程（rev478） | 官方 SDK 六项会话和线程管理操作；浏览器消息与函数结果回填、流式回答和历史分页。 | 同项目按用户、工作流及历史策略过滤。主包故障后，重新签发的用户会话可以接续原线程、附件及待回填调用。[发行回执](evidence/serve-chatkit-20261125/delivery.json) |
 | Webhook | rev472 提供八项管理方法及后台 Responses、Batch 终态通知，独立 HTTPS 发送器验签、重试并可跨进程接手。 | 需部署方显式配置目的地。订阅方按稳定事件 ID 去重。默认部署关闭出站，订阅和待投递记录可以跨故障接手。[发行回执](evidence/serve-webhooks-20261124/delivery.json)。[实测回执](evidence/serve-webhooks-20261124/lifecycle.json) |

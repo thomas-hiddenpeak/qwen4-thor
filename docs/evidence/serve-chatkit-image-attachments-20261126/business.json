@@ -1,0 +1,158 @@
+{
+  "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+  "issued": false,
+  "aggregate_verdict": "FAIL",
+  "guard_status": "COMMAND_FAILED",
+  "controls": {
+    "before": [
+      "49",
+      "42"
+    ],
+    "after": [
+      "49",
+      "42"
+    ]
+  },
+  "observations": [
+    {
+      "phase": "original_before",
+      "text": "Reply with only the integer 6 times 7.",
+      "value": "49",
+      "refusal": null
+    },
+    {
+      "phase": "previous_before",
+      "text": "Return only the integer 6 times 7.",
+      "value": "42",
+      "refusal": null
+    },
+    {
+      "phase": "first",
+      "thread": "cthr_f31b4c77fb039f986488df735f027632",
+      "file": "file_085135bf7115f1b2d41ffe6bfad70604",
+      "answer": "Red",
+      "expected": "RED"
+    },
+    {
+      "phase": "retry",
+      "thread": "cthr_f31b4c77fb039f986488df735f027632",
+      "file": "file_085135bf7115f1b2d41ffe6bfad70604",
+      "answer": "I'm not supposed to complete this task, so I cannot proceed further.",
+      "expected": "RED"
+    },
+    {
+      "phase": "first",
+      "thread": "cthr_33c2e315423c658cb48cc744617e84de",
+      "file": "file_96605dabe99b8f85d5ddabfcf1212fab",
+      "answer": "Blue",
+      "expected": "BLUE"
+    },
+    {
+      "phase": "retry",
+      "thread": "cthr_33c2e315423c658cb48cc744617e84de",
+      "file": "file_96605dabe99b8f85d5ddabfcf1212fab",
+      "answer": "Blue",
+      "expected": "BLUE"
+    },
+    {
+      "phase": "original_after",
+      "text": "Reply with only the integer 6 times 7.",
+      "value": "49",
+      "refusal": null
+    },
+    {
+      "phase": "previous_after",
+      "text": "Return only the integer 6 times 7.",
+      "value": "42",
+      "refusal": null
+    }
+  ],
+  "model_profile": "media enabled, MTP off",
+  "model_starts": 1,
+  "seconds": 36.577,
+  "engine": "2dabf1b37269ebea1da1df26e2edf096eca16e06b4819d439c55ee2a4128c72e",
+  "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87",
+  "public_schema_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+  "sdk": "7.47.0",
+  "actor": "c54767cb315087525d6dd1cb9dc83b610010d47884744ec49a4a081c64e23fe5",
+  "rows": [
+    {
+      "mode": "direct",
+      "mime": "image/png",
+      "sha256": "dde7a85f27759e8787f7e6723450502a7e18ec83f59d8bbf262996fdfa81bea0",
+      "thread": "cthr_f31b4c77fb039f986488df735f027632",
+      "file": "file_085135bf7115f1b2d41ffe6bfad70604",
+      "item": "item_e348ee79834282f2ec6efa0c7dcfcdd8",
+      "first": "Red",
+      "retry": "I'm not supposed to complete this task, so I cannot proceed further.",
+      "events": [
+        8,
+        22
+      ],
+      "source_deleted": 404,
+      "other_key": 404,
+      "other_user": 404,
+      "response_records": {
+        "resp_8267bac48e9984e0923838416961f582": "bb64c0e0b688aff9ba4116c9e94b6468e9ec078e350672f7e47b536ef5e2d150",
+        "resp_870a5d88955257fd3f194129e4cbfe95": "fbd200cdaf18302b0767fcae64b7f21c75d063bb820a1e39b91ff6c1c5365d7d"
+      },
+      "snapshot_id": "input_snapshot_5ce8950a17dfe4e6716320ce60cbdddd",
+      "snapshot_sha256": "7e49d6e351c48bb274f02cdbaab5ad5ebedb48dfd9fb24c318916ac099af07d6",
+      "snapshot_format": "q4t.image_input_snapshot.v1",
+      "original_pixels": [
+        128,
+        128
+      ],
+      "browser_attachment_type": "file",
+      "preview_url_present": false
+    },
+    {
+      "mode": "two_phase",
+      "mime": "image/jpeg",
+      "sha256": "4a824fb46a44451aad044d7c05cfb8a6f530da837ff68d124aaa523c4ba34539",
+      "thread": "cthr_33c2e315423c658cb48cc744617e84de",
+      "file": "file_96605dabe99b8f85d5ddabfcf1212fab",
+      "item": "item_33c02b35c3a84fc345368c88f6f1feca",
+      "first": "Blue",
+      "retry": "Blue",
+      "events": [
+        8,
+        6
+      ],
+      "source_deleted": 404,
+      "other_key": 404,
+      "other_user": 404,
+      "response_records": {
+        "resp_1fce54158c8c7e8a499083304f186724": "d8b62393ad1c0499814f453eb016a8531bc84d03ce508c091ad8b12350cfa9c3",
+        "resp_fdb7afbff37d2160764f2efd386401c2": "219ecda0959bcdb7c99af38d3aea86e9b391e10d6e37085840a42607315bd85e"
+      },
+      "snapshot_id": "input_snapshot_6b5949f27609f190945663ff2578aba9",
+      "snapshot_sha256": "d330d0c42d27de1a0e81ad87ddfb37ef688f025e34e09a3a71897c0d82e0c67b",
+      "snapshot_format": "q4t.image_input_snapshot.v1",
+      "original_pixels": [
+        128,
+        128
+      ],
+      "browser_attachment_type": "file",
+      "preview_url_present": false
+    }
+  ],
+  "independent_chat": "49",
+  "lease_sha256": "9520c5517d48fa2d07a4f05332b1beabfd7b079945bc301939d050fde15a23b6",
+  "sdk_sha256": "d2c1af0f57001dd71cd461a8766f8247d6b79403b451f14bf349f20cbe1de30e",
+  "protected_default_unchanged": true,
+  "ports_free": true,
+  "remaining": [
+    "Model quality: one red retry declined, original greedy math prompt answers 49",
+    "Browser preview for reserved and completed images",
+    "Cross-profile and managed delivery"
+  ],
+  "other_results": {
+    "first_red_refusal": "first-image-refusal.json",
+    "four_visual_answers_and_math_failure": "visual-answers-math-failure.json",
+    "input_contract_and_cpu": "cpu.json"
+  },
+  "scope": "Authenticated input projection, byte-identical frozen snapshots, the two public client views and model behavior are reported separately. Neither whole-model quality nor production delivery was accepted.",
+  "existing_math_control": "Return only the integer 6 times 7.",
+  "new_math_control": "Reply with only the integer 6 times 7."
+}

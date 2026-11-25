@@ -23,6 +23,7 @@ ObjectReply PublishAttachment(ObjectStore& objects, const BinaryAccess& access,
                               std::string_view token = {});
 ObjectReply RemoveAttachment(ObjectStore& objects, const StateAccess& access,
                              const Grant& grant, const std::string& id);
+io::Json AttachmentModelInput(const io::Json& resource);
 ObjectReply ResolveAttachments(ObjectStore& objects, const StateAccess& access,
                                const Grant& grant, const io::Json& ids,
                                io::Json* published, io::Json* model);

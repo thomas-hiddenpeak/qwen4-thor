@@ -6,6 +6,8 @@
 #include "../src/server/chatkit_credentials.h"
 #include "../src/server/chatkit_retry.h"
 #include "../src/server/chatkit_attachments.h"
+#include "q4t/server/file_image.h"
+#include "q4t/vision/processor.h"
 #include "q4t/server/files.h"
 #include "q4t/server/files_http.h"
 #include "../src/server/chatkit_thread_state.h"
@@ -14,6 +16,7 @@
 #include "q4t/server/http_connection.h"
 #include "q4t/server/agent_registration.h"
 #include "q4t/server/realtime_client_ticket.h"
+#include "q4t/server/responses_item_shape.h"
 #include "q4t/test.h"
 
 #include <sys/socket.h>
@@ -22,6 +25,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
+#include <fstream>
 
 namespace q4t::server {
 namespace {
@@ -1214,6 +1218,128 @@ Q4T_TEST(chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes) {
             projected.GetArray("content")->array.size() == 1);
   return true;
 }
+Q4T_TEST(chatkit_image_attachment_resolves_original_pixels_and_scoped_file) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto access = Access();
+  const BinaryAccess binary{access.scope, access.deadline, access.cancelled};
+  auto session = Create(objects, access, 16, true);
+  chatkit_detail::Grant owner;
+  Q4T_CHECK(session.ok() &&
+            chatkit_detail::Redeem(objects, access,
+                                   session.value.GetString("client_secret"),
+                                   std::time(nullptr), &owner)
+                .ok());
+  BinaryStore store(objects);
+  const auto images =
+      std::filesystem::path(__FILE__).parent_path() / "fixtures/file_images";
+  for (const auto& [name, mime] :
+       {std::pair{"original.png", "image/png"},
+        std::pair{"original.jpg", "image/jpeg"},
+        std::pair{"gif/opaque.gif", "image/gif"},
+        std::pair{"original.png", "application/octet-stream"}}) {
+    std::ifstream input(images / name, std::ios::binary);
+    Q4T_CHECK(input);
+    std::string bytes(std::istreambuf_iterator<char>(input), {});
+    BinaryStage stage;
+    Q4T_CHECK(store.Begin(binary, 1U << 20, 60, &stage).ok() &&
+              store.Append(binary, &stage, bytes).ok());
+    auto upload = chatkit_detail::PublishAttachment(objects, binary, owner,
+                                                    &stage, name, mime);
+    Q4T_CHECK(upload.ok());
+    const auto id = upload.value.GetString("id");
+    const auto ids = Array({String(id)});
+    auto visible = Array(), model = Array();
+    auto other = owner;
+    other.session += "x";
+    Q4T_CHECK(chatkit_detail::ResolveAttachments(objects, access, other, ids,
+                                                 &visible, &model)
+                  .http_status == 404);
+    Q4T_CHECK(chatkit_detail::ResolveAttachments(objects, access, owner, ids,
+                                                 &visible, &model)
+                  .ok());
+    Q4T_CHECK(model.array.size() == 1 &&
+              model.array[0].GetString("type") == "input_image" &&
+              model.array[0].GetString("file_id") == id);
+    ChatPlanError error_shape;
+    Q4T_CHECK(ValidateResponsesItemShape(
+        Object({{"role", String("user")}, {"content", model}}),
+        ResponsesItemShape::kInput, &error_shape, "input[0]"));
+    FileInputSource source;
+    Q4T_CHECK(ParseImageInputSource(model.array[0],
+                                    FileInputProfile::kResponses,
+                                    "input[0].content[0]", &source)
+                  .ok());
+    FileInputBudget budget;
+    FileImageInput image;
+    Q4T_CHECK(
+        ReadFileImage(&objects, binary, source, {}, {}, &budget, &image).ok() &&
+        image.source.bytes == bytes && image.source.file_id == id &&
+        image.header.width == 64 && image.header.height == 32);
+    vision::ProcessorConfig config;
+    config.min_pixels = config.max_pixels = 2048;
+    vision::ProcessedImage pixels;
+    std::string error;
+    Q4T_CHECK(vision::ProcessImage(
+        reinterpret_cast<const uint8_t*>(image.source.bytes.data()),
+        image.source.bytes.size(), config, &pixels, &error));
+    Q4T_CHECK(pixels.grid_w == 4 && pixels.grid_h == 2 &&
+              pixels.pixel_values.size() == 8 * 3 * 2 * 16 * 16);
+    Q4T_CHECK(
+        chatkit_detail::RemoveAttachment(objects, access, owner, id).ok());
+  }
+  return true;
+}
+
+Q4T_TEST(chatkit_retry_preserves_raster_and_legacy_document_identity) {
+  const auto retry = [](const char* mime, const char* public_type,
+                        const char* saved_type, const char* saved_id) {
+    const auto attachment = Object({{"id", String("file_image")},
+                                    {"name", String("asset")},
+                                    {"mime_type", String(mime)},
+                                    {"type", String(public_type)}});
+    const auto user = Object({{"id", String("item_visible")},
+                              {"type", String("chatkit.user_message")},
+                              {"content", Array()},
+                              {"attachments", Array({attachment})}});
+    auto thread = Object({{"thread", Object({{"id", String("cthr_retry")}})},
+                          {"last_response", String("resp_last")},
+                          {"items", Array({user})}});
+    auto part =
+        Object({{"type", String(saved_type)}, {"file_id", String(saved_id)}});
+    if (std::string_view(saved_type) == "input_image")
+      Set(&part, "detail", String("auto"));
+    const auto message = Object({{"id", String("item_model")},
+                                 {"type", String("message")},
+                                 {"role", String("user")},
+                                 {"content", Array({part})}});
+    const auto record =
+        Object({{"chatkit_thread_id", String("cthr_retry")},
+                {"response", Object({{"id", String("resp_last")}})},
+                {"history", Array({message})}});
+    chatkit_detail::RetryHistory history;
+    Json selected;
+    return chatkit_detail::SelectRetryHistory(record, "item_visible", &thread,
+                                              &selected, &history)
+               .ok() &&
+           OutputJson(history.items) == OutputJson(Array({message}));
+  };
+  for (const auto* mime :
+       {"image/png", "image/jpeg", "image/webp", "image/gif"}) {
+    Q4T_CHECK(retry(mime, "file", "input_image", "file_image"));
+    Q4T_CHECK(retry(mime, "file", "input_file", "file_image"));
+    Q4T_CHECK(!retry(mime, "file", "input_image", "file_other"));
+  }
+  Q4T_CHECK(
+      retry("IMAGE/PNG; profile=test", "file", "input_image", "file_image"));
+  Q4T_CHECK(!retry("image/svg+xml", "file", "input_image", "file_image"));
+  Q4T_CHECK(!retry("image/pngx", "file", "input_image", "file_image"));
+  Q4T_CHECK(retry("application/pdf", "file", "input_file", "file_image"));
+  Q4T_CHECK(!retry("application/pdf", "file", "input_image", "file_image"));
+  Q4T_CHECK(!retry("image/png", "image", "input_file", "file_image"));
+  return true;
+}
+
 Q4T_TEST(
     chatkit_attachment_publication_requires_a_live_owner_and_actual_binary) {
   Fixture f;

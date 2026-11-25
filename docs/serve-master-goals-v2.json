@@ -1283,6 +1283,14 @@
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
         "revision": 512,
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "chatkit_image_attachment_20261126": {
+        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+        "issued": false,
+        "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
+        "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
+        "visual_profile": "explicit media, MTP off",
+        "browser_preview": false
       }
     },
     {
@@ -2843,6 +2851,14 @@
         "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
         "revision": 514,
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "chatkit_image_attachment_20261126": {
+        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+        "issued": false,
+        "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
+        "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
+        "visual_profile": "explicit media, MTP off",
+        "browser_preview": false
       }
     },
     {
@@ -3430,6 +3446,14 @@
         "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
         "revision": 514,
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "chatkit_image_attachment_20261126": {
+        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+        "issued": false,
+        "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
+        "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
+        "visual_profile": "explicit media, MTP off",
+        "browser_preview": false
       }
     },
     {
@@ -6201,6 +6225,14 @@
         "stage": "awaiting_resources_in_scope",
         "methods": 12,
         "decision": "evidence/serve-scope-decision-20261120/media-backends-20261125.json"
+      },
+      "chatkit_image_attachment_20261126": {
+        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+        "issued": false,
+        "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
+        "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
+        "visual_profile": "explicit media, MTP off",
+        "browser_preview": false
       }
     },
     {
@@ -8270,6 +8302,14 @@
         "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
         "revision": 514,
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "chatkit_image_attachment_20261126": {
+        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+        "issued": false,
+        "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
+        "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
+        "visual_profile": "explicit media, MTP off",
+        "browser_preview": false
       }
     },
     {
@@ -11141,6 +11181,14 @@
         "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json",
         "revision": 514,
         "delivery": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "chatkit_image_attachment_20261126": {
+        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+        "issued": false,
+        "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
+        "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
+        "visual_profile": "explicit media, MTP off",
+        "browser_preview": false
       }
     },
     {
@@ -12463,6 +12511,14 @@
       "chatkit_summary_recovery_delivery_20261126": {
         "revision": 514,
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "chatkit_image_attachment_20261126": {
+        "stage": "native_projection_and_snapshot_verified_model_quality_mixed",
+        "issued": false,
+        "cpu": "evidence/serve-chatkit-image-attachments-20261126/cpu.json",
+        "business": "evidence/serve-chatkit-image-attachments-20261126/business.json",
+        "visual_profile": "explicit media, MTP off",
+        "browser_preview": false
       }
     },
     {

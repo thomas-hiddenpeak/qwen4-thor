@@ -1,0 +1,82 @@
+{
+  "stage": "four_visual_answers_passed_math_control_failed",
+  "issued": false,
+  "guard": "COMMAND_FAILED",
+  "result": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 34.559,
+    "unchanged_default": true,
+    "cleanup_ok": true,
+    "phases": []
+  },
+  "observations": [
+    {
+      "phase": "responses_control",
+      "response": "resp_48b2b55fa7c3ec43bec8ab6a9ed6183b",
+      "content": [
+        {
+          "type": "output_text",
+          "answer": "Red"
+        }
+      ],
+      "status": "completed"
+    },
+    {
+      "phase": "chat_control",
+      "answer": "Red",
+      "refusal": null
+    },
+    {
+      "phase": "first",
+      "thread": "cthr_0cfdd76922d0b48ad99cd0e69a4e86ca",
+      "file": "file_35c869104390dd458846a9d0287e3984",
+      "answer": "Red",
+      "expected": "RED"
+    },
+    {
+      "phase": "retry",
+      "thread": "cthr_0cfdd76922d0b48ad99cd0e69a4e86ca",
+      "file": "file_35c869104390dd458846a9d0287e3984",
+      "answer": "red",
+      "expected": "RED"
+    },
+    {
+      "phase": "first",
+      "thread": "cthr_1f62d164565dc8c4f76592fb476c12a2",
+      "file": "file_beb7de4c2c986e7ea65a491074cf87e1",
+      "answer": "Blue",
+      "expected": "BLUE"
+    },
+    {
+      "phase": "retry",
+      "thread": "cthr_1f62d164565dc8c4f76592fb476c12a2",
+      "file": "file_beb7de4c2c986e7ea65a491074cf87e1",
+      "answer": "Blue",
+      "expected": "BLUE"
+    }
+  ],
+  "linked_responses": {
+    "cthr_1f62d164565dc8c4f76592fb476c12a2": {
+      "snapshot": "input_snapshot_db591f4ed747b3c8a94c8009d850b2d3",
+      "response_records": {
+        "resp_3334fa5b441833ac0104bfdf9aa076a0": "98a2f7e370964fa4df8e69859d3170fff98eb59bf5617b72ef2a5b9b13c22455",
+        "resp_085430b1e7df96e753a3f606676a3618": "2b7557093a9b64e0b8c066b6f77ad23d42f05079b5df238456c2401becd68c9b"
+      }
+    },
+    "cthr_0cfdd76922d0b48ad99cd0e69a4e86ca": {
+      "snapshot": "input_snapshot_75ee81f57ca4eab22e5d971ab6931725",
+      "response_records": {
+        "resp_6aab2972106dba47bce224cc27ffdd6f": "ae583cc9f1435dee095e9983ecded9fcf7682e0d94bb5035245d67dcb0bb10a7",
+        "resp_4341ebdef2f6509d1874f327ab7dbeb5": "d378e395b026961c30400cd0cbbcfe1abc2443255d180418414f7d20bd096933"
+      }
+    }
+  },
+  "math": {
+    "actual": "49",
+    "expected": "42",
+    "prompt": "Reply with only the integer 6 times 7.",
+    "temperature": 0
+  },
+  "public_pages_captured": false
+}

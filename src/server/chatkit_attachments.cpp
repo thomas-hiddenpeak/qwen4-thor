@@ -6,6 +6,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/file_limits.h"
+#include "q4t/server/http_framing.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/realtime_client_ticket.h"
@@ -343,6 +344,25 @@ ObjectReply RemoveAttachment(ObjectStore& objects, const StateAccess& access,
                "Session changed during attachment removal");
 }
 
+io::Json AttachmentModelInput(const Json& resource) {
+  const auto media_type = resource.GetString("mime_type");
+  const auto mime = http::Lower(
+      http::Trim(std::string_view(media_type).substr(0, media_type.find(';'))));
+  bool image = resource.GetString("type") == "image" || mime == "image/png" ||
+               mime == "image/jpeg" || mime == "image/gif" ||
+               mime == "image/webp";
+  if (!image && (mime.empty() || mime == "application/octet-stream")) {
+    const auto name = http::Lower(resource.GetString("name"));
+    image = name.ends_with(".png") || name.ends_with(".jpg") ||
+            name.ends_with(".jpeg") || name.ends_with(".gif") ||
+            name.ends_with(".webp");
+  }
+  auto part = Object({{"type", String(image ? "input_image" : "input_file")},
+                      {"file_id", String(resource.GetString("id"))}});
+  if (image) Set(&part, "detail", String("auto"));
+  return part;
+}
+
 ObjectReply ResolveAttachments(ObjectStore& objects, const StateAccess& access,
                                const Grant& grant, const Json& ids,
                                Json* published, Json* model) {
@@ -372,8 +392,7 @@ ObjectReply ResolveAttachments(ObjectStore& objects, const StateAccess& access,
     auto metadata = *attachment;
     Set(&metadata, "preview_url", {});
     published->array.push_back(std::move(metadata));
-    model->array.push_back(
-        Object({{"type", String("input_file")}, {"file_id", id}}));
+    model->array.push_back(AttachmentModelInput(*attachment));
   }
   return {};
 }
