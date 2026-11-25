@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "chatkit_credentials.h"
+#include "chatkit_retry.h"
 #include "chatkit_attachments.h"
 #include "chatkit_thread_state.h"
 #include "object_protocol.h"
@@ -79,8 +80,19 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   const auto* features = session.Find("chatkit_configuration");
   const bool create = operation == "threads.create";
   const bool tool_output = operation == "threads.add_client_tool_output";
+  const bool retry = operation == "threads.retry_after_item";
   const auto* input = params.Find("input");
-  if (!tool_output && (!input || !input->IsObject()))
+  if (retry) {
+    for (const auto* field : {"thread_id", "item_id"}) {
+      const auto* value = params.Find(field);
+      if (!value || !value->IsString()) {
+        auto error = Invalid("Expected a retry identifier");
+        error.value = Object({{"param", String(field)}});
+        return error;
+      }
+    }
+  }
+  if (!retry && !tool_output && (!input || !input->IsObject()))
     return Invalid("Missing user message");
   ObjectRequest write;
   write.kind = ObjectKind::kChatKitThread;
@@ -121,7 +133,19 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
       items.back().GetString("type") == "chatkit.client_tool_call" &&
       items.back().GetString("status") == "in_progress";
   Json model_message;
-  if (tool_output) {
+  chatkit_detail::RetryHistory prefix;
+  if (retry) {
+    ResponsesState state(objects);
+    auto record = state.ReadRecord(write.data.GetString("last_response"), access);
+    if (!record.ok()) return record;
+    auto selected = chatkit_detail::SelectRetryHistory(
+        record.value, params.GetString("item_id"), &write.data, user, &prefix);
+    if (!selected.ok() || prefix.items.IsNull()) return selected;
+    // Resolve the original scoped item. Its stored status and file snapshot
+    // belong to the server and cannot be sent as new client input fields.
+    model_message = Object({{"type", String("item_reference")},
+                            {"id", *prefix.items.array.back().Find("id")}});
+  } else if (tool_output) {
     if (!waiting)
       return Error(409, "chatkit_no_pending_tool", "No pending client tool");
     const auto* result = params.Find("result");
@@ -175,8 +199,10 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
   // Request serial function calls so each result has exactly one recipient.
   Set(&request, "parallel_tool_calls", Boolean(false));
   const Json empty;
-  const auto& supplied =
-      tool_output ? empty : *input->Find("inference_options");
+  const auto* supplied_options =
+      retry ? user->Find("inference_options") :
+      input ? input->Find("inference_options") : nullptr;
+  const auto& supplied = supplied_options && !tool_output ? *supplied_options : empty;
   if (const auto* model = supplied.Find("model");
       model && !model->IsNull() &&
       (!model->IsString() || model->str != definition.GetString("model")))
@@ -186,7 +212,7 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
         Object({{"type", String("function")},
                 {"name", String(tool->GetString("id"))}}));
   if (const auto previous = write.data.GetString("last_response");
-      !previous.empty())
+      !retry && !previous.empty())
     Set(&request, "previous_response_id", String(previous));
   if (create && !input->GetArray("content")->array.empty() &&
       features->Find("automatic_thread_titling")->GetBool("enabled")) {
@@ -199,7 +225,8 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     Set(&Field(write.data, "thread"), "title", String(title.substr(0, bytes)));
   }
   auto run = std::make_unique<ResponsesExecution>(objects, &jobs, true);
-  auto result = run->Prepare(request, config, access, now, true);
+  auto result = run->Prepare(request, config, access, now, true, nullptr,
+                             nullptr, retry ? &prefix : nullptr);
   if (!result.ok()) return result;
   Set(&write.data, "pending_response", String(run->Id()));
   *thread_id = write.id;
@@ -298,7 +325,8 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
     return;
   }
   const bool create = type == "threads.create";
-  if (!create && type != "threads.add_user_message" &&
+  const bool retry = type == "threads.retry_after_item";
+  if (!create && !retry && type != "threads.add_user_message" &&
       type != "threads.add_client_tool_output") {
     auto result = type == "attachments.create"
                       ? chatkit_detail::ReserveAttachment(objects, access, grant,
@@ -324,6 +352,13 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                           type, &id, &response_id, &user);
   if (!submitted.ok()) {
     Fail(fd, access, submitted);
+    return;
+  }
+  if (retry && response_id.empty()) {
+    if (detail::BeginStreamingResponse(fd, http->State(), {access.deadline})) {
+      http->BeforeTerminal();
+      *http->State() = detail::ResponseState::kComplete;
+    }
     return;
   }
   auto row = chatkit_detail::ReadThread(objects, access, id, &grant);
@@ -356,7 +391,7 @@ void ServeChatKitClient(int fd, ObjectStore& objects, ResponsesJobs* jobs,
                       {"item", chatkit_detail::ClientItem(user)}}),
               access))
       return;
-  } else if (!done(user))
+  } else if (!retry && !done(user))
     return;
   size_t next = 0;
   ResponsesState state(objects);

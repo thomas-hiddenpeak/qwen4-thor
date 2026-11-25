@@ -534,7 +534,9 @@ set(protocol_inputs
   src/server/chatkit_transcription.cpp
   src/server/chatkit_attachments.h
   src/server/chatkit_thread_state.cpp
+  src/server/chatkit_retry.cpp
   src/server/chatkit_thread_state.h
+  src/server/chatkit_retry.h
   src/server/chatkit_threads.cpp
   src/server/chatkit_credentials.cpp
   src/server/chatkit_credentials.h

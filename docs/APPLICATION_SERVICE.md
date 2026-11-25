@@ -137,7 +137,7 @@ q4t safety publish --object-store-dir /srv/q4t/objects --client-id alpha < appro
 
 ## API 兼容矩阵
 
-ChatKit 管理 SDK 与浏览器 POST 共用存储。浏览器分页已在候选上通过 21 条真实消息的 HTTPS 验证。固定参考浏览器协议共 16 种操作，当前声明 12 种；仍须实现消息重试、结构化输入回填、流式和同步自定义动作。这些操作均经同一路径分派。 [逐操作核对及分页验收](evidence/serve-chatkit-page-defaults-20261125/business.json)
+ChatKit 的管理 SDK 与浏览器 POST 共用存储。候选已验证 21 条消息分页，也能从原用户消息重试，保留此前上下文及附件快照，通过原线程提交新生成的工具结果。固定参考的 16 种浏览器操作中，候选声明 13 种。结构化输入回填、流式和同步自定义动作仍待实现。 [分页回执](evidence/serve-chatkit-page-defaults-20261125/business.json) [重试回执](evidence/serve-chatkit-retry-20261125/business.json)
 
 本项目支持的完整输入见[38字段schema](serve-chat-request-v1.schema.json)
 与[必需原生语义](serve-input-semantics-v1.json)；10条路由见

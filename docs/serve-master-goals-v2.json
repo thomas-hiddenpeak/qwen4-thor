@@ -1223,6 +1223,11 @@
         "business": "evidence/serve-history-argument-types-20261125/business.json",
         "profiles": "evidence/serve-history-argument-types-20261125/profiles.json",
         "delivery": "evidence/serve-history-argument-types-20261125/delivery.json"
+      },
+      "chatkit_retry_20261125": {
+        "stage": "candidate_native_https_verified",
+        "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -2719,6 +2724,11 @@
       "history_arguments_delivery_20261125": {
         "revision": 486,
         "receipt": "evidence/serve-chat-history-arguments-20261125/delivery.json"
+      },
+      "chatkit_retry_20261125": {
+        "stage": "candidate_native_https_verified",
+        "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -3233,10 +3243,16 @@
         "remaining": [
           "threads.add_structured_input",
           "threads.custom_action",
-          "threads.retry_after_item",
           "threads.sync_custom_action"
         ],
-        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json"
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "candidate_declared": 13,
+        "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json"
+      },
+      "chatkit_retry_20261125": {
+        "stage": "candidate_native_https_verified",
+        "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -7980,10 +7996,16 @@
         "remaining": [
           "threads.add_structured_input",
           "threads.custom_action",
-          "threads.retry_after_item",
           "threads.sync_custom_action"
         ],
-        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json"
+        "receipt": "evidence/serve-chatkit-page-defaults-20261125/business.json",
+        "candidate_declared": 13,
+        "candidate_receipt": "evidence/serve-chatkit-retry-20261125/business.json"
+      },
+      "chatkit_retry_20261125": {
+        "stage": "candidate_native_https_verified",
+        "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
+        "issued": false
       }
     },
     {
@@ -10771,6 +10793,11 @@
         "business": "evidence/serve-video-characters-20261125/business.json",
         "profiles": "evidence/serve-video-characters-20261125/profiles.json",
         "delivery": "evidence/serve-video-characters-20261125/delivery.json"
+      },
+      "chatkit_retry_20261125": {
+        "stage": "candidate_native_https_verified",
+        "receipt": "evidence/serve-chatkit-retry-20261125/business.json",
+        "issued": false
       }
     },
     {

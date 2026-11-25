@@ -1,4 +1,5 @@
 #include "../src/server/chatkit_credentials.h"
+#include "../src/server/chatkit_retry.h"
 #include "../src/server/chatkit_attachments.h"
 #include "q4t/server/files.h"
 #include "q4t/server/files_http.h"
@@ -162,6 +163,93 @@ Q4T_TEST(chatkit_session_body_and_read_routes_obey_sdk_and_http_bounds) {
   Q4T_CHECK(!IsChatKitTarget("/v1/chatkit/sessions/cksess_x/cancel/extra"));
   return true;
 }
+Q4T_TEST(chatkit_retry_selects_legacy_user_identity_and_discards_only_future) {
+  const auto part = [](const char* text) {
+    return Array(
+        {Object({{"type", String("input_text")}, {"text", String(text)}})});
+  };
+  const auto user = [&](const char* id, const char* text) {
+    return Object({{"id", String(id)},
+                   {"type", String("chatkit.user_message")},
+                   {"content", part(text)},
+                   {"attachments", Array()},
+                   {"inference_options", {}}});
+  };
+  auto first = user("item_visible_a", "first");
+  auto second = user("item_visible_b", "second");
+  const auto assistant =
+      Object({{"id", String("msg_old")},
+              {"type", String("chatkit.assistant_message")}});
+  auto data = Object({{"thread", Object({{"id", String("cthr_one")}})},
+                      {"last_response", String("resp_old")},
+                      {"items", Array({first, assistant, second})},
+                      {"feedback", Object({{"msg_old", String("positive")}})}});
+  const auto canonical = [&](const char* id, const char* text) {
+    return Object({{"id", String(id)},
+                   {"type", String("message")},
+                   {"role", String("user")},
+                   {"content", part(text)}});
+  };
+  const auto original = canonical("item_canonical_a", "first");
+  const auto later = canonical("item_canonical_b", "second");
+  const auto prior_answer = Object({{"id", String("msg_old")},
+                                    {"type", String("message")},
+                                    {"role", String("assistant")}});
+  auto saved = Object({{"chatkit_thread_id", String("cthr_one")},
+                       {"response", Object({{"id", String("resp_old")}})},
+                       {"history", Array({original, prior_answer, later})}});
+  const auto before = OutputJson(data);
+  chatkit_detail::RetryHistory prefix;
+  Json selected;
+  Q4T_CHECK(chatkit_detail::SelectRetryHistory(saved, "missing", &data,
+                                               &selected, &prefix)
+                .ok());
+  Q4T_CHECK(prefix.items.IsNull() && OutputJson(data) == before);
+  const auto wrong = chatkit_detail::SelectRetryHistory(saved, "msg_old", &data,
+                                                        &selected, &prefix);
+  Q4T_CHECK(wrong.http_status == 400 &&
+            wrong.value.GetString("param") == "item_id");
+  auto foreign = saved;
+  Set(&foreign, "chatkit_thread_id", String("cthr_two"));
+  Q4T_CHECK(!chatkit_detail::SelectRetryHistory(foreign, "item_visible_a",
+                                                &data, &selected, &prefix)
+                 .ok());
+  auto switched = saved;
+  std::swap(Field(switched, "history").array.front(),
+            Field(switched, "history").array.back());
+  Q4T_CHECK(!chatkit_detail::SelectRetryHistory(switched, "item_visible_a",
+                                                &data, &selected, &prefix)
+                 .ok());
+  Q4T_CHECK(OutputJson(data) == before);
+  auto middle = data;
+  chatkit_detail::RetryHistory retained;
+  Q4T_CHECK(chatkit_detail::SelectRetryHistory(saved, "item_visible_b", &middle,
+                                               &selected, &retained)
+                .ok());
+  ResponseStatePlan continuation;
+  continuation.own_input = continuation.history = Array({later});
+  Q4T_CHECK(chatkit_detail::ApplyRetryHistory(retained, &continuation).ok());
+  Q4T_CHECK(continuation.own_input.array.size() == 1);
+  Q4T_CHECK(OutputJson(continuation.history) ==
+            OutputJson(*saved.Find("history")));
+  Q4T_CHECK(middle.Find("feedback")->GetString("msg_old") == "positive");
+  Q4T_CHECK(chatkit_detail::SelectRetryHistory(saved, "item_visible_a", &data,
+                                               &selected, &prefix)
+                .ok());
+  Q4T_CHECK(selected.GetString("id") == "item_visible_a");
+  Q4T_CHECK(data.GetArray("items")->array.size() == 1);
+  Q4T_CHECK(data.Find("feedback")->object.empty() &&
+            prefix.items.array.size() == 1);
+  ResponseStatePlan plan;
+  plan.history = Array({later});
+  Q4T_CHECK(!chatkit_detail::ApplyRetryHistory(prefix, &plan).ok());
+  plan.own_input = plan.history = Array({original});
+  Q4T_CHECK(chatkit_detail::ApplyRetryHistory(prefix, &plan).ok());
+  Q4T_CHECK(plan.history.array.size() == 1 &&
+            plan.history.array.front().GetString("id") == "item_canonical_a");
+  return true;
+}
+
 Q4T_TEST(chatkit_browser_page_defaults_and_management_zero_are_distinct) {
   Fixture fixture;
   ObjectStore objects(fixture.options);

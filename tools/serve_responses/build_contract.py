@@ -160,7 +160,8 @@ def schema(graph):
         query = definitions['chatkit_' + str(chatkit['roots'][name])]
         query['properties']['limit']['default'] = 20
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
-        'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output', 'threads.get_by_id',
+        'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output',
+        'threads.retry_after_item', 'threads.get_by_id',
         'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.create', 'attachments.delete', 'input.transcribe']),
         params=dict(type='object'), metadata=dict(type='object')), ['type', 'params'])
     string = dict(type='string')
@@ -196,6 +197,8 @@ def schema(graph):
                 ['audio_base64', 'mime_type'])),
             ('threads.list', browser_fields(browser_page, [])),
             ('items.list', browser_fields(dict(browser_page, thread_id=string), ['thread_id'])),
+            ('threads.retry_after_item', browser_fields(
+                dict(thread_id=string, item_id=string), ['thread_id', 'item_id'])),
             ('items.feedback', feedback), ('threads.create', browser_fields({'input': message}, ['input'])),
             ('threads.add_user_message', browser_fields(dict(input=message, thread_id=string), ['input', 'thread_id']))]]
     definitions['chatkit_client_result'] = dict(type='object')

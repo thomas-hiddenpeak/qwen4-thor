@@ -1,0 +1,79 @@
+{
+  "stage": "candidate_native_https_verified",
+  "issued": false,
+  "predecessor_revision": 504,
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 46.055,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "thread": "cthr_c994bb2b78305ade59a7fc5a189f2c39",
+    "user_item": "item_656c4a88cf1f5859b2e4232e06bee3a1",
+    "source_sha256": "fc3b565348f7b32b0faf42a10f6c399e0434ffdff82dd79624f71e978575f5b5",
+    "file_deleted": true,
+    "foreign": 404,
+    "non_user": 400,
+    "missing_events": 0,
+    "original_call": "call_resp_67f093258979af23ca56f7204db53c23_0",
+    "retry_call": "call_resp_893ce45e13bbec398bece858f4abcb00_0",
+    "verified_count": 157,
+    "original_answer": "157",
+    "answer": "157",
+    "independent_chat": "42",
+    "old_items": [
+      "item_656c4a88cf1f5859b2e4232e06bee3a1",
+      "fc_227e39cf839bbaf1622ba01bb5bf44b5",
+      "msg_4eba7143c800b195ee4090735414be48"
+    ],
+    "final_items": [
+      "item_656c4a88cf1f5859b2e4232e06bee3a1",
+      "fc_b6f0363a8ac15e335c6c7748c972fbb6",
+      "msg_3987e478b5c18b9d8735ba61c64cfdc5"
+    ]
+  },
+  "identity": {
+    "binary": "6d89986ef1bae9e413cbe594dfa77fbef72248416a76526ffbb1262b9dcb5a4b",
+    "protocol_sha256": "316df75a33b35c7df926026bed6b4910f7bc2926012e5527e86ae68d495efbe9"
+  },
+  "cpu": {
+    "native_passed": 4,
+    "contract_passed": 3,
+    "inventory_mutations": 40
+  },
+  "stored_trace": {
+    "owned_responses": 4,
+    "original_and_retry_input_identical": true,
+    "original_and_retry_snapshot_bindings_identical": true,
+    "retry_own_items": 1,
+    "retry_history_items": 1
+  },
+  "checksums": {
+    "actor": "e5cb6bf75f122786c59ed22a9c3efdd0031b7f0e1fa3cc0595908febcb6713bd",
+    "handoff_driver": "0c8bb72da94b956d40aef82898bce792d442c9fc8b0c56875fe70fe603d80c7b",
+    "native": "a8d75a7ae234b48d96bdca1dcf5e8ac8e8cbe664f084984fe49c804d6be6aa31",
+    "lease": "df93845722b00597cbdfdf3dcf3cb1fcb2aa0a04d745e1ce75b5f3058bc29e9b"
+  },
+  "first_attempt": {
+    "result": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 41.856,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "lease_sha256": "6f24e92b8a77554410762a0e5f44587eaeaad7164fe68b3ef4d4e3f4704d26d8",
+    "cpu_reopen_original": "prepare 400 invalid_request Unknown item field param=input[0].status",
+    "cpu_reopen_by_scoped_item": "prepare 200   param=",
+    "cause": "The stored server-generated status is invalid in a new input message. The scoped item reference restores the canonical message and its original file snapshot."
+  },
+  "remaining": [
+    "Primary/light and managed recovery handoff for the new candidate and group issuance.",
+    "Three unimplemented browser operations: structured input submission, streaming custom action and synchronous custom action."
+  ]
+}

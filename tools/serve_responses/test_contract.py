@@ -214,6 +214,15 @@ class ApplicationContract(unittest.TestCase):
             self.assertFalse(accepted(order=None))
         self.assertTrue(errors(dict(type='items.list', params={}), 'chatkit_client_request'))
 
+    def test_chatkit_retry_selects_a_thread_and_user_item(self):
+        def accepted(params):
+            return not errors(dict(type='threads.retry_after_item', params=params),
+                              'chatkit_client_request')
+        self.assertTrue(accepted(dict(thread_id='cthr_a', item_id='item_a')))
+        for params in ({}, {'thread_id': 'cthr_a'}, {'item_id': 'item_a'},
+                       {'thread_id': 'cthr_a', 'item_id': None}):
+            self.assertFalse(accepted(params))
+
     def test_application_list_defaults_survive_bundling(self):
         paths = app.standalone_openapi(api.openapi())['paths']
         session = '/v1/agents/sessions/{session_id}'
