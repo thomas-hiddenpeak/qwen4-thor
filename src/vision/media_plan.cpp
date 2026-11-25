@@ -366,8 +366,10 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
   }
   const bool video = kind == MediaKind::kVideo;
   if ((detail != ImageDetail::kAuto && detail != ImageDetail::kLow &&
-       detail != ImageDetail::kHigh && detail != ImageDetail::kOriginal) ||
-      (video && detail == ImageDetail::kOriginal))
+       detail != ImageDetail::kHigh && detail != ImageDetail::kOriginal &&
+       detail != ImageDetail::kCompressedHigh) ||
+      (video && (detail == ImageDetail::kOriginal ||
+                 detail == ImageDetail::kCompressedHigh)))
     return Fail(MediaPlanError::kInvalidConfig);
   if ((!video && frames != 1) || (video && frames < 2) ||
       frames > kMediaPlanFrames) {
@@ -451,8 +453,11 @@ MediaPlanResult PlanMediaGeometry(MediaKind kind, uint32_t width,
       }
     }
     if ((!video && detail == ImageDetail::kLow) ||
-        detail == ImageDetail::kHigh) {
-      const int edge = detail == ImageDetail::kLow ? 512 : 2048;
+        detail == ImageDetail::kHigh ||
+        detail == ImageDetail::kCompressedHigh) {
+      int edge = 2048;
+      if (detail == ImageDetail::kLow) edge = 512;
+      if (detail == ImageDetail::kCompressedHigh) edge = 1024;
       const int pixels = std::min(config.max_pixels, edge * edge);
       if (factor > edge || static_cast<uint64_t>(factor) * factor >
                                static_cast<uint64_t>(pixels))

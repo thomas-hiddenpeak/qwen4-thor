@@ -1,0 +1,41 @@
+{
+  "stage": "cpu_verified_before_business",
+  "issued": false,
+  "cpu_build_parent": "ed6ded1e6",
+  "rebased_parent": "059cb52447bf3e5051df897865783358a441becf",
+  "fixture_correction": {
+    "first_passed": 2,
+    "first_failed": 1,
+    "reason": "One decoded byte was marked as PNG. Replaced the fixture with a valid PNG.",
+    "log_sha256": "ad0b94d1ac9c3c872f13a125b88dffe4626b3ca3893abdfe3c39b0c3dc8b22c7"
+  },
+  "native_cases": {
+    "passed": 3,
+    "observations": [
+      "Image options reach Chat prompt preparation",
+      "Auto/high/original detail map to measured geometry according to the chosen policy",
+      "The original response input keeps its detail and image bytes",
+      "Invalid values and unsupported explicit compression on a text deployment are rejected"
+    ],
+    "log_sha256": "b3dddbdcf6eae4ef7d21d3cc4d2501b1160e6d79c7805680cb7b222598dadb49"
+  },
+  "declared_schema_cases": 1,
+  "application_definitions": 4747,
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 246,
+    "native_routes": 408,
+    "reviewed_source_anchors": 1388,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "generated_contracts": {
+    "serve-application-v1.schema.json": "cda16b1e50099cbcbd368c98442bdf2568514b0133caa0d37d347f3c71aaf151",
+    "serve-input-semantics-v1.json": "4215670f1b5c27763fe4af3bd6e6f94725c684ab903a4afabe56cdf9322b96e6",
+    "serve-openapi-bundle-v1.json": "c94f5c6710e4c2acb8000e72beb47bae45785e7b4d6d1c3ac49e8ffd0bf293fa"
+  },
+  "real_image_https": "pending on integrated binary"
+}

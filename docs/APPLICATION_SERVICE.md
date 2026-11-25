@@ -1,5 +1,14 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### Responses 图像上下文
+
+通过 Responses 的 `image.context_compression` 可选择图像输入策略。字段按请求生效，取回已有回答时会返回原策略；compact 会保留客户提交的原图与 detail。[业务回执](evidence/serve-image-speech-recovery-20261126/delivery.json)
+
+### 语音合成响应的媒体类型
+
+rev522 的 `POST /v1/audio/speech` 由请求体的 `response_format` 选择编码。二进制响应按 `Accept` 选择媒体类型。官方 SDK 默认发送的 `application/octet-stream` 返回文件字节。对 Opus，显式 `audio/opus` 和通配请求采用相同的 Ogg Opus 文件封装，通配请求的响应头为 `audio/ogg`。客户端指定 `stream_format: "sse"` 时，音频字节经 `speech.audio.delta` 返回，最后收到 `speech.audio.done`。四种响应形式均在原生 TLS 入口实测。[发行及恢复回执](evidence/serve-image-speech-recovery-20261126/delivery.json)
+
+
 q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖官方接口目录中的 157 条推理与应用路径，共 231 个必做 HTTP 方法。组织管理、云账单和微调训练由范围决定排除。逐方法对照区分接口声明和真实业务验收。[范围决定](evidence/serve-scope-decision-20261120/README.md) · [实际进展和发行身份](STATUS.md)
 
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |

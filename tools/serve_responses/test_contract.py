@@ -89,6 +89,25 @@ def wire_values(root):
 
 
 class ApplicationContract(unittest.TestCase):
+    def test_image_context_policy_stable_and_beta_requests(self):
+        for name in ('response_create', 'response_compact',
+                     'agent_history_response_create', 'agent_history_response_compact'):
+            fields = resolve(SCHEMA['$defs'][name])['properties']
+            image = resolve(fields['image'])
+            self.assertIs(image['additionalProperties'], False)
+            self.assertEqual(image['properties']['context_compression']['enum'],
+                             ['auto', 'enabled', 'disabled'])
+            self.assertNotIn('context_compression', image.get('required', []))
+        for policy in ('auto', 'enabled', 'disabled'):
+            self.assertFalse(errors({'context_compression': policy}, 'image_options'))
+        for bad in (None, {'context_compression': None}, {'context_compression': True}, {'other': 1}):
+            self.assertTrue(errors(bad, 'image_options'))
+        self.assertTrue(errors({'context_compression': 'auto'}, 'resolved_image_options'))
+        self.assertTrue(errors({}, 'resolved_image_options'))
+        for name in ('response', 'compacted_response', 'agent_response'):
+            image = resolve(SCHEMA['$defs'][name])['properties']['image']
+            self.assertEqual(image, {'$ref': '#/$defs/resolved_image_options'})
+
     def report(self, name, value):
         output = os.environ.get('Q4T_TEST_OUTPUT_DIR')
         if output:

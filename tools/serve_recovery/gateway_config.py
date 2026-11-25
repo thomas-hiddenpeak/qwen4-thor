@@ -240,6 +240,7 @@ http {{
       proxy_set_header Host 127.0.0.1;
 {g.websocket_proxy_headers()}
       proxy_set_header Content-Type $http_content_type;
+      proxy_set_header Accept $http_accept;
       proxy_set_header OpenAI-Beta $q4t_responses_beta;
       proxy_set_header X-Request-Id $http_x_request_id;
 {g.tunnel_headers()}

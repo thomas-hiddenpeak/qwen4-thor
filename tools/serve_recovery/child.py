@@ -35,6 +35,9 @@ def progress_environment(args, permit):
     """Only the named observation socket survives; its failure is auxiliary."""
     env = {key: value for key, value in os.environ.items()
            if not key.startswith(('Q4T_PROGRESS_', 'Q4T_POLICY_'))}
+    # The manager and native serve negotiate EX_TEMPFAIL for a confirmed
+    # startup RAM refusal. Standalone serve keeps its original exit status.
+    env['Q4T_MANAGED_STARTUP_STATUS'] = '1'
     env['Q4T_CONTROLLER_GENERATION'] = str(args.controller_generation)
     env['Q4T_MODEL_GENERATION'] = str(permit['model_generation'])
     # These identities came from the mandatory exec permit handshake. Policy

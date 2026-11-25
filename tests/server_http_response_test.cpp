@@ -466,6 +466,7 @@ Q4T_TEST(server_http_error_classification) {
            {401, "Unauthorized", "authentication_error"},
            {403, "Forbidden", "permission_error"},
            {404, "Not Found", "invalid_request_error"},
+           {406, "Not Acceptable", "invalid_request_error"},
            {408, "Request Timeout", "timeout_error"},
            {409, "Conflict", "conflict_error"},
            {413, "Content Too Large", "invalid_request_error"},

@@ -13,6 +13,7 @@ import time
 
 NS = 1_000_000_000
 HEADER = struct.Struct('<8s13Q36s36s')
+STARTUP_MEMORY = struct.Struct('<8s8Q36s36s')
 ROW = struct.Struct('<12Q')
 CAPACITY = 1024
 MAX_PACKET = HEADER.size + CAPACITY * ROW.size
@@ -136,6 +137,7 @@ class Reader:
         self.sock, self.identity = sock, identity
         self.last = None
         self.sequence = self.observed_ns = self.successes = self.steps = 0
+        self.startup_memory = None
         self.reason = 'awaiting_progress'
         self.ready_ns = None
         self.success_baseline = None
@@ -145,6 +147,17 @@ class Reader:
         self.last, self.reason = None, reason
 
     def accept(self, packet, now_ns):
+        if packet.startswith(b'Q4TMEM01'):
+            require(len(packet) == STARTUP_MEMORY.size, 'invalid startup memory frame')
+            _, pid, start, namespace, controller, model, total, available, required, boot, service = (
+                STARTUP_MEMORY.unpack(packet))
+            identity = Identity(pid, start, namespace, controller, model,
+                                boot.decode('ascii'), service.decode('ascii'))
+            require(self.ready_ns is None and self.startup_memory is None and identity == self.identity
+                    and 0 < total and available <= total and available < required,
+                    'invalid startup memory refusal')
+            self.startup_memory = (total, required)
+            return
         value = decode(packet)
         require(value.identity == self.identity, 'progress identity mismatch')
         require(value.sequence > self.sequence and
@@ -219,6 +232,7 @@ class Reader:
         return self.last
 
     def mark_ready(self, now_ns):
+        self.startup_memory = None
         self.ready_ns, self.success_baseline = now_ns, None
 
     def stable(self, now_ns=None):

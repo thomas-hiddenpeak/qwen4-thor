@@ -194,8 +194,8 @@ Status PrepareChatPrompt(
     std::string* error_param, std::string* error_code, ChatPromptLayout* layout,
     bool allow_empty, std::span<const std::string> async_call_ids,
     bool responses_tool_media, const io::Json* header_tools,
-    std::span<const ChatToolCallFormat> call_formats,
-    bool prepared_source_data) {
+    std::span<const ChatToolCallFormat> call_formats, bool prepared_source_data,
+    bool compress_images) {
   if (layout) *layout = {};
   if (HasLegacyTools(request)) {
     LegacyToolRequest normalized;
@@ -204,7 +204,7 @@ Status PrepareChatPrompt(
     status = PrepareChatPrompt(
         normalized.request, constraints, prompt_out, items_out, error_param,
         error_code, layout, allow_empty, async_call_ids, responses_tool_media,
-        header_tools, call_formats, prepared_source_data);
+        header_tools, call_formats, prepared_source_data, compress_images);
     if (!status) LegacyToolErrorParam(request, error_param);
     return status;
   }
@@ -244,6 +244,15 @@ Status PrepareChatPrompt(
           layout ? &layout->part_ends[index] : nullptr, responses_tool_media));
       if (!error.empty()) return fail(error);
       error_param->clear();
+    }
+    if (compress_images) {
+      for (auto& item : items) {
+        if (item.kind != VisionItem::kImage) continue;
+        if (item.detail == vision::ImageDetail::kAuto)
+          item.detail = vision::ImageDetail::kLow;
+        else if (item.detail == vision::ImageDetail::kHigh)
+          item.detail = vision::ImageDetail::kCompressedHigh;
+      }
     }
     io::Json header, adapted_header, empty_header;
     empty_header.type = io::Json::Type::kArray;

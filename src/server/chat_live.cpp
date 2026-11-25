@@ -132,7 +132,8 @@ LiveSessionCallbacks ChatServer::MakeLiveCallbacks(
         request, candidate.chat.constraints, &prompt, &media, &error->param,
         &error->code, nullptr, true, candidate.chat.async_tool_call_ids,
         candidate.chat.responses_tool_media, candidate.chat.HeaderTools(),
-        candidate.chat.tool_call_formats, candidate.chat.prepared_source_data);
+        candidate.chat.tool_call_formats, candidate.chat.prepared_source_data,
+        candidate.chat.compress_images);
     if (!status) return status;
     if (!media.empty()) {
       *error = {"invalid_request", "session.input", 400};

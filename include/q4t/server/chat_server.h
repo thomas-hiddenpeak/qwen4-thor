@@ -172,6 +172,9 @@ class ChatServer {
   // single-use server to release partial model/scheduler resources. Start,
   // Run and destruction must be sequenced by the owner, never concurrent.
   Status Start(const ServerOptions& opts);
+  bool StartupMemoryInsufficient() const {
+    return startup_memory_.Insufficient();
+  }
 
   // Accept loop: blocks, spawning one thread per client (concurrent requests;
   // see the B1 scheduling note above), until an error or closed. Returns the
@@ -236,7 +239,7 @@ class ChatServer {
       const std::shared_ptr<RequestControl>& control,
       RequestDiagnostics& diagnostic, EmbeddingStepResult* result);
   std::string NativeEmbeddingHealthJson() const;
-  void HandleSpeech(int fd, const std::string& body);
+  void HandleSpeech(int fd, const std::string& body, std::string_view accept);
   ObjectReply SynthesizeChatAudio(
       int fd, const ChatAudioOptions& options, uint64_t output_limit,
       std::span<const uint64_t> choice_tokens,

@@ -16886,6 +16886,12 @@
                   "format": "binary"
                 }
               },
+              "audio/opus": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
               "audio/aac": {
                 "schema": {
                   "type": "string",
@@ -16905,6 +16911,12 @@
                 }
               },
               "audio/pcm": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/octet-stream": {
                 "schema": {
                   "type": "string",
                   "format": "binary"
@@ -37912,6 +37924,9 @@
               "user": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
               },
+              "image": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/image_options"
+              },
               "personality": {
                 "type": "string",
                 "enum": [
@@ -39699,6 +39714,9 @@
               },
               "user": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+              },
+              "image": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/resolved_image_options"
               },
               "store": {
                 "type": "boolean"
@@ -44405,6 +44423,9 @@
               },
               "service_tier": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1155"
+              },
+              "image": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/image_options"
               }
             },
             "required": [
@@ -44831,6 +44852,9 @@
               },
               "usage": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/960"
+              },
+              "image": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/resolved_image_options"
               }
             },
             "required": [
@@ -96914,6 +96938,36 @@
               }
             ]
           },
+          "image_options": {
+            "type": "object",
+            "properties": {
+              "context_compression": {
+                "enum": [
+                  "auto",
+                  "enabled",
+                  "disabled"
+                ],
+                "default": "auto"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "resolved_image_options": {
+            "type": "object",
+            "properties": {
+              "context_compression": {
+                "enum": [
+                  "enabled",
+                  "disabled"
+                ]
+              }
+            },
+            "required": [
+              "context_compression"
+            ],
+            "additionalProperties": false
+          },
           "item_include_query": {
             "type": "object",
             "properties": {
@@ -100929,6 +100983,9 @@
               "user": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
               },
+              "image": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/image_options"
+              },
               "personality": {
                 "type": "string",
                 "enum": [
@@ -101091,6 +101148,9 @@
               },
               "service_tier": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1155"
+              },
+              "image": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/image_options"
               }
             },
             "required": [
@@ -101381,6 +101441,9 @@
               },
               "user": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/27"
+              },
+              "image": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/resolved_image_options"
               },
               "store": {
                 "type": "boolean"

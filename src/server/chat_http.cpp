@@ -1132,7 +1132,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
     return;
   }
   if (path == "/v1/audio/speech" && method == "POST") {
-    HandleSpeech(fd, body);
+    HandleSpeech(fd, body, headers.accept);
     return;
   }
   if (path == "/v1/embeddings" && method == "POST") {

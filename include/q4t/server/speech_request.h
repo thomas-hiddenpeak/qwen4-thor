@@ -23,4 +23,7 @@ Status ParseSpeechRequest(std::string_view body, SpeechRequest* out,
                           ChatPlanError* error);
 std::string_view SpeechFormatName(SpeechFormat format);
 std::string_view SpeechContentType(SpeechFormat format);
+Status NegotiateSpeechContentType(SpeechFormat format, std::string_view accept,
+                                  std::string_view* selected,
+                                  ChatPlanError* error);
 }  // namespace q4t::server

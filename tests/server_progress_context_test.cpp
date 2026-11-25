@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <condition_variable>
 #include <cstdlib>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <optional>
@@ -439,6 +440,32 @@ Q4T_TEST(progress_packet_bounds_and_unknown_rows) {
   snapshot.complete = false;
   packet = EncodeProgress(snapshot, identity, 4, 0, 0);
   Q4T_CHECK(Number(packet, 2) == 0);
+  return true;
+}
+
+Q4T_TEST(progress_publisher_reports_native_startup_capacity) {
+  RequestProgress progress;
+  std::atomic<uint64_t> count{0};
+  auto sockets = Sockets();
+  const auto identity = Identity();
+  ProgressPublisher publisher(std::move(sockets[1]), identity, progress, count,
+                              count);
+  publisher.StartupMemoryRefused(1000, 800, 900);
+  ProgressPacket packet;
+  const ssize_t size = recv(sockets[0].Get(), packet.data.data(),
+                            packet.data.size(), MSG_DONTWAIT);
+  Q4T_CHECK(size == 144 && !std::memcmp(packet.data.data(), "Q4TMEM01", 8));
+  Q4T_CHECK(Number(packet, 0) == identity.pid &&
+            Number(packet, 1) == identity.start_ticks &&
+            Number(packet, 2) == identity.pid_namespace &&
+            Number(packet, 3) == 3 && Number(packet, 4) == 7 &&
+            Number(packet, 5) == 1000 && Number(packet, 6) == 800 &&
+            Number(packet, 7) == 900);
+  Q4T_CHECK(!std::memcmp(packet.data.data() + 72, identity.boot_id.data(), 36));
+  Q4T_CHECK(!std::memcmp(packet.data.data() + 108, identity.service_id.data(),
+                         36));
+  sockets[0] = OwnedFd();
+  publisher.StartupMemoryRefused(1000, 800, 900);
   return true;
 }
 

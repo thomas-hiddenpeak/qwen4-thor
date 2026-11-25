@@ -99,6 +99,7 @@ struct ChatPlanConfig {
 };
 
 struct ChatRequestPlan {
+  bool compress_images = false;
   std::vector<std::string> async_tool_call_ids = {};
   bool responses_tool_media = false;
   // Set only after native file/MCP preparation. It changes model guidance,

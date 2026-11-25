@@ -10,6 +10,8 @@
 // This is the skeleton entry point; subcommands are implemented as their
 // modules land (see docs/PHASES.md).
 
+#include <sysexits.h>
+
 #include <cuda_runtime.h>
 #include <cuda_profiler_api.h>
 
@@ -920,6 +922,10 @@ int RunServe(int argc, char** argv) {
   }
   if (!s.ok()) {
     std::fprintf(stderr, "serve start failed: %s\n", s.message().c_str());
+    const char* managed = std::getenv("Q4T_MANAGED_STARTUP_STATUS");
+    if (managed && std::string_view(managed) == "1" &&
+        server.StartupMemoryInsufficient())
+      return EX_TEMPFAIL;
     return 1;
   }
   // Graceful shutdown on SIGINT/SIGTERM: RequestStop() breaks the accept loop

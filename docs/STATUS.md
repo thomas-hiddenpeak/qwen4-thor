@@ -7,7 +7,23 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #156 的监督器主机检查在 180.01 秒超时，上版同组检查耗时 154.15 秒。现将 40 项监督器生命周期检查和 4 项生产控制器恢复检查分别注册到 CTest，每组时限仍为 180 秒。44 个用例的方法体逐一比对一致，Thor 使用系统 Python 运行两组分别耗时 130.74 和 56.56 秒，全部通过。[核验记录](evidence/serve-image-speech-recovery-20261126/ci.json)
+
+rev522 已发行 Responses 图像上下文控制、Speech 响应媒体协商和启动内存恢复。模型退出与主网关异常后，客户都能按原 ID 读回图像判断和 Opus 文件，摘要一致，跨客户读取均返回 404。替换后再次识别蓝色，压缩节省 528 个输入 tokens，独立 Chat 返回 42。真实主网关故障触发一次设备探测并切换到已登记的回退包。发布时保持 STOPPED，13 份客户与恢复记录完整。普通图像回答误标为 refusal 的原始失败仍待修复。[发行及恢复回执](evidence/serve-image-speech-recovery-20261126/delivery.json)
+
+主配置使用完整图像识别蓝色，以 audio/opus 合成并保存客户文件。轻配置按原回答和文件 ID 读回相同音频，启用图像上下文压缩后输入从 1078 降至 550 tokens，又按 SDK 默认类型合成语音。两次独立 Chat 都回答 42，跨客户读取均返回 404。两套配置各启动一次，分别耗时 69.420 秒和 50.124 秒。两份 v66 资格记录可逐字节还原已发行的 v65 前驱，53 项针对性 CPU 检查通过。集成构建的内存拒绝退出码及真实监督器的等待、恢复也已验证。默认仍为 rev520，下一步检验托管包接手与发布。[配置交接](evidence/serve-image-speech-recovery-20261126/profiles.json) · [集成短验](evidence/serve-image-speech-recovery-20261126/combined.json)
+
+语音合成已对官方 SDK 默认的 application/octet-stream 和显式 audio/opus 返回协商后的类型。audio/* 客户仍取得 audio/ogg，显式 SSE 收到音频增量与终态。四条原生 TLS 响应均由独立解码器识别为单声道 Opus 并解出非静默波形；不匹配和非法权重分别返回 406、400。首次真实请求暴露写出层漏列 audio/opus，已修复并保留 409 回执。可选托管 nginx 已能转发 Accept。第二次驱动在六个 HTTP 请求通过后遇到本机 FFmpeg 缺少裸 PCM 复用器，直接从保留字节解码为 WAV 完成校验，额外模型启动 0 次。下一步为整包交接。[语音回执](evidence/serve-speech-media-20261126/business.json)
+
+同一张 896×896 蓝色图片经官方 SDK、原生 TLS 分别走 stable 和 beta Responses。六选一的结构化结果都为 blue；启用上下文压缩后输入从 1078 降为 550 tokens，两边 compact 均保留原图，跨客户读取均返回 404。普通回答在 16 tokens 截断，给到 96 后用 25 tokens 完成，但正文仍被标为 refusal。两条普通结果均保留为质量失败；尚待整包交接。[业务回执](evidence/serve-responses-image-context-20261126/business.json)
+
+Responses 与 beta Responses 的图像上下文选项候选已通过 3 项原生 CPU 用例和 1 项应用合同用例。显式启用时，自动细节图片使用 512 像素上限，high 使用 1024，original 按原规则保留；自动策略在同一请求有多张用户图片时启用。原始图像和 detail 留在会话记录中。初版夹具自称 PNG 却只有一个字节，已换为有效 PNG。来源清单 40 项变异检查通过。下一步用合成色块通过真实 TLS 比对图像回答、用量和 compact 回读。[CPU 验证记录](evidence/serve-responses-image-context-20261126/cpu.json)
+
 rev520 已发行 Agent 会话的结构化输出、缓存寿命和失败回合恢复。用官方 SDK 提交只要求整数的 schema，模型退出和主网关切换后，均沿用原会话、回合和条目 ID，读回发行号 518，下一回合答 42。原始失败回合字节一致，其他客户读取均返回 404。首次替换模型在统一内存低于启动门槛时退出，失败记录保留。发布核对 13 份受保护记录，生产期望为 STOPPED，发布时模型启动 0 次。24 小时运行计划已预检，由用户实跑。设备真实失能冷启动待维护窗口。[发行及恢复回执](evidence/serve-agent-structured-format-20261126/delivery.json)
+
+真实 q4t 进程在读取模型元数据前因内存门槛拒绝启动。独立调用退出 1，托管调用有无观察器均退出 75，非法参数退出 2。生产控制器读取了匹配该进程身份的原生门槛报文。四次调用合计加载模型 0 次；首次驱动因工作目录错误在调用候选前退出。下一步验证整包托管恢复并安排发行。[CLI 回执](evidence/serve-managed-startup-memory-20261126/cli.json)
+
+托管故障演练中，第一次进程被杀、第二次启动内存不足被赋予同一未知故障指纹，触发永久隔离。候选用原生进程退出状态区分内存准入拒绝，并在私有通道传递该代实测的内存门槛。CPU 端到端演练中，监督器在第二代等待容量回升，第三代恢复就绪。首次未知故障和两次重启计数完整保留。11 项原生用例、89 项 Python 用例及 1 项监督器端到端用例通过。下一步核对真实二进制的退出状态、原生报文和发行接手。[内存故障与 CPU 验证](evidence/serve-managed-startup-memory-20261126/cpu.json)
 
 公开 JSON Schema 已在主、轻配置间实际生效。主配置查到真实发行号 518，创建流关闭填充。轻配置按原会话、回合和回答 ID 读回记录，订阅恢复默认填充，下一回合答出 42。独立检查两个持久 Responses 的请求与生效缓存寿命分别为 12h 和 30m。清除设置后可读回模型默认状态，两个配置的跨客户读取均为 404。每种配置各启动一次模型，分别耗时 41.504 和 35.994 秒。两份 v65 记录均逐字节还原各自的 v64 前驱。 下一步是托管服务故障接手及可回退发行。[配置交接回执](evidence/serve-agent-structured-format-20261126/profiles.json)
 

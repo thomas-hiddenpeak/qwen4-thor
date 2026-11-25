@@ -58,6 +58,9 @@ class ProgressPublisher {
   ProgressPublisher& operator=(const ProgressPublisher&) = delete;
   void Start();
   bool Publish() noexcept;
+  // One best-effort packet when native startup admission refused the model.
+  void StartupMemoryRefused(uint64_t total, uint64_t available,
+                            uint64_t required) noexcept;
   uint64_t Dropped() const noexcept { return dropped_.load(); }
 
  private:

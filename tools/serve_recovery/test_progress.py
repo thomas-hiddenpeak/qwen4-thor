@@ -53,6 +53,26 @@ class ProgressTests(unittest.TestCase):
         peer.send(packet(value))
         return reader.poll(value.observed_ns if now is None else now)
 
+    def test_startup_memory_report_is_bound_to_its_unready_generation(self):
+        reader, peer = self.reader()
+        def report(generation=7, available=800, required=900):
+            i = IDENTITY
+            return p.STARTUP_MEMORY.pack(b'Q4TMEM01', i.pid, i.start_ticks,
+                i.pid_namespace, i.controller_generation, generation, 1000,
+                available, required, i.boot_id.encode(), i.service_id.encode())
+        for bad in (report(8), report(available=1001, required=1100),
+                    report(available=900), report()[:-1], report()+b'x'):
+            peer.send(bad)
+            self.assertIsNone(reader.poll())
+            self.assertIsNone(reader.startup_memory)
+        peer.send(report())
+        self.assertIsNone(reader.poll())
+        self.assertEqual(reader.startup_memory, (1000, 900))
+        reader.mark_ready(p.NS)
+        peer.send(report())
+        reader.poll()
+        self.assertIsNone(reader.startup_memory)
+
     def test_actual_cpp_wire_not_a_python_roundtrip(self):
         data = (ROOT/'docs/evidence/serve-progress-native-20261109/'
                 'integration-cpu-01/work/native-progress.bin').read_bytes()
@@ -396,6 +416,7 @@ class ControllerProgressTests(unittest.TestCase):
             with mock.patch.object(controller.core_http, 'request') as request:
                 self.assertEqual(actor.supervise(), policy.FaultKind.EXECUTION_DEADLINE)
                 request.assert_not_called()
+        actor.profiles = None
         actor.base, actor.manifest = dict(files={'q4t': 'a'*64}), dict(model_assets={})
         actor.record_fault(policy.FaultKind.EXECUTION_DEADLINE)
         self.assertTrue(actor.need_cuda_probe)

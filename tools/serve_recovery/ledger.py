@@ -298,11 +298,14 @@ def record_fault(state, args, now):
         state['quarantine'] = 'repeated_model_fault'
     elif len(unknown) >= 2:
         state['quarantine'] = 'unknown_exit_repeated'
-    count = len([at for at in state['attempts']['model']
-                 if now-at < 30*MINUTE])
-    state['not_before']['model'] = max(state['not_before']['model'],
-                                     now+(5, 20, 60)[min(count, 2)]*SECOND)
+    defer_model(state, now)
     return dict(recorded=True, quarantine=state['quarantine'])
+
+
+def defer_model(state, now):
+    count = sum(now-at < 30*MINUTE for at in state['attempts']['model'])
+    wait = (5, 20, 60)[min(count, 2)]*SECOND
+    state['not_before']['model'] = max(state['not_before']['model'], now+wait)
 
 
 def apply(state, operation, args, now, request_id):
@@ -316,6 +319,9 @@ def apply(state, operation, args, now, request_id):
         return authorize(state, args, now, request_id)
     if operation in ('spawned', 'ready', 'retired'):
         extra = ('owner',) if operation == 'spawned' else ('verified',)
+        startup_wait = operation == 'retired' and 'startup_wait' in args
+        if startup_wait:
+            extra += ('startup_wait',)
         keys(args, ('role', 'ticket', *extra))
         active = active_grant(state, args)
         if operation == 'spawned':
@@ -336,6 +342,11 @@ def apply(state, operation, args, now, request_id):
                 if args['role'] == 'controller':
                     require(state['active']['model'] is None,
                             'model subtree not retired')
+                if startup_wait:
+                    require(args['startup_wait'] == 'memory' and
+                            args['role'] == 'model' and active['phase'] == 'spawned',
+                            'startup memory wait requires a spawned, unready model')
+                    defer_model(state, now)
                 state['active'][args['role']] = None
         return dict(recorded=True)
     if operation == 'fault':

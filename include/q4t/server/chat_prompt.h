@@ -38,6 +38,6 @@ Status PrepareChatPrompt(
     std::span<const std::string> async_call_ids = {},
     bool responses_tool_media = false, const io::Json* header_tools = nullptr,
     std::span<const ChatToolCallFormat> call_formats = {},
-    bool prepared_source_data = false);
+    bool prepared_source_data = false, bool compress_images = false);
 
 }  // namespace q4t::server
