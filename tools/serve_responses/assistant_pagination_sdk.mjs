@@ -53,29 +53,53 @@ async function page(request, path, empty, ids = {}) {
   return body;
 }
 
-await page(assistants.list(), endpoints.assistants, true);
-await page(client.beta.chatkit.threads.list(), endpoints.chatkit, true);
-const assistant = await assistants.create({model:plan.model, temperature:0,
-  reasoning_effort:'none', instructions:'Answer arithmetic with only the integer.'});
-const thread = await threads.create();
-const options = {thread_id:thread.id};
-await page(messages.list(thread.id), endpoints.messages, true, options);
-await page(runs.list(thread.id), endpoints.runs, true, options);
-await messages.create(thread.id, {role:'user', content:'Return only the product of 6 and 7.'});
-const run = await runs.createAndPoll(thread.id, {assistant_id:assistant.id},
-  {pollIntervalMs:300});
-assert.equal(run.status, 'completed');
-const ids = {...options, run_id:run.id};
+const previous = plan.previous;
+let assistantId, threadId, runId;
+if (previous) {
+  ({assistant:assistantId, thread:threadId, run:runId} = previous);
+  await page(client.beta.chatkit.threads.list(), endpoints.chatkit, true);
+} else {
+  await page(assistants.list(), endpoints.assistants, true);
+  await page(client.beta.chatkit.threads.list(), endpoints.chatkit, true);
+  const assistant = await assistants.create({model:plan.model, temperature:0,
+    reasoning_effort:'none', instructions:'Answer arithmetic with only the integer.'});
+  assistantId = assistant.id;
+  threadId = (await threads.create()).id;
+  const ids = {thread_id:threadId};
+  await page(messages.list(threadId), endpoints.messages, true, ids);
+  await page(runs.list(threadId), endpoints.runs, true, ids);
+  await messages.create(threadId, {role:'user', content:'Return only the product of 6 and 7.'});
+  const run = await runs.createAndPoll(threadId, {assistant_id:assistantId},
+    {pollIntervalMs:300});
+  assert.equal(run.status, 'completed');
+  runId = run.id;
+}
+const options = {thread_id:threadId};
+const ids = {...options, run_id:runId};
 const calls = [
   [query => assistants.list(query), endpoints.assistants],
-  [query => messages.list(thread.id, query), endpoints.messages],
-  [query => runs.list(thread.id, query), endpoints.runs],
-  [query => runs.steps.list(run.id, {...options, ...query}), endpoints.steps],
+  [query => messages.list(threadId, query), endpoints.messages],
+  [query => runs.list(threadId, query), endpoints.runs],
+  [query => runs.steps.list(runId, {...options, ...query}), endpoints.steps],
 ];
+const pages = {};
 for (const [list, path] of calls) {
   const entries = await page(list({order:'asc'}), path, false, ids);
+  pages[path] = entries.data.map(item => item.id);
+  if (path === endpoints.assistants) assert.ok(pages[path].includes(assistantId));
+  if (path === endpoints.runs) assert.ok(pages[path].includes(runId));
   if (path === endpoints.messages)
     assert.equal(entries.data.at(-1).content[0].text.value.trim(), '42');
   await page(list({order:'asc', after:entries.last_id}), path, true, ids);
 }
-process.stdout.write(JSON.stringify({sdk:version, answer:'42', wire}));
+const result = {sdk:version, answer:'42', wire, assistant:assistantId, thread:threadId, run:runId, pages};
+if (plan.handoff) {
+  if (previous) assert.deepEqual(pages, previous.pages);
+  const other = new OpenAI({baseURL:base.href, apiKey:plan.other, maxRetries:0, timeout:60000});
+  await assert.rejects(other.beta.threads.retrieve(threadId), error => error.status === 404);
+  const chat = await other.chat.completions.create({model:plan.model, temperature:0,
+    max_tokens:32, enable_thinking:false, messages:[{role:'user', content:'Return only 14 times 3.'}]});
+  assert.equal(chat.choices[0].message.content.trim(), '42');
+  Object.assign(result, {foreign_status:404, independent_chat:'42'});
+}
+process.stdout.write(JSON.stringify(result));

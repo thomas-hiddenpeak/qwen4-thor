@@ -1,0 +1,52 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "model_starts": 0,
+  "tests": 53,
+  "log_sha256": "6e433f47bf20f472c1f6576171be50dd4be2c6b721f40724e78cc09b30f7e3f4",
+  "previous_record_checks": {
+    "primary": {
+      "previous": "ba60a7d3382d53de343add8600da9e35b71165744f946b8fed89e3ad1a1c9ead",
+      "reconstruction": true,
+      "rejected": [
+        "prior substitution",
+        "invalid receipt",
+        "prior evidence change",
+        "capability loss"
+      ]
+    },
+    "light": {
+      "previous": "24d393e5ae0b296c417dabc6e321cf81eb2fdfbb2f1d5d41c7f0ff9373b42876",
+      "reconstruction": true,
+      "rejected": [
+        "prior substitution",
+        "invalid receipt",
+        "prior evidence change",
+        "capability loss"
+      ]
+    }
+  },
+  "initial_setup": {
+    "migration": "Sparse checkout lacked historical embedding fixtures; restored the four original files from Git.",
+    "test": "New negative checks initially expected ValueError; the shared package validator raises RuntimeError.",
+    "logs": [
+      "9e40dd0a12e09691562bf102efa42314617af3db5fe2e7b26b37107fa4a63fea",
+      "6843cf2982c9f8a33d26fa452c87c522bb78de00ff4958cc07840f56642ed8f6"
+    ]
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 243,
+    "native_routes": 402,
+    "reviewed_source_anchors": 1373,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "pending": [
+    "Combined SDK pilot and two-capacity handoff",
+    "Managed delivery"
+  ]
+}
