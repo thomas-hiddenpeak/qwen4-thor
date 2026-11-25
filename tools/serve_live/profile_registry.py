@@ -96,6 +96,7 @@ def prepare(source, manifest_sha256, stage, observations, output):
                   profile_live_reuse.WEBHOOK_RECORD: 'ACCEPT_WEBHOOK_PRIMARY_LIGHT',
                   profile_live_reuse.HOSTED_LIFECYCLE_RECORD: 'ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT',
                   profile_live_reuse.PREPARATION_RECORD: 'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT',
+                  profile_live_reuse.CHATKIT_BROWSER_RECORD: 'ACCEPT_CHATKIT_BROWSER_PRIMARY_LIGHT',
                   profile_live_reuse.CHATKIT_ACTIONS_RECORD: 'ACCEPT_CHATKIT_ACTIONS_PRIMARY_LIGHT',
                   profile_live_reuse.CHATKIT_RETRY_RECORD: 'ACCEPT_CHATKIT_RETRY_PRIMARY_LIGHT',
                   profile_live_reuse.STORED_REFUSAL_RECORD: 'ACCEPT_STORED_REFUSAL_PRIMARY_LIGHT',

@@ -23,6 +23,13 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+CHATKIT_BROWSER_RECORD = 'q4t-profile-business-v60'
+CHATKIT_BROWSER_FORMAT = 'q4t-chatkit-browser-output-source-v1'
+CHATKIT_BROWSER_RECEIPT = 'chatkit-browser-output-handoff.json'
+CHATKIT_BROWSER_REVIEWED = {
+    'primary': 'acdcd284eb75f69e9dc7f0b85e75d4146edf049868b367e7935be4703d2fa34b',
+    'light': 'ce580aca9e8f74bba813d7bc9bec97e2668278c54564db66d47601e84c4b5933',
+}
 CHATKIT_ACTIONS_RECORD = 'q4t-profile-business-v59'
 CHATKIT_ACTIONS_FORMAT = 'q4t-chatkit-actions-source-v1'
 CHATKIT_ACTIONS_RECEIPT = 'chatkit-actions-handoff.json'
@@ -358,7 +365,16 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 TYPED_HISTORY_RECORD: TYPED_HISTORY_FORMAT,
                 STORED_REFUSAL_RECORD: STORED_REFUSAL_FORMAT,
                 CHATKIT_RETRY_RECORD: CHATKIT_RETRY_FORMAT,
-                CHATKIT_ACTIONS_RECORD: CHATKIT_ACTIONS_FORMAT}
+                CHATKIT_ACTIONS_RECORD: CHATKIT_ACTIONS_FORMAT,
+                CHATKIT_BROWSER_RECORD: CHATKIT_BROWSER_FORMAT}
+# These formats keep the compressed predecessor history in a separate field.
+# Encoding and reconstruction must always select the same envelope.
+SEPARATE_HISTORY_RECORDS = (
+    COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD,
+    UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD,
+    TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD,
+    CHATKIT_ACTIONS_RECORD, CHATKIT_BROWSER_RECORD,
+)
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
     'light': '19299d0067ef28685380c4bf080526c2463e5f083ae9868c98bf6c869a92cd0c',
@@ -380,6 +396,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'c988d41f894582cf797cef7a58558cf82e4d3ccdb9ce2d16e5ed64b49e0cb24c':
+        '3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87',
     'f8cf174d68360146f7671d4aba24bafe54744ce1cea1cbfcf8b4fe8cffa70ecd':
         '3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87',
     '9e55d1861f434b4d0c3d7ef37ed25188625a2b659a71586bed396337a4b83ba4':
@@ -512,6 +530,11 @@ def format_for(capabilities, evidence=None):
                        and CHARACTER_RECEIPT in (evidence or {})
                        and format_for(prior, evidence) == COMPOSER_RECORD,
                        'character qualification requires a verified reference and the issued dictation handoff')
+        if CHATKIT_BROWSER_RECEIPT in evidence:
+            ledger.require(CHATKIT_ACTIONS_RECEIPT in evidence and CHATKIT_RETRY_RECEIPT in evidence
+                           and STORED_REFUSAL_RECEIPT in evidence and TYPED_HISTORY_RECEIPT in evidence,
+                           'missing issued form and action qualification')
+            return CHATKIT_BROWSER_RECORD
         if CHATKIT_ACTIONS_RECEIPT in evidence:
             ledger.require(CHATKIT_RETRY_RECEIPT in evidence and STORED_REFUSAL_RECEIPT in evidence
                            and TYPED_HISTORY_RECEIPT in evidence, 'missing issued ChatKit retry history')
@@ -750,8 +773,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            CHATKIT_BROWSER_RECORD: (CHATKIT_ACTIONS_RECORD, CHATKIT_ACTIONS_REVIEWED, None, CHATKIT_BROWSER_RECEIPT),
             CHATKIT_ACTIONS_RECORD: (CHATKIT_RETRY_RECORD, CHATKIT_RETRY_REVIEWED, None, CHATKIT_ACTIONS_RECEIPT),
             CHATKIT_RETRY_RECORD: (STORED_REFUSAL_RECORD, STORED_REFUSAL_REVIEWED, None, CHATKIT_RETRY_RECEIPT),
             STORED_REFUSAL_RECORD: (TYPED_HISTORY_RECORD, TYPED_HISTORY_REVIEWED, None, STORED_REFUSAL_RECEIPT),
@@ -982,7 +1006,7 @@ def attach(value, prior):
         ledger.require(original == before['responses'], 'unreviewed Responses capability difference')
         del previous['capabilities']['responses']
     envelope = dict(format=AGENT_REFRESH if refresh else REUSE_FORMAT[value['format']])
-    if value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD, CHATKIT_ACTIONS_RECORD):
+    if value['format'] in SEPARATE_HISTORY_RECORDS:
         # Prior releases already compressed their history. Keep those signed
         # bytes once and compress only this release's reconstruction fields.
         envelope['history'] = previous.pop('reused_business')
@@ -994,7 +1018,7 @@ def attach(value, prior):
 
 def previous_record(value):
     reuse = value['reused_business']
-    separate_history = value['format'] in (COSINE_RECORD, SAFETY_RECORD, HISTORY_RECORD, METEOR_RECORD, FEEDBACK_RECORD, UPLOAD_RECORD, PAGINATION_RECORD, COMPOSER_RECORD, CHARACTER_RECORD, TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD, CHATKIT_ACTIONS_RECORD)
+    separate_history = value['format'] in SEPARATE_HISTORY_RECORDS
     ledger.keys(reuse, ('format', 'previous', 'history') if separate_history else ('format', 'previous'))
     agent = value['format'] == AGENT_RECORD_FORMAT
     refresh = agent and reuse['format'] == AGENT_REFRESH
@@ -1006,6 +1030,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            CHATKIT_BROWSER_RECORD: (CHATKIT_ACTIONS_FORMAT, ('format', 'previous', 'history')),
             CHATKIT_ACTIONS_RECORD: (CHATKIT_RETRY_FORMAT, ('format', 'previous', 'history')),
             CHATKIT_RETRY_RECORD: (STORED_REFUSAL_FORMAT, ('format', 'previous', 'history')),
             STORED_REFUSAL_RECORD: (TYPED_HISTORY_FORMAT, ('format', 'previous', 'history')),
@@ -1052,8 +1077,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            CHATKIT_BROWSER_RECORD: (CHATKIT_BROWSER_REVIEWED, CHATKIT_ACTIONS_REVIEWED),
             CHATKIT_ACTIONS_RECORD: (CHATKIT_ACTIONS_REVIEWED, CHATKIT_RETRY_REVIEWED),
             CHATKIT_RETRY_RECORD: (CHATKIT_RETRY_REVIEWED, STORED_REFUSAL_REVIEWED),
             STORED_REFUSAL_RECORD: (STORED_REFUSAL_REVIEWED, TYPED_HISTORY_REVIEWED),
