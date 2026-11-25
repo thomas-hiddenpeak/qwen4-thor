@@ -174,9 +174,10 @@
     {
       "id": "historical-arguments",
       "sources": [
-        "src/server/chat_tool_history.cpp"
+        "src/server/chat_tool_history.cpp",
+        "src/server/chat_template.cpp"
       ],
-      "contract": "Arguments are object or JSON text of an object using production parser budgets. Argument keys are JSON data, not function identifiers. Exact decimals, arbitrary keys and null/string identity survive rendering, with JSON wrapper and escaped markers when native XML is ambiguous. No silent parameter dropping."
+      "contract": "Identified API history and deprecated function_call preserve argument strings, including rejected input. Decodable objects use the native mapping. Other strings are carried verbatim in a JSON-quoted assistant history record associated with the tool result. Unidentified native forms still require a mapping. Argument keys are JSON data, not function identifiers. Exact decimals, arbitrary keys and null/string identity survive rendering, with JSON wrapper and escaped markers when native XML is ambiguous. No silent parameter dropping."
     },
     {
       "id": "historical-batches",
@@ -695,8 +696,8 @@
     "src/server/chat_server.cpp": "56e5b2fd8f85958eb84a094bf5a5c0b7d90eefc82c3981fa66b46875361e90c6",
     "src/server/chat_storage.cpp": "23c3b1fc06fbf72aeb75abd732c508db5c7aa73830797d8743fa723b0dd80dbf",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "891adaf390e59776189f8cf68006a3b8020ece14fbd3882c46f04aec3dcd2b68",
-    "src/server/chat_tool_history.cpp": "243097e1cfefb35971a947b273dacbabf5f0c5c7de1fffab9e24048fd57a47b9",
+    "src/server/chat_template.cpp": "271b1a517fbc4f4bf40dbfd9f075c78975d69d3d97300f30303b631c510d2ade",
+    "src/server/chat_tool_history.cpp": "a8c6210b9d3ffc644c69f55e27956e85176aa977398398b5422bef7ad0d4973c",
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
     "src/server/client_request.cpp": "19dad6df0fbdaf85806f9f5a540b4a992befde93fa0918995d529bd36a8ba038",

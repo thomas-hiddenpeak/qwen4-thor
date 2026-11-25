@@ -863,7 +863,9 @@ std::string ChatCapabilitiesJson(
          R"("history":{"identified_results":"complete_unique_batch",)"
          R"("unordered_text_results":true,"unordered_media_results":false,)"
          R"("legacy_without_ids":true,"legacy_shape_validation":true,)"
-         R"("arguments":"required_object_or_json_object_text",)"
+         R"("arguments":"object_or_original_identified_argument_text",)"
+         R"("unidentified_arguments":"required_object_or_json_object_text",)"
+         R"("non_mapping_text":"quoted_assistant_history",)"
          R"("result_content":"required_string_or_array"}},)"
          R"("structured_output":{"available":)" +
          (constrained && !cleanup_pending ? "true" : "false") +

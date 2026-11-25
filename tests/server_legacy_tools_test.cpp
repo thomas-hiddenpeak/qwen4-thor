@@ -110,6 +110,24 @@ Q4T_TEST(legacy_tools_history_roundtrip_and_modern_migration) {
   return true;
 }
 
+Q4T_TEST(legacy_tools_replay_preserves_rejected_arguments_and_result) {
+  auto request =
+      Parse(R"({"messages":[{"role":"user","content":"read the record"},
+    {"role":"assistant","function_call":{"name":"read","arguments":"{\"path\":"}},
+    {"role":"function","name":"read","content":"Missing path"}]})");
+  ChatRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(PlanChatRequest(request, Config(), &plan, &error));
+  std::string prompt;
+  std::vector<VisionItem> items;
+  Q4T_CHECK(PrepareChatPrompt(request, plan.constraints, &prompt, &items,
+                              &error.param));
+  const auto start = prompt.find(R"({"name":"read","arguments":"{\"path\":"})");
+  Q4T_CHECK(start != prompt.npos &&
+            prompt.find("Missing path", start) != prompt.npos);
+  return true;
+}
+
 Q4T_TEST(legacy_tools_history_rejects_missing_or_wrong_result) {
   for (
       const auto& history :

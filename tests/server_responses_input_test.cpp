@@ -197,6 +197,32 @@ Q4T_TEST(responses_input_custom_history_keeps_unstructured_bytes) {
   return true;
 }
 
+Q4T_TEST(responses_input_rejected_arguments_need_their_actual_tool_result) {
+  const auto request = [](bool async, bool complete) {
+    std::string raw =
+        R"({"input":[{"type":"function_call","call_id":"c","name":"read","arguments":"{\"path\":" )";
+    if (async) raw += R"(,"async":true)";
+    raw += '}';
+    if (complete)
+      raw +=
+          R"(,{"type":"function_call_output","call_id":"c","output":"Missing path"})";
+    return raw + "]}";
+  };
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  for (bool async : {false, true}) {
+    Q4T_CHECK(Input(request(async, true), &plan, &error));
+    Q4T_CHECK(plan.messages.array.size() == 2);
+    const auto& call = plan.messages.array[0].GetArray("tool_calls")->array[0];
+    Q4T_CHECK(call.Find("function")->GetString("arguments") == "{\"path\":");
+    Q4T_CHECK(plan.messages.array[1].GetString("content") == "Missing path");
+    Q4T_CHECK(!Input(request(async, false), &plan, &error));
+    Q4T_CHECK(plan.messages.IsNull() && error.http_status == 400);
+    if (async) Q4T_CHECK(error.param == "input[0].arguments");
+  }
+  return true;
+}
+
 Q4T_TEST(responses_input_invalid_tools_never_fabricate_results) {
   for (
       const auto* input :

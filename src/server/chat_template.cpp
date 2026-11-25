@@ -431,21 +431,26 @@ Status AppendToolCalls(const io::Json& request, const io::Json& message,
       return Status::Fail("tool call requires a function name");
     }
     *prompt += i ? "\n" : (has_content ? "\n\n" : "");
-    *prompt += "<tool_call>\n<function=" + name->str + ">\n";
     const io::Json* arguments = fn->Find("arguments");
     io::Json parsed;
-    // OpenAI transports arguments as JSON text; the model template consumes
-    // the decoded mapping. Never silently iterate a string or discard it.
     if (arguments && arguments->IsString()) {
-      if (arguments->str.empty())
-        arguments = nullptr;
-      else {
-        Status s =
-            io::ParseJson(arguments->str, &parsed, true, kSchemaJsonLimits);
-        if (!s) return Status::Fail("invalid tool arguments JSON");
-        arguments = &parsed;
+      const auto status =
+          io::ParseJson(arguments->str, &parsed, true, kSchemaJsonLimits);
+      if (!status || !parsed.IsObject()) {
+        if (!call.Has("id"))
+          return Status::Fail(
+              "historical tool arguments require a JSON object");
+        // The transport preserves the text the model emitted. A rejected
+        // call has no parameter mapping. Preserve it in assistant history so
+        // the next turn can use the corresponding tool error to repair it.
+        *prompt += "[Historical function call arguments as received]\n";
+        *prompt += "{\"name\":" + EncodeSchemaJson(*name) +
+                   ",\"arguments\":" + EncodeSchemaJson(*arguments) + "}";
+        continue;
       }
+      arguments = &parsed;
     }
+    *prompt += "<tool_call>\n<function=" + name->str + ">\n";
     if (arguments) {
       if (!arguments->IsObject()) {
         return Status::Fail("tool arguments must be an object");

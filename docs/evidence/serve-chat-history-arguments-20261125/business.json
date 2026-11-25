@@ -1,0 +1,44 @@
+{
+  "stage": "cpu_verified",
+  "issued": false,
+  "official_schema": "ChatCompletionMessageToolCall.function.arguments is a string; a model can generate non-JSON argument text.",
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "model_template": "The model template iterates a parameter mapping. Mapping history retains the native rendering. Completed Chat and Responses history keeps unmappable argument text as an escaped JSON string together with its function name and original result ordering.",
+  "cpu": {
+    "chat_contract_tool_history_gate": 1,
+    "chat_template_tool_result_": 2,
+    "chat_tool_history_": 13,
+    "legacy_tools_history_": 2,
+    "legacy_tools_replay_": 1,
+    "responses_consecutive_synchronous_tool_rounds_": 1,
+    "responses_input_": 12
+  },
+  "wire": {
+    "accepted": 12,
+    "native_array_negatives": 12,
+    "schemas": 4,
+    "forms": [
+      "deprecated",
+      "identified"
+    ]
+  },
+  "first_wire_fixture": "The first checker supplied an array to the standalone message profile, whose root requires a messages object. Corrected the envelope and repeated all four schema views.",
+  "sources": {
+    "chat_tool_history_.log": "904b1eb9795f649744ff3b8068386420623922b2caa8c9eb545f5ee46157416a",
+    "chat_template_tool_result_.log": "b4632ce11476180d6c605831908078d442d20a91a035d6ae3768d507e1d385b7",
+    "legacy_tools_history_.log": "04464922ce74c5e07d00082e9e3e0d28c2ad64816dde51d897643c96271d125a",
+    "responses_input_.log": "62c95bf94e962a04a938b800f22cf253f8f9fe16bb294733fa5cbea85b26e4a3",
+    "responses_consecutive_synchronous_tool_rounds_.log": "cdc8e294c733012f0619db6f8ffb35ba8cc1b225235a36a132ef639d4bfd73c7",
+    "chat_contract_tool_history_gate.log": "3d7fd8437d8776e77e2c67be17b39e445a77f06e40fe794f7d60ec186d818d9a",
+    "legacy_tools_replay_.log": "4d66da6381b240abfee6c584dc64d44e7f616102951a79ce6028f69f6c9f7afd",
+    "opaque-arguments-wire-02.log": "1d542a1ba61272ad791046a2356d615e8232b99a447ec54d8186fad09a88b808",
+    "opaque-arguments-wire-01.log": "85a6d8ebc52b7609696e3af195da55398dc8f230062ad12c0fee6ebe6ee23e4a",
+    "opaque-arguments-inventory.json": "f891319cf7bee128df18fbf0c739e00cc866155b89984d689af72370a3dde09e",
+    "opaque-arguments-generated-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "history_argument_sdk.mjs": "71e156cae94c0c720a4342b0cbc62dae11b357712c5db0818f41b648a3ac452a"
+  },
+  "pending": [
+    "Native TLS SDK repair, stored history and streamed final tool result",
+    "Recoverable package qualification"
+  ]
+}

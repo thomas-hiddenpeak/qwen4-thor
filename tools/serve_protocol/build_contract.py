@@ -115,19 +115,22 @@ def chat_schema():
     content = dict(anyOf=[dict(type=["string", "null"]),
         dict(type="array", minItems=1,
              items=dict(oneOf=[ref("textPart"), ref("refusalPart"), ref("audioPart")]))])
-    arguments = dict(anyOf=[dict(type="object"),
+    raw_arguments = dict(type="string", **{"x-q4t-max-utf8-bytes": 16777216})
+    historical_arguments = dict(anyOf=[dict(type="object"), raw_arguments])
+    native_arguments = dict(anyOf=[dict(type="object"),
         dict(type="string", **{"x-q4t-json-object-text": True})])
-    call = dict(oneOf=[obj(dict(id=dict(type="string", minLength=1, maxLength=256,
-        **{"x-q4t-max-utf8-bytes": 256}), type=dict(const="function"),
-        function=obj(dict(name=text_name(), arguments=arguments), ("name", "arguments"))),
-        ("function",)), obj(dict(type=dict(const="function"), name=text_name(),
-                                arguments=arguments), ("name", "arguments"))])
+    function = obj(dict(name=text_name(), arguments=historical_arguments), ("name", "arguments"))
+    native_function = obj(dict(name=text_name(), arguments=native_arguments), ("name", "arguments"))
+    call = dict(oneOf=[
+        obj(dict(id=dict(type="string", minLength=1, maxLength=256, **{"x-q4t-max-utf8-bytes": 256}),
+                 type=dict(const="function"), function=function), ("id", "type", "function")),
+        obj(dict(type=dict(const="function"), function=native_function), ("function",)),
+        obj(dict(type=dict(const="function"), name=text_name(), arguments=native_arguments), ("name", "arguments"))])
     call["oneOf"].append(obj(dict(id=dict(type="string", minLength=1, maxLength=256,
         **{"x-q4t-max-utf8-bytes": 256}), type=dict(const="custom"),
         custom=obj(dict(name=safe, input=dict(type="string")), ("name", "input"))),
         ("id", "type", "custom")))
-    legacy_call = obj(dict(name=safe, arguments=dict(type="string",
-        **{"x-q4t-json-object-text": True})), ("name", "arguments"))
+    legacy_call = obj(dict(name=safe, arguments=raw_arguments), ("name", "arguments"))
     message = obj(dict(role=dict(enum=["system", "developer", "user", "assistant", "tool", "function"]),
         content=content, name=dict(type=["string", "null"],
             **{"x-q4t-max-utf8-bytes": 4096}),
@@ -549,8 +552,8 @@ def semantics():
          "System/developer instruction messages retain order as native system ChatML; no required user role. Participant names are JSON quoted with escaped angle brackets and limited to4096 UTF-8 bytes, never authorization identity. Assistant refusal strings/one refusal content part are rendered as text. Content is required unless assistant has nonempty tool_calls or a refusal string. Other media and content shapes remain role-checked."),
         ("reasoning-aliases", ["src/server/reasoning_options.cpp"],
          "Only assistant may carry reasoning aliases; two string values must agree byte-for-byte. Null alias may defer to the other. Hidden output preserves computation/usage."),
-        ("historical-arguments", ["src/server/chat_tool_history.cpp"],
-         "Arguments are object or JSON text of an object using production parser budgets. Argument keys are JSON data, not function identifiers. Exact decimals, arbitrary keys and null/string identity survive rendering, with JSON wrapper and escaped markers when native XML is ambiguous. No silent parameter dropping."),
+        ("historical-arguments", ["src/server/chat_tool_history.cpp", "src/server/chat_template.cpp"],
+         "Identified API history and deprecated function_call preserve argument strings, including rejected input. Decodable objects use the native mapping. Other strings are carried verbatim in a JSON-quoted assistant history record associated with the tool result. Unidentified native forms still require a mapping. Argument keys are JSON data, not function identifiers. Exact decimals, arbitrary keys and null/string identity survive rendering, with JSON wrapper and escaped markers when native XML is ambiguous. No silent parameter dropping."),
         ("historical-batches", ["src/server/chat_tool_history.cpp"],
          "Any ID in a batch requires all nested calls to have valid unique IDs and type=function. Exactly one contiguous result for every ID; no orphan/duplicate/missing/mixed IDs. Text results may reorder. Unlabelled native legacy has distinct preserved rules; IDs are unique per batch, not globally."),
         ("tool-definitions", ["src/server/input_contract.cpp", "src/server/output_constraints.cpp"],
