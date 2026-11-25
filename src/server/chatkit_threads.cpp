@@ -119,6 +119,8 @@ ObjectReply HandleChatKit(ObjectStore& objects, const StateAccess& access,
   auto page = assistant_detail::PageAssistantRows(*items, query.value, true);
   if (!page.ok()) return page;
   ChatPlanError error;
+  for (auto& item : Field(page.value, "data").array)
+    chatkit_detail::ProjectManagementItem(&item);
   if (!ValidateChatKit(page.value, "items", &error))
     return Error(503, "chatkit_thread_invalid", "Invalid stored ChatKit items");
   return page;

@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if ('item_feedback' in declared.get('chatkit', {}) or 'chatkit_feedback_handoff' in plan):
+            from tools.serve_responses import chatkit_feedback_profiles
+            proofs = chatkit_feedback_profiles.verify(phase, plan, declared)
+            profiles[name]['evidence_sha256'].update(proofs)
+            continue
         if ('meteor' in declared.get('evals', {}).get('text_similarity', [])
                 or 'eval_meteor_handoff' in plan):
             from tools.serve_responses import eval_meteor_profiles

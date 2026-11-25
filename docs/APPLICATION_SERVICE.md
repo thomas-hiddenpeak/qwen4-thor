@@ -7,6 +7,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 | Evals 余弦评分（rev482） | 选择 `text_similarity` 和 `evaluation_metric: "cosine"` 后，运行会用同一客户的嵌入配额计算候选文本与参考文本的相似度。分数为 0 到 1，每次评分的 token 用量记入 `per_model_usage`。 | 通过 `--embedding-model-dir` 配置 Qwen3-Embedding-0.6B，在 `/v1/capabilities` 查看启用状态。使用本地标注样本校准通过阈值。OpenAI 托管评分使用 text-embedding-3-large，两种模型的得分可能不同。[OpenAI 评分文档](https://developers.openai.com/api/docs/guides/graders) |
 | Evals 英文 METEOR | 开发候选 | 按词对齐、词干和 WordNet 同义词计算分数；复用隔离评分进程、客户取消、截止时间和逐行工作预算。词库随包分发。云端的分词与词库版本未公开，候选以 NLTK 3.9.2 做差分。 |
 | Evals 运行报告（rev482） | 从创建、读取、列表或取消响应的 `report_url` 获取 HTML，可查看运行状态、成败计数和各评分项结果。使用同一项目的认证头访问。报告只展示前 100 项评分，完整数据仍可从页面中的两个 JSON 链接读取。 | 原生前置按已验证的 Host、协议和部署前缀生成绝对地址。匹配客户端策略的可选 nginx 前置转发外部地址。旧式匿名上游或固定外部地址的部署可在模型进程设置 `Q4T_EVAL_PUBLIC_BASE=https://llm.example/tenant`。地址只含协议、主机、可选端口与路径前缀，末尾省略斜杠。 |
+| ChatKit 消息反馈和实体提及 | 开发候选；浏览器保留评价与标签，管理 SDK 显示提及文本。 | 两份公开 schema 与 49 项配置迁移检查已通过。模型、持久化和恢复验收见[记录](evidence/serve-chatkit-20261125/feedback.json)。 |
 | ChatKit 文档直传 | 浏览器按会话配置分段上传文件，模型读取真实文件，同一线程可在删除上传源后续谈。 | 已验收权限、容量、附件删除和标准历史返回。rev478 已验收部署接管后的原附件与工具回填。浏览器两阶段上传和图片预览仍待实现。[业务回执](evidence/serve-chatkit-20261125/attachments.json) |
 | ChatKit 会话与线程（rev478） | 官方 SDK 六项会话和线程管理操作；浏览器消息与函数结果回填、流式回答和历史分页。 | 同项目按用户、工作流及历史策略过滤。主包故障后，重新签发的用户会话可以接续原线程、附件及待回填调用。[发行回执](evidence/serve-chatkit-20261125/delivery.json) |
 | Webhook | rev472 提供八项管理方法及后台 Responses、Batch 终态通知，独立 HTTPS 发送器验签、重试并可跨进程接手。 | 需部署方显式配置目的地。订阅方按稳定事件 ID 去重。默认部署关闭出站，订阅和待投递记录可以跨故障接手。[发行回执](evidence/serve-webhooks-20261124/delivery.json)。[实测回执](evidence/serve-webhooks-20261124/lifecycle.json) |

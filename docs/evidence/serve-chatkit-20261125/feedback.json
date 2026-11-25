@@ -12,9 +12,42 @@
     "tests/server_chatkit_test.cpp": "8fdc8be2363c920c4b55ac5f45df0f0f6a1f8923dd99c064fc9f2c853c5ae804"
   },
   "host_binary": "8b850bbc120be6fb4ae86b10db429b5686129d80ea5d3aa062fdc51a854ba349",
-  "sdk_driver": "92ddcf0cee6abac938dd30dbf221debfef9e86554144234448cbfdab7f48fe51",
+  "sdk_driver": "95d8b8ef77bc38fb01c08a638d97568b92bd40b837627517707642103256253f",
   "pending": [
-    "Real browser request using a model-generated thread and independently stored votes",
-    "Recovery qualification and release"
-  ]
+    "Targeted C++ entity, feedback and history tests",
+    "Actual TLS schema, model and storage checks",
+    "Profile and managed recovery and stopped publication"
+  ],
+  "entity_mentions": {
+    "stage": "implemented_host_compiled",
+    "reference": "https://openai.github.io/chatkit-python/concepts/entities/",
+    "management_reference": "UserMessageItem.content accepts UserMessageInputText and UserMessageQuotedText in the frozen OpenAPI.",
+    "behavior": "The browser stores and replays the scoped tag, its ID, text and metadata. The model receives the user-visible mention as text; the management history projects it into its official input_text type.",
+    "targeted_schema": {
+      "schema_views": 2,
+      "admitted": 4,
+      "rejected": 10,
+      "official_receipts_checked": 4,
+      "official_rejections": 2,
+      "scope": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "inputs": {
+        "serve-application-v1.schema.json": "1d4f5a56db94650889244a28dcad7bb1b775a934f795786d31445fbb3bffebac",
+        "serve-openapi-bundle-v1.json": "a9dac7e81f76de67d3d30288313d6c9e2fd8a953e319dbc39b318b9c1be6bb26",
+        "sdk-observations.json": "bc0d7880bf482e021f1580dccff2318645e3ee109ae1fd527f114c88e0ca8956",
+        "sdk_wire_receipt.py": "103b60239fd3d7f9f542df92cae5f576ad7fdfff73da183422e0a36577a58398"
+      }
+    },
+    "profile_migration": {
+      "passed": 49,
+      "sha256": "5ed8f3e62bce656ae905178c34b2bff6ff0461ff6c967c6d95ec5eae390a6d1a"
+    },
+    "native_sources": {
+      "src/server/chatkit_client.cpp": "230e9b395a5e660d505fd5e41fb8745617fd10492a4b49f95019c7430e7268d1",
+      "src/server/chatkit_threads.cpp": "fa35d8fcb7324e5091e31a285e4dfcf9c2558aa58ef033731a70ae4990432b5c",
+      "src/server/chatkit_thread_state.cpp": "e48765e053670e794ed5d5faf0cc9615be8eb1a448d694a6260c67ac26a88aba",
+      "tests/server_chatkit_test.cpp": "ef009792f6dee1e486890d2d8748d9a41bb77b14e14771e42c0423eef24f8f1e",
+      "src/server/chatkit_thread_state.h": "639a75366df639e9d954fad25e52da784ab693128cd4fe2260019e813060348b"
+    },
+    "host_binary": "2a8191c3dd2405ea11a2b7bba1f2d9cc0ab604430d563cbb25b4f2383ef48bd1"
+  }
 }

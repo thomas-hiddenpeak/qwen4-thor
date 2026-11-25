@@ -148,8 +148,30 @@ def schema(graph):
     definitions.update(graph_definitions(chatkit, 'chatkit_'))
     definitions['chatkit_client_request'] = obj(dict(type=dict(type='string', enum=[
         'threads.create', 'threads.add_user_message', 'threads.add_client_tool_output', 'threads.get_by_id',
-        'threads.list', 'threads.delete', 'threads.update', 'items.list', 'attachments.delete']),
+        'threads.list', 'threads.delete', 'threads.update', 'items.list', 'items.feedback', 'attachments.delete']),
         params=dict(type='object'), metadata=dict(type='object')), ['type', 'params'])
+    string = dict(type='string')
+    def browser_fields(properties, required):
+        return dict(type='object', properties=properties, required=required)
+
+    definitions['chatkit_browser_content'] = dict(oneOf=[
+        browser_fields(dict(type=dict(const='input_text'), text=string), ['type', 'text']),
+        browser_fields(dict(type=dict(const='input_tag'), id=string, text=string,
+                            data=dict(type='object'), group=nullable(string),
+                            interactive=dict(type='boolean')), ['type', 'id', 'text', 'data'])])
+    definitions['chatkit_browser_message'] = browser_fields(dict(
+        content=dict(type='array', items=ref('chatkit_browser_content')),
+        attachments=dict(type='array', items=string), quoted_text=nullable(string),
+        inference_options=dict(type='object')), ['content', 'attachments', 'inference_options'])
+    message = ref('chatkit_browser_message')
+    feedback = browser_fields(dict(thread_id=string, item_ids=dict(type='array', items=string),
+                                   kind=dict(enum=['positive', 'negative'])), ['thread_id', 'item_ids', 'kind'])
+    definitions['chatkit_client_request']['allOf'] = [
+        {'if': {'properties': {'type': {'const': name}}},
+         'then': {'properties': {'params': params}}}
+        for name, params in [
+            ('items.feedback', feedback), ('threads.create', browser_fields({'input': message}, ['input'])),
+            ('threads.add_user_message', browser_fields(dict(input=message, thread_id=string), ['input', 'thread_id']))]]
     definitions['chatkit_client_result'] = dict(type='object')
     definitions['chatkit_document_attachment'] = obj(dict(id=dict(type='string'),name=dict(type='string'),
         type=dict(const='file'),mime_type=dict(type='string')), ['id','name','type','mime_type'])

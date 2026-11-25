@@ -46,14 +46,8 @@ ObjectReply UserInput(ObjectStore& objects, const StateAccess& access,
     model.array.push_back(
         Object({{"type", String("input_text")}, {"text", *quote}}));
   }
-  for (const auto& part : parts->array) {
-    const auto* text = part.Find("text");
-    if (part.GetString("type") != "input_text" || !text || !text->IsString())
-      return Invalid("Expected a ChatKit text part");
-    auto wire = Object({{"type", String("input_text")}, {"text", *text}});
-    content.array.push_back(wire);
-    model.array.push_back(std::move(wire));
-  }
+  auto projected = chatkit_detail::AppendUserContent(*parts, &content, &model);
+  if (!projected.ok()) return projected;
   *user = Object(
       {{"id", String(id)},
        {"thread_id", String(thread_id)},

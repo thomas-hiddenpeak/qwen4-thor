@@ -392,6 +392,46 @@ Q4T_TEST(chatkit_keeps_original_journal_until_thread_advances_or_is_deleted) {
   Q4T_CHECK(state.Erase(response.id, access).ok());
   return true;
 }
+Q4T_TEST(chatkit_entity_mentions_preserve_browser_sdk_and_model_contracts) {
+  auto text = Object({{"type", String("input_text")}, {"text", String("see ")}});
+  auto tag = Object({{"type", String("input_tag")}, {"id", String("release")},
+                     {"text", String("版本")}, {"data", Object({{"n", Number(7)}})}});
+  Json content = Array(), model = Array();
+  Q4T_CHECK(chatkit_detail::AppendUserContent(Array({text, tag, text}),
+                                              &content, &model).ok());
+  Q4T_CHECK(model.array.size() == 1 &&
+            model.array[0].GetString("text") == "see @版本see ");
+  auto& rich = content.array.at(1);
+  Q4T_CHECK(rich.GetString("id") == "release" &&
+            rich.Find("data")->GetInt("n") == 7 && rich.Find("group")->IsNull() &&
+            !rich.GetBool("interactive"));
+  auto item = Object({{"type", String("chatkit.user_message")},
+                      {"content", content}, {"created_at", Number(100)},
+                      {"inference_options", {}}});
+  Q4T_CHECK(chatkit_detail::ClientItem(item).GetArray("content")->array.at(1)
+                .GetString("type") == "input_tag");
+  chatkit_detail::ProjectManagementItem(&item);
+  const auto& wire = item.GetArray("content")->array.at(1);
+  Q4T_CHECK(wire.GetString("type") == "input_text" &&
+            wire.GetString("text") == "@版本" && !wire.Has("data"));
+  for (const auto& key : {"text", "id", "data", "group", "interactive"}) {
+    auto wrong = tag;
+    Set(&wrong, key, Number(3));
+    Q4T_CHECK(chatkit_detail::AppendUserContent(Array({wrong}), &content,
+                                                &model).http_status == 400);
+  }
+  Set(&tag, "interactive", Boolean(true));
+  Set(&tag, "group", String("docs"));
+  Q4T_CHECK(chatkit_detail::AppendUserContent(Array({tag}), &content,
+                                              &model).ok());
+  Q4T_CHECK(content.array.back().GetBool("interactive") &&
+            content.array.back().GetString("group") == "docs");
+  model = Array();
+  Q4T_CHECK(chatkit_detail::AppendUserContent(Array({text, text}), &content,
+                                              &model).ok());
+  Q4T_CHECK(model.array.size() == 2 && model.array[1].GetString("text") == "see ");
+  return true;
+}
 Q4T_TEST(chatkit_tool_call_preserves_sdk_and_browser_shapes_and_user_quotes) {
   Json response;
   Q4T_CHECK(io::ParseJson(
