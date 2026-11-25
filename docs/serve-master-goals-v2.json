@@ -1308,6 +1308,11 @@
         "issued": false,
         "receipt": "evidence/serve-image-speech-recovery-20261126/profiles.json",
         "business": "evidence/serve-image-speech-recovery-20261126/combined.json"
+      },
+      "visual_answer_encoding_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-visual-answer-encoding-20261126/cpu.json"
       }
     },
     {
@@ -8434,6 +8439,11 @@
         "profiles": "evidence/serve-agent-structured-format-20261126/profiles.json",
         "revision": 520,
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "visual_answer_encoding_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-visual-answer-encoding-20261126/cpu.json"
       }
     },
     {
@@ -11347,6 +11357,11 @@
         "profiles": "evidence/serve-agent-structured-format-20261126/profiles.json",
         "revision": 520,
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "visual_answer_encoding_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-visual-answer-encoding-20261126/cpu.json"
       }
     },
     {
