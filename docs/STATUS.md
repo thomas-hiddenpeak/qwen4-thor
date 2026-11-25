@@ -7,6 +7,12 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Node SDK 经原生 TLS 上传一页项目 PDF，原 Chat 答出 157。先删源文件，再从历史 Chat 创建 Evals 并删除原对话，重放仍答 157，得 1 分。Python SDK 独立读回同一结果。另一客户读取返回 404，其 Chat 仍能答 42。此轮启动一次，用时 88.345 秒。下一步验证项目安全记录并完成组合交付。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)
+
+真实 PDF 已上传并从 Chat 读出 157。创建 Evals 运行时，SDK 用例把 stored_completions 配在 Responses 运行下，服务返回 400。已按冻结规范改用 completions 运行，保留原失败回执，下一步重验文件删除后的重放。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)
+
+历史 Chat 的 PDF 与图片内容现在可以投影到 Responses 采样输入。系统先核对原消息部件和所属客户，再沿用原二进制分块；工具调用或推理项改变历史位置时会重新关联消息。25 项主机用例通过，已覆盖来源删除、对象库重开、跨客户访问和缓存边界。下一步用真实 PDF 及官方 SDK 验证重放。[验证记录](evidence/serve-evals-20261125/stored-chat-files.json)
+
 已发布 rev482，保留 rev480 与独立回退包。受监护的模型退出、主包故障接管两次均恢复原评估，保留已提交行的输出 ID 与分数，继续至六行完成。六次嵌入按实际 token 计量，报告跨客户读取均返回 404。发布保持 STOPPED，启动模型零次，13 份受保护记录一致。24 小时计划已预检，实跑由用户安排。下一步继续补齐剩余应用接口和恢复组合。[验证记录](evidence/serve-evals-20261125/cosine-delivery.json)
 
 主配置退出时，6 行中已持久化 1 行。轻配置完成其余 5 行，保留原输出 ID、分数和报告访问权限。六行模型回答均为 157，正反例各三项；六次嵌入共 81 个 token。两份 v46 记录均可还原 rev480 的 v45 前驱，43 项迁移用例通过。下一步验证受监护的模型退出和独立回退包接管。[验证记录](evidence/serve-evals-20261125/cosine-profiles.json)

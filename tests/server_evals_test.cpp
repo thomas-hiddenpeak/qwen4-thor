@@ -14,6 +14,9 @@
 #include "../src/server/eval_trajectory.h"
 #include "../src/server/object_protocol.h"
 #include "q4t/server/http_connection.h"
+#include "q4t/server/input_snapshot_bindings.h"
+#include "q4t/server/chat_file_inputs.h"
+#include "q4t/server/file_input.h"
 #include "q4t/server/http_request.h"
 #include "q4t/server/chat_storage.h"
 #include "q4t/server/files.h"
@@ -103,6 +106,150 @@ Q4T_TEST(evals_stored_completion_snapshot_filters_and_survives_source_deletion) 
   Q4T_CHECK(item.Find("metadata")->GetString("project") == "q4t");
   Q4T_CHECK(bytes.find("chatcmpl_foreign") == std::string::npos);
   Q4T_CHECK(Request(store, "DELETE", path + "/" + run.value.GetString("id")).ok());
+  return true;
+}
+
+Q4T_TEST(
+    evals_chat_image_projection_preserves_source_detail_and_cache_boundary) {
+  for (
+      const auto* input :
+      {R"({"type":"image_url","image_url":{"url":"https://media.example/chart.png","detail":"high"}})",
+       R"({"type":"image_url","image_url":"https://media.example/chart.png"})"}) {
+    Json chat, mapped;
+    Q4T_CHECK(io::ParseJson(input, &chat));
+    auto boundary = Object({{"mode", String("explicit")}});
+    Set(&chat, "prompt_cache_breakpoint", boundary);
+    Q4T_CHECK(ProjectChatMediaPart(chat, &mapped).ok());
+    FileInputSource a, b;
+    Q4T_CHECK(
+        ParseImageInputSource(chat, FileInputProfile::kChat, "image", &a).ok());
+    Q4T_CHECK(
+        ParseImageInputSource(mapped, FileInputProfile::kResponses, "image", &b)
+            .ok() &&
+        a.value == b.value && a.kind == b.kind && a.detail == b.detail &&
+        a.cache_breakpoint == b.cache_breakpoint);
+    Q4T_CHECK(mapped.GetString("type") == "input_image" &&
+              OutputJson(*mapped.Find("prompt_cache_breakpoint")) ==
+                  OutputJson(boundary));
+  }
+  return true;
+}
+
+Q4T_TEST(evals_stored_chat_projects_snapshots_after_expanded_tool_history) {
+  Fixture fixture;
+  InputSnapshotRef alias;
+  std::string projected_digest;
+  StateAccess access{
+      "client:alpha", std::chrono::steady_clock::now() + 10s, {}};
+  BinaryAccess auth{access.scope, access.deadline, {}};
+  {
+    ObjectStore store(fixture.options);
+    InputSnapshotStore snapshots(store);
+    Json input, response;
+    Q4T_CHECK(io::ParseJson(R"({"store":true,"messages":[
+      {"role":"user","content":"Look up the records"},
+      {"role":"assistant","content":null,"reasoning_content":"Read the source","tool_calls":[
+        {"id":"call_one","type":"function","function":{"name":"read","arguments":"{}"}}]},
+      {"role":"tool","tool_call_id":"call_one","content":"Document found"},
+      {"role":"user","content":[{"type":"file","file":{"file_id":"file_original"}},
+        {"type":"text","text":"Read the total"}]}]})",
+                            &input));
+    Q4T_CHECK(io::ParseJson(
+        R"({"id":"chatcmpl_pdf","object":"chat.completion","model":"cpu",
+      "created":1,"choices":[{"finish_reason":"stop","message":{"role":"assistant","content":"157"}}]})",
+        &response));
+    auto message = input.GetArray("messages")->array.back();
+    Set(&message, "id", String(StoredChatMessageId("chatcmpl_pdf", 3)));
+    const auto& part = message.GetArray("content")->array[0];
+    std::string source_digest;
+    Q4T_CHECK(InputValueIdentity(part, &source_digest));
+    Json projected;
+    Q4T_CHECK(ProjectChatMediaPart(part, &projected).ok() &&
+              InputValueIdentity(projected, &projected_digest));
+    Q4T_CHECK(source_digest != projected_digest);
+    const std::string_view bytes = "immutable extracted page 157";
+    InputSnapshotRef original;
+    InputSnapshotHold hold;
+    Q4T_CHECK(snapshots
+                  .Save(auth, source_digest,
+                        Object({{"origin", String("page")}}),
+                        std::span(&bytes, 1), {}, 60, &original, &hold)
+                  .ok());
+    Json binding;
+    Q4T_CHECK(
+        BindInputSnapshot(message, "/content/0", original, &binding).ok());
+    Q4T_CHECK(StoredChats(store)
+                  .Save(input, response, access, Array({binding}))
+                  .ok());
+    Q4T_CHECK(snapshots.Release(auth, &hold).ok());
+    auto def = Request(
+        store, "POST", "/v1/evals",
+        R"({"data_source_config":{"type":"logs"},"testing_criteria":[]})");
+    Q4T_CHECK(def.ok());
+    const auto runs = "/v1/evals/" + def.value.GetString("id") + "/runs";
+    auto run = Request(
+        store, "POST", runs,
+        R"({"data_source":{"type":"completions","model":"cpu","source":{"type":"stored_completions"}}})");
+    if (!run.ok())
+      std::fprintf(stderr, "stored Chat projection: %s %s\n", run.code.c_str(),
+                   run.message.c_str());
+    Q4T_CHECK(run.ok() &&
+              StoredChats(store).Erase("chatcmpl_pdf", access).ok());
+    BinaryRead read;
+    BinaryStore binary(store);
+    Q4T_CHECK(binary
+                  .Open(auth, ObjectKind::kEvalRun, run.value.GetString("id"),
+                        60, &read)
+                  .ok());
+    std::string text;
+    Q4T_CHECK(binary.Read(auth, read, 0, &text).ok() &&
+              binary.Close(auth, &read).ok());
+    Json row;
+    Q4T_CHECK(io::ParseJson(text, &row, true));
+    const auto* private_parts = row.GetArray("frozen_response_parts");
+    Q4T_CHECK(private_parts && private_parts->array.size() == 1);
+    const auto& indexed = private_parts->array.front();
+    Q4T_CHECK(indexed.GetInt("index") == 4);
+    const auto& mapped = *indexed.Find("binding");
+    Q4T_CHECK(mapped.GetString("binding_sha256") == projected_digest &&
+              ParseInputSnapshotReference(*mapped.Find("snapshot"), &alias) &&
+              alias.id != original.id);
+    auto fetch = [&](const InputSnapshotRef& root) {
+      ObjectRequest get;
+      get.scope = auth.scope;
+      get.kind = ObjectKind::kInputSnapshot;
+      get.id = root.id;
+      return store.Execute(get, auth.deadline);
+    };
+    const auto old = fetch(original), copy = fetch(alias);
+    Q4T_CHECK(old.ok() && copy.ok());
+    auto& old_root = *old.value.Find("data");
+    auto& new_root = *copy.value.Find("data");
+    Q4T_CHECK(OutputJson(*old_root.Find("blob")) ==
+                  OutputJson(*new_root.Find("blob")) &&
+              new_root.GetArray("input_snapshots")
+                      ->array[0]
+                      .Find("snapshot")
+                      ->GetString("id") == original.id);
+    auto other = part;
+    Set(&Field(other, "file"), "file_id", String("file_other"));
+    InputSnapshotRef invalid;
+    InputSnapshotHold invalid_hold;
+    Q4T_CHECK(
+        !snapshots
+             .ProjectChat(auth, original, other, 60, &invalid, &invalid_hold)
+             .ok() &&
+        invalid.id.empty() && invalid_hold.id.empty());
+  }
+  ObjectStore reopened(fixture.options);
+  InputSnapshotStore snapshots(reopened);
+  InputSnapshot output;
+  Q4T_CHECK(snapshots.Read(auth, alias, projected_digest, {}, &output).ok() &&
+            output.parts.size() == 1 &&
+            output.parts.front() == "immutable extracted page 157");
+  BinaryAccess foreign{"client:beta", auth.deadline, {}};
+  Q4T_CHECK(snapshots.Read(foreign, alias, projected_digest, {}, &output)
+                .http_status == 404);
   return true;
 }
 

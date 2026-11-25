@@ -8,7 +8,7 @@ class ResponsesJobs;
 }
 namespace q4t::server::eval_detail {
 struct SamplingOwner;
-bool ReplaysStoredResponse(const io::Json& source);
+bool ReplaysStoredTrajectory(const io::Json& source);
 std::string RenderRunReport(const io::Json& run);
 void ProjectRun(io::Json* run, std::string_view base);
 ObjectReply PublishStoredRun(ObjectStore& objects, const StateAccess& access,

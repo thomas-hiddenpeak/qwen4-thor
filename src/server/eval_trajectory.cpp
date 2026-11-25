@@ -5,12 +5,13 @@
 
 #include "eval_run_state.h"
 #include "q4t/server/legacy_tools.h"
+#include "q4t/server/file_input.h"
 
 namespace q4t::server::eval_detail {
 namespace {
 using namespace object_detail;
 
-void Content(Json* content) {
+ObjectReply Content(Json* content) {
   if (content->IsObject()) *content = Array({*content});
   for (auto& part : content->array) {
     const auto type = part.GetString("type");
@@ -18,18 +19,12 @@ void Content(Json* content) {
       part = Object({{"type", String("input_text")}, {"text", part}});
     } else if (type == "text") {
       Set(&part, "type", String("input_text"));
-    } else if (type == "image_url") {
-      const auto* image = part.Find("image_url");
-      if (!image || !image->IsObject() || !image->Find("url")) continue;
-      auto mapped = Object({{"type", String("input_image")},
-                            {"image_url", *image->Find("url")}});
-      if (const auto* detail = image->Find("detail"))
-        Set(&mapped, "detail", *detail);
-      if (const auto* boundary = part.Find("prompt_cache_breakpoint"))
-        Set(&mapped, "prompt_cache_breakpoint", *boundary);
-      part = std::move(mapped);
+    } else if (type == "image_url" || type == "file") {
+      auto projected = ProjectChatMediaPart(part, &part);
+      if (!projected.ok()) return projected;
     }
   }
+  return {};
 }
 
 ObjectReply ExpandCall(const Json& call, Json* item) {
@@ -51,7 +46,9 @@ ObjectReply ExpandCall(const Json& call, Json* item) {
 }
 }  // namespace
 
-ObjectReply NormalizeEvalTrajectory(Json* input) {
+ObjectReply NormalizeEvalTrajectory(Json* input,
+                                    std::vector<size_t>* positions) {
+  if (positions) positions->clear();
   if (!input->IsArray()) return {};
   const bool legacy =
       std::any_of(input->array.begin(), input->array.end(), [](const Json& m) {
@@ -67,10 +64,14 @@ ObjectReply NormalizeEvalTrajectory(Json* input) {
   auto result = Array();
   std::unordered_map<std::string, bool> custom;
   for (auto& message : input->array) {
+    if (positions) positions->push_back(result.array.size());
     const auto type = message.GetString("type");
     if (type == "function_call" || type == "custom_tool_call")
       custom.emplace(message.GetString("call_id"), type == "custom_tool_call");
-    if (message.Has("content")) Content(&Field(message, "content"));
+    if (message.Has("content")) {
+      auto converted = Content(&Field(message, "content"));
+      if (!converted.ok()) return converted;
+    }
     const auto role = message.GetString("role");
     if (role == "tool") {
       const auto id = message.GetString("tool_call_id");

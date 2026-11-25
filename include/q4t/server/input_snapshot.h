@@ -53,6 +53,12 @@ class InputSnapshotStore {
   ObjectReply Pin(const BinaryAccess& access, const InputSnapshotRef& reference,
                   std::string_view binding_sha256, int hold_seconds,
                   InputSnapshotHold* hold);
+  // Certify the new typed part from the exact stored Chat part. The alias
+  // retains the original immutable root and reuses its binary manifest.
+  ObjectReply ProjectChat(const BinaryAccess& access,
+                          const InputSnapshotRef& source,
+                          const io::Json& chat_part, int hold_seconds,
+                          InputSnapshotRef* projected, InputSnapshotHold* hold);
   ObjectReply Release(const BinaryAccess& access, InputSnapshotHold* hold);
 
  private:

@@ -1,0 +1,105 @@
+{
+  "stage": "native_tls_stored_chat_pdf_verified",
+  "issued": false,
+  "cpu": {
+    "cases": 25,
+    "sha256": "4c0d842cf15a228d98367568e513c079678d5896c9aef84734d8fc8429c104ba",
+    "first_attempt": {
+      "cases": 25,
+      "passed": 24,
+      "failure": "The image test used a cache breakpoint from a different API instead of q4t explicit mode.",
+      "sha256": "0f351b0725aa29222d878661b0189aff85b7faba4c60b24a61cd0b363405e277"
+    }
+  },
+  "design": "Verify the original stored Chat content and immutable snapshot, derive the equivalent typed Responses part, preserve the prior binary manifest under an owner-scoped alias, and verify the projected binding before replay.",
+  "evidence": [
+    "unchanged binary chunk IDs and retained original root",
+    "source and Chat deletion, object store reopen",
+    "foreign scope and changed part rejected",
+    "message index after tool calls and reasoning expansion",
+    "image URL, detail and explicit cache breakpoint"
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 240,
+    "native_routes": 396,
+    "reviewed_source_anchors": 1365,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "pending": [
+    "Package and recovery qualification"
+  ],
+  "device_attempts": [
+    {
+      "result": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 60.751,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "source_file_read_success": true,
+      "retained_error": "400 invalid_request at data_source.source.type",
+      "cause": "The SDK fixture paired stored_completions with the Responses run source. The frozen official schema permits stored_completions only under a completions run.",
+      "sdk_stderr": "0fc61a9752f3829f9bb29fb46e99330762258011663aac6648c477038c716f71",
+      "lease": "314f8de64e5f2b6705b8dc9cbc135486880c095f353913fa172d22b6a31e61f7"
+    }
+  ],
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 88.345,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "independent_chat": "42",
+    "history_answer": "157",
+    "replay_answer": "157",
+    "score": 1,
+    "sha256": "39e3d3a8c6d54be05537d428a6fb56b6cad67e9eaef3531c7cf0a4af7f3e15cf",
+    "source_file": "file_ce90e5a90944d61158ff59edf4c34688",
+    "response": "chatcmpl-auto-21d0fd2ef231014d46ea2920eaa246d5",
+    "evaluation": "eval_7e6fbe53f92e35199857a93ff599f09c",
+    "run": "evalrun_81e38d65e536062b978964f8a65aee6d",
+    "output": "outputitem_a192467b6bb1d3b2554148c07f9c8b5a",
+    "source_deleted_before_selection": 404,
+    "response_deleted": 404,
+    "foreign_project": 404,
+    "python": {
+      "version": "3.42.1",
+      "run": "evalrun_81e38d65e536062b978964f8a65aee6d",
+      "output": "outputitem_a192467b6bb1d3b2554148c07f9c8b5a",
+      "answer": "157",
+      "score": 1.0,
+      "foreign_status": 404,
+      "deleted_status": 404
+    },
+    "wire_objects": 3,
+    "driver_sha256": "7f2a317a3fb4ed823042c852bb2713a7dbce39dc665080b2928888ce95e20af4"
+  },
+  "lease": {
+    "receipt": "8bf99f18405b189bd1d526f55ef667ae74a4ce1722e2c1db3192c82bc7b12bb0",
+    "status": "COMPLETED"
+  },
+  "candidate": {
+    "binary": "5aa7520917e1d780eec4b6eba132f7bb63897bc21ea4ecd7608c6831e155a3cf",
+    "ingress": "1efb565263062c11b682bab1905424da4fdb84fc902c87c67bb3a60e2e57c137",
+    "sdk_driver": "7f2a317a3fb4ed823042c852bb2713a7dbce39dc665080b2928888ce95e20af4"
+  },
+  "device_files": {
+    "eval-chat-file-business-02/result.json": "2031e04578a05e6e390565296e748e66afc7219e9e41804c5479576be7e08815",
+    "eval-chat-file-lease-02/exit.json": "8bf99f18405b189bd1d526f55ef667ae74a4ce1722e2c1db3192c82bc7b12bb0",
+    "eval-chat-file-business-02/plan.json": "9f6ed5430c9fb35167ddd67c7402c8e6fe384e84fffcfd4e8d46c61dfa41596a",
+    "eval-chat-file-business-02/create/scope.pdf": "39e3d3a8c6d54be05537d428a6fb56b6cad67e9eaef3531c7cf0a4af7f3e15cf",
+    "eval-chat-file-business-02/create/sdk-observations.json": "671efc166a115eda734137fa8ba3e325c6cf65d1bfbb7a7760621b5fe962dedc",
+    "eval-chat-file-business-02/create/sdk-result.json": "9f840e92bf3e20b5566a48af05ba1ae384c62bfac54e85bc1899fe22ff8cfc96"
+  }
+}
