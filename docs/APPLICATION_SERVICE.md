@@ -137,6 +137,8 @@ q4t safety publish --object-store-dir /srv/q4t/objects --client-id alpha < appro
 
 ## API 兼容矩阵
 
+跨配置验证覆盖读回真实历史摘要、接手续签会话中的工具调用，以及两种身份隔离。主轻配置都从浏览器和管理 SDK 读到相同的公开任务，轻配置用原调用继续回答发行号 512。[验收记录](evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json)
+
 ChatKit 候选通过浏览器的 workflow 和管理 SDK 的 chatkit.task_group 提供同一份公开摘要。流式更新、终态和线程历史使用同一条目 ID。摘要步骤拒答时保留原业务答案，摘要可以为空。定向短验中，模型新生成了 1 份公开摘要。[业务回执](evidence/serve-chatkit-reasoning-workflow-20261126/business.json)
 
 ChatKit 的管理 SDK 与浏览器 POST 共用存储。rev506 已验证 21 条消息分页，也能从原用户消息重试，保留此前上下文及附件快照，通过原线程提交新生成的工具结果。rev508 首次实现固定参考的全部 16 个浏览器操作名。新增结构化输入回填、流式和同步自定义动作，已验证同一工作流在模型和网关故障后继续。[rev508 发行回执](evidence/serve-chatkit-actions-20261125/delivery.json) [分页回执](evidence/serve-chatkit-page-defaults-20261125/business.json) [重试回执](evidence/serve-chatkit-retry-20261125/business.json) [恢复与发行](evidence/serve-chatkit-retry-20261125/delivery.json)

@@ -1,0 +1,154 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 512,
+  "build": {
+    "engine": "038b672632aeea5137872fdebc77ef5f3e9ee6a108cf1d74ad983f4eabd1c1b3",
+    "ingress": "3eaf3d9781cbd0ea6b7f212e5f6d2682b49a0c3db3a128fa8efd6764b924de87"
+  },
+  "openapi_sha256": "d41b0962de13eee3e3f395372a6db0119c9bd1c967d9978381b313cfce086978",
+  "business_sha256": "5f56c99616ca184037fc545d412801fdaf7a765392f264298834fe67f435c7cf",
+  "historical_witness_sha256": "59dcec50ddd687d5ec5761f3d806c5dc6758c5685604396d3ba384cd4a0ebe21",
+  "restored_original_record_bytes": true,
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "phase": "primary",
+        "sdk": "7.47.0",
+        "revision": "512",
+        "chat": "42",
+        "archive": {
+          "thread": "cthr_f5123e881fb018a0f2122427e0740c9d",
+          "groups_sha256": "8b2128e5dd7ae0492f8ee60b962bc53bfc18202a35645d5344763f5eb1191946",
+          "items": [
+            "item_8b696cb1e11d32a3d96157a4fc0160aa",
+            "wf_rs_f3997b63e7205f243c4ba57ea236f3f9",
+            "msg_35a6b6265666f4e41b314b34569678c2",
+            "wf_rs_9ca268a7dfb7cdeaeda8e9250d3d0780",
+            "fc_28ab2a01ef501d938df96fde384e882f",
+            "msg_f4202a821a8eaa839b082f1be381dcd8"
+          ]
+        },
+        "source": {
+          "thread": "cthr_1104fd6ab3304d24cda95edbe55ff4d9",
+          "item": "fc_75b62083689652a13fcd5c004cbbaf75",
+          "call": "call_resp_ad734075a6ff282b6614f4b6dc99e597_0",
+          "ids": [
+            "item_0cd30c5442314b72dfceaf6deaa662eb",
+            "wf_rs_bac6968f1657c28bbbc86f7cbf859c1c",
+            "msg_06f8c27f3c0ce8a0f887680b76758f82",
+            "fc_75b62083689652a13fcd5c004cbbaf75"
+          ],
+          "groups": [
+            [
+              "wf_rs_bac6968f1657c28bbbc86f7cbf859c1c",
+              []
+            ]
+          ],
+          "groups_sha256": "d9b08fe2d40064f044dab679cc3e1304967ed87fa69a60fa30a87e8542db3b44"
+        }
+      },
+      "starts": 1,
+      "seconds": 46.032,
+      "record_sha256": "e7b73f093b01a9b74b97cad1417eb2df133ed447d4ee8c6b85e2f1a0af64e958",
+      "predecessor": "858b8111be51b5378b5f16082843dad6d2abbdf56e3366bee1d7f64a82b19ea4"
+    },
+    "light": {
+      "sdk": {
+        "phase": "light",
+        "sdk": "7.47.0",
+        "revision": "512",
+        "chat": "42",
+        "archive": {
+          "thread": "cthr_f5123e881fb018a0f2122427e0740c9d",
+          "groups_sha256": "8b2128e5dd7ae0492f8ee60b962bc53bfc18202a35645d5344763f5eb1191946",
+          "items": [
+            "item_8b696cb1e11d32a3d96157a4fc0160aa",
+            "wf_rs_f3997b63e7205f243c4ba57ea236f3f9",
+            "msg_35a6b6265666f4e41b314b34569678c2",
+            "wf_rs_9ca268a7dfb7cdeaeda8e9250d3d0780",
+            "fc_28ab2a01ef501d938df96fde384e882f",
+            "msg_f4202a821a8eaa839b082f1be381dcd8"
+          ]
+        },
+        "source": {
+          "thread": "cthr_1104fd6ab3304d24cda95edbe55ff4d9",
+          "item": "fc_75b62083689652a13fcd5c004cbbaf75",
+          "call": "call_resp_ad734075a6ff282b6614f4b6dc99e597_0",
+          "ids": [
+            "item_0cd30c5442314b72dfceaf6deaa662eb",
+            "wf_rs_bac6968f1657c28bbbc86f7cbf859c1c",
+            "msg_06f8c27f3c0ce8a0f887680b76758f82",
+            "fc_75b62083689652a13fcd5c004cbbaf75"
+          ],
+          "groups": [
+            [
+              "wf_rs_bac6968f1657c28bbbc86f7cbf859c1c",
+              []
+            ]
+          ],
+          "groups_sha256": "d9b08fe2d40064f044dab679cc3e1304967ed87fa69a60fa30a87e8542db3b44"
+        },
+        "recovered": {
+          "answer": "512",
+          "message": "msg_598d8a77b7aec30006dd7680fdd3be25",
+          "ids": [
+            "item_0cd30c5442314b72dfceaf6deaa662eb",
+            "wf_rs_bac6968f1657c28bbbc86f7cbf859c1c",
+            "msg_06f8c27f3c0ce8a0f887680b76758f82",
+            "fc_75b62083689652a13fcd5c004cbbaf75",
+            "wf_rs_4a206ddc874fa95b0cd7526adec18db4",
+            "msg_598d8a77b7aec30006dd7680fdd3be25"
+          ],
+          "call": "call_resp_ad734075a6ff282b6614f4b6dc99e597_0",
+          "item": "fc_75b62083689652a13fcd5c004cbbaf75",
+          "before_sha256": "d9b08fe2d40064f044dab679cc3e1304967ed87fa69a60fa30a87e8542db3b44",
+          "sibling": 404,
+          "peer": 404,
+          "duplicate": 409
+        }
+      },
+      "starts": 1,
+      "seconds": 43.337,
+      "record_sha256": "094242eb2be6752860004eb78f4442e4f0aa3dc45754c5fc55c5ac00b6810375",
+      "predecessor": "b79a92d5003ddb295b50c00849425eccfc55c5674c0554550d89b64ac7bde609"
+    }
+  },
+  "response_chain": {
+    "tool": "resp_ad734075a6ff282b6614f4b6dc99e597",
+    "tool_sha256": "4f393b276087fe22c37db00e62974d32d0e1001dfb19eeb8baa17858923e5fb9",
+    "answer": "resp_3e12293d01d732ba9e194bea0dbcdd70",
+    "answer_sha256": "a5cb7249da034158be4ea31739415aa2492c6f8e4df4657f93a6d1c6b1c0edc8"
+  },
+  "registry": {
+    "status": "ACCEPT_CHATKIT_WORKFLOW_PRIMARY_LIGHT",
+    "registry_sha256": "32834e7405df2691feb038c8bb81f158fe2f25181bc6a3f91b21b07a9bc71c9e",
+    "environment": {
+      "status": "PASS",
+      "env_abort": false,
+      "all_queries_ok": true,
+      "nvml_queries": 85,
+      "cleanup_complete": true,
+      "lease_result_sha256": "2bbc6f075e5a511ee0085b90f44f1eec579a2a28a0b4a8b92b0b04c752daf9cc"
+    },
+    "migration_permit_sha256": "a068fab8c008a25d77019d255fbccb91512c90adbf84d3b1a585c921b183746e",
+    "actual_model_starts": 2,
+    "additional_model_starts": 0,
+    "historical_business_preserved": true
+  },
+  "lease_sha256": "2bbc6f075e5a511ee0085b90f44f1eec579a2a28a0b4a8b92b0b04c752daf9cc",
+  "predecessor_negative": {
+    "primary": {
+      "predecessor": "858b8111be51b5378b5f16082843dad6d2abbdf56e3366bee1d7f64a82b19ea4",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    },
+    "light": {
+      "predecessor": "b79a92d5003ddb295b50c00849425eccfc55c5674c0554550d89b64ac7bde609",
+      "prior_reconstructed": true,
+      "removed_receipt_or_changed_template_rejected": 5,
+      "unreviewed_candidate_rejected": true
+    }
+  }
+}

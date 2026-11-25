@@ -2837,9 +2837,10 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "candidate_business",
+        "stage": "profile_verified",
         "issued": false,
-        "fresh_public_summaries": 1
+        "fresh_public_summaries": 1,
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
       }
     },
     {
@@ -3421,9 +3422,10 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "candidate_business",
+        "stage": "profile_verified",
         "issued": false,
-        "fresh_public_summaries": 1
+        "fresh_public_summaries": 1,
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
       }
     },
     {
@@ -8258,9 +8260,10 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "candidate_business",
+        "stage": "profile_verified",
         "issued": false,
-        "fresh_public_summaries": 1
+        "fresh_public_summaries": 1,
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
       }
     },
     {
@@ -11122,9 +11125,10 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "candidate_business",
+        "stage": "profile_verified",
         "issued": false,
-        "fresh_public_summaries": 1
+        "fresh_public_summaries": 1,
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
       }
     },
     {
@@ -12437,9 +12441,10 @@
       },
       "chatkit_public_summary_20261126": {
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/business.json",
-        "stage": "candidate_business",
+        "stage": "profile_verified",
         "issued": false,
-        "fresh_public_summaries": 1
+        "fresh_public_summaries": 1,
+        "profiles": "evidence/serve-chatkit-reasoning-workflow-20261126/profiles.json"
       }
     },
     {
