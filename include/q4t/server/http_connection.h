@@ -42,8 +42,6 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
   if (IsMcpTunnelPoll(method, path)) return HttpConnectionClass::kTunnelPoll;
   if (IsMcpTunnelResponse(method, path))
     return HttpConnectionClass::kTunnelResponse;
-  if (IsMcpTunnelMetadata(method, path))
-    return HttpConnectionClass::kObservation;
   if ((method == "GET" &&
        (path == "/healthz" || path == "/livez" || path == "/readyz")) ||
       IsCancellationRequest(method, path) || (IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path)))
@@ -54,18 +52,7 @@ inline HttpConnectionClass ClassifyHttpConnection(std::string_view method,
     return HttpConnectionClass::kObservation;
   if (method == "DELETE" && IsModelDetailPath(path))
     return HttpConnectionClass::kControl;
-  if (RealtimeTraceMethodAllowed(method, path) ||
-      IsResponsesObservation(method, path) ||
-      IsVectorStoreObservation(method, path) ||
-      IsEvalObservation(method, path) || IsSafetyRead(method, path) ||
-      IsChatKitObservation(method, path) ||
-      ((method == "GET" || method == "DELETE") && IsWebhookTarget(path)) ||
-      IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
-      IsVoiceMetadata(method, path) ||
-      IsManagedAgentObservation(method, path) ||
-      IsSkillObservation(method, path) || IsContainerObservation(method, path) ||
-      IsAssistantObservation(method, path) ||
-      IsPromptObservation(method, path) || IsStoredChatManagement(method, path))
+  if (IsApplicationObservation(method, path))
     return HttpConnectionClass::kObservation;
   return HttpConnectionClass::kBusiness;
 }

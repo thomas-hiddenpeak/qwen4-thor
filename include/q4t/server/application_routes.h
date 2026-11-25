@@ -1160,9 +1160,8 @@ inline bool EvalMethodAllowed(std::string_view method, std::string_view target) 
          allow.find(method) != allow.npos;
 }
 inline bool IsEvalObservation(std::string_view method, std::string_view target) {
-  const auto kind = ParseEvalRoute(target).kind;
-  return (method == "GET" || method == "DELETE" || kind == EvalRouteKind::kCancel)
-         && EvalMethodAllowed(method, target);
+  return (method == "GET" || method == "DELETE") &&
+         EvalMethodAllowed(method, target);
 }
 
 inline bool IsPromptTarget(std::string_view target) {
@@ -1248,7 +1247,9 @@ inline bool IsResponseCancellation(std::string_view method,
 
 inline bool IsCancellationRequest(std::string_view method,
                                   std::string_view target) {
-  return (method == "POST" && ParseAssistantRunRoute(target).kind ==
+  return (method == "POST" && ParseEvalRoute(target).kind ==
+                                  EvalRouteKind::kCancel) ||
+         (method == "POST" && ParseAssistantRunRoute(target).kind ==
                                   AssistantRunRouteKind::kCancel) ||
          (method == "POST" && target == "/v1/requests/cancel") ||
          (method == "POST" && ParseChatKitRoute(target).kind == ChatKitRouteKind::kCancel) ||
@@ -1283,6 +1284,27 @@ inline bool ConversationMethodAllowed(std::string_view method,
   if (path.starts_with("/items/") && ValidApplicationId(path.substr(7)))
     return method == "GET" || method == "DELETE";
   return false;
+}
+
+// Application requests served on the bounded observation partition. Keep the
+// public gateway, HTTP listener and tenant admission on the same route policy.
+inline bool IsApplicationObservation(std::string_view method,
+                                     std::string_view path) {
+  return RealtimeTraceMethodAllowed(method, path) ||
+         IsMcpTunnelMetadata(method, path) || IsVoiceMetadata(method, path) ||
+         IsAssistantObservation(method, path) ||
+         IsResponsesObservation(method, path) ||
+         IsVectorStoreObservation(method, path) ||
+         IsEvalObservation(method, path) || IsSafetyRead(method, path) ||
+         IsChatKitObservation(method, path) ||
+         ((method == "GET" || method == "DELETE") &&
+          WebhookMethodAllowed(method, path)) ||
+         IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
+         IsSkillObservation(method, path) ||
+         IsContainerObservation(method, path) ||
+         IsManagedAgentObservation(method, path) ||
+         IsPromptObservation(method, path) ||
+         IsStoredChatManagement(method, path);
 }
 
 }  // namespace q4t::server

@@ -126,6 +126,14 @@ def current_surface(root):
     native_routes.extend((method, "/v1/models/{model}", "true")
                          for method in ("GET", "DELETE"))
     application_routes = (root / "include/q4t/server/application_routes.h").read_text()
+    declaration = 'inline bool IsApplicationObservation('
+    if declaration not in application_routes:
+        raise ValueError('review shared application observation policy')
+    observation = application_routes.split(declaration, 1)[1].split('\n}', 1)[0]
+    for adapter in ('include/q4t/server/http_connection.h', 'src/server/client_request.cpp',
+                    'src/service/ingress_main.cpp'):
+        if 'IsApplicationObservation(method, path)' not in (root / adapter).read_text():
+            raise ValueError(f'review application observation admission in {adapter}')
     if 'HandleRealtimeTraceRequest(' not in dispatch or \
             'IsRealtimeTraceTarget(path)' not in dispatch or \
             'server::RealtimeTraceMethodAllowed(method, path)' not in native or \
@@ -222,7 +230,7 @@ def current_surface(root):
         raise ValueError("review dynamic Conversations transport extractor")
     if 'HandleVoices(fd, method, path, headers.content_type, body)' not in dispatch or \
             'server::VoiceMethodAllowed(method, path)' not in native or \
-            'server::IsVoiceMetadata(method, path)' not in native or \
+            'IsVoiceMetadata(method, path)' not in observation or \
             'std::min(headers.body_limit, server::kVoiceFormBytes)' not in native or \
             not re.search(r'IsVoiceTarget\(\*path\)\s*\?\s*kVoiceFormBytes', reader) or \
             'IsVoiceCreation(method, target)' not in application_routes or \
@@ -256,7 +264,7 @@ def current_surface(root):
                  ("POST", "/v1/responses/{response_id}/cancel"),
                  ("GET", "/v1/responses/{response_id}/input_items")]
     routes.extend((path, method) for method, path in responses)
-    if 'server::IsResponsesObservation(method, path)' not in native or \
+    if 'IsResponsesObservation(method, path)' not in observation or \
             'server::IsCancellationRequest(method, path)' not in native or \
             'path.substr(end) == "/cancel"' not in application_routes:
         raise ValueError("review Responses cancellation/control route extractor")
@@ -274,7 +282,7 @@ def current_surface(root):
     native_routes.extend((method, path, "true") for method, path in responses)
     if 'HandleStoredChatRequest(*objects_' not in dispatch or \
             'server::StoredChatMethodAllowed(method, path)' not in native or \
-            'server::IsStoredChatManagement(method, path)' not in native or \
+            'IsStoredChatManagement(method, path)' not in observation or \
             'inline bool StoredChatMethodAllowed' not in application_routes:
         raise ValueError("review dynamic stored Chat transport extractor")
     chats = [("GET", "/v1/chat/completions"),
@@ -296,7 +304,7 @@ def current_surface(root):
                          for method, path in prompts)
     if 'HandleAgentRegistration(*objects_' not in dispatch or (
             'server::ManagedAgentMethodAllowed(method, path)' not in native or
-            'server::IsManagedAgentObservation(method, path)' not in native):
+            'IsManagedAgentObservation(method, path)' not in observation):
         raise ValueError("review native agent registration routing")
     if 'HandleAgentVault(*objects_' not in dispatch or 'IsVaultTarget(target)' not in application_routes:
         raise ValueError("review native vault routing")
@@ -323,7 +331,7 @@ def current_surface(root):
             (dispatch,'IsContainerTarget(path)'), (file_http,'HandleContainers(objects_'),
             (file_http,'PrepareContainer(content_type, stream)'),
             (native,'server::ContainerMethodAllowed(method, path)'),
-            (native,'server::IsContainerObservation(method, path)'))):
+            (observation, 'IsContainerObservation(method, path)'))):
         raise ValueError('review native container routing')
     for path, methods in (('/v1/containers', ('GET','POST')),
                           ('/v1/containers/{container_id}', ('GET','DELETE')),
@@ -336,7 +344,7 @@ def current_surface(root):
     if not all(value in source for source,value in (
             (dispatch,'IsSkillTarget(path)'), (file_http,'HandleSkills(objects_'),
             (file_http,'PrepareSkill(content_type, stream)'), (native,'server::SkillMethodAllowed(method, path)'),
-            (native,'server::IsSkillObservation(method, path)'))):
+            (observation, 'IsSkillObservation(method, path)'))):
         raise ValueError('review native skill routing')
     for path, methods in (('/v1/skills', ('GET','POST')),
                           ('/v1/skills/{skill_id}', ('GET','POST','DELETE')),
@@ -356,7 +364,7 @@ def current_surface(root):
             (dispatch, 'ServeChatKitClient(fd, *objects_'),
             (dispatch, 'context->ChatKitBeta()'),
             (native, 'server::ChatKitMethodAllowed(method, path)'),
-            (native, 'server::IsChatKitObservation(method, path)'),
+            (observation, 'IsChatKitObservation(method, path)'),
             (native, 'server::IsChatKitClient(method, path)'),
             (dispatch, 'file_request->PrepareChatKit(credential'),
             (native, 'server::ClientTicketAudience::kChatKit'))):
@@ -376,7 +384,7 @@ def current_surface(root):
             '/v1/chatkit/attachments/{session_id}/{file_id}', '/v1/chatkit/sessions') else 'true'))
     if ('HandleEval(*objects_, access' not in dispatch or
             'server::EvalMethodAllowed(method, path)' not in native or
-            'server::IsEvalObservation(method, path)' not in native):
+            'IsEvalObservation(method, path)' not in observation):
         raise ValueError('review Evals definition dispatch and admission')
     for path, methods in (('/v1/evals', ('GET', 'POST')),
                           ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE')),

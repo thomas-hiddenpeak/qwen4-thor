@@ -1,0 +1,53 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "model_starts": 0,
+  "catalogued_regular_methods": 240,
+  "preflight_methods": 162,
+  "client_lanes": {
+    "control": 120,
+    "data": 95,
+    "none": 3,
+    "sideband": 2,
+    "realtime": 10,
+    "tunnel_poll": 1,
+    "cancel": 8,
+    "tunnel_response": 1
+  },
+  "classification_changes": [
+    {
+      "method": "POST /v1/evals/{eval_id}/runs/{run_id}/cancel",
+      "before": [
+        "1",
+        "observation",
+        "200",
+        "control"
+      ],
+      "after": [
+        "1",
+        "control",
+        "200",
+        "cancel"
+      ]
+    }
+  ],
+  "separate_behavior": "Agent event submission reserves control capacity and uses the data listener. Authenticated requests to the three local health routes are refused by the core.",
+  "gateway_before": "Original gateway returned 429 for Eval cancellation while its four ordinary control readers were active.",
+  "gateway_after": "Native socket test received 200 through the operations listener in the same condition. A second cancellation returned 429 while the dedicated lease was held.",
+  "core": "Real tenant admission tested with an active generation, 17 observation method/path pairs, six data or invalid-method controls and an exclusive Eval cancellation.",
+  "initial_cpu_setup": "The normal fixture required the existing archive headers. The first hand-assembled client policy failed Configure; the successful test uses the public policy parser.",
+  "candidate_ingress_sha256": "3fc018c2dcfd69433ddff22ac2b4e99cbba525e72f26d0e56433967f86d92d4a",
+  "previous_ingress_sha256": "47efe94a638420a7e5cd24a6505597e8096545c3279f40ae7dd6298e1efcf8be",
+  "raw_archive_sha256": "ec3a570090680602a14887cf1fb9faa8c53534a584c2cd654939a98c2d88e851",
+  "sources": {
+    "include/q4t/server/application_routes.h": "9e8a27b4501c8f0779374020d8a6ac40e4f5e2ff5fca7ac3afce8b57e4ef8e76",
+    "include/q4t/server/http_connection.h": "7d0a0ba74607980acc406343052654f7fd10ac6f7b4e1db054f7d3ec0a90e093",
+    "src/server/client_request.cpp": "1fb436f54d8914d99c58e466f6af5c5d049b4c36752d51de1867d4bb99d76473",
+    "src/service/ingress_main.cpp": "d3a3ad2fd035702e3e21721b8b2e16a478b49d95d97364c97dc568a8c865b369",
+    "tests/server_observation_admission_test.cpp": "7e4a0aea4f35c0b5cbee8b72350341a0ab86208732cf03f43cb2a59fe4d1bb5d",
+    "tools/serve_recovery/test_native_ingress.py": "d0a9c8165a6229b6cf989dfea37678f7752ccc82b983f025a8588950fd628d2b"
+  },
+  "pending": [
+    "Actual asynchronous Eval cancellation with the new model service and reversible delivery"
+  ]
+}

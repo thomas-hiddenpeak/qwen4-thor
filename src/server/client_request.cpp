@@ -46,18 +46,9 @@ bool AdmitClientRequest(std::string_view method, std::string_view path,
       : ((method == "GET" &&
           (path == "/v1/models" || path == "/v1/capabilities")) ||
          ((method == "GET" || method == "DELETE") && IsModelDetailPath(path)) ||
-         IsAgentEventSubmission(method, path) || IsMcpTunnelMetadata(method, path) ||
-         IsAssistantObservation(method, path) ||
-         IsResponsesObservation(method, path) ||
-         IsVectorStoreObservation(method, path) ||
-         IsEvalObservation(method, path) || IsSafetyRead(method, path) ||
-         IsChatKitObservation(method, path) ||
-         ((method == "GET" || method == "DELETE") && IsWebhookTarget(path)) ||
-      IsBatchObservation(method, path) || IsFileMetadata(method, path) ||
-         IsSkillObservation(method, path) || IsContainerObservation(method, path) ||
-         (IsSipReject(method, path) || IsSipHangup(method, path) || IsSipRefer(method, path)) || IsVoiceMetadata(method, path) || IsManagedAgentObservation(method, path) || IsPromptObservation(method, path) ||
-         IsStoredChatManagement(method, path) ||
-         RealtimeTraceMethodAllowed(method, path))
+         IsAgentEventSubmission(method, path) || IsSipReject(method, path) ||
+         IsSipHangup(method, path) || IsSipRefer(method, path) ||
+         IsApplicationObservation(method, path))
           ? ClientLane::kControl
           : ClientLane::kData;
   if (!lease->Acquire(admission, *identity, lane))

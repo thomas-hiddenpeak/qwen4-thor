@@ -3126,6 +3126,10 @@
         "stage": "http_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/cpu.json"
       }
     },
     {
@@ -7762,6 +7766,10 @@
         "stage": "http_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/cpu.json"
       }
     },
     {
@@ -10494,6 +10502,10 @@
         "stage": "http_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/poll-admission.json",
         "issued": false
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/cpu.json"
       }
     },
     {
@@ -11752,6 +11764,10 @@
         "stage": "sdk_verified",
         "receipt": "evidence/serve-assistant-pagination-20261125/http.json",
         "issued": false
+      },
+      "eval_cancel_admission_20261125": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-observation-admission-20261125/cpu.json"
       }
     },
     {

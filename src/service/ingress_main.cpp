@@ -442,23 +442,8 @@ bool Route(const std::string& method, const std::string& path, bool* control) {
       server::BatchMethodAllowed(method, path) ||
       server::VectorStoreMethodAllowed(method, path) ||
       server::StoredChatMethodAllowed(method, path)) {
-    *control = server::RealtimeTraceMethodAllowed(method, path) ||
-               server::IsVoiceMetadata(method, path) ||
-               server::IsMcpTunnelMetadata(method, path) ||
-               server::IsResponsesObservation(method, path) ||
-               server::IsVectorStoreObservation(method, path) ||
-               server::IsEvalObservation(method, path) || server::IsSafetyRead(method, path) ||
-               server::IsChatKitObservation(method, path) ||
-               ((method == "GET" || method == "DELETE") && server::IsWebhookTarget(path)) ||
-               server::IsBatchObservation(method, path) ||
-               server::IsSkillObservation(method, path) ||
-               server::IsContainerObservation(method, path) ||
-               server::IsAssistantObservation(method, path) ||
-               server::IsManagedAgentObservation(method, path) ||
-               server::IsPromptObservation(method, path) ||
-               server::IsCancellationRequest(method, path) ||
-               server::IsFileMetadata(method, path) ||
-               server::IsStoredChatManagement(method, path);
+    *control = server::IsApplicationObservation(method, path) ||
+               server::IsCancellationRequest(method, path);
     return true;
   }
   if ((method == "GET" || method == "DELETE") &&
