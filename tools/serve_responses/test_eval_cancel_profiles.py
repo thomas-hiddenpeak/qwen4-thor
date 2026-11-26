@@ -1,6 +1,11 @@
 """Verify the cancellation handoff rejects mismatched routes, owners and state."""
 from copy import deepcopy
+import json
+from pathlib import Path
+import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest import mock
 
 from tools.serve_recovery import ledger, profile_live_reuse as reuse, profile_record
 from tools.serve_responses import eval_cancel_profiles as profiles
@@ -43,6 +48,30 @@ class EvalCancelProfilesTest(unittest.TestCase):
             sample[part][field] = value
             with self.subTest(field=field), self.assertRaises(RuntimeError):
                 profiles.check(sample)
+
+    def test_wire_capture_keeps_three_responses_separate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            captures = Path(directory) / 'wire'
+            cases = [('restored', '3.55.1', self.next['restored']),
+                     ('legacy', '2.8.1', self.next['old']),
+                     ('canonical', '3.55.1', self.next['current'])]
+
+            def run(args, **options):
+                label, version, response = cases.pop(0)
+                self.assertEqual(args[0], version)
+                path = Path(json.loads(options['input'])['wire_output'])
+                self.assertEqual(path, captures / (label + '.json'))
+                with path.open('x') as stream:
+                    json.dump(response, stream)
+                return SimpleNamespace(stdout=json.dumps(response))
+
+            versions = {v: v for v in ('2.8.1', '3.55.1')}
+            with mock.patch.object(profiles.subprocess, 'run', side_effect=run):
+                row = profiles.exercise({}, versions, None, self.first, captures=captures)
+            self.assertEqual(row, self.next)
+            self.assertEqual(captures.stat().st_mode & 0o777, 0o700)
+            self.assertEqual(len(list(captures.iterdir())), 3)
+            self.assertFalse(cases)
 
     def test_only_reviewed_source_format_gets_evidence_limit(self):
         sample = dict(format=reuse.EVAL_CANCEL_RECORD, reused_business=dict(format=reuse.EVAL_CANCEL_FORMAT))

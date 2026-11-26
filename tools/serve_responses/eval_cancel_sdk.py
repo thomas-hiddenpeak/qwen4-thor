@@ -1,6 +1,7 @@
 """Exercise typed Evals cancellation and project isolation against a native TLS endpoint."""
 from hashlib import sha256
 import json
+from pathlib import Path
 import ssl
 import sys
 import time
@@ -85,6 +86,10 @@ def main():
         path = raw.http_response.request.url.path
         expected = f'/v1/evals/{eid}/runs/{rid}' + ('' if legacy else '/cancel')
         assert raw.status_code == 200 and path == expected
+        if 'wire_output' in plan:
+            # Record only the public response body, never the authenticated request headers.
+            with Path(plan['wire_output']).open('xb') as capture:
+                capture.write(raw.http_response.content)
         canceled = raw.parse()
         assert canceled.id == rid and canceled.status == 'canceled'
         assert owner.evals.runs.retrieve(rid, eval_id=eid).status == 'canceled'

@@ -67,8 +67,13 @@ def check(row, previous=None):
                     'original Eval Run, cancellation, ownership or cleanup changed')
 
 
-def exercise(plan, interpreters, errors, previous=None):
-    def call(version, params):
+def exercise(plan, interpreters, errors, previous=None, *, captures=None):
+    if captures is not None:
+        captures.mkdir(mode=0o700)
+
+    def call(version, params, label):
+        if captures is not None:
+            params = dict(params, wire_output=str(captures / (label + '.json')))
         proc = subprocess.run([interpreters[version], '-I', '-B', ACTOR],
                               input=json.dumps(params), text=True, stdout=subprocess.PIPE,
                               stderr=errors, timeout=75, check=True)
@@ -78,10 +83,11 @@ def exercise(plan, interpreters, errors, previous=None):
 
     def review(old, cleanup):
         return call('3.55.1', dict(plan, eval_id=old['eval_id'], run_id=old['run_id'],
-                                   delete_after=cleanup, verify_chat=not cleanup))
+                                   delete_after=cleanup, verify_chat=not cleanup),
+                    'restored' if cleanup else 'canonical')
 
     restored = review(previous['old'], True) if previous is not None else None
-    old = call('2.8.1', plan)
+    old = call('2.8.1', plan, 'legacy')
     current = review(old, False)
     row = dict(old=old, current=current, restored=restored)
     check(row, previous)

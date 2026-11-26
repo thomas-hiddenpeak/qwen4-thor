@@ -236,7 +236,8 @@ def business(stage, capabilities):
         previous = (package.read(stage.out.parent / 'primary' / spec.receipt)
                     if plan['name'] == 'light' else None)
         with (stage.out / 'eval-cancel-sdk.stderr').open('xb') as errors:
-            row = eval_cancel_profiles.exercise(params, plan[spec.key]['interpreters'], errors, previous)
+            row = eval_cancel_profiles.exercise(params, plan[spec.key]['interpreters'], errors,
+                                                previous, captures=stage.out / 'eval-wire')
         package.save(stage.out / spec.receipt, row)
         verify(stage.out, plan, capabilities)
         return
