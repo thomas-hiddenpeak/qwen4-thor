@@ -1,5 +1,6 @@
 """Read two real release records through a model-selected dictionary argument."""
 import hashlib
+import http.client
 import importlib.metadata
 import json
 import ssl
@@ -10,12 +11,58 @@ from urllib.parse import urlsplit
 from openai import OpenAI
 
 
+def read_scoped(cfg, method, path, *, peer=False):
+    origin = urlsplit(cfg['base'])
+    headers = {'Authorization': 'Bearer ' + cfg['other' if peer else 'key']}
+    if path.startswith('/agents/'):
+        headers['OpenAI-Beta'] = 'agents=v1'
+    if origin.scheme == 'https':
+        context = ssl.create_default_context(cafile=cfg['certificate'])
+        conn = http.client.HTTPSConnection(origin.hostname, origin.port, context=context, timeout=30)
+    else:
+        assert origin.scheme == 'http' and origin.hostname == '127.0.0.1' and not cfg['certificate']
+        conn = http.client.HTTPConnection(origin.hostname, origin.port, timeout=30)
+    try:
+        conn.request(method, origin.path + path, headers=headers)
+        reply = conn.getresponse()
+        return reply.status, reply.read()
+    finally:
+        conn.close()
+
+
+def stored_resources(cfg, agent_id, chat_id, call_id, args):
+    agent_path = '/agents/' + agent_id
+    chat_path = '/chat/completions/' + chat_id
+    status, raw = read_scoped(cfg, 'GET', chat_path)
+    assert status == 200
+    chat = json.loads(raw)
+    call = chat['choices'][0]['message']['tool_calls'][0]
+    assert chat['id'] == chat_id and call['id'] == call_id
+    assert call['function']['name'] == 'lookup_release' and json.loads(call['function']['arguments']) == args
+    status, before = read_scoped(cfg, 'GET', agent_path)
+    assert status == 200
+    status, after = read_scoped(cfg, 'POST', agent_path)
+    assert status == 200
+    original, updated = json.loads(before), json.loads(after)
+    assert original['id'] == updated['id'] == agent_id and updated['metadata']['lookup'] == call_id
+    assert updated['updated_at'] >= original['updated_at']
+    stable = {k: v for k, v in original.items() if k != 'updated_at'}
+    assert stable == {k: v for k, v in updated.items() if k != 'updated_at'}
+    assert read_scoped(cfg, 'POST', agent_path, peer=True)[0] == 404
+    assert read_scoped(cfg, 'GET', chat_path, peer=True)[0] == 404
+    return dict(agent_id=agent_id, chat_id=chat_id, call_id=call_id,
+                chat_sha256=hashlib.sha256(raw).hexdigest(), owner_patch=200, foreign=404,
+                agent_fields_sha256=hashlib.sha256(json.dumps(stable,sort_keys=True).encode()).hexdigest())
+
+
 def main():
     cfg = json.load(sys.stdin)
     capture = Path(cfg['capture'])
     capture.mkdir(mode=0o700)
     origin = urlsplit(cfg['base'])
-    assert origin.scheme == 'https' and origin.hostname == '127.0.0.1'
+    assert origin.hostname == '127.0.0.1'
+    handoff = bool(cfg.get('handoff'))
+    assert origin.scheme == 'https' or (handoff and origin.scheme == 'http' and not cfg['certificate'])
     records = {}
     for name in ('primary', 'previous'):
         raw = Path(cfg['release_records'][name]).read_bytes()
@@ -41,10 +88,17 @@ def main():
     except ImportError:
         import httpx
     context = ssl.create_default_context(cafile=cfg['certificate'])
+    saved, restored = None, None
     with OpenAI(base_url=cfg['base'], api_key=cfg['key'], max_retries=0,
                 _strict_response_validation=True, http_client=httpx.Client(verify=context)) as api:
         common = dict(model='qwen3.8-flash-next', temperature=0, reasoning_effort='none',
                       max_tokens=160, tools=[tool])
+        if handoff:
+            common['store'] = True
+            if previous := cfg.get('previous'):
+                restored = stored_resources(cfg, previous['agent_id'], previous['chat_id'],
+                                            previous['call_id'], {'versions':versions})
+                assert restored == previous
         response = api.chat.completions.create(**common, messages=initial,
             tool_choice={'type':'function','function':{'name':'lookup_release'}})
         (capture/'lookup.json').write_text(response.model_dump_json(exclude_unset=True))
@@ -81,7 +135,10 @@ def main():
                     if item.finish_reason: endings.append(item.finish_reason)
         answer = ''.join(chunks).strip()
         assert endings == ['stop'] and answer == str(records['primary']['protected']), (endings, answer)
-    print(json.dumps(dict(sdk=importlib.metadata.version('openai'), call_id=call.id,
+        if handoff:
+            agent = api.beta.agents.create(model=common['model'], metadata={'lookup':call.id})
+            saved = stored_resources(cfg, agent.id, response.id, call.id, args)
+    print(json.dumps(dict(saved=saved, restored=restored, sdk=importlib.metadata.version('openai'), call_id=call.id,
                           arguments=args, records=records, reply=answer,
                           finish_reasons=[choice.finish_reason, *endings], text_deltas=len(chunks))))
 
