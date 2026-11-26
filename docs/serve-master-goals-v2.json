@@ -909,13 +909,15 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "capacity_verified",
+        "status": "issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "managed recovery and release",
+        "remaining": null,
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
-        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json"
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json",
+        "revision": 562,
+        "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       }
     },
     {
@@ -3162,13 +3164,15 @@
         "delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "capacity_verified",
+        "status": "issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "managed recovery and release",
+        "remaining": null,
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
-        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json"
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json",
+        "revision": 562,
+        "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
         "state": "reproduced",
@@ -9219,14 +9223,16 @@
         "delivery": "evidence/serve-video-layer-composition-20261127/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "capacity_verified",
+        "status": "issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "managed recovery and release",
+        "remaining": null,
         "async_disconnect": "docs/evidence/serve-response-cache-retention-20261127/async-cursor.json",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
-        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json"
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json",
+        "revision": 562,
+        "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
         "state": "reproduced",
@@ -10482,8 +10488,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 560,
-        "receipt": "evidence/serve-video-layer-composition-20261127/delivery.json",
+        "revision": 562,
+        "receipt": "evidence/serve-response-cache-retention-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12254,7 +12260,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev560_delivered_remaining_deliveries",
+      "state": "rev562_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13612,7 +13618,8 @@
       "current_program_fork_delivery": "evidence/serve-program-forks-20261126/delivery.json",
       "current_track_grid_delivery": "evidence/serve-video-track-grid-20261127/delivery.json",
       "current_chatkit_interrupted_retry_delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json",
-      "current_video_layers_delivery": "evidence/serve-video-layer-composition-20261127/delivery.json"
+      "current_video_layers_delivery": "evidence/serve-video-layer-composition-20261127/delivery.json",
+      "current_response_cache_retention_delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -13717,16 +13724,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "fff39c5811cb544ec4f32a42a6e348bd07fa9671",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/video-layers-delivery-soak-src",
+        "source_commit": "1881eebc2eaeb206cf96170e6e9aea49217a2c73",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/video-layers-client-primary-01/bundle",
-          "manifest_sha256": "5c7fec159c48911c0b076761d48b21164a7c6de1c3a4b2763e7e969ce7fd7116"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-client-primary-01/bundle",
+          "manifest_sha256": "e5567f955c00f3ddd69e83253bb871feb43727752205106fc28d1659672bb2f5"
         },
-        "revision": 560,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/video-layers-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "fe3d550cad6e72413ffd866fc1cf044386bfddd7377449ac220150694ee49f19",
-        "handoff_sha256": "02cb831ba451654adc22227599d776179e74988b5aa08ba81622e7ea2813799a",
+        "revision": 562,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "9241fa878656233857e7484555ad01bb903c3908869e723eb4b7048f6f091f77",
+        "handoff_sha256": "d565bf2be5ee7e3e2c8fe6097a43bc30f3028f21edf469b5b38a45916ddf5644",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14137,9 +14144,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 560,
-        "receipt": "evidence/serve-video-layer-composition-20261127/delivery.json",
-        "plan_sha256": "fe3d550cad6e72413ffd866fc1cf044386bfddd7377449ac220150694ee49f19",
+        "revision": 562,
+        "receipt": "evidence/serve-response-cache-retention-20261127/delivery.json",
+        "plan_sha256": "9241fa878656233857e7484555ad01bb903c3908869e723eb4b7048f6f091f77",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
