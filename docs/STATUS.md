@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+又复核了三条已删除源文件的真实记录。文本上传、带 QuickDraw 区域的视频和带编辑列表的视频均按原消息 ID 从所属客户的快照准备，独立压缩与回填后逐项得到相同的文本或视频帧。原始持久记录摘要一致。 下一步核对 TLS 上的真实模型回答。[快照复核](evidence/serve-compact-window-identities-20261127/file-snapshots.json)
+
 修复附件压缩时误用模型内部输入的问题。原实现将文本附件换成提取的文本，对真实视频附件则在帧类型校验处返回 400。候选在公开窗口与加密状态里保留原始文件项，模型续答继续使用已准备的文本或视频帧。两份文件原样回填后，内部输入和压缩前一致，摘要提示不含内联文件编码。6 项定向检查通过。 下一步由真实模型回答归档视频末帧的颜色。[原生验证](evidence/serve-compact-window-identities-20261127/files.json)
 
 双方 Python SDK 均可使用项目提供的 CompactWindow 类型严格读取完整压缩窗口。直接指定 cast_to 或对原始响应严格建模均逐字段保留 7 项，缺少用户消息 ID 或状态的反例均被拒绝。此类型只由 Python 客户端导入。 下一步验证真实 TLS 回填。[严格客户端](evidence/serve-compact-window-identities-20261127/typed-client.json)

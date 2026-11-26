@@ -1,0 +1,112 @@
+{
+  "scope": "Native CPU preparation with the original files already deleted; frozen summary, no device inference",
+  "cases": {
+    "quickdraw-region": {
+      "result": {
+        "exit_code": 0,
+        "original_types": [
+          "input_file",
+          "input_text"
+        ],
+        "retained": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "response": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "rendered_replay_identical": true,
+        "rendered_types": [
+          "input_text",
+          "input_video_frames",
+          "input_text"
+        ],
+        "original_record_included_file_snapshot": true,
+        "original_file_deleted": true,
+        "original_source_unchanged": true
+      },
+      "source_response": "765880a398b6d789f96dec7d0b18b8e87936546969ac5133fcc7fcbe787127b0",
+      "original_business_receipt": "cecd1ca9c74c2ff5647e3e760eadb8562a4801c55dd77ac4d3147eb3f8e6c06f",
+      "compact_resource": "1aa8e2e471028a10b4e894131cb0ee739c21b481b3794be37cab4452f20c809a",
+      "replayed_input": "90ab7e81850527860b5e597b7bbe8014481dcb015c93b554657b1a5040761012"
+    },
+    "movie-edit": {
+      "result": {
+        "exit_code": 0,
+        "original_types": [
+          "input_file",
+          "input_text"
+        ],
+        "retained": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "response": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "rendered_replay_identical": true,
+        "rendered_types": [
+          "input_text",
+          "input_video_frames",
+          "input_text"
+        ],
+        "original_record_included_file_snapshot": true,
+        "original_file_deleted": true,
+        "original_source_unchanged": true
+      },
+      "source_response": "8c1c2ff0ebf1d5d29831255ddfcc35bb7a3e3486ead3625644068bd08a2cd78f",
+      "original_business_receipt": "7e5778385ca19d34f8952e27bf9414425df893540bc7396f99d94af900b408c7",
+      "compact_resource": "c3695a878491e58ae2db6bd913f6f13662f598b68cf0af4616c03b7c1d33f557",
+      "replayed_input": "5c4441a50a8a585d7f141e7c980cb6cccb7d189a9b0f268c54b8812e911051d5"
+    },
+    "text-document": {
+      "result": {
+        "exit_code": 0,
+        "original_types": [
+          "input_file",
+          "input_text"
+        ],
+        "retained": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "response": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "rendered_replay_identical": true,
+        "rendered_types": [
+          "input_text",
+          "input_text"
+        ],
+        "original_record_included_file_snapshot": true,
+        "original_file_deleted": true,
+        "original_source_unchanged": true
+      },
+      "source_response": "5f37cc5c816b7051b4f19d9d5144e17167d3525b4659a638f7b82cdc08cce8d7",
+      "original_business_receipt": "672fbf29fd7a10ef3acb03fe3113af965919c04f5f8c56e3970254d93726400c",
+      "compact_resource": "1610afb0e253c86e97ea817e8fcb7505966ba93fc00b991e844429de05cd6e06",
+      "replayed_input": "f42d1b64452a49328377a5b6c5cfe2a5357b300fcb9448d619811f5d02127315"
+    }
+  }
+}

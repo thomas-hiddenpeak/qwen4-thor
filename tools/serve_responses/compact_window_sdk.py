@@ -62,10 +62,12 @@ def run(params):
     target = Path(params["capture"])
     target.mkdir(mode=0o700)
     hashes = {}
+    varies = {}
 
     def capture(label, raw):
         response = raw.http_response
         response.raise_for_status()
+        varies[label] = sorted({h.strip().lower() for h in response.headers.get("vary", "").split(",") if h.strip()})
         path = target / (label + ".json")
         path.write_bytes(response.content)
         hashes[label] = hashlib.sha256(response.content).hexdigest()
@@ -123,7 +125,7 @@ def run(params):
                     output_items=len(window["output"]), usage=window["usage"],
                     raw_compact=True, typed_window_round_trip=True, strict_compact=strict, foreign_status=400,
                     foreign_code="invalid_encrypted_content", answer=text,
-                    exact_answer=(text == str(params["revision"])), video=video, files=hashes)
+                    exact_answer=(text == str(params["revision"])), video=video, files=hashes, vary=varies)
 
 
 if __name__ == "__main__":
