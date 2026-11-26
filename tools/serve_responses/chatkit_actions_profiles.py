@@ -351,6 +351,7 @@ def business(stage, capabilities):
     if spec.key == interrupted.KEY:
         command = plan['command']
         params['interruptedRetry'] = dict(release=str(interrupted.RELEASE),
+                                          capture=str(stage.out/'interrupted-retry-wire'),
                                           store=command[command.index('--object-store-dir') + 1])
     if spec.actor == frame_profiles.ACTOR:
         params.update(frame_profiles.sdk_parameters(stage))

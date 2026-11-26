@@ -1,7 +1,7 @@
 // Carry an interrupted project document review across a capacity or process change.
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {existsSync, readFileSync, readdirSync} from 'node:fs';
+import {existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {loadSdk} from '../serve_protocol/sdk.mjs';
 
@@ -15,6 +15,7 @@ const retry = plan.interruptedRetry;
 const release = JSON.parse(readFileSync(retry?.release ?? new URL(
   '../../docs/evidence/serve-chatkit-browser-output-20261125/delivery.json', import.meta.url)));
 const revision = String(release.publication.publication_revision);
+if (retry) mkdirSync(retry.capture, {mode: 0o700});
 const document = Buffer.from(JSON.stringify({
   publication_revision: release.publication.publication_revision,
   previous_revision: release.previous_revision,
@@ -41,6 +42,16 @@ async function send(grant, path, body, status = 200, signal = AbortSignal.timeou
 const rpc = (grant, type, params, status, signal) => send(grant, '/chatkit', {type, params}, status, signal);
 const text = (value, attachments = []) => ({content: [{type: 'input_text', text: value}], attachments, inference_options: {}});
 const list = async (grant, thread) => (await rpc(grant, 'items.list', {thread_id: thread, order: 'asc'})).json();
+
+async function captureHistory(grant, thread, expected) {
+  const management = await owner.beta.chatkit.threads.listItems(thread, {order: 'asc'}).asResponse();
+  const browser = await rpc(grant, 'items.list', {thread_id: thread, order: 'asc'});
+  for (const [file, response] of [['management', management], ['browser', browser]]) {
+    const bytes = Buffer.from(await response.arrayBuffer());
+    assert.deepEqual(JSON.parse(bytes).data.map(row => row.id), expected);
+    writeFileSync(join(retry.capture, file + '.json'), bytes, {flag: 'wx'});
+  }
+}
 
 function journal(thread, assistant) {
   const records = readdirSync(retry.store).filter(name => name.includes('.response.resp_') && name.endsWith('.json'))
@@ -121,6 +132,7 @@ async function interrupt() {
     await owner.files.delete(file);
     await assert.rejects(owner.files.content(file), error => error.status === 404);
     source.deleted = 404;
+    await captureHistory(grant, thread, [source.user, item]);
   }
   return source;
 }
@@ -153,12 +165,13 @@ async function resume(source) {
     const text = answer?.content[0].text.trim();
     assert.equal(text?.match(/^([0-9]+)\b/)?.[1], revision, text);
     const after = await list(grant, thread);
-    const management = await owner.beta.chatkit.threads.listItems(thread, {order: 'asc'});
     const ids = [user, answer.id];
     assert.deepEqual(after.data.map(row => row.id), ids);
-    assert.deepEqual(management.data.map(row => row.id), ids);
+    await captureHistory(grant, thread, ids);
     assert.deepEqual(after.data[0], before.data[0]);
+    const management = JSON.parse(readFileSync(join(retry.capture, 'management.json')));
     assert.equal(management.data[1].content[0].text, text);
+    writeFileSync(join(retry.capture, 'events.json'), JSON.stringify(events), {flag: 'wx'});
     const original = journal(thread, item), replacement = journal(thread, answer.id);
     assert.deepEqual(original, {...source.interrupted, published: true});
     assert.deepEqual(replacement.binding, original.binding);

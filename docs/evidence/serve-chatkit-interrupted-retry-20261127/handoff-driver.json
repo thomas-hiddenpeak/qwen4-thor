@@ -3,11 +3,11 @@
   "profile_business_accepted": false,
   "issued": false,
   "source": {
-    "tools/serve_responses/chatkit_generation_profile_sdk.mjs": "a0c3df4cb9d91f7d5a1a51e252afbfac75e8ed2aca4fae6325b6d42a11de8fb9",
+    "tools/serve_responses/chatkit_generation_profile_sdk.mjs": "0feecf9e9746d4f76c248856e836978121fc9921ec5c4cec8c2802bba8476a2a",
     "tools/serve_responses/chatkit_interrupted_retry_profiles.py": "25833776e00d65615a3986e9f337d2bcdc59e6b549f767d37c0ae63f22175689",
     "tools/serve_live/profile_acceptance.py": "caf5df0e853d657d6591fe1c6e3da407817c5228340cfe0ad881fcc2df9983ef",
     "tools/serve_live/profile_qualification.py": "a74017af6b3d8056db4829fa6fccbe1681b80fca70dc333bdba56a2033f52830",
-    "tools/serve_responses/chatkit_actions_profiles.py": "9e8048f1bc18edda12828ded1c27570303e05fad9454ef90e72339fbdcb2f112",
+    "tools/serve_responses/chatkit_actions_profiles.py": "1d36606782b37ac2e1fb64732edbc4e5efcdd9392a9dd9b078261f1955706c7e",
     "tools/serve_recovery/profile_live_reuse.py": "efac52966fb9129649429b4fbacf77a435d5ce926cc4dcfc0885c738fb22642b"
   },
   "native_cpu_sha256": "b93c94d7a128559e1e8c7f42158c783672176812f33e448b8ba8ac6857433692",
@@ -51,5 +51,45 @@
       "negative_cases": 3
     }
   },
-  "scope": "Primary cancels the first actual project document answer before standalone item publication, then deletes the file. Light retries the same browser item from a renewed grant and verifies the original journal hash and snapshot, model answer, two visible items, tenant isolation and independent Chat."
+  "scope": "Primary cancels the first actual project document answer before standalone item publication, then deletes the file. Light retries the same browser item from a renewed grant and verifies the original journal hash and snapshot, model answer, two visible items, tenant isolation and independent Chat.",
+  "archived_wire_controls": {
+    "source_sha256": "84e79707b7c580e6ae00c5aa50ae9ad2a7339d704a8a66bc9a5624d62c0a147b",
+    "contracts": [
+      "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5"
+    ],
+    "genuine": [
+      {
+        "events": 45,
+        "items": 2,
+        "ids": [
+          "item_9439973d901c82a23aefc245259b247c",
+          "msg_1e4652ecafd4a6509ddc73f120ba7217"
+        ]
+      },
+      {
+        "events": 45,
+        "items": 2,
+        "ids": [
+          "item_4f22299f0b1ab0997616e91f339a1388",
+          "msg_d47c056dba608d0645ab8f1c781814f6"
+        ]
+      }
+    ],
+    "incomplete_rejected": true
+  },
+  "accepted_parent_controls": {
+    "primary": {
+      "accepted_v82": "c5aa3df34136466d52e8b2c9c4d59950cc74ba584ad152938fb761596db1de03",
+      "provisional_v83": "82c68d396a8b5fb621bc3993457e6f87df194327da9f2f3498dace5d32d96ecc",
+      "original_restored": true,
+      "rejected_controls": 3
+    },
+    "light": {
+      "accepted_v82": "b5ee96a9a4deb6a783661eaecf75cfdb3f4cca962408c73ced1fe94a66878786",
+      "provisional_v83": "842e135ee81bc3d11647e8b434b98b160de88f6ade2871205dffeacb3fe7c6e8",
+      "original_restored": true,
+      "rejected_controls": 3
+    }
+  }
 }
