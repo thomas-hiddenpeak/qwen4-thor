@@ -890,7 +890,7 @@
     {
       "id": "A02",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "delivered",
       "implementation": "system/developer/name、assistant/refusal、工具历史及多模态消息的模板语义",
       "acceptance": "逐字节模板/历史回填与模型token映射；不丢角色、参数或结果；一个真实多轮工具场景",
       "depends_on": [
@@ -922,9 +922,7 @@
         ],
         "existing_evidence_reviewed": true
       },
-      "remaining_required": [
-        "Deliver that read projection with an accepted rollback and integrate it on main; reconcile the linked evidence for each A02 exit."
-      ],
+      "remaining_required": [],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
         "plan": "SERVE_CHAT_CONTRACT_PARITY_2026-11-16.md",
@@ -1427,7 +1425,8 @@
         "revision": 542,
         "delivery": "evidence/serve-stored-content-parts-20261126/delivery.json"
       },
-      "acceptance_matrix": "SERVE_CHAT_HISTORY_ACCEPTANCE_2026-11-26.md"
+      "acceptance_matrix": "SERVE_CHAT_HISTORY_ACCEPTANCE_2026-11-26.md",
+      "chat_history_exit": "evidence/serve-stored-content-parts-20261126/history-exit.json"
     },
     {
       "id": "A03",
@@ -3044,13 +3043,15 @@
         "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
       },
       "conversation_compaction_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
         "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json",
         "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json",
         "business": "evidence/serve-conversation-compaction-20261126/business.json",
-        "profiles": "evidence/serve-conversation-compaction-20261126/profiles.json"
+        "profiles": "evidence/serve-conversation-compaction-20261126/profiles.json",
+        "revision": 544,
+        "delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
       }
     },
     {
@@ -3700,13 +3701,15 @@
         "delivery": "evidence/serve-stored-content-parts-20261126/delivery.json"
       },
       "conversation_compaction_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
         "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json",
         "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json",
         "business": "evidence/serve-conversation-compaction-20261126/business.json",
-        "profiles": "evidence/serve-conversation-compaction-20261126/profiles.json"
+        "profiles": "evidence/serve-conversation-compaction-20261126/profiles.json",
+        "revision": 544,
+        "delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
       },
       "conversation_item_identifiers_20261126": {
         "stage": "reproduced",
@@ -8784,13 +8787,15 @@
         "python_transport": "offline replay of native reads and events"
       },
       "conversation_compaction_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
         "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json",
         "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json",
         "business": "evidence/serve-conversation-compaction-20261126/business.json",
-        "profiles": "evidence/serve-conversation-compaction-20261126/profiles.json"
+        "profiles": "evidence/serve-conversation-compaction-20261126/profiles.json",
+        "revision": 544,
+        "delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
       },
       "stored_message_client_pages_20261126": {
         "stage": "issued_with_scoped_verification",
@@ -10045,8 +10050,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 542,
-        "receipt": "evidence/serve-stored-content-parts-20261126/delivery.json",
+        "revision": 544,
+        "receipt": "evidence/serve-conversation-compaction-20261126/delivery.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11801,7 +11806,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev542_delivered_remaining_deliveries",
+      "state": "rev544_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13150,7 +13155,8 @@
       "current_tool_map_delivery": "evidence/serve-tool-map-references-20261126/delivery.json",
       "current_reclaim_pressure_delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json",
       "current_null_history_delivery": "evidence/serve-null-assistant-history-20261126/delivery.json",
-      "current_stored_parts_delivery": "evidence/serve-stored-content-parts-20261126/delivery.json"
+      "current_stored_parts_delivery": "evidence/serve-stored-content-parts-20261126/delivery.json",
+      "current_conversation_compaction_delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13255,16 +13261,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "468efbdbd8a20e0221be65ae55a66cc936ad8336",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stored-parts-delivery-soak-src",
+        "source_commit": "39474478f3a31cccea3e61b7ef8a703feeadb6d3",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/conversation-compact-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stored-parts-client-primary-01/bundle",
-          "manifest_sha256": "93c384e8635000949f9776908cb2bc01aef9847bd46ea2f4611fc9eafea1a4ba"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/conversation-compact-client-primary-01/bundle",
+          "manifest_sha256": "6064efc934d16665277eebfa6b5922498395f19052f3408b6200a6219b432035"
         },
-        "revision": 542,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stored-parts-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "f11aab9681af03e4f5ff377aed95da0f13c9211102103c705c0344a5cc5a9cdf",
-        "handoff_sha256": "e855a29496a7eed159759a99091e6af93ac5a8931d1a3f3869fd1dfc94ae9eb7",
+        "revision": 544,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/conversation-compact-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "463f34e4725a2df15c2a126ebc76be1426763c4da81047e784085b7c5480df96",
+        "handoff_sha256": "662be048580e043cf6642ee12f1bfdf9bebcc69ba78d527c2e87cdb8f3ceafc8",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13675,9 +13681,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 542,
-        "receipt": "evidence/serve-stored-content-parts-20261126/delivery.json",
-        "plan_sha256": "f11aab9681af03e4f5ff377aed95da0f13c9211102103c705c0344a5cc5a9cdf",
+        "revision": 544,
+        "receipt": "evidence/serve-conversation-compaction-20261126/delivery.json",
+        "plan_sha256": "463f34e4725a2df15c2a126ebc76be1426763c4da81047e784085b7c5480df96",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+A02 聊天历史验收完成。已核对模板、模型输入、真实工具回填、多模态旧对象读回、独立回退和 PR #169 主线提交。[验收记录](evidence/serve-stored-content-parts-20261126/history-exit.json)
+
+rev544 已发行会话创建和追加的原生压缩触发器。受控模型故障和网关接管后，原会话整页及密封项按同一 ID 读回，SHA-256 一致。仅凭密文续答得到 28617，另一把 Key 获得 404。登记时模型启动为零，13 份受保护状态通过复核。[发行记录](evidence/serve-conversation-compaction-20261126/delivery.json)
+
 主配置用时 42.5 秒，轻量配置用时 47.3 秒。按原 ID 读回的会话整页和压缩对象摘要一致，只携带密文续答得到 28617。两种配置的独立 Chat 均返回 720041。下一步验证发布包和回退包。[配置记录](evidence/serve-conversation-compaction-20261126/profiles.json)
 
 已将密封会话接入主、轻配置验收。接管方按原会话 ID 和摘要 ID 校验完整字节，单独将密文与问题送入模型，检查状态密钥仍可用于续答。下一步在同一 GPU 租约执行两种容量的实际读回。
