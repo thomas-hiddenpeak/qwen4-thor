@@ -871,10 +871,11 @@
         "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
       },
       "stored_content_parts_20261126": {
-        "stage": "native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
         "issued": false,
-        "business": "evidence/serve-stored-content-parts-20261126/business.json"
+        "business": "evidence/serve-stored-content-parts-20261126/business.json",
+        "profiles": "evidence/serve-stored-content-parts-20261126/profiles.json"
       }
     },
     {
@@ -1409,10 +1410,11 @@
         "delivery": "evidence/serve-null-assistant-history-20261126/delivery.json"
       },
       "stored_content_parts_20261126": {
-        "stage": "native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
         "issued": false,
-        "business": "evidence/serve-stored-content-parts-20261126/business.json"
+        "business": "evidence/serve-stored-content-parts-20261126/business.json",
+        "profiles": "evidence/serve-stored-content-parts-20261126/profiles.json"
       },
       "acceptance_matrix": "SERVE_CHAT_HISTORY_ACCEPTANCE_2026-11-26.md"
     },
@@ -3669,10 +3671,11 @@
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       },
       "stored_content_parts_20261126": {
-        "stage": "native_https_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
         "issued": false,
-        "business": "evidence/serve-stored-content-parts-20261126/business.json"
+        "business": "evidence/serve-stored-content-parts-20261126/business.json",
+        "profiles": "evidence/serve-stored-content-parts-20261126/profiles.json"
       }
     },
     {
