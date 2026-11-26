@@ -1,0 +1,242 @@
+{
+  "stage": "isolated_native_decode_and_frozen_replay_cpu_verified",
+  "issued": false,
+  "baseline_sha256": "a2307bba7208bd08aa55e22f26b546b6dfdf0869f648e68916af3330fb024e7b",
+  "fixture": "tests/fixtures/file_video/alternate-tracks.mp4",
+  "fixture_sha256": "a79c1f52be40a74e85a796053d54c45f2ca7600dfd819e7722f3d01768b99916",
+  "target_gpu": "not used by these checks",
+  "host_device_namespace": "PrivateDevices=yes; /dev/nvidiactl, /dev/nvidia0, /dev/nvmap and /dev/dri absent",
+  "scope": "Copy-mode enabled tracks; deterministic lowest enabled ID within each nonzero alternate group, lower signed layer in front. Exact source pixels compared with two separately decoded tracks. Other transfer modes are pending.",
+  "cpu_executable": "35c00f2fd7f7ba9f1e67eb7db42a9d9cfe59db4c0f03d7c1ae5b02d628097347",
+  "decoder_probe": "206666e24b32ea8cd7224f01c3adcb070251483541d0d9a61f94f37abfb86bf1",
+  "normal_decode": {
+    "left-only": {
+      "source_sha256": "3bee8fe57c7d1d1a3059ea46d5dbec9c91a40f9246bad0c8b9e6c8b7bcd58a32",
+      "dimensions": [
+        96,
+        64
+      ],
+      "presentation_frames": 6,
+      "frames": [
+        {
+          "timestamp_ns": 0,
+          "duration_ns": 500000000,
+          "rgb_sha256": "24ec71d80f2632b3bd74e24a27599efeec48b42005142e2133661be1fd8f6368"
+        },
+        {
+          "timestamp_ns": 1000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "c62f7d584434c8be9b25282b20ccad3824cd4128576185324dea7838b1a2f54e"
+        },
+        {
+          "timestamp_ns": 2000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "71c85b1b34383452218d0334716600b76a1ff278a7df4e3a9bd347f99f87a4b0"
+        },
+        {
+          "timestamp_ns": 2500000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "5853b63cf56a88764a0734d47129e273cb904485d9fe1041fcad193c2617f2b8"
+        }
+      ]
+    },
+    "right-only": {
+      "source_sha256": "3893528622d62ee39180395bc241cd9ebe5623bb42590dfd1f9e8a4de7b81c3e",
+      "dimensions": [
+        128,
+        64
+      ],
+      "presentation_frames": 4,
+      "frames": [
+        {
+          "timestamp_ns": 0,
+          "duration_ns": 500000000,
+          "rgb_sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+        },
+        {
+          "timestamp_ns": 1000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+        },
+        {
+          "timestamp_ns": 1500000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+        }
+      ]
+    },
+    "adjacent": {
+      "source_sha256": "13cbc855c1a9a9843abb4f6f770c812a0b3cbf1cc11f1714623d79afbc29b221",
+      "dimensions": [
+        224,
+        64
+      ],
+      "presentation_frames": 6,
+      "frames": [
+        {
+          "timestamp_ns": 0,
+          "duration_ns": 500000000,
+          "rgb_sha256": "ceeccf50deb3801706cb1f465c63872e1c244cb808c5edfcd0098faa944b3c6d"
+        },
+        {
+          "timestamp_ns": 1000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "67341b64963c8eddac784614dca47479be7c8d64905550fb832bb36395900a1c"
+        },
+        {
+          "timestamp_ns": 2000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "deeab743eb67cda4198fe5a4b0da83ca2cafef951de7df584df0212af025fe7f"
+        },
+        {
+          "timestamp_ns": 2500000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "b4e7113aff86c784e459ddeaa3cc5d1bcc8686d18f3e447dc6b38d1025f9f105"
+        }
+      ]
+    },
+    "first-in-front": {
+      "source_sha256": "bd74ab7c48b726d525b6a3556793636addc4ae4810f8a58d5ecf25586dc01242",
+      "dimensions": [
+        160,
+        64
+      ],
+      "presentation_frames": 6,
+      "frames": [
+        {
+          "timestamp_ns": 0,
+          "duration_ns": 500000000,
+          "rgb_sha256": "2b5378528473aadd5bc5286fddcd931be1e2d387f31a0e9e5cb8ac80904252ca"
+        },
+        {
+          "timestamp_ns": 1000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "58209763e9e0c8b652d405ec8808818efd951fbe32b44cfaae0b9e505f23473b"
+        },
+        {
+          "timestamp_ns": 2000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "c6de8e9bc6c4278aea4be495d775f3cc2c1a83d1405fbc46942f03fb8305238e"
+        },
+        {
+          "timestamp_ns": 2500000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "1190a9e22195540529963c3c9ced247d6802e8c3d2cb0a5e3b7616aa97b8035a"
+        }
+      ]
+    },
+    "second-in-front": {
+      "source_sha256": "b5000a18334805b087b84299d7dcaa69df52baed01ab39bff87eb40926a8135e",
+      "dimensions": [
+        160,
+        64
+      ],
+      "presentation_frames": 6,
+      "frames": [
+        {
+          "timestamp_ns": 0,
+          "duration_ns": 500000000,
+          "rgb_sha256": "57bee11db1ab1b3547aecbb69b72c8a0247d82c10383091023bf9f2588ece64c"
+        },
+        {
+          "timestamp_ns": 1000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "91878b7ae11635d5296242d5fbe8275dff11345bbbd85ac45fae7da1df2b1e00"
+        },
+        {
+          "timestamp_ns": 2000000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "c6de8e9bc6c4278aea4be495d775f3cc2c1a83d1405fbc46942f03fb8305238e"
+        },
+        {
+          "timestamp_ns": 2500000000,
+          "duration_ns": 500000000,
+          "rgb_sha256": "1190a9e22195540529963c3c9ced247d6802e8c3d2cb0a5e3b7616aa97b8035a"
+        }
+      ]
+    }
+  },
+  "single_track_regression": {
+    "cases": 192,
+    "bytes": 16031,
+    "previous_and_candidate_sha256": "0a0df9312eefcc56b79b8474b008844387271756b6c88478b79a9983671848f5"
+  },
+  "cpu_tests": [
+    "responses_video_file_uses_temporal_input_and_count_generation_parity",
+    "responses_files_composed_video_shares_actual_work_across_parts",
+    "file_video_presentation_reads_enabled_layers_in_paint_order",
+    "file_video_presentation_v1_layer_and_group_use_wide_header_offsets",
+    "file_video_shared_canvas_bounds_and_clipped_layer_reveal_background",
+    "file_video_shared_canvas_rounds_only_after_union",
+    "file_video_shared_time_uses_movie_boundaries_and_track_end",
+    "file_video_shared_time_keeps_gaps_and_bounds_combined_decode",
+    "file_video_alternate_track_selection_keeps_pixels_and_timeline",
+    "file_video_layered_track_budget_binding_and_alternates",
+    "file_snapshot_video_composed_layers_offline_replay_and_work_limits",
+    "file_snapshot_video_projective_v5_offline_replay_and_tampering",
+    "file_snapshot_video_affine_v4_offline_replay_preserves_intervals",
+    "file_snapshot_video_v3_roundtrip_without_codec_and_strict_integrity",
+    "chat_capabilities_native_video_separates_model_and_codec_readiness",
+    "file_video_affine_matrix_signed_composition_and_v1_headers",
+    "file_video_affine_geometry_checks_singular_overflow_and_exact_bounds",
+    "file_video_affine_integer_bilinear_center_and_reflection_oracle",
+    "file_video_affine_rgb_stride_bounds_and_black_exterior",
+    "file_video_affine_actual_scale_preserves_pixels_and_frame_intervals",
+    "file_video_affine_actual_shear_preserves_pixels_and_black_bounds",
+    "file_video_affine_actual_non_right_angle_rotation_preserves_pixels",
+    "file_video_affine_actual_movie_and_pixel_aspect_compose",
+    "file_video_affine_conversion_rejects_matrix_policy_and_source_changes",
+    "file_video_affine_downscale_does_not_hide_cumulative_decode_work",
+    "file_video_affine_actual_singular_and_capacity_publish_no_frames",
+    "file_video_integer_carry_borrow_signed_zero_and_int128_minimum",
+    "file_video_integer_multiplication_independent_binomial_words",
+    "file_video_integer_ratio_corrects_float_hint_at_exact_boundaries",
+    "file_video_integer_overflow_and_invalid_ratio_are_explicit",
+    "file_video_projective_homogeneous_sign_and_exact_center_oracle",
+    "file_video_projective_independent_fraction_geometry_and_pixel_oracles",
+    "file_video_projective_track_movie_and_square_pixel_composition",
+    "file_video_projective_finite_horizon_singular_and_capacity_bounds",
+    "file_video_projective_rgb_stride_bounds_and_black_exterior",
+    "file_video_projective_actual_nonunit_w_pixels_and_intervals",
+    "file_video_projective_actual_perspective_pixels_and_intervals",
+    "file_video_projective_actual_movie_and_pixel_aspect_compose",
+    "file_video_projective_conversion_rejects_source_policy_and_geometry_tampering",
+    "file_video_projective_downscale_keeps_cumulative_decode_budget",
+    "file_video_projective_actual_horizon_singular_and_capacity_cleanup",
+    "file_video_fractional_track_grid_samples_exact_source_centers",
+    "file_video_rect_clips_preserve_only_the_intersection",
+    "file_video_rect_clip_replay_binds_signed_source_geometry",
+    "file_video_rect_clips_projective_coordinates_respect_signed_w",
+    "file_video_rect_clips_reject_ambiguous_or_invalid_geometry",
+    "file_video_rect_clip_tracks_use_the_declared_grid_and_pixel_budget",
+    "file_video_region_decodes_diagonal_quadrants_and_binds_source",
+    "file_video_region_hole_and_negative_projective_coordinates",
+    "file_video_region_rejects_incomplete_or_inconsistent_inversion_rows",
+    "file_video_region_large_encoding_preserves_sparse_pixel_membership",
+    "file_video_declared_track_grid_matches_full_clip_on_actual_frames"
+  ],
+  "cpu_test_log_sha256": "d40fa79f740833470304f73ef8f22aface442b2b80a8b5136a114489b2e23dc6",
+  "work_verification": [
+    "two source scans, selected canvases and active paints charged",
+    "one fewer source frame or one fewer pixel returns 413",
+    "actual combined work shared across two Responses file parts",
+    "strict snapshot budget after original data deleted and decoder unavailable"
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "pending": [
+    "native TLS model response, SSE and history across file deletion",
+    "primary/light and managed recovery",
+    "publication and mainline",
+    "additional movie transfer modes and transparency"
+  ]
+}

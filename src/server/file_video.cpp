@@ -4,6 +4,7 @@
 
 #include "file_video_affine.h"
 #include "file_video_geometry.h"
+#include "file_video_layer_record.h"
 #include "file_video_projective.h"
 #include "file_video_protocol.h"
 #include "object_protocol.h"
@@ -95,6 +96,154 @@ bool RectClips(const Json& display, bool fixed,
   }
   return fixed || clips->Any();
 }
+bool Integer(const Json* value, int64_t minimum, int64_t maximum) {
+  return value && IsInputInteger(*value) && value->number >= minimum &&
+         value->number <= maximum;
+}
+ObjectReply ValidateMovieLayers(const FileVideoLimits& limits,
+                                const FileVideoPixels& pixels) {
+  using namespace video_detail;
+  const auto* geometry = pixels.conversion.Find("display_geometry");
+  const auto* layers = geometry ? geometry->GetArray("layers") : nullptr;
+  if (!layers || layers->array.empty() || geometry->object.size() != 4 ||
+      geometry->GetString("policy") !=
+          "quicktime-active-layers-copy-bilinear16")
+    return Invalid();
+  std::set<uint32_t> ids;
+  std::set<uint16_t> groups;
+  int64_t previous_layer = INT16_MAX;
+  uint64_t decoded_frames = 0, decoded_pixels = 0, max_duration = 0;
+  uint64_t canvases = pixels.frames.size();
+  if (pixels.frames.front().timestamp_ns != 0) return Invalid();
+  for (size_t i = 0; i < pixels.frames.size(); ++i) {
+    const auto& frame = pixels.frames[i];
+    const bool last = i + 1 == pixels.frames.size();
+    const auto next =
+        last ? pixels.duration_ns : pixels.frames[i + 1].timestamp_ns;
+    if (!frame.duration_ns || next <= frame.timestamp_ns ||
+        frame.duration_ns > next - frame.timestamp_ns ||
+        ((last ||
+          pixels.frames[i + 1].source_index == frame.source_index + 1) &&
+         frame.duration_ns != next - frame.timestamp_ns))
+      return Invalid();
+  }
+  MovieCanvas canvas;
+  for (const auto& row : layers->array) {
+    const auto* source = row.Find("source");
+    if (!source || row.object.size() != 8 || source->object.size() != 10 ||
+        !Integer(source->Find("track_id"), 1, UINT32_MAX) ||
+        !Integer(source->Find("layer"), INT16_MIN, previous_layer) ||
+        !Integer(source->Find("alternate_group"), 0, UINT16_MAX) ||
+        !Sha(source->GetString("track_sha256")) ||
+        !Integer(source->Find("track_duration_ns"), 0, pixels.duration_ns) ||
+        !Integer(row.Find("duration_ns"), 1, pixels.duration_ns) ||
+        !Integer(row.Find("scanned_frames"), 1, limits.max_scanned_frames))
+      return Invalid();
+    previous_layer = source->GetInt("layer");
+    const auto group = source->GetInt("alternate_group");
+    if (!ids.insert(source->GetInt("track_id")).second ||
+        (group && !groups.insert(group).second))
+      return Invalid();
+    const auto duration = uint64_t(row.GetInt("duration_ns"));
+    if (const auto declared = source->GetInt("track_duration_ns");
+        declared && uint64_t(declared) != duration)
+      return Invalid();
+    max_duration = std::max(max_duration, duration);
+    DisplayMatrices matrices;
+    if (!Matrices(*source, &matrices, false)) return Invalid();
+    const auto* clip = source->GetArray("movie_clip");
+    if (!clip || (!clip->array.empty() && clip->array.size() != 4))
+      return Invalid();
+    if (!clip->array.empty()) {
+      for (const auto& point : clip->array)
+        if (!Integer(&point, INT16_MIN, INT16_MAX)) return Invalid();
+      if (clip->array[0].number > clip->array[2].number ||
+          clip->array[1].number > clip->array[3].number)
+        return Invalid();
+    }
+    const auto* region = source->Find("movie_region_sha256");
+    if (!region || !region->IsString() ||
+        (!region->str.empty() && (clip->array.empty() || !Sha(region->str))))
+      return Invalid();
+    const auto* size = source->GetArray("track_size_fixed16");
+    if (!size || size->array.size() != 2) return Invalid();
+    TrackSize extent{};
+    for (size_t i = 0; i < 2; ++i) {
+      if (!Integer(&size->array[i], 0, UINT32_MAX)) return Invalid();
+      extent[i] = uint32_t(size->array[i].number);
+    }
+    if ((extent[0] == 0) != (extent[1] == 0)) return Invalid();
+    for (const auto* key : {"coded_width", "coded_height", "pixel_aspect_num",
+                            "pixel_aspect_den"})
+      if (!Integer(row.Find(key), 1, INT32_MAX)) return Invalid();
+    DisplayGeometry decoded;
+    auto status = SquarePixelGeometry(
+        row.GetInt("coded_width"), row.GetInt("coded_height"),
+        row.GetInt("pixel_aspect_num"), row.GetInt("pixel_aspect_den"), limits,
+        &decoded);
+    if (status == Failure::kNone && extent[0])
+      status = UseTrackGrid(extent, limits, &decoded);
+    ProjectiveGeometry projected;
+    if (status == Failure::kNone)
+      status = MakeProjectiveGeometry(matrices, decoded.square_width,
+                                      decoded.square_height, limits, &projected,
+                                      extent);
+    if (status == Failure::kNone) status = canvas.Include(projected, limits);
+    if (status != Failure::kNone)
+      return status == Failure::kCapacity ? Capacity() : Invalid();
+    const uint64_t count = 2 * uint64_t(row.GetInt("scanned_frames"));
+    const auto per =
+        std::max(uint64_t(decoded.coded_width) * decoded.coded_height,
+                 uint64_t(decoded.square_width) * decoded.square_height);
+    if (count > limits.max_scanned_frames - decoded_frames ||
+        per > (limits.max_decoded_pixels - decoded_pixels) / count)
+      return Capacity();
+    decoded_frames += count;
+    decoded_pixels += per * count;
+    const auto* samples = row.GetArray("samples");
+    if (!samples || samples->array.size() != pixels.frames.size())
+      return Invalid();
+    int64_t last = -1, start = 0, end = 0;
+    for (size_t i = 0; i < samples->array.size(); ++i) {
+      const auto& sample = samples->array[i];
+      const auto time = pixels.frames[i].timestamp_ns;
+      if (sample.IsNull()) {
+        if (time < uint64_t(end)) return Invalid();
+        continue;
+      }
+      if (!sample.IsArray() || sample.array.size() != 3 ||
+          !Integer(&sample.array[0], 0, int64_t(count / 2) - 1) ||
+          !Integer(&sample.array[1], 0, duration) ||
+          !Integer(&sample.array[2], 1, duration))
+        return Invalid();
+      const int64_t index = sample.array[0].number,
+                    begin = sample.array[1].number,
+                    until = sample.array[2].number;
+      if (index < last || time < uint64_t(begin) || time >= uint64_t(until) ||
+          pixels.frames[i].duration_ns > uint64_t(until) - time ||
+          (index == last && (begin != start || until != end)) ||
+          (index > last && begin < end))
+        return Invalid();
+      last = index;
+      start = begin;
+      end = until;
+      ++canvases;
+    }
+  }
+  const auto area = uint64_t(canvas.width) * canvas.height;
+  if (area > (limits.max_decoded_pixels - decoded_pixels) / canvases)
+    return Capacity();
+  decoded_pixels += area * canvases;
+  if (canvas.width != pixels.width || canvas.height != pixels.height ||
+      max_duration != pixels.duration_ns ||
+      !Integer(geometry->Find("decoded_pixels"), decoded_pixels,
+               decoded_pixels) ||
+      !Integer(geometry->Find("decoded_frames"), decoded_frames,
+               decoded_frames))
+    return Invalid();
+  return {};
+}
+
 uint64_t Big(std::string_view bytes) {
   uint64_t value = 0;
   for (unsigned char byte : bytes) value = (value << 8) | byte;
@@ -184,6 +333,15 @@ bool ContainerLengths(std::string_view bytes) {
   return false;
 }
 }  // namespace
+FileVideoWorkBudget FileVideoPixels::Work() const {
+  if (conversion.GetString("format") == "q4t.cpu_video_png.v9") {
+    const auto* display = conversion.Find("display_geometry");
+    if (!display) return {UINT64_MAX, UINT64_MAX};
+    return {uint64_t(display->GetInt("decoded_frames", -1)),
+            uint64_t(display->GetInt("decoded_pixels", -1))};
+  }
+  return {scanned_frames, scanned_frames * width * height};
+}
 bool IsVideoContainer(std::string_view bytes) {
   if (bytes.size() >= 12 && bytes.substr(4, 4) == "ftyp") {
     const auto brand = bytes.substr(8, 4);
@@ -213,6 +371,42 @@ ObjectReply ValidateVideoPixels(std::string_view source,
           static_cast<int64_t>(source.size()))
     return Invalid();
   const auto format = pixels.conversion.GetString("format");
+  if (format == "q4t.cpu_video_png.v1" || format == "q4t.cpu_video_png.v2" ||
+      format == "q4t.cpu_video_png.v3") {
+    try {
+      const auto movie = video_detail::MovieDisplay().ReadPresentation(source);
+      if (movie && movie->enabled.size() > 1) return Invalid();
+    } catch (...) {
+      return Invalid();
+    }
+  }
+  if (format == "q4t.cpu_video_png.v9") {
+    try {
+      video_detail::MovieDisplay reader;
+      const auto presentation = reader.ReadPresentation(source);
+      const auto* display = pixels.conversion.Find("display_geometry");
+      const auto* recorded = display ? display->GetArray("layers") : nullptr;
+      if (!presentation || presentation->enabled.size() < 2 || !recorded)
+        return Invalid();
+      const auto actual = reader.PlaybackLayers(*presentation);
+      if (recorded->array.size() != actual.size()) return Invalid();
+      for (size_t i = 0; i < actual.size(); ++i) {
+        const auto* binding = recorded->array[i].Find("source");
+        if (!binding || reader.GraphicsMode(actual[i]) != 0) return Invalid();
+        const auto expected = video_detail::LayerSource(
+            actual[i], reader.DescribeLayer(*presentation, actual[i]));
+        // Each source field is a scalar or an ordered array.
+        if (binding->object.size() != expected.object.size()) return Invalid();
+        for (const auto& [key, value] : expected.object) {
+          const auto* found = binding->Find(key);
+          if (!found || OutputJson(*found) != OutputJson(value))
+            return Invalid();
+        }
+      }
+    } catch (...) {
+      return Invalid();
+    }
+  }
   const bool grid = format == "q4t.cpu_video_png.v8";
   const bool complex = format == "q4t.cpu_video_png.v7";
   const bool clipped = grid || complex || format == "q4t.cpu_video_png.v6";
@@ -264,17 +458,20 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   if (!source_bytes || !IsInputInteger(*source_bytes) ||
       source_bytes->number <= 0)
     return Invalid();
+  const bool layers =
+      pixels.conversion.GetString("format") == "q4t.cpu_video_png.v9";
   if (source_bytes->number > limits.max_source_bytes ||
       pixels.width > limits.max_edge || pixels.height > limits.max_edge ||
       uint64_t{pixels.width} * pixels.height > limits.max_frame_pixels ||
       pixels.duration_ns > limits.max_duration_ns ||
       pixels.scanned_frames > limits.max_scanned_frames ||
-      uint64_t{pixels.width} * pixels.height >
-          limits.max_decoded_pixels / pixels.scanned_frames ||
+      (!layers && uint64_t{pixels.width} * pixels.height >
+                      limits.max_decoded_pixels / pixels.scanned_frames) ||
       pixels.frames.size() > limits.sample_frames)
     return Capacity();
   const auto& conversion = pixels.conversion;
-  if (OutputJson(conversion).size() > 16384) return Invalid();
+  if (OutputJson(conversion).size() > video_detail::kMaxMetadataBytes)
+    return Invalid();
   const auto* outputs = conversion.GetArray("frames");
   const auto* modules = conversion.GetArray("modules");
   const bool affine = conversion.GetString("format") == "q4t.cpu_video_png.v4";
@@ -288,16 +485,21 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   const bool geometry =
       transformed || conversion.GetString("format") == "q4t.cpu_video_png.v3";
   const bool intervals =
-      geometry || conversion.GetString("format") == "q4t.cpu_video_png.v2";
+      layers || geometry ||
+      conversion.GetString("format") == "q4t.cpu_video_png.v2";
   if ((!intervals &&
        conversion.GetString("format") != "q4t.cpu_video_png.v1") ||
-      (!geometry && conversion.Has("display_geometry")) ||
+      (!geometry && !layers && conversion.Has("display_geometry")) ||
       conversion.GetString("source_sha256") != source_sha256 ||
       conversion.GetString("sampling") !=
           "uniform-presentation-time-with-endpoints" ||
       !outputs || outputs->array.size() != pixels.frames.size() || !modules ||
       modules->array.empty() || modules->array.size() > 16)
     return Invalid();
+  if (layers) {
+    const auto checked = ValidateMovieLayers(limits, pixels);
+    if (!checked.ok()) return checked;
+  }
   if (geometry) {
     const auto* display = conversion.Find("display_geometry");
     if (!display || !display->IsObject() ||
@@ -553,8 +755,8 @@ ObjectReply DecodeVideoContainer(std::string_view source,
   if (result.failure == video_detail::Failure::kInvalid) return Invalid();
   if (result.failure != video_detail::Failure::kNone || result.frames < 2 ||
       result.frames > limits.sample_frames || !result.metadata_bytes ||
-      result.metadata_bytes > 16384 || result.width > limits.max_edge ||
-      result.height > limits.max_edge)
+      result.metadata_bytes > video_detail::kMaxMetadataBytes ||
+      result.width > limits.max_edge || result.height > limits.max_edge)
     return Failed(GrammarFailure::kWorker);
   std::string metadata(result.metadata_bytes, '\0');
   if (!transfer(metadata.data(), metadata.size(), false))
@@ -562,7 +764,7 @@ ObjectReply DecodeVideoContainer(std::string_view source,
   FileVideoPixels next;
   if (!io::ParseJson(metadata, &next.conversion, true,
                      {.max_depth = 8,
-                      .max_values = 512,
+                      .max_values = video_detail::kMaxMetadataBytes / 2 + 1,
                       .max_string_bytes = 16384,
                       .reject_duplicate_keys = true}))
     return Failed(GrammarFailure::kWorker);
@@ -588,7 +790,7 @@ ObjectReply DecodeVideoContainer(std::string_view source,
   if (!process->CollectOutput(&trailing, 0, deadline, cancelled))
     return Failed(process->Failure());
   const auto format = next.conversion.GetString("format");
-  if (format != "q4t.cpu_video_png.v8") {
+  if (format != "q4t.cpu_video_png.v8" && format != "q4t.cpu_video_png.v9") {
     try {
       const auto selected = video_detail::MovieDisplay().SelectTrack(source);
       if (selected) {

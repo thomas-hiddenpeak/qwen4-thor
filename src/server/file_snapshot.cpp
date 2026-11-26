@@ -271,8 +271,9 @@ ObjectReply Validate(const FileInputSnapshot& input,
       reply = ValidateVideoSnapshot(embedded->source_sha256, options.video, p);
     }
     if (!reply.ok()) return reply.http_status == 413 ? Capacity() : Corrupt();
-    if (!Consume(p.scanned_frames, &scanned) ||
-        !Consume(p.scanned_frames * p.width * p.height, &decoded_pixels))
+    const auto work = p.Work();
+    if (!Consume(work.scanned_frames, &scanned) ||
+        !Consume(work.decoded_pixels, &decoded_pixels))
       return Capacity();
     for (const auto& frame : p.frames)
       if (!Consume(uint64_t{p.width} * p.height, &pixels) ||
@@ -365,7 +366,8 @@ Json Pack(const FileInputSnapshot& input,
                              format == "q4t.cpu_video_png.v5" ||
                              format == "q4t.cpu_video_png.v6" ||
                              format == "q4t.cpu_video_png.v7" ||
-                             format == "q4t.cpu_video_png.v8";
+                             format == "q4t.cpu_video_png.v8" ||
+                             format == "q4t.cpu_video_png.v9";
       for (const auto& frame : video.pixels.frames) {
         frames.array.push_back(
             Object({{"part", Number(add(frame.png))},
@@ -563,7 +565,8 @@ ObjectReply Unpack(InputSnapshot* stored, const FileExtractOptions& limits,
                              format == "q4t.cpu_video_png.v5" ||
                              format == "q4t.cpu_video_png.v6" ||
                              format == "q4t.cpu_video_png.v7" ||
-                             format == "q4t.cpu_video_png.v8";
+                             format == "q4t.cpu_video_png.v8" ||
+                             format == "q4t.cpu_video_png.v9";
       for (const auto& value : frames->array) {
         FileVideoFrame frame;
         const auto* time = value.Find("timestamp_ns");

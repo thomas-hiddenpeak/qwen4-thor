@@ -305,11 +305,20 @@ Q4T_TEST(file_video_alternate_track_selection_keeps_pixels_and_timeline) {
     const auto reply =
         DecodeVideoContainer(movie, limits, Access(), &actual, control);
     Q4T_CHECK(Clean(control));
-    if (selection == 0 || selection == 3) {
+    if (selection == 0) {
       Q4T_CHECK(reply.http_status == 400);
       continue;
     }
     Q4T_CHECK(Ok(reply) && Ok(ValidateVideoPixels(movie, limits, actual)));
+    if (selection == 3) {
+      Q4T_CHECK(actual.conversion.GetString("format") ==
+                "q4t.cpu_video_png.v9");
+      const auto* layers =
+          actual.conversion.Find("display_geometry")->GetArray("layers");
+      Q4T_CHECK(layers && layers->array.size() == 2 &&
+                actual.duration_ns == 3000000000ULL);
+      continue;
+    }
     const auto reference = Bytes(selection == 1 ? "h264.mp4" : "rotate-90.mp4");
     FileVideoPixels expected;
     auto baseline = Control();
@@ -329,6 +338,74 @@ Q4T_TEST(file_video_alternate_track_selection_keeps_pixels_and_timeline) {
                 a.duration_ns == b.duration_ns);
     }
   }
+  return true;
+}
+Q4T_TEST(file_video_layered_track_budget_binding_and_alternates) {
+  auto movie = Bytes("alternate-tracks.mp4");
+  const auto first = movie.find("tkhd"), second = movie.find("tkhd", first + 4);
+  Q4T_CHECK(first != movie.npos && second != movie.npos);
+  movie[second + 7] |= 1;
+  FileVideoLimits limits;
+  limits.sample_frames = 4;
+  FileVideoPixels actual;
+  Q4T_CHECK(Ok(DecodeVideoContainer(movie, limits, Access(), &actual)));
+  const auto work = actual.Work();
+  Q4T_CHECK(work.scanned_frames == 20 &&
+            work.decoded_pixels >
+                actual.scanned_frames * actual.width * actual.height);
+  limits.max_scanned_frames = work.scanned_frames;
+  limits.max_decoded_pixels = work.decoded_pixels;
+  Q4T_CHECK(Ok(ValidateVideoSnapshot(Digest(movie), limits, actual)));
+  FileVideoPixels repeated;
+  Q4T_CHECK(Ok(DecodeVideoContainer(movie, limits, Access(), &repeated)));
+  for (bool frame_limit : {false, true}) {
+    auto reduced = limits;
+    if (frame_limit)
+      --reduced.max_scanned_frames;
+    else
+      --reduced.max_decoded_pixels;
+    FileVideoPixels empty;
+    Q4T_CHECK(ValidateVideoPixels(movie, reduced, actual).http_status == 413);
+    Q4T_CHECK(
+        DecodeVideoContainer(movie, reduced, Access(), &empty).http_status ==
+            413 &&
+        empty.frames.empty());
+  }
+  for (int mode = 0; mode < 6; ++mode) {
+    auto changed = actual;
+    auto& geometry = Field(changed.conversion, "display_geometry");
+    auto& layers = Field(geometry, "layers").array;
+    auto& source = Field(layers.front(), "source");
+    if (mode == 0)
+      Set(&source, "track_sha256", String(Digest("another track")));
+    if (mode == 1)
+      Set(&geometry, "decoded_frames", Number(work.scanned_frames - 1));
+    if (mode == 2)
+      Set(&geometry, "decoded_pixels", Number(work.decoded_pixels - 1));
+    if (mode == 3)
+      Field(layers.front(), "samples").array.front().array[1] = Number(1);
+    if (mode == 4) Set(&source, "track_id", Number(99));
+    if (mode == 5) std::swap(layers.front(), layers.back());
+    Q4T_CHECK(!ValidateVideoPixels(movie, limits, changed).ok());
+  }
+  // Members of one nonzero alternate group are alternatives, not overlays.
+  movie[first + 4 + 35] = movie[second + 4 + 35] = 1;
+  FileVideoPixels selected;
+  Q4T_CHECK(Ok(DecodeVideoContainer(movie, {}, Access(), &selected)));
+  const auto& alternatives =
+      Field(Field(selected.conversion, "display_geometry"), "layers").array;
+  Q4T_CHECK(alternatives.size() == 1 &&
+            alternatives[0].Find("source")->GetInt("track_id") == 1);
+  movie[second + 7] &= ~1;
+  FileVideoPixels single;
+  Q4T_CHECK(Ok(DecodeVideoContainer(movie, {}, Access(), &single)) &&
+            selected.frames.size() == single.frames.size());
+  for (size_t i = 0; i < single.frames.size(); ++i)
+    Q4T_CHECK(selected.frames[i].png == single.frames[i].png &&
+              selected.frames[i].timestamp_ns == single.frames[i].timestamp_ns);
+  movie[second + 7] |= 1;
+  Set(&single.conversion, "source_sha256", String(Digest(movie)));
+  Q4T_CHECK(!ValidateVideoPixels(movie, {}, single).ok());
   return true;
 }
 Q4T_TEST(file_video_display_matrix_bounds_versions_and_composition) {

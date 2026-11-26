@@ -8,10 +8,13 @@
 
 #include <atomic>
 #include <cstring>
+#include <functional>
 #include <mutex>
 
 #include "file_video_affine.h"
 #include "file_video_geometry.h"
+#include "file_video_layers.h"
+#include "file_video_layer_record.h"
 #include "file_video_orientation.h"
 #include "file_video_projective.h"
 #include "file_video_protocol.h"
@@ -150,11 +153,9 @@ class PngEncoder {
   uint64_t frames_ = 0;
 };
 
-Failure TransformSample(Runtime& api, GstSample* sample,
-                        const DisplayMatrices& matrices,
-                        const DisplayClips& clips, const DisplayGeometry& shape,
-                        const FileVideoLimits& limits, PngEncoder* encoder,
-                        std::string* png) {
+template <class Consume>
+Failure WithRgbSample(Runtime& api, GstSample* sample,
+                      const DisplayGeometry& shape, Consume consume) {
   GstVideoInfo info{};
   auto* caps = api.gst_sample_get_caps_fn(sample);
   auto* buffer = api.gst_sample_get_buffer_fn(sample);
@@ -174,25 +175,36 @@ Failure TransformSample(Runtime& api, GstSample* sample,
     return Failure::kInvalid;
   std::span<const uint8_t> view(static_cast<const uint8_t*>(frame.data[0]),
                                 frame.map[0].size - (start - base));
-  TransformedSize dimensions;
-  std::vector<uint8_t> rgb;
-  Failure status;
-  if (!FractionalTrack(clips.track_size) && IsAffine(matrices.movie) &&
-      IsAffine(matrices.track)) {
-    AffineGeometry geometry;
-    status = RenderAffineRgb(matrices, shape.square_width, shape.square_height,
-                             view, stride, limits, &geometry, &rgb, clips);
-    dimensions = {geometry.width, geometry.height};
-  } else {
-    ProjectiveGeometry geometry;
-    status =
-        RenderProjectiveRgb(matrices, shape.square_width, shape.square_height,
-                            view, stride, limits, &geometry, &rgb, clips);
-    dimensions = {geometry.width, geometry.height};
-  }
-  if (status != Failure::kNone) return status;
-  return encoder->Encode(dimensions.width, dimensions.height, rgb,
-                         limits.max_output_bytes, png);
+  return consume(view, size_t(stride));
+}
+
+Failure TransformSample(Runtime& api, GstSample* sample,
+                        const DisplayMatrices& matrices,
+                        const DisplayClips& clips, const DisplayGeometry& shape,
+                        const FileVideoLimits& limits, PngEncoder* encoder,
+                        std::string* png) {
+  return WithRgbSample(api, sample, shape, [&](auto view, size_t stride) {
+    TransformedSize dimensions;
+    std::vector<uint8_t> rgb;
+    Failure status;
+    if (!FractionalTrack(clips.track_size) && IsAffine(matrices.movie) &&
+        IsAffine(matrices.track)) {
+      AffineGeometry geometry;
+      status =
+          RenderAffineRgb(matrices, shape.square_width, shape.square_height,
+                          view, stride, limits, &geometry, &rgb, clips);
+      dimensions = {geometry.width, geometry.height};
+    } else {
+      ProjectiveGeometry geometry;
+      status =
+          RenderProjectiveRgb(matrices, shape.square_width, shape.square_height,
+                              view, stride, limits, &geometry, &rgb, clips);
+      dimensions = {geometry.width, geometry.height};
+    }
+    if (status != Failure::kNone) return status;
+    return encoder->Encode(dimensions.width, dimensions.height, rgb,
+                           limits.max_output_bytes, png);
+  });
 }
 
 struct Pipeline {
@@ -440,9 +452,13 @@ struct Pipeline {
       failure = Failure::kInvalid;
   }
 };
-Failure Decode(Runtime& api, const Request& request, const std::string& source,
-               FileVideoPixels* output) {
-  const auto track = MovieDisplay().SelectTrack(source);
+using LayerObserver = std::function<Failure(GstSample*, const DisplayGeometry&,
+                                            LayerFrameTime, uint64_t)>;
+Failure DecodeTrack(Runtime& api, const Request& request,
+                    const std::string& source,
+                    const MovieDisplay::SelectedTrack* track,
+                    FileVideoPixels* output,
+                    const LayerObserver& observe = {}) {
   const auto* matrices = track ? &track->matrices : nullptr;
   const auto direction = matrices ? matrices->Direction() : std::nullopt;
   const bool clipped = track && track->clips.Any();
@@ -461,7 +477,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   for (const char* name :
        {"appsrc", source.substr(4, 4) == "ftyp" ? "qtdemux" : "matroskademux",
         "videoconvert", "videoscale", "capsfilter", "videoflip",
-        transformed ? "identity" : "pngenc", "appsink"}) {
+        (observe || transformed) ? "identity" : "pngenc", "appsink"}) {
     auto* node = api.gst_element_factory_make_fn(name, nullptr);
     if (!node) return Failure::kDependency;
     if (!api.gst_bin_add_fn(reinterpret_cast<GstBin*>(pipeline), node)) {
@@ -497,7 +513,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
       GST_VIDEO_ORIENTATION_HORIZ,    GST_VIDEO_ORIENTATION_VERT,
       GST_VIDEO_ORIENTATION_UL_LR,    GST_VIDEO_ORIENTATION_UR_LL};
   api.g_object_set_fn(elements[5], "video-direction",
-                      transformed ? GST_VIDEO_ORIENTATION_IDENTITY
+                      (observe || transformed) ? GST_VIDEO_ORIENTATION_IDENTITY
                       : direction ? directions[static_cast<size_t>(*direction)]
                                   : GST_VIDEO_ORIENTATION_AUTO,
                       nullptr);
@@ -583,6 +599,14 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
         frame_duration = end - timestamp;
       }
     }
+    if (observe) {
+      if (++count > request.limits.max_scanned_frames)
+        return Failure::kCapacity;
+      const auto status = observe(sample, geometry, {timestamp, frame_duration},
+                                  output->duration_ns);
+      if (status != Failure::kNone) return status;
+      continue;
+    }
     TransformedSize display_size;
     if (transformed) {
       const auto status = GetTransformedSize(
@@ -642,6 +666,7 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
     }
   }
   if (state.failure != Failure::kNone) return state.failure.load();
+  if (observe) return count ? Failure::kNone : Failure::kInvalid;
   if (count < 2 || last.png.empty()) return Failure::kInvalid;
   if (output->frames.back().source_index != last.source_index) {
     if (last.png.size() > request.limits.max_output_bytes - output_bytes)
@@ -723,6 +748,191 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   }
   return Failure::kNone;
 }
+Failure DecodeMovie(Runtime& api, const Request& request,
+                    const std::string& source, MovieDisplay& reader,
+                    const MovieDisplay::Presentation& presentation,
+                    FileVideoPixels* output) {
+  const auto& limits = request.limits;
+  const auto layers = reader.PlaybackLayers(presentation);
+  if (layers.size() > limits.max_scanned_frames / 2) return Failure::kCapacity;
+  std::string bytes = source;
+  for (const auto& layer : presentation.enabled)
+    bytes[size_t(layer.header.data() - source.data()) + 3] &= ~1;
+  std::vector<LayerTimeline> timelines(layers.size());
+  std::vector<DisplayGeometry> shapes(layers.size());
+  std::vector<MovieDisplay::SelectedTrack> tracks;
+  MovieCanvas canvas;
+  auto records = Array();
+  uint64_t pixels_left = limits.max_decoded_pixels;
+  size_t frames_left = limits.max_scanned_frames;
+  const auto scan = [&](size_t i, const LayerObserver& observe) {
+    const auto flags = size_t(layers[i].header.data() - source.data()) + 3;
+    bytes[flags] |= 1;
+    FileVideoPixels scanned;
+    const auto result =
+        DecodeTrack(api, request, bytes, &tracks[i], &scanned, observe);
+    bytes[flags] &= ~1;
+    return result;
+  };
+  const auto charge = [&](const DisplayGeometry& geometry) {
+    const auto count =
+        std::max(uint64_t(geometry.coded_width) * geometry.coded_height,
+                 uint64_t(geometry.square_width) * geometry.square_height);
+    if (!frames_left || count > pixels_left) return false;
+    --frames_left;
+    pixels_left -= count;
+    return true;
+  };
+  for (size_t i = 0; i < layers.size(); ++i) {
+    // Other transfer modes have a different pixel contract.
+    if (reader.GraphicsMode(layers[i]) != 0) return Failure::kInvalid;
+    tracks.push_back(reader.DescribeLayer(presentation, layers[i]));
+    auto& timeline = timelines[i];
+    auto status = scan(i, [&](GstSample*, const DisplayGeometry& geometry,
+                              LayerFrameTime time, uint64_t duration) {
+      if (!charge(geometry)) return Failure::kCapacity;
+      if (timeline.frames.empty()) {
+        timeline.duration = duration;
+        shapes[i] = geometry;
+      } else if (shapes[i] != geometry || timeline.duration != duration) {
+        return Failure::kInvalid;
+      }
+      timeline.frames.push_back(time);
+      return Failure::kNone;
+    });
+    if (status != Failure::kNone) return status;
+    const auto& shape = shapes[i];
+    const auto& track = tracks[i];
+    ProjectiveGeometry projected;
+    status = MakeProjectiveGeometry(track.matrices, shape.square_width,
+                                    shape.square_height, limits, &projected,
+                                    track.clips.track_size);
+    if (status != Failure::kNone) return status;
+    status = canvas.Include(projected, limits);
+    if (status != Failure::kNone) return status;
+    records.array.push_back(Object({
+        {"source", LayerSource(layers[i], track)},
+        {"coded_width", Number(shape.coded_width)},
+        {"coded_height", Number(shape.coded_height)},
+        {"pixel_aspect_num", Number(shape.pixel_aspect_num)},
+        {"pixel_aspect_den", Number(shape.pixel_aspect_den)},
+        {"duration_ns", Number(timeline.duration)},
+        {"scanned_frames", Number(timeline.frames.size())},
+    }));
+  }
+  MovieSchedule schedule;
+  auto status = ScheduleMovie(timelines, limits, &schedule);
+  if (status != Failure::kNone) return status;
+  for (size_t i = 0; i < layers.size(); ++i) {
+    auto sampled = Array();
+    for (const auto& frame : schedule.samples) {
+      const auto active = frame.layer_frames[i];
+      if (active) {
+        const auto& track = timelines[i];
+        sampled.array.push_back(
+            Array({Number(*active), Number(track.frames[*active].start),
+                   Number(track.End(*active))}));
+      } else {
+        sampled.array.emplace_back();
+      }
+    }
+    Set(&records.array[i], "samples", std::move(sampled));
+  }
+  const uint64_t area = uint64_t(canvas.width) * canvas.height;
+  // Charge each allocated canvas and every actual layer paint. Holding only
+  // the selected canvases keeps storage independent of the movie's length.
+  if (area > pixels_left / schedule.samples.size()) return Failure::kCapacity;
+  pixels_left -= area * schedule.samples.size();
+  std::vector<std::vector<uint8_t>> images;
+  for (size_t j = 0; j < schedule.samples.size(); ++j)
+    images.emplace_back(size_t(area) * 3, 0);
+  for (size_t i = 0; i < layers.size(); ++i) {
+    size_t index = 0;
+    status = scan(i, [&](GstSample* sample, const DisplayGeometry& shape,
+                         LayerFrameTime time, uint64_t duration) {
+      if (!charge(shape)) return Failure::kCapacity;
+      const auto& timeline = timelines[i];
+      if (shape != shapes[i] || index >= timeline.frames.size() ||
+          duration != timeline.duration ||
+          time.start != timeline.frames[index].start ||
+          time.duration != timeline.frames[index].duration)
+        return Failure::kInvalid;
+      for (size_t j = 0; j < schedule.samples.size(); ++j) {
+        if (schedule.samples[j].layer_frames[i] != index) continue;
+        if (area > pixels_left) return Failure::kCapacity;
+        pixels_left -= area;
+        const auto paint =
+            WithRgbSample(api, sample, shape, [&](auto view, size_t stride) {
+              ProjectiveGeometry geometry;
+              return RenderProjectiveRgb(tracks[i].matrices, shape.square_width,
+                                         shape.square_height, view, stride,
+                                         limits, &geometry, &images[j],
+                                         tracks[i].clips, &canvas);
+            });
+        if (paint != Failure::kNone) return paint;
+      }
+      ++index;
+      return Failure::kNone;
+    });
+    if (status != Failure::kNone) return status;
+    if (index != timelines[i].frames.size()) return Failure::kInvalid;
+  }
+  PngEncoder encoder(api);
+  uint64_t remaining = limits.max_output_bytes;
+  auto frames = Array();
+  for (size_t j = 0; j < images.size(); ++j) {
+    const auto& sample = schedule.samples[j];
+    FileVideoFrame frame{{}, sample.start, sample.index, sample.duration};
+    status = encoder.Encode(canvas.width, canvas.height, images[j], remaining,
+                            &frame.png);
+    if (status != Failure::kNone) return status;
+    remaining -= frame.png.size();
+    frames.array.push_back(Object({
+        {"sha256", String(Digest(frame.png))},
+        {"timestamp_ns", Number(frame.timestamp_ns)},
+        {"duration_ns", Number(frame.duration_ns)},
+        {"source_index", Number(frame.source_index)},
+    }));
+    output->frames.push_back(std::move(frame));
+  }
+  output->width = canvas.width;
+  output->height = canvas.height;
+  output->duration_ns = schedule.duration;
+  output->scanned_frames = schedule.presentation_frames;
+  output->conversion = Object({
+      {"format", String("q4t.cpu_video_png.v9")},
+      {"source_sha256", String(Digest(source))},
+      {"source_bytes", Number(source.size())},
+      {"sampling", String("uniform-presentation-time-with-endpoints")},
+      {"width", Number(canvas.width)},
+      {"height", Number(canvas.height)},
+      {"duration_ns", Number(schedule.duration)},
+      {"scanned_frames", Number(schedule.presentation_frames)},
+      {"display_geometry",
+       Object({
+           {"policy", String("quicktime-active-layers-copy-bilinear16")},
+           {"layers", std::move(records)},
+           {"decoded_pixels", Number(limits.max_decoded_pixels - pixels_left)},
+           {"decoded_frames", Number(limits.max_scanned_frames - frames_left)},
+       })},
+      {"modules", api.modules},
+      {"frames", std::move(frames)},
+  });
+  return Failure::kNone;
+}
+
+Failure Decode(Runtime& api, const Request& request, const std::string& source,
+               FileVideoPixels* output) {
+  MovieDisplay reader;
+  const auto presentation = reader.ReadPresentation(source);
+  if (presentation && presentation->enabled.size() > 1)
+    return DecodeMovie(api, request, source, reader, *presentation, output);
+  if (!presentation) return DecodeTrack(api, request, source, nullptr, output);
+  auto track =
+      reader.DescribeLayer(*presentation, presentation->enabled.front());
+  return DecodeTrack(api, request, source, &track, output);
+}
+
 #endif
 int Run(int argc, char** argv, bool missing) {
   if (!detail::EnterGrammarWorker(argc, argv)) return 2;
@@ -764,6 +974,7 @@ int Run(int argc, char** argv, bool missing) {
   const auto metadata = result.failure == Failure::kNone
                             ? OutputJson(pixels.conversion)
                             : std::string{};
+  if (metadata.size() > kMaxMetadataBytes) result.failure = Failure::kCapacity;
   if (result.failure == Failure::kNone) {
     result.metadata_bytes = metadata.size();
     result.frames = pixels.frames.size();

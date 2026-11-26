@@ -489,6 +489,8 @@ set(protocol_inputs
   src/server/file_video_clipping.h
   src/server/file_video_region.h
   src/server/file_video_integer.h
+  src/server/file_video_layers.h
+  src/server/file_video_layer_record.h
   src/server/file_video_projective.h
   src/server/file_webp_worker.cpp
   include/q4t/server/file_image.h

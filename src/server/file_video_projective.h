@@ -22,13 +22,60 @@ inline int CompareFraction(const DisplayFraction& a, const DisplayFraction& b) {
       DisplayInteger(b.numerator) * DisplayInteger(a.denominator);
   return left < right ? -1 : left > right ? 1 : 0;
 }
-struct ProjectiveGeometry {
+struct MovieCanvas {
   uint32_t width = 0, height = 0;
-  DisplayFraction min_x, min_y;
-  // Adjugate entries share a determinant that cancels in the homogeneous
-  // division. Keep these and pixel-center increments exact, without division.
+  DisplayFraction min_x, min_y, max_x, max_y;
+
+  Failure Measure(const FileVideoLimits& limits) {
+    const auto pixels = [&](DisplayFraction low, DisplayFraction high,
+                            uint32_t* size) {
+      if (low.denominator <= 0 || high.denominator <= 0 ||
+          limits.max_edge > 8192)
+        return Failure::kInvalid;
+      const auto denominator =
+          DisplayInteger(low.denominator) * DisplayInteger(high.denominator);
+      const auto numerator =
+          DisplayInteger(high.numerator) * DisplayInteger(low.denominator) -
+          DisplayInteger(low.numerator) * DisplayInteger(high.denominator);
+      if (numerator.IsZero() || numerator.IsNegative())
+        return Failure::kInvalid;
+      if (numerator > denominator * DisplayInteger(limits.max_edge))
+        return Failure::kCapacity;
+      auto rounded =
+          DisplayInteger::FloorRatio(numerator, denominator, limits.max_edge);
+      if (DisplayInteger(rounded) * denominator != numerator) ++rounded;
+      *size = rounded;
+      return Failure::kNone;
+    };
+    uint32_t w, h;
+    auto status = pixels(min_x, max_x, &w);
+    if (status != Failure::kNone) return status;
+    status = pixels(min_y, max_y, &h);
+    if (status != Failure::kNone) return status;
+    if (uint64_t(w) * h > limits.max_frame_pixels) return Failure::kCapacity;
+    width = w;
+    height = h;
+    return Failure::kNone;
+  }
+
+  Failure Include(const MovieCanvas& other, const FileVideoLimits& limits) {
+    auto combined = width ? *this : other;
+    if (CompareFraction(other.min_x, combined.min_x) < 0)
+      combined.min_x = other.min_x;
+    if (CompareFraction(other.min_y, combined.min_y) < 0)
+      combined.min_y = other.min_y;
+    if (CompareFraction(other.max_x, combined.max_x) > 0)
+      combined.max_x = other.max_x;
+    if (CompareFraction(other.max_y, combined.max_y) > 0)
+      combined.max_y = other.max_y;
+    const auto status = combined.Measure(limits);
+    if (status == Failure::kNone) *this = combined;
+    return status;
+  }
+};
+struct ProjectiveGeometry : MovieCanvas {
+  // The common determinant cancels when dividing homogeneous coordinates.
   std::array<DisplayInteger, 9> inverse;
-  std::array<DisplayInteger, 3> first, step_x, step_y;
 };
 
 inline Failure MakeProjectiveGeometry(const DisplayMatrices& matrices,
@@ -90,49 +137,17 @@ inline Failure MakeProjectiveGeometry(const DisplayMatrices& matrices,
     xs[i] = {(t[0] * x + t[3] * y + t[6] * unit) * sign, denominator * sign};
     ys[i] = {(t[1] * x + t[4] * y + t[7] * unit) * sign, denominator * sign};
   }
-  const auto bounds = [&](const auto& points, DisplayFraction* minimum,
-                          uint32_t* pixels) {
-    auto low = points[0], high = points[0];
-    for (const auto& point : points) {
-      if (CompareFraction(point, low) < 0) low = point;
-      if (CompareFraction(point, high) > 0) high = point;
-    }
-    const auto denominator =
-        DisplayInteger(low.denominator) * DisplayInteger(high.denominator);
-    const auto numerator =
-        DisplayInteger(high.numerator) * DisplayInteger(low.denominator) -
-        DisplayInteger(low.numerator) * DisplayInteger(high.denominator);
-    if (numerator.IsZero()) return Failure::kInvalid;
-    if (numerator > denominator * DisplayInteger(limits.max_edge))
-      return Failure::kCapacity;
-    auto rounded =
-        DisplayInteger::FloorRatio(numerator, denominator, limits.max_edge);
-    if (DisplayInteger(rounded) * denominator != numerator) ++rounded;
-    *minimum = low;
-    *pixels = rounded;
-    return Failure::kNone;
+  const auto less = [](DisplayFraction a, DisplayFraction b) {
+    return CompareFraction(a, b) < 0;
   };
-  const auto x_status = bounds(xs, &geometry.min_x, &geometry.width);
-  if (x_status != Failure::kNone) return x_status;
-  const auto y_status = bounds(ys, &geometry.min_y, &geometry.height);
-  if (y_status != Failure::kNone) return y_status;
-  if (uint64_t(geometry.width) * geometry.height > limits.max_frame_pixels)
-    return Failure::kCapacity;
-  const auto dx = DisplayInteger(geometry.min_x.denominator);
-  const auto dy = DisplayInteger(geometry.min_y.denominator);
-  const auto product = dx * dy, common = product * DisplayInteger(2);
-  const auto px =
-      DisplayInteger(geometry.min_x.numerator) * dy * DisplayInteger(2) +
-      product;
-  const auto py =
-      DisplayInteger(geometry.min_y.numerator) * dx * DisplayInteger(2) +
-      product;
-  for (size_t i = 0; i < 3; ++i) {
-    geometry.first[i] =
-        px * inverse[i] + py * inverse[3 + i] + common * inverse[6 + i];
-    geometry.step_x[i] = common * inverse[i];
-    geometry.step_y[i] = common * inverse[3 + i];
-  }
+  const auto [xmin, xmax] = std::minmax_element(xs.begin(), xs.end(), less);
+  const auto [ymin, ymax] = std::minmax_element(ys.begin(), ys.end(), less);
+  geometry.min_x = *xmin;
+  geometry.max_x = *xmax;
+  geometry.min_y = *ymin;
+  geometry.max_y = *ymax;
+  const auto status = geometry.Measure(limits);
+  if (status != Failure::kNone) return status;
   *result = std::move(geometry);
   return Failure::kNone;
 }
@@ -143,27 +158,51 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
                                    size_t stride, const FileVideoLimits& limits,
                                    ProjectiveGeometry* geometry,
                                    std::vector<uint8_t>* rgb,
-                                   const DisplayClips& clips = {}) {
+                                   const DisplayClips& clips = {},
+                                   const MovieCanvas* canvas = nullptr) {
   const uint64_t row_bytes = uint64_t(width) * 3;
   if (!rgb || !geometry || !width || !height || stride < row_bytes ||
       source.size() < row_bytes ||
       height - 1 > (source.size() - row_bytes) / stride)
     return Failure::kInvalid;
-  const auto status = MakeProjectiveGeometry(
-      matrices, width, height, limits, geometry,
-      FractionalTrack(clips.track_size) ? clips.track_size : TrackSize{});
+  const bool scaled =
+      FractionalTrack(clips.track_size) || (canvas && clips.track_size[0]);
+  const auto status =
+      MakeProjectiveGeometry(matrices, width, height, limits, geometry,
+                             scaled ? clips.track_size : TrackSize{});
   if (status != Failure::kNone) return status;
-  rgb->assign(size_t(geometry->width) * geometry->height * 3, 0);
-  const bool fractional = FractionalTrack(clips.track_size);
-  const uint32_t unit = fractional ? 65536 : 1;
-  const TrackSize extent =
-      fractional ? clips.track_size : TrackSize{width, height};
-  auto row = geometry->first;
-  for (uint32_t y = 0; y < geometry->height; ++y) {
+  const MovieCanvas& target = canvas ? *canvas : *geometry;
+  if (canvas) {
+    auto measured = *canvas;
+    const auto valid = measured.Measure(limits);
+    if (valid != Failure::kNone) return valid;
+    if (measured.width != target.width || measured.height != target.height ||
+        rgb->size() != size_t(target.width) * target.height * 3)
+      return Failure::kInvalid;
+  } else {
+    rgb->assign(size_t(target.width) * target.height * 3, 0);
+  }
+  const uint32_t unit = scaled ? 65536 : 1;
+  const TrackSize extent = scaled ? clips.track_size : TrackSize{width, height};
+  const auto& inverse = geometry->inverse;
+  std::array<DisplayInteger, 3> row, step_x, step_y;
+  const auto dx = DisplayInteger(target.min_x.denominator);
+  const auto dy = DisplayInteger(target.min_y.denominator);
+  const auto product = dx * dy, common = product * DisplayInteger(2);
+  const auto px =
+      DisplayInteger(target.min_x.numerator) * dy * DisplayInteger(2) + product;
+  const auto py =
+      DisplayInteger(target.min_y.numerator) * dx * DisplayInteger(2) + product;
+  for (size_t i = 0; i < 3; ++i) {
+    row[i] = px * inverse[i] + py * inverse[3 + i] + common * inverse[6 + i];
+    step_x[i] = common * inverse[i];
+    step_y[i] = common * inverse[3 + i];
+  }
+  for (uint32_t y = 0; y < target.height; ++y) {
     auto point = row;
-    for (uint32_t x = 0; x < geometry->width; ++x) {
+    for (uint32_t x = 0; x < target.width; ++x) {
       auto nx = point[0], ny = point[1], denominator = point[2];
-      for (size_t i = 0; i < 3; ++i) point[i] = point[i] + geometry->step_x[i];
+      for (size_t i = 0; i < 3; ++i) point[i] = point[i] + step_x[i];
       if (denominator.IsNegative()) {
         nx = -nx;
         ny = -ny;
@@ -179,8 +218,8 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
                               uint32_t edge) {
         const int64_t q =
             DisplayInteger::FloorRatio(
-                fractional ? n * unit * size * 65536 : n * 65536,
-                fractional ? denominator * edge : denominator, size * 65536) -
+                scaled ? n * unit * size * 65536 : n * 65536,
+                scaled ? denominator * edge : denominator, size * 65536) -
             int64_t{32768};
         const auto low = q >= 0 ? q / 65536 : -((-q + 65535) / 65536);
         return std::array<uint32_t, 3>{
@@ -198,10 +237,10 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
           for (size_t i = 0; i < 2; ++i)
             value += source[size_t(sy[j]) * stride + sx[i] * 3 + channel] *
                      wx[i] * wy[j];
-        (*rgb)[(size_t(y) * geometry->width + x) * 3 + channel] = value >> 32;
+        (*rgb)[(size_t(y) * target.width + x) * 3 + channel] = value >> 32;
       }
     }
-    for (size_t i = 0; i < 3; ++i) row[i] = row[i] + geometry->step_y[i];
+    for (size_t i = 0; i < 3; ++i) row[i] = row[i] + step_y[i];
   }
   return Failure::kNone;
 }

@@ -200,6 +200,14 @@ Q4T_TEST(chat_capabilities_native_video_separates_model_and_codec_readiness) {
       Q4T_CHECK(video &&
                 video->GetString("profile") == "q4t-native-video-input-v1");
       Q4T_CHECK(video->GetBool("model_media_enabled") == media);
+      const auto* layers = video->Find("active_track_composition");
+      Q4T_CHECK(layers && layers->GetString("graphics_mode") == "copy" &&
+                layers->GetString("layer_order") == "lower-in-front" &&
+                layers->GetString("alternate_group") == "lowest-enabled-id" &&
+                layers->GetString("timeline") == "movie" &&
+                layers->GetString("background") == "black" &&
+                layers->GetString("frozen_conversion") ==
+                    "q4t.cpu_video_png.v9");
       const auto* grid = video->Find("track_display_size");
       const auto* regions = video->Find("region_clipping");
       Q4T_CHECK(grid && grid->GetString("source") == "quicktime-tkhd-fixed16" &&

@@ -24,11 +24,16 @@ struct FileVideoFrame {
   // snapshots; never infer the final frame's duration from container duration.
   uint64_t duration_ns = 0;
 };
+struct FileVideoWorkBudget {
+  uint64_t scanned_frames = 0, decoded_pixels = 0;
+};
 struct FileVideoPixels {
   uint32_t width = 0, height = 0;
   uint64_t duration_ns = 0, scanned_frames = 0;
   std::vector<FileVideoFrame> frames;
   io::Json conversion;
+  // Call after validation. Layered movies charge both scans and each paint.
+  FileVideoWorkBudget Work() const;
 };
 bool IsVideoContainer(std::string_view bytes);
 bool ValidFileVideoLimits(const FileVideoLimits& limits);

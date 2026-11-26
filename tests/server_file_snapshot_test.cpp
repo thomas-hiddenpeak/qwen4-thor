@@ -88,6 +88,48 @@ std::string Upload(ObjectStore& objects, std::string_view bytes) {
 }
 }  // namespace
 
+Q4T_TEST(file_snapshot_video_composed_layers_offline_replay_and_work_limits) {
+  Fixture f;
+  auto source = f.Extract("file_video", "alternate-tracks.mp4");
+  auto& content = source.source.content;
+  const auto first = content.bytes.find("tkhd");
+  const auto second = content.bytes.find("tkhd", first + 4);
+  Q4T_CHECK(first != content.bytes.npos && second != content.bytes.npos);
+  content.bytes[second + 7] |= 1;
+  content.sha256 = Digest(content.bytes);
+  Q4T_CHECK(Ok(ExtractFileDocument(content, f.extraction, false, source.detail,
+                                   Access(), &source.document, f.control)));
+  const auto& original = source.document.videos.at(0).pixels;
+  Q4T_CHECK(original.conversion.GetString("format") == "q4t.cpu_video_png.v9");
+  ObjectStore objects(f.options);
+  InputSnapshotStore store(objects);
+  InputSnapshotRef reference;
+  InputSnapshotHold hold;
+  Q4T_CHECK(Ok(Save(store, f, source, &reference, &hold)));
+  const auto started = f.control.counters->started.load();
+  content.bytes.clear();
+  detail::SetVideoWorkerEntryForTesting("--file-video-missing-worker");
+  ScopeExit reset([] { detail::SetVideoWorkerEntryForTesting(""); });
+  FileInputSnapshot replay;
+  const auto work = original.Work();
+  f.extraction.video.max_scanned_frames = work.scanned_frames;
+  f.extraction.video.max_decoded_pixels = work.decoded_pixels;
+  Q4T_CHECK(Ok(Read(store, f, reference, &replay)));
+  const auto& restored = replay.document.videos.at(0).pixels;
+  Q4T_CHECK(OutputJson(restored.conversion) ==
+                OutputJson(original.conversion) &&
+            restored.frames.size() == original.frames.size());
+  for (size_t i = 0; i < restored.frames.size(); ++i)
+    Q4T_CHECK(restored.frames[i].png == original.frames[i].png &&
+              restored.frames[i].timestamp_ns ==
+                  original.frames[i].timestamp_ns &&
+              restored.frames[i].duration_ns == original.frames[i].duration_ns);
+  --f.extraction.video.max_decoded_pixels;
+  FileInputSnapshot rejected;
+  Q4T_CHECK(Read(store, f, reference, &rejected).http_status == 413 &&
+            Empty(rejected) && f.control.counters->started == started);
+  return true;
+}
 Q4T_TEST(file_snapshot_video_projective_v5_offline_replay_and_tampering) {
   Fixture f;
   FileInputSnapshot source;

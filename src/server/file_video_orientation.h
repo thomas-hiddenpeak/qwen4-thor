@@ -5,6 +5,8 @@
 #include <bit>
 #include <cstdint>
 #include <optional>
+#include <map>
+#include <set>
 #include <stdexcept>
 #include <string_view>
 #include <vector>
@@ -165,6 +167,34 @@ class MovieDisplay {
     return result;
   }
 
+  // With no language/quality preference, use the lowest enabled track ID in
+  // each alternate group. Independent tracks retain their full paint order.
+  std::vector<VideoLayer> PlaybackLayers(const Presentation& presentation) {
+    std::set<uint32_t> ids;
+    std::map<uint16_t, uint32_t> groups;
+    for (const auto& layer : presentation.enabled) {
+      Require(layer.track_id && ids.insert(layer.track_id).second);
+      if (layer.alternate_group) {
+        auto [entry, inserted] =
+            groups.emplace(layer.alternate_group, layer.track_id);
+        if (!inserted) entry->second = std::min(entry->second, layer.track_id);
+      }
+    }
+    auto layers = presentation.enabled;
+    std::erase_if(layers, [&](const auto& layer) {
+      return layer.alternate_group &&
+             groups.at(layer.alternate_group) != layer.track_id;
+    });
+    return layers;
+  }
+
+  uint16_t GraphicsMode(const VideoLayer& layer) {
+    const auto info = Find(Find(layer.track_atom, "mdia"), "minf");
+    const auto header = Find(info, "vmhd");
+    Require(header.size() >= 12 && header[0] == 0);
+    return uint16_t(Big(header.substr(4, 2)));
+  }
+
   std::optional<SelectedTrack> SelectTrack(std::string_view bytes,
                                            bool read_clips = true) {
     const auto presentation = ReadPresentation(bytes);
@@ -181,7 +211,9 @@ class MovieDisplay {
     const auto movie = presentation.movie;
     const auto header = presentation.header;
     SelectedTrack result{{Matrix(header, 36, 48), Matrix(track, 40, 52)},
-                         presentation.video_track_count > 1, {}, {}};
+                         presentation.video_track_count > 1,
+                         {},
+                         {}};
     if (read_clips) {
       result.clips.movie = Clip(movie, &result.clips.movie_region);
       result.clips.track = Clip(selected, &result.clips.track_region);

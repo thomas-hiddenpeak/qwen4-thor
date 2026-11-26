@@ -6,6 +6,7 @@
 
 namespace q4t::server::video_detail {
 inline constexpr uint64_t kMagic = 0x5134545649443032;
+inline constexpr uint64_t kMaxMetadataBytes = 16384;
 enum class Ready : uint64_t { kReady = 1, kDependency, kSandbox, kInvalid };
 enum class Failure : uint64_t { kNone, kDependency, kInvalid, kCapacity };
 struct Request {
