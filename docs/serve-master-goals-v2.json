@@ -3123,6 +3123,11 @@
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
         ]
+      },
+      "program_dependent_calls_20261126": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-program-forks-20261126/cpu.json",
+        "issued": false
       }
     },
     {
@@ -3847,6 +3852,11 @@
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
         ]
+      },
+      "program_dependent_calls_20261126": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-program-forks-20261126/cpu.json",
+        "issued": false
       }
     },
     {
@@ -7723,6 +7733,11 @@
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
         ]
+      },
+      "program_dependent_calls_20261126": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-program-forks-20261126/cpu.json",
+        "issued": false
       }
     },
     {
@@ -9041,6 +9056,11 @@
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
         ]
+      },
+      "program_dependent_calls_20261126": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-program-forks-20261126/cpu.json",
+        "issued": false
       }
     },
     {
