@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Thor 上，显式 32 MiB 的 CUDA 异步内存池在首条流占有 24 MiB 时，拒绝了第二条流的 24 MiB 分配。释放后保留的底层内存仍为 32 MiB，trim 后归零，另一条流能重新分配。独立的普通 CUDA 分配另成功写入 12 MiB，池内用量保持 24 MiB。两个早期驱动在调用 CUDA 前因导入路径退出；修正后的独占短验启动模型 0 次，七份发布及恢复记录摘要一致。下一步把池上限与现有申请字节配额、池外分配和真实压力恢复组合验证。[设备记录](evidence/serve-resource-charge-20261126/sized-pool.json)
+
 rev532 已发行视频矩形裁剪和 Agent 失败事件的错误类别修复。自监护替换模型和主网关致命退出切至独立回退包后，原客户都能用原 ID 读到相同的回答，并从已删除源文件的冻结视频补答左下角颜色。两份封包的合同均通过 9 个原始 GET 正文及 21 个与原生持久化记录配对的严格 SDK 回答校验，其中 15 个回答核对了实际流事件序列。发行意图保持 STOPPED，13 份客户与恢复记录的哈希一致。后续继续处理非矩形区域、小数轨道尺寸和多轨合成。[发行记录](evidence/serve-video-clipping-20261126/delivery.json)
 
 带 Agent 错误修复的主、轻配置各启动一次，分别用时 48.499 和 47.069 秒。轻配置从已删除的视频读回同一响应并补答左下角蓝色。原候选的证据单独保留，新的两份资格均可重建 rev530 前驱。下一步使用这对二进制封包验收进程退出后的接管。[配置回执](evidence/serve-video-clipping-20261126/repaired-profiles.json)
@@ -44,6 +46,12 @@ rev530 已发行 Responses 失败分类、取消流序号和旧 Beta 工具输�
 真实 TLS 短验一次启动，用时 37.324 秒。Python 3.55.1 严格模式读取旧 Beta 故障、重复取消并从原游标续读，均返回 200。实际前台生成取消后，已编号的正文增量全部送达，最后一个事件为 response.failed。三个响应正文和两个解码后的失败终态均通过官方 HTTP 及本地合同校验。其他客户读取得到 404；原会话续答和独立 Chat 均回答 42。下一步验证主、轻配置接续以及主包与回退包恢复。[验收记录](evidence/serve-responses-errors-20261126/business.json)
 
 真实生成的取消流已连续送达序号 0 至 9，后续 Chat 回答 42。对同次验收的五份真实返回逐一校验时，旧 Beta 子 Agent 结果的查询、重复取消和续读均缺少 HTTP 必填的 logprobs 数组。候选为无评分的输出返回空数组，同时保留已有评分和输入历史格式。十项原生定向检查通过，原始三份不合规回包的摘要已留存。下一步用修复后的程序重验真实 TLS 回包。[验收记录](evidence/serve-responses-errors-20261126/beta-result.json)
+
+Thor 上两次 256 MiB 的 cudaMallocAsync 已由 GPU 全量写入。默认阈值下同步释放后池在用量与保留量均回到基线。阈值设为 256 MiB 时，同步释放后在用增量为零，池仍保留 256 MiB，主动 trim 后保留增量才回到零。两次持有分配期间，服务 cgroup 的四个 memory.current 样本仅比基线高 13.0～13.5 MiB。内存池在用量、保留量及 memcg 应分别读取。下一步仍需解决整机物理 DRAM 的硬边界。[设备回执](evidence/serve-resource-charge-20261126/device.json)
+
+探针进程现在通过 Unix 套接字接收同一个 GPU 锁文件描述符，永久降权后再核验该锁。实际经 sudo 传入无关描述符被拒绝，未启动探针，临时 cgroup 已清理。下一步在有效租约内核验两个池模式。[CPU 回执](evidence/serve-resource-charge-20261126/cpu.json)
+
+R08 已复核旧版对匿名、device、pinned 和 managed 各 256 MiB 的实测。新增探针对同样大小的 cudaMallocAsync 分配，分别在默认阈值与显式保留阈值下记录应用在用量、池保留量和原生服务 cgroup 计量。五项 CPU 正反例通过；实际在新建资源域运行失败子进程后，两个叶和根均已清理。下一步让两个探针独占设备短验。[CPU 回执](evidence/serve-resource-charge-20261126/cpu.json)
 
 rev528 已发行 Evals 取消的旧版 SDK 路径，以及托管验收读取器的历史记录兼容修复。模型被替换和独立回退包接管后，两代 Python SDK 均可用原 ID 复查取消结果，跨客户返回 404。主、备包各验证同一组 15 个真实响应，正文同时满足当前官方取消响应合同。发布时服务保持 STOPPED，13 份受保护记录保持一致。[发行回执](evidence/serve-sdk-routes-20261126/delivery.json)
 

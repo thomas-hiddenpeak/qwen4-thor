@@ -210,3 +210,17 @@ profile_memory模块，避免改写历史包source清单。验证副本时从
 2026-11-12。双版本资源[18不同CPU接受](evidence/serve-resource-version-cpu-20261112/README.md)，20调用累计11.908秒；原2夹具错误保留并定点补过。真实已验v12原件10155da3的独立适配59934942逐字节核验通过（两次来源检查3.717秒，首版本断言错误保留），原件/无关故障方法/历史清单保持。0GPU/默认与R07不变；继续实际外层资源业务、冷准入和可回退交付，全部任务保持。
 
 2026-11-12。实际外层资源短验02失败：2次模型派生/0Chat/0探测，24.958秒后重复故障保护；日志明确NvRmMemInitNvmap Permission denied。资源入口清空附加组，导致原运行用户丢video权限；CPU夹具未覆盖CUDA设备DAC。自有进程/端口/资源域已清、原锁released，默认/其他服务不变。已开发仅保留目标账号已有video/render成员资格的永久降权，清除管理员附加组，仍要求no_new_privs；资源及直接设备入口共用。冻结4新CPU（实际文件DAC旧/新对照、nvmap只读access判定、不回root、缺身份/权限负控）+3直接资源/原生角色+3封包，共10项。原GPU预算累计已用2/3启动，完整补验仍需额外启动额度；R07原冻结入口同类问题也保留为待更新，不执行旧计划。
+
+## CUDA 异步池的设备侧计量
+
+已有 256 MiB 探针覆盖匿名、cudaMalloc、cudaMallocHost 和 cudaMallocManaged。cudaMalloc 的已触页负载使主机可用量下降约 257 MiB，memcg 增量接近零。推理代码另外使用流有序分配，进程的请求字节配额、CUDA 池在用字节、该池保留的后备存储和内核资源域属于不同计量。四种旧分配复用原记录。[历史实测](SERVE_STARTUP_MEMORY_RESULT_2026-11-03.md) · [NVIDIA 对池使用量和保留量的定义](https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/stream-ordered-memory-allocation.html)
+
+独占租约内运行两个独立探针进程，每次分配 256 MiB，核对 GPU 写入首尾、同步释放及主动 trim。调用者进程负责观测，每个检查点两次读取内核原服务叶。探针使用临时原生资源域，结束时清理。复验须从当前工作树以普通用户运行，sudo 只用于建立临时域和进入观察者叶。
+
+```sh
+mkdir -p build/pool
+/usr/local/cuda-13.3/bin/nvcc -std=c++23 -ccbin g++-14 -arch=sm_110a -Xcompiler=-Wall,-Wextra,-Werror tools/serve_startup_memory/memory_probe.cu -o build/pool/memory-probe
+python3 -B tools/evalscope/gpu_exclusive.py --compute-backend nvml --inherit-lease --output .q4t-work/async-pool/lease -- python3 -I -B tools/serve_startup_memory/native_pool_stage.py --binary build/pool/memory-probe --output .q4t-work/async-pool/observations
+```
+
+Thor 上两次 256 MiB 的 cudaMallocAsync 已由 GPU 全量写入。默认阈值下同步释放后池在用量与保留量均回到基线。阈值设为 256 MiB 时，同步释放后在用增量为零，池仍保留 256 MiB，主动 trim 后保留增量才回到零。两次持有分配期间，服务 cgroup 的四个 memory.current 样本仅比基线高 13.0～13.5 MiB。内存池在用量、保留量及 memcg 应分别读取。下一步仍需解决整机物理 DRAM 的硬边界。使用单一租约、两个独立进程，模型启动 0 次，临时资源域已清理，默认服务状态和文件摘要保持一致。[设备回执](evidence/serve-resource-charge-20261126/device.json)
