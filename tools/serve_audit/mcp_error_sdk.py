@@ -68,7 +68,7 @@ def run(plan):
 
             accepted = owner.responses.with_raw_response.create(**follow(True))
             assert accepted.parse().status == "completed"
-            capture("approved", json.loads(accepted.http_response.content))
+            (folder / "approved.json").write_bytes(accepted.http_response.content)
             approved_id = accepted.parse().id
             live = stream_events(owner.responses.create(
                 **follow(False), stream=True, stream_options={"include_obfuscation": False}))
@@ -109,7 +109,7 @@ def run(plan):
                 assert error.status_code == 404
             else:
                 raise AssertionError("MCP resource visible to another customer")
-        capture("resource", resource)
+        (folder / "resource.json").write_bytes(raw.http_response.content)
         capture("replay", replay)
         return dict(sdk=openai.__version__, id=ident, approved_id=approved_id,
                     string_error=legacy, get_sha256=hashlib.sha256(raw.http_response.content).hexdigest(),
