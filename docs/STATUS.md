@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 AsyncOpenAI 2.8.1、3.42.1 和 3.55.1 严格模式均在两份真实历史回答的正文中段关闭了流。每次创建新客户端，使用原游标分别收回 14 和 18 个事件，逐片拼回原文。高级接口取得相同终态，其他客户从同一游标读取均返回 404。此次使用 CPU 回放服务。[异步验收](evidence/serve-response-cache-retention-20261127/async-cursor.json)
+
 Responses 已按客户端版本处理缓存驻留字段。Python SDK 2.8.1 严格模式可读取原先解析失败的历史响应；2.8.1、3.42.1、3.55.1 的默认与严格模式共六组均可交给 Node 续读。五份新响应跨版本创建、重启后读取，落盘记录的 SHA-256 全部一致。CPU 验证已完成，原生 TLS 真实模型和发行待验。[CPU 验证](evidence/serve-response-cache-retention-20261127/cpu.json)
 
 两份真实成功响应通过原生 CPU HTTP 服务交给官方 SDK。Node 7.47.0 从 Python 提供的游标 14 和 17 分别读到余下 14 和 18 个事件；重启测试服务后得到相同正文，越界游标返回 400，其他客户读取返回 404。Python 三个版本的六种配置中五种通过。2.8.1 严格模式在 GET 解析时报缓存枚举错误，已保存三份原始响应的定位证据。下一步修复旧客户端，并在真实主轻配置和托管恢复中验证游标交接。[兼容记录](evidence/serve-video-layer-composition-20261127/sdk-cursor.json)
