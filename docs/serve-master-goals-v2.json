@@ -2958,10 +2958,12 @@
         "delivery": "evidence/serve-responses-errors-20261126/delivery.json"
       },
       "agent_failure_events_20261126": {
-        "stage": "device_verified_publication_pending",
+        "stage": "issued",
         "affected_release": 530,
         "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json",
-        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json"
+        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
+        "publication_revision": 532,
+        "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
       }
     },
     {
@@ -6448,6 +6450,16 @@
         "stage": "profile_verified",
         "receipt": "docs/evidence/serve-video-clipping-20261126/profiles.json"
       },
+      "quicktime_clip_delivery_20261126": {
+        "stage": "issued",
+        "revision": 532,
+        "evidence": "evidence/serve-video-clipping-20261126/delivery.json",
+        "unresolved": [
+          "nonrectangular QuickDraw region",
+          "fractional track grid",
+          "multiple enabled video tracks"
+        ]
+      },
       "quickdraw_regions_20261126": {
         "stage": "device_verified",
         "receipt": "evidence/serve-video-regions-20261126/cpu.json",
@@ -8635,10 +8647,12 @@
         "aggregate_clients": "evidence/serve-responses-errors-20261126/python-aggregate.json"
       },
       "agent_failure_events_20261126": {
-        "stage": "device_verified_publication_pending",
+        "stage": "issued",
         "affected_release": 530,
         "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json",
-        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json"
+        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
+        "publication_revision": 532,
+        "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
       }
     },
     {
@@ -9886,8 +9900,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 530,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev530-preflight.json",
+        "revision": 532,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev532-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11616,7 +11630,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev530_delivered_remaining_deliveries",
+      "state": "rev532_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12959,7 +12973,8 @@
       },
       "current_visual_frame_delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json",
       "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json",
-      "current_failure_delivery": "evidence/serve-responses-errors-20261126/delivery.json"
+      "current_failure_delivery": "evidence/serve-responses-errors-20261126/delivery.json",
+      "current_movie_clip_delivery": "evidence/serve-video-clipping-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13064,16 +13079,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "a6da2e0f6d114b25da47870d36dada7a21885852",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-delivery-soak-src",
+        "source_commit": "30ad891b9866d97dae4a5d0889719fdfc20ebb0d",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-client-primary-01/bundle",
-          "manifest_sha256": "0268116088f6d8871c6eb96f127a32c8b09d2f0fe978e3564f112854cd5d9978"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-client-primary-01/bundle",
+          "manifest_sha256": "703046bff3f2f7701a00027060849d41621e36837190d03b2334481afe3fc62b"
         },
-        "revision": 530,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "50fa375dd4fa4eabfb7276037120c5e39133a1745cb840ad41f5ab91c6eec65b",
-        "handoff_sha256": "b980e1c5fe3c48faeb93006791841387fd81515ecd01674f6880b8da48e32f7b",
+        "revision": 532,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "e6664d743df464cf2069e524c272d5cc67fee2d0db113702419c959055d4eac2",
+        "handoff_sha256": "682133da358440197ec378023abdfbec6ee5ba2a0c5779a23a8df457de1f95d1",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13484,9 +13499,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 530,
-        "receipt": "evidence/serve-responses-errors-20261126/delivery.json",
-        "plan_sha256": "50fa375dd4fa4eabfb7276037120c5e39133a1745cb840ad41f5ab91c6eec65b",
+        "revision": 532,
+        "receipt": "evidence/serve-video-clipping-20261126/delivery.json",
+        "plan_sha256": "e6664d743df464cf2069e524c272d5cc67fee2d0db113702419c959055d4eac2",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
