@@ -23,6 +23,13 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+VIDEO_CLIP_RECORD = 'q4t-profile-business-v71'
+VIDEO_CLIP_FORMAT = 'q4t-video-clip-source-v1'
+VIDEO_CLIP_RECEIPT = 'video-clip-handoff.json'
+VIDEO_CLIP_REVIEWED = {}
+CLIP_CAPABILITY = dict(track_grid='whole-pixel', source='quicktime-movie-and-track',
+                       exterior='black', frozen_conversion='q4t.cpu_video_png.v6')
+
 RESPONSE_FAILURE_RECORD = 'q4t-profile-business-v70'
 RESPONSE_FAILURE_FORMAT = 'q4t-response-failure-source-v1'
 RESPONSE_FAILURE_RECEIPT = 'response-failure-handoff.json'
@@ -460,7 +467,8 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 SESSION_CONTROL_RECORD: SESSION_CONTROL_FORMAT,
                 MEDIA_HANDOFF_RECORD: MEDIA_HANDOFF_FORMAT,
                 VISUAL_ANSWER_RECORD: VISUAL_ANSWER_FORMAT, FRAME_RECORD: FRAME_FORMAT,
-                EVAL_CANCEL_RECORD: EVAL_CANCEL_FORMAT, RESPONSE_FAILURE_RECORD: RESPONSE_FAILURE_FORMAT}
+                EVAL_CANCEL_RECORD: EVAL_CANCEL_FORMAT, RESPONSE_FAILURE_RECORD: RESPONSE_FAILURE_FORMAT,
+                VIDEO_CLIP_RECORD: VIDEO_CLIP_FORMAT}
 # Shared by the qualification writer and the managed acceptance reader.
 ACCEPTANCE_LABELS = {
     RECORD_FORMAT: 'ACCEPT_LIVE_PRIMARY_LIGHT',
@@ -485,6 +493,7 @@ ACCEPTANCE_LABELS = {
     HOSTED_LIFECYCLE_RECORD: 'ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT',
     PREPARATION_RECORD: 'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT',
     RESPONSE_FAILURE_RECORD: 'ACCEPT_RESPONSE_FAILURE_PRIMARY_LIGHT',
+    VIDEO_CLIP_RECORD: 'ACCEPT_VIDEO_CLIP_PRIMARY_LIGHT',
     EVAL_CANCEL_RECORD: 'ACCEPT_EVAL_CANCEL_PRIMARY_LIGHT',
     FRAME_RECORD: 'ACCEPT_VISUAL_FRAME_PRIMARY_LIGHT',
     VISUAL_ANSWER_RECORD: 'ACCEPT_VISUAL_ANSWER_PRIMARY_LIGHT',
@@ -526,7 +535,7 @@ SEPARATE_HISTORY_RECORDS = (
     TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD,
     CHATKIT_ACTIONS_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_WORKFLOW_RECORD,
     CHATKIT_IMAGE_RECORD, CHATKIT_WIDGET_RECORD, SESSION_CONTROL_RECORD, MEDIA_HANDOFF_RECORD,
-    VISUAL_ANSWER_RECORD, FRAME_RECORD, EVAL_CANCEL_RECORD, RESPONSE_FAILURE_RECORD,
+    VISUAL_ANSWER_RECORD, FRAME_RECORD, EVAL_CANCEL_RECORD, RESPONSE_FAILURE_RECORD, VIDEO_CLIP_RECORD,
 )
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
@@ -699,6 +708,12 @@ def composer_capability(capabilities):
     return dict(UPLOAD_CHATKIT, input_transcribe=dict(operation='input.transcribe', configured=enabled))
 
 
+def clipped_file_inputs(previous):
+    native = previous['native_video']
+    ledger.require('rectangular_clipping' not in native, 'predecessor already declares clipping')
+    return dict(previous, native_video=dict(native, rectangular_clipping=CLIP_CAPABILITY))
+
+
 def format_for(capabilities, evidence=None):
     if 'video_characters' in capabilities:
         prior = dict(capabilities)
@@ -707,6 +722,11 @@ def format_for(capabilities, evidence=None):
                        and CHARACTER_RECEIPT in (evidence or {})
                        and format_for(prior, evidence) == COMPOSER_RECORD,
                        'character qualification requires a verified reference and the issued dictation handoff')
+        if VIDEO_CLIP_RECEIPT in evidence:
+            previous = {k: v for k, v in evidence.items() if k != VIDEO_CLIP_RECEIPT}
+            ledger.require(format_for(capabilities, previous) == RESPONSE_FAILURE_RECORD,
+                           'clip qualification requires the issued Responses handoff')
+            return VIDEO_CLIP_RECORD
         if RESPONSE_FAILURE_RECEIPT in evidence:
             previous = {k: v for k, v in evidence.items() if k != RESPONSE_FAILURE_RECEIPT}
             ledger.require(format_for(capabilities, previous) == EVAL_CANCEL_RECORD,
@@ -1001,8 +1021,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (VIDEO_CLIP_RECORD, RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            VIDEO_CLIP_RECORD: (RESPONSE_FAILURE_RECORD, RESPONSE_FAILURE_REVIEWED, None, VIDEO_CLIP_RECEIPT),
             RESPONSE_FAILURE_RECORD: (EVAL_CANCEL_RECORD, EVAL_CANCEL_REVIEWED, None, RESPONSE_FAILURE_RECEIPT),
             EVAL_CANCEL_RECORD: (FRAME_RECORD, FRAME_REVIEWED, None, EVAL_CANCEL_RECEIPT),
             FRAME_RECORD: (VISUAL_ANSWER_RECORD, VISUAL_ANSWER_REVIEWED, None, FRAME_RECEIPT),
@@ -1039,6 +1060,11 @@ def attach(value, prior):
         }
         previous_format, reviewed, added, receipt = predecessors[value['format']]
         changed = {'protocol_source_sha256'}
+        if value['format'] == VIDEO_CLIP_RECORD:
+            changed.add('file_inputs')
+            ledger.require(ledger.canonical(after['file_inputs']) ==
+                           ledger.canonical(clipped_file_inputs(before['file_inputs'])),
+                           'only the qualified video clipping declaration may change')
         if value['format'] in (TYPED_HISTORY_RECORD, VISUAL_ANSWER_RECORD, FRAME_RECORD):
             changed.add('template')
             renderer = after['template'].get('renderer_source_sha256')
@@ -1268,6 +1294,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            VIDEO_CLIP_RECORD: (RESPONSE_FAILURE_FORMAT, ('format', 'previous', 'history')),
             RESPONSE_FAILURE_RECORD: (EVAL_CANCEL_FORMAT, ('format', 'previous', 'history')),
             EVAL_CANCEL_RECORD: (FRAME_FORMAT, ('format', 'previous', 'history')),
             FRAME_RECORD: (VISUAL_ANSWER_FORMAT, ('format', 'previous', 'history')),
@@ -1325,8 +1352,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (VIDEO_CLIP_RECORD, RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            VIDEO_CLIP_RECORD: (VIDEO_CLIP_REVIEWED, RESPONSE_FAILURE_REVIEWED),
             RESPONSE_FAILURE_RECORD: (RESPONSE_FAILURE_REVIEWED, EVAL_CANCEL_REVIEWED),
             EVAL_CANCEL_RECORD: (EVAL_CANCEL_REVIEWED, FRAME_REVIEWED),
             FRAME_RECORD: (FRAME_REVIEWED, VISUAL_ANSWER_REVIEWED),
