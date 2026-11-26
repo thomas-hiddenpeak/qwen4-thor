@@ -181,6 +181,10 @@ Json ProjectStoredItem(const Json& item, const ItemViewOptions& options,
         target && target->IsString())
       Set(&result, "request_id", *target);
   }
+  if (type == "local_shell_call_output" && !result.Has("call_id")) {
+    if (const auto* id = item.Find("id"); id && id->IsString())
+      Set(&result, "call_id", *id);
+  }
   // The SDK's conversation union uses the base custom-call types. Its
   // Responses input_items list uses the Item variants with status instead.
   if (view == StoredItemView::kConversation &&

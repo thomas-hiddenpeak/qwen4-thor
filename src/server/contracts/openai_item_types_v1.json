@@ -5267,6 +5267,11 @@
           "name": "type",
           "optional": false,
           "type": 474
+        },
+        {
+          "name": "call_id",
+          "optional": true,
+          "type": 3
         }
       ],
       "additional": null
@@ -7000,6 +7005,11 @@
           "name": "type",
           "optional": false,
           "type": 474
+        },
+        {
+          "name": "call_id",
+          "optional": true,
+          "type": 3
         }
       ],
       "additional": null
@@ -8338,6 +8348,11 @@
           "name": "type",
           "optional": false,
           "type": 474
+        },
+        {
+          "name": "call_id",
+          "optional": true,
+          "type": 3
         }
       ],
       "additional": null

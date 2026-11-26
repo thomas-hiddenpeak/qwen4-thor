@@ -3,7 +3,7 @@
   "sdk_version": "7.47.0",
   "compiler_version": "5.9.3",
   "validation_mode": "concrete-sdk-union-members",
-  "graph_sha256": "c145a8561370cf58536e63ef941b8fe3a39c0b147f7aa9a136282b11632e81d6",
+  "graph_sha256": "b0cdc5c0a0a032dcb9203ee4ad2acbcfa67f918d6d50be92175017dd1574cfd4",
   "fixture_sha256": "a46bf9ce8c485761e8da122618ca1d93400464c6e5a803af6693d9f98218fcd1",
   "concrete_fixture_sha256": "c683427eef197e47194574df09d0eb6628fc8a52c2b04fc26b09336391247198",
   "member_names": {

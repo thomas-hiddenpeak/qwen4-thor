@@ -21,7 +21,7 @@ AUDIO_EXTENSION_FORMAT = 'q4t-profile-migration-permit-v5'
 TTS_CAPACITY_FORMAT = 'q4t-profile-migration-permit-v6'
 VOICE_FORMAT = 'q4t-profile-migration-permit-v7'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
-    'custom_tool_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
+    'custom_tool_call', 'local_shell_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
     'mcp_approval_request', 'mcp_call'))
 MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
@@ -418,6 +418,13 @@ def semantic_capabilities(value):
         ledger.require(type(items) is list and all(type(x) is str for x in items)
             and len(set(items)) == len(items) and
             set(items) <= RESPONSE_OUTPUT_TYPES, 'invalid response output capabilities')
+        if 'local_shell_call' in items or 'local_shell' in responses:
+            shell = responses.get('local_shell')
+            ledger.require('local_shell_call' in items and type(shell) is dict
+                           and shell.get('executor') == 'client'
+                           and shell.get('automatic_execution') is False
+                           and shell.get('result_item') == 'local_shell_call_output',
+                           'invalid local shell execution capability')
         if 'file_search_call' in items:
             search = responses.get('file_search')
             ledger.require(type(search) is dict and

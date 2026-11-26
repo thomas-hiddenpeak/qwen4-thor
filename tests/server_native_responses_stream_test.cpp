@@ -659,3 +659,36 @@ Q4T_TEST(live_responses_execution_partial_drain_and_output_loss_never_replay) {
             second.input.Used() == 0);
   return true;
 }
+
+Q4T_TEST(live_local_shell_result_survives_fork_and_rejects_crossed_ids) {
+  auto call =
+      Parse(R"({"type":"local_shell_call","id":"old_item","call_id":"target",
+          "action":{"type":"exec","command":["pwd"],"env":{}},"status":"completed"})");
+  auto second = call;
+  Set(&second, "id", String("another_item"));
+  Set(&second, "call_id", String("another_target"));
+  LiveResponsesTurn turn("delegation_test", "", Ok);
+  Q4T_CHECK(turn.Event(Created(), 0).ok());
+  Q4T_CHECK(turn.Event(Done(0, call), 0).ok());
+  Q4T_CHECK(turn.Event(Done(1, second), 0).ok());
+  auto result = Parse(R"({"type":"local_shell_call_output","id":"old_item",
+                           "call_id":"another_target","output":"record"})");
+  Q4T_CHECK(!turn.Result(result).ok());
+  Set(&result, "id", String("separate_output"));
+  Q4T_CHECK(turn.Result(result).ok());
+  result = Parse(
+      R"({"type":"local_shell_call_output","id":"old_item","output":"original"})");
+  Q4T_CHECK(turn.Result(result).ok() && !turn.Result(result).ok());
+  Json saved = turn.ForkHistory();
+  Set(&saved, "completed", Boolean(true));
+  LiveResponsesTurn restored("delegation_restore", "", Ok);
+  Q4T_CHECK(restored.RestoreCompleted(saved).ok() &&
+            !restored.WaitingForResults());
+  auto history = Array();
+  Q4T_CHECK(restored.AppendHistory(&history).ok());
+  Q4T_CHECK(history.array.size() == 4 &&
+            history.array[2].GetString("id") == "target" &&
+            history.array[3].GetString("id") == "separate_output" &&
+            history.array[3].GetString("call_id") == "another_target");
+  return true;
+}

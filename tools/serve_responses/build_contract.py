@@ -102,6 +102,18 @@ def schema(graph):
         resource['properties']['request_id'] = dict(resource['properties']['approval_request_id'])
         if not fields['id']['optional']:
             resource['required'].append('request_id')
+    # SDK writes may identify the call by id alone. Publicly read resources
+    # include call_id, even for records stored by an older release.
+    inputs = set(graph['nodes'][graph['roots']['input_item']]['variants'])
+    for index, node in enumerate(graph['nodes']):
+        fields = {f['name']: f for f in node.get('fields', [])}
+        if ('type' not in fields or
+                graph['nodes'][fields['type']['type']].get('value') != 'local_shell_call_output'):
+            continue
+        resource = definitions[str(index)]
+        resource['properties']['call_id'] = dict(type='string', minLength=1)
+        if index not in inputs:
+            resource['required'].append('call_id')
     live = json.loads((ROOT/'src/server/contracts/openai_live_types_v1.json').read_text())
     assert live['profile'] == 'q4t-openai-live-types-v1'
     definitions.update(graph_definitions(live, 'live_', ('session_accept', 'session_refer', 'session_reject', 'session_fork', 'session_forked', 'media_create', 'media_created')))

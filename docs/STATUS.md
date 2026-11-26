@@ -7,6 +7,22 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #172 的公开 CI 在旧断言上失败，本机复现两项。现按 32 个 SDK 输入逐项检查对象存储访问，其中唯一需要读取归属记录的是旧版 shell 结果；能力清单逐一核对包含 local_shell_call 的 15 种输出。本机四项 CPU 检查全部通过，等待新提交的公开 CI。[复核记录](evidence/serve-local-shell-20261126/host-contracts.json)
+
+rev548 已发行本地 shell 工具的客户端调用、流事件和结果回填。模型恢复和主网关故障切换后，原响应与回填页可按原 ID 逐字节读回，新续答取回相同的架构名。历史选择器按官方格式显示。登记时模型启动为零，13 份受保护状态通过复核。按设备维护授权，jtop 和相机守护进程已停止并取消开机自启；清理后 NVML 正常采样，冷启动验收仍暂缓。[发行记录](evidence/serve-local-shell-20261126/delivery.json)
+
+主配置 42.7 秒，轻配置 41.3 秒。两个配置均按原 ID 读回本地 shell 请求、结果和后续响应，HTTP 字节与首次业务一致。每次新续答均从历史中返回 qwen4_exp，跨客户 404，独立 Chat 返回 720041。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-local-shell-20261126/profiles.json)
+
+本机模型通过原生 TLS 和官方 SDK 发出 local_shell_call。客户端实际读取项目文档首行，使用旧 SDK 的单 ID 形式回填，模型答出 qwen4_exp；跨客户端查询返回 404，错误的调用 ID 返回 400。首次遗留的响应经原 ID 读回，只修正选择器；另一响应与输入页逐字节相同。下一步跨配置和进程故障复核。[设备记录](evidence/serve-local-shell-20261126/business.json)
+
+真实模型首次本地 shell 读档和跨轮续答通过，但固定的官方 schema 拒绝直接回显 local_shell 选择器；同一问题影响历史 GET 和 3 种 SSE 生命周期事件。已在统一 HTTP 输出层将该选择器映射为 required 的单项 allowed_tools，保留原请求与存储值。8 项 C++ 回归通过，下一步用首次原 ID 和新的标准 SDK 请求短验。[原始失败与修正](evidence/serve-local-shell-20261126/choice-compatibility.json)
+
+本地 shell 的接管驱动已接入主、轻配置。驱动校验原调用、回填输入页及后续响应的 HTTP 字节，并通过原响应 ID 开始新的续答。5 项有针对性的 CPU 用例通过，包含旧版 MCP 对象复制、历史摘要篡改和响应 ID 重用。实际跨配置恢复尚待验证。
+
+本地 shell 的设备验收会按模型调用响应和回填响应各自的原 ID 读取完整资源，供后续接管逐字节复核。
+
+本地 shell 已接入 Responses 的工具声明、选择、模型输出、流事件和客户端结果回填。服务保留条目 ID 与模型调用 ID；旧 SDK 省略 call_id 时可重用所属客户端的原记录。8 项定向 C++ 检查、Python 3.55.1 与 Node 7.47.0 HTTP 读回通过。真实模型业务、恢复和发行待验。[CPU 证据](evidence/serve-local-shell-20261126/cpu.json)
+
 rev546 已发行 MCP 审批关联字段兼容。模型故障及网关切换回退包后仍按原 ID 读回 rev544 的批准与拒绝，响应与输入页保持相同字节。修改拒绝决定返回 409，跨客户端查询返回 404，独立 Chat 正常。登记时模型启动为零，13 份受保护状态通过复核。NVML 冷启动所需的相机与 jtop 维护窗口已由用户暂缓，两项服务继续运行。[发行记录](evidence/serve-mcp-approval-identifiers-20261126/delivery.json)
 
 主配置 39.5 秒，轻配置 37.7 秒。两种配置都按原 ID 读回 rev544 的真实 MCP 批准与拒绝，响应与输入页的原始 HTTP 字节跨配置相同。修改拒绝决定返回 409，冲突关联返回 400，另一把 Key 获得 404。独立 Chat 均返回 720041。下一步验证模型和网关故障后的同一批对象。[配置记录](evidence/serve-mcp-approval-identifiers-20261126/profiles.json)

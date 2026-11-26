@@ -852,11 +852,17 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
   std::vector<int> spanning(items.size() + 1, 0);
   for (size_t i = 0; i < items.size(); ++i) {
     const auto type = items[i].GetString("type");
-    if (type == "function_call" || type == "custom_tool_call") {
+    if (type == "function_call" || type == "custom_tool_call" ||
+        type == "local_shell_call") {
       calls.emplace(items[i].GetString("call_id"), i);
     } else if (type == "function_call_output" ||
-               type == "custom_tool_call_output") {
-      const auto found = calls.find(items[i].GetString("call_id"));
+               type == "custom_tool_call_output" ||
+               type == "local_shell_call_output") {
+      const auto id =
+          type == "local_shell_call_output"
+              ? items[i].GetString("call_id", items[i].GetString("id"))
+              : items[i].GetString("call_id");
+      const auto found = calls.find(id);
       if (found != calls.end()) {
         returned.insert(found->first);
         ++spanning[found->second + 1];

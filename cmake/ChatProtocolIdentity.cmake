@@ -730,6 +730,7 @@ set(protocol_inputs
   include/q4t/server/live_responses_settings.h
   include/q4t/server/live_responses_validation.h
   include/q4t/server/live_responses_turn.h
+  include/q4t/server/local_shell_history.h
   include/q4t/server/live_responses_execution.h
   include/q4t/server/live_responses_delegate.h
   include/q4t/server/live_decision_items.h

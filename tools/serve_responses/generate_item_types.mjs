@@ -535,6 +535,18 @@ if (mode === undefined) {
     node.fields.push({ name: 'request_id', optional: true, type: target.type });
   }
 }
+// The HTTP shell output can carry the model call ID separately from the item
+// ID. The frozen SDK sends the result ID alone. Keep its raw API graph intact.
+if (mode === undefined || mode === '--live') {
+  for (const node of nodes) {
+    const type = node.fields?.find(field => field.name === 'type');
+    if (!type || nodes[type.type].value !== 'local_shell_call_output') continue;
+    const id = node.fields.find(field => field.name === 'id');
+    if (!id || node.fields.some(field => field.name === 'call_id'))
+      throw new Error('Review local shell output identifiers');
+    node.fields.push({ name: 'call_id', optional: true, type: id.type });
+  }
+}
 if (mode === '--environments') addTemplateBounds(nodes, roots);
 const result = {
   profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :
