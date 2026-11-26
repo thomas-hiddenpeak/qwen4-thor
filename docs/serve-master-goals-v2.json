@@ -3128,7 +3128,8 @@
         "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
-        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
       }
     },
     {
@@ -3858,7 +3859,8 @@
         "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
-        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
       }
     },
     {
@@ -7740,7 +7742,8 @@
         "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
-        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
       }
     },
     {
@@ -9064,7 +9067,8 @@
         "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
-        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
       }
     },
     {
