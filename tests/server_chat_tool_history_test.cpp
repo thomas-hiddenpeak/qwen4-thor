@@ -2,6 +2,7 @@
 
 #include <initializer_list>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "q4t/server/chat_contract.h"
@@ -106,6 +107,55 @@ Q4T_TEST(chat_tool_history_json_adapter_preserves_refs_null_and_exact_values) {
                         EncodeSchemaJson(*expected.Find("arguments")) +
                         "\n</parameter>\n</function>") != prompt.npos);
   Q4T_CHECK(prompt.find("null</parameter>中") == prompt.npos);
+  return true;
+}
+
+Q4T_TEST(chat_tool_map_references_preserve_the_declared_value_contract) {
+  using namespace q4t::server;
+  Json tools;
+  Q4T_CHECK(q4t::io::ParseJson(R"([{"type":"function","function":{
+    "name":"lookup_release","strict":false,"parameters":{
+      "type":"object","properties":{"versions":{"type":"object",
+        "additionalProperties":{"$ref":"#/$defs/revision"}}},
+      "required":["versions"],"additionalProperties":false,
+      "$defs":{"revision":{"type":"integer","minimum":1}},
+      "examples":[{"versions":{"$ref":"#/$defs/this-is-data"}}]}}}])",
+      &tools, true));
+  const auto& original = *tools.array[0].Find("function")->Find("parameters");
+  const auto original_bytes = OutputJson(original);
+  std::string definitions;
+  Q4T_CHECK(RenderChatToolDefinitions(tools, &definitions));
+  const auto begin = definitions.find("<tools>\n");
+  const auto end = definitions.find("\n</tools>", begin);
+  Q4T_CHECK(begin != definitions.npos && end != definitions.npos);
+  Json tool;
+  Q4T_CHECK(q4t::io::ParseJson(
+      definitions.substr(begin + 8, end - begin - 8), &tool, true));
+  const auto& wrapper = *tool.Find("function")->Find("parameters");
+  const auto& nested = *wrapper.Find("properties")->Find("arguments");
+  Q4T_CHECK(OutputJson(*nested.Find("examples")) ==
+            OutputJson(*original.Find("examples")));
+  Q4T_CHECK(OutputJson(original) == original_bytes);
+
+  OutputSchemaGraph client, model;
+  Q4T_CHECK(client.Init(original, false, nullptr, "schema",
+                        OutputSchemaPurpose::kToolResult));
+  Q4T_CHECK(model.Init(wrapper, false, nullptr, "schema",
+                       OutputSchemaPurpose::kToolResult));
+  for (const auto& [wire, valid] :
+       {std::pair{R"({"versions":{"main":532,"light":534}})", true},
+        {R"({"versions":{}})", true},
+        {R"({"versions":{"main":"532"}})", false},
+        {R"({"versions":{"light":0}})", false},
+        {R"({"versions":{},"extra":1})", false}}) {
+    Json arguments;
+    Q4T_CHECK(q4t::io::ParseJson(wire, &arguments, true));
+    Q4T_CHECK(client.Check(arguments).ok() == valid);
+    Json framed;
+    framed.type = Json::Type::kObject;
+    framed.object.emplace_back("arguments", std::move(arguments));
+    Q4T_CHECK(model.Check(framed).ok() == valid);
+  }
   return true;
 }
 

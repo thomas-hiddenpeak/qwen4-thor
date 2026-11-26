@@ -1376,6 +1376,12 @@
         "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
         "revision": 526,
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "tool_dictionary_references_20261126": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
+        "device_qualified": false,
+        "issued": false
       }
     },
     {
@@ -1414,7 +1420,7 @@
     {
       "id": "A04",
       "required": true,
-      "state": "implemented_validated_delivered",
+      "state": "implementation_in_progress",
       "implementation": "工具选择/allowed_tools、legacy functions迁移、自定义工具形状、逐片参数/多调用流及完成语义",
       "acceptance": "标准客户端重组调用与参数；截断不执行工具、最终结果关联一致；不将只发终态冒充增量工具流",
       "depends_on": [
@@ -1453,7 +1459,9 @@
           "full_task_complete": true
         }
       ],
-      "remaining_required": [],
+      "remaining_required": [
+        "Validate and deliver the model-visible local reference correction for advisory dictionary tools"
+      ],
       "active_subset": null,
       "current_audit": {
         "date": "2026-11-16",
@@ -1462,6 +1470,12 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "tool_dictionary_references_20261126": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
+        "device_qualified": false,
+        "issued": false
       }
     },
     {

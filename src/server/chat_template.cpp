@@ -312,7 +312,7 @@ void RelocateSchemaReferences(io::Json* schema) {
         (void)name;
         RelocateSchemaReferences(&child);
       }
-    } else if (key == "items") {
+    } else if (key == "items" || key == "additionalProperties") {
       RelocateSchemaReferences(&value);
     } else if (key == "anyOf") {
       for (auto& child : value.array) RelocateSchemaReferences(&child);
