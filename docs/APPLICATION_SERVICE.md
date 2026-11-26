@@ -1,5 +1,9 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### 旧版 SDK 的 Evals 取消
+
+Python 2.8.1 在 Run 资源上发送 POST，新版客户端访问同一资源的 /cancel。两个入口共享所有者检查、状态和取消操作，恢复后可继续使用原 Eval 和 Run ID。[rev528 记录](evidence/serve-sdk-routes-20261126/delivery.json)
+
 ### Chat 视频帧与 H.264 文件回答
 
 Chat 支持 video_frames 和按载荷识别的图像、帧输入。两帧 Chat、流式图像和 H.264 文件已在真实托管包上验证。模型进程退出或切换回退包后仍可按原 Responses ID 获取文件视频的回答。[rev526 记录](evidence/serve-visual-frame-parts-20261126/delivery.json)
