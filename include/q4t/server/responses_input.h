@@ -10,6 +10,9 @@
 #include "q4t/status.h"
 
 namespace q4t::server {
+
+inline constexpr char kApplyPatchToolName[] = "q4t_builtin_apply_patch";
+
 struct ResponsesInputPlan {
   io::Json items;     // Original canonical items, including metadata for A08.
   io::Json messages;  // Native model adapter; no internal HTTP request.

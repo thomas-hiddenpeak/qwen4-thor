@@ -57,6 +57,13 @@ Status ItemMetadata(const Json& item, std::string_view path,
                     ChatPlanError* error) {
   // These variants have their own status/nullable contract in the SDK graph.
   const auto kind = item.GetString("type");
+  if (kind == "apply_patch_call" || kind == "apply_patch_call_output") {
+    if (Nonnull(item, "id") &&
+        (item.GetString("id").empty() || item.GetString("id").size() > 256))
+      return Invalid(error, std::string(path) + ".id", "invalid item ID");
+    return ValidateResponsesItemShape(item, ResponsesItemShape::kInput, error,
+                                      path);
+  }
   if (kind.starts_with("mcp_"))
     return ValidateResponsesItemShape(item, ResponsesItemShape::kInput, error,
                                       path);
@@ -528,6 +535,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   size_t activation = 0;
   std::deque<std::string> server_searches;
   LocalShellHistory local_shell;
+  std::unordered_set<std::string> patch_calls;
 
   Json assistant =
       Object({{"role", String("assistant")}, {"content", String("")}});
@@ -539,7 +547,11 @@ Status NormalizeResponsesInput(const io::Json& request,
   std::vector<size_t> async_function_inputs;
   std::unordered_set<std::string> program_ids, program_results;
   std::unordered_map<std::string, std::pair<std::string, Json>> agent_actions;
-  std::unordered_map<std::string, std::string> program_children;
+  struct ProgramChild {
+    std::string parent;
+    std::string output_type;
+  };
+  std::unordered_map<std::string, ProgramChild> program_children;
   std::unordered_set<std::string> program_child_results;
   std::string reasoning, assistant_path;
   size_t automatic_returns = 0;
@@ -761,9 +773,11 @@ Status NormalizeResponsesInput(const io::Json& request,
           id.empty() || id.size() > 256)
         return Invalid(error, path, "Invalid program child relationship");
       const bool invocation =
-          type == "function_call" || type == "custom_tool_call";
+          type == "function_call" || type == "custom_tool_call" ||
+          type == "apply_patch_call";
       const bool result =
-          type == "function_call_output" || type == "custom_tool_call_output";
+          type == "function_call_output" || type == "custom_tool_call_output" ||
+          type == "apply_patch_call_output";
       if (!invocation && !result)
         return Invalid(error, path, "Invalid program caller item");
       auto public_item = item;
@@ -776,11 +790,14 @@ Status NormalizeResponsesInput(const io::Json& request,
       if (!status) return status;
       if (invocation) {
         if (!call_ids.insert(id).second ||
-            !program_children.emplace(id, parent).second ||
+            !program_children.emplace(id, ProgramChild{parent, type + "_output"})
+                 .second ||
             item.GetString("status", "completed") != "completed")
           return Invalid(error, path, "Invalid program child call");
-      } else if (!program_children.contains(id) ||
-                 program_children.at(id) != parent ||
+      } else if (const auto child = program_children.find(id);
+                 child == program_children.end() ||
+                 child->second.parent != parent ||
+                 child->second.output_type != type ||
                  !program_child_results.insert(id).second) {
         return Invalid(error, path, "Orphan or duplicate program child result");
       }
@@ -1069,6 +1086,41 @@ Status NormalizeResponsesInput(const io::Json& request,
       expected.emplace(id, false);
       returned.insert(id);
       ++automatic_returns;
+    } else if (type == "apply_patch_call" || type == "apply_patch_call_output") {
+      const auto id = item.GetString("call_id");
+      if (id.empty() || id.size() > 256)
+        return Invalid(error, path + ".call_id", "Invalid patch call ID");
+      status = DirectCaller(item, path, error);
+      if (!status) return status;
+      if (type == "apply_patch_call") {
+        if (item.GetString("status") != "completed")
+          return Invalid(error, path + ".status", "Patch call is unfinished");
+        if (results.size() > automatic_returns) {
+          status = flush();
+          if (!status) return status;
+        }
+        if (!call_ids.insert(id).second)
+          return Invalid(error, path + ".call_id", "Duplicate patch call ID");
+        patch_calls.insert(id);
+        if (assistant_path.empty()) assistant_path = path;
+        auto function = Object({
+            {"name", String(kApplyPatchToolName)},
+            {"arguments", String(OutputJson(*item.Find("operation")))}});
+        calls.array.push_back(Object({{"id", String(id)},
+                                      {"type", String("function")},
+                                      {"function", std::move(function)}}));
+      } else {
+        if (!patch_calls.contains(id) || !returned.insert(id).second)
+          return Invalid(error, path + ".call_id",
+                         "Orphan or duplicate patch result");
+        auto outcome = Object({{"status", *item.Find("status")}});
+        if (const auto* text = item.Find("output"))
+          Set(&outcome, "output", *text);
+        results.emplace_back(Object({{"role", String("tool")},
+                                     {"tool_call_id", String(id)},
+                                     {"content", String(OutputJson(outcome))}}),
+                             path);
+      }
     } else if (type == "local_shell_call" ||
                type == "local_shell_call_output") {
       if (item.GetString("status", "completed") != "completed")

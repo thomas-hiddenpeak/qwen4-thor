@@ -3082,6 +3082,16 @@
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+      },
+      "client_patch_20261126": {
+        "stage": "history_cpu_verified",
+        "issued": false,
+        "history": "evidence/serve-client-patch-20261126/history.json",
+        "pending": [
+          "tool declaration and typed output producer",
+          "program-executed child dispatch and SDK business",
+          "managed recovery and release"
+        ]
       }
     },
     {
@@ -3767,6 +3777,16 @@
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+      },
+      "client_patch_20261126": {
+        "stage": "history_cpu_verified",
+        "issued": false,
+        "history": "evidence/serve-client-patch-20261126/history.json",
+        "pending": [
+          "tool declaration and typed output producer",
+          "program-executed child dispatch and SDK business",
+          "managed recovery and release"
+        ]
       }
     },
     {
@@ -7604,6 +7624,16 @@
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+      },
+      "client_patch_20261126": {
+        "stage": "history_cpu_verified",
+        "issued": false,
+        "history": "evidence/serve-client-patch-20261126/history.json",
+        "pending": [
+          "tool declaration and typed output producer",
+          "program-executed child dispatch and SDK business",
+          "managed recovery and release"
+        ]
       }
     },
     {
@@ -8883,6 +8913,16 @@
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+      },
+      "client_patch_20261126": {
+        "stage": "history_cpu_verified",
+        "issued": false,
+        "history": "evidence/serve-client-patch-20261126/history.json",
+        "pending": [
+          "tool declaration and typed output producer",
+          "program-executed child dispatch and SDK business",
+          "managed recovery and release"
+        ]
       }
     },
     {

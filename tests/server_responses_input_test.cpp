@@ -648,3 +648,75 @@ Q4T_TEST(responses_local_shell_selectors_require_the_declared_builtin) {
   Q4T_CHECK(!NormalizeResponsesTools(request, &tools, &choice, &error));
   return true;
 }
+
+Q4T_TEST(responses_patch_history_preserves_the_operation_and_failure) {
+  auto request = Read(R"({"input":[
+      {"type":"apply_patch_call","id":null,"call_id":"patch_1",
+       "status":"completed","operation":{"type":"update_file",
+       "path":"notes.md","diff":"@@\n-old\n+new"}},
+      {"type":"apply_patch_call_output","call_id":"patch_1","status":"failed",
+       "output":"context mismatch"}]})");
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  const auto& messages = plan.messages.array;
+  Q4T_CHECK(messages.size() == 2 &&
+            messages[0].GetString("role") == "assistant" &&
+            messages[1].GetString("role") == "tool" &&
+            messages[1].GetString("tool_call_id") == "patch_1");
+  const auto& call = messages[0].GetArray("tool_calls")->array.front();
+  const auto* function = call.Find("function");
+  Q4T_CHECK(function && call.GetString("id") == "patch_1" &&
+            function->GetString("name") == "q4t_builtin_apply_patch");
+  const auto args = Read(function->GetString("arguments"));
+  Q4T_CHECK(args.GetString("path") == "notes.md" &&
+            args.GetString("diff") == "@@\n-old\n+new");
+  auto result = Read(messages[1].GetString("content"));
+  Q4T_CHECK(result.GetString("status") == "failed" &&
+            result.GetString("output") == "context mismatch");
+
+  request = Read(R"({"input":[{"type":"apply_patch_call","call_id":"delete",
+       "status":"completed","operation":{"type":"delete_file","path":"old"}},
+       {"type":"apply_patch_call_output","call_id":"delete","status":"completed"}]})");
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  result = Read(plan.messages.array.back().GetString("content"));
+  Q4T_CHECK(result.GetString("status") == "completed" && !result.Has("output"));
+  auto& items = request.object.front().second.array;
+  items.back() = Read(R"({"type":"function_call_output","call_id":"delete",
+                          "output":"wrong tool family"})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  items.front() = Read(R"({"type":"function_call","call_id":"delete",
+                            "name":"read","arguments":"{}"})");
+  items.back() = Read(R"({"type":"apply_patch_call_output","call_id":"delete",
+                           "status":"completed"})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  return true;
+}
+
+Q4T_TEST(responses_program_patch_results_require_original_family_and_parent) {
+  auto request = Read(R"json({"input":[
+    {"type":"program","id":"p","call_id":"parent","code":"text('ok')",
+     "fingerprint":"history-only"},
+    {"type":"apply_patch_call","call_id":"child","status":"completed",
+     "operation":{"type":"create_file","path":"draft","diff":"+draft"},
+     "caller":{"type":"program","caller_id":"parent"}},
+    {"type":"apply_patch_call_output","call_id":"child","status":"failed",
+     "output":"client declined","caller":{"type":"program","caller_id":"parent"}}]})json");
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  const auto prompt = OutputJson(plan.messages);
+  Q4T_CHECK(prompt.find("history-only") == prompt.npos &&
+            prompt.find("client declined") == prompt.npos);
+  auto& items = request.object.front().second.array;
+  items[2] = Read(R"({"type":"custom_tool_call_output","call_id":"child",
+      "output":"not a patch result","caller":{"type":"program","caller_id":"parent"}})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  items[1] = Read(R"({"type":"function_call","call_id":"child","name":"read",
+      "arguments":"{}","caller":{"type":"program","caller_id":"parent"}})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  items[2] = Read(R"({"type":"function_call_output","call_id":"child",
+      "output":"ok","caller":{"type":"program","caller_id":"wrong"}})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  return true;
+}
