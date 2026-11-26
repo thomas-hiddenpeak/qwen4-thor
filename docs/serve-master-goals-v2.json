@@ -3169,13 +3169,14 @@
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "failed_mcp_native_http_cpu_verified",
+        "state": "failed_mcp_real_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native TLS and managed-profile qualification of the MCP error representation",
-          "compatibility of typed programmatic tools with earlier clients"
+          "capacity profiles, supervised recovery and issue of MCP reader change",
+          "older SDK closed union for programmatic tools"
         ],
-        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json"
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json"
       }
     },
     {
@@ -7856,13 +7857,14 @@
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "failed_mcp_native_http_cpu_verified",
+        "state": "failed_mcp_real_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native TLS and managed-profile qualification of the MCP error representation",
-          "compatibility of typed programmatic tools with earlier clients"
+          "capacity profiles, supervised recovery and issue of MCP reader change",
+          "older SDK closed union for programmatic tools"
         ],
-        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json"
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json"
       }
     },
     {
@@ -9224,13 +9226,14 @@
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "failed_mcp_native_http_cpu_verified",
+        "state": "failed_mcp_real_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native TLS and managed-profile qualification of the MCP error representation",
-          "compatibility of typed programmatic tools with earlier clients"
+          "capacity profiles, supervised recovery and issue of MCP reader change",
+          "older SDK closed union for programmatic tools"
         ],
-        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json"
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json"
       }
     },
     {
