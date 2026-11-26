@@ -354,7 +354,8 @@ Q4T_TEST(responses_program_patch_preserves_client_failure_after_reopen) {
     ObjectStore store(f.options);
     StateCipher cipher(store);
     const auto invalid = Array({Create(
-        cipher, "await tools.apply_patch({type:'update_file',path:'draft.md'});",
+        cipher,
+        "await tools.apply_patch({type:'update_file',path:'draft.md'});",
         tools)});
     Q4T_CHECK(!Run(cipher, invalid, &calls).ok() && calls.array.empty());
     history = Array({Create(
@@ -556,4 +557,32 @@ Q4T_TEST(
             result.array[0].GetString("result") == "9");
   history.array[0] = original;
   return !Run(cipher, history, &result).ok();
+}
+
+Q4T_TEST(responses_program_child_identity_preserves_vm_object_key_order) {
+  Fixture f;
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  auto tools = Tools();
+  auto& definition = tools.array[1];
+  std::erase_if(definition.object, [](const auto& field) {
+    return field.first == "output_schema";
+  });
+  auto history =
+      Array({Create(cipher,
+                    "const a=await tools.read({n:1});"
+                    "await tools.read({n:Object.keys(a)[0]==='left'?2:3});",
+                    tools)});
+  Json initial, left, right;
+  Q4T_CHECK(Ok(Run(cipher, history, &initial)) && initial.array.size() == 1);
+  history.array.push_back(initial.array.front());
+  history.array.push_back(
+      Result(initial.array.front(), String(R"({"left":0,"right":0})")));
+  Q4T_CHECK(Ok(Run(cipher, history, &left)) && left.array.size() == 1);
+  Set(&history.array.back(), "output", String(R"({"right":0,"left":0})"));
+  Q4T_CHECK(Ok(Run(cipher, history, &right)) && right.array.size() == 1);
+  Q4T_CHECK(left.array[0].GetString("arguments") == R"({"n":2})" &&
+            right.array[0].GetString("arguments") == R"({"n":3})");
+  return left.array[0].GetString("call_id") !=
+         right.array[0].GetString("call_id");
 }

@@ -75,17 +75,16 @@ std::string InvocationDigest(std::string_view parent, size_t index,
   return Digest(input).substr(0, 56);
 }
 
-ObjectReply AddResult(ResponsesProgramState* state, size_t index, Json value) {
+void AddResult(ResponsesProgramState* state, size_t index, Json value) {
   auto entry = Object({{"index", Number(index)}, {"value", std::move(value)}});
-  std::string identity;
-  if (!InputValueIdentity(entry, &identity))
-    return Error(503, "program_state_capacity", "Cannot bind program result");
+  // The VM can observe object insertion order and the sign of zero.
+  // Bind the same JSON encoding that its worker parses.
+  auto identity = Digest(OutputJson(entry));
   const auto& previous = state->result_contexts;
   state->result_contexts.push_back(
       previous.empty() ? std::move(identity)
                        : Digest(previous.back() + ':' + identity));
   Field(state->worker_input, "results").array.push_back(std::move(entry));
-  return {};
 }
 
 std::optional<std::string_view> ResultContext(
@@ -540,8 +539,7 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
         } else if (!Parse(canonical.GetString("output"), &value)) {
           return Invalid("MCP result is not an authenticated native value");
         }
-        auto added = AddResult(&state, index, std::move(value));
-        if (!added.ok()) return added;
+        AddResult(&state, index, std::move(value));
       }
       continue;
     }
@@ -667,8 +665,7 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
         if (shell && item.Has("max_output_length"))
           Set(&outcome, "max_output_length", *item.Find("max_output_length"));
         if (output_value) Set(&outcome, "output", *output_value);
-        auto added = AddResult(&state, index, std::move(outcome));
-        if (!added.ok()) return added;
+        AddResult(&state, index, std::move(outcome));
         continue;
       }
       if (!output_value) return Invalid("Missing program result", path);
@@ -686,8 +683,7 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
         if (io::ParseJson(output_value->str, &decoded, true, kSchemaJsonLimits))
           value = std::move(decoded);
       }
-      auto added = AddResult(&state, index, std::move(value));
-      if (!added.ok()) return added;
+      AddResult(&state, index, std::move(value));
     }
   }
   auto validated = ValidateToolResultSchemas(

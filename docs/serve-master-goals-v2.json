@@ -3125,9 +3125,10 @@
         ]
       },
       "program_dependent_calls_20261126": {
-        "stage": "targeted_cpu",
+        "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
       }
     },
     {
@@ -3854,9 +3855,10 @@
         ]
       },
       "program_dependent_calls_20261126": {
-        "stage": "targeted_cpu",
+        "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
       }
     },
     {
@@ -7735,9 +7737,10 @@
         ]
       },
       "program_dependent_calls_20261126": {
-        "stage": "targeted_cpu",
+        "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
       }
     },
     {
@@ -9058,9 +9061,10 @@
         ]
       },
       "program_dependent_calls_20261126": {
-        "stage": "targeted_cpu",
+        "stage": "vm_visible_result_bytes_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "vm_order": "evidence/serve-program-forks-20261126/vm-order.json"
       }
     },
     {
