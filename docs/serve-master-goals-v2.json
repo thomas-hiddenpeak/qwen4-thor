@@ -887,11 +887,12 @@
         ]
       },
       "mcp_approval_identifiers_20261126": {
-        "stage": "native_https_verified",
+        "stage": "profile_verified",
         "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
         "issued": false,
         "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
-        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json"
+        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
+        "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
       }
     },
     {
@@ -3726,11 +3727,12 @@
         ]
       },
       "mcp_approval_identifiers_20261126": {
-        "stage": "native_https_verified",
+        "stage": "profile_verified",
         "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
         "issued": false,
         "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
-        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json"
+        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
+        "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
       }
     },
     {
@@ -8819,11 +8821,12 @@
         "method": "GET /v1/chat/completions/{completion_id}/messages"
       },
       "mcp_approval_identifiers_20261126": {
-        "stage": "native_https_verified",
+        "stage": "profile_verified",
         "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
         "issued": false,
         "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
-        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json"
+        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
+        "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
       }
     },
     {
