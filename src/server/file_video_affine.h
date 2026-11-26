@@ -5,6 +5,7 @@
 #include <span>
 #include <vector>
 
+#include "file_video_clipping.h"
 #include "file_video_geometry.h"
 #include "file_video_orientation.h"
 
@@ -51,7 +52,8 @@ inline Failure RenderAffineRgb(const DisplayMatrices& matrices, uint32_t width,
                                uint32_t height, std::span<const uint8_t> source,
                                size_t stride, const FileVideoLimits& limits,
                                AffineGeometry* geometry,
-                               std::vector<uint8_t>* rgb) {
+                               std::vector<uint8_t>* rgb,
+                               const DisplayClips& clips = {}) {
   const uint64_t row_bytes = uint64_t(width) * 3;
   if (!rgb || !geometry || !width || !height || stride < row_bytes ||
       source.size() < row_bytes ||
@@ -74,6 +76,8 @@ inline Failure RenderAffineRgb(const DisplayMatrices& matrices, uint32_t width,
       const auto ny = (t.a * py - t.b * px) * sign;
       if (nx < 0 || ny < 0 || nx >= determinant * width ||
           ny >= determinant * height)
+        continue;
+      if (clips.Any() && !VisibleAt(clips, matrices.track, nx, ny, determinant))
         continue;
       const auto sample = [&](const __int128 n, uint32_t extent) {
         const auto q = int64_t(n * 65536 / determinant) - 32768;

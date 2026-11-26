@@ -1,0 +1,1043 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 530,
+  "build": {
+    "engine": "4f94080ae75c546efbd48f90c1d861bd8f0d6c83d720d215125eb7897b8c9687",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "4da5cd5d5b0a5c85724c3d056c0de8525a01d2bec4199623fb1e4c7bb00d5415",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "saved": {
+          "response": "resp_e774f64acb7a4fec24981f9ac6da319f",
+          "file": "file_4a5f875dba575322668cb2017df73a64",
+          "resource_sha256": "1929fea3e52d33b2cb3a44cd1f500c26644d58dc82e4995acaf0bd54e8182573",
+          "get": 200,
+          "foreign": 404,
+          "deleted": 404
+        },
+        "sdk": "3.55.1",
+        "responses": {
+          "uploaded": {
+            "response": "resp_e774f64acb7a4fec24981f9ac6da319f",
+            "status": "completed",
+            "colors": {
+              "top_left": "red"
+            },
+            "input_tokens": 901
+          },
+          "inline": {
+            "response": "resp_8f5a0489f6edf7322928fca7f3032161",
+            "status": "completed",
+            "colors": {
+              "top_left": "black",
+              "top_right": "green",
+              "bottom_left": "black",
+              "bottom_right": "yellow"
+            },
+            "input_tokens": 1020,
+            "events": [
+              [
+                0,
+                "response.created"
+              ],
+              [
+                1,
+                "response.in_progress"
+              ],
+              [
+                2,
+                "response.output_item.added"
+              ],
+              [
+                3,
+                "response.content_part.added"
+              ],
+              [
+                4,
+                "response.output_text.delta"
+              ],
+              [
+                5,
+                "response.output_text.delta"
+              ],
+              [
+                6,
+                "response.output_text.delta"
+              ],
+              [
+                7,
+                "response.output_text.delta"
+              ],
+              [
+                8,
+                "response.output_text.delta"
+              ],
+              [
+                9,
+                "response.output_text.delta"
+              ],
+              [
+                10,
+                "response.output_text.delta"
+              ],
+              [
+                11,
+                "response.output_text.delta"
+              ],
+              [
+                12,
+                "response.output_text.delta"
+              ],
+              [
+                13,
+                "response.output_text.delta"
+              ],
+              [
+                14,
+                "response.output_text.delta"
+              ],
+              [
+                15,
+                "response.output_text.delta"
+              ],
+              [
+                16,
+                "response.output_text.delta"
+              ],
+              [
+                17,
+                "response.output_text.delta"
+              ],
+              [
+                18,
+                "response.output_text.delta"
+              ],
+              [
+                19,
+                "response.output_text.delta"
+              ],
+              [
+                20,
+                "response.output_text.delta"
+              ],
+              [
+                21,
+                "response.output_text.delta"
+              ],
+              [
+                22,
+                "response.output_text.delta"
+              ],
+              [
+                23,
+                "response.output_text.delta"
+              ],
+              [
+                24,
+                "response.output_text.delta"
+              ],
+              [
+                25,
+                "response.output_text.delta"
+              ],
+              [
+                26,
+                "response.output_text.delta"
+              ],
+              [
+                27,
+                "response.output_text.delta"
+              ],
+              [
+                28,
+                "response.output_text.delta"
+              ],
+              [
+                29,
+                "response.output_text.delta"
+              ],
+              [
+                30,
+                "response.output_text.delta"
+              ],
+              [
+                31,
+                "response.output_text.delta"
+              ],
+              [
+                32,
+                "response.output_text.done"
+              ],
+              [
+                33,
+                "response.content_part.done"
+              ],
+              [
+                34,
+                "response.output_item.done"
+              ],
+              [
+                35,
+                "response.completed"
+              ]
+            ]
+          },
+          "replay": {
+            "response": "resp_aa83d2b415d2e13fa9e4b9ea71d25045",
+            "status": "completed",
+            "colors": {
+              "top_left": "red",
+              "top_right": "black",
+              "bottom_left": "blue",
+              "bottom_right": "black"
+            },
+            "input_tokens": 1062,
+            "events": [
+              [
+                0,
+                "response.created"
+              ],
+              [
+                1,
+                "response.in_progress"
+              ],
+              [
+                2,
+                "response.output_item.added"
+              ],
+              [
+                3,
+                "response.content_part.added"
+              ],
+              [
+                4,
+                "response.output_text.delta"
+              ],
+              [
+                5,
+                "response.output_text.delta"
+              ],
+              [
+                6,
+                "response.output_text.delta"
+              ],
+              [
+                7,
+                "response.output_text.delta"
+              ],
+              [
+                8,
+                "response.output_text.delta"
+              ],
+              [
+                9,
+                "response.output_text.delta"
+              ],
+              [
+                10,
+                "response.output_text.delta"
+              ],
+              [
+                11,
+                "response.output_text.delta"
+              ],
+              [
+                12,
+                "response.output_text.delta"
+              ],
+              [
+                13,
+                "response.output_text.delta"
+              ],
+              [
+                14,
+                "response.output_text.delta"
+              ],
+              [
+                15,
+                "response.output_text.delta"
+              ],
+              [
+                16,
+                "response.output_text.delta"
+              ],
+              [
+                17,
+                "response.output_text.delta"
+              ],
+              [
+                18,
+                "response.output_text.delta"
+              ],
+              [
+                19,
+                "response.output_text.delta"
+              ],
+              [
+                20,
+                "response.output_text.delta"
+              ],
+              [
+                21,
+                "response.output_text.delta"
+              ],
+              [
+                22,
+                "response.output_text.delta"
+              ],
+              [
+                23,
+                "response.output_text.delta"
+              ],
+              [
+                24,
+                "response.output_text.delta"
+              ],
+              [
+                25,
+                "response.output_text.delta"
+              ],
+              [
+                26,
+                "response.output_text.delta"
+              ],
+              [
+                27,
+                "response.output_text.delta"
+              ],
+              [
+                28,
+                "response.output_text.delta"
+              ],
+              [
+                29,
+                "response.output_text.delta"
+              ],
+              [
+                30,
+                "response.output_text.delta"
+              ],
+              [
+                31,
+                "response.output_text.delta"
+              ],
+              [
+                32,
+                "response.output_text.delta"
+              ],
+              [
+                33,
+                "response.output_text.delta"
+              ],
+              [
+                34,
+                "response.output_text.delta"
+              ],
+              [
+                35,
+                "response.output_text.delta"
+              ],
+              [
+                36,
+                "response.output_text.delta"
+              ],
+              [
+                37,
+                "response.output_text.delta"
+              ],
+              [
+                38,
+                "response.output_text.delta"
+              ],
+              [
+                39,
+                "response.output_text.delta"
+              ],
+              [
+                40,
+                "response.output_text.delta"
+              ],
+              [
+                41,
+                "response.output_text.delta"
+              ],
+              [
+                42,
+                "response.output_text.delta"
+              ],
+              [
+                43,
+                "response.output_text.done"
+              ],
+              [
+                44,
+                "response.content_part.done"
+              ],
+              [
+                45,
+                "response.output_item.done"
+              ],
+              [
+                46,
+                "response.completed"
+              ]
+            ]
+          }
+        },
+        "foreign": 404,
+        "malformed": 400,
+        "counted": 901,
+        "deleted_before_replay": true,
+        "independent_chat": "42",
+        "sources": [
+          "8dd7d84676013aa65dbe213fe27f2c9ff41016ef0e7c095a7a0e6c2c083695fc",
+          "ca274bc1c59f9a4645199a78b39df5cd78bc4d734a5b41393291f65ec776e847"
+        ]
+      },
+      "seconds": 48.449,
+      "starts": 1,
+      "record_sha256": "1b184591f50c1019c56a6f7f5ae455355c0a27dc405d71ddde0ecb6bb8014501",
+      "receipt_sha256": "d6bfba5d1e451a5fd92743e277a1b7171f2646b6f38ca90595997cc8aca7aa92",
+      "predecessor": "9396f0b67a256784879cd37957a835591f1ec6d5e7a01427563f08f662f30dc7"
+    },
+    "light": {
+      "sdk": {
+        "saved": {
+          "response": "resp_18f7f7e03e04fe9ecdf875e72118c816",
+          "file": "file_ea20354709b60f4d92492bd1e13e51ce",
+          "resource_sha256": "3ffe067767222d7679d65816ca902501bce947964e5995767e0613cddb5d9fec",
+          "get": 200,
+          "foreign": 404,
+          "deleted": 404
+        },
+        "restored": {
+          "response": "resp_e774f64acb7a4fec24981f9ac6da319f",
+          "file": "file_4a5f875dba575322668cb2017df73a64",
+          "resource_sha256": "1929fea3e52d33b2cb3a44cd1f500c26644d58dc82e4995acaf0bd54e8182573",
+          "get": 200,
+          "foreign": 404,
+          "deleted": 404
+        },
+        "sdk": "3.55.1",
+        "responses": {
+          "uploaded": {
+            "response": "resp_18f7f7e03e04fe9ecdf875e72118c816",
+            "status": "completed",
+            "colors": {
+              "top_left": "red"
+            },
+            "input_tokens": 901
+          },
+          "inline": {
+            "response": "resp_4c413b4f3ec12e181b14f2a4787cc423",
+            "status": "completed",
+            "colors": {
+              "top_left": "black",
+              "top_right": "green",
+              "bottom_left": "black",
+              "bottom_right": "yellow"
+            },
+            "input_tokens": 1020,
+            "events": [
+              [
+                0,
+                "response.created"
+              ],
+              [
+                1,
+                "response.in_progress"
+              ],
+              [
+                2,
+                "response.output_item.added"
+              ],
+              [
+                3,
+                "response.content_part.added"
+              ],
+              [
+                4,
+                "response.output_text.delta"
+              ],
+              [
+                5,
+                "response.output_text.delta"
+              ],
+              [
+                6,
+                "response.output_text.delta"
+              ],
+              [
+                7,
+                "response.output_text.delta"
+              ],
+              [
+                8,
+                "response.output_text.delta"
+              ],
+              [
+                9,
+                "response.output_text.delta"
+              ],
+              [
+                10,
+                "response.output_text.delta"
+              ],
+              [
+                11,
+                "response.output_text.delta"
+              ],
+              [
+                12,
+                "response.output_text.delta"
+              ],
+              [
+                13,
+                "response.output_text.delta"
+              ],
+              [
+                14,
+                "response.output_text.delta"
+              ],
+              [
+                15,
+                "response.output_text.delta"
+              ],
+              [
+                16,
+                "response.output_text.delta"
+              ],
+              [
+                17,
+                "response.output_text.delta"
+              ],
+              [
+                18,
+                "response.output_text.delta"
+              ],
+              [
+                19,
+                "response.output_text.delta"
+              ],
+              [
+                20,
+                "response.output_text.delta"
+              ],
+              [
+                21,
+                "response.output_text.delta"
+              ],
+              [
+                22,
+                "response.output_text.delta"
+              ],
+              [
+                23,
+                "response.output_text.delta"
+              ],
+              [
+                24,
+                "response.output_text.delta"
+              ],
+              [
+                25,
+                "response.output_text.delta"
+              ],
+              [
+                26,
+                "response.output_text.delta"
+              ],
+              [
+                27,
+                "response.output_text.delta"
+              ],
+              [
+                28,
+                "response.output_text.delta"
+              ],
+              [
+                29,
+                "response.output_text.delta"
+              ],
+              [
+                30,
+                "response.output_text.delta"
+              ],
+              [
+                31,
+                "response.output_text.delta"
+              ],
+              [
+                32,
+                "response.output_text.done"
+              ],
+              [
+                33,
+                "response.content_part.done"
+              ],
+              [
+                34,
+                "response.output_item.done"
+              ],
+              [
+                35,
+                "response.completed"
+              ]
+            ]
+          },
+          "replay": {
+            "response": "resp_528b47dadc05bc50340610133352b475",
+            "status": "completed",
+            "colors": {
+              "top_left": "red",
+              "top_right": "black",
+              "bottom_left": "blue",
+              "bottom_right": "black"
+            },
+            "input_tokens": 1062,
+            "events": [
+              [
+                0,
+                "response.created"
+              ],
+              [
+                1,
+                "response.in_progress"
+              ],
+              [
+                2,
+                "response.output_item.added"
+              ],
+              [
+                3,
+                "response.content_part.added"
+              ],
+              [
+                4,
+                "response.output_text.delta"
+              ],
+              [
+                5,
+                "response.output_text.delta"
+              ],
+              [
+                6,
+                "response.output_text.delta"
+              ],
+              [
+                7,
+                "response.output_text.delta"
+              ],
+              [
+                8,
+                "response.output_text.delta"
+              ],
+              [
+                9,
+                "response.output_text.delta"
+              ],
+              [
+                10,
+                "response.output_text.delta"
+              ],
+              [
+                11,
+                "response.output_text.delta"
+              ],
+              [
+                12,
+                "response.output_text.delta"
+              ],
+              [
+                13,
+                "response.output_text.delta"
+              ],
+              [
+                14,
+                "response.output_text.delta"
+              ],
+              [
+                15,
+                "response.output_text.delta"
+              ],
+              [
+                16,
+                "response.output_text.delta"
+              ],
+              [
+                17,
+                "response.output_text.delta"
+              ],
+              [
+                18,
+                "response.output_text.delta"
+              ],
+              [
+                19,
+                "response.output_text.delta"
+              ],
+              [
+                20,
+                "response.output_text.delta"
+              ],
+              [
+                21,
+                "response.output_text.delta"
+              ],
+              [
+                22,
+                "response.output_text.delta"
+              ],
+              [
+                23,
+                "response.output_text.delta"
+              ],
+              [
+                24,
+                "response.output_text.delta"
+              ],
+              [
+                25,
+                "response.output_text.delta"
+              ],
+              [
+                26,
+                "response.output_text.delta"
+              ],
+              [
+                27,
+                "response.output_text.delta"
+              ],
+              [
+                28,
+                "response.output_text.delta"
+              ],
+              [
+                29,
+                "response.output_text.delta"
+              ],
+              [
+                30,
+                "response.output_text.delta"
+              ],
+              [
+                31,
+                "response.output_text.delta"
+              ],
+              [
+                32,
+                "response.output_text.delta"
+              ],
+              [
+                33,
+                "response.output_text.delta"
+              ],
+              [
+                34,
+                "response.output_text.delta"
+              ],
+              [
+                35,
+                "response.output_text.delta"
+              ],
+              [
+                36,
+                "response.output_text.delta"
+              ],
+              [
+                37,
+                "response.output_text.delta"
+              ],
+              [
+                38,
+                "response.output_text.delta"
+              ],
+              [
+                39,
+                "response.output_text.delta"
+              ],
+              [
+                40,
+                "response.output_text.delta"
+              ],
+              [
+                41,
+                "response.output_text.delta"
+              ],
+              [
+                42,
+                "response.output_text.delta"
+              ],
+              [
+                43,
+                "response.output_text.done"
+              ],
+              [
+                44,
+                "response.content_part.done"
+              ],
+              [
+                45,
+                "response.output_item.done"
+              ],
+              [
+                46,
+                "response.completed"
+              ]
+            ]
+          },
+          "restored": {
+            "response": "resp_f68d7b6eb55dfa8067ac20a40a32a410",
+            "status": "completed",
+            "colors": {
+              "top_left": "red",
+              "top_right": "black",
+              "bottom_left": "blue",
+              "bottom_right": "black"
+            },
+            "input_tokens": 1062,
+            "events": [
+              [
+                0,
+                "response.created"
+              ],
+              [
+                1,
+                "response.in_progress"
+              ],
+              [
+                2,
+                "response.output_item.added"
+              ],
+              [
+                3,
+                "response.content_part.added"
+              ],
+              [
+                4,
+                "response.output_text.delta"
+              ],
+              [
+                5,
+                "response.output_text.delta"
+              ],
+              [
+                6,
+                "response.output_text.delta"
+              ],
+              [
+                7,
+                "response.output_text.delta"
+              ],
+              [
+                8,
+                "response.output_text.delta"
+              ],
+              [
+                9,
+                "response.output_text.delta"
+              ],
+              [
+                10,
+                "response.output_text.delta"
+              ],
+              [
+                11,
+                "response.output_text.delta"
+              ],
+              [
+                12,
+                "response.output_text.delta"
+              ],
+              [
+                13,
+                "response.output_text.delta"
+              ],
+              [
+                14,
+                "response.output_text.delta"
+              ],
+              [
+                15,
+                "response.output_text.delta"
+              ],
+              [
+                16,
+                "response.output_text.delta"
+              ],
+              [
+                17,
+                "response.output_text.delta"
+              ],
+              [
+                18,
+                "response.output_text.delta"
+              ],
+              [
+                19,
+                "response.output_text.delta"
+              ],
+              [
+                20,
+                "response.output_text.delta"
+              ],
+              [
+                21,
+                "response.output_text.delta"
+              ],
+              [
+                22,
+                "response.output_text.delta"
+              ],
+              [
+                23,
+                "response.output_text.delta"
+              ],
+              [
+                24,
+                "response.output_text.delta"
+              ],
+              [
+                25,
+                "response.output_text.delta"
+              ],
+              [
+                26,
+                "response.output_text.delta"
+              ],
+              [
+                27,
+                "response.output_text.delta"
+              ],
+              [
+                28,
+                "response.output_text.delta"
+              ],
+              [
+                29,
+                "response.output_text.delta"
+              ],
+              [
+                30,
+                "response.output_text.delta"
+              ],
+              [
+                31,
+                "response.output_text.delta"
+              ],
+              [
+                32,
+                "response.output_text.delta"
+              ],
+              [
+                33,
+                "response.output_text.delta"
+              ],
+              [
+                34,
+                "response.output_text.delta"
+              ],
+              [
+                35,
+                "response.output_text.delta"
+              ],
+              [
+                36,
+                "response.output_text.delta"
+              ],
+              [
+                37,
+                "response.output_text.delta"
+              ],
+              [
+                38,
+                "response.output_text.delta"
+              ],
+              [
+                39,
+                "response.output_text.delta"
+              ],
+              [
+                40,
+                "response.output_text.delta"
+              ],
+              [
+                41,
+                "response.output_text.delta"
+              ],
+              [
+                42,
+                "response.output_text.delta"
+              ],
+              [
+                43,
+                "response.output_text.done"
+              ],
+              [
+                44,
+                "response.content_part.done"
+              ],
+              [
+                45,
+                "response.output_item.done"
+              ],
+              [
+                46,
+                "response.completed"
+              ]
+            ]
+          }
+        },
+        "foreign": 404,
+        "malformed": 400,
+        "counted": 901,
+        "deleted_before_replay": true,
+        "independent_chat": "42",
+        "sources": [
+          "8dd7d84676013aa65dbe213fe27f2c9ff41016ef0e7c095a7a0e6c2c083695fc",
+          "ca274bc1c59f9a4645199a78b39df5cd78bc4d734a5b41393291f65ec776e847"
+        ]
+      },
+      "seconds": 47.551,
+      "starts": 1,
+      "record_sha256": "c84469191f3fbc11e6ad26f224e2f8da83d3c7a18c188b40e57869bd1b143504",
+      "receipt_sha256": "03bdc82cd678088fc083712bbeaf1ff629478705e24d52f17a973a68dfe2dcc1",
+      "predecessor": "6aee1dbf9a8f9544b348302f16144cabf5790a1f745b05633735194a5a4c9392"
+    }
+  },
+  "business_evidence": "2654aed17ca172d014806d159841eea3115ea8b96e07175684e1930f38aa0940",
+  "lease_exit": "87feefd5d4d15e3b951d8e41605ae85d849ca9f73896ef66cb5e64138f434d7e",
+  "acceptance": "c2ebf8c338cc5f3993b165d8d8df26e9f6cf1c10c86f690c59f5327c78adb10f",
+  "qualification": "5426a13632d986dbfc602a2ad27f8e856c4908e0eaef8f10658597a012520e8e",
+  "default_preserved": true,
+  "wire": {
+    "primary": {
+      "captures": {
+        "saved-get.json": "1929fea3e52d33b2cb3a44cd1f500c26644d58dc82e4995acaf0bd54e8182573",
+        "uploaded.json": "80e3661b9fd7bfafc5f6d789267d15ba08c474176290118d69a45bdd312867b6",
+        "inline.json": "d02110b591adc100343497c424972da60b3ea788d6095c5ef83b3c4d67d4b242",
+        "replay.json": "5960d308efa1f30f1b4942fcde9f0dc89740d5fb6f633ce385d1aca8264659d6"
+      },
+      "scoped_gets": 1,
+      "seconds": 48.44854646222666
+    },
+    "light": {
+      "captures": {
+        "saved-get.json": "3ffe067767222d7679d65816ca902501bce947964e5995767e0613cddb5d9fec",
+        "restored-get.json": "1929fea3e52d33b2cb3a44cd1f500c26644d58dc82e4995acaf0bd54e8182573",
+        "uploaded.json": "799cf9710b0b9416094d64ed73e8d15a1f8676455f562856aa269a871452d6dd",
+        "inline.json": "acec88e1237480e07460770b27273f3d266bfb8e9d4d40c540d2dcfb685d4f27",
+        "replay.json": "e0d66b31fcc27e829a035e3a248c68ed894de3557ee832d367933c9fd62483ac",
+        "restored.json": "2762f9f6e86ce5f7744c9248c43e58bacdf6f39efd337317add6747583a9cd36"
+      },
+      "scoped_gets": 2,
+      "seconds": 47.55064019188285
+    }
+  },
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "previous_format": "q4t-profile-business-v70",
+  "current_format": "q4t-profile-business-v71"
+}

@@ -150,7 +150,7 @@ class PngEncoder {
 
 Failure TransformSample(Runtime& api, GstSample* sample,
                         const DisplayMatrices& matrices,
-                        const DisplayGeometry& shape,
+                        const DisplayClips& clips, const DisplayGeometry& shape,
                         const FileVideoLimits& limits, PngEncoder* encoder,
                         std::string* png) {
   GstVideoInfo info{};
@@ -178,13 +178,13 @@ Failure TransformSample(Runtime& api, GstSample* sample,
   if (IsAffine(matrices.movie) && IsAffine(matrices.track)) {
     AffineGeometry geometry;
     status = RenderAffineRgb(matrices, shape.square_width, shape.square_height,
-                             view, stride, limits, &geometry, &rgb);
+                             view, stride, limits, &geometry, &rgb, clips);
     dimensions = {geometry.width, geometry.height};
   } else {
     ProjectiveGeometry geometry;
-    status = RenderProjectiveRgb(matrices, shape.square_width,
-                                 shape.square_height, view, stride, limits,
-                                 &geometry, &rgb);
+    status =
+        RenderProjectiveRgb(matrices, shape.square_width, shape.square_height,
+                            view, stride, limits, &geometry, &rgb, clips);
     dimensions = {geometry.width, geometry.height};
   }
   if (status != Failure::kNone) return status;
@@ -203,6 +203,7 @@ struct Pipeline {
   std::mutex geometry_mutex;
   DisplayGeometry geometry;
   const DisplayMatrices* transform = nullptr;
+  const DisplayClips* clips = nullptr;
   size_t offset = 0;
   std::atomic<Failure> failure{Failure::kNone};
   bool video = false;
@@ -248,6 +249,15 @@ struct Pipeline {
     if (result != Failure::kNone) {
       failure = result;
       return false;
+    }
+    if (clips) {
+      const auto status =
+          UseTrackGrid(clips->track_size[0], clips->track_size[1],
+                       request.limits, &selected);
+      if (status != Failure::kNone) {
+        failure = status;
+        return false;
+      }
     }
     if (transform) {
       TransformedSize output;
@@ -430,7 +440,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   const auto track = MovieDisplay().SelectTrack(source);
   const auto* matrices = track ? &track->matrices : nullptr;
   const auto direction = matrices ? matrices->Direction() : std::nullopt;
-  const bool transformed = matrices && !direction;
+  const bool clipped = track && track->clips.Any();
+  const bool transformed = matrices && (!direction || clipped);
   const bool projective = matrices &&
       (!IsAffine(matrices->movie) || !IsAffine(matrices->track));
   auto* pipeline = api.gst_pipeline_new_fn(nullptr);
@@ -454,6 +465,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   }
   Pipeline state{api, request, source};
   state.has_alternates = track && track->has_alternates;
+  state.clips = clipped ? &track->clips : nullptr;
+  if (clipped) api.g_object_set_fn(elements[3], "add-borders", FALSE, nullptr);
   state.pipeline = pipeline;
   state.convert = elements[2];
   state.square_caps = elements[4];
@@ -570,15 +583,17 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
       if (status != Failure::kNone) return status;
     }
     const uint64_t work_pixels =
-        std::max(uint64_t(geometry.square_width) * geometry.square_height,
-                 uint64_t(display_size.width) * display_size.height);
+        std::max({uint64_t(geometry.coded_width) * geometry.coded_height,
+                  uint64_t(geometry.square_width) * geometry.square_height,
+                  uint64_t(display_size.width) * display_size.height});
     if (++count > request.limits.max_scanned_frames ||
         work_pixels > request.limits.max_decoded_pixels / count)
       return Failure::kCapacity;
     last = {{}, timestamp, count - 1, frame_duration};
     if (transformed) {
-      const auto status = TransformSample(api, sample, *matrices, geometry,
-                                          request.limits, &encoder, &last.png);
+      const auto status =
+          TransformSample(api, sample, *matrices, track->clips, geometry,
+                          request.limits, &encoder, &last.png);
       if (status != Failure::kNone) return status;
     } else {
       const auto size = api.gst_buffer_get_size_fn(buffer);
@@ -653,11 +668,31 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
        {"frames", std::move(frames)}});
   if (transformed) {
     Set(&output->conversion, "format",
-        String(projective ? "q4t.cpu_video_png.v5" : "q4t.cpu_video_png.v4"));
+        String(clipped      ? "q4t.cpu_video_png.v6"
+               : projective ? "q4t.cpu_video_png.v5"
+                            : "q4t.cpu_video_png.v4"));
     auto& display = Field(output->conversion, "display_geometry");
-    Set(&display, "policy", String(projective
-        ? "projective-square-pixels-tight-integer512-bilinear16"
-        : "affine-square-pixels-tight-bilinear16"));
+    Set(&display, "policy",
+        String(clipped ? "quicktime-rect-clips-black-bilinear16"
+               : projective
+                   ? "projective-square-pixels-tight-integer512-bilinear16"
+                   : "affine-square-pixels-tight-bilinear16"));
+    if (clipped) {
+      auto size = Array();
+      for (auto extent : track->clips.track_size)
+        size.array.push_back(Number(extent));
+      Set(&display, "track_size", std::move(size));
+      for (const auto& [name, clip] :
+           {std::pair{"movie_clip", &track->clips.movie},
+            std::pair{"track_clip", &track->clips.track}}) {
+        auto raw = Array();
+        if (*clip)
+          for (auto v :
+               {(*clip)->top, (*clip)->left, (*clip)->bottom, (*clip)->right})
+            raw.array.push_back(Number(v));
+        Set(&display, name, std::move(raw));
+      }
+    }
     for (const auto& [name, matrix] :
          {std::pair{"movie_matrix", &matrices->movie},
           std::pair{"track_matrix", &matrices->track}}) {

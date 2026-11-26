@@ -71,7 +71,7 @@ def observations(directory, accepted):
             'chatkit_generation_handoff', 'chatkit_workflow_handoff',
             'chatkit_image_handoff', 'chatkit_widget_handoff', 'agent_session_control_handoff',
             'response_media_handoff', 'visual_answer_handoff', 'visual_frame_handoff', 'eval_cancel_handoff',
-            'response_failure_handoff'}.intersection(plan):
+            'response_failure_handoff', 'video_clip_handoff'}.intersection(plan):
             from tools.serve_responses import chatkit_actions_profiles
             profiles[name]['evidence_sha256'].update(chatkit_actions_profiles.verify(phase, plan, declared))
             continue
