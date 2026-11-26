@@ -1,0 +1,28 @@
+{
+  "stage": "native_tls_verified",
+  "sdk": {
+    "sdk": "3.55.1",
+    "thread": "cthr_1ab688c19c09da037b59c11ef45be42b",
+    "visible": [
+      "item_3c4abbe5f23d2c5f22e83daf245adbde",
+      "msg_89c2f3c7abce3b7425a31a829a809f6b",
+      "item_4b7023df10800e2361cb0847ed149f5c",
+      "msg_d23d265a8eb12a2811cf573b5e65552a"
+    ],
+    "pages_per_order": 2,
+    "peer": 404,
+    "deleted": 404,
+    "items_sha256": "a342bfbe7832d573e6712737feeb82ef74d5abab80a146ce6b26d8d34b886b8a"
+  },
+  "source": "9b1bd1a5a53b06630e38dc297b35289e66442f4b7f243401fbc62ad4240d3b31",
+  "native": "11890af031c1dffbd5fd4d0973bed014f61dc16ac2fd35d0dc9f7e0a98615359",
+  "checks": [
+    "ascending and descending SDK pagination",
+    "obsolete answer absent",
+    "visible model answers",
+    "source file deleted",
+    "different client denied"
+  ],
+  "model_starts_added": 0,
+  "generations_added": 0
+}

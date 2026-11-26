@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Python SDK 3.55.1 已在原生 TLS 入口按正序和倒序各读取两页，四条消息的 ID 和内容对齐 Node 客户端，旧回答已退出列表，删除的源文件和另一个客户的查询均返回 404。此次读取复用中断重试短验的同一进程，新增模型启动、生成请求均为零。下一步验证主轻配置与故障后的接管。[Python 客户端验收](evidence/serve-chatkit-interrupted-retry-20261127/python-native.json)
+
 真实 ChatKit 用户上传项目发布记录、在回答中断开连接并删除上传文件，随后用新会话凭据重试原消息。中断时独立输入项确实缺失；重试按原输入 ID 从同一快照读回，模型答出 556。原取消记录摘要一致，跨客户读取为 404，后续回答和独立 Chat 均为 42。一次模型启动，用时 40.5 秒。容量及故障切换待验。[原生 TLS 验收](evidence/serve-chatkit-interrupted-retry-20261127/business.json)
 
 Python SDK 3.55.1 现可独立核对重试后的 ChatKit 消息列表。两组真实历史消息在模拟游标上传给官方严格类型解析器，验证了正序和倒序翻页，并拒绝重复页和损坏的消息类型。下一步在同一原生 TLS 短验中核对四条真实消息、旧回答移除、已删除文件及跨客户 404。[客户端记录](evidence/serve-chatkit-interrupted-retry-20261127/python-client.json)
