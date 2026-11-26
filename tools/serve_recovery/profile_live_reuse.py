@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 LAYER_RECORD = 'q4t-profile-business-v84'
 LAYER_FORMAT = 'q4t-video-layer-source-v1'
 LAYER_RECEIPT = 'video-layer-handoff.json'
-LAYER_REVIEWED = {}
+LAYER_REVIEWED = {
+    'primary': '7ff3cd08a248bd5b994142a9eaae14d61c6150bdece24af490dd44cdc60a6c09',
+    'light': '4c627cddf1b60b1e131ca632e9a5645af8b93c01b8ffcf8ea5c3f621428d3877',
+}
 
 INTERRUPTED_RETRY_RECORD = 'q4t-profile-business-v83'
 INTERRUPTED_RETRY_FORMAT = 'q4t-chatkit-interrupted-retry-source-v1'
@@ -687,6 +690,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'c4567531c43c2b9c531d9cc700d4eeaeeab1348508ede91231e670e85a9e24bb':
+        '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     '2290b024c2271c4d85716086b1504ee9eb1f425e60199a8b619181e809fdc9ec':
         '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     '0fae97bc1684b6ce71276e8f138b59cc6c40038bb2068f81a59282ab0ca1fa95':

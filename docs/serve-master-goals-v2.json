@@ -6790,7 +6790,7 @@
         "delivery": "evidence/serve-video-track-grid-20261127/delivery.json"
       },
       "quicktime_active_layers_20261127": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "original": "evidence/serve-video-layer-composition-20261127/baseline.json",
         "targets": [
           "independent enabled track selection",
@@ -6806,7 +6806,8 @@
         "handoff_driver": "evidence/serve-video-layer-composition-20261127/handoff-driver.json",
         "first_attempt": "evidence/serve-video-layer-composition-20261127/first-business-attempt.json",
         "paired_control": "evidence/serve-video-layer-composition-20261127/paired-business-controls.json",
-        "business": "evidence/serve-video-layer-composition-20261127/business.json"
+        "business": "evidence/serve-video-layer-composition-20261127/business.json",
+        "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json"
       }
     },
     {
@@ -9173,10 +9174,11 @@
         "delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
       },
       "successful_stream_sdk_handoff_20261127": {
-        "stage": "cpu_http_verified_with_legacy_strict_failure",
+        "stage": "profile_verified",
         "cpu": "evidence/serve-video-layer-composition-20261127/sdk-cursor.json",
         "live_profiles_pending": true,
-        "legacy_strict_cache_retention_pending": true
+        "legacy_strict_cache_retention_pending": true,
+        "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json"
       }
     },
     {
