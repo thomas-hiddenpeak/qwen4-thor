@@ -19,10 +19,11 @@ LEGACY = PROOF.with_name("legacy-source.json")
 ACTOR = Path(__file__).with_name("approval_identifiers_handoff_sdk.py")
 
 
-def seed(source, store):
+def seed(source, store, witness=None):
     """Copy the closed historical fixture into a fresh private test store."""
     source, store = Path(source), Path(store)
-    witness = package.read(LEGACY)
+    if witness is None:
+        witness = package.read(LEGACY)
     package.require(not store.exists() and not store.is_symlink(),
                     "an uninitialized test store is required")
     store.parent.mkdir(mode=0o700, exist_ok=True, parents=True)
