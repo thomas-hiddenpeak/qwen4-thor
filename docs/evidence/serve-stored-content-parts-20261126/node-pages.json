@@ -1,0 +1,112 @@
+{
+  "stage": "native_loopback_cpu",
+  "sdk": "7.47.0",
+  "runtime": "Node v24.18.0",
+  "rows": [
+    {
+      "name": "mixed-text",
+      "id": "chatcmpl_7213f8851e208dd8008ab485fd6299a2",
+      "rows": 3,
+      "orders": [
+        "asc",
+        "desc"
+      ],
+      "errors": [
+        404,
+        401,
+        400
+      ],
+      "wire_sha256": "400453c0f788090089cbb1e925d73f63313ccd05489a456f2af3d77cebb59957"
+    },
+    {
+      "name": "empty",
+      "id": "chatcmpl_cb66363b83c33212ddbf7b0f2e2dc29e",
+      "rows": 3,
+      "orders": [
+        "asc",
+        "desc"
+      ],
+      "errors": [
+        404,
+        401,
+        400
+      ],
+      "wire_sha256": "f7032078cbd16991d1f17377e09ba1c1cc26086e8774690cf9dd0e4e0d854ea3"
+    },
+    {
+      "name": "images",
+      "id": "chatcmpl_668b9ac691600142ab83938b80188ddc",
+      "rows": 3,
+      "orders": [
+        "asc",
+        "desc"
+      ],
+      "errors": [
+        404,
+        401,
+        400
+      ],
+      "wire_sha256": "ada43492e83c486bcd26ac2a9fe65c2bd1b5b16f5a5055c511c1da819d16de4a"
+    },
+    {
+      "name": "video",
+      "id": "chatcmpl_a999acbfedd2f46073a9d5fd92873174",
+      "rows": 3,
+      "orders": [
+        "asc",
+        "desc"
+      ],
+      "errors": [
+        404,
+        401,
+        400
+      ],
+      "wire_sha256": "c6886f7382554d7040d4554807b7fd534425f12f8ab6d516fb5ce2d5b1fa2609"
+    },
+    {
+      "name": "typed",
+      "id": "chatcmpl_a003a7efc8ff00f7693d466e923b48f2",
+      "rows": 3,
+      "orders": [
+        "asc",
+        "desc"
+      ],
+      "errors": [
+        404,
+        401,
+        400
+      ],
+      "wire_sha256": "5c3104a814cb0237e4336b1987c8a66febdbacc9c24212f4761e7f2e9971fea6"
+    },
+    {
+      "name": "refusal",
+      "id": "chatcmpl_8f85da1eac464f268b4d99431441223a",
+      "rows": 3,
+      "orders": [
+        "asc",
+        "desc"
+      ],
+      "errors": [
+        404,
+        401,
+        400
+      ],
+      "wire_sha256": "504edf1ba7ec57b3734ab745e1660530b18fe690f14a5145c534938f2505aa9e"
+    }
+  ],
+  "fixture_objects": {
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_8f85da1eac464f268b4d99431441223a.json": "9389d8b48dc9fea76921131adbed687eff76180b0bd56d7437137f3d0478972e",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_a003a7efc8ff00f7693d466e923b48f2.json": "e399a0a3b6db9e379dc0394b69510b4535b62f67e416d3d54a40985a32f41599",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_668b9ac691600142ab83938b80188ddc.json": "b6438d94d12136eeb747ba9dad74d947260ae50010d8b720e513bb4975da83a0",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_7213f8851e208dd8008ab485fd6299a2.json": "a7ef5d4dad44b0f5bb37a00bc526c6d10ddef1746212da4078f0ad0daae9da8a",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_cb66363b83c33212ddbf7b0f2e2dc29e.json": "dd454829e3aee57c636ac03d52e80672e1a30ed597a208b638349539a23faf95",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_a999acbfedd2f46073a9d5fd92873174.json": "0d18fc90ae10e6d974f57475c9ba4340179a8934ec79b0e9eeb37e5ebabac9a1"
+  },
+  "native_fixture_sha256": "25b6c9a04d9d0cf4901c97e165d8a3dbd0237f8bf08abf3b4cea7e8c48d51ce4",
+  "driver_sha256": "0fcec0ee636d9ac2a9382e2ac374665478daf2a91ae6e7162eca44c0d89c2d08",
+  "source": "0cf50c6a5583c231d73514ac2558bcbed65e9022ae75e18712c5ad7b711c085f",
+  "python_raw_pages": "e19270db3ce4813fe2138b7944bafb8f5883a693d54ebeea3f476078a1d18c35",
+  "wire_hashes_match_python": true,
+  "object_bytes_unchanged": true,
+  "gpu_starts": 0
+}
