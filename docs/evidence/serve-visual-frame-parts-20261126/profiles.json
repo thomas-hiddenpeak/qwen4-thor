@@ -1,0 +1,157 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 524,
+  "build": {
+    "engine": "e34e80ee67899f008740f5d2aaaf4eb627089c333897d969d7fcaa57c74e5332",
+    "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb"
+  },
+  "openapi_sha256": "1107caed5d15aefc5f519501b97cc62b3fbfb32992596ded503bc042eb002f72",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "previews": [
+          {
+            "guidance": true,
+            "prompt_sha256": "10148f5df96bf0673f42f20f6811541ded33ba5fe026da2aac2e25532bfbcee1",
+            "prompt_tokens": 162,
+            "visual_tokens": 25
+          },
+          {
+            "guidance": true,
+            "prompt_sha256": "10148f5df96bf0673f42f20f6811541ded33ba5fe026da2aac2e25532bfbcee1",
+            "prompt_tokens": 162,
+            "visual_tokens": 25
+          },
+          {
+            "guidance": true,
+            "prompt_sha256": "6a0441bf98e7fa4ec83e9b4998ea9063b99fad922c8ca34c462079ef32b462ab",
+            "prompt_tokens": 195,
+            "visual_tokens": 64
+          }
+        ],
+        "invalid_video_url": 400,
+        "chat_video": {
+          "role": "assistant",
+          "content": "Green"
+        },
+        "chat_untyped_image": {
+          "text": "Blue",
+          "refusal": "",
+          "finish": "stop"
+        },
+        "file_video": {
+          "id": "resp_445cdacc91d38653793155ab2d01111e",
+          "parts": [
+            {
+              "type": "output_text",
+              "text": "Blue",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "peer": 404,
+          "sha256": "c51e7f8936131626788bc4fdbbe41f0cc9a0455aa22113f15380595fd95109d7"
+        },
+        "independent": "42",
+        "restored": null,
+        "controls": {
+          "templates": true,
+          "chat_video": true,
+          "chat_untyped_image": true,
+          "file_video": true,
+          "independent": true
+        },
+        "passed": true
+      },
+      "seconds": 41.487,
+      "starts": 1,
+      "record_sha256": "53733256f15b3801f7d5b1713d532b940e3a5db318621607226b4c94944246da",
+      "receipt_sha256": "5f8a7235ea11a4ad228f3ae02a0523ccdcd52a42f24a31b0f5f1a78b5bbffa24",
+      "predecessor": "59d8f260fb2d4f987220e19f9ae46c141ce8f9ddce6817575eed296465d5dc01"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "previews": [
+          {
+            "guidance": true,
+            "prompt_sha256": "10148f5df96bf0673f42f20f6811541ded33ba5fe026da2aac2e25532bfbcee1",
+            "prompt_tokens": 162,
+            "visual_tokens": 25
+          },
+          {
+            "guidance": true,
+            "prompt_sha256": "10148f5df96bf0673f42f20f6811541ded33ba5fe026da2aac2e25532bfbcee1",
+            "prompt_tokens": 162,
+            "visual_tokens": 25
+          },
+          {
+            "guidance": true,
+            "prompt_sha256": "6a0441bf98e7fa4ec83e9b4998ea9063b99fad922c8ca34c462079ef32b462ab",
+            "prompt_tokens": 195,
+            "visual_tokens": 64
+          }
+        ],
+        "invalid_video_url": 400,
+        "chat_video": {
+          "role": "assistant",
+          "content": "Green"
+        },
+        "chat_untyped_image": {
+          "text": "Blue",
+          "refusal": "",
+          "finish": "stop"
+        },
+        "file_video": {
+          "id": "resp_0cfed86305dc7bff895b4a9762ba6d0d",
+          "parts": [
+            {
+              "type": "output_text",
+              "text": "Blue",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "peer": 404,
+          "sha256": "c51e7f8936131626788bc4fdbbe41f0cc9a0455aa22113f15380595fd95109d7"
+        },
+        "independent": "42",
+        "restored": {
+          "id": "resp_445cdacc91d38653793155ab2d01111e",
+          "parts": [
+            {
+              "type": "output_text",
+              "text": "Blue",
+              "annotations": [],
+              "logprobs": []
+            }
+          ],
+          "peer": 404
+        },
+        "controls": {
+          "templates": true,
+          "chat_video": true,
+          "chat_untyped_image": true,
+          "file_video": true,
+          "independent": true
+        },
+        "passed": true
+      },
+      "seconds": 37.636,
+      "starts": 1,
+      "record_sha256": "ae46ec08ec7cd100300781c098f96fe446cabad890d6b37203d22dc9a9032e49",
+      "receipt_sha256": "49d8c7accc3412796a88c171ed292d6b4e3e1dcf111e84d6d4d13c98bb36729a",
+      "predecessor": "297d0c4e991ac54189ae2eaca2a09626c4f092ca7ad974dd53e023d5fce4b51a"
+    }
+  },
+  "business_evidence": "7273d8db9e8dc129fbbbfc22ee2d7301f65ec2054e4bdda64ca75094b9023f80",
+  "lease_exit": "d3d1190b8b22c008cb78d35455b0055bd9f5b92bbf4585dbfb1a621fe347c192",
+  "acceptance": "8390d912b9bd44d2b430477236b9dbf20c6ddd1b5720db83e0e398c94079e672",
+  "qualification": "4647f312d347f23a99ac3718c04cb0b1f309be5a5b423caa22cc49b6968ff6ef",
+  "default_preserved": true,
+  "previous_format": "q4t-profile-business-v67",
+  "current_format": "q4t-profile-business-v68",
+  "restored_responses": 1
+}

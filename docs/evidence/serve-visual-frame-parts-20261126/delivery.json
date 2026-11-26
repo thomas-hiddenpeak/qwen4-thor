@@ -1,0 +1,242 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 526,
+    "version_revision": 192,
+    "profile_revision": 82,
+    "previous_profile_revision": 81,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "43d4615d8306f0cbce6fe9303012ec833d29357e7a2eca43029ff3c205bcff7a",
+    "fallback": "bfed57c7803ed926e299fcd9439bf61f19ae997884a91a8314e959eafa57659a",
+    "engine": "e34e80ee67899f008740f5d2aaaf4eb627089c333897d969d7fcaa57c74e5332",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 524,
+  "previous_primary": "77df228557884c14f2b8c57d17f092cc6bbf721e548e1314080dace0ee9e80b2",
+  "source_commit": "ebb82b218c8e02d6bc93030998832a8adb3be876",
+  "recovery": {
+    "fallback": {
+      "seconds": 179.475,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": "resp_3039fa12166600b8cfccec033a1ccef9",
+        "current": "resp_d65abdc5b367df57acf79bed37fa5c2c",
+        "peer": 404,
+        "port": 18161,
+        "egress": false
+      },
+      "restored_parts": [
+        {
+          "type": "output_text",
+          "text": "Blue",
+          "annotations": [],
+          "logprobs": []
+        }
+      ],
+      "fresh_colors": [
+        "Green",
+        "Blue",
+        "Blue"
+      ],
+      "invalid_video_url": 400,
+      "fresh_chat": "42",
+      "sdk": "7.47.0",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "lease_sha256": "b648be9eb31baaace8934cb695da532ddae999aff71c4f23e22aa8a490e43ba4",
+      "accepted_sha256": "f68115ddf1dd9dd7d27ee721b433d12c7982a72dff9c8b8decec1da8052c65d4",
+      "original_sdk_sha256": "8220d57a2f7f11c5c58edfa137d9c762af9d74d59514ff7218a2bc7eb7bd4df6",
+      "restored_sdk_sha256": "d76666d1d88919ce7dd5408db0737da1061f160d8a4aa64734c1c0deac0dd364"
+    },
+    "primary": {
+      "seconds": 266.393,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": "resp_2d68c1257f8024ba79ecd04ec672aa4d",
+        "current": "resp_ab4d709bf0ced00350c0d181bfb46e0d",
+        "peer": 404,
+        "port": 18161,
+        "egress": false
+      },
+      "restored_parts": [
+        {
+          "type": "output_text",
+          "text": "Blue",
+          "annotations": [],
+          "logprobs": []
+        }
+      ],
+      "fresh_colors": [
+        "Green",
+        "Blue",
+        "Blue"
+      ],
+      "invalid_video_url": 400,
+      "fresh_chat": "42",
+      "sdk": "7.47.0",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "lease_sha256": "c702300e43f854a8ca48a1eb8ad849d05e74326a0450a3bdc75baef6a673f3e7",
+      "accepted_sha256": "620ee939f90f1b5df51a104355fa02b9e61a4196ed095903c9a28d22f867767c",
+      "original_sdk_sha256": "1ed0a2fe07e852da1b6a889bd2aae22c0aaf9dfed806b738af3a29c1d0656d39",
+      "restored_sdk_sha256": "914c9847d7d6fe6c732c9f928152e95814c218baee6e2b6b5eb373d473cac047",
+      "takeover": {
+        "selected": "fallback",
+        "manifest": "bfed57c7803ed926e299fcd9439bf61f19ae997884a91a8314e959eafa57659a",
+        "probes": 1,
+        "signal": 6
+      }
+    }
+  },
+  "wire": {
+    "status": "PASS",
+    "packages": [
+      {
+        "slot": "primary",
+        "manifest_sha256": "43d4615d8306f0cbce6fe9303012ec833d29357e7a2eca43029ff3c205bcff7a",
+        "schema_sha256": "31878b30bd1a92a0dac6d52876c1054575dc02d9aa7c0798fe71605f27696e5f",
+        "openapi_sha256": "1107caed5d15aefc5f519501b97cc62b3fbfb32992596ded503bc042eb002f72",
+        "requests": 3,
+        "responses": 3,
+        "persisted_events": 27,
+        "invalid_status_rejected": true
+      },
+      {
+        "slot": "fallback",
+        "manifest_sha256": "bfed57c7803ed926e299fcd9439bf61f19ae997884a91a8314e959eafa57659a",
+        "schema_sha256": "31878b30bd1a92a0dac6d52876c1054575dc02d9aa7c0798fe71605f27696e5f",
+        "openapi_sha256": "1107caed5d15aefc5f519501b97cc62b3fbfb32992596ded503bc042eb002f72",
+        "requests": 3,
+        "responses": 3,
+        "persisted_events": 27,
+        "invalid_status_rejected": true
+      }
+    ]
+  },
+  "profiles_sha256": "3d92dcd7d6d618d084efe6c005ba09237866ce38927f63ebd083e52630dfa427",
+  "business_sha256": "7273d8db9e8dc129fbbbfc22ee2d7301f65ec2054e4bdda64ca75094b9023f80",
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "7690be5488580815b93a8f648614cc3b266a0786eb5bd1c2c24a3e78677f8737"
+        ],
+        "sha256": "5107b6650eb9b8fee8c8ec57b32bea4bf16e8825b1ce0e04b8da944f9527a2f5",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "cb69b09e-5cdc-468b-b91c-a0956ac545ee"
+        ],
+        "sha256": "6ab1e2ae9bc44c93e308287e5274da757dbbcb55f24dcd46863c982261407753",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "0722442d-d46a-486d-b795-7f01da17124b"
+        ],
+        "sha256": "4524a52557007c69cd6184b60255b07e158d1862cdf0553efc20f599a714d5de",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71
+  },
+  "soak": {
+    "source_commit": "ebb82b218c8e02d6bc93030998832a8adb3be876",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-client-primary-01/bundle",
+      "manifest_sha256": "43d4615d8306f0cbce6fe9303012ec833d29357e7a2eca43029ff3c205bcff7a"
+    },
+    "revision": 526,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "f70768d08801bb0d7e2875520fcd4798a74fc262ede7593d7d9a71ae8baac671",
+    "handoff_sha256": "6ab6cc1537c33143ae9a5a98237aefb6529a76ff3b2df6cd2d74f6295a104f14",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev526-preflight.json",
+  "predecessor_ci_at_publication": {
+    "pr": 157,
+    "state": "OPEN",
+    "head": "56743bc13744e9b43f31b2738243a67f6dac2070",
+    "checks": {
+      "pull_request": {
+        "conclusion": "",
+        "databaseId": 45726880924,
+        "event": "pull_request",
+        "headSha": "56743bc13744e9b43f31b2738243a67f6dac2070",
+        "status": "in_progress",
+        "workflowName": "Public host contracts"
+      },
+      "push": {
+        "conclusion": "success",
+        "databaseId": 45726874099,
+        "event": "push",
+        "headSha": "56743bc13744e9b43f31b2738243a67f6dac2070",
+        "status": "completed",
+        "workflowName": "Public host contracts"
+      }
+    },
+    "previous_failed_run": 45726880924,
+    "previous_failure": "Guardian CPU stop cleanup confirmation, stale-boot quota case"
+  },
+  "limitations": {
+    "visual_scope": "Two 160x160 frames, untagged streaming image, H.264 final frame and ownership. Coverage is limited to these workloads. The original CUDA 999 and serialized cuBLASLt status 7 are retained in workspace.json",
+    "deferred_media_methods": 12,
+    "genuine_device_cold_start": false,
+    "long_run_hours": 0
+  },
+  "retained_day_plan": {
+    "status": "PASS",
+    "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/feedback-delivery-soak-src",
+    "generation": "7690be5488580815b93a8f648614cc3b266a0786eb5bd1c2c24a3e78677f8737",
+    "manifest": "d5384687815af9b9018903f1e810dd1851c75bd04228ac54540997f3f486fc8f",
+    "unchanged_plan": "b4c2ba144d2598f38c62fc674689533d0b77e4cd6b7b1786afd0006f84366126",
+    "protected_raw_files": 28,
+    "executed_hours": 0,
+    "bindings": {
+      "q4t": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/7690be5488580815b93a8f648614cc3b266a0786eb5bd1c2c24a3e78677f8737/q4t",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/feedback-client-primary-01/bundle/engine/q4t",
+        "sha256": "a0e05459afeb3cde0cf7371695f55a71dc83b706dd2495c7b73bf169295c188d"
+      },
+      "q4t.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/7690be5488580815b93a8f648614cc3b266a0786eb5bd1c2c24a3e78677f8737/q4t.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/feedback-client-primary-01/bundle/engine/q4t.release.json",
+        "sha256": "778b8d9262e27f61c39652efb528bd7fac5d7b65f8913753585f68d0d7c2f3c0"
+      },
+      "service.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/7690be5488580815b93a8f648614cc3b266a0786eb5bd1c2c24a3e78677f8737/service.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/feedback-client-primary-01/service.release.json",
+        "sha256": "3863ed0674567da6ce36d08bd27ee51712ce0095aebbe1475b0d9742969348be"
+      }
+    }
+  }
+}

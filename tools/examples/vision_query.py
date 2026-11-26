@@ -42,8 +42,7 @@ def build_request(question, images=(), video=None, frames=8, stream=True,
 def query(client,body):
     caps=client.capabilities(model=body['model'])
     runtime=caps.get('runtime',{})
-    require(runtime.get('media_enabled') is True and runtime.get('mtp_enabled') is False,
-            'explicit no-MTP media service required')
+    require(runtime.get('media_enabled') is True, 'media-enabled service required')
     pre=client.preflight(body,protocol_sha256=caps['protocol_source_sha256'])
     require(pre.get('media',{}).get('token_ids')=='expanded_for_inference',
             'expanded media preflight required')

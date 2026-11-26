@@ -833,6 +833,25 @@
         "issued": true,
         "revision": 506,
         "delivery": "evidence/serve-chatkit-retry-20261125/delivery.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       }
     },
     {
@@ -1326,6 +1345,25 @@
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json",
         "revision": 524,
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       }
     },
     {
@@ -6343,6 +6381,30 @@
         "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
         "revision": 522,
         "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
+      },
+      "vision_workspace_alignment_20261126": {
+        "stage": "device_cause_reproduced",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
+        "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       }
     },
     {
@@ -8470,6 +8532,18 @@
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json",
         "revision": 524,
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       }
     },
     {
@@ -9136,6 +9210,11 @@
         "profiles": "evidence/serve-agent-turn-output-recovery-20261126/profiles.json",
         "revision": 520,
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "vision_workspace_alignment_20261126": {
+        "stage": "device_cause_reproduced",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
+        "issued": false
       }
     },
     {
@@ -9706,8 +9785,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 524,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev524-preflight.json",
+        "revision": 526,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev526-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11407,12 +11486,36 @@
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json",
         "revision": 524,
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
+      },
+      "visual_frame_parts_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/cpu.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "media_client_discovery_20261126": {
+        "stage": "targeted_client_cpu_verified",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
+      },
+      "vision_workspace_alignment_20261126": {
+        "stage": "device_cause_reproduced",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
+        "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
+        "revision": 526,
+        "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev524_delivered_remaining_deliveries",
+      "state": "rev526_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12746,7 +12849,8 @@
       "current_widget_delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json",
       "current_agent_session_delivery": "evidence/serve-agent-structured-format-20261126/delivery.json",
       "current_response_media_delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json",
-      "current_visual_answer_delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
+      "current_visual_answer_delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json",
+      "current_visual_frame_delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -12851,16 +12955,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "a152203b667544bab1ae4ab9a1d91bb3f2c0438d",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/visual-answer-delivery-soak-src",
+        "source_commit": "ebb82b218c8e02d6bc93030998832a8adb3be876",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/visual-answer-client-primary-01/bundle",
-          "manifest_sha256": "77df228557884c14f2b8c57d17f092cc6bbf721e548e1314080dace0ee9e80b2"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-client-primary-01/bundle",
+          "manifest_sha256": "43d4615d8306f0cbce6fe9303012ec833d29357e7a2eca43029ff3c205bcff7a"
         },
-        "revision": 524,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/visual-answer-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "d10a037d3d365bcddf96fe6c69278a2b3a81dcd7bf1e868db6da3f321d1dd5a2",
-        "handoff_sha256": "d51ec4a0f6c4b0a915271fffc63b9d01da68fcaff0cf0ed3aeda3d8b17f9002d",
+        "revision": 526,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "f70768d08801bb0d7e2875520fcd4798a74fc262ede7593d7d9a71ae8baac671",
+        "handoff_sha256": "6ab6cc1537c33143ae9a5a98237aefb6529a76ff3b2df6cd2d74f6295a104f14",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13271,9 +13375,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 524,
-        "receipt": "evidence/serve-visual-answer-encoding-20261126/delivery.json",
-        "plan_sha256": "d10a037d3d365bcddf96fe6c69278a2b3a81dcd7bf1e868db6da3f321d1dd5a2",
+        "revision": 526,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/delivery.json",
+        "plan_sha256": "f70768d08801bb0d7e2875520fcd4798a74fc262ede7593d7d9a71ae8baac671",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

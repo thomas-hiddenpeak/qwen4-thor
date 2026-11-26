@@ -471,13 +471,14 @@ def vision_schema():
         dict(properties=dict(content=dict(anyOf=[dict(type=["string", "null"]),
             dict(type="array", items=dict(oneOf=[ref("textPart"), ref("refusalPart")]))])))))
     result["x-q4t"].update(profile="q4t-vision-v1", scope="explicit media service profile",
-        server_flags=["--allow-media", "--no-mtp", "--max-seq", "1"],
+        server_flags=["--allow-media", "--max-seq", "1"],
+        text_mtp_may_be_loaded=True, visual_decode="target_only",
         required_semantic_validation=True, acceptance="separate release attestation",
         temporal_patch_size=2, max_media_items=8,
         file_inputs="Chat file parts require actual PDF; original text and pages use common preparation, preflight and stored snapshot ownership",
         state_cache="actual source/processor identity, complete visual blocks, target state and three-axis RoPE/delta",
         media_chunked_prefill=True,
-        unsupported=["video_container_on_server", "MTP",
+        unsupported=["direct_chat_video_container_part", "visual_request_mtp",
                      "multiple_execution_slots"])
     return result
 
@@ -769,7 +770,7 @@ def openapi():
     error = external("serve-transport-v1.schema.json", "#/$defs/error")
     chat = dict(anyOf=[external("serve-chat-request-v1.schema.json"),
                        external("serve-vision-request-v1.schema.json")],
-        **{"x-q4t-media-profile": "Explicit --allow-media --no-mtp --max-seq 1; check runtime capabilities. video_frames/video_timestamps are Q4T extensions. Structural validity does not establish model task accuracy."})
+        **{"x-q4t-media-profile": "Enable media with --allow-media --max-seq 1 and check runtime.media_enabled. The text MTP draft can be loaded. Requests with visual tokens use target-only decoding. video_frames and video_timestamps are Q4T extensions."})
     cancel = obj(dict(request_id=chat_schema()["properties"]["request_id"],
         cancel_token=dict(type="string", pattern="^[0-9a-f]{64}$")), ("request_id", "cancel_token"))
     preflight = obj(dict(request=chat, include_prompt=dict(type="boolean", default=False),
