@@ -3102,7 +3102,7 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "native_tls_direct_and_program_verified",
+        "stage": "profile_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
@@ -3111,7 +3111,8 @@
         ],
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
-        "profile_stage": "failed_409_repaired_cpu"
+        "profile_stage": "failed_409_repaired_cpu",
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -3825,7 +3826,7 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "native_tls_direct_and_program_verified",
+        "stage": "profile_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
@@ -3834,7 +3835,8 @@
         ],
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
-        "profile_stage": "failed_409_repaired_cpu"
+        "profile_stage": "failed_409_repaired_cpu",
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -7700,7 +7702,7 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "native_tls_direct_and_program_verified",
+        "stage": "profile_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
@@ -7709,7 +7711,8 @@
         ],
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
-        "profile_stage": "failed_409_repaired_cpu"
+        "profile_stage": "failed_409_repaired_cpu",
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -9017,7 +9020,7 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "native_tls_direct_and_program_verified",
+        "stage": "profile_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
@@ -9026,7 +9029,8 @@
         ],
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
-        "profile_stage": "failed_409_repaired_cpu"
+        "profile_stage": "failed_409_repaired_cpu",
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
