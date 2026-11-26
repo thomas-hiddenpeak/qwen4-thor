@@ -89,6 +89,7 @@ ObjectReply SelectRetryHistory(const Json& record, std::string_view item_id,
       !InputValueIdentity(*end->GetArray("content"), &actual) ||
       actual != expected)
     return Corrupt();
+  history->source_response_id = response->GetString("id");
   history->items = Array();
   history->items.array.assign(saved->array.begin(), end + 1);
   const Json empty;
@@ -119,6 +120,31 @@ ObjectReply SelectRetryHistory(const Json& record, std::string_view item_id,
     });
   }
   return {};
+}
+
+ObjectReply ReadRetryReference(ResponsesState& state, const StateAccess& access,
+                               std::string_view thread, const Json& input,
+                               const RetryHistory& history) {
+  if (thread.empty() || history.source_response_id.empty() ||
+      !history.items.IsArray() || history.items.array.empty() ||
+      !input.IsArray() || input.array.size() != 1)
+    return Corrupt();
+  const auto& reference = input.array.front();
+  if (reference.GetString("type") != "item_reference" ||
+      reference.object.size() != 2)
+    return Corrupt();
+  auto saved = state.ReadRecord(history.source_response_id, access);
+  if (!saved.ok()) return saved;
+  const auto* rows = saved.value.GetArray("history");
+  if (saved.value.GetString("chatkit_thread_id") != thread || !rows ||
+      rows->array.size() < history.items.array.size())
+    return Corrupt();
+  const auto& user = rows->array[history.items.array.size() - 1];
+  if (!IsUser(user) || user.GetString("id") != reference.GetString("id"))
+    return Corrupt();
+  ObjectReply result;
+  result.value = Array({user});
+  return result;
 }
 
 ObjectReply ApplyRetryHistory(const RetryHistory& history,

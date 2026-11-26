@@ -2,6 +2,7 @@
 
 #include "agent_artifact_internal.h"
 #include "agent_session_internal.h"
+#include "chatkit_retry.h"
 #include "chatkit_thread_state.h"
 #include "agent_workspace_copy.h"
 
@@ -475,7 +476,8 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
                                     ResponseStatePlan* plan,
                                     const CancelledAgentHistory* cancelled,
                                     std::string_view agent_session,
-                                    std::string_view chatkit_thread) {
+                                    std::string_view chatkit_thread,
+                                    const chatkit_detail::RetryHistory* retry) {
   *plan = {};
   if (access.scope.empty() || access.scope.size() > 256)
     return StateError("Authenticated state scope is unavailable");
@@ -492,6 +494,10 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
   auto resolved = ResolveItems(input ? *input : Json(), access, 4096,
                                &plan->input_snapshots, &plan->tool_contracts,
                                &plan->web_content, plan->multi_agent_beta);
+  if (resolved.http_status == 404 && retry && input &&
+      envelope.previous_response_id.empty() && envelope.conversation_id.empty())
+    resolved = chatkit_detail::ReadRetryReference(*this, access, chatkit_thread,
+                                                  *input, *retry);
   if (!resolved.ok()) return resolved;
   plan->own_input = std::move(resolved.value);
   if (!envelope.previous_response_id.empty()) {

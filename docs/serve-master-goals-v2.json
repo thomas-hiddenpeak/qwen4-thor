@@ -3130,6 +3130,12 @@
         "issued": false,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
+      },
+      "chatkit_interrupted_retry_20261127": {
+        "stage": "cpu_verified",
+        "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
+        "real_business_accepted": false,
+        "issued": false
       }
     },
     {
@@ -3861,6 +3867,12 @@
         "issued": false,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
+      },
+      "chatkit_interrupted_retry_20261127": {
+        "stage": "cpu_verified",
+        "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
+        "real_business_accepted": false,
+        "issued": false
       }
     },
     {

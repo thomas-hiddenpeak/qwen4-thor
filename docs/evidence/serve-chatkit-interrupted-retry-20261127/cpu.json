@@ -1,0 +1,112 @@
+{
+  "stage": "cpu_verified",
+  "issued": false,
+  "device": "Jetson AGX Thor",
+  "parent": "a7f38addb5a85cbee5952769e9771791160d611d",
+  "product": {
+    "engine": "51a1650123af258af6591d9365884fc96c6d1937e91de0541a5a4c7e74055279",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "protocol_sources": 1102,
+  "protocol_sha256": "94b32e6c46eedbf74dee6de90f1778689bf5751e79cd9c60e3d1bcd9699280cf",
+  "actor_sha256": "0afaad41db4398e41e6017a2b047e27e14a8fd6ebfd8458786f7e35700ca416a",
+  "implementation_sha256": {
+    "include/q4t/server/responses_state.h": "9724655c1df6ca4166a96de2cc3a1a55c84ad897183f2ff6dd271890a0e39618",
+    "src/server/chatkit_client.cpp": "d813572ab8b5f7f4a7d25e918f209f65f951d9cadebd48024b4995c3356a13aa",
+    "src/server/chatkit_retry.cpp": "aceda66da8b4afd3a364e1e5c63646b44816c0a827f2b4b8535ef310182c83b0",
+    "src/server/chatkit_retry.h": "38201c377fb3a54bc0100218591304915c799e9d41ff4f912c6a3a8fe730cef5",
+    "src/server/responses_execution.cpp": "0b741e117e70a803f87a18af1e8fdb31a63dc94b9ed956412192cd2abe5a8c24",
+    "src/server/responses_state.cpp": "e904efefd52d4f3ac18a562c2fd77832be4f01770924a2acd21431d0bbe28c11",
+    "tests/server_responses_state_test.cpp": "6eb526404fd4ee441f201e44a8e957795b8fe84a564cf5e78738c86b42af79d6"
+  },
+  "cases": [
+    "responses_state_chatkit_cancelled_context_is_bound_to_original_thread",
+    "chatkit_retry_replays_unpublished_input_from_cancelled_turn",
+    "chatkit_retry_selects_legacy_user_identity_and_discards_only_future",
+    "chatkit_cancelled_generation_keeps_only_nonempty_assistant_output",
+    "chatkit_retry_preserves_raster_and_legacy_document_identity"
+  ],
+  "original_native_failure": [
+    "object_not_found: Object not found",
+    "  CHECK failed: Ok(retry.Prepare(request, config, Access(), 42, true, nullptr, nullptr, &prefix, first.chatkit_thread_id)) (line 310)",
+    "[FAIL] chatkit_retry_replays_unpublished_input_from_cancelled_turn",
+    "1 tests, 0 passed, 1 failed, 0 skipped"
+  ],
+  "sdk_contract_tests": [
+    "test_chatkit_retry_selects_a_thread_and_user_item",
+    "test_chatkit_browser_pagination_fields"
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1392,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "reference": {
+    "repository": "openai/chatkit-python",
+    "revision": "dacc133c280b39b9334d06ea73f0f1c199e59927"
+  },
+  "historical": {
+    "business": "chatkit-disconnect-business-02",
+    "before": "404 object_not_found",
+    "after": {
+      "thread": "cthr_bdfaf018a69a5f06aedd7de29c61d1c2",
+      "browser_id": "item_0859202c29688a14fb8b8399ace69193",
+      "source_response": "resp_9cb5c8ec86fee6bdb5a448bf65301c8a",
+      "canonical_id": "item_4b592220913883f6c9dbb698a7795d29",
+      "restored_items": 1,
+      "standalone_status": 404,
+      "restored": true
+    },
+    "unchanged_objects": 10,
+    "source_set_sha256": "b8f9d90429d244a98ce92436a81470fe4e6c20b3fed25ef002a9bdc96b8b3d39"
+  },
+  "attachments": [
+    {
+      "observed": {
+        "thread": "cthr_9491cc6b49827cb73d783032ff8bf84a",
+        "browser_id": "item_2b1c481ca32ffee942a46bbf7ad6fd04",
+        "source_response": "resp_d68920872f1b9f7cb25eb32d73efea53",
+        "canonical_id": "item_8bcce388888277a95ee0bc6c8455a402",
+        "restored_items": 1,
+        "standalone_status": 200,
+        "expired_file_read_from_snapshot": true,
+        "restored": true
+      },
+      "publication_sha256": "d1f1101a791a76a45a78f74804c4472803712c18952bf82582a52c36542c5bc5",
+      "evidence_sha256": "35e520a2cd785fca7b8af8917f9c73adb140dc1347478f928a541e829030d24e",
+      "source_unchanged": true,
+      "retained_records_unchanged": true,
+      "standalone_removed_in_test_copy": false
+    },
+    {
+      "observed": {
+        "thread": "cthr_9491cc6b49827cb73d783032ff8bf84a",
+        "browser_id": "item_2b1c481ca32ffee942a46bbf7ad6fd04",
+        "source_response": "resp_d68920872f1b9f7cb25eb32d73efea53",
+        "canonical_id": "item_8bcce388888277a95ee0bc6c8455a402",
+        "restored_items": 1,
+        "standalone_status": 404,
+        "expired_file_read_from_snapshot": true,
+        "restored": true
+      },
+      "publication_sha256": "d1f1101a791a76a45a78f74804c4472803712c18952bf82582a52c36542c5bc5",
+      "evidence_sha256": "35e520a2cd785fca7b8af8917f9c73adb140dc1347478f928a541e829030d24e",
+      "source_unchanged": true,
+      "retained_records_unchanged": true,
+      "standalone_removed_in_test_copy": true
+    }
+  ],
+  "acceptance": {
+    "max_model_starts": 1,
+    "max_generations": 4,
+    "max_seconds": 340,
+    "predecessor_revision": 556,
+    "real_business_accepted": false
+  }
+}

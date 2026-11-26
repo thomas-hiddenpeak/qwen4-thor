@@ -158,8 +158,8 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     auto selected = chatkit_detail::SelectRetryHistory(
         record.value, params.GetString("item_id"), &write.data, user, &prefix);
     if (!selected.ok() || prefix.items.IsNull()) return selected;
-    // Resolve the original scoped item. Its stored status and file snapshot
-    // belong to the server and cannot be sent as new client input fields.
+    // The reference binds the original admitted item, including inputs
+    // retained only in the interrupted thread's Response journal.
     model_message = Object({{"type", String("item_reference")},
                             {"id", *prefix.items.array.back().Find("id")}});
   } else if (tool_output || structured) {

@@ -13,6 +13,7 @@
 
 namespace q4t::server {
 namespace environment_detail { class WorkspaceCopies; }
+namespace chatkit_detail { struct RetryHistory; }
 
 // Request-local authority. Never derived from user/metadata/opaque item IDs.
 struct StateAccess {
@@ -100,7 +101,8 @@ class ResponsesState {
                       const StateAccess& access, ResponseStatePlan* plan,
                       const CancelledAgentHistory* cancelled = nullptr,
                       std::string_view agent_session = {},
-                      std::string_view chatkit_thread = {});
+                      std::string_view chatkit_thread = {},
+                      const chatkit_detail::RetryHistory* retry = nullptr);
   // Loads authoritative inputs and revision, without rerunning resolution or
   // any tool/model. The result is the internal stored record, never an API
   // body.

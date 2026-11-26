@@ -5,7 +5,10 @@
 #include <cstdlib>
 #include <filesystem>
 
+#include "../src/server/chatkit_retry.h"
+#include "../src/server/object_protocol.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_execution.h"
 #include "q4t/server/responses_api.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_output.h"
@@ -257,6 +260,82 @@ Q4T_TEST(responses_state_chatkit_cancelled_context_is_bound_to_original_thread) 
   Q4T_CHECK(Ok(states.Resolve(next, Access(), &second)));
   Q4T_CHECK(second.own_input.array.size() == 1 &&
             second.history.array[2].GetString("id") == "msg_blank");
+  return true;
+}
+
+Q4T_TEST(chatkit_retry_replays_unpublished_input_from_cancelled_turn) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState state(objects);
+  ResponseStatePlan first, later;
+  Q4T_CHECK(Ok(state.Resolve(Envelope(R"({"input":"first"})"),
+                             Access(), &first)));
+  first.chatkit_thread_id = "cthr_reader";
+  Q4T_CHECK(Ok(state.Begin(Snapshot(first, "in_progress"), Access(), &first)));
+  Q4T_CHECK(Ok(state.Finish(Snapshot(first, "cancelled", Answer()),
+                            Parse("[]"), Access(), &first)));
+  auto next = Envelope(R"({"input":"later"})");
+  next.previous_response_id = first.id;
+  Q4T_CHECK(Ok(state.Resolve(next, Access(), &later, nullptr, {},
+                             first.chatkit_thread_id)));
+  later.chatkit_thread_id = first.chatkit_thread_id;
+  Q4T_CHECK(Ok(state.Begin(Snapshot(later, "in_progress"), Access(), &later)));
+  Q4T_CHECK(Ok(state.Finish(Snapshot(later, "completed"), Parse("[]"),
+                            Access(), &later)));
+
+  const auto& original = first.own_input.array.front();
+  auto request = Parse(R"({"background":true,"store":true,
+                          "input":[{"type":"item_reference"}]})");
+  Set(&object_detail::Field(request, "input").array.front(), "id", *original.Find("id"));
+  const auto& input = *request.Find("input");
+  Q4T_CHECK(state.ResolveItems(input, Access()).http_status == 404);
+  ChatPlanConfig config;
+  config.model = "cpu";
+  for (const auto* source : {&first, &later}) {
+    auto thread = Parse(R"({"thread":{"id":"cthr_reader"},"items":[
+      {"type":"chatkit.user_message","id":"item_visible","attachments":[],
+       "content":[{"type":"input_text","text":"first"}]}]})");
+    if (source == &later)
+      object_detail::Field(thread, "items").array.push_back(Parse(R"({
+        "type":"chatkit.user_message","id":"item_later","attachments":[],
+        "content":[{"type":"input_text","text":"later"}]})"));
+    Set(&thread, "last_response", String(source->id));
+    auto saved = state.ReadRecord(source->id, Access());
+    Q4T_CHECK(Ok(saved));
+    chatkit_detail::RetryHistory prefix;
+    Json user;
+    Q4T_CHECK(Ok(chatkit_detail::SelectRetryHistory(
+        saved.value, "item_visible", &thread, &user, &prefix)));
+    ResponsesExecution retry(objects);
+    Q4T_CHECK(Ok(retry.Prepare(request, config, Access(), 42, true, nullptr,
+                               nullptr, &prefix, first.chatkit_thread_id)));
+    Json frozen;
+    Q4T_CHECK(Ok(retry.FreezeInputs(&frozen)));
+    Q4T_CHECK(OutputJson(*frozen.Find("history")) == OutputJson(first.history));
+    Q4T_CHECK(OutputJson(*frozen.Find("own_input")) ==
+              OutputJson(first.own_input));
+    auto wrong = request;
+    Set(&object_detail::Field(wrong, "input").array.front(), "id",
+        String("item_never_admitted"));
+    ResponsesExecution unrelated(objects);
+    Q4T_CHECK(!unrelated.Prepare(wrong, config, Access(), 42, true, nullptr,
+                                 nullptr, &prefix, first.chatkit_thread_id)
+                   .ok());
+    auto altered = prefix;
+    Set(&altered.items.array.back(), "content",
+        Parse(R"([{"type":"input_text","text":"changed"}])"));
+    ResponsesExecution mismatch(objects);
+    Q4T_CHECK(!mismatch.Prepare(request, config, Access(), 42, true, nullptr,
+                                nullptr, &altered, first.chatkit_thread_id)
+                   .ok());
+    ResponsesExecution foreign(objects), sibling(objects);
+    Q4T_CHECK(foreign.Prepare(request, config, Access("client:b"), 42, true,
+                             nullptr, nullptr, &prefix, first.chatkit_thread_id)
+                  .http_status == 404);
+    Q4T_CHECK(!sibling.Prepare(request, config, Access(), 42, true, nullptr,
+                               nullptr, &prefix, "cthr_other").ok());
+  }
+  Q4T_CHECK(state.ResolveItems(input, Access()).http_status == 404);
   return true;
 }
 
