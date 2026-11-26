@@ -1,0 +1,123 @@
+{
+  "stage": "built_targeted_cpu",
+  "source": "8d9bb4472ee5c2d168ab0f2e5f532064a8fcc4a9",
+  "engine_sha256": "edf0e22d5a15bdb14a5f07c6ea9662a332279a1974ed25913492d8f264247432",
+  "ingress_sha256": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "production_probe": "14a5cac9a38e187859d3e8ed1f901c7cc9d7d96daa2bff22169bedd42a422f10",
+  "source_pins": 1101,
+  "checkpoint_comparisons": 42,
+  "checkpoint_rows_sha256": "04b274068374a54880b05e395a8c3c9e1a5c4e00b9df9428d0bdf97b4202cbcc",
+  "other_history_preflight": {
+    "cases": [
+      {
+        "case": "developer-user-only",
+        "tokens": 43,
+        "sha256": "019cff146a63a7c0c8ac929bb8785653a01e79a259717ec986cadb4e5eddcb1c",
+        "visual_tokens": null
+      },
+      {
+        "case": "developer-unicode-trim",
+        "tokens": 45,
+        "sha256": "45e279b34dad9c607cb53c697d4247cc033e545daddf32d2b95e63a3f0d64410",
+        "visual_tokens": null
+      },
+      {
+        "case": "developer-history-discard",
+        "tokens": 72,
+        "sha256": "642fe37495797dbd0f1bad66a37309e933eb455cd501550220c09ad57a969c1f",
+        "visual_tokens": null
+      },
+      {
+        "case": "developer-empty",
+        "tokens": 13,
+        "sha256": "9af4170d5a17417082a72c74245e513d7a93ff9e1cba1cae50a0412b1b99c2bc",
+        "visual_tokens": null
+      },
+      {
+        "case": "developer-parts",
+        "tokens": 23,
+        "sha256": "a6704b6d68d697fdde6097481825a5849653f73ea87f89eb5132c0a751653509",
+        "visual_tokens": null
+      },
+      {
+        "case": "developer-unordered-identified-history",
+        "tokens": 80,
+        "sha256": "691af4a0b97692b6b35f1e4f3307395b8b70968744be4252b6541031669aea57",
+        "visual_tokens": null
+      },
+      {
+        "case": "alias-history-preserve",
+        "tokens": 74,
+        "sha256": "0652413d5557c2b2e322af892c70720b55989818a9804c463e46b35b875fb3b7",
+        "visual_tokens": null
+      },
+      {
+        "case": "legacy-null-history-discard",
+        "tokens": 63,
+        "sha256": "4deff10a13b8f00eca3f0f79a12393a095503995f45c6399aea50e914f35a9c1",
+        "visual_tokens": null
+      },
+      {
+        "case": "canonical-null-history-discard",
+        "tokens": 63,
+        "sha256": "4deff10a13b8f00eca3f0f79a12393a095503995f45c6399aea50e914f35a9c1",
+        "visual_tokens": null
+      },
+      {
+        "case": "image-before-empty-turn",
+        "tokens": 103,
+        "sha256": "95d7a4695babd5af84c9f29c2973e0bfbc33c6d352c7edc0a745aa84192a1017",
+        "visual_tokens": 72
+      },
+      {
+        "case": "two-frame-video-before-empty-turn",
+        "tokens": 39,
+        "sha256": "55e2c94f80b5a6652a5c4f78d3f442defee21a64729000fab6513fbb740be531",
+        "visual_tokens": 2
+      },
+      {
+        "case": "four-frame-video-before-empty-turn",
+        "tokens": 49,
+        "sha256": "23a279d187e6fd3d52337cb4f1505dcceac00f3e2c1451ddb1acee2e07010367",
+        "visual_tokens": 4
+      }
+    ],
+    "fixture_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+    "image_processor_sha256": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+    "video_processor_sha256": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+    "pixel_execution": false
+  },
+  "scoped_native": [
+    "chat_annotations_text_parts_and_refusal_keep_original_offsets",
+    "chat_annotations_tool_history_and_legacy_normalization_preserve_data",
+    "chat_style_none_and_nested_precedence_use_native_prefix",
+    "chat_plain_visual_answers_keep_observations_separate_from_refusals",
+    "chat_message_profile_instruction_content_before_media",
+    "chat_message_profile_ordered_instructions_and_names",
+    "chat_message_profile_name_byte_limit",
+    "refusal_template_native_instruction_and_raw_cache_identity",
+    "chat_reasoning_history_alias_contract",
+    "chat_reasoning_history_conflicts_rejected_before_render"
+  ],
+  "fixture_script_sha256": "7b284b887a58d8452e5471a97f858034851c5f9d04e65c46f648d979558bb894",
+  "sdk_driver_sha256": "a1e612cdadb25f57d4dc143f157facaadbbf1f1722c16aef012f5640f4ff7fd1",
+  "sdk_type_check": {
+    "version": "3.55.1",
+    "stored_roles_in_frozen_official_http": [
+      "user",
+      "assistant",
+      "tool",
+      "system",
+      "function",
+      "developer"
+    ],
+    "strict_pinned_role_enum": [
+      "assistant"
+    ],
+    "strict_mixed_page": false,
+    "strict_assistant_page": true,
+    "test": "MockTransport with exact pinned library",
+    "http_reference": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/subresources/messages/methods/list"
+  },
+  "real_https_pending": true
+}

@@ -1,0 +1,457 @@
+{
+  "stage": "targeted_cpu",
+  "issued": false,
+  "model_starts": 0,
+  "baseline_source": "b08721977b681c179b7d52afd9ec63e7644cee93",
+  "sources": {
+    "fixtures": "670afc63b321539c2f86aff7c15a1b351bd7bb35ca9e01373466c7ad2353f27c",
+    "template": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+    "tokenizer": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+  },
+  "new_probe": "427dc73b7fd6857fe58ec290c0a5359b7838fda9c5ba411dd11917f27410a986",
+  "baseline_probe": "f5e80e7cfda508fe0c5c852d00281a33fde7bb91e19bf8b1a14bb7bc85139c37",
+  "official_spec": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "baseline_failure": {
+    "case": "null-assistant",
+    "param": "messages[1].content",
+    "native_test_failed": true
+  },
+  "native": [
+    "chat_annotations_null_and_empty_preserve_template_identity",
+    "chat_annotations_reject_invalid_utf8_and_citations_without_content",
+    "chat_message_profile_developer_system_equivalence",
+    "chat_null_assistant_content_preserves_history_and_turn_boundaries",
+    "chat_message_profile_rejects_invalid_shapes",
+    "chat_message_profile_refusal_round_trip",
+    "chat_message_profile_preserves_history_rules"
+  ],
+  "schema_and_preflight": [
+    {
+      "case": "assistant-explicit-null-history",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": true,
+      "error_param": null
+    },
+    {
+      "case": "assistant-missing-content",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[0].content"
+    },
+    {
+      "case": "user-null-content",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[0].content"
+    },
+    {
+      "case": "message-refusal-null-content",
+      "previous_schema": true,
+      "previous_valid": true,
+      "accepted": true,
+      "error_param": null
+    },
+    {
+      "case": "message-refusal-part",
+      "previous_schema": true,
+      "previous_valid": true,
+      "accepted": true,
+      "error_param": null
+    },
+    {
+      "case": "message-refusal-missing",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[0].content"
+    },
+    {
+      "case": "message-refusal-wrong-role",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[0].refusal"
+    },
+    {
+      "case": "message-refusal-wrong-part-role",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[0].content[0]"
+    },
+    {
+      "case": "message-refusal-mixed-parts",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[0].content[0]"
+    },
+    {
+      "case": "reused-shape-null-assistant",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": true,
+      "error_param": null
+    },
+    {
+      "case": "reused-shape-developer-null-assistant",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": true,
+      "error_param": null
+    },
+    {
+      "case": "null-only",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": true,
+      "error_param": null
+    },
+    {
+      "case": "null-and-reasoning",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": true,
+      "error_param": null
+    },
+    {
+      "case": "omitted-and-reasoning",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[1].content"
+    },
+    {
+      "case": "bad-object",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[1].content"
+    },
+    {
+      "case": "empty-parts",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[1].content"
+    },
+    {
+      "case": "user-null",
+      "previous_schema": false,
+      "previous_valid": false,
+      "accepted": false,
+      "error_param": "messages[1].content"
+    }
+  ],
+  "checkpoint_and_api": [
+    {
+      "case": "system-user",
+      "parsed": false,
+      "tokens": 52,
+      "checkpoint_bytes": true,
+      "sha256": "f66aabb1df2fce69740793a1a856cdd1b006480ecaebfd1206bf3546cc2d3b69"
+    },
+    {
+      "case": "system-user",
+      "parsed": true,
+      "tokens": 119,
+      "checkpoint_bytes": false,
+      "sha256": "32b4c7c87be8d4f8ca039f8d69cd2519868748c9bfda39b59264548cfd3d9fc0"
+    },
+    {
+      "case": "user-only",
+      "parsed": false,
+      "tokens": 34,
+      "checkpoint_bytes": true,
+      "sha256": "fc3fce1b33f3fbbc16534c76ab7480c9145734f80dd96a19fa155b68036bbd35"
+    },
+    {
+      "case": "user-only",
+      "parsed": true,
+      "tokens": 105,
+      "checkpoint_bytes": false,
+      "sha256": "fb59be68b5e7e5b40a0e25d201e36b0372016735226bc294a83bffb2ed518fa9"
+    },
+    {
+      "case": "multi-turn",
+      "parsed": false,
+      "tokens": 90,
+      "checkpoint_bytes": true,
+      "sha256": "4e157c81e77d9d3397eb18f66cea2ddc7a7b0b1d60a6f55f04dea989ddb74656"
+    },
+    {
+      "case": "multi-turn",
+      "parsed": true,
+      "tokens": 157,
+      "checkpoint_bytes": false,
+      "sha256": "a9234419866a492b1d18259dfba2fa7ed55f866b1de398097ba91a92796713f2"
+    },
+    {
+      "case": "text-parts",
+      "parsed": false,
+      "tokens": 52,
+      "checkpoint_bytes": true,
+      "sha256": "d2a34fd6546a1a441969d9c9167e1d0c32e8e2340741700e0f6914709d7c818d"
+    },
+    {
+      "case": "text-parts",
+      "parsed": true,
+      "tokens": 119,
+      "checkpoint_bytes": false,
+      "sha256": "bcd24313047e9edaaa59dfaf3fcabfe8de452b229410d87ce85503ee5089d088"
+    },
+    {
+      "case": "chinese",
+      "parsed": false,
+      "tokens": 46,
+      "checkpoint_bytes": true,
+      "sha256": "69d3a4861fc0a9cc35737102f0dba9e4f186729df0517b0f0e8db3f577653310"
+    },
+    {
+      "case": "chinese",
+      "parsed": true,
+      "tokens": 113,
+      "checkpoint_bytes": false,
+      "sha256": "a3e64803c23eb6f45e8de18654c90022354de1c173b14f923e38daf58404ee12"
+    },
+    {
+      "case": "whitespace",
+      "parsed": false,
+      "tokens": 51,
+      "checkpoint_bytes": true,
+      "sha256": "2bfaedb0e0358731d2ad84ef388a7f1161a9c65a0c62ff2e34e182b1d64bcbc4"
+    },
+    {
+      "case": "whitespace",
+      "parsed": true,
+      "tokens": 118,
+      "checkpoint_bytes": false,
+      "sha256": "a602b4e58aadc97caf60aee1d798b2fed0a35f91a38328c5b5798372897995ef"
+    },
+    {
+      "case": "thinking-default",
+      "parsed": false,
+      "tokens": 74,
+      "checkpoint_bytes": true,
+      "sha256": "47a71b74e373ef34b0c011315b2ae4b1632ea432e4ff171b6838ff2a7f83b3a5"
+    },
+    {
+      "case": "thinking-default",
+      "parsed": true,
+      "tokens": 103,
+      "checkpoint_bytes": false,
+      "sha256": "ddabf4377371049d6f7c2e9526368a674b2b7569acd1fdc6b0b5f30ae6149f2c"
+    },
+    {
+      "case": "thinking-true",
+      "parsed": false,
+      "tokens": 74,
+      "checkpoint_bytes": true,
+      "sha256": "47a71b74e373ef34b0c011315b2ae4b1632ea432e4ff171b6838ff2a7f83b3a5"
+    },
+    {
+      "case": "thinking-true",
+      "parsed": true,
+      "tokens": 103,
+      "checkpoint_bytes": false,
+      "sha256": "ddabf4377371049d6f7c2e9526368a674b2b7569acd1fdc6b0b5f30ae6149f2c"
+    },
+    {
+      "case": "thinking-low",
+      "parsed": false,
+      "tokens": 62,
+      "checkpoint_bytes": true,
+      "sha256": "9f2a2f47fc5194cb67367b27f764cb589b0db7933f9a5c99569ed461862cec6b"
+    },
+    {
+      "case": "thinking-low",
+      "parsed": true,
+      "tokens": 129,
+      "checkpoint_bytes": false,
+      "sha256": "b69e8a96b6c161f37e6d621b2825b4bd5230472bf95a611ad39b7e2e45c79267"
+    },
+    {
+      "case": "thinking-medium",
+      "parsed": false,
+      "tokens": 32,
+      "checkpoint_bytes": true,
+      "sha256": "4f0c372ee0b258bbe46af3ecfd3b0e394fc33faa2b8edba2519a65af5dbe47fa"
+    },
+    {
+      "case": "thinking-medium",
+      "parsed": true,
+      "tokens": 103,
+      "checkpoint_bytes": false,
+      "sha256": "ddabf4377371049d6f7c2e9526368a674b2b7569acd1fdc6b0b5f30ae6149f2c"
+    },
+    {
+      "case": "empty-system",
+      "parsed": false,
+      "tokens": 34,
+      "checkpoint_bytes": true,
+      "sha256": "6d37f7d16731a29c17b53deeb0dfc26b3e3d828ec2c871f539002564b667fabe"
+    },
+    {
+      "case": "empty-system",
+      "parsed": true,
+      "tokens": 105,
+      "checkpoint_bytes": false,
+      "sha256": "c97868730f7cd8795f43c1764cd24d315239eec48cb4b31f4afd15e97cfb2a54"
+    },
+    {
+      "case": "unicode-trim",
+      "parsed": false,
+      "tokens": 45,
+      "checkpoint_bytes": true,
+      "sha256": "45e279b34dad9c607cb53c697d4247cc033e545daddf32d2b95e63a3f0d64410"
+    },
+    {
+      "case": "unicode-trim",
+      "parsed": true,
+      "tokens": 112,
+      "checkpoint_bytes": false,
+      "sha256": "5e413c8b2ff0e3162d63fddfc5d7878fe698d7583cc5ee432b0b421b7af25c7a"
+    },
+    {
+      "case": "history-preserve",
+      "parsed": false,
+      "tokens": 74,
+      "checkpoint_bytes": true,
+      "sha256": "0652413d5557c2b2e322af892c70720b55989818a9804c463e46b35b875fb3b7"
+    },
+    {
+      "case": "history-preserve",
+      "parsed": true,
+      "tokens": 145,
+      "checkpoint_bytes": false,
+      "sha256": "837443f0a43bd0d304726c62b17492984860673c6d8105ab09e3ecdeee21a428"
+    },
+    {
+      "case": "history-discard",
+      "parsed": false,
+      "tokens": 63,
+      "checkpoint_bytes": true,
+      "sha256": "4deff10a13b8f00eca3f0f79a12393a095503995f45c6399aea50e914f35a9c1"
+    },
+    {
+      "case": "history-discard",
+      "parsed": true,
+      "tokens": 134,
+      "checkpoint_bytes": false,
+      "sha256": "454debcfb4b5bb8fd69e0f370ea51fab87f7babff0cbfee6487c98270b43d02b"
+    },
+    {
+      "case": "null-assistant",
+      "parsed": false,
+      "tokens": 49,
+      "checkpoint_bytes": true,
+      "sha256": "3b809914e0d214a8b864534d39574fbd02fc34f8d90a39a27a8d9af33a0f2d31"
+    },
+    {
+      "case": "null-assistant",
+      "parsed": true,
+      "tokens": 120,
+      "checkpoint_bytes": false,
+      "sha256": "19b3bd97dbdcddad80dc9b23eafebaf2ae26f16a51c6a83a5704898438014cab"
+    },
+    {
+      "case": "tools-schema",
+      "parsed": false,
+      "tokens": 343,
+      "checkpoint_bytes": false,
+      "sha256": "fd796e96da429b952bd39fb910280664ad1cd5100b96c51a265a848af48536a2"
+    },
+    {
+      "case": "tools-schema",
+      "parsed": true,
+      "tokens": 410,
+      "checkpoint_bytes": false,
+      "sha256": "83159036c58241fa53088537c7152e849d2545cb1b47798161610ea216905dae"
+    },
+    {
+      "case": "tools-object-history",
+      "parsed": false,
+      "tokens": 471,
+      "checkpoint_bytes": false,
+      "sha256": "dbfd727dd3561eaecaeece1e3a17b1b46b848ca0d3cb507ac28eb9e215776ab8"
+    },
+    {
+      "case": "tools-object-history",
+      "parsed": true,
+      "tokens": 538,
+      "checkpoint_bytes": false,
+      "sha256": "9beab003d8a9b7017d9e9d64d98124c01f099b748cc96fed5882603b2d8bb0f6"
+    },
+    {
+      "case": "tools-string-history",
+      "parsed": false,
+      "tokens": 471,
+      "checkpoint_bytes": false,
+      "sha256": "dbfd727dd3561eaecaeece1e3a17b1b46b848ca0d3cb507ac28eb9e215776ab8"
+    },
+    {
+      "case": "tools-string-history",
+      "parsed": true,
+      "tokens": 538,
+      "checkpoint_bytes": false,
+      "sha256": "9beab003d8a9b7017d9e9d64d98124c01f099b748cc96fed5882603b2d8bb0f6"
+    },
+    {
+      "case": "consecutive-tools",
+      "parsed": false,
+      "tokens": 486,
+      "checkpoint_bytes": false,
+      "sha256": "6d19f401c44868ef73db2091db8b528cc52de606d598c429f73a12aad1cf1b59"
+    },
+    {
+      "case": "consecutive-tools",
+      "parsed": true,
+      "tokens": 553,
+      "checkpoint_bytes": false,
+      "sha256": "aa96de516d7f0387648f2f587ee6818a65b97aadff4dc0bcb18dba76958b68e8"
+    },
+    {
+      "case": "tool-current-thinking-preserved",
+      "parsed": false,
+      "tokens": 471,
+      "checkpoint_bytes": false,
+      "sha256": "dbfd727dd3561eaecaeece1e3a17b1b46b848ca0d3cb507ac28eb9e215776ab8"
+    },
+    {
+      "case": "tool-current-thinking-preserved",
+      "parsed": true,
+      "tokens": 538,
+      "checkpoint_bytes": false,
+      "sha256": "9beab003d8a9b7017d9e9d64d98124c01f099b748cc96fed5882603b2d8bb0f6"
+    },
+    {
+      "case": "tool-response-user",
+      "parsed": false,
+      "tokens": 91,
+      "checkpoint_bytes": true,
+      "sha256": "75ab3fd17fa8f75ad8d46ddc31bab25a21be2d88ac15654c8e3616160873549f"
+    },
+    {
+      "case": "tool-response-user",
+      "parsed": true,
+      "tokens": 162,
+      "checkpoint_bytes": false,
+      "sha256": "00fa848ce69ce6ff5f8637397d903e276dc20fa6b6a3e2c5c4061f5c4c4929f3"
+    }
+  ],
+  "default_mode_detail": "The public API uses medium default effort and the refusal-output instruction. Five frozen cases use the lossless single JSON arguments format. Independent Jinja plus the boundary-specific service protocol reproduces all public prompt bytes and IDs.",
+  "raw_checkpoint_identity": {
+    "same": 16,
+    "adapted_tool_definitions": 5,
+    "total": 21
+  },
+  "source_anchor_review": 40,
+  "historical_source_checks": [
+    "Initial sparse checkout lacked evidence files",
+    "Source hash renewed for reviewed validator edit"
+  ],
+  "runtime_http_pending": true
+}

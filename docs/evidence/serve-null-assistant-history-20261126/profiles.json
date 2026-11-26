@@ -1,0 +1,85 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 538,
+  "build": {
+    "engine": "edf0e22d5a15bdb14a5f07c6ea9662a332279a1974ed25913492d8f264247432",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "b022caba3bf074eca7493c780079bb5ca14a941b2a5f5e0f685ed1baa7e54c80",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "revision": 536,
+        "source_sha256": "0808c8fea5310c821b4815de087e35854995e986834e0552950a0904d9272470",
+        "saved": {
+          "chat_id": "chatcmpl-auto-cb907b51bee4379198f56411b3cd4799",
+          "call_id": "call_chatcmpl-auto-cb907b51bee4379198f56411b3cd4799_0",
+          "empty_id": "chatmsg_7248d26d72ec5c42fef32fad59d653660bdb4da09ec982aec7898fa038e377ee",
+          "history_sha256": "ece5679e4e8d4f7b65c28781675d8a5f004d8ab2771f9eeb9fe3a44e344dbb1c",
+          "peer": 404,
+          "strict_empty_page": true,
+          "strict_mixed_page": false
+        },
+        "restored": null,
+        "reply": "13",
+        "finishes": [
+          "stop"
+        ],
+        "usage": 194,
+        "independent_chat": "720041",
+        "missing_content_status": 400,
+        "chunks": 5
+      },
+      "seconds": 42.506,
+      "starts": 1,
+      "record_sha256": "cdc43682c65e2d905cbfef6fb3f5f9f146812bf978db4219f91f6d4e21401d3a",
+      "receipt_sha256": "883d194934ca76fd98abdd9570b74a02bd1ce816492d575662283f002eb903bf",
+      "predecessor": "91353897f1b88dd4916281832177ed7ee542ef1a8e6c81a25578b7241f8c149a"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "revision": 536,
+        "source_sha256": "0808c8fea5310c821b4815de087e35854995e986834e0552950a0904d9272470",
+        "saved": {
+          "chat_id": "chatcmpl-auto-d1d409987e868e1334af6cd948393e52",
+          "call_id": "call_chatcmpl-auto-d1d409987e868e1334af6cd948393e52_0",
+          "empty_id": "chatmsg_8f859cb5a1c837d8952f23ba8c63ae10c0f26dac010385d889bcdb1d7cedfe37",
+          "history_sha256": "bdf32a788f1d41bfcf20834e9c9d9d692be2b54a55d35a0d8da1c4525ef77130",
+          "peer": 404,
+          "strict_empty_page": true,
+          "strict_mixed_page": false
+        },
+        "restored": {
+          "chat_id": "chatcmpl-auto-cb907b51bee4379198f56411b3cd4799",
+          "call_id": "call_chatcmpl-auto-cb907b51bee4379198f56411b3cd4799_0",
+          "empty_id": "chatmsg_7248d26d72ec5c42fef32fad59d653660bdb4da09ec982aec7898fa038e377ee",
+          "history_sha256": "ece5679e4e8d4f7b65c28781675d8a5f004d8ab2771f9eeb9fe3a44e344dbb1c",
+          "peer": 404,
+          "strict_empty_page": true,
+          "strict_mixed_page": false
+        },
+        "reply": "13",
+        "finishes": [
+          "stop"
+        ],
+        "usage": 194,
+        "independent_chat": "720041",
+        "missing_content_status": 400,
+        "chunks": 5
+      },
+      "seconds": 38.314,
+      "starts": 1,
+      "record_sha256": "f83427f21c79690bc278413a1def13d054b7196488dc0ec559c4300efbf14083",
+      "receipt_sha256": "093be4b31f011c86878e8049d62b80a3bc4360159e55cffc05b2121e062755c4",
+      "predecessor": "3f4f1574bd3d077409bd418a6d50ba49fa0b60619962f3cc82962ddaedbd3bf5"
+    }
+  },
+  "business_evidence": "03c5b36b5a85ca3d5e3f0cb399c01df7c9dd425d33e7c7880669d9d9ee9f44b1",
+  "lease_exit": "cf197398c3524e097a4e3c9db2e68dda95a46c0db1eb710b6c3120e60ae24c61",
+  "acceptance": "2ba26d2cff45edced5130ac36e187b8d0892a284b8560ef821abe9372c82ea42",
+  "qualification": "aafcbed542b33a62b8d4f743550ebf96c73967df8fbc4b4b9250f99e3b89f53f",
+  "default_preserved": true
+}

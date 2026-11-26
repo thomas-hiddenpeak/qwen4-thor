@@ -634,7 +634,8 @@ Status ValidateChatMessageProfile(const io::Json& messages,
         role == "assistant" &&
         ((calls && !calls->array.empty()) || (legacy && !legacy->IsNull()) ||
          (refusal && refusal->IsString()) || !audio_id.empty());
-    if ((!content || content->IsNull()) && !assistant_payload)
+    if ((!content && !assistant_payload) ||
+        (content && content->IsNull() && role != "assistant"))
       return invalid(path + ".content", "message content is required");
     if (content && !content->IsNull() && !content->IsString() &&
         !content->IsArray())

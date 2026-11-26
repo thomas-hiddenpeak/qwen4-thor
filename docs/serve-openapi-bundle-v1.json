@@ -22909,6 +22909,16 @@
                             "anyOf": [
                               {
                                 "required": [
+                                  "content"
+                                ],
+                                "properties": {
+                                  "content": {
+                                    "type": "null"
+                                  }
+                                }
+                              },
+                              {
+                                "required": [
                                   "tool_calls"
                                 ],
                                 "properties": {
@@ -26622,6 +26632,16 @@
                           },
                           {
                             "anyOf": [
+                              {
+                                "required": [
+                                  "content"
+                                ],
+                                "properties": {
+                                  "content": {
+                                    "type": "null"
+                                  }
+                                }
+                              },
                               {
                                 "required": [
                                   "tool_calls"

@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 from typing import Callable
 
+from tools.serve_preflight import null_history_profiles
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
 from tools.serve_responses import eval_cancel_profiles, failure_profiles, video_clip_profiles, tool_map_profiles
@@ -163,6 +164,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if null_history_profiles.KEY in plan:
+        return Handoff(null_history_profiles.KEY, null_history_profiles.RELEASE, null_history_profiles.ACTOR,
+                       reuse.NULL_HISTORY_RECEIPT, reuse.TOOL_MAP_RECEIPT, reuse.TOOL_MAP_REVIEWED,
+                       null_history_profiles.check)
     if tool_map_profiles.KEY in plan:
         return Handoff(tool_map_profiles.KEY, tool_map_profiles.RELEASE, tool_map_profiles.ACTOR,
                        reuse.TOOL_MAP_RECEIPT, reuse.REGION_RECEIPT, reuse.REGION_REVIEWED,
@@ -230,7 +235,7 @@ def verify(phase, plan, capabilities):
         expected['file_inputs'] = reuse.region_file_inputs(expected['file_inputs'])
     if spec.key == video_clip_profiles.KEY:
         expected['file_inputs'] = reuse.clipped_file_inputs(expected['file_inputs'])
-    if spec.key in (visual_profiles.KEY, frame_profiles.KEY, tool_map_profiles.KEY):
+    if spec.key in (visual_profiles.KEY, frame_profiles.KEY, tool_map_profiles.KEY, null_history_profiles.KEY):
         expected['template'] = dict(expected['template'],
                                     renderer_source_sha256=package.sha(ROOT / 'src/server/chat_template.cpp'))
     package.require(package.sha(prior_file) == change['previous'] == spec.reviewed[name]
@@ -251,12 +256,14 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
-    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY):
+    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
         if spec.key == tool_map_profiles.KEY:
             module, wire = tool_map_profiles, 'tool-map-wire'
+        elif spec.key == null_history_profiles.KEY:
+            module, wire = null_history_profiles, 'null-history-wire'
         params.update(settings.get('fixture', {}), certificate=plan['tls']['certificate'])
         previous = (package.read(stage.out.parent/'primary'/spec.receipt)
                     if plan['name'] == 'light' else None)
