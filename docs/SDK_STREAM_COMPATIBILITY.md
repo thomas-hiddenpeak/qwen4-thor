@@ -1,5 +1,9 @@
 # 官方 SDK 的流式兼容记录
 
+### 较早 Python SDK 读取程序化工具
+
+Python 2.8.1 的严格 `responses.retrieve` 不能解析较晚加入的 `program` 项和 `programmatic_tool_calling` 工具。其通用 `client.get(path, cast_to=dict[str, Any])` 可读取两种原生资源。订阅时使用 `stream=True`、`stream_cls=openai.Stream[dict[str, Any]]`、`options={"params": {"stream": "true"}, "headers": {"Accept": "text/event-stream"}}`，续读将 `starting_after` 加入 `params`。2.8.1 和 3.55.1 均完整读取两份真实记录的 144 和 6 个事件以及两个后缀，程序代码、工具定义和调用者字段逐项等于原件。3.55.1 的高层严格入口也通过。[程序化工具读取记录](evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json)
+
 ### Responses 的 MCP 错误表示
 
 原生 TLS 下，Python 2.8.1 严格客户端批准读取项目文档，并用另一次审批拒绝同一工具。实际只读取文档一次。旧客户端完整收下拒绝结果的 38 个事件，3.55.1 读回原响应、错误对象和相同事件，两侧均从第 6 号游标续读 31 个事件。四次跨客户读取均返回 404。模型启动一次，用时 53.7 秒；下一步验证配置和托管恢复。[业务短验](evidence/serve-mcp-error-sdk-20261127/business.json)

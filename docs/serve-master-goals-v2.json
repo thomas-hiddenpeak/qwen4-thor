@@ -3176,7 +3176,9 @@
           "older SDK closed union for programmatic tools"
         ],
         "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
-        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json"
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
       }
     },
     {
@@ -7864,7 +7866,9 @@
           "older SDK closed union for programmatic tools"
         ],
         "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
-        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json"
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
       }
     },
     {
@@ -9233,7 +9237,9 @@
           "older SDK closed union for programmatic tools"
         ],
         "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
-        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json"
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
       }
     },
     {
