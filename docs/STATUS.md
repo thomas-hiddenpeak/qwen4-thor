@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+真实 ChatKit 用户上传项目发布记录、在回答中断开连接并删除上传文件，随后用新会话凭据重试原消息。中断时独立输入项确实缺失；重试按原输入 ID 从同一快照读回，模型答出 556。原取消记录摘要一致，跨客户读取为 404，后续回答和独立 Chat 均为 42。一次模型启动，用时 40.5 秒。容量及故障切换待验。[原生 TLS 验收](evidence/serve-chatkit-interrupted-retry-20261127/business.json)
+
 Python SDK 3.55.1 现可独立核对重试后的 ChatKit 消息列表。两组真实历史消息在模拟游标上传给官方严格类型解析器，验证了正序和倒序翻页，并拒绝重复页和损坏的消息类型。下一步在同一原生 TLS 短验中核对四条真实消息、旧回答移除、已删除文件及跨客户 404。[客户端记录](evidence/serve-chatkit-interrupted-retry-20261127/python-client.json)
 
 ChatKit 交接驱动现保存管理端、浏览器分页的原始响应和解析后的 SSE 事件。两段历史业务流的 90 个事件和 4 个列表项通过对应协议验证，缺少消息体的完成事件被拒绝。两份设备已验 v82 记录均可从演练 v83 逐字节还原。真实中断重试的跨配置接管待设备验收。[验证记录](evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json)
