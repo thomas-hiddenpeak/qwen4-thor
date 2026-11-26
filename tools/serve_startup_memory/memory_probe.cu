@@ -60,8 +60,24 @@ void Publish(const std::filesystem::path& path, const std::string& text) {
     throw std::runtime_error("probe receipt publication failed");
 }
 
+// The pool belongs to this short-lived process and device. Keep its backing
+// and live allocation counters separate from both CUDA free and host memcg.
+std::string PoolCounters(cudaMemPool_t pool) {
+  if (!pool) return {};
+  uint64_t used = 0, reserved = 0, threshold = 0;
+  Check(cudaMemPoolGetAttribute(pool, cudaMemPoolAttrUsedMemCurrent, &used));
+  Check(cudaMemPoolGetAttribute(pool, cudaMemPoolAttrReservedMemCurrent,
+                                &reserved));
+  Check(cudaMemPoolGetAttribute(pool, cudaMemPoolAttrReleaseThreshold,
+                                &threshold));
+  return ",\"pool_used_bytes\":" + std::to_string(used) +
+         ",\"pool_reserved_bytes\":" + std::to_string(reserved) +
+         ",\"pool_release_threshold_bytes\":" + std::to_string(threshold);
+}
+
 void Checkpoint(const std::filesystem::path& folder, const std::string& phase,
-                const std::string& kind, const std::string& touch) {
+                const std::string& kind, const std::string& touch,
+                cudaMemPool_t pool = nullptr) {
   size_t free = 0, total = 0;
   Check(cudaMemGetInfo(&free, &total));
   Publish(folder / (phase + ".json"),
@@ -69,7 +85,7 @@ void Checkpoint(const std::filesystem::path& folder, const std::string& phase,
               "\",\"bytes\":" + std::to_string(kBytes) +
               ",\"touch\":\"" + touch + "\",\"cuda_free_bytes\":" +
               std::to_string(free) + ",\"cuda_total_bytes\":" +
-              std::to_string(total) + "}\n");
+              std::to_string(total) + PoolCounters(pool) + "}\n");
   const auto deadline = std::chrono::steady_clock::now() +
                         std::chrono::seconds(30);
   const auto acknowledge = folder / (phase + ".continue");
@@ -89,6 +105,8 @@ struct Allocation {
     if (!current) return;
     if (kind == "anonymous") {
       if (munmap(current, kBytes)) throw std::runtime_error("munmap failed");
+    } else if (kind == "async" || kind == "async-retained") {
+      Check(cudaFreeAsync(current, nullptr));
     } else if (kind == "pinned") {
       Check(cudaFreeHost(current));
     } else {
@@ -110,8 +128,9 @@ int main(int argc, char** argv) {
     if (argc != 3) throw std::runtime_error("KIND EXISTING_OUTPUT_DIR required");
     const std::string kind = argv[1];
     const std::filesystem::path folder(argv[2]);
+    const bool async = kind == "async" || kind == "async-retained";
     if ((kind != "anonymous" && kind != "device" && kind != "pinned" &&
-         kind != "managed") || !folder.is_absolute() ||
+         kind != "managed" && !async) || !folder.is_absolute() ||
         !std::filesystem::is_directory(folder))
       throw std::runtime_error("invalid bounded probe arguments");
     Check(cudaSetDevice(0));
@@ -131,7 +150,16 @@ int main(int argc, char** argv) {
                 std::to_string(properties.pageableMemoryAccess) +
                 ",\"concurrent_managed_access\":" +
                 std::to_string(properties.concurrentManagedAccess) + "}\n");
-    Checkpoint(folder, "baseline", kind, "context_initialized");
+    cudaMemPool_t pool = nullptr;
+    if (async) {
+      Check(cudaDeviceGetMemPool(&pool, 0));
+      if (kind == "async-retained") {
+        uint64_t threshold = kBytes;
+        Check(cudaMemPoolSetAttribute(pool, cudaMemPoolAttrReleaseThreshold,
+                                      &threshold));
+      }
+    }
+    Checkpoint(folder, "baseline", kind, "context_initialized", pool);
     Allocation allocation{kind, nullptr};
     if (kind == "anonymous") {
       allocation.pointer = mmap(nullptr, kBytes, PROT_READ | PROT_WRITE,
@@ -141,6 +169,9 @@ int main(int argc, char** argv) {
         throw std::runtime_error("mmap failed");
       }
       CpuTouch(allocation.pointer);
+    } else if (async) {
+      Check(cudaMallocAsync(&allocation.pointer, kBytes, nullptr));
+      GpuTouch(allocation.pointer);
     } else if (kind == "device") {
       Check(cudaMalloc(&allocation.pointer, kBytes));
       GpuTouch(allocation.pointer);
@@ -153,13 +184,17 @@ int main(int argc, char** argv) {
       Checkpoint(folder, "host", kind, "cpu_all_words_verified_edges");
       GpuTouch(allocation.pointer);
     }
-    const std::string touch = kind == "device" || kind == "managed"
+    const std::string touch = async || kind == "device" || kind == "managed"
                                   ? "gpu_all_words_verified_edges"
                                   : "cpu_all_words_verified_edges";
-    Checkpoint(folder, "held", kind, touch);
+    Checkpoint(folder, "held", kind, touch, pool);
     allocation.Release();
     Check(cudaDeviceSynchronize());
-    Checkpoint(folder, "freed", kind, "release_returned_success");
+    Checkpoint(folder, "freed", kind, "release_returned_success", pool);
+    if (pool) {
+      Check(cudaMemPoolTrimTo(pool, 0));
+      Checkpoint(folder, "trimmed", kind, "pool_trim_returned_success", pool);
+    }
     Publish(folder / "result.json", "{\"passed\":true,\"bytes\":" +
                 std::to_string(kBytes) + ",\"allocations\":1,\"releases\":1}\n");
     return 0;

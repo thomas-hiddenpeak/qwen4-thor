@@ -8702,6 +8702,16 @@
         "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
         "publication_revision": 532,
         "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
+      },
+      "agent_quota_python_clients_20261126": {
+        "stage": "verified",
+        "python": [
+          "2.8.1 via generic GET",
+          "3.42.1 and 3.55.1 via typed Agents"
+        ],
+        "receipt": "evidence/serve-responses-errors-20261126/agent-quota-python.json",
+        "node_tls": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
+        "python_transport": "offline replay of native reads and events"
       }
     },
     {
@@ -10047,6 +10057,23 @@
         "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
         "revision": 522,
         "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
+      },
+      "async_pool_charge_20261126": {
+        "stage": "targeted_device_verified",
+        "evidence": "evidence/serve-resource-charge-20261126/cpu.json",
+        "physical_ram_limit_proved": false,
+        "device_receipt": "evidence/serve-resource-charge-20261126/device.json",
+        "model_starts": 0
+      },
+      "sized_cuda_pool_20261126": {
+        "stage": "device_observed",
+        "model_starts": 0,
+        "requested_bytes": 33554432,
+        "reported_bytes": 33554432,
+        "pool_capacity_refused": true,
+        "out_of_pool_allocation_observed": true,
+        "physical_ram_limit_proved": false,
+        "evidence": "evidence/serve-resource-charge-20261126/sized-pool.json"
       }
     },
     {

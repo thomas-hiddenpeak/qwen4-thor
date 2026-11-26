@@ -1,0 +1,512 @@
+{
+  "stage": "device_observed",
+  "source_commit": "bacdbb3d79dcb301c93d21e0283fb7922ba831ff",
+  "kernel": "6.8.12-1021-tegra",
+  "device": {
+    "driver": 13020,
+    "runtime": 13030,
+    "major": 11,
+    "minor": 0,
+    "integrated": 1,
+    "pageable_memory_access": 1,
+    "concurrent_managed_access": 1
+  },
+  "model_starts": 0,
+  "owned_domains_removed": 1,
+  "physical_ram_limit_proved": false,
+  "protected_default_files": 4,
+  "default_intent": "STOPPED",
+  "lease": {
+    "status": "COMPLETED",
+    "sha256": "8ea0cfffe103ffbf9cc81b3b5ab1f18c13f435935386ca17f815a5aa089f363a"
+  },
+  "raw_sha256": "190061238129cdce77c53214ef1a61c815abf4083f7ffeca30db881faab8635d",
+  "source_sha256": {
+    "build/pool/memory-probe": "85837625d316db09eb93b778a75fdc183275f10d185770ff4f383a19da9bfed3",
+    "tools/serve_startup_memory/native_pool_stage.py": "f19c2f77557174f2b4311ff15afd86cc1e6b86963cb51d6461a514412f4c1bc3",
+    "tools/serve_startup_memory/pool_accounting.py": "9b74993c5dfcafdec2744c360a89727eee1cb4436cb4191e66947561feb211a0",
+    "tools/serve_recovery/resource_kernel.py": "13024a2a1759f15c2e83b963c23144553b21853d5911c16160bf3ca53af45cbf",
+    "tools/serve_startup_memory/memory_probe.cu": "dee0bfc922480ec66f120c36b63e497beb5b813a79e3278687426a3b2c8b0c8c"
+  },
+  "native_policy": {
+    "service": {
+      "memory_high_bytes": 1610612736,
+      "memory_max_bytes": 2147483648,
+      "pids_max": 64
+    },
+    "outer": {
+      "memory_high_bytes": 402653184,
+      "memory_max_bytes": 536870912,
+      "pids_max": 64
+    },
+    "swap_max_bytes": 0,
+    "oom_group": true,
+    "physical_ram_limit": false
+  },
+  "observations": [
+    {
+      "mode": "async",
+      "phases": {
+        "baseline": {
+          "native": {
+            "kind": "async",
+            "phase": "baseline",
+            "bytes": 268435456,
+            "touch": "context_initialized",
+            "cuda_free_bytes": 106999259136,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 0,
+            "pool_reserved_bytes": 0,
+            "pool_release_threshold_bytes": 0
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856628216790640,
+              "rss_bytes": 72544256,
+              "current_bytes": 42962944,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856628467212618,
+              "rss_bytes": 72544256,
+              "current_bytes": 42475520,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        },
+        "held": {
+          "native": {
+            "kind": "async",
+            "phase": "held",
+            "bytes": 268435456,
+            "touch": "gpu_all_words_verified_edges",
+            "cuda_free_bytes": 106716286976,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 268435456,
+            "pool_reserved_bytes": 268435456,
+            "pool_release_threshold_bytes": 0
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856628497798203,
+              "rss_bytes": 89079808,
+              "current_bytes": 56631296,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856628748190082,
+              "rss_bytes": 89079808,
+              "current_bytes": 56631296,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        },
+        "freed": {
+          "native": {
+            "kind": "async",
+            "phase": "freed",
+            "bytes": 268435456,
+            "touch": "release_returned_success",
+            "cuda_free_bytes": 106988392448,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 0,
+            "pool_reserved_bytes": 0,
+            "pool_release_threshold_bytes": 0
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856628778667234,
+              "rss_bytes": 89079808,
+              "current_bytes": 56631296,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856629029045574,
+              "rss_bytes": 89079808,
+              "current_bytes": 56631296,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        },
+        "trimmed": {
+          "native": {
+            "kind": "async",
+            "phase": "trimmed",
+            "bytes": 268435456,
+            "touch": "pool_trim_returned_success",
+            "cuda_free_bytes": 106977038336,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 0,
+            "pool_reserved_bytes": 0,
+            "pool_release_threshold_bytes": 0
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856629059515854,
+              "rss_bytes": 89079808,
+              "current_bytes": 56631296,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856629309868537,
+              "rss_bytes": 89079808,
+              "current_bytes": 56631296,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        }
+      },
+      "deltas_from_baseline": {
+        "baseline": {
+          "pool_used_bytes": 0,
+          "pool_reserved_bytes": 0,
+          "cuda_free_bytes": 0,
+          "current_bytes": [
+            0,
+            0
+          ],
+          "rss_bytes": [
+            0,
+            0
+          ]
+        },
+        "held": {
+          "pool_used_bytes": 268435456,
+          "pool_reserved_bytes": 268435456,
+          "cuda_free_bytes": -282972160,
+          "current_bytes": [
+            13668352,
+            14155776
+          ],
+          "rss_bytes": [
+            16535552,
+            16535552
+          ]
+        },
+        "freed": {
+          "pool_used_bytes": 0,
+          "pool_reserved_bytes": 0,
+          "cuda_free_bytes": -10866688,
+          "current_bytes": [
+            13668352,
+            14155776
+          ],
+          "rss_bytes": [
+            16535552,
+            16535552
+          ]
+        },
+        "trimmed": {
+          "pool_used_bytes": 0,
+          "pool_reserved_bytes": 0,
+          "cuda_free_bytes": -22220800,
+          "current_bytes": [
+            13668352,
+            14155776
+          ],
+          "rss_bytes": [
+            16535552,
+            16535552
+          ]
+        }
+      },
+      "device": {
+        "driver": 13020,
+        "runtime": 13030,
+        "major": 11,
+        "minor": 0,
+        "integrated": 1,
+        "pageable_memory_access": 1,
+        "concurrent_managed_access": 1
+      }
+    },
+    {
+      "mode": "async-retained",
+      "phases": {
+        "baseline": {
+          "native": {
+            "kind": "async-retained",
+            "phase": "baseline",
+            "bytes": 268435456,
+            "touch": "context_initialized",
+            "cuda_free_bytes": 107008249856,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 0,
+            "pool_reserved_bytes": 0,
+            "pool_release_threshold_bytes": 268435456
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856629526091227,
+              "rss_bytes": 72544256,
+              "current_bytes": 43298816,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856629776480586,
+              "rss_bytes": 72544256,
+              "current_bytes": 43044864,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        },
+        "held": {
+          "native": {
+            "kind": "async-retained",
+            "phase": "held",
+            "bytes": 268435456,
+            "touch": "gpu_all_words_verified_edges",
+            "cuda_free_bytes": 106717134848,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 268435456,
+            "pool_reserved_bytes": 268435456,
+            "pool_release_threshold_bytes": 268435456
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856629806967134,
+              "rss_bytes": 89079808,
+              "current_bytes": 57200640,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856630057314633,
+              "rss_bytes": 89079808,
+              "current_bytes": 56954880,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        },
+        "freed": {
+          "native": {
+            "kind": "async-retained",
+            "phase": "freed",
+            "bytes": 268435456,
+            "touch": "release_returned_success",
+            "cuda_free_bytes": 106716872704,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 0,
+            "pool_reserved_bytes": 268435456,
+            "pool_release_threshold_bytes": 268435456
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856630087777228,
+              "rss_bytes": 89079808,
+              "current_bytes": 56954880,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856630338143634,
+              "rss_bytes": 89079808,
+              "current_bytes": 56954880,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        },
+        "trimmed": {
+          "native": {
+            "kind": "async-retained",
+            "phase": "trimmed",
+            "bytes": 268435456,
+            "touch": "pool_trim_returned_success",
+            "cuda_free_bytes": 106990022656,
+            "cuda_total_bytes": 131920637952,
+            "pool_used_bytes": 0,
+            "pool_reserved_bytes": 0,
+            "pool_release_threshold_bytes": 268435456
+          },
+          "samples": [
+            {
+              "monotonic_ns": 3856630368590062,
+              "rss_bytes": 89079808,
+              "current_bytes": 56954880,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            },
+            {
+              "monotonic_ns": 3856630618906627,
+              "rss_bytes": 89079808,
+              "current_bytes": 56954880,
+              "events": {
+                "low": 0,
+                "high": 0,
+                "max": 0,
+                "oom": 0,
+                "oom_kill": 0,
+                "oom_group_kill": 0
+              }
+            }
+          ]
+        }
+      },
+      "deltas_from_baseline": {
+        "baseline": {
+          "pool_used_bytes": 0,
+          "pool_reserved_bytes": 0,
+          "cuda_free_bytes": 0,
+          "current_bytes": [
+            0,
+            0
+          ],
+          "rss_bytes": [
+            0,
+            0
+          ]
+        },
+        "held": {
+          "pool_used_bytes": 268435456,
+          "pool_reserved_bytes": 268435456,
+          "cuda_free_bytes": -291115008,
+          "current_bytes": [
+            13901824,
+            13910016
+          ],
+          "rss_bytes": [
+            16535552,
+            16535552
+          ]
+        },
+        "freed": {
+          "pool_used_bytes": 0,
+          "pool_reserved_bytes": 268435456,
+          "cuda_free_bytes": -291377152,
+          "current_bytes": [
+            13656064,
+            13910016
+          ],
+          "rss_bytes": [
+            16535552,
+            16535552
+          ]
+        },
+        "trimmed": {
+          "pool_used_bytes": 0,
+          "pool_reserved_bytes": 0,
+          "cuda_free_bytes": -18227200,
+          "current_bytes": [
+            13656064,
+            13910016
+          ],
+          "rss_bytes": [
+            16535552,
+            16535552
+          ]
+        }
+      },
+      "device": {
+        "driver": 13020,
+        "runtime": 13030,
+        "major": 11,
+        "minor": 0,
+        "integrated": 1,
+        "pageable_memory_access": 1,
+        "concurrent_managed_access": 1
+      }
+    }
+  ]
+}
