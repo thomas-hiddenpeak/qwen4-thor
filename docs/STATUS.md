@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+原生 TLS 与双 API Key 验收用一次模型启动、43.879 秒。四类资源均能省略请求体和 Content-Type，也接受空的 JSON 请求及显式空对象。另一客户均为 404；null、损坏 JSON 为 400，错误媒体类型为 415。四个必填请求体入口仍返回 400。旧 Agent 会话保留原配额失败轮次，独立 Chat 回答 42。默认包保持原身份，下一步验证交付封包。[业务记录](evidence/serve-optional-resource-updates-20261126/https.json)
+
 真实 TLS 验收驱动现直接复用已核验的配额失败会话副本。它检查空更新前后的业务字段、失败轮次 ID 与错误类别，并在同一模型进程中发出一条独立 Chat。这样可同时覆盖历史数据与新建资源；设备结果待实跑。
 
 Agent、Agent 会话、环境模板和 webhook 端点现在允许省略更新请求体。原生入口和公开 OpenAPI 已同步，显式 null 和损坏 JSON 返回 400。用真实配额失败会话的 32 份持久化文件复验，所有者的空更新由 400 修正为 200，另一客户由 400 修正为 404，历史轮次和错误保留。五项原生定向检查及四条声明的可选性校验通过。下一步验证原生 TLS 接入与常规 Chat。[CPU 记录](evidence/serve-optional-resource-updates-20261126/cpu.json)
