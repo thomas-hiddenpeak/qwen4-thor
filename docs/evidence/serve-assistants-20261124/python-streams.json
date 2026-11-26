@@ -1,0 +1,194 @@
+{
+  "status": "scoped_client_replay_pass",
+  "scope": "Python official event iterators, stream snapshots and tool continuation. Synthetic SSE framing around the authenticated Node event/data capture; no Python network request or model start in this replay.",
+  "historical_node": {
+    "version": "7.47.0",
+    "transport": "native TLS",
+    "record": "runs.json",
+    "sha256": "3a9f3c190df9a5c11c5358217aaafe7192dcc61566f3a1d968e83996cbc3caad",
+    "captures": {
+      ".q4t-work/serve-responses-agents-20261123/runs-business-02/result.json": "616d2670e8f7bd4956556f8f89fe958247a8d4d7cb99c9e9b10e0ddd61a1c2f9",
+      ".q4t-work/serve-responses-agents-20261123/runs-business-02/plan.json": "8ef0dafae75eda378172860ef80bdafe8fabd739e7d099037e831371a5458e97",
+      ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/sdk-result.json": "fbc3177ec55f47c89973b7951a1721ec0838253da1489f9dffd27f08a3bf2724",
+      ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/run-events.json": "85f811dbdfd7c6c0f3d3fdaa64f3712a905d41ed278ecc6e784a95b5fc720714",
+      ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/run-wire.json": "95e3d88ebceebc2a0d208f3231908f9a9c7b5cdfd3e0050cf8ab3f3041d7ed1e",
+      ".q4t-work/serve-responses-agents-20261123/runs-business-lease-02/exit.json": "33092535368a6c4caf670982fb73e8e25b67ee5766d23ed532d96acb7225b3e8"
+    },
+    "error_statuses": {
+      "invalid_tool_submissions": [
+        400,
+        400,
+        400
+      ],
+      "foreign_run_and_step": [
+        404,
+        404
+      ],
+      "active_thread_write": 409
+    }
+  },
+  "all_json": {
+    "receipt": "evidence/serve-stored-message-projection-20261125/python-resource-replay.json",
+    "sha256": "fa86fba85a1d5fe1fdae70ebc79ad96e45855958c50e0c03e8fac44fd87be176",
+    "success_bodies": 36,
+    "exact_original_json_http_status_retained": false
+  },
+  "driver": "tools/serve_audit/assistant_run_sdk.py",
+  "driver_sha256": "3d603db229bc4c3ade6fbfe305781a88daac6d10143d32eeb868f024fe8691eb",
+  "python": [
+    {
+      "version": "2.8.1",
+      "mode": "default",
+      "trace_sha256": "7cea372873ee06126d0e200dc1cafe6beabcc67b120044f245933d0d05a7619b",
+      "streams": [
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 0,
+          "phase": "create",
+          "operation": "POST /v1/threads/{thread_id}/runs",
+          "events": 9,
+          "final_status": "requires_action",
+          "differing_fields": []
+        },
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 1,
+          "phase": "submit",
+          "operation": "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+          "events": 13,
+          "final_status": "completed",
+          "differing_fields": []
+        }
+      ]
+    },
+    {
+      "version": "2.8.1",
+      "mode": "strict",
+      "trace_sha256": "b89dd0fdc7606e4b84515ecf6c4b8eb198065ddca4fcb9f97e7eafca05f7e36b",
+      "streams": [
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 0,
+          "phase": "create",
+          "operation": "POST /v1/threads/{thread_id}/runs",
+          "events": 9,
+          "final_status": "requires_action",
+          "differing_fields": []
+        },
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 1,
+          "phase": "submit",
+          "operation": "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+          "events": 13,
+          "final_status": "completed",
+          "differing_fields": []
+        }
+      ]
+    },
+    {
+      "version": "3.42.1",
+      "mode": "default",
+      "trace_sha256": "01dbd459815e7b6835bc9039ba38d05c7c48f1cdba053108dfcfd8b787bf9414",
+      "streams": [
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 0,
+          "phase": "create",
+          "operation": "POST /v1/threads/{thread_id}/runs",
+          "events": 9,
+          "final_status": "requires_action",
+          "differing_fields": []
+        },
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 1,
+          "phase": "submit",
+          "operation": "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+          "events": 13,
+          "final_status": "completed",
+          "differing_fields": []
+        }
+      ]
+    },
+    {
+      "version": "3.42.1",
+      "mode": "strict",
+      "trace_sha256": "832fa70dadd1a46ffec01c73da1d26845f64044dba7a21609895f2eb8a6b2c55",
+      "streams": [
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 0,
+          "phase": "create",
+          "operation": "POST /v1/threads/{thread_id}/runs",
+          "events": 9,
+          "final_status": "requires_action",
+          "differing_fields": []
+        },
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 1,
+          "phase": "submit",
+          "operation": "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+          "events": 13,
+          "final_status": "completed",
+          "differing_fields": []
+        }
+      ]
+    },
+    {
+      "version": "3.55.1",
+      "mode": "default",
+      "trace_sha256": "3c4dd7cd1335f4bf99061358e9b8864f0cc7b3e4ac41b29834e011af92cde7a4",
+      "streams": [
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 0,
+          "phase": "create",
+          "operation": "POST /v1/threads/{thread_id}/runs",
+          "events": 9,
+          "final_status": "requires_action",
+          "differing_fields": []
+        },
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 1,
+          "phase": "submit",
+          "operation": "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+          "events": 13,
+          "final_status": "completed",
+          "differing_fields": []
+        }
+      ]
+    },
+    {
+      "version": "3.55.1",
+      "mode": "strict",
+      "trace_sha256": "00d5acb242f2cc01b5ec55a1f11946143b8f845d97f653c60328c028bc0c472c",
+      "streams": [
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 0,
+          "phase": "create",
+          "operation": "POST /v1/threads/{thread_id}/runs",
+          "events": 9,
+          "final_status": "requires_action",
+          "differing_fields": []
+        },
+        {
+          "step_snapshots": 1,
+          "completed_tool_calls": 1,
+          "phase": "submit",
+          "operation": "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs",
+          "events": 13,
+          "final_status": "completed",
+          "differing_fields": []
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "get_final_run_steps records steps created in the current subscription. The completed prior tool step is available in the submit stream event and via the steps resource.",
+    "All compared typed event/data projections matched captured fields."
+  ]
+}
