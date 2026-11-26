@@ -1,0 +1,42 @@
+{
+  "stage": "targeted_cpu_validated",
+  "issued": false,
+  "predecessor": "38fa014b702f2f5ff55ffa0a03ec42b37b0fd587",
+  "first_http": {
+    "sdk": "2.8.1",
+    "http": 409,
+    "code": "object_revision_conflict",
+    "persisted_status": "canceled",
+    "persisted_revision": 5,
+    "sampling_released": true,
+    "resource_record_sha256": "5bf0ee195b979ce13c80ef58c5f840efeafb9455ec6065c7e99f668dc634e5cb",
+    "model_starts": 1,
+    "seconds": 39.531,
+    "default_unchanged": true,
+    "ports_released": true,
+    "remaining": 0,
+    "lease_status": "COMMAND_FAILED",
+    "lease_sha256": "f930dee4eae00111881cb8e1d59b9ff919fcc909c698afa164dac44dfdc7fde8",
+    "error_sha256": "15fd01f2d01c68ee8180cdc6809917aca445af3f7fa415793db9f90c0b215069"
+  },
+  "cpu": {
+    "regression": "evals_concurrent_cancel_routes_return_the_same_owned_run",
+    "clients": 4,
+    "routes": 2,
+    "original_failed": true,
+    "original_log_sha256": "bf533fb5723cc7c9a0d7ebf606fc637837ce6cfe383b7c8d463d0f8423cf3d3b",
+    "targeted_cases": 5,
+    "repetitions": 3,
+    "new_log_sha256": "706360f9c1f64641b4ba42ede32f0bef41552a3c2c616a58dea805f49ac38c81",
+    "inventory_mutations": 40
+  },
+  "candidate": {
+    "binary": "b23ed5665b9dcb25f3eab772251e469c15431fd5e072107aa0acfeef7a955605",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "sources": {
+      "src/server/evals.cpp": "74af922815ff7d43463da879c600fb3bcb8881fbb9fd3c056fe680ae8afdef46",
+      "tests/server_evals_test.cpp": "42510be348f831b1c87b3f2d5b24dab025b4028a36f4b6a4b224ac1cde51071e"
+    }
+  },
+  "scope": "Only cancellation retries known optimistic revision conflicts, rereads ownership and current run state, and observes the original deadline. Unknown commit outcomes and other operations keep their existing handling. Integrated capacity and managed fault business are pending."
+}

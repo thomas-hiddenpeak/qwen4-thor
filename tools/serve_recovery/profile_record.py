@@ -3,7 +3,7 @@ import json
 import os
 from pathlib import Path
 
-from tools.serve_recovery import ledger
+from tools.serve_recovery import ledger, profile_live_reuse
 from tools.serve_service import package
 
 MAX_BYTES = 8 << 20
@@ -12,119 +12,25 @@ LEGACY_BYTES = 2 << 20
 
 def shape(value, size):
     ledger.require(size <= MAX_BYTES, 'profile evidence size limit')
-    if size > LEGACY_BYTES:
-        ledger.require(type(value) is dict and type(value.get('reused_business')) is dict and
-            ((value.get('format') == 'q4t-profile-business-v18' and
-            value['reused_business'].get('format') in (
-                'q4t-prompt-profile-source-reuse-v1',
-                'q4t-prompt-refusal-source-reuse-v1',
-                'q4t-prompt-refusal-source-assembly-v1')) or
-             (value.get('format') == 'q4t-profile-business-v19' and
-              value['reused_business'].get('format') in (
-                  'q4t-speech-source-reuse-v1',
-                  'q4t-speech-cancellation-source-reuse-v1')) or
-             (value.get('format') == 'q4t-profile-business-v20' and
-              value['reused_business'].get('format') in (
-                  'q4t-duplex-source-reuse-v1',
-                  'q4t-duplex-composed-source-reuse-v1')) or
-             (value.get('format') == 'q4t-profile-business-v21' and
-              value['reused_business'].get('format') == 'q4t-mcp-profile-source-reuse-v1') or
-             (value.get('format') == 'q4t-profile-business-v22' and
-              value['reused_business'].get('format') == 'q4t-tracing-profile-source-reuse-v1') or
-             (value.get('format') == 'q4t-profile-business-v23' and
-              value['reused_business'].get('format') == 'q4t-live-profile-source-reuse-v1') or
-             (value.get('format') == 'q4t-profile-business-v24' and
-              value['reused_business'].get('format') == 'q4t-live-beta-profile-source-reuse-v1') or
-             (value.get('format') == 'q4t-profile-business-v25' and
-              value['reused_business'].get('format') in (
-                  'q4t-agent-profile-source-reuse-v1', 'q4t-agent-profile-requalification-v1')) or
-             (value.get('format') == 'q4t-profile-business-v26' and
-              value['reused_business'].get('format') == 'q4t-agent-registration-profile-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v27' and
-              value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v28' and
-              value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v68' and
-              value['reused_business'].get('format') == 'q4t-visual-frame-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v67' and
-              value['reused_business'].get('format') == 'q4t-visual-answer-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v66' and
-              value['reused_business'].get('format') == 'q4t-response-media-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v65' and
-              value['reused_business'].get('format') == 'q4t-agent-session-control-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v64' and
-              value['reused_business'].get('format') == 'q4t-chatkit-widget-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v63' and
-              value['reused_business'].get('format') == 'q4t-chatkit-image-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v62' and
-              value['reused_business'].get('format') == 'q4t-chatkit-workflow-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v61' and
-              value['reused_business'].get('format') == 'q4t-chatkit-generation-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v60' and
-              value['reused_business'].get('format') == 'q4t-chatkit-browser-output-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v59' and
-              value['reused_business'].get('format') == 'q4t-chatkit-actions-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v58' and
-              value['reused_business'].get('format') == 'q4t-chatkit-retry-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v57' and
-              value['reused_business'].get('format') == 'q4t-stored-refusal-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v56' and
-              value['reused_business'].get('format') == 'q4t-typed-function-history-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v55' and
-              value['reused_business'].get('format') == 'q4t-video-track-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v54' and
-              value['reused_business'].get('format') == 'q4t-video-character-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v53' and
-              value['reused_business'].get('format') == 'q4t-chatkit-dictation-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v52' and
-              value['reused_business'].get('format') == 'q4t-assistant-pagination-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v51' and
-              value['reused_business'].get('format') == 'q4t-chatkit-upload-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v50' and
-              value['reused_business'].get('format') == 'q4t-chatkit-feedback-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v49' and
-              value['reused_business'].get('format') == 'q4t-eval-meteor-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v48' and
-              value['reused_business'].get('format') == 'q4t-historical-arguments-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v47' and
-              value['reused_business'].get('format') == 'q4t-project-safety-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v46' and
-              value['reused_business'].get('format') == 'q4t-eval-cosine-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v45' and
-              value['reused_business'].get('format') == 'q4t-eval-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v44' and
-              value['reused_business'].get('format') == 'q4t-chatkit-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v43' and
-              value['reused_business'].get('format') == 'q4t-hosted-preparation-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v42' and
-              value['reused_business'].get('format') == 'q4t-hosted-environment-lifecycle-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v41' and
-              value['reused_business'].get('format') == 'q4t-webhook-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v40' and
-              value['reused_business'].get('format') == 'q4t-agent-automation-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v39' and
-              value['reused_business'].get('format') == 'q4t-translation-transport-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v38' and
-              value['reused_business'].get('format') == 'q4t-interpreter-workspace-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v37' and
-              value['reused_business'].get('format') == 'q4t-skill-workspace-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v36' and
-              value['reused_business'].get('format') == 'q4t-assistants-run-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v35' and
-              value['reused_business'].get('format') == 'q4t-translation-realtime-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v34' and
-              value['reused_business'].get('format') == 'q4t-managed-subagent-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v33' and
-              value['reused_business'].get('format') == 'q4t-managed-session-tools-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v32' and
-              value['reused_business'].get('format') == 'q4t-session-artifact-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v31' and
-              value['reused_business'].get('format') == 'q4t-agent-workspace-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v30' and
-              value['reused_business'].get('format') == 'q4t-agent-environment-template-source-v1') or
-             (value.get('format') == 'q4t-profile-business-v29' and
-              value['reused_business'].get('format') == 'q4t-vault-oauth-profile-source-v1')),
-            'only explicit reviewed source records have the larger evidence bound')
+    if size <= LEGACY_BYTES:
+        return
+    ledger.require(type(value) is dict and type(value.get('reused_business')) is dict,
+                   'only explicit reviewed source records have the larger evidence bound')
+    record = value.get('format')
+    source = value['reused_business'].get('format')
+    older = {
+        'q4t-profile-business-v18': ('q4t-prompt-profile-source-reuse-v1',
+            'q4t-prompt-refusal-source-reuse-v1', 'q4t-prompt-refusal-source-assembly-v1'),
+        'q4t-profile-business-v19': ('q4t-speech-source-reuse-v1', 'q4t-speech-cancellation-source-reuse-v1'),
+        'q4t-profile-business-v20': ('q4t-duplex-source-reuse-v1', 'q4t-duplex-composed-source-reuse-v1'),
+        'q4t-profile-business-v21': ('q4t-mcp-profile-source-reuse-v1',),
+        'q4t-profile-business-v22': ('q4t-tracing-profile-source-reuse-v1',),
+        profile_live_reuse.AGENT_RECORD_FORMAT: (profile_live_reuse.AGENT_REFRESH,),
+    }
+    ledger.require(isinstance(record, str) and isinstance(source, str) and
+                   (profile_live_reuse.REUSE_FORMAT.get(record) == source
+                    or source in older.get(record, ())),
+                   'only explicit reviewed source records have the larger evidence bound')
 
 
 def read(path):
@@ -176,51 +82,14 @@ def accepted_source(plan_path, manifest, primary, payload):
         'ACCEPT_TARGETED_REFUSAL_PRIMARY_LIGHT': 'q4t-prompt-refusal-source-reuse-v1',
         'ACCEPT_REVIEWED_REFUSAL_PRIMARY_LIGHT': 'q4t-prompt-refusal-source-assembly-v1',
         'ACCEPT_SPEECH_PRIMARY_LIGHT': 'q4t-speech-source-reuse-v1',
-        'ACCEPT_SPEECH_CANCELLATION_PRIMARY_LIGHT':
-            'q4t-speech-cancellation-source-reuse-v1',
+        'ACCEPT_SPEECH_CANCELLATION_PRIMARY_LIGHT': 'q4t-speech-cancellation-source-reuse-v1',
         'ACCEPT_DUPLEX_PRIMARY_LIGHT': 'q4t-duplex-source-reuse-v1',
-        'ACCEPT_COMPOSED_DUPLEX_PRIMARY_LIGHT':
-            'q4t-duplex-composed-source-reuse-v1',
+        'ACCEPT_COMPOSED_DUPLEX_PRIMARY_LIGHT': 'q4t-duplex-composed-source-reuse-v1',
         'ACCEPT_MCP_PRIMARY_LIGHT': 'q4t-mcp-profile-source-reuse-v1',
-        'ACCEPT_LIVE_PRIMARY_LIGHT': 'q4t-live-profile-source-reuse-v1',
-        'ACCEPT_RESPONSES_BETA_PRIMARY_LIGHT': 'q4t-live-beta-profile-source-reuse-v1',
-        'ACCEPT_HOSTED_AGENTS_PRIMARY_LIGHT': 'q4t-agent-profile-source-reuse-v1',
         'ACCEPT_AGENT_RECOVERY_PRIMARY_LIGHT': 'q4t-agent-profile-requalification-v1',
-        'ACCEPT_AGENT_REGISTRATION_PRIMARY_LIGHT': 'q4t-agent-registration-profile-source-v1',
-        'ACCEPT_AGENT_SESSIONS_PRIMARY_LIGHT': 'q4t-agent-session-profile-source-v1',
-        'ACCEPT_AUTOMATION_PRIMARY_LIGHT': 'q4t-agent-automation-source-v1',
-        'ACCEPT_RESPONSE_MEDIA_PRIMARY_LIGHT': 'q4t-response-media-source-v1',
-        'ACCEPT_AGENT_SESSION_CONTROL_PRIMARY_LIGHT': 'q4t-agent-session-control-source-v1',
-        'ACCEPT_CHATKIT_WIDGET_PRIMARY_LIGHT': 'q4t-chatkit-widget-source-v1',
-        'ACCEPT_CHATKIT_IMAGE_PRIMARY_LIGHT': 'q4t-chatkit-image-source-v1',
-        'ACCEPT_CHATKIT_WORKFLOW_PRIMARY_LIGHT': 'q4t-chatkit-workflow-source-v1',
-        'ACCEPT_CHATKIT_GENERATION_PRIMARY_LIGHT': 'q4t-chatkit-generation-source-v1',
-        'ACCEPT_CHATKIT_BROWSER_PRIMARY_LIGHT': 'q4t-chatkit-browser-output-source-v1',
-        'ACCEPT_CHATKIT_ACTIONS_PRIMARY_LIGHT': 'q4t-chatkit-actions-source-v1',
-        'ACCEPT_CHATKIT_RETRY_PRIMARY_LIGHT': 'q4t-chatkit-retry-source-v1',
-        'ACCEPT_STORED_REFUSAL_PRIMARY_LIGHT': 'q4t-stored-refusal-source-v1',
-        'ACCEPT_TYPED_HISTORY_PRIMARY_LIGHT': 'q4t-typed-function-history-source-v1',
-        'ACCEPT_VIDEO_TRACK_PRIMARY_LIGHT': 'q4t-video-track-source-v1',
-        'ACCEPT_VIDEO_CHARACTER_PRIMARY_LIGHT': 'q4t-video-character-source-v1',
-        'ACCEPT_CHATKIT_DICTATION_PRIMARY_LIGHT': 'q4t-chatkit-dictation-source-v1',
-        'ACCEPT_ASSISTANT_PAGINATION_PRIMARY_LIGHT': 'q4t-assistant-pagination-source-v1',
-        'ACCEPT_CHATKIT_UPLOAD_PRIMARY_LIGHT': 'q4t-chatkit-upload-source-v1',
-        'ACCEPT_CHATKIT_FEEDBACK_PRIMARY_LIGHT': 'q4t-chatkit-feedback-source-v1',
-        'ACCEPT_EVAL_METEOR_PRIMARY_LIGHT': 'q4t-eval-meteor-source-v1',
-        'ACCEPT_HISTORY_ARGUMENTS_PRIMARY_LIGHT': 'q4t-historical-arguments-source-v1',
-        'ACCEPT_PROJECT_SAFETY_PRIMARY_LIGHT': 'q4t-project-safety-source-v1',
-        'ACCEPT_EVAL_COSINE_PRIMARY_LIGHT': 'q4t-eval-cosine-source-v1',
-        'ACCEPT_EVAL_PRIMARY_LIGHT': 'q4t-eval-source-v1',
-        'ACCEPT_CHATKIT_PRIMARY_LIGHT': 'q4t-chatkit-source-v1',
-        'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT': 'q4t-hosted-preparation-source-v1',
-        'ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT': 'q4t-hosted-environment-lifecycle-source-v1',
-        'ACCEPT_WEBHOOK_PRIMARY_LIGHT': 'q4t-webhook-source-v1',
-        'ACCEPT_TRANSLATION_TRANSPORTS_PRIMARY_LIGHT': 'q4t-translation-transport-source-v1',
-        'ACCEPT_INTERPRETER_PRIMARY_LIGHT': 'q4t-interpreter-workspace-source-v1',
-        'ACCEPT_SKILLS_PRIMARY_LIGHT': 'q4t-skill-workspace-source-v1',
-        'ACCEPT_ASSISTANTS_PRIMARY_LIGHT': 'q4t-assistants-run-source-v1',
-        'ACCEPT_TRANSLATION_REALTIME_PRIMARY_LIGHT': 'q4t-translation-realtime-source-v1',
         'ACCEPT_TRACING_PRIMARY_LIGHT': 'q4t-tracing-profile-source-reuse-v1',
+        **{label: profile_live_reuse.REUSE_FORMAT[record]
+           for record, label in profile_live_reuse.ACCEPTANCE_LABELS.items()},
     }
     status = accepted.get('status')
     ledger.require(status in formats and
@@ -236,12 +105,11 @@ def accepted_source(plan_path, manifest, primary, payload):
         # The original v24 publisher used the v23 label. Only the exact two
         # registered records have this historical interpretation.
         if status == 'ACCEPT_LIVE_PRIMARY_LIGHT' and value.get('format') == 'q4t-profile-business-v24':
-            from tools.serve_recovery import profile_live_reuse
             ledger.require(package.sha(path) == profile_live_reuse.BETA_REVIEWED.get(name),
                            'unrecognized historical Beta qualification')
             expected = profile_live_reuse.BETA_FORMAT
-        ledger.require(expected is None or
-            value.get('reused_business', {}).get('format') == expected,
+        ledger.require(('reused_business' not in value if expected is None else
+                        value.get('reused_business', {}).get('format') == expected),
             'managed acceptance does not describe the retained evidence format')
         records[name] = value
     ledger.require(package.same_json(records['primary'], primary) and

@@ -178,6 +178,10 @@ class GatewayTests(unittest.TestCase):
         self.assertIn('"~^POST:/v1/embeddings$" data;', text)
         self.assertIn('"~^GET:/v1/models/[^?#]+$" control;', text)
         self.assertIn('"~^DELETE:/v1/models/[^?#]+$" control;', text)
+        runs = '/v1/evals/eval_[A-Za-z0-9_-]{1,123}/runs'
+        detail = runs + '/evalrun_[A-Za-z0-9_-]{1,120}'
+        for path, lane in [(runs, 'data'), (detail, 'control'), (detail + '/cancel', 'control')]:
+            self.assertIn(f'"~^POST:{path}(?:[?][^#]*)?$" {lane};', text)
         with self.assertRaises(ValueError):g.policy(dict(self.p,global_inflight=1))
 
     def test_backend_identity_requires_ready_pinned_loopback(self):

@@ -1,0 +1,73 @@
+{
+  "stage": "cpu_and_offline_sdk_verified",
+  "issued": false,
+  "catalog_sha256": "29d308c67660c3657714426669a9df3127b40ef0743088423fe7ec697b28f8ba",
+  "clients": [
+    {
+      "version": "2.8.1",
+      "observed": {
+        "canonical": 123,
+        "absent": 107,
+        "legacy_cancel": 1
+      },
+      "methods": 231
+    },
+    {
+      "version": "3.42.1",
+      "observed": {
+        "canonical": 231,
+        "absent": 0,
+        "legacy_cancel": 0
+      },
+      "methods": 231
+    },
+    {
+      "version": "3.55.1",
+      "observed": {
+        "canonical": 231,
+        "absent": 0,
+        "legacy_cancel": 0
+      },
+      "methods": 231
+    },
+    {
+      "version": "7.47.0",
+      "canonical": 231
+    }
+  ],
+  "cpu": {
+    "baseline": {
+      "exit_code": 1,
+      "cases": [
+        "evals_frozen_service_preserves_queued_model_job_and_accepts_cancel"
+      ]
+    },
+    "candidate": {
+      "exit_code": 0,
+      "cases": [
+        "evals_frozen_service_preserves_queued_model_job_and_accepts_cancel",
+        "evals_model_samples_bind_one_worker_and_release_parent_and_child",
+        "evals_cosine_dispatcher_cancels_only_the_matching_project_and_run",
+        "evals_runs_persist_real_pass_fail_outputs_and_filter_by_parent"
+      ]
+    }
+  },
+  "gateway_checks": 2,
+  "inventory_mutations": 40,
+  "negative_controls": [
+    "verb",
+    "selector",
+    "historical_path",
+    "absent_accessor_is_present"
+  ],
+  "actual_service_test": "pending",
+  "sources": {
+    "src/server/chat_http.cpp": "8a82c04402f28bbdc15490359447179b8a721c793d031d6f1f2947e5f6e3ad38",
+    "include/q4t/server/application_routes.h": "38429df9da3c2f299e885fe2df840820dad05cf8bbf2c9077ca53973509546ce",
+    "src/server/evals.cpp": "10808da985b64dcaadbf5810ce872111937b1f58799604fe4bb95e912ac586ef",
+    "tools/serve_gateway/gateway.py": "deb680e1bca8f5896b848826d5ba1943047234932ff94ec02cb6e86b891dd5fe",
+    "tools/serve_audit/sdk_route_probe.py": "567dd10c81122a70b06176cd3ab167924b2d33658c7398ef155a187f4377df07",
+    "tools/serve_audit/sdk_route_probe.mjs": "3f1611c871650e5111346e5af18fb8531068aa8245a516914a3b739f09e5f647",
+    "tools/serve_responses/eval_cancel_sdk.py": "149a0762b63eb3d69632dbe7c9a0f866fb8f5f51858b1d8a99450459ec679de5"
+  }
+}

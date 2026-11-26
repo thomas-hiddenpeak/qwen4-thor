@@ -8526,6 +8526,16 @@
         "revision": 520,
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       },
+      "sdk_route_matrix_20261126": {
+        "stage": "issued_with_scoped_verification",
+        "issued": true,
+        "methods": 231,
+        "receipt": "evidence/serve-sdk-routes-20261126/cpu.json",
+        "business": "evidence/serve-sdk-routes-20261126/business.json",
+        "profiles": "evidence/serve-sdk-routes-20261126/profiles.json",
+        "revision": 528,
+        "delivery": "evidence/serve-sdk-routes-20261126/delivery.json"
+      },
       "visual_answer_encoding_20261126": {
         "stage": "issued_with_scoped_verification",
         "issued": true,
@@ -8544,6 +8554,12 @@
         "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
         "revision": 526,
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "managed_qualification_reader_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-sdk-routes-20261126/profile-source.json",
+        "real_records": 9
       }
     },
     {
@@ -9419,6 +9435,12 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "managed_qualification_reader_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-sdk-routes-20261126/profile-source.json",
+        "real_records": 9
       }
     },
     {
@@ -9785,8 +9807,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 526,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev526-preflight.json",
+        "revision": 528,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev528-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11522,7 +11544,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev526_delivered_remaining_deliveries",
+      "state": "rev528_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12857,7 +12879,14 @@
       "current_agent_session_delivery": "evidence/serve-agent-structured-format-20261126/delivery.json",
       "current_response_media_delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json",
       "current_visual_answer_delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json",
-      "current_visual_frame_delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      "managed_qualification_reader_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-sdk-routes-20261126/profile-source.json",
+        "real_records": 9
+      },
+      "current_visual_frame_delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json",
+      "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -12962,16 +12991,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "ebb82b218c8e02d6bc93030998832a8adb3be876",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-delivery-soak-src",
+        "source_commit": "aacaaef7a767311882870ea4be385e7c3c7c9d5a",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-client-primary-01/bundle",
-          "manifest_sha256": "43d4615d8306f0cbce6fe9303012ec833d29357e7a2eca43029ff3c205bcff7a"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-client-primary-01/bundle",
+          "manifest_sha256": "5ecf9f0efcaf67f4ddd40508f5de3a11a42209eb03e692b3f61d34ed3f685722"
         },
-        "revision": 526,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/frame-parts-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "f70768d08801bb0d7e2875520fcd4798a74fc262ede7593d7d9a71ae8baac671",
-        "handoff_sha256": "6ab6cc1537c33143ae9a5a98237aefb6529a76ff3b2df6cd2d74f6295a104f14",
+        "revision": 528,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "f07cf22364cdd5573869552f53ad13528f5bd929e959ea14e3f18b4af4d543eb",
+        "handoff_sha256": "700a740d37080768c955648936b10658a7936c66df949da391b466624d8e023e",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13382,9 +13411,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 526,
-        "receipt": "evidence/serve-visual-frame-parts-20261126/delivery.json",
-        "plan_sha256": "f70768d08801bb0d7e2875520fcd4798a74fc262ede7593d7d9a71ae8baac671",
+        "revision": 528,
+        "receipt": "evidence/serve-sdk-routes-20261126/delivery.json",
+        "plan_sha256": "f07cf22364cdd5573869552f53ad13528f5bd929e959ea14e3f18b4af4d543eb",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

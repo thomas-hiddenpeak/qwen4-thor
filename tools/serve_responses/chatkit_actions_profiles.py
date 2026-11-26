@@ -8,6 +8,7 @@ from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
+from tools.serve_responses import eval_cancel_profiles
 from tools.serve_responses import frame_profiles, media_profiles, visual_profiles
 from tools.serve_responses import chatkit_image_profiles as images
 from tools.serve_responses import chatkit_widget_profiles as widgets
@@ -162,6 +163,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if eval_cancel_profiles.KEY in plan:
+        return Handoff(eval_cancel_profiles.KEY, eval_cancel_profiles.RELEASE,
+                       eval_cancel_profiles.ACTOR, eval_cancel_profiles.RECEIPT,
+                       frame_profiles.RECEIPT, reuse.FRAME_REVIEWED, eval_cancel_profiles.check)
     if frame_profiles.KEY in plan:
         return Handoff(frame_profiles.KEY, frame_profiles.RELEASE, frame_profiles.ACTOR,
                        frame_profiles.RECEIPT, visual_profiles.RECEIPT,
@@ -226,6 +231,16 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
+    if spec.key == eval_cancel_profiles.KEY:
+        params['certificate'] = plan['tls']['certificate']
+        previous = (package.read(stage.out.parent / 'primary' / spec.receipt)
+                    if plan['name'] == 'light' else None)
+        with (stage.out / 'eval-cancel-sdk.stderr').open('xb') as errors:
+            row = eval_cancel_profiles.exercise(params, plan[spec.key]['interpreters'], errors,
+                                                previous, captures=stage.out / 'eval-wire')
+        package.save(stage.out / spec.receipt, row)
+        verify(stage.out, plan, capabilities)
+        return
     if spec.actor == frame_profiles.ACTOR:
         params.update(frame_profiles.sdk_parameters(stage))
     if spec.actor == visual_profiles.ACTOR:

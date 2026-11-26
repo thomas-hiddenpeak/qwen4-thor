@@ -209,7 +209,7 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
                        std::string_view method, std::string_view target,
                        const std::string& body, ResponsesJobs* jobs,
                        std::string_view report_base) {
-  const auto route = ParseEvalRoute(target);
+  const auto route = EvalOperation(method, target);
   if (route.kind == EvalRouteKind::kNone)
     return Error(404, "route_not_found", "Unknown eval route");
   const auto split = target.find('?');
@@ -223,8 +223,18 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
   }
   if (route.kind != EvalRouteKind::kCollection &&
       route.kind != EvalRouteKind::kEval) {
-    auto reply = eval_detail::RunRequest(objects, access, route, method,
-        split == target.npos ? "" : target.substr(split + 1), body, jobs, report_base);
+    const auto query = split == target.npos ? "" : target.substr(split + 1);
+    ObjectReply reply;
+    constexpr int kMaxCancelAttempts = 8;
+    for (int attempt = 0; attempt < kMaxCancelAttempts; ++attempt) {
+      reply = eval_detail::RunRequest(objects, access, route, method, query,
+                                      body, jobs, report_base);
+      // The dispatcher can finish sampling cleanup after the cancel commits.
+      // Re-read the owned run when a known concurrent revision wins.
+      if (route.kind != EvalRouteKind::kCancel || reply.commit_unknown ||
+          reply.code != "object_revision_conflict")
+        break;
+    }
     if (reply.ok() && (route.kind == EvalRouteKind::kRun ||
                        route.kind == EvalRouteKind::kCancel ||
                        (route.kind == EvalRouteKind::kRuns && method == "POST")))

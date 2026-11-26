@@ -1,0 +1,101 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 526,
+  "build": {
+    "engine": "b23ed5665b9dcb25f3eab772251e469c15431fd5e072107aa0acfeef7a955605",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "40fb0bf8e4d21c76340827b50534b3a5cc2936c52c0bc516076e87a87020239e",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "old": {
+          "sdk": "2.8.1",
+          "eval_id": "eval_b8f77efaf8a23bdf71fbd6671921faab",
+          "run_id": "evalrun_1bbdc28b9254160e75101c0122c82281",
+          "path": "/v1/evals/eval_b8f77efaf8a23bdf71fbd6671921faab/runs/evalrun_1bbdc28b9254160e75101c0122c82281",
+          "before": "in_progress",
+          "status": "canceled",
+          "http": 200,
+          "peer": 404,
+          "resource_sha256": "b584b2ecc963843f9487ca347e0f2ef9b4c5d7479de2db8e924ac03987de0630",
+          "malformed": 400,
+          "foreign_cancel": 404
+        },
+        "current": {
+          "sdk": "3.55.1",
+          "eval_id": "eval_b8f77efaf8a23bdf71fbd6671921faab",
+          "run_id": "evalrun_1bbdc28b9254160e75101c0122c82281",
+          "path": "/v1/evals/eval_b8f77efaf8a23bdf71fbd6671921faab/runs/evalrun_1bbdc28b9254160e75101c0122c82281/cancel",
+          "before": "canceled",
+          "status": "canceled",
+          "http": 200,
+          "peer": 404,
+          "resource_sha256": "b584b2ecc963843f9487ca347e0f2ef9b4c5d7479de2db8e924ac03987de0630",
+          "fresh_chat": "42"
+        },
+        "restored": null
+      },
+      "seconds": 40.371,
+      "starts": 1,
+      "record_sha256": "b21b02f1f089fc337db9c373ba1066e9464785a89c768fb38f75dd267d639ba0",
+      "receipt_sha256": "00b6f98ab41f87edfea1ded991ae7dd3a033354e16cedadba6e4a6dc42107c5d",
+      "predecessor": "53733256f15b3801f7d5b1713d532b940e3a5db318621607226b4c94944246da"
+    },
+    "light": {
+      "sdk": {
+        "old": {
+          "sdk": "2.8.1",
+          "eval_id": "eval_ecab63d3c85d07a69d912533dc49d3ae",
+          "run_id": "evalrun_f890cdb4bb0f383df547bb2e196e5894",
+          "path": "/v1/evals/eval_ecab63d3c85d07a69d912533dc49d3ae/runs/evalrun_f890cdb4bb0f383df547bb2e196e5894",
+          "before": "in_progress",
+          "status": "canceled",
+          "http": 200,
+          "peer": 404,
+          "resource_sha256": "94127f3810af99f4a5e9397ba74f1b6b579f515859dd19712fd024a11377e5f4",
+          "malformed": 400,
+          "foreign_cancel": 404
+        },
+        "current": {
+          "sdk": "3.55.1",
+          "eval_id": "eval_ecab63d3c85d07a69d912533dc49d3ae",
+          "run_id": "evalrun_f890cdb4bb0f383df547bb2e196e5894",
+          "path": "/v1/evals/eval_ecab63d3c85d07a69d912533dc49d3ae/runs/evalrun_f890cdb4bb0f383df547bb2e196e5894/cancel",
+          "before": "canceled",
+          "status": "canceled",
+          "http": 200,
+          "peer": 404,
+          "resource_sha256": "94127f3810af99f4a5e9397ba74f1b6b579f515859dd19712fd024a11377e5f4",
+          "fresh_chat": "42"
+        },
+        "restored": {
+          "sdk": "3.55.1",
+          "eval_id": "eval_b8f77efaf8a23bdf71fbd6671921faab",
+          "run_id": "evalrun_1bbdc28b9254160e75101c0122c82281",
+          "path": "/v1/evals/eval_b8f77efaf8a23bdf71fbd6671921faab/runs/evalrun_1bbdc28b9254160e75101c0122c82281/cancel",
+          "before": "canceled",
+          "status": "canceled",
+          "http": 200,
+          "peer": 404,
+          "resource_sha256": "b584b2ecc963843f9487ca347e0f2ef9b4c5d7479de2db8e924ac03987de0630",
+          "deleted": 404
+        }
+      },
+      "seconds": 37.052,
+      "starts": 1,
+      "record_sha256": "9053cbc75155ea539fbb4896f1daa974248157204e440fd95c2b0baae96d7ad5",
+      "receipt_sha256": "50514d7e91e762cfbf970831eabac07f19435608df4370c66f4f64cba9311863",
+      "predecessor": "ae46ec08ec7cd100300781c098f96fe446cabad890d6b37203d22dc9a9032e49"
+    }
+  },
+  "business_evidence": "7bf92e20a905b17e0f0ca9ff95f4a7fb25abf9f9fff8095249f3096e28ce6f39",
+  "lease_exit": "fe59c4deb759a403aaa696bd3341e4070d45dcc473583833fee04e03070faedb",
+  "acceptance": "884368197f40b727d1ad3897703d3a7f0a344c11f79617f394d1f6f02bc0f09f",
+  "qualification": "9c9a49e13c4266fb4516113db2d02b45ef413762788a6b6676606a72ef86eb8c",
+  "default_preserved": true,
+  "previous_format": "q4t-profile-business-v68",
+  "current_format": "q4t-profile-business-v69",
+  "resource_digest": "Entire canceled run response, with the authenticated report URL normalized to its verified route."
+}
