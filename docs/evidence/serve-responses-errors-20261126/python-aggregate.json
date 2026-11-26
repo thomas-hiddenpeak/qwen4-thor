@@ -1,0 +1,246 @@
+{
+  "scope": "Offline sealed native stream; six Python client configurations",
+  "driver_sha256": "3f559e5481fbd398ff70f628207dbf2b512c6c3b1492f651fed475be05e9c9b7",
+  "sdk_results": [
+    {
+      "aggregates": {
+        "create": {
+          "delivered": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "3": {
+          "delivered": [
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "4": {
+          "delivered": [],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        }
+      },
+      "success_control": "答案是42✅",
+      "sdk": "2.8.1",
+      "strict": false,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "aggregates": {
+        "create": {
+          "delivered": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "3": {
+          "delivered": [
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "4": {
+          "delivered": [],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        }
+      },
+      "success_control": "答案是42✅",
+      "sdk": "2.8.1",
+      "strict": true,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "aggregates": {
+        "create": {
+          "delivered": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "3": {
+          "delivered": [
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "4": {
+          "delivered": [],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        }
+      },
+      "success_control": "答案是42✅",
+      "sdk": "3.42.1",
+      "strict": false,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "aggregates": {
+        "create": {
+          "delivered": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "3": {
+          "delivered": [
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "4": {
+          "delivered": [],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        }
+      },
+      "success_control": "答案是42✅",
+      "sdk": "3.42.1",
+      "strict": true,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "aggregates": {
+        "create": {
+          "delivered": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "3": {
+          "delivered": [
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "4": {
+          "delivered": [],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        }
+      },
+      "success_control": "答案是42✅",
+      "sdk": "3.55.1",
+      "strict": false,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "aggregates": {
+        "create": {
+          "delivered": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "3": {
+          "delivered": [
+            4
+          ],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        },
+        "4": {
+          "delivered": [],
+          "final_exception": "RuntimeError",
+          "detail": "Didn't receive a `response.completed` event."
+        }
+      },
+      "success_control": "答案是42✅",
+      "sdk": "3.55.1",
+      "strict": true,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    }
+  ],
+  "failed_sse_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214",
+  "completion_control": {
+    "source": "docs/evidence/serve-responses-declarations-20261109/declarations-cpu-01/work/responses/text.wire",
+    "sha256": "01279b10ea56304c12785cafec1ec0149e24413c8ee2460067fba1b146c38c7e",
+    "fresh_native_sha256": "47952b961cc45452b051825b31343aeea0c2499800e78e37333ab1ffe9df8bf1",
+    "native_test": "responses_output_text_reasoning_full_lifecycle"
+  },
+  "original_pre_durable_fixture": {
+    "source": "docs/evidence/serve-responses-core-20261108/cpu-output-01/responses/text.wire",
+    "sha256": "39c033aea0800eff3ea45c2f1826772fbe6abbe75a94929aaed12d2c1a0ad5e2",
+    "first_durable_commit": "3c7538cad37ec3f11af551bab1447df417ae6734",
+    "error": "required bytes absent in selected and alternative scored tokens",
+    "strict_client_failures": {
+      "2.8.1": "7565aa42825c615c87dc3faf1b6b83a58b9bf4b0e402bfc2b14c77cbbc9518b7",
+      "3.42.1": "840a582956ef9d992a4a9d80bf58512d8ff892ecb02cd2502207e2b778770bbb",
+      "3.55.1": "6633131874b69de7013cc699498a46e48abc86118ce1ab55ea4a079f4611339f"
+    }
+  }
+}

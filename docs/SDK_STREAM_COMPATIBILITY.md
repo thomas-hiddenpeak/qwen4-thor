@@ -34,3 +34,12 @@ python -I -B tools/serve_audit/response_failure_replay.py --strict
 Node 7.47.0 对同一份原生五事件流分别使用 responses.create 的异步迭代器与 responses.stream().finalResponse()。两者均保留失败终态、工具调用 ID 和未完成参数，GET 与终态一致。按游标 3 恢复时只送达序号 4，游标 4 处没有新事件；两次均能取得完整的失败对象。复验命令为 `node tools/serve_audit/response_failure_replay.mjs <SDK安装目录>`。[Node 回放](evidence/serve-responses-errors-20261126/node-aggregate.json)
 
 rev530 已发行 Responses 失败分类、取消流序号和旧 Beta 工具输出修复。分别终止模型并触发主网关致命退出后，严格客户端均用原 ID 和游标读回相同的失败正文与终态，跨客户访问为 404，独立 Chat 答 42。主包与回退包各用同一组 36 份实际回包及终态校验封包合同。默认意图保持 STOPPED，发行启动模型 0 次，13 份客户与恢复记录保持完整。[发行与回退记录](evidence/serve-responses-errors-20261126/delivery.json)
+
+### 获取失败流的最终结果
+
+| SDK 与调用 | 收到 response.failed 后 |
+|---|---|
+| Python 2.8.1、3.42.1、3.55.1，responses.stream().get_final_response() | 抛出 RuntimeError。迭代事件时读取 event.response，或使用 responses.retrieve(id)。 |
+| Node 7.47.0，responses.stream().finalResponse() | 返回 status 为 failed 的响应，保留未完成的工具参数。 |
+
+两端的高级恢复方法均拉取完整事件流，再按 starting_after 向调用方分发。游标已在终态时，Python 客户端可用 GET 读取已存结果。[六种 Python 配置](evidence/serve-responses-errors-20261126/python-aggregate.json) · [Node 回放](evidence/serve-responses-errors-20261126/node-aggregate.json)
