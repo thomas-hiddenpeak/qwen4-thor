@@ -1,0 +1,355 @@
+{
+  "state": "cpu_verified",
+  "issued": false,
+  "prior_engine": "5f4c888656adb46e5523b61c63d3efa1a22b31e5f8fbb19edfd1869731af5a67",
+  "prior_source": "a6da2e0f6d114b25da47870d36dada7a21885852",
+  "prior_worker_observations": {
+    "baseline-original": {
+      "source": "f4af100004f5d93f4a2d6608cebd24c0750166d20c33cf37d4dc4452ea8024aa",
+      "timestamps": [
+        "128 64 4",
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ],
+      "all_returned_pixels": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ],
+      "four_quadrants": [
+        [
+          252,
+          0,
+          0
+        ],
+        [
+          0,
+          249,
+          0
+        ],
+        [
+          0,
+          0,
+          250
+        ],
+        [
+          250,
+          252,
+          0
+        ]
+      ]
+    },
+    "movie-full": {
+      "source": "4b7e2487075cc560c67009a01bfc908974753687c279699b4903a9a4516d39cf",
+      "timestamps": [
+        "128 64 4",
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ],
+      "all_returned_pixels": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ],
+      "four_quadrants": [
+        [
+          252,
+          0,
+          0
+        ],
+        [
+          0,
+          249,
+          0
+        ],
+        [
+          0,
+          0,
+          250
+        ],
+        [
+          250,
+          252,
+          0
+        ]
+      ]
+    },
+    "movie-upper-left": {
+      "source": "475f2d720a3a2730ccda6406fb9db02326da66c33e6b8b50b2502448fbe1d972",
+      "timestamps": [
+        "128 64 4",
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ],
+      "all_returned_pixels": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ],
+      "four_quadrants": [
+        [
+          252,
+          0,
+          0
+        ],
+        [
+          0,
+          249,
+          0
+        ],
+        [
+          0,
+          0,
+          250
+        ],
+        [
+          250,
+          252,
+          0
+        ]
+      ]
+    },
+    "track-full": {
+      "source": "8f61ec90abea61e12e398f0bb4156f7715f5578547ece1d736f82bf207358e6b",
+      "timestamps": [
+        "128 64 4",
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ],
+      "all_returned_pixels": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ],
+      "four_quadrants": [
+        [
+          252,
+          0,
+          0
+        ],
+        [
+          0,
+          249,
+          0
+        ],
+        [
+          0,
+          0,
+          250
+        ],
+        [
+          250,
+          252,
+          0
+        ]
+      ]
+    },
+    "track-upper-left": {
+      "source": "af51826fc33d72ef3f74bee6006251ea0466d20fb74943491ae9eeda11193b5f",
+      "timestamps": [
+        "128 64 4",
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ],
+      "all_returned_pixels": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ],
+      "four_quadrants": [
+        [
+          252,
+          0,
+          0
+        ],
+        [
+          0,
+          249,
+          0
+        ],
+        [
+          0,
+          0,
+          250
+        ],
+        [
+          250,
+          252,
+          0
+        ]
+      ]
+    }
+  },
+  "fixture": {
+    "path": "tests/fixtures/file_video/rect-clips.mov",
+    "sha256": "76e7c2319fa3574d5a70e6316bd8e5261a69c38f1ffc5acdee8269a79d8e09a6",
+    "regenerated_byte_identical": true
+  },
+  "candidate_originals": [
+    {
+      "case": "none",
+      "source": "f4af100004f5d93f4a2d6608cebd24c0750166d20c33cf37d4dc4452ea8024aa",
+      "frames": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ]
+    },
+    {
+      "case": "movie-all",
+      "source": "4b7e2487075cc560c67009a01bfc908974753687c279699b4903a9a4516d39cf",
+      "frames": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ]
+    },
+    {
+      "case": "track-all",
+      "source": "8f61ec90abea61e12e398f0bb4156f7715f5578547ece1d736f82bf207358e6b",
+      "frames": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ]
+    },
+    {
+      "case": "movie-quarter",
+      "source": "475f2d720a3a2730ccda6406fb9db02326da66c33e6b8b50b2502448fbe1d972",
+      "frames": [
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467"
+      ]
+    },
+    {
+      "case": "track-quarter",
+      "source": "af51826fc33d72ef3f74bee6006251ea0466d20fb74943491ae9eeda11193b5f",
+      "frames": [
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467"
+      ]
+    },
+    {
+      "case": "movie-empty",
+      "source": "025bb56914218aba2b7756d1026acf4cad17097cf1415b92ffb8bfd83383515c",
+      "frames": [
+        "de676bae28a480011d3d012db14bef539324e62a841a9627863c689bea168af3",
+        "de676bae28a480011d3d012db14bef539324e62a841a9627863c689bea168af3",
+        "de676bae28a480011d3d012db14bef539324e62a841a9627863c689bea168af3"
+      ]
+    },
+    {
+      "case": "half-open",
+      "source": "d0264318c2103af99fdcaed4a829ac04ea8cbc1d1a5d29a34691234e5072f58e",
+      "frames": [
+        "55d8917bd9cd28963d36412f2ab289d1214b748b877a236e17eea083e47d5d48",
+        "55d8917bd9cd28963d36412f2ab289d1214b748b877a236e17eea083e47d5d48",
+        "55d8917bd9cd28963d36412f2ab289d1214b748b877a236e17eea083e47d5d48"
+      ]
+    },
+    {
+      "case": "both",
+      "source": "76e7c2319fa3574d5a70e6316bd8e5261a69c38f1ffc5acdee8269a79d8e09a6",
+      "frames": [
+        "b84614a5d04b0343c9bf0b458f5ec3f7a304447eb8c1ad258f98f157fb4af001",
+        "b84614a5d04b0343c9bf0b458f5ec3f7a304447eb8c1ad258f98f157fb4af001",
+        "b84614a5d04b0343c9bf0b458f5ec3f7a304447eb8c1ad258f98f157fb4af001"
+      ]
+    },
+    {
+      "case": "movie-before-movie",
+      "source": "65442ecbf64307168f0f8a08b64f2c2df53ffde851d743350013cf498e92ae50",
+      "frames": [
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467"
+      ]
+    },
+    {
+      "case": "track-before-track",
+      "source": "9524d10d30439ae18d23f768514351eb1e189f4c6bee4200c9b584c7dfba7311",
+      "frames": [
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467"
+      ]
+    },
+    {
+      "case": "movie-negative",
+      "source": "aa202362fb4aa99ab51bf78e5bbf12215f67787118b11293baa91f8a823027ed",
+      "frames": [
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467",
+        "8cb42235ddfdd522235205610f8023f827b9de1e00c041c401b9ede9e75a3467"
+      ]
+    },
+    {
+      "case": "bad-box",
+      "source": "69318af91f96a7f935ebc9e147f997ed30ca48109341f7fae333b20f62234e11",
+      "rejection": "400 invalid_file_video Invalid video container or frames"
+    },
+    {
+      "case": "two-regions",
+      "source": "be07ff5d0daf8d74f242357c1fb06e6d2c91d8f08307bab66e40d6cdfe6315aa",
+      "rejection": "400 invalid_file_video Invalid video container or frames"
+    },
+    {
+      "case": "long-region",
+      "source": "f94324f23aa79c2bd93f8ad16bd93bba2dd4b80af8f269e5588be727d5876b74",
+      "rejection": "400 invalid_file_video Invalid video container or frames"
+    }
+  ],
+  "tests": [
+    "file_video_rect_clips_preserve_only_the_intersection",
+    "file_video_rect_clip_replay_binds_signed_source_geometry",
+    "file_video_rect_clips_projective_coordinates_respect_signed_w",
+    "file_video_rect_clips_reject_ambiguous_or_invalid_geometry",
+    "file_video_rect_clip_tracks_use_the_declared_grid_and_pixel_budget",
+    "file_video_affine_matrix_signed_composition_and_v1_headers",
+    "file_video_affine_geometry_checks_singular_overflow_and_exact_bounds",
+    "file_video_affine_integer_bilinear_center_and_reflection_oracle",
+    "file_video_affine_rgb_stride_bounds_and_black_exterior",
+    "file_video_affine_actual_scale_preserves_pixels_and_frame_intervals",
+    "file_video_affine_actual_shear_preserves_pixels_and_black_bounds",
+    "file_video_affine_actual_non_right_angle_rotation_preserves_pixels",
+    "file_video_affine_actual_movie_and_pixel_aspect_compose",
+    "file_video_affine_conversion_rejects_matrix_policy_and_source_changes",
+    "file_video_affine_downscale_does_not_hide_cumulative_decode_work",
+    "file_video_affine_actual_singular_and_capacity_publish_no_frames",
+    "file_video_integer_carry_borrow_signed_zero_and_int128_minimum",
+    "file_video_integer_multiplication_independent_binomial_words",
+    "file_video_integer_ratio_corrects_float_hint_at_exact_boundaries",
+    "file_video_integer_overflow_and_invalid_ratio_are_explicit",
+    "file_video_projective_homogeneous_sign_and_exact_center_oracle",
+    "file_video_projective_independent_fraction_geometry_and_pixel_oracles",
+    "file_video_projective_track_movie_and_square_pixel_composition",
+    "file_video_projective_finite_horizon_singular_and_capacity_bounds",
+    "file_video_projective_rgb_stride_bounds_and_black_exterior",
+    "file_video_projective_actual_nonunit_w_pixels_and_intervals",
+    "file_video_projective_actual_perspective_pixels_and_intervals",
+    "file_video_projective_actual_movie_and_pixel_aspect_compose",
+    "file_video_projective_conversion_rejects_source_policy_and_geometry_tampering",
+    "file_video_projective_downscale_keeps_cumulative_decode_budget",
+    "file_video_projective_actual_horizon_singular_and_capacity_cleanup"
+  ],
+  "decoder": "CPU H.264 isolated worker",
+  "snapshot_format": "q4t.cpu_video_png.v6",
+  "references": [
+    "https://developer.apple.com/documentation/quicktime-file-format/clipping_atom",
+    "https://developer.apple.com/documentation/quicktime-file-format/clipping_region_atom",
+    "https://developer.apple.com/library/archive/documentation/QuickTime/RM/MovieInternals/MTTimeSpace/B-Chapter/2MovieTimeandSpace.html"
+  ],
+  "remaining": [
+    "HTTP model answer on owner upload, SSE, replay after file deletion and rejection on invalid clip",
+    "nonrectangular regions and fractional track grids",
+    "multi-layer compositing and alternate selection policy",
+    "primary/light and independent package delivery"
+  ]
+}

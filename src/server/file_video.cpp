@@ -64,6 +64,35 @@ bool Matrices(const Json& display, video_detail::DisplayMatrices* output,
   }
   return true;
 }
+bool RectClips(const Json& display, video_detail::DisplayClips* clips) {
+  for (const auto& [name, output] : {std::pair{"movie_clip", &clips->movie},
+                                     std::pair{"track_clip", &clips->track}}) {
+    const auto* raw = display.GetArray(name);
+    if (!raw) return false;
+    if (raw->array.empty()) continue;
+    if (raw->array.size() != 4) return false;
+    std::array<int16_t, 4> coords;
+    for (size_t i = 0; i < coords.size(); ++i) {
+      const auto& value = raw->array[i];
+      if (!IsInputInteger(value) || value.number < INT16_MIN ||
+          value.number > INT16_MAX)
+        return false;
+      coords[i] = static_cast<int16_t>(value.number);
+    }
+    if (coords[0] > coords[2] || coords[1] > coords[3]) return false;
+    *output = {coords[0], coords[1], coords[2], coords[3]};
+  }
+  const auto* size = display.GetArray("track_size");
+  if (!size || size->array.size() != 2) return false;
+  for (size_t i = 0; i < 2; ++i) {
+    const auto& extent = size->array[i];
+    if (!IsInputInteger(extent) || extent.number < 1 ||
+        extent.number > UINT16_MAX)
+      return false;
+    clips->track_size[i] = static_cast<uint16_t>(extent.number);
+  }
+  return clips->Any();
+}
 uint64_t Big(std::string_view bytes) {
   uint64_t value = 0;
   for (unsigned char byte : bytes) value = (value << 8) | byte;
@@ -182,15 +211,21 @@ ObjectReply ValidateVideoPixels(std::string_view source,
           static_cast<int64_t>(source.size()))
     return Invalid();
   const auto format = pixels.conversion.GetString("format");
-  if (format == "q4t.cpu_video_png.v4" || format == "q4t.cpu_video_png.v5") {
+  const bool clipped = format == "q4t.cpu_video_png.v6";
+  if (clipped || format == "q4t.cpu_video_png.v4" ||
+      format == "q4t.cpu_video_png.v5") {
     const auto* display = pixels.conversion.Find("display_geometry");
     video_detail::DisplayMatrices recorded;
     if (!display ||
         !Matrices(*display, &recorded, format == "q4t.cpu_video_png.v4"))
       return Invalid();
     try {
-      const auto actual = video_detail::MovieDisplay().ReadMatrices(source);
-      if (!actual || *actual != recorded) return Invalid();
+      const auto actual =
+          video_detail::MovieDisplay().SelectTrack(source, clipped);
+      if (!actual || actual->matrices != recorded) return Invalid();
+      video_detail::DisplayClips clips;
+      if (clipped && (!RectClips(*display, &clips) || clips != actual->clips))
+        return Invalid();
     } catch (...) {
       return Invalid();
     }
@@ -226,7 +261,8 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   const bool affine = conversion.GetString("format") == "q4t.cpu_video_png.v4";
   const bool projective =
       conversion.GetString("format") == "q4t.cpu_video_png.v5";
-  const bool transformed = affine || projective;
+  const bool clipped = conversion.GetString("format") == "q4t.cpu_video_png.v6";
+  const bool transformed = affine || projective || clipped;
   const bool geometry =
       transformed || conversion.GetString("format") == "q4t.cpu_video_png.v3";
   const bool intervals =
@@ -243,12 +279,15 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   if (geometry) {
     const auto* display = conversion.Find("display_geometry");
     if (!display || !display->IsObject() ||
-        display->object.size() != (transformed ? 7U : 5U) ||
+        display->object.size() != (clipped       ? 10U
+                                   : transformed ? 7U
+                                                 : 5U) ||
         display->GetString("policy") !=
-            (projective
+            (clipped ? "quicktime-rect-clips-black-bilinear16"
+             : projective
                  ? "projective-square-pixels-tight-integer512-bilinear16"
-                 : affine ? "affine-square-pixels-tight-bilinear16"
-                          : "source-orientation-square-pixels"))
+             : affine ? "affine-square-pixels-tight-bilinear16"
+                      : "source-orientation-square-pixels"))
       return Invalid();
     for (const char* name : {"coded_width", "coded_height", "pixel_aspect_num",
                              "pixel_aspect_den"}) {
@@ -262,6 +301,17 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
         display->GetInt("pixel_aspect_den"), limits, &shape);
     if (failure == video_detail::Failure::kCapacity) return Capacity();
     if (failure != video_detail::Failure::kNone) return Invalid();
+    if (clipped) {
+      video_detail::DisplayClips clips;
+      if (!RectClips(*display, &clips)) return Invalid();
+      const auto status = video_detail::UseTrackGrid(
+          clips.track_size[0], clips.track_size[1], limits, &shape);
+      if (status == video_detail::Failure::kCapacity) return Capacity();
+      if (status != video_detail::Failure::kNone) return Invalid();
+      if (uint64_t(shape.coded_width) * shape.coded_height >
+          limits.max_decoded_pixels / pixels.scanned_frames)
+        return Capacity();
+    }
     if (uint64_t(shape.square_width) * shape.square_height >
         limits.max_decoded_pixels / pixels.scanned_frames)
       return Capacity();
@@ -270,7 +320,8 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
       if (!Matrices(*display, &matrices, affine)) return Invalid();
       video_detail::Failure status;
       uint32_t width = 0, height = 0;
-      if (projective) {
+      if (projective || !video_detail::IsAffine(matrices.movie) ||
+          !video_detail::IsAffine(matrices.track)) {
         video_detail::ProjectiveGeometry output;
         status = video_detail::MakeProjectiveGeometry(
             matrices, shape.square_width, shape.square_height, limits, &output);
@@ -492,6 +543,14 @@ ObjectReply DecodeVideoContainer(std::string_view source,
   std::string trailing;
   if (!process->CollectOutput(&trailing, 0, deadline, cancelled))
     return Failed(process->Failure());
+  if (next.conversion.GetString("format") != "q4t.cpu_video_png.v6") {
+    try {
+      const auto selected = video_detail::MovieDisplay().SelectTrack(source);
+      if (selected && selected->clips.Any()) return Invalid();
+    } catch (...) {
+      return Invalid();
+    }
+  }
   const auto valid = ValidateVideoPixels(source, limits, next);
   if (!valid.ok()) return Failed(GrammarFailure::kWorker);
   if (cancelled()) return Failed(GrammarFailure::kCancelled);
