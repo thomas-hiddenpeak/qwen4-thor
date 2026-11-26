@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import pwd
+import socket
 import subprocess
 import sys
 import traceback
@@ -13,6 +14,29 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT/'tools/evalscope')]
 from tools.serve_recovery import resource_kernel as kernel
 from tools.serve_startup_memory import pool_accounting as pool
+
+
+def verify_device_lease(fd):
+    from tools.evalscope import gpu_exclusive
+    from tools.serve_recovery.child import verify_lease
+    verify_lease(fd, gpu_exclusive.common_lock())
+
+
+def receive_device_lease():
+    # sudo closes extra descriptors. Standard input carries only this
+    # socketpair, so the unprivileged observer can verify the original lock.
+    with socket.socket(fileno=os.dup(0)) as channel:
+        channel.settimeout(3)
+        tag, files, flags, _ = socket.recv_fds(channel, 1, 1)
+    try:
+        if tag != b'L' or len(files) != 1 or flags & socket.MSG_CTRUNC:
+            raise ValueError('missing exclusive GPU lease handoff')
+        verify_device_lease(files[0])
+        return files[0]
+    except BaseException:
+        for fd in files:
+            os.close(fd)
+        raise
 
 
 def owned_domain(binary, output):
@@ -38,9 +62,12 @@ def owned_domain(binary, output):
                     os.initgroups(user.pw_name,gid)
                     os.setresgid(gid,gid,gid)
                     os.setresuid(uid,uid,uid)
+                    lease_fd = receive_device_lease()
                     rows = []
                     for mode in ('async','async-retained'):
                         rows.append(pool.observe(binary,output/mode,mode,scope))
+                    verify_device_lease(lease_fd)
+                    os.close(lease_fd)
                     print(json.dumps(dict(record=record,observations=rows)),flush=True)
                     os._exit(0)
                 except BaseException:
@@ -60,13 +87,12 @@ def owned_domain(binary, output):
 
 
 def run(binary, output):
-    from tools.evalscope import gpu_exclusive
-    from tools.serve_recovery.child import verify_lease
     from tools.serve_service import memory, package
     uid = os.getuid()
     if not uid or os.geteuid() != uid:
         raise ValueError('start this driver as the ordinary GPU lease holder')
-    verify_lease(int(os.environ['Q4T_MANAGED_LEASE_FD']),gpu_exclusive.common_lock())
+    lease_fd = int(os.environ['Q4T_MANAGED_LEASE_FD'])
+    verify_device_lease(lease_fd)
     if memory.read()['available_bytes'] < 16*1024**3:
         raise RuntimeError('insufficient host headroom for isolated characterization')
     binary = binary.resolve(strict=True)
@@ -75,10 +101,12 @@ def run(binary, output):
     hashes = {str(p):package.sha(p) for p in
               (binary,Path(__file__),Path(pool.__file__),Path(kernel.__file__),
                Path(__file__).with_name('memory_probe.cu'))}
-    with (output/'root.stderr').open('xb') as errors:
+    sender, receiver = socket.socketpair(socket.AF_UNIX, socket.SOCK_DGRAM)
+    with sender, receiver, (output/'root.stderr').open('xb') as errors:
+        socket.send_fds(sender, [b'L'], [lease_fd])
         result = subprocess.run(['sudo','-n','/usr/bin/python3','-I','-B',__file__,
                                  '--domain','--binary',binary,'--output',output],
-                                stdout=subprocess.PIPE,stderr=errors,check=True)
+                                stdin=receiver, stdout=subprocess.PIPE, stderr=errors, check=True)
     record = json.loads(result.stdout)
     rows = record['observations']
     if [row['mode'] for row in rows] != ['async', 'async-retained']:

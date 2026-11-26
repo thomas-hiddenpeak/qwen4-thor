@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+探针进程现在通过 Unix 套接字接收同一个 GPU 锁文件描述符，永久降权后再核验该锁。实际经 sudo 传入无关描述符被拒绝，未启动探针，临时 cgroup 已清理。下一步在有效租约内核验两个池模式。[CPU 回执](evidence/serve-resource-charge-20261126/cpu.json)
+
 R08 已复核旧版对匿名、device、pinned 和 managed 各 256 MiB 的实测。新增探针对同样大小的 cudaMallocAsync 分配，分别在默认阈值与显式保留阈值下记录应用在用量、池保留量和原生服务 cgroup 计量。五项 CPU 正反例通过；实际在新建资源域运行失败子进程后，两个叶和根均已清理。下一步让两个探针独占设备短验。[CPU 回执](evidence/serve-resource-charge-20261126/cpu.json)
 
 rev526 已发行视频帧和省略类型的图像输入修复。160×160 两帧首次验收触发 cuBLASLt 工作区对齐错误，修复后视频回答绿色，流式图像回答蓝色，真实 H.264 文件末帧回答蓝色。模型退出和主网关故障切换后，原客户可按同一 ID 读回原结果，另一客户得到 404。主、备包各通过 3 条请求、3 条响应及 27 条持久事件的合同校验。发布保持 STOPPED，13 份受保护记录摘要一致。[发行回执](evidence/serve-visual-frame-parts-20261126/delivery.json)
