@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 FORK_RECORD = 'q4t-profile-business-v81'
 FORK_FORMAT = 'q4t-program-fork-source-v1'
 FORK_RECEIPT = 'program-fork-handoff.json'
-FORK_REVIEWED = {}
+FORK_REVIEWED = {
+    'primary': '9d1040ded9d883e8e7ea34836bd3f6f45dfc4bb9ee541d7346c2678862c76910',
+    'light': 'a9730796f469417ed76b068f67b07ee28aa1290c1f412f746d249fbbd3c03637',
+}
 
 CLIENT_SHELL_RECORD = 'q4t-profile-business-v80'
 CLIENT_SHELL_FORMAT = 'q4t-client-shell-source-v1'
@@ -657,6 +660,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '03bef9da9c1653fb39260abd4915e3afee4e4979264b0bc9653d1dfa1cf86592':
+        '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     '8a9a92c7d7f81e5ed459fbae0bd236f8be3c76ae5212dfcf3469439a0e86d093':
         '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     'e36b2d9270d2428765fed0768f669f3aa8bacc998230c865682f8a2d663387c3':

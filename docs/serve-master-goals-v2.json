@@ -3129,12 +3129,13 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
-        "business": "evidence/serve-program-forks-20261126/business.json"
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
       }
     },
     {
@@ -3865,12 +3866,13 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
-        "business": "evidence/serve-program-forks-20261126/business.json"
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
       }
     },
     {
@@ -7753,12 +7755,13 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
-        "business": "evidence/serve-program-forks-20261126/business.json"
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
       }
     },
     {
@@ -9083,12 +9086,13 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
         "issued": false,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
-        "business": "evidence/serve-program-forks-20261126/business.json"
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
       }
     },
     {
