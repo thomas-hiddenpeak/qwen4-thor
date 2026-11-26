@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+用真实 SDK 3.55.1 校验红、蓝两图的验收驱动。独立 PNG 解码逐像素检查主色，两份 HTTP 请求的指令和历史正文完全一致。篡改图像、允许跨客户读取及返回第三种颜色均会使验收失败。模型实机结果待 GPU 排期。 [夹具回执](evidence/serve-compact-inline-media-20261127/sdk-fixture.json)
+
 修复 Responses 压缩把保留图像的 Base64 放入文本摘要提示的问题。原有独立压缩对 32 KiB 合成字段产生 33,337 字节提示，修复后为 577 字节；回填窗口长度均为 33,241 字节。实际 PNG 经原生密钥封装、重新打开后逐字节相同。3 项回归在原实现失败，修复后同组 40 项全部通过。后续使用红、蓝两张不同图像做真实 TLS 续答和跨客户检查。 [验收证据](evidence/serve-compact-inline-media-20261127/cpu.json)
 
 README 增加官方 Python SDK 压缩并继续对话的可运行示例。客户端可以直接读取压缩窗口 JSON，原样保留输入消息、媒体和既有工具决定；另给出严格字段校验入口。2.33.0 与 3.55.1 均以真实 SDK 重放既有 HTTP 正文，验证完整窗口、新问题位置及续答内容。接续主轻配置实机验收。 [示例验证](evidence/serve-compact-window-identities-20261127/sdk-example.json)

@@ -1,0 +1,62 @@
+{
+  "scope": "Captured HTTP schema shapes; comparison of decoded PNG pixels with Pillow, no real GPU answers",
+  "cases": [
+    {
+      "check": "reference",
+      "rejected": false,
+      "requests": [
+        "compact",
+        "foreign",
+        "owner",
+        "compact",
+        "foreign",
+        "owner"
+      ],
+      "decoded": {
+        "30cf947778cf70b9233d577d2f08530a00e1cd358279a904d6e48a71db451856": "Blue",
+        "04f0a0102b981389e2c7f8abaf7a33fdc3060be49105ae465dc24b5a97004307": "Red"
+      }
+    },
+    {
+      "check": "attachment",
+      "rejected": true,
+      "requests": [
+        "compact"
+      ],
+      "decoded": {
+        "30cf947778cf70b9233d577d2f08530a00e1cd358279a904d6e48a71db451856": "Blue"
+      }
+    },
+    {
+      "check": "tenant",
+      "rejected": true,
+      "requests": [
+        "compact",
+        "foreign-accepted"
+      ],
+      "decoded": {
+        "30cf947778cf70b9233d577d2f08530a00e1cd358279a904d6e48a71db451856": "Blue"
+      }
+    },
+    {
+      "check": "color",
+      "rejected": true,
+      "requests": [
+        "compact",
+        "foreign",
+        "owner"
+      ],
+      "decoded": {
+        "30cf947778cf70b9233d577d2f08530a00e1cd358279a904d6e48a71db451856": "Blue"
+      }
+    }
+  ],
+  "sdk": "3.55.1",
+  "image_dimensions": [
+    96,
+    96
+  ],
+  "actor_sha256": "0dad0df84b2edd4e15cc2a4ee688a89952cbd319d4e0d96f30d0b0afaaadf0b4",
+  "actual_model_starts": 0,
+  "decoder_note": "First fixture attempt used the bundled FFmpeg CLI, whose enabled demuxers do not read standalone PNG from a pipe. Pillow independently checked the PNG dimensions and dominant pixel channel."
+}
