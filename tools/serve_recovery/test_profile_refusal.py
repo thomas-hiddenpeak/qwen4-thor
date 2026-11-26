@@ -322,6 +322,22 @@ class ManagedSource(unittest.TestCase):
             status='ACCEPT_TARGETED_REFUSAL_PRIMARY_LIGHT'))
         with mock.patch.object(profile_evidence, 'validate'), self.assertRaises(ValueError): self.call()
 
+    def test_original_qualification_cannot_claim_a_reused_source(self):
+        from tools.serve_realtime import managed
+        primary, light = dict(profile='primary'), dict(profile='light')
+        package.save(self.root/'acceptance.json', dict(self.accepted,
+            status='ACCEPT_PRIMARY_LIGHT_QUALIFICATION'))
+        for slot in ('primary', 'light'):
+            rows = {'primary':dict(primary), 'light':dict(light)}
+            rows[slot]['reused_business'] = {'format':reuse.ASSEMBLED_FORMAT}
+            for name, row in rows.items():
+                package.save(self.root/'qualified'/(name+'.json'), row)
+            package.save(self.root/'payload/profile-light.json', rows['light'])
+            with self.subTest(slot=slot), self.assertRaisesRegex(RuntimeError, 'exact accepted'):
+                managed.accepted_source(self.plan, self.manifest, rows['primary'], self.root/'payload')
+            with mock.patch.object(profile_evidence, 'validate'), self.assertRaises(ValueError):
+                profile_record.accepted_source(self.plan, self.manifest, rows['primary'], self.root/'payload')
+
     def test_legacy_actor_does_not_need_new_reader_in_old_sealed_payload(self):
         from tools.serve_realtime import managed
         primary, light = dict(profile='primary'), dict(profile='light')

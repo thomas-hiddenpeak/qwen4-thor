@@ -1,0 +1,128 @@
+{
+  "stage": "source_binding_cpu_verified",
+  "issued": false,
+  "baseline_source": "ebb82b218c8e02d6bc93030998832a8adb3be876",
+  "scope": "Real acceptance plans, registries, original primary and light records, and package manifests were passed to tools.serve_realtime.managed.accepted_source. This is the managed acceptance reader, not the online request path.",
+  "before": {
+    "rejected_real_records": 9,
+    "reason": "managed profile acceptance or registry identity differs"
+  },
+  "after": {
+    "accepted_real_records": 9,
+    "records": [
+      {
+        "format": "q4t-profile-business-v28",
+        "label": "ACCEPT_AGENT_VAULTS_PRIMARY_LIGHT",
+        "status": "accepted",
+        "seconds": 1.083,
+        "registry_sha256": "9b54b9fbd76d37671cb9dc51ea2afe24ae6635ea18633340598a602ad5a00de7",
+        "primary": "2849d28c117d197f0ceb0bc6f3a6a43d63f2a5f0173766f82eae0399bb75e939",
+        "light": "e76621fdd0353aee0007baf9d55ae55c6c256b121be9ec0194757bf7e95a9c69",
+        "manifest_sha256": "f9609cadbd91f2b8c97b61b1d63bc37254c101c77ab3637e38e3cf4a7d46c0df"
+      },
+      {
+        "format": "q4t-profile-business-v29",
+        "label": "ACCEPT_VAULT_OAUTH_PRIMARY_LIGHT",
+        "status": "accepted",
+        "seconds": 1.093,
+        "registry_sha256": "2f73caefc79ed55b0bb06f158ee7ad3803ada33e1332b22188255a9443819872",
+        "primary": "1fb036ff722a21719546d1b042298cc91e489ecd9dc30ddcfb8602e546c683ef",
+        "light": "cc67e878110002a8be19fa7fbf61fe32d82b098731e570bf2008e8d0dfa54517",
+        "manifest_sha256": "cd61127bd68449755f7666a077242dfc2eca473a1059016076e361455543aaae"
+      },
+      {
+        "format": "q4t-profile-business-v30",
+        "label": "ACCEPT_ENVIRONMENT_TEMPLATES_PRIMARY_LIGHT",
+        "status": "accepted",
+        "seconds": 1.176,
+        "registry_sha256": "2fec62fa99db01f536a4cc4b7a223e72a8ff8cb6c1e95a3819cf44528e5611ce",
+        "primary": "2dfe88998e517324a5cb71f02a3cc6d3135157caca3ae49d076755aa196a453f",
+        "light": "608e130e4026322b69666b27572caee1c53d7558bf279771ee700c19f95f5125",
+        "manifest_sha256": "f1883c0925844d9a2dd4fe1febfddc3f45c7ea7c6856870ff2f1649ae8afb9a0"
+      },
+      {
+        "format": "q4t-profile-business-v31",
+        "label": "ACCEPT_HOSTED_WORKSPACES_PRIMARY_LIGHT",
+        "status": "accepted",
+        "seconds": 1.239,
+        "registry_sha256": "1784783aa1cad7f44964600e238fd8672aaff923bf8bb5df1d9e0b8ef832b7dd",
+        "primary": "6e28e44b71aab96b044d30301e8b9aa2a36fe882031e4a35d350efa10bd3f846",
+        "light": "994c7b2df26b9c275feec6ff859995ea50d92113cee096f764ac1cbacb90b9e5",
+        "manifest_sha256": "4b961214ef213fc822f00e0c8aedd541e70b13dadf79b57dcf192187bebd7c9c"
+      },
+      {
+        "format": "q4t-profile-business-v32",
+        "label": "ACCEPT_SESSION_ARTIFACTS_PRIMARY_LIGHT",
+        "status": "accepted",
+        "seconds": 1.325,
+        "registry_sha256": "8ed01d709f78d8513e2aa3cb2d896ca9591fa0318e031eb8757a5d19b3234fed",
+        "primary": "9134b3c35009291ee215d9d807508c0171001eddc6aa8e01ec2f3111a0fb1f32",
+        "light": "8ef5c5c0378b0c1ffafc830755607e43fbad9679e98bf6a11b66f5cfc09cb0d0",
+        "manifest_sha256": "9867dc4a9c647e445dca75447a15d501175f40aa24bde80a0a8efb33ea6e313c"
+      },
+      {
+        "format": "q4t-profile-business-v33",
+        "label": "ACCEPT_MANAGED_SESSION_TOOLS_PRIMARY_LIGHT",
+        "status": "accepted",
+        "seconds": 1.391,
+        "registry_sha256": "4748fffca3905a9f6191ff0a4597c362b89ed3d4141fcff498751f1b6846f0b2",
+        "primary": "a861225ac8bf4e9216fc7670b152039340237ab83e8f002854c8f92d2cb58cc2",
+        "light": "190809a136db0c5f0dec62fc808cd39df9db137470cf374da18640fe9801a13b",
+        "manifest_sha256": "0b8fa84a0989a278f91e888d8265e4a873333bfe82a277ffa3b5f857396a3abc"
+      },
+      {
+        "format": "q4t-profile-business-v34",
+        "label": "ACCEPT_SUBAGENT_PRIMARY_LIGHT",
+        "status": "accepted",
+        "seconds": 1.475,
+        "registry_sha256": "1ba7908d364c52ca9371108910fe09fe711e7db449821dd697d32b118b2b321d",
+        "primary": "bc31006134f64f662919accea942c0d675d9ef9e5ad4fee50879eb3c1f66a292",
+        "light": "6929d4f5200e4e59e3c4402cc531029c069214c5f581ab318affde4804b67822",
+        "manifest_sha256": "40ef88bd607388bc99d23a28474f76fa1b0da503f3e52a218c3232aeea65e0e0"
+      },
+      {
+        "format": "q4t-profile-business-v67",
+        "label": "ACCEPT_VISUAL_ANSWER_PRIMARY_LIGHT",
+        "status": "accepted",
+        "registry_sha256": "772060d85f10362362445b489e77ebba991767ff5512e739e3fbcd259735e9f7",
+        "primary": "59d8f260fb2d4f987220e19f9ae46c141ce8f9ddce6817575eed296465d5dc01",
+        "light": "297d0c4e991ac54189ae2eaca2a09626c4f092ca7ad974dd53e023d5fce4b51a",
+        "manifest_sha256": "77df228557884c14f2b8c57d17f092cc6bbf721e548e1314080dace0ee9e80b2"
+      },
+      {
+        "format": "q4t-profile-business-v68",
+        "label": "ACCEPT_VISUAL_FRAME_PRIMARY_LIGHT",
+        "status": "accepted",
+        "registry_sha256": "1f530de522628c55c34abcfb2dcc98cbd8efd838421f0a57eb2ed7e5b9d50719",
+        "primary": "53733256f15b3801f7d5b1713d532b940e3a5db318621607226b4c94944246da",
+        "light": "ae46ec08ec7cd100300781c098f96fe446cabad890d6b37203d22dc9a9032e49",
+        "manifest_sha256": "43d4615d8306f0cbce6fe9303012ec833d29357e7a2eca43029ff3c205bcff7a"
+      }
+    ],
+    "paired_capacity_records": 18,
+    "models_started": 0
+  },
+  "label_table": 47,
+  "limits": {
+    "pairs": 3074,
+    "deliberate_changes": [
+      [
+        "q4t-profile-business-v69",
+        "q4t-eval-cancel-source-v1"
+      ]
+    ],
+    "unhashable_rejected": 4
+  },
+  "targeted_tests": 13,
+  "inventory_mutations": 40,
+  "validated_sdk": "8f40ab0a2f060d5f9ee3312a836886817aec4754",
+  "runtime": "Managed Evals handoff on the integrated engine remains pending.",
+  "sources": {
+    "tools/serve_recovery/profile_record.py": "9ddeab350ec4805b0f26f4768dc98aa7dfdfdd3ad62cdd1e187d2e8fc5f3e9b5",
+    "tools/serve_recovery/profile_live_reuse.py": "6586c09b3dec62b7481e0528df4ee05502acf23b3b5809abe9c42f5d6cfc61f0",
+    "tools/serve_realtime/managed.py": "1bf06d71c4786969c79b83263f649ba4acc1691d361ca5313e66706691907073",
+    "tools/serve_live/profile_registry.py": "c63b535f8b8ee1689bd7b1e11b0a1dcba69976ea99e56f6c5fce876343eb9030",
+    "tools/serve_responses/eval_cancel_sdk.py": "42e10c776ed2838e77c40df2500641e2dd084283f52adc9b6dcc03a426492378",
+    "tools/serve_responses/eval_cancel_profiles.py": "d275965e9df33cbbb97cbf0d67c84bf72469b5ed3c6b5354b0759d67aaca198e"
+  }
+}

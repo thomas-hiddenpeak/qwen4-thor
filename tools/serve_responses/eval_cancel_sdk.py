@@ -1,7 +1,9 @@
 """Exercise typed Evals cancellation and project isolation against a native TLS endpoint."""
+from hashlib import sha256
 import json
 import ssl
 import sys
+from urllib.parse import urlsplit
 
 import openai
 
@@ -21,12 +23,24 @@ def expect(code, fn, *args, **kwargs):
     raise AssertionError(f'Expected HTTP {code}')
 
 
+def resource_digest(response, eid, rid):
+    value = response.http_response.json()
+    url = urlsplit(value['report_url'])
+    expected = f'/v1/evals/{eid}/runs/{rid}/report'
+    assert url.path == expected and not url.query and not url.fragment
+    assert value['object'] == 'eval.run' and value['eval_id'] == eid and value['id'] == rid
+    assert value['status'] == 'canceled' and value['data_source']['type'] == 'responses'
+    # The public report URL follows the active gateway origin.
+    canonical = dict(value, report_url=url.path)
+    return sha256(json.dumps(canonical, separators=(',', ':'), sort_keys=True).encode()).hexdigest()
+
+
 def main():
     plan = json.load(sys.stdin)
     legacy = openai.__version__ == '2.8.1'
     if legacy != ('eval_id' not in plan):
         raise ValueError('Use the legacy SDK first, then the current SDK with its saved IDs')
-    ctx = ssl.create_default_context(cafile=plan['certificate'])
+    ctx = ssl.create_default_context(cafile=plan.get('certificate'))
     def client(key):
         return openai.OpenAI(base_url=plan['base'], api_key=key, max_retries=0,
                              http_client=httpx.Client(verify=ctx, trust_env=False, timeout=45))
@@ -65,7 +79,8 @@ def main():
         assert owner.evals.runs.retrieve(rid, eval_id=eid).status == 'canceled'
         expect(404, peer.evals.runs.retrieve, rid, eval_id=eid)
         result = dict(sdk=openai.__version__, eval_id=eid, run_id=rid, path=path,
-                      before=initial, status=canceled.status, http=raw.status_code, peer=404)
+                      before=initial, status=canceled.status, http=raw.status_code, peer=404,
+                      resource_sha256=resource_digest(raw, eid, rid))
         if legacy:
             result.update(malformed=400, foreign_cancel=404)
         else:
@@ -73,9 +88,11 @@ def main():
                 messages=[{'role': 'user', 'content': 'Compute 17 plus 25. Reply only with the number.'}],
                 extra_body={'enable_thinking': False})
             assert reply.choices[0].message.content.strip() == '42'
-            owner.evals.delete(eid)
-            expect(404, owner.evals.runs.retrieve, rid, eval_id=eid)
-            result.update(fresh_chat='42', deleted=404)
+            result['fresh_chat'] = '42'
+            if plan.get('delete_after', True):
+                owner.evals.delete(eid)
+                expect(404, owner.evals.runs.retrieve, rid, eval_id=eid)
+                result['deleted'] = 404
         print(json.dumps(result))
 
 

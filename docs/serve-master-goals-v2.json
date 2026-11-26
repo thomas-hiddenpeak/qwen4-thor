@@ -8537,6 +8537,12 @@
         "stage": "managed_profiles_validated",
         "issued": false,
         "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json"
+      },
+      "managed_qualification_reader_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-sdk-routes-20261126/profile-source.json",
+        "real_records": 9
       }
     },
     {
@@ -9412,6 +9418,12 @@
       "native_realtime_duplex_main_20261120": {
         "merge_commit": "abf4dab67a4b6ea3bb40f304e8ff6899883417f8",
         "evidence": "evidence/serve-pr55-merged-20261120/README.md"
+      },
+      "managed_qualification_reader_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-sdk-routes-20261126/profile-source.json",
+        "real_records": 9
       }
     },
     {
@@ -12838,7 +12850,13 @@
       "current_widget_delivery": "evidence/serve-chatkit-widget-stream-20261126/delivery.json",
       "current_agent_session_delivery": "evidence/serve-agent-structured-format-20261126/delivery.json",
       "current_response_media_delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json",
-      "current_visual_answer_delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
+      "current_visual_answer_delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json",
+      "managed_qualification_reader_20261126": {
+        "stage": "targeted_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-sdk-routes-20261126/profile-source.json",
+        "real_records": 9
+      }
     },
     {
       "id": "Q03",
