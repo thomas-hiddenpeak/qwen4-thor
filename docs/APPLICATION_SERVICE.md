@@ -1,5 +1,9 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### 失败后的 Responses 查询和续读
+
+失败响应使用标准 error.code；error.type 保留具体故障名。前台生成取消后可用原响应 ID 与 starting_after 读取失败终态，旧版 Beta 子 Agent 的无评分输出返回空 logprobs 数组。[rev530 记录](evidence/serve-responses-errors-20261126/delivery.json)
+
 ### 旧版 SDK 的 Evals 取消
 
 Python 2.8.1 在 Run 资源上发送 POST，新版客户端访问同一资源的 /cancel。两个入口共享所有者检查、状态和取消操作，恢复后可继续使用原 Eval 和 Run ID。[rev528 记录](evidence/serve-sdk-routes-20261126/delivery.json)

@@ -1,0 +1,80 @@
+{
+  "status": "cpu_pass_real_precursor_official_schema_failure",
+  "engine": "5f4c888656adb46e5523b61c63d3efa1a22b31e5f8fbb19edfd1869731af5a67",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "source_manifest": "358ec5a99e8e28f4bc6cfaa124cafc638da447463b13d771cf47dc6ffa1b13d0",
+  "native_regressions": [
+    "responses_beta_agent_result_preserves_scores_and_projects_history",
+    "responses_cancel_delivers_the_sequenced_frame_before_failure",
+    "responses_cancel_keeps_backpressure_and_shutdown_bounded",
+    "responses_output_http_failure_uses_native_terminal_once",
+    "responses_output_failure_has_no_success_or_tool_done",
+    "responses_output_failure_classification",
+    "native_responses_failed_incomplete_and_exception_keep_real_outcomes",
+    "native_responses_cancel_deadline_and_unfinished_never_complete",
+    "server_http_write_cancel_and_request_deadline",
+    "responses_legacy_failure_projects_get_and_resumed_event"
+  ],
+  "original_run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 37.416,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "previous_sdk_result_sha256": "37afc9e2ae8e1360757e4500a1768c9b7fd32a09e065cd1152a6fc83231e1906",
+  "previous_lease_sha256": "513a926b8f8d2c815cd18b75ce14873e7e7977ebabb34a5822ced5ef43eb4239",
+  "official_openapi": {
+    "date": "2026-11-07T19:24:53Z",
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a"
+  },
+  "official_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "original_tls_captures": {
+    "get.json": {
+      "sha256": "aee16e1132801e15cdc41c76c0d5e2dbfaa9e6ed36e5302e416c3026c25299f5",
+      "schema": "BetaResponse",
+      "official_pass": false,
+      "previous_local_pass": true,
+      "current_local_pass": false
+    },
+    "cancel.json": {
+      "sha256": "aee16e1132801e15cdc41c76c0d5e2dbfaa9e6ed36e5302e416c3026c25299f5",
+      "schema": "BetaResponse",
+      "official_pass": false,
+      "previous_local_pass": true,
+      "current_local_pass": false
+    },
+    "decoded-event.json": {
+      "sha256": "1f0547124f0709de6144fdb68012f1f65b77317e84319a10618bd15fc6705be2",
+      "schema": "BetaResponseFailedEvent",
+      "official_pass": false,
+      "previous_local_pass": true,
+      "current_local_pass": false
+    },
+    "live-get.json": {
+      "sha256": "d200c1cb7a201af425775b8295b1f022232231e9fbfb0a343d64e16193b98adb",
+      "schema": "Response",
+      "official_pass": true,
+      "previous_local_pass": true,
+      "current_local_pass": true
+    },
+    "live-decoded-terminal.json": {
+      "sha256": "c8a819eb237c49febbb75ec9a75406216eaa3a97c6ddf7cb17e4ef5dab5e49c5",
+      "schema": "ResponseFailedEvent",
+      "official_pass": true,
+      "previous_local_pass": true,
+      "current_local_pass": true
+    }
+  },
+  "previous_live_sequence_sha256": "0a904fffe417ab07d60139bac621ce8f72f9e302abb717f9b87377eeec993f3c",
+  "checks": [
+    "Required-field check isolated at BetaOutputTextContent",
+    "Changing only logprobs to [] makes previously failing observations valid in memory",
+    "A string remains invalid",
+    "Unscored input history is valid; injecting output-only logprobs into input history is rejected",
+    "Existing scores survive native output projection"
+  ],
+  "candidate_tls": "pending"
+}

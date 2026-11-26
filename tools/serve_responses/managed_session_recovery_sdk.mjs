@@ -35,7 +35,8 @@ assert.equal(historicalTurn.status, 'failed');
 assert.equal(historicalTurn.error.message, 'incomplete refusal frame');
 const failed = await client(plan.key).responses.retrieve(plan.failed.response);
 assert.equal(failed.status, 'failed');
-assert.equal(failed.error.code, 'response_parse_failed');
+assert.equal(failed.error.code, 'server_error');
+assert.equal(failed.error.type, 'response_parse_failed');
 await assert.rejects(peer.responses.retrieve(failed.id), missing);
 
 async function receive(stream, padded, expected) {

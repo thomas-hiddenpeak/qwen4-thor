@@ -98,9 +98,12 @@ def seed(phase, plan):
 def business(stage):
     src, dest, evidence = fixture(stage.out, stage.plan)
     old = pkg.read(src)['record']
+    # This historical verifier only qualifies the original, pinned engine.
+    pkg.require(stage.plan['binary_sha256'] == evidence['candidate_sha256'],
+                'legacy interruption contract belongs to its recorded engine')
     body = dict(base='https://127.0.0.1:'+str(stage.plan['public_port'])+'/v1',
                 key=stage.keys['alpha'], other=stage.keys['gamma'], id=old['id'],
-                items=old['data']['response']['output'], mode='recover',
+                items=old['data']['response']['output'], mode='recover', legacy_error_code=True,
                 sequence=evidence['original']['interrupted_after']['sequence'],
                 sdk=stage.plan['sdk_directory'])
     result = subprocess.run(['node', ROOT/SDK], input=json.dumps(body), text=True,

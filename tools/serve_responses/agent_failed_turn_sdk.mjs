@@ -28,7 +28,8 @@ assert.equal(oldTurn.error.code, 'server_error');
 assert.equal(oldTurn.error.message, 'incomplete refusal frame');
 const failed = await owner.responses.retrieve(plan.failed_response);
 assert.equal(failed.status, 'failed');
-assert.equal(failed.error.code, 'response_parse_failed');
+assert.equal(failed.error.code, 'server_error');
+assert.equal(failed.error.type, 'response_parse_failed');
 assert.ok(failed.output.some(i => i.content?.some(p => p.type === 'refusal')));
 const stream = await sessions.events.stream(id);
 let answer = '', next, deltas = 0, idle = false, count = 0;
@@ -57,6 +58,6 @@ const chat = await client(plan.other).chat.completions.create({model:'qwen3.8-fl
   temperature:0, max_tokens:24, reasoning_effort:'none',
   messages:[{role:'user',content:'Return only the answer to 17 plus 25.'}]});
 assert.equal(chat.choices[0].message.content.trim(), '42');
-process.stdout.write(JSON.stringify({session:id, old_turn:plan.turn, next_turn:next, original_error:failed.error.code,
+process.stdout.write(JSON.stringify({session:id, old_turn:plan.turn, next_turn:next, original_error:failed.error.type,
   failed_response:failed.id, turn_error:oldTurn.error.code, original_retained:true, initial_state:original.status,
   final_state:'idle', deltas, answer:answer.trim(), peer:404, independent_chat:'42'}));

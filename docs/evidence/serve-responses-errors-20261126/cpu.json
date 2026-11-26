@@ -1,0 +1,101 @@
+{
+  "scope": "native CPU rendering, persistent reads, errors, SDK replay and schema; device TLS measured separately",
+  "old_engine": "b23ed5665b9dcb25f3eab772251e469c15431fd5e072107aa0acfeef7a955605",
+  "failed_before": [
+    "responses_output_failure_has_no_success_or_tool_done",
+    "responses_legacy_failure_projects_get_and_resumed_event"
+  ],
+  "engine": "6b82b8074bcce949a32f5312a281ac390535088add119d5ed482d90d5e79935e",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "native": [
+    "responses_output_failure_has_no_success_or_tool_done",
+    "responses_legacy_failure_projects_get_and_resumed_event",
+    "responses_output_failure_classification",
+    "native_responses_failed_incomplete_and_exception_keep_real_outcomes",
+    "native_responses_finite_errors_keep_status_without_fake_events",
+    "responses_api_replay_uses_original_sequence_and_obfuscation_choice",
+    "responses_api_cancel_route_and_owner_boundary",
+    "responses_output_incomplete_never_completes_partial_tool",
+    "responses_output_http_failure_uses_native_terminal_once"
+  ],
+  "sdk": [
+    {
+      "sdk": "2.8.1",
+      "strict": false,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "sdk": "2.8.1",
+      "strict": true,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "sdk": "3.42.1",
+      "strict": false,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "sdk": "3.42.1",
+      "strict": true,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "sdk": "3.55.1",
+      "strict": false,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    },
+    {
+      "sdk": "3.55.1",
+      "strict": true,
+      "events": 5,
+      "terminal": "response.failed",
+      "code": "server_error",
+      "native_type": "explicit_cancel",
+      "historical_error_rejected": true,
+      "source_sha256": "07c2e9d39501c38262740dec4383f75e63c0581349f983e1a56b046c4a8810ef",
+      "wire_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214"
+    }
+  ],
+  "captures": "cpu-captures.json",
+  "captures_sha256": "c10901b01722d4afae00843104aa3075d319eb5a5d86312189de178071343baf",
+  "application_schema": "4abc6e4940a8ea770d1105b64a08088fd8c17178712d19df3ad06a510b069577",
+  "upstream_openapi": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "upstream_revision": {
+    "date": "2026-11-07T19:24:53Z",
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a"
+  },
+  "public_codes": 21,
+  "historical_code_rejected": true,
+  "source_files": 1099,
+  "inventory_mutations": 40
+}

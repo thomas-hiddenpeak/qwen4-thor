@@ -1278,8 +1278,16 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     }
     RequestDiagnostics::Scope wait(diagnostic, Wait::kWrite);
     const auto visible = responses ? responses->PublicWire(data) : data;
-    if (!cancelled() && WriteAll(fd, visible, {.control = control.get()}))
+    if (responses) {
+      // Append has already assigned sequence numbers to these events. Let a
+      // writable subscriber finish the frame before sending the failure.
+      if (WriteAll(fd, visible,
+                   {.control = control.get(), .finish_response_event = true}))
+        return !cancelled();
+    } else if (!cancelled() &&
+               WriteAll(fd, visible, {.control = control.get()})) {
       return true;
+    }
     client_disconnected = true;
     control->Cancel(RequestControl::State::kDisconnect);
     count_abort();
