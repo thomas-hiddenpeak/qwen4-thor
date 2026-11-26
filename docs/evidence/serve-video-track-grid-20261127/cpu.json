@@ -1,0 +1,309 @@
+{
+  "stage": "native_cpu_verified",
+  "scope": "A10 QuickTime track dimensions before clip and movie/track matrices",
+  "base": "24e3ac58a40c10297fab2d2a2c0c20de6477a8c1",
+  "product": {
+    "binary": "91ca3b94f494db8391ac5158e89cb3bce08b6c5c9bebf3e275d651405a7612a0",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_manifest": "361bf40f9ce3ef449a1ccc1efbb265f95b03de4157bf4a81f469156d8437a092",
+    "matched_sources": 1102
+  },
+  "fixture": {
+    "path": "tests/fixtures/file_video/rect-clips.mov",
+    "sha256": "76e7c2319fa3574d5a70e6316bd8e5261a69c38f1ffc5acdee8269a79d8e09a6"
+  },
+  "sdk_driver_sha256": "ff1aafd3aedbf914ad03bd238b4c03a4dc49ce14180ef80f6d4a992beec8ecdf",
+  "original_same_sources": [
+    {
+      "case": "reference-plain",
+      "status": 0,
+      "size": [
+        128,
+        64
+      ]
+    },
+    {
+      "case": "reference-clip",
+      "status": 0,
+      "size": [
+        128,
+        64
+      ]
+    },
+    {
+      "case": "integral-plain",
+      "status": 0,
+      "size": [
+        128,
+        64
+      ]
+    },
+    {
+      "case": "integral-clip",
+      "status": 0,
+      "size": [
+        96,
+        48
+      ]
+    },
+    {
+      "case": "fractional-plain",
+      "status": 0,
+      "size": [
+        128,
+        64
+      ]
+    },
+    {
+      "case": "fractional-clip",
+      "status": 1,
+      "size": null
+    }
+  ],
+  "paired_cpu": [
+    {
+      "case": "reference",
+      "extent_fixed16": [
+        8388608,
+        4194304
+      ],
+      "size": [
+        128,
+        64
+      ],
+      "rgb_sha256": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ],
+      "source_sha256": [
+        "80e440d2fc111c922d94c4905c011880034b32906913759e34d0aef3c49a8609",
+        "2d9ccb1cebc01c298365d9273d43b5dad0c80903af0f9df542777109d8c3f759"
+      ],
+      "png_sha256": [
+        "2713d366f115bd2cfefdc0be04876fea1e31ceb2f39b48e494ca10eec8ac2b4f",
+        "2713d366f115bd2cfefdc0be04876fea1e31ceb2f39b48e494ca10eec8ac2b4f",
+        "2713d366f115bd2cfefdc0be04876fea1e31ceb2f39b48e494ca10eec8ac2b4f"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "integral",
+      "extent_fixed16": [
+        6291456,
+        3145728
+      ],
+      "size": [
+        96,
+        48
+      ],
+      "rgb_sha256": [
+        "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77",
+        "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77",
+        "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77"
+      ],
+      "source_sha256": [
+        "b5e1e21369e01460b16db13269b85cbd8a458a86e3d9e7a949d87a74c5f6b798",
+        "d15d1f60a94d7e90a57f50348660e21a32cefa64fa5d31cc79d663c2ebafcca7"
+      ],
+      "png_sha256": [
+        "51a9804622d2baf3fe2c31fc7effc62a5abfd6e624fbac2fbc2a6976c31d9826",
+        "51a9804622d2baf3fe2c31fc7effc62a5abfd6e624fbac2fbc2a6976c31d9826",
+        "51a9804622d2baf3fe2c31fc7effc62a5abfd6e624fbac2fbc2a6976c31d9826"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "fractional",
+      "extent_fixed16": [
+        6324224,
+        3145728
+      ],
+      "size": [
+        97,
+        48
+      ],
+      "rgb_sha256": [
+        "6d6b84cd977f76a4e61ab273a4cb8d0f6fbc94403a03ccf68eb1a5a453a821bc",
+        "6d6b84cd977f76a4e61ab273a4cb8d0f6fbc94403a03ccf68eb1a5a453a821bc",
+        "6d6b84cd977f76a4e61ab273a4cb8d0f6fbc94403a03ccf68eb1a5a453a821bc"
+      ],
+      "source_sha256": [
+        "63d9f0cd4e111dac5aec81afbb3b459c400bf30c70594aa1ebe16c0c4e795fca",
+        "b05bc1d79cd2f52eeb5368c153b44d613a958428c6e3b3823d663abfb00a308d"
+      ],
+      "png_sha256": [
+        "583b1f4552c22e0d51682fda566582f0ebf50d06828442c399e9ac1813321262",
+        "583b1f4552c22e0d51682fda566582f0ebf50d06828442c399e9ac1813321262",
+        "583b1f4552c22e0d51682fda566582f0ebf50d06828442c399e9ac1813321262"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "quarter",
+      "extent_fixed16": [
+        6307840,
+        3194880
+      ],
+      "size": [
+        97,
+        49
+      ],
+      "rgb_sha256": [
+        "a07f3b0113a9f8ff878c0a62b7ddb9790e222ec6f3dc3195019539e4692061d4",
+        "a07f3b0113a9f8ff878c0a62b7ddb9790e222ec6f3dc3195019539e4692061d4",
+        "a07f3b0113a9f8ff878c0a62b7ddb9790e222ec6f3dc3195019539e4692061d4"
+      ],
+      "source_sha256": [
+        "62ec5db80762f7c75f36f4da053558be0a900e2a5898957caf8ea74da2baeb89",
+        "1d8135dbd87bdec5082f70f319d156ba8e78f5ccac115c991cbd180c0c35eaa7"
+      ],
+      "png_sha256": [
+        "26d13c0b6bc2578bfa5896745e6c4deaacc3dfa71ac7a642cf432386f0d85bdb",
+        "26d13c0b6bc2578bfa5896745e6c4deaacc3dfa71ac7a642cf432386f0d85bdb",
+        "26d13c0b6bc2578bfa5896745e6c4deaacc3dfa71ac7a642cf432386f0d85bdb"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "three_quarters",
+      "extent_fixed16": [
+        6340608,
+        3162112
+      ],
+      "size": [
+        97,
+        49
+      ],
+      "rgb_sha256": [
+        "2c9236030d02a4b3c917c4f581ba689a157f1a0c69bfea410b9190283c56a262",
+        "2c9236030d02a4b3c917c4f581ba689a157f1a0c69bfea410b9190283c56a262",
+        "2c9236030d02a4b3c917c4f581ba689a157f1a0c69bfea410b9190283c56a262"
+      ],
+      "source_sha256": [
+        "de3165bc616cc5e5aa0a3016d9365d93bce97159c2b74c9805faaa0dda9e41c0",
+        "d1a49979b22b066107653960732cea5db202d330e78deaadd81fa90fcf4c2f5b"
+      ],
+      "png_sha256": [
+        "318da22835b46088385ea98bf8fb0d2bd4e6f564e692430e3613ddbd7b3eb1c2",
+        "318da22835b46088385ea98bf8fb0d2bd4e6f564e692430e3613ddbd7b3eb1c2",
+        "318da22835b46088385ea98bf8fb0d2bd4e6f564e692430e3613ddbd7b3eb1c2"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    }
+  ],
+  "tests": {
+    "passed": 49,
+    "failed": 0,
+    "skipped": 0,
+    "names": [
+      "file_video_rect_clips_preserve_only_the_intersection",
+      "file_video_rect_clip_replay_binds_signed_source_geometry",
+      "file_video_rect_clips_projective_coordinates_respect_signed_w",
+      "file_video_rect_clips_reject_ambiguous_or_invalid_geometry",
+      "file_video_rect_clip_tracks_use_the_declared_grid_and_pixel_budget",
+      "file_video_region_decodes_diagonal_quadrants_and_binds_source",
+      "file_video_region_hole_and_negative_projective_coordinates",
+      "file_video_region_rejects_incomplete_or_inconsistent_inversion_rows",
+      "file_video_region_large_encoding_preserves_sparse_pixel_membership",
+      "file_video_declared_track_grid_matches_full_clip_on_actual_frames",
+      "file_video_actual_h264_mp4_preserves_colors_order_and_pts",
+      "file_video_actual_vp8_webm_preserves_colors_order_and_pts",
+      "file_video_actual_vp9_webm_preserves_colors_order_and_pts",
+      "file_video_actual_track_rotations_and_reflections_transform_pixels",
+      "file_video_actual_non_square_pixels_preserve_display_aspect",
+      "file_video_tall_pixels_frozen_v3_keeps_original_grid",
+      "file_video_actual_pixel_aspect_and_orientation_compose",
+      "file_video_display_geometry_rejects_overflow_and_expansion_budget",
+      "file_video_display_metadata_is_validated_before_frozen_replay",
+      "file_video_alternate_track_selection_keeps_pixels_and_timeline",
+      "file_video_display_matrix_bounds_versions_and_composition",
+      "file_video_frozen_metadata_rejects_source_pts_and_frame_tampering",
+      "file_video_affine_matrix_signed_composition_and_v1_headers",
+      "file_video_affine_geometry_checks_singular_overflow_and_exact_bounds",
+      "file_video_affine_integer_bilinear_center_and_reflection_oracle",
+      "file_video_affine_rgb_stride_bounds_and_black_exterior",
+      "file_video_affine_actual_scale_preserves_pixels_and_frame_intervals",
+      "file_video_affine_actual_shear_preserves_pixels_and_black_bounds",
+      "file_video_affine_actual_non_right_angle_rotation_preserves_pixels",
+      "file_video_affine_actual_movie_and_pixel_aspect_compose",
+      "file_video_affine_conversion_rejects_matrix_policy_and_source_changes",
+      "file_video_affine_downscale_does_not_hide_cumulative_decode_work",
+      "file_video_affine_actual_singular_and_capacity_publish_no_frames",
+      "file_video_integer_carry_borrow_signed_zero_and_int128_minimum",
+      "file_video_integer_multiplication_independent_binomial_words",
+      "file_video_integer_ratio_corrects_float_hint_at_exact_boundaries",
+      "file_video_integer_overflow_and_invalid_ratio_are_explicit",
+      "file_video_projective_homogeneous_sign_and_exact_center_oracle",
+      "file_video_projective_independent_fraction_geometry_and_pixel_oracles",
+      "file_video_projective_track_movie_and_square_pixel_composition",
+      "file_video_projective_finite_horizon_singular_and_capacity_bounds",
+      "file_video_projective_rgb_stride_bounds_and_black_exterior",
+      "file_video_projective_actual_nonunit_w_pixels_and_intervals",
+      "file_video_projective_actual_perspective_pixels_and_intervals",
+      "file_video_projective_actual_movie_and_pixel_aspect_compose",
+      "file_video_projective_conversion_rejects_source_policy_and_geometry_tampering",
+      "file_video_projective_downscale_keeps_cumulative_decode_budget",
+      "file_video_projective_actual_horizon_singular_and_capacity_cleanup",
+      "file_video_fractional_track_grid_samples_exact_source_centers"
+    ],
+    "independent_rational_oracles": 8,
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 247,
+      "native_routes": 409,
+      "reviewed_source_anchors": 1392,
+      "mutation_checks": 40,
+      "errors": []
+    }
+  },
+  "legacy": {
+    "original_binary": "c34f8cf73fab5e373861ecbc163b5b66a67aa5f12129742ff3f66d42934d036b",
+    "original_revision": 550,
+    "new_declared": [
+      64,
+      64
+    ],
+    "original_v3": [
+      128,
+      128
+    ],
+    "source": "807c346b9946cb9123a3907bc41dee991d3177ce57946f0c546b9e619d72930f",
+    "conversion": "072486502b9c08e25bd41abbd74a17c25225255a0db5594a5f9d19711504b7f7",
+    "png": "c89ce2f31def0874e069db13e9615d08e3c5eff8ca1318da87f3f78f2be7d1fb",
+    "tampered_png": "rejected",
+    "observed_prior_assertion": "47/48; tall-pixels expected derived 128x128 despite the integral 64x64 track header"
+  },
+  "references": [
+    "https://developer.apple.com/documentation/quicktime-file-format/track_header_atom",
+    "https://developer.apple.com/documentation/quicktime-file-format/matrices"
+  ],
+  "remaining": [
+    "native TLS SDK generation and independent frozen segment validation",
+    "profile qualification, managed recovery, registry issue",
+    "multiple active video track compositing"
+  ]
+}

@@ -180,7 +180,7 @@ Q4T_TEST(
   Q4T_CHECK(q4t::io::ParseJson(
       std::string(std::istreambuf_iterator<char>(file), {}), &oracle));
   const auto* cases = oracle.GetArray("cases");
-  Q4T_CHECK(cases && cases->array.size() == 6);
+  Q4T_CHECK(cases && cases->array.size() == 8);
   for (const auto& row : cases->array) {
     DisplayMatrices matrices;
     for (size_t i = 0; i < 9; ++i) {
@@ -192,11 +192,17 @@ Q4T_TEST(
       source.push_back(p.number);
     for (const auto& p : row.GetArray("output")->array)
       expected.push_back(p.number);
+    DisplayClips clips;
+    if (const auto* extent = row.GetArray("track_size_fixed16")) {
+      Q4T_CHECK(extent->array.size() == 2);
+      for (size_t i = 0; i < 2; ++i)
+        clips.track_size[i] = extent->array[i].number;
+    }
     ProjectiveGeometry shape;
     Q4T_CHECK(RenderProjectiveRgb(matrices, row.GetInt("width"),
                                   row.GetInt("height"), source,
                                   row.GetInt("width") * 3, {}, &shape,
-                                  &output) == Failure::kNone);
+                                  &output, clips) == Failure::kNone);
     Q4T_CHECK(shape.width == row.GetInt("output_width") &&
               shape.height == row.GetInt("output_height") &&
               output == expected);
@@ -376,5 +382,27 @@ Q4T_TEST(file_video_projective_actual_horizon_singular_and_capacity_cleanup) {
               output.frames.empty() && control.counters->started == 1 &&
               control.counters->reaped == 1 && control.counters->active == 0);
   }
+  return true;
+}
+
+Q4T_TEST(file_video_fractional_track_grid_samples_exact_source_centers) {
+  const std::vector<uint8_t> raster{0, 0, 0, 100, 100, 100};
+  ProjectiveGeometry geometry;
+  std::vector<uint8_t> output;
+  DisplayClips clips;
+  clips.track_size = {2U * 65536 + 32768, 65536};
+  Q4T_CHECK(RenderProjectiveRgb({}, 2, 1, raster, 6, {}, &geometry, &output,
+                                clips) == Failure::kNone);
+  Q4T_CHECK(geometry.width == 3 && geometry.height == 1);
+  Q4T_CHECK(output == std::vector<uint8_t>({0, 0, 0, 70, 70, 70, 0, 0, 0}));
+  clips.track_size[0] += 16384;
+  Q4T_CHECK(RenderProjectiveRgb({}, 2, 1, raster, 6, {}, &geometry, &output,
+                                clips) == Failure::kNone);
+  Q4T_CHECK(output ==
+            std::vector<uint8_t>({0, 0, 0, 59, 59, 59, 100, 100, 100}));
+  clips.track = ClipRect{0, 0, 1, 2};
+  Q4T_CHECK(RenderProjectiveRgb({}, 2, 1, raster, 6, {}, &geometry, &output,
+                                clips) == Failure::kNone &&
+            output[6] == 0);
   return true;
 }

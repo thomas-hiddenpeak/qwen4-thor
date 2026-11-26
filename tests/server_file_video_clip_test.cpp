@@ -165,8 +165,8 @@ Q4T_TEST(file_video_rect_clip_tracks_use_the_declared_grid_and_pixel_budget) {
   Q4T_CHECK(Decode(source, &output).http_status == 413 &&
             output.frames.empty());
   dimensions((256 << 16) + 1, 40 << 16);
-  Q4T_CHECK(Decode(source, &output).http_status == 400 &&
-            output.frames.empty());
+  Q4T_CHECK(Decode(source, &output).ok() && output.width == 257 &&
+            output.height == 40);
   dimensions(32 << 16, 32 << 16);
   FileVideoLimits limits;
   limits.max_decoded_pixels = 2 * 128 * 64;
@@ -317,6 +317,49 @@ Q4T_TEST(file_video_region_large_encoding_preserves_sparse_pixel_membership) {
   for (int x = -7001; x <= 8000; ++x) {
     Q4T_CHECK(region.Contains(x, 0) == (x >= -7000 && x < 7999 && x % 2 == 0));
     Q4T_CHECK(!region.Contains(x, -13) && !region.Contains(x, 17));
+  }
+  return true;
+}
+
+Q4T_TEST(file_video_declared_track_grid_matches_full_clip_on_actual_frames) {
+  for (const uint32_t fraction : {0U, 16384U, 32768U, 49152U}) {
+    auto clipped = Original(kFull, kFull);
+    const uint32_t width = (96U << 16) + fraction;
+    auto at = clipped.find("tkhd") + 4 + 76;
+    for (auto extent : {width, 48U << 16})
+      for (int shift : {24, 16, 8, 0}) clipped.at(at++) = char(extent >> shift);
+    auto plain = clipped;
+    for (size_t p = 0; (p = plain.find("clip", p)) != plain.npos; p += 4)
+      plain.replace(p, 4, "free");
+    FileVideoPixels a, b;
+    Q4T_CHECK(Decode(plain, &a).ok() && Decode(clipped, &b).ok());
+    const uint32_t w = fraction == 0 ? 96 : 97;
+    Q4T_CHECK(a.width == w && b.width == w && a.height == 48 && b.height == 48);
+    Q4T_CHECK(a.conversion.GetString("format") == "q4t.cpu_video_png.v8");
+    Q4T_CHECK(b.conversion.GetString("format") ==
+              (fraction ? "q4t.cpu_video_png.v8" : "q4t.cpu_video_png.v6"));
+    Q4T_CHECK(a.frames.size() >= 2 && a.frames.size() == b.frames.size());
+    for (size_t i = 0; i < a.frames.size(); ++i) {
+      const auto rgb = Rgb(a.frames[i], w, 48);
+      Q4T_CHECK(rgb.size() == w * 48 * 3 && rgb == Rgb(b.frames[i], w, 48));
+      Q4T_CHECK(a.frames[i].source_index == b.frames[i].source_index &&
+                a.frames[i].timestamp_ns == b.frames[i].timestamp_ns &&
+                a.frames[i].duration_ns == b.frames[i].duration_ns);
+      if (fraction && fraction <= 32768U) {
+        for (size_t y = 0; y < 48; ++y) {
+          const auto edge = rgb.begin() + (y * w + 96) * 3;
+          Q4T_CHECK(std::all_of(edge, edge + 3, [](auto c) { return c == 0; }));
+        }
+      }
+    }
+    Q4T_CHECK(
+        ValidateVideoSnapshot(a.conversion.GetString("source_sha256"), {}, a)
+            .ok());
+    auto& fixed =
+        Field(Field(a.conversion, "display_geometry"), "track_size_fixed16");
+    Q4T_CHECK(fixed.array.size() == 2 && fixed.array[0].number == width);
+    fixed.array[0] = Number(width + 1U);
+    Q4T_CHECK(ValidateVideoPixels(plain, {}, a).http_status == 400);
   }
   return true;
 }

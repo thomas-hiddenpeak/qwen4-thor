@@ -38,8 +38,9 @@ struct TransformedSize {
 };
 Failure GetTransformedSize(const DisplayMatrices& matrices, uint32_t width,
                            uint32_t height, const FileVideoLimits& limits,
-                           TransformedSize* result) {
-  if (IsAffine(matrices.movie) && IsAffine(matrices.track)) {
+                           TransformedSize* result, const TrackSize& extent) {
+  if (!FractionalTrack(extent) && IsAffine(matrices.movie) &&
+      IsAffine(matrices.track)) {
     AffineGeometry geometry;
     const auto status =
         MakeAffineGeometry(matrices, width, height, limits, &geometry);
@@ -48,7 +49,8 @@ Failure GetTransformedSize(const DisplayMatrices& matrices, uint32_t width,
   }
   ProjectiveGeometry geometry;
   const auto status =
-      MakeProjectiveGeometry(matrices, width, height, limits, &geometry);
+      MakeProjectiveGeometry(matrices, width, height, limits, &geometry,
+                             FractionalTrack(extent) ? extent : TrackSize{});
   *result = {geometry.width, geometry.height};
   return status;
 }
@@ -175,7 +177,8 @@ Failure TransformSample(Runtime& api, GstSample* sample,
   TransformedSize dimensions;
   std::vector<uint8_t> rgb;
   Failure status;
-  if (IsAffine(matrices.movie) && IsAffine(matrices.track)) {
+  if (!FractionalTrack(clips.track_size) && IsAffine(matrices.movie) &&
+      IsAffine(matrices.track)) {
     AffineGeometry geometry;
     status = RenderAffineRgb(matrices, shape.square_width, shape.square_height,
                              view, stride, limits, &geometry, &rgb, clips);
@@ -204,6 +207,7 @@ struct Pipeline {
   DisplayGeometry geometry;
   const DisplayMatrices* transform = nullptr;
   const DisplayClips* clips = nullptr;
+  bool track_resized = false;
   size_t offset = 0;
   std::atomic<Failure> failure{Failure::kNone};
   bool video = false;
@@ -250,10 +254,10 @@ struct Pipeline {
       failure = result;
       return false;
     }
-    if (clips) {
+    const auto natural = selected;
+    if (clips && clips->track_size[0]) {
       const auto status =
-          UseTrackGrid(clips->track_size[0], clips->track_size[1],
-                       request.limits, &selected);
+          UseTrackGrid(clips->track_size, request.limits, &selected);
       if (status != Failure::kNone) {
         failure = status;
         return false;
@@ -261,9 +265,9 @@ struct Pipeline {
     }
     if (transform) {
       TransformedSize output;
-      const auto status =
-          GetTransformedSize(*transform, selected.square_width,
-                             selected.square_height, request.limits, &output);
+      const auto status = GetTransformedSize(
+          *transform, selected.square_width, selected.square_height,
+          request.limits, &output, clips->track_size);
       if (status != Failure::kNone) {
         failure = status;
         return false;
@@ -285,6 +289,7 @@ struct Pipeline {
     }
     api.g_object_set_fn(square_caps, "caps", target, nullptr);
     api.Mini(target);
+    track_resized = selected != natural;
     geometry = selected;
     return true;
   }
@@ -442,7 +447,8 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   const auto direction = matrices ? matrices->Direction() : std::nullopt;
   const bool clipped = track && track->clips.Any();
   const bool complex = clipped && track->clips.Complex();
-  const bool transformed = matrices && (!direction || clipped);
+  const bool fractional = track && FractionalTrack(track->clips.track_size);
+  const bool transformed = matrices && (!direction || clipped || fractional);
   const bool projective =
       matrices && (!IsAffine(matrices->movie) || !IsAffine(matrices->track));
   auto* pipeline = api.gst_pipeline_new_fn(nullptr);
@@ -466,8 +472,9 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   }
   Pipeline state{api, request, source};
   state.has_alternates = track && track->has_alternates;
-  state.clips = clipped ? &track->clips : nullptr;
-  if (clipped) api.g_object_set_fn(elements[3], "add-borders", FALSE, nullptr);
+  state.clips = track ? &track->clips : nullptr;
+  if (track && track->clips.track_size[0])
+    api.g_object_set_fn(elements[3], "add-borders", FALSE, nullptr);
   state.pipeline = pipeline;
   state.convert = elements[2];
   state.square_caps = elements[4];
@@ -578,9 +585,9 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
     }
     TransformedSize display_size;
     if (transformed) {
-      const auto status = GetTransformedSize(*matrices, geometry.square_width,
-                                             geometry.square_height,
-                                             request.limits, &display_size);
+      const auto status = GetTransformedSize(
+          *matrices, geometry.square_width, geometry.square_height,
+          request.limits, &display_size, track->clips.track_size);
       if (status != Failure::kNone) return status;
     }
     const uint64_t work_pixels =
@@ -667,21 +674,24 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
                 {"pixel_aspect_den", Number(geometry.pixel_aspect_den)}})},
        {"modules", api.modules},
        {"frames", std::move(frames)}});
-  if (transformed) {
+  const bool grid = fractional || (!clipped && state.track_resized);
+  if (transformed || grid) {
     Set(&output->conversion, "format",
-        String(complex      ? "q4t.cpu_video_png.v7"
+        String(grid         ? "q4t.cpu_video_png.v8"
+               : complex    ? "q4t.cpu_video_png.v7"
                : clipped    ? "q4t.cpu_video_png.v6"
                : projective ? "q4t.cpu_video_png.v5"
                             : "q4t.cpu_video_png.v4"));
     auto& display = Field(output->conversion, "display_geometry");
     Set(&display, "policy",
-        String(complex   ? "quicktime-region-clips-black-bilinear16"
+        String(grid      ? "quicktime-fixed-track-grid-bilinear16"
+               : complex ? "quicktime-region-clips-black-bilinear16"
                : clipped ? "quicktime-rect-clips-black-bilinear16"
                : projective
                    ? "projective-square-pixels-tight-integer512-bilinear16"
                    : "affine-square-pixels-tight-bilinear16"));
-    if (clipped) {
-      if (complex) {
+    if (clipped || grid) {
+      if (complex || grid) {
         for (const auto& [key, region] :
              {std::pair{"movie_region_sha256", &track->clips.movie_region},
               std::pair{"track_region_sha256", &track->clips.track_region}})
@@ -689,8 +699,9 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
       }
       auto size = Array();
       for (auto extent : track->clips.track_size)
-        size.array.push_back(Number(extent));
-      Set(&display, "track_size", std::move(size));
+        size.array.push_back(Number(grid ? extent : extent >> 16));
+      Set(&display, grid ? "track_size_fixed16" : "track_size",
+          std::move(size));
       for (const auto& [name, clip] :
            {std::pair{"movie_clip", &track->clips.movie},
             std::pair{"track_clip", &track->clips.track}}) {

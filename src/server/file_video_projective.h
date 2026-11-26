@@ -34,11 +34,20 @@ struct ProjectiveGeometry {
 inline Failure MakeProjectiveGeometry(const DisplayMatrices& matrices,
                                       uint32_t width, uint32_t height,
                                       const FileVideoLimits& limits,
-                                      ProjectiveGeometry* result) {
+                                      ProjectiveGeometry* result,
+                                      TrackSize extent = {}) {
   if (!result || !width || !height || limits.max_edge > 8192)
     return Failure::kInvalid;
   if (width > limits.max_edge || height > limits.max_edge ||
       uint64_t(width) * height > limits.max_frame_pixels)
+    return Failure::kCapacity;
+  const uint32_t unit = extent[0] ? 65536 : 1;
+  if (!extent[0] && !extent[1]) extent = {width, height};
+  if (!extent[0] || !extent[1]) return Failure::kInvalid;
+  const uint64_t ew = (uint64_t(extent[0]) + unit - 1) / unit;
+  const uint64_t eh = (uint64_t(extent[1]) + unit - 1) / unit;
+  if (ew > limits.max_edge || eh > limits.max_edge ||
+      ew * eh > limits.max_frame_pixels)
     return Failure::kCapacity;
   std::array<__int128, 9> movie{}, track{}, t{};
   for (size_t i = 0; i < 9; ++i) {
@@ -70,18 +79,18 @@ inline Failure MakeProjectiveGeometry(const DisplayMatrices& matrices,
   std::array<DisplayFraction, 4> xs, ys;
   int denominator_sign = 0;
   for (size_t i = 0; i < 4; ++i) {
-    const auto x = (i & 1) ? width : 0;
-    const auto y = (i & 2) ? height : 0;
-    const auto denominator = t[2] * x + t[5] * y + t[8];
+    const auto x = (i & 1) ? extent[0] : 0;
+    const auto y = (i & 2) ? extent[1] : 0;
+    const auto denominator = t[2] * x + t[5] * y + t[8] * unit;
     if (!denominator) return Failure::kCapacity;
     const int sign = denominator < 0 ? -1 : 1;
     if (denominator_sign && sign != denominator_sign)
       return Failure::kCapacity;  // An infinite horizon intersects the source.
     denominator_sign = sign;
-    xs[i] = {(t[0] * x + t[3] * y + t[6]) * sign, denominator * sign};
-    ys[i] = {(t[1] * x + t[4] * y + t[7]) * sign, denominator * sign};
+    xs[i] = {(t[0] * x + t[3] * y + t[6] * unit) * sign, denominator * sign};
+    ys[i] = {(t[1] * x + t[4] * y + t[7] * unit) * sign, denominator * sign};
   }
-  const auto extent = [&](const auto& points, DisplayFraction* minimum,
+  const auto bounds = [&](const auto& points, DisplayFraction* minimum,
                           uint32_t* pixels) {
     auto low = points[0], high = points[0];
     for (const auto& point : points) {
@@ -103,9 +112,9 @@ inline Failure MakeProjectiveGeometry(const DisplayMatrices& matrices,
     *pixels = rounded;
     return Failure::kNone;
   };
-  const auto x_status = extent(xs, &geometry.min_x, &geometry.width);
+  const auto x_status = bounds(xs, &geometry.min_x, &geometry.width);
   if (x_status != Failure::kNone) return x_status;
-  const auto y_status = extent(ys, &geometry.min_y, &geometry.height);
+  const auto y_status = bounds(ys, &geometry.min_y, &geometry.height);
   if (y_status != Failure::kNone) return y_status;
   if (uint64_t(geometry.width) * geometry.height > limits.max_frame_pixels)
     return Failure::kCapacity;
@@ -140,10 +149,15 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
       source.size() < row_bytes ||
       height - 1 > (source.size() - row_bytes) / stride)
     return Failure::kInvalid;
-  const auto status =
-      MakeProjectiveGeometry(matrices, width, height, limits, geometry);
+  const auto status = MakeProjectiveGeometry(
+      matrices, width, height, limits, geometry,
+      FractionalTrack(clips.track_size) ? clips.track_size : TrackSize{});
   if (status != Failure::kNone) return status;
   rgb->assign(size_t(geometry->width) * geometry->height * 3, 0);
+  const bool fractional = FractionalTrack(clips.track_size);
+  const uint32_t unit = fractional ? 65536 : 1;
+  const TrackSize extent =
+      fractional ? clips.track_size : TrackSize{width, height};
   auto row = geometry->first;
   for (uint32_t y = 0; y < geometry->height; ++y) {
     auto point = row;
@@ -156,15 +170,17 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
         denominator = -denominator;
       }
       if (denominator.IsZero() || nx.IsNegative() || ny.IsNegative() ||
-          nx >= denominator * DisplayInteger(width) ||
-          ny >= denominator * DisplayInteger(height))
+          nx * unit >= denominator * extent[0] ||
+          ny * unit >= denominator * extent[1])
         continue;
       if (clips.Any() && !VisibleAt(clips, matrices.track, nx, ny, denominator))
         continue;
-      const auto sample = [&](const DisplayInteger& n, uint32_t size) {
+      const auto sample = [&](const DisplayInteger& n, uint32_t size,
+                              uint32_t edge) {
         const int64_t q =
-            DisplayInteger::FloorRatio(n * DisplayInteger(65536), denominator,
-                                       size * 65536) -
+            DisplayInteger::FloorRatio(
+                fractional ? n * unit * size * 65536 : n * 65536,
+                fractional ? denominator * edge : denominator, size * 65536) -
             int64_t{32768};
         const auto low = q >= 0 ? q / 65536 : -((-q + 65535) / 65536);
         return std::array<uint32_t, 3>{
@@ -172,7 +188,8 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
             uint32_t(std::clamp<int64_t>(low + 1, 0, size - 1)),
             uint32_t(q - low * 65536)};
       };
-      const auto sx = sample(nx, width), sy = sample(ny, height);
+      const auto sx = sample(nx, width, extent[0]),
+                 sy = sample(ny, height, extent[1]);
       const uint64_t wx[] = {65536 - sx[2], sx[2]};
       const uint64_t wy[] = {65536 - sy[2], sy[2]};
       for (size_t channel = 0; channel < 3; ++channel) {

@@ -10,8 +10,8 @@
 
 namespace q4t::server::video_detail {
 // Fixed storage for exact projective display arithmetic. Two signed 32-bit
-// source matrices and an 8192-pixel canvas require fewer than 432 bits,
-// including inverse pixel centers and 16 fractional sampling bits.
+// source matrices, bounded 8192-pixel 16.16 extents, inverse pixel centers
+// and 16-bit bilinear weights fit the 512-bit accumulator.
 class DisplayInteger {
  public:
   static constexpr size_t kWords = 8;

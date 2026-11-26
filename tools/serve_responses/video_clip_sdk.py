@@ -22,6 +22,21 @@ def sample(source, track, movie):
     return bytes(data)
 
 
+def track_grid_samples(source):
+    whole = (0, 0, 64, 128)
+    data = bytearray(sample(source, whole, whole))
+    at = data.index(b'tkhd') + 4
+    if data[at] != 0 or struct.unpack_from('>II', data, at + 76) != (128 << 16, 64 << 16):
+        raise ValueError('unexpected video track header')
+    struct.pack_into('>II', data, at + 76, (96 << 16) + 32768, 48 << 16)
+    if data.count(b'clip') != 2:
+        raise ValueError('expected both track and movie clipping atoms')
+    plain = bytes(data).replace(b'clip', b'free')
+    cropped = bytes(data)
+    struct.pack_into('>I', data, at + 76, 0)
+    return plain, cropped, bytes(data)
+
+
 def region_samples(source):
     # Change only the three rows of inversion points. Both masks have exactly
     # the same bounding box and the same compressed video.
@@ -72,7 +87,10 @@ def main():
                                  max_retries=0, timeout=60, _strict_response_validation=True)
         owner, peer = sdk(plan['key']), sdk(plan['other'])
         source = Path(plan['fixture']).read_bytes()
-        if plan.get('quickdraw_region', False):
+        if plan.get('track_grid', False):
+            left, right, invalid = track_grid_samples(source)
+            left_colors = right_colors = ('red', 'green', 'blue', 'yellow')
+        elif plan.get('quickdraw_region', False):
             left, right, invalid = region_samples(source)
             left_colors = ('red', 'black', 'black', 'yellow')
             right_colors = ('black', 'green', 'blue', 'black')

@@ -35,15 +35,17 @@ def point(p, m):
     return q[0] / q[2], q[1] / q[2]
 
 
-def fixture(name, track, movie):
+def fixture(name, track, movie, track_size_fixed16=None):
     width, height = 4, 3
     source = [(i * 37 + c * 71) % 256 for i in range(width * height)
               for c in range(3)]
     t, m = matrix(track), matrix(movie)
     combined = [[sum(t[r][k] * m[k][c] for k in range(3))
                  for c in range(3)] for r in range(3)]
+    tw, th = ((F(n, 65536) for n in track_size_fixed16)
+              if track_size_fixed16 else (F(width), F(height)))
     corners = [point([x, y, 1], combined)
-               for x in (0, width) for y in (0, height)]
+               for x in (0, tw) for y in (0, th)]
     xmin, ymin = (min(p[c] for p in corners) for c in (0, 1))
     xmax, ymax = (max(p[c] for p in corners) for c in (0, 1))
     ceil = lambda x: -(-x.numerator // x.denominator)
@@ -53,9 +55,10 @@ def fixture(name, track, movie):
     for y in range(out_h):
         for x in range(out_w):
             sx, sy = point([xmin + x + F(1, 2), ymin + y + F(1, 2), 1], reverse)
-            if not (0 <= sx < width and 0 <= sy < height):
+            if not (0 <= sx < tw and 0 <= sy < th):
                 pixels.extend([0, 0, 0])
                 continue
+            sx, sy = sx * width / tw, sy * height / th
             qx, qy = (int((s * 65536).__floor__()) - 32768 for s in (sx, sy))
             ix, iy = qx // 65536, qy // 65536
             fx, fy = qx % 65536, qy % 65536
@@ -66,11 +69,14 @@ def fixture(name, track, movie):
                         px, py = min(max(ix + dx, 0), width - 1), min(max(iy + dy, 0), height - 1)
                         total += source[(py * width + px) * 3 + c] * wx * wy
                 pixels.append(total >> 32)
-    return dict(name=name, movie=movie, track=track, source=source,
+    row = dict(name=name, movie=movie, track=track, source=source,
                 width=width, height=height, output_width=out_w,
                 output_height=out_h, output=pixels,
                 min_x=[str(xmin.numerator), str(xmin.denominator)],
                 min_y=[str(ymin.numerator), str(ymin.denominator)])
+    if track_size_fixed16:
+        row["track_size_fixed16"] = track_size_fixed16
+    return row
 
 
 def main():
@@ -86,7 +92,10 @@ def main():
              ("two_axis_perspective", perspective, IDENTITY),
              ("near_horizon_expansion", expanded, IDENTITY),
              ("track_then_movie", perspective, movie),
-             ("movie_then_track_differs", movie, perspective)]
+             ("movie_then_track_differs", movie, perspective),
+             ("fractional_track_then_movie", perspective, movie, [212992, 180224]),
+             ("fractional_negative_homography", [-x for x in expanded], movie,
+              [229376, 147456])]
     output = dict(oracle="Python Fraction; Gauss-Jordan inverse; bilinear16",
                   cases=[fixture(*case) for case in cases])
     Path(__file__).with_suffix(".json").write_text(json.dumps(output, indent=2) + "\n")

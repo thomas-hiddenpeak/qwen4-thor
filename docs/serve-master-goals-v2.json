@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-26",
+  "updated": "2026-11-27",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -6670,6 +6670,15 @@
         "unresolved": [
           "uniform integral and fractional track grid with exposed and full-clip tracks",
           "multiple enabled video tracks"
+        ]
+      },
+      "quicktime_track_grid_20261127": {
+        "stage": "cpu_verified",
+        "receipt": "evidence/serve-video-track-grid-20261127/cpu.json",
+        "pending": [
+          "native TLS SDK generation and independent frozen segment validation",
+          "profile qualification, managed recovery, registry issue",
+          "multiple active video track compositing"
         ]
       }
     },

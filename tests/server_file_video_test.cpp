@@ -94,7 +94,8 @@ bool Actual(const char* filename) {
   return true;
 }
 bool Display(const char* filename, uint32_t width, uint32_t height,
-             const std::array<int, 4>& corners) {
+             const std::array<int, 4>& corners,
+             std::string_view format = "q4t.cpu_video_png.v3") {
   const auto bytes = Bytes(filename);
   FileVideoPixels output;
   auto control = Control();
@@ -105,7 +106,7 @@ bool Display(const char* filename, uint32_t width, uint32_t height,
   Q4T_CHECK(Clean(control) && output.width == width &&
             output.height == height && output.scanned_frames == 4 &&
             output.frames.size() == 2 && output.duration_ns == 2000000000ULL);
-  Q4T_CHECK(output.conversion.GetString("format") == "q4t.cpu_video_png.v3" &&
+  Q4T_CHECK(output.conversion.GetString("format") == format &&
             Ok(ValidateVideoPixels(bytes, limits, output)));
   const int colors[][3] = {
       {255, 0, 0}, {0, 255, 0}, {0, 0, 255}, {255, 255, 0}};
@@ -212,8 +213,29 @@ Q4T_TEST(file_video_actual_track_rotations_and_reflections_transform_pixels) {
 }
 Q4T_TEST(file_video_actual_non_square_pixels_preserve_display_aspect) {
   return Display("wide-pixels.mp4", 256, 64, {0, 1, 2, 3}) &&
-         Display("tall-pixels.mp4", 128, 128, {0, 1, 2, 3}) &&
+         Display("tall-pixels.mp4", 64, 64, {0, 1, 2, 3},
+                 "q4t.cpu_video_png.v8") &&
          Display("wide-pixels.webm", 256, 64, {0, 1, 2, 3});
+}
+Q4T_TEST(file_video_tall_pixels_frozen_v3_keeps_original_grid) {
+  // The original decoder expanded coded 128x64 to 128x128 for 1:2 PAR.
+  // Stored v3 pixels and their source receipt must survive the grid change.
+  FileVideoPixels stored;
+  Q4T_CHECK(q4t::io::ParseJson(Bytes("tall-pixels-v3.json"),
+                               &stored.conversion));
+  stored.width = stored.height = 128;
+  stored.duration_ns = 2000000000ULL;
+  stored.scanned_frames = 4;
+  const auto png = Bytes("tall-pixels-v3.png");
+  for (uint64_t index : {0, 2, 3})
+    stored.frames.push_back({png, index * 500000000, index, 500000000});
+  const auto source = Bytes("tall-pixels.mp4");
+  FileVideoLimits limits;
+  limits.sample_frames = 4;
+  Q4T_CHECK(Ok(ValidateVideoPixels(source, limits, stored)));
+  stored.frames.back().png.back() ^= 1;
+  Q4T_CHECK(!ValidateVideoPixels(source, limits, stored).ok());
+  return true;
 }
 Q4T_TEST(file_video_actual_pixel_aspect_and_orientation_compose) {
   return Display("wide-rotate-90.mp4", 64, 256, {2, 0, 3, 1});
