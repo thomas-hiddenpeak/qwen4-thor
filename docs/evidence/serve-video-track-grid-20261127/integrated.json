@@ -201,5 +201,24 @@
     "reviewed_source_anchors": 1392,
     "mutation_checks": 40,
     "errors": []
+  },
+  "native_capability_tests": {
+    "cases": [
+      "chat_capabilities_files_separates_capacity_storage_and_consumption",
+      "chat_capabilities_native_video_separates_model_and_codec_readiness",
+      "chat_capabilities_native_responses_state_and_recovery"
+    ],
+    "settings": {
+      "media": [
+        false,
+        true
+      ],
+      "mtp": [
+        false,
+        true
+      ]
+    },
+    "new_snapshot": "q4t.cpu_video_png.v8",
+    "previous_clipping": "q4t.cpu_video_png.v7"
   }
 }
