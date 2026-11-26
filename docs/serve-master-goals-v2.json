@@ -3102,14 +3102,14 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "local_client_shell_protocol_cpu_verified",
+        "stage": "native_tls_direct_and_program_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
-          "real native TLS SDK business and ownership",
-          "two capacity profiles and managed delivery",
+          "capacity and managed delivery",
           "hosted shell environments"
-        ]
+        ],
+        "business": "evidence/serve-shell-history-20261126/business.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -3823,14 +3823,14 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "local_client_shell_protocol_cpu_verified",
+        "stage": "native_tls_direct_and_program_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
-          "real native TLS SDK business and ownership",
-          "two capacity profiles and managed delivery",
+          "capacity and managed delivery",
           "hosted shell environments"
-        ]
+        ],
+        "business": "evidence/serve-shell-history-20261126/business.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -7696,14 +7696,14 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "local_client_shell_protocol_cpu_verified",
+        "stage": "native_tls_direct_and_program_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
-          "real native TLS SDK business and ownership",
-          "two capacity profiles and managed delivery",
+          "capacity and managed delivery",
           "hosted shell environments"
-        ]
+        ],
+        "business": "evidence/serve-shell-history-20261126/business.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -9011,14 +9011,14 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "local_client_shell_protocol_cpu_verified",
+        "stage": "native_tls_direct_and_program_verified",
         "issued": false,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
-          "real native TLS SDK business and ownership",
-          "two capacity profiles and managed delivery",
+          "capacity and managed delivery",
           "hosted shell environments"
-        ]
+        ],
+        "business": "evidence/serve-shell-history-20261126/business.json"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",

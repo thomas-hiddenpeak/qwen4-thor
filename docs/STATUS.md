@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+一次模型启动经原生 TLS 和官方 Python SDK 完成两个标准 shell 场景。客户端读出项目文档，模型续答 qwen4_exp；程序取得真实 grep 退出码 1 与计数 0，返回 exit=1 count=0。错误调用和父 ID 均返回 400，跨客户查询 404，独立 Chat 返回 720041。九份 HTTP 资源与 35 个流事件分别通过两套 schema。下一步进行容量接管与故障恢复验收。[业务记录](evidence/serve-shell-history-20261126/business.json)
+
 标准 shell 的本地环境已接通直接调用与程序调用。每条命令有独立序号与增量、完成事件；旧程序按原归属恢复后取得退出码、超时及输出。九项 CPU 用例通过，六个命令事件和两个工具项事件分别通过官方与随包 schema，两套声明均拒绝缺少命令序号的反例。下一步用官方 SDK 经原生 TLS 读取真实项目文档。[合同验证](evidence/serve-shell-history-20261126/client-protocol.json)
 
 标准 shell_call 及 shell_call_output 原先通过官方输入 schema 和客户状态解析后，在生成准备阶段返回 503。现可回放历史命令、环境、每条命令的 stdout、stderr、退出码或超时记录；截断会保留调用与结果的配对。6 项定向 CPU 检查通过。新请求的工具声明、真实生成、托管执行和发行为后续工作。[回归记录](evidence/serve-shell-history-20261126/history.json)
