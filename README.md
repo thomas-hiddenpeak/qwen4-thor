@@ -366,6 +366,28 @@ Responses生成也接受此字段，以保持计数与生成同源。
 原始持久历史不删除；截断、无法缩短或认证失败均返回具体错误，
 无可压缩项不编造模型用量。入口原生支持这两种模式，无需外部网关。
 
+Python 客户端压缩历史后，可用同一客户身份把整个窗口传给下一次
+Responses 调用。下面的函数使用既有的 OpenAI 客户端和完整对话历史。
+
+```python
+def continue_from_compact_window(client, model, history, next_question):
+    raw = client.responses.with_raw_response.compact(model=model, input=history)
+    window = raw.http_response.json()
+    return client.responses.create(
+        model=model,
+        input=[*window["output"], {"role": "user", "content": next_question}],
+    )
+```
+
+官方 Python SDK 2.33.0 和 3.55.1 的内置严格返回类型遇到窗口中保留的
+用户消息会报类型错误。上述函数直接读取 HTTP JSON，保留消息 ID、文件和
+已处理的工具决定。需要逐字段类型校验的客户端可使用仓库里的
+[CompactWindow 类型](tools/serve_responses/compact_client.py)，通过
+`client.post("/responses/compact", cast_to=CompactWindow, body=...)`
+读取，并将 `window.to_dict()["output"]` 用于后续请求。
+[双版本类型验证](docs/evidence/serve-compact-window-identities-20261127/typed-client.json)
+和[原生 TLS 续答记录](docs/evidence/serve-compact-window-identities-20261127/business.json)。
+
 部署方可按需在原生入口之前放置 nginx。下面的片段放在 nginx 的
 `http` 块。本机示例将请求转给 18161 端口的 q4t 原生入口；公开监听
 地址、TLS 和来源限制由部署方配置，Host 应与原生 `server_name` 一致。
