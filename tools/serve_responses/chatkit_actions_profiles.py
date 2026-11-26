@@ -8,7 +8,7 @@ from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
-from tools.serve_responses import eval_cancel_profiles
+from tools.serve_responses import eval_cancel_profiles, failure_profiles
 from tools.serve_responses import frame_profiles, media_profiles, visual_profiles
 from tools.serve_responses import chatkit_image_profiles as images
 from tools.serve_responses import chatkit_widget_profiles as widgets
@@ -163,6 +163,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if failure_profiles.KEY in plan:
+        return Handoff(failure_profiles.KEY, failure_profiles.RELEASE,
+                       failure_profiles.ACTOR, failure_profiles.RECEIPT,
+                       eval_cancel_profiles.RECEIPT, reuse.EVAL_CANCEL_REVIEWED, failure_profiles.check)
     if eval_cancel_profiles.KEY in plan:
         return Handoff(eval_cancel_profiles.KEY, eval_cancel_profiles.RELEASE,
                        eval_cancel_profiles.ACTOR, eval_cancel_profiles.RECEIPT,
@@ -231,6 +235,17 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
+    if spec.key == failure_profiles.KEY:
+        settings = plan[spec.key]
+        params.update(settings['fixture'], certificate=plan['tls']['certificate'])
+        previous = (package.read(stage.out.parent/'primary'/spec.receipt)
+                    if plan['name'] == 'light' else None)
+        with (stage.out/'responses-sdk.stderr').open('xb') as errors:
+            row = failure_profiles.exercise(params, settings['interpreter'], errors,
+                                           stage.out/'failure-wire', previous)
+        package.save(stage.out/spec.receipt, row)
+        verify(stage.out, plan, capabilities)
+        return
     if spec.key == eval_cancel_profiles.KEY:
         params['certificate'] = plan['tls']['certificate']
         previous = (package.read(stage.out.parent / 'primary' / spec.receipt)

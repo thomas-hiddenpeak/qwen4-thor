@@ -21,7 +21,8 @@ def cancel_during_generation(owner, context, plan, destination):
     sequence = -1
     with owner.responses.create(
             model='qwen3.8-flash-next', store=True, stream=True,
-            temperature=0, reasoning={'effort': 'none'}, max_output_tokens=384,
+            temperature=0, reasoning={'effort': 'none'},
+            max_output_tokens=plan.get('max_output_tokens', 384),
             input='Write the integers from 1 through 300, one integer per line.',
             extra_body=command) as stream:
         for event in stream:
@@ -53,9 +54,34 @@ def cancel_during_generation(owner, context, plan, destination):
                 code=terminal.error.code, cause=terminal.error.type)
 
 
+def restored_generation(owner, peer, previous, destination):
+    rid = previous['id']
+    raw = owner.responses.with_raw_response.retrieve(rid)
+    resource = raw.parse()
+    path = destination / 'restored-get.json'
+    path.write_bytes(raw.http_response.content)
+    assert raw.status_code == 200 and resource.id == rid and resource.status == 'failed'
+    assert resource.error.code == 'server_error' and resource.error.type == 'explicit_cancel'
+    with owner.responses.retrieve(rid, stream=True, starting_after=previous['sequence'] - 1) as stream:
+        last, = stream
+    assert last.type == 'response.failed' and last.response == resource
+    assert last.sequence_number == previous['sequence']
+    terminal = destination / 'restored-terminal.json'
+    terminal.write_text(last.model_dump_json(exclude_unset=True))
+    try:
+        peer.responses.retrieve(rid)
+    except openai.NotFoundError as exc:
+        assert exc.status_code == 404
+    else:
+        raise AssertionError('Restored response was visible across clients')
+    return dict(id=rid, sequence=last.sequence_number, get=raw.status_code, peer=404,
+                resource_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+                terminal_sha256=hashlib.sha256(terminal.read_bytes()).hexdigest())
+
+
 def main():
     plan = json.load(sys.stdin)
-    context = ssl.create_default_context(cafile=plan['certificate'])
+    context = ssl.create_default_context(cafile=plan.get('certificate'))
     destination = Path(plan['capture'])
     destination.mkdir(mode=0o700)
     options = dict(base_url=plan['base'], max_retries=0, timeout=20,
@@ -91,10 +117,13 @@ def main():
             assert exc.status_code == 404
         else:
             raise AssertionError('Foreign response was visible')
+        previous = plan.get('previous')
+        restored = restored_generation(owner, peer, previous, destination) if previous else None
         live = cancel_during_generation(owner, context, plan, destination)
     print(json.dumps(dict(sdk=openai.__version__, id=rid, strict=True, get=raw.status_code,
                           resumed=resumed.status_code, cancel=cancel.status_code, peer=404,
                           public_code=error.code, cause=error.type, sequence=cursor+1, live=live,
+                          restored=restored,
                           captures={p.name:hashlib.sha256(p.read_bytes()).hexdigest()
                                     for p in sorted(destination.iterdir())})))
 
