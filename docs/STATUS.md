@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已按输入角色、模板 token、工具回填、多模态和存储回读逐项核对 A02。3 个固定 Python SDK 版本均读回 6 份旧记录，各有 4 份助手页通过严格校验。PNG、JPEG、GIF、WebP 的 12 种图像表示解码后与原件逐字节一致。[验收对照](SERVE_CHAT_HISTORY_ACCEPTANCE_2026-11-26.md)
+
 旧版从三段文本“项目”“👋”“记录”只读回“👋”，空文本、图片简写和视频帧也返回不符合官方 schema 的历史。候选按原顺序返回文字和图片，将视频列为连续图像，并在 original_content_parts 保留原帧分组、时间和原始拼写。6 份旧对象重开及 6 份新对象均通过官方、本地和发行 OpenAPI 合同；原 ID、游标、其他客户 404、未认证 401 和旧存储摘要已核对。下一步是实际 HTTPS 视觉回读。[验证记录](evidence/serve-stored-content-parts-20261126/cpu.json)
 
 主、轻配置分别用时 42.5 秒和 38.3 秒。轻配置用原 ID 读回主配置保存的空助手轮次，整页摘要一致，另一把 Key 收到 404；两边的新工具查询均流式答出 13。两份容量资格已核验，下一步验证独立主包和回退包。[配置记录](evidence/serve-null-assistant-history-20261126/profiles.json)

@@ -912,7 +912,8 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Remaining full template/history parity; non-null audio history and actual speech round trips delivered in rev316"
+        "Verify actual stored Chat multimodal HTTP projection with its originating model request, SDK, ordered frames, historical assistant text and independent Chat.",
+        "Deliver that read projection with an accepted rollback and integrate it on main; reconcile the linked evidence for each A02 exit."
       ],
       "chat_style_parity_20261116": {
         "state": "delivered_main_merged",
@@ -1409,7 +1410,8 @@
         "stage": "targeted_cpu_verified",
         "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
         "issued": false
-      }
+      },
+      "acceptance_matrix": "SERVE_CHAT_HISTORY_ACCEPTANCE_2026-11-26.md"
     },
     {
       "id": "A03",

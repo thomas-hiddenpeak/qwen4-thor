@@ -224,7 +224,7 @@
     "official mixed role HTTP schema on 6 reopened and 6 fresh complete pages, including 12 descending cursor pages",
     "local page and bundled GET schemas on the same 12 complete pages",
     "other client 404, unauthenticated 401",
-    "old IDs and 6 encrypted or private object file digests unchanged across reopen",
+    "old IDs and six private object file digests unchanged across reopen",
     "synthetic generation used only in this loopback fixture"
   ],
   "source_guard": {
@@ -238,5 +238,98 @@
     "mutation_checks": 40,
     "errors": []
   },
-  "device_qualified": false
+  "device_qualified": false,
+  "image_source_fidelity": [
+    {
+      "mime": "image/png",
+      "form": "string",
+      "fixture": "tests/fixtures/file_images/original.png",
+      "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+    },
+    {
+      "mime": "image/png",
+      "form": "object",
+      "fixture": "tests/fixtures/file_images/original.png",
+      "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+    },
+    {
+      "mime": "image/png",
+      "form": "original",
+      "fixture": "tests/fixtures/file_images/original.png",
+      "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+    },
+    {
+      "mime": "image/jpeg",
+      "form": "string",
+      "fixture": "tests/fixtures/file_images/original.jpg",
+      "sha256": "2c59fcf770e79d87dd012f3a214365e4984cb26d444fd6b70469764966e038f0"
+    },
+    {
+      "mime": "image/jpeg",
+      "form": "object",
+      "fixture": "tests/fixtures/file_images/original.jpg",
+      "sha256": "2c59fcf770e79d87dd012f3a214365e4984cb26d444fd6b70469764966e038f0"
+    },
+    {
+      "mime": "image/jpeg",
+      "form": "original",
+      "fixture": "tests/fixtures/file_images/original.jpg",
+      "sha256": "2c59fcf770e79d87dd012f3a214365e4984cb26d444fd6b70469764966e038f0"
+    },
+    {
+      "mime": "image/gif",
+      "form": "string",
+      "fixture": "tests/fixtures/file_images/gif/opaque.gif",
+      "sha256": "d1dafac3bcd764c3db62429fcb8f1df9d7e73b7b146a8f5846151c18f88bbf7b"
+    },
+    {
+      "mime": "image/gif",
+      "form": "object",
+      "fixture": "tests/fixtures/file_images/gif/opaque.gif",
+      "sha256": "d1dafac3bcd764c3db62429fcb8f1df9d7e73b7b146a8f5846151c18f88bbf7b"
+    },
+    {
+      "mime": "image/gif",
+      "form": "original",
+      "fixture": "tests/fixtures/file_images/gif/opaque.gif",
+      "sha256": "d1dafac3bcd764c3db62429fcb8f1df9d7e73b7b146a8f5846151c18f88bbf7b"
+    },
+    {
+      "mime": "image/webp",
+      "form": "string",
+      "fixture": "tests/fixtures/file_images/webp/lossless.webp",
+      "sha256": "c682e5398c1c12a0d772e21cc62edcbb2b191b3c55585b14c400813a9eab3392"
+    },
+    {
+      "mime": "image/webp",
+      "form": "object",
+      "fixture": "tests/fixtures/file_images/webp/lossless.webp",
+      "sha256": "c682e5398c1c12a0d772e21cc62edcbb2b191b3c55585b14c400813a9eab3392"
+    },
+    {
+      "mime": "image/webp",
+      "form": "original",
+      "fixture": "tests/fixtures/file_images/webp/lossless.webp",
+      "sha256": "c682e5398c1c12a0d772e21cc62edcbb2b191b3c55585b14c400813a9eab3392"
+    }
+  ],
+  "sdk_reopen": [
+    {
+      "version": "2.8.1",
+      "raw_and_default_pages": 6,
+      "strict_assistant_pages": 4
+    },
+    {
+      "version": "3.42.1",
+      "raw_and_default_pages": 6,
+      "strict_assistant_pages": 4
+    },
+    {
+      "version": "3.55.1",
+      "raw_and_default_pages": 6,
+      "strict_assistant_pages": 4
+    }
+  ],
+  "engine_sha256": "da03ea719e2641448f1995f8f1974f977d95a4d5dfdb09732781e3f39ebe3582",
+  "production_source_pins": 1101
 }
