@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+官方 Python SDK 通过原生 TLS，从同一程序分别查询 rev548 与 rev550 的真实发行记录。第二次工具调用的 ID 独立，同一结果重试复用了原调用 ID，错交给另一分支返回 400。两轮均返回各自版本的 219 项声明，已存响应与原始响应逐字节相同。独立 Chat 返回 720041。下一步交付已验收的运行时修复。[真实业务记录](evidence/serve-program-forks-20261126/business.json)
+
 程序分支交接驱动会按原响应 ID 恢复两条历史查询，并从同一父程序发起第三次真实版本查询。七项 CPU 检查通过；用两份标准 shell 配置记录验证了前驱可逐字节还原，缺少历史证据或更改对外能力会被拒绝。真实业务和容量切换仍待运行。[驱动验证](evidence/serve-program-forks-20261126/handoff-driver.json)
 
 追加的 QuickJS 反例发现，两个对象只有键顺序不同，程序仍可能据此发出不同的下一次调用。原先用于比较 JSON 结构的哈希会忽略键顺序。现用工作进程实际解析的 JSON 字节计算结果身份，16 项回归全部通过。真实 HTTP 短验改为使用此二进制。[失败与回归](evidence/serve-program-forks-20261126/vm-order.json)
