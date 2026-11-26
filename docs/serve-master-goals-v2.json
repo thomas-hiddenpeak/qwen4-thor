@@ -3102,8 +3102,8 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
           "capacity and managed delivery",
@@ -3112,24 +3112,32 @@
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
         "profile_stage": "failed_409_repaired_cpu",
-        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json",
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "shell_history_20261126": {
-        "stage": "shell_history_cpu_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-shell-history-20261126/history.json",
-        "issued": false,
+        "issued": true,
         "pending": [
           "newly generated shell operations, selectors and SSE",
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
-        ]
+        ],
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "vm_visible_result_bytes_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
-        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -3833,8 +3841,8 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
           "capacity and managed delivery",
@@ -3843,24 +3851,32 @@
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
         "profile_stage": "failed_409_repaired_cpu",
-        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json",
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "shell_history_20261126": {
-        "stage": "shell_history_cpu_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-shell-history-20261126/history.json",
-        "issued": false,
+        "issued": true,
         "pending": [
           "newly generated shell operations, selectors and SSE",
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
-        ]
+        ],
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "vm_visible_result_bytes_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
-        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -7726,8 +7742,8 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
           "capacity and managed delivery",
@@ -7736,24 +7752,32 @@
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
         "profile_stage": "failed_409_repaired_cpu",
-        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json",
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "shell_history_20261126": {
-        "stage": "shell_history_cpu_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-shell-history-20261126/history.json",
-        "issued": false,
+        "issued": true,
         "pending": [
           "newly generated shell operations, selectors and SSE",
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
-        ]
+        ],
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "vm_visible_result_bytes_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
-        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -9051,8 +9075,8 @@
         "delivery": "evidence/serve-client-patch-20261126/delivery.json"
       },
       "client_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
         "pending": [
           "capacity and managed delivery",
@@ -9061,24 +9085,32 @@
         "business": "evidence/serve-shell-history-20261126/business.json",
         "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
         "profile_stage": "failed_409_repaired_cpu",
-        "profiles": "evidence/serve-shell-history-20261126/profiles.json"
+        "profiles": "evidence/serve-shell-history-20261126/profiles.json",
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "shell_history_20261126": {
-        "stage": "shell_history_cpu_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-shell-history-20261126/history.json",
-        "issued": false,
+        "issued": true,
         "pending": [
           "newly generated shell operations, selectors and SSE",
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
-        ]
+        ],
+        "revision": 552,
+        "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "vm_visible_result_bytes_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
-        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
+        "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
+        "business": "evidence/serve-program-forks-20261126/business.json",
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -10326,8 +10358,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 550,
-        "receipt": "evidence/serve-client-patch-20261126/delivery.json",
+        "revision": 554,
+        "receipt": "evidence/serve-program-forks-20261126/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12098,7 +12130,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev550_delivered_remaining_deliveries",
+      "state": "rev554_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13451,7 +13483,9 @@
       "current_conversation_compaction_delivery": "evidence/serve-conversation-compaction-20261126/delivery.json",
       "current_mcp_approval_identifiers_delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json",
       "current_local_shell_delivery": "evidence/serve-local-shell-20261126/delivery.json",
-      "current_client_patch_delivery": "evidence/serve-client-patch-20261126/delivery.json"
+      "current_client_patch_delivery": "evidence/serve-client-patch-20261126/delivery.json",
+      "current_client_shell_delivery": "evidence/serve-shell-history-20261126/delivery.json",
+      "current_program_fork_delivery": "evidence/serve-program-forks-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13556,16 +13590,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "8f9f5fd528f2caf5dd1cb881a6892ec3f133750d",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/client-patch-delivery-soak-src",
+        "source_commit": "a58954090886b7b6777ec302e1e38b8bd0f70504",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-fork-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/client-patch-client-primary-01/bundle",
-          "manifest_sha256": "555596600f2b75cc67c4539458bc9c354803cd83354fef4e6fad02cf3945ee68"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-fork-client-primary-01/bundle",
+          "manifest_sha256": "169fc0bcc4834112e84a38ed9e97f508220e61c9d36a6c650eb380dc90dbdbdd"
         },
-        "revision": 550,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/client-patch-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "af0ebd4ac5d886380ca2bedbf6b921cead3730b70ce9f77c2e1faf2d1aaa944d",
-        "handoff_sha256": "a13357a823059a4ba4c14a1ff7e4dce7cb542250227466c7e96e1055ac21e971",
+        "revision": 554,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-fork-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "1b205ac0cb9e214811af7d5f287d20857a72b2e65e297fb3266470cc392e4897",
+        "handoff_sha256": "002018fc33f3dfae9fdb463c44287b20cfc9540f8a3206b7f1f3a1281aa84e86",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13976,9 +14010,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 550,
-        "receipt": "evidence/serve-client-patch-20261126/delivery.json",
-        "plan_sha256": "af0ebd4ac5d886380ca2bedbf6b921cead3730b70ce9f77c2e1faf2d1aaa944d",
+        "revision": 554,
+        "receipt": "evidence/serve-program-forks-20261126/delivery.json",
+        "plan_sha256": "1b205ac0cb9e214811af7d5f287d20857a72b2e65e297fb3266470cc392e4897",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
