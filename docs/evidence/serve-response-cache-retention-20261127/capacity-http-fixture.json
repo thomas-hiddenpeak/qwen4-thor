@@ -1,0 +1,166 @@
+{
+  "status": "PASS",
+  "scope": "two separately started native CPU fixtures returning a fixed integer; private copies of real GPU response records, only the owner wrapper rebound to the test customer; no GPU and no production profile qualified",
+  "records_rebound": 7,
+  "fixture_sha256": "d8cf6251f97c08729bd3d439cd6004febb89c3011019cfcf99bc12d5e16bed18",
+  "revision": 560,
+  "model_starts": 0,
+  "rows": {
+    "primary": {
+      "phase": "primary",
+      "revision": 560,
+      "history": {
+        "old": {
+          "client": {
+            "sdk": "3.55.1",
+            "id": "resp_0415adadcb211e244bec18e1deac46f4",
+            "retention": "in_memory",
+            "cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "get_sha256": "9859630a14ab345ca0be3165f23d5a5c2bbd5d2095c049e4f0d3a515e1eae550",
+            "events": 11,
+            "emitted": 0,
+            "foreign": 404
+          },
+          "canonical": {
+            "id": "resp_0415adadcb211e244bec18e1deac46f4",
+            "resource": "22e0cb1c1ed1297319358e3c703d543e37df7632a744c3a12e81b53aac3606cd",
+            "events": "891abbe28bc93b2e39d27d02fc6960cc494ea91291d1c1a6def0320eea685e91"
+          }
+        },
+        "current": {
+          "client": {
+            "sdk": "3.55.1",
+            "id": "resp_c87fca7cf78a175adedf88eb326ad214",
+            "retention": "in_memory",
+            "cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "get_sha256": "b7d880eefefa3e569931e1b023d60853669d24597267b0ceb3516572fc0af704",
+            "events": 11,
+            "emitted": 0,
+            "foreign": 404
+          },
+          "canonical": {
+            "id": "resp_c87fca7cf78a175adedf88eb326ad214",
+            "resource": "46ca18946348f283e4b2b25f9d72118c3614f917da499cf90f43d458eabcd9f2",
+            "events": "f9a69ba321358c753e73870e06786575d6aa7a1c8844e8e3171d61c03e09f9f5"
+          }
+        }
+      },
+      "created": {
+        "client": {
+          "sdk": "2.8.1",
+          "id": "resp_6e841b7a3615ba29b9f51f5fcd3577d4",
+          "retention": "in-memory",
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          },
+          "get_sha256": "5f07ea2058eb878e9920ac191d53727928f4deea09a0c657ed8268d63771128e",
+          "events": 9,
+          "emitted": 9,
+          "foreign": 404
+        },
+        "canonical": {
+          "id": "resp_6e841b7a3615ba29b9f51f5fcd3577d4",
+          "resource": "6a5e3994449a52453ae693bfd778c18a73d15a403477ddf301fb10a5a80d9911",
+          "events": "7728d5c9f226d8c4f0515a8e6b2678f00943a144f236602a87b0b9d7a39b5f78"
+        }
+      }
+    },
+    "light": {
+      "phase": "light",
+      "revision": 560,
+      "history": {
+        "old": {
+          "client": {
+            "sdk": "2.8.1",
+            "id": "resp_0415adadcb211e244bec18e1deac46f4",
+            "retention": "in-memory",
+            "cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "get_sha256": "3c83b06ff28fdca1ee7cd4fce707038014ae92af63e6b17abc3de9f68b744b31",
+            "events": 11,
+            "emitted": 0,
+            "foreign": 404
+          },
+          "canonical": {
+            "id": "resp_0415adadcb211e244bec18e1deac46f4",
+            "resource": "22e0cb1c1ed1297319358e3c703d543e37df7632a744c3a12e81b53aac3606cd",
+            "events": "891abbe28bc93b2e39d27d02fc6960cc494ea91291d1c1a6def0320eea685e91"
+          }
+        },
+        "current": {
+          "client": {
+            "sdk": "2.8.1",
+            "id": "resp_c87fca7cf78a175adedf88eb326ad214",
+            "retention": "in-memory",
+            "cache_options": {
+              "mode": "implicit",
+              "ttl": "30m"
+            },
+            "get_sha256": "291b7432d4a763b67c9519624b27061be00dcdf9e2ea63e5e4cafb605c2bf1e8",
+            "events": 11,
+            "emitted": 0,
+            "foreign": 404
+          },
+          "canonical": {
+            "id": "resp_c87fca7cf78a175adedf88eb326ad214",
+            "resource": "46ca18946348f283e4b2b25f9d72118c3614f917da499cf90f43d458eabcd9f2",
+            "events": "f9a69ba321358c753e73870e06786575d6aa7a1c8844e8e3171d61c03e09f9f5"
+          }
+        }
+      },
+      "restored": {
+        "client": {
+          "sdk": "3.55.1",
+          "id": "resp_6e841b7a3615ba29b9f51f5fcd3577d4",
+          "retention": "in_memory",
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          },
+          "get_sha256": "e7f9eaced7f8d0780ae3b75c16035d8091d71e465e7f9c557ee08d6f448e09e6",
+          "events": 9,
+          "emitted": 0,
+          "foreign": 404
+        },
+        "canonical": {
+          "id": "resp_6e841b7a3615ba29b9f51f5fcd3577d4",
+          "resource": "6a5e3994449a52453ae693bfd778c18a73d15a403477ddf301fb10a5a80d9911",
+          "events": "7728d5c9f226d8c4f0515a8e6b2678f00943a144f236602a87b0b9d7a39b5f78"
+        }
+      },
+      "created": {
+        "client": {
+          "sdk": "3.55.1",
+          "id": "resp_3b75cf41078f60a09ecd254e7210cc50",
+          "retention": "in_memory",
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          },
+          "get_sha256": "e242fbac00e0fdfec96d3c21adb4322114fc95a71eb9b1f442a722e19bb9cb36",
+          "events": 9,
+          "emitted": 9,
+          "foreign": 404
+        },
+        "canonical": {
+          "id": "resp_3b75cf41078f60a09ecd254e7210cc50",
+          "resource": "4331822f4467909f3d9f6ff23496896d977a1369ab50e93e022a245e6140024a",
+          "events": "4ec2712cf384d2bba5a3a1efbb90f8baf6e12a0b8942b36bf5f0f77d8b2950a9"
+        }
+      }
+    }
+  },
+  "negative": 4,
+  "source_capture": "docs/evidence/serve-response-cache-retention-20261127/business.json",
+  "cpu_receipt_sha256": "2bccc33976bdccc808e92a704dca11e50a588a5406e4eef571ab238c3c63d368",
+  "initial_harness_failure": "first fixture used an unregistered model alias and returned 404 model_not_found; the second run used its registered cpu alias"
+}

@@ -913,7 +913,8 @@
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
         "remaining": "release qualification",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
-        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json"
+        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       }
     },
     {
@@ -3164,7 +3165,8 @@
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
         "remaining": "release qualification",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
-        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json"
+        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       }
     },
     {
@@ -9200,7 +9202,8 @@
         "remaining": "release qualification",
         "async_disconnect": "docs/evidence/serve-response-cache-retention-20261127/async-cursor.json",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
-        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json"
+        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       }
     },
     {
