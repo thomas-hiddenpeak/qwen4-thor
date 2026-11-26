@@ -9119,6 +9119,12 @@
         "stage": "cpu_verified",
         "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json",
         "actual_client": false
+      },
+      "successful_stream_sdk_handoff_20261127": {
+        "stage": "cpu_http_verified_with_legacy_strict_failure",
+        "cpu": "evidence/serve-video-layer-composition-20261127/sdk-cursor.json",
+        "live_profiles_pending": true,
+        "legacy_strict_cache_retention_pending": true
       }
     },
     {

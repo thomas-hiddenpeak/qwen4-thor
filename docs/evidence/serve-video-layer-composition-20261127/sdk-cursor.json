@@ -1,0 +1,152 @@
+{
+  "stage": "cpu_http_verified_with_legacy_strict_failure",
+  "transport": "native loopback HTTP with private devices and a restarted CPU fixture",
+  "recovery": "only the fixture tenant identity and its envelope checksum were changed",
+  "cxx_fixture": "5d29e26cc39eb1783c0f06c1d512e646183d9af9086bcfbe3fc0866e2d0cbc8a",
+  "node": "7.47.0",
+  "python": {
+    "2.8.1 default": {
+      "status": "PASS",
+      "receipt_sha256": "33eaa1e4774fecf926d6a2c3bd1e24f3f05e63de0847ebcbc95ec7111fa6bd3c",
+      "native_processes": 2,
+      "streams": 2
+    },
+    "3.42.1 default": {
+      "status": "PASS",
+      "receipt_sha256": "01dd4c84e1dfe5594d5fdb6c656d2363123a7cfe202a88932b156dc7a60f751c",
+      "native_processes": 2,
+      "streams": 2
+    },
+    "3.42.1 strict": {
+      "status": "PASS",
+      "receipt_sha256": "2d9bc28812a1dad399c90fb2c2ce246eb042805de226f53d27433442fa9e2a86",
+      "native_processes": 2,
+      "streams": 2
+    },
+    "3.55.1 default": {
+      "status": "PASS",
+      "receipt_sha256": "b3dacbc939de9024e4864d2bac34d86478e41ea83fbb8bbff5822a5bd128b99d",
+      "native_processes": 2,
+      "streams": 2
+    },
+    "3.55.1 strict": {
+      "status": "PASS",
+      "receipt_sha256": "670b866fadaba4a13266c22659ae198eb3669800ccaac2f84c72bbc97285fb67",
+      "native_processes": 2,
+      "streams": 2
+    },
+    "2.8.1 strict": {
+      "status": "FAIL",
+      "operation": "responses.retrieve().parse()",
+      "detail": [
+        {
+          "name": "inline",
+          "response": "resp_7e74ef4b203fc3f8919cddc1a2a3972a",
+          "source_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449",
+          "field": "prompt_cache_retention",
+          "actual": "in_memory",
+          "type": "literal_error",
+          "message": "Input should be 'in-memory' or '24h'"
+        },
+        {
+          "name": "replay",
+          "response": "resp_4632655efc0335ea1e9d95aa67cc6d37",
+          "source_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b",
+          "field": "prompt_cache_retention",
+          "actual": "in_memory",
+          "type": "literal_error",
+          "message": "Input should be 'in-memory' or '24h'"
+        },
+        {
+          "name": "uploaded",
+          "response": "resp_72fe47f9ed1e53aab3aad9c8048f8739",
+          "source_sha256": "6b486d340696559f82675aa0afa743ccfb0741ca58b72adea1b3a70ce48f4981",
+          "field": "prompt_cache_retention",
+          "actual": "in_memory",
+          "type": "literal_error",
+          "message": "Input should be 'in-memory' or '24h'"
+        }
+      ]
+    }
+  },
+  "successful_rows": {
+    "inline": {
+      "checkpoint": {
+        "response": "resp_7e74ef4b203fc3f8919cddc1a2a3972a",
+        "cursor": 14,
+        "last": 28,
+        "resource_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449",
+        "item": "msg_5ea0b1ff0882f3931a4049f8c1c08c23",
+        "output_index": 0,
+        "text_sha256": "0dc7e49e18af4ca8069481155fef5ae148ea5bd3f505169c7da8ef690c6338d2",
+        "suffix_sha256": "99ae9c6ed28e5a7cc282e2b4e1c0377b6493e48b78e0957dc01ba58faf56a68d"
+      },
+      "node_resume": {
+        "sdk": "7.47.0",
+        "expected": {
+          "response": "resp_7e74ef4b203fc3f8919cddc1a2a3972a",
+          "cursor": 14,
+          "last": 28,
+          "resource_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449",
+          "item": "msg_5ea0b1ff0882f3931a4049f8c1c08c23",
+          "output_index": 0,
+          "text_sha256": "0dc7e49e18af4ca8069481155fef5ae148ea5bd3f505169c7da8ef690c6338d2",
+          "suffix_sha256": "99ae9c6ed28e5a7cc282e2b4e1c0377b6493e48b78e0957dc01ba58faf56a68d"
+        },
+        "delivered": 14,
+        "aggregate": true,
+        "past_terminal_events": 0,
+        "invalid_cursor_status": 400,
+        "foreign_status": 404
+      }
+    },
+    "replay": {
+      "checkpoint": {
+        "response": "resp_4632655efc0335ea1e9d95aa67cc6d37",
+        "cursor": 17,
+        "last": 35,
+        "resource_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b",
+        "item": "msg_b466a7fe2dd1c381aba3d86b82dea181",
+        "output_index": 0,
+        "text_sha256": "89e07af5c05feb16b88e777da74324c0beb80a52bae8102f24080990852de276",
+        "suffix_sha256": "c31798b8330b3b8a602facf828b96111af2e4d0d7be6730a7e5f69e123885b74"
+      },
+      "node_resume": {
+        "sdk": "7.47.0",
+        "expected": {
+          "response": "resp_4632655efc0335ea1e9d95aa67cc6d37",
+          "cursor": 17,
+          "last": 35,
+          "resource_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b",
+          "item": "msg_b466a7fe2dd1c381aba3d86b82dea181",
+          "output_index": 0,
+          "text_sha256": "89e07af5c05feb16b88e777da74324c0beb80a52bae8102f24080990852de276",
+          "suffix_sha256": "c31798b8330b3b8a602facf828b96111af2e4d0d7be6730a7e5f69e123885b74"
+        },
+        "delivered": 18,
+        "aggregate": true,
+        "past_terminal_events": 0,
+        "invalid_cursor_status": 400,
+        "foreign_status": 404
+      }
+    }
+  },
+  "controls": [
+    "changed_suffix",
+    "changed_resource",
+    "changed_text",
+    "different_cursor"
+  ],
+  "source_record_hashes": {
+    "inline": "579f824a564a0c7e53b7eaffe07e471949e76ee32f65dc73fc02f30563095dfc",
+    "replay": "1ac9ab81b0b5cc52a9ebf15ef0cec1be7d04fb5079ebe9f11e495c30f192db5c"
+  },
+  "fixture_scope": "Native Responses HTTP route and retained real records, test credentials, two distinct CPU processes per passing combination. Cold startup, managed recovery and public TLS are separate.",
+  "sources": {
+    "tools/serve_audit/text_stream_resume.py": "95fabec25c54a7e0f90993eba1c0071acc01df934016e1434fed410ed4d9920c",
+    "tools/serve_audit/text_stream_resume.mjs": "d5e87d539a1a4d3dfc11a10752cd17f9c0ebe9156155d215e2ca51b688bf089f",
+    "tools/serve_responses/video_layer_profiles.py": "00723382f91e8e5fccee47b9f4ccc6b0e580fd7d2259dbb68aee9e5c6692193c",
+    "tools/serve_responses/test_video_layer_profiles.py": "05e3e4c0a8e975f1ff92b1b7067168fa14b144c990a219c18c002be70875c86d",
+    "tests/server_responses_api_test.cpp": "12ad5b8a2f8303060476f41f237e02f9122a9bd88074d9b2d005a4e18ea6c169"
+  }
+}

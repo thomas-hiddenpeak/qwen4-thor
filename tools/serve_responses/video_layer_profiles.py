@@ -4,6 +4,8 @@ from pathlib import Path
 import re
 import subprocess
 
+from tools.serve_audit import text_stream_resume
+
 from tools.serve_recovery import profile_live_reuse as reuse
 from tools.serve_responses import approval_identifiers_profiles as approvals
 from tools.serve_responses import environment_lifecycle_profiles as lifecycle
@@ -78,7 +80,8 @@ def prepare(out, build, deployment, interpreter, source):
     lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.INTERRUPTED_RETRY_REVIEWED, KEY,
                                 [ACTOR, PROOF, RELEASE, ROOT/'composition.json', ROOT/'paired-business-controls.json',
                                  Path(approvals.__file__), Path(video_snapshot_bindings.__file__),
-                                 Path(grid.__file__), Path(__file__)])
+                                 Path(grid.__file__), Path(__file__), Path(text_stream_resume.__file__),
+                                 text_stream_resume.ACTOR, text_stream_resume.ACTOR.parents[1] / 'serve_protocol/sdk.mjs'])
     store = out/'state/application-objects'
     approvals.seed(source, store, proof)
     package.require(video_snapshot_bindings.check(store, proof['sdk'], ids) == proof['bindings'],
@@ -93,7 +96,7 @@ def prepare(out, build, deployment, interpreter, source):
         package.save(path, plan)
 
 
-def check(row, previous=None):
+def check_python(row, previous=None):
     grid.check_handoff(row, previous, package.read(PROOF)['sdk'], COLORS)
     for result in (row,) if previous is None else (previous, row):
         trace = result.get('stream', {})
@@ -107,12 +110,20 @@ def check(row, previous=None):
                         'missing or inconsistent streamed text receipt')
 
 
+def check(row, previous=None):
+    check_python(row, previous)
+    if previous:
+        text_stream_resume.check(previous, None)
+    text_stream_resume.check(row, previous)
+
+
 def exercise(params, interpreter, errors, captures, previous=None):
-    row = grid.run_client(dict(params, layered=True), interpreter, errors, captures, previous, PROOF, check)
+    row = grid.run_client(dict(params, layered=True), interpreter, errors, captures, previous, PROOF, check_python)
     stream = json.loads((captures/'stream.json').read_bytes())
     current = json.loads((captures/'current.json').read_bytes())
     package.require(verify_text_stream(stream, current) == row['stream']
                     and row['stream']['response'] == row['saved']['response']
                     and [event['type'] for event in stream] == row['events'],
                     'typed SDK stream does not reconstruct the retained response')
+    text_stream_resume.observe(params, stream, row, previous, errors)
     return row

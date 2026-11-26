@@ -1,5 +1,11 @@
 # 官方 SDK 的流式兼容记录
 
+### 成功响应的跨客户端游标续读
+
+两份真实成功响应通过原生 CPU HTTP 服务交给官方 SDK。Node 7.47.0 从 Python 提供的游标 14 和 17 分别读到余下 14 和 18 个事件；重启测试服务后得到相同正文，越界游标返回 400，其他客户读取返回 404。Python 三个版本的六种配置中五种通过。2.8.1 严格模式在 GET 解析时报缓存枚举错误，已保存三份原始响应的定位证据。下一步修复旧客户端，并在真实主轻配置和托管恢复中验证游标交接。[兼容记录](evidence/serve-video-layer-composition-20261127/sdk-cursor.json)
+
+Node 的底层迭代器用服务端游标读取后续事件；高级接口 `finalResponse()` 读取全部事件来重建最终对象，并向监听器交付游标之后的事件。两条路径的序号、文本增量、消息 ID 与终态均与原流一致。两个客户端收到的原始 GET 正文已逐字节核对。
+
 ### Managed Agents 会话的配额失败
 
 Node 7.47.0 经原生 HTTPS 开启会话事件订阅。发送第二个回合返回 202，订阅随后收到 `agent.session.turn.failed`，错误码为 `rate_limit_exceeded`。会话回到 `idle`，配额窗口恢复后使用同一会话得到 42。[设备验收](evidence/serve-responses-errors-20261126/agent-turn-http.json)

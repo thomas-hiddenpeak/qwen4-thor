@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+两份真实成功响应通过原生 CPU HTTP 服务交给官方 SDK。Node 7.47.0 从 Python 提供的游标 14 和 17 分别读到余下 14 和 18 个事件；重启测试服务后得到相同正文，越界游标返回 400，其他客户读取返回 404。Python 三个版本的六种配置中五种通过。2.8.1 严格模式在 GET 解析时报缓存枚举错误，已保存三份原始响应的定位证据。下一步修复旧客户端，并在真实主轻配置和托管恢复中验证游标交接。[兼容记录](evidence/serve-video-layer-composition-20261127/sdk-cursor.json)
+
 原生 TLS 与真实模型完成双轨文件上传、相反层序的内联输入以及删除上传后的 SSE 历史续问。首次未改动的原片触发模型拒答并已单独保留。首对源帧相同的对照短验 1 次模型启动，用时 43.8 秒。两份独立快照的 12 个 PNG 与独立参照一致。模型按层序辨认出首帧左下角的红色和蓝色，三份持久响应通过两套合同。下一步验证容量与故障切换。[业务记录](evidence/serve-video-layer-composition-20261127/business.json)
 
 首次双轨 TLS 短验用时 40.7 秒。已从真实存储复核六份 PNG 与参照一致；模型在首问返回类型为 refusal 的回答。首个视觉分组内左上角从红变绿，是否导致拒答尚未证实。已构造对照，仅让较长轨道的第二个画面重复第一帧，其余像素、时间、层序、问法和模型设置保持一致。两种层序的 12 个输出均与单轨合成参照相同。验收客户端现显式报告模型拒答，并使用 SDK 的协议字段名保存结构化响应，已用原失败和三份历史成功响应复核。[原失败](evidence/serve-video-layer-composition-20261127/first-business-attempt.json) · [对照输入](evidence/serve-video-layer-composition-20261127/paired-business-controls.json)
