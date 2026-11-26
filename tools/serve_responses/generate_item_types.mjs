@@ -523,6 +523,23 @@ if (mode === '--chatkit') {
   for (const root of ['thread_query', 'item_query'])
     field(root, 'limit').bounds = {type:['integer'], minimum:0, maximum:100};
 }
+// The HTTP MCP approval resource also requires request_id. The pinned SDK
+// names the same approval target approval_request_id on writes.
+if (mode === undefined || mode === '--api') {
+  for (const node of nodes) {
+    const type = node.fields?.find(field => field.name === 'type');
+    if (!type || nodes[type.type].value !== 'mcp_approval_response') continue;
+    const target = node.fields.find(field => field.name === 'approval_request_id');
+    if (!target || node.fields.some(field => field.name === 'request_id'))
+      throw new Error('Review MCP approval response identifiers');
+    const id = node.fields.find(field => field.name === 'id');
+    if (!id) throw new Error('Review MCP approval item identity');
+    // Accept SDK-shaped input and older objects internally. HTTP resource
+    // reads always project the canonical target into the required wire field.
+    const optional = mode !== '--api' || id.optional;
+    node.fields.push({ name: 'request_id', optional, type: target.type });
+  }
+}
 if (mode === '--environments') addTemplateBounds(nodes, roots);
 const result = {
   profile: mode === '--environments' ? 'q4t-openai-environment-types-v1' :

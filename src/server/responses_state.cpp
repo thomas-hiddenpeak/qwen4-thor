@@ -241,6 +241,23 @@ bool HasFileParts(const Json& value, size_t depth = 0) {
 ObjectReply CompareStoredItem(const Json& stored, const Json& incoming) {
   std::string left, right;
   auto comparable = stored;
+  // Public reads spell out the approval target under both wire names.
+  // Only the redundant copy can differ when an SDK reuses a stored item.
+  if (stored.GetString("type") == "mcp_approval_response" &&
+      incoming.GetString("type") == "mcp_approval_response") {
+    const auto* target = stored.Find("approval_request_id");
+    const auto* original = stored.Find("request_id");
+    const auto* alias = incoming.Find("request_id");
+    if (target && target->IsString() &&
+        (!original || (original->IsString() && original->str == target->str))) {
+      if (alias && alias->IsString() && alias->str == target->str)
+        Set(&comparable, "request_id", *target);
+      else if (!alias && original)
+        std::erase_if(comparable.object, [](const auto& field) {
+          return field.first == "request_id";
+        });
+    }
+  }
   // SDK read views omit search sources unless requested. An omitted source
   // list may recover the original owned context; supplied conflicting fields
   // still fail the ordinary exact identity check.

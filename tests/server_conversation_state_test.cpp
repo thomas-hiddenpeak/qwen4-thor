@@ -314,6 +314,53 @@ Q4T_TEST(conversation_state_quota_cannot_publish_partial_conversation) {
   return true;
 }
 
+Q4T_TEST(conversation_approval_target_projects_legacy_and_checks_conflicts) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ConversationState states(objects);
+  const auto legacy = Parse(R"([{"type":"mcp_approval_response","id":"decision1",
+    "approval_request_id":"approval1","approve":false}])");
+  auto created = states.Create(Json(), legacy, Access());
+  Q4T_CHECK(Ok(created));
+  const auto id = created.value.GetString("id");
+  auto read = states.RetrieveItem(id, "decision1", {}, Access());
+  Q4T_CHECK(Ok(read) && read.value.GetString("request_id") == "approval1" &&
+            read.value.GetString("approval_request_id") == "approval1" &&
+            !read.value.GetBool("approve", true));
+  Q4T_CHECK(Ok(CompareStoredItem(legacy.array[0], read.value)));
+  Q4T_CHECK(Ok(CompareStoredItem(read.value, legacy.array[0])));
+  auto changed = read.value;
+  Set(&changed, "approve", Parse("true"));
+  Q4T_CHECK(!CompareStoredItem(legacy.array[0], changed).ok());
+  changed = read.value;
+  Set(&changed, "request_id", String("other"));
+  Q4T_CHECK(!CompareStoredItem(legacy.array[0], changed).ok());
+  const auto stored = ItemRecord(objects, "decision1");
+  Q4T_CHECK(Ok(stored) &&
+            !stored.value.Find("data")->Find("item")->Has("request_id"));
+
+  auto explicit_target = Parse(R"([{"type":"mcp_approval_response",
+    "id":"decision2","approval_request_id":"approval2","request_id":"approval2",
+    "approve":true}])");
+  auto added = states.Append(id, explicit_target, {}, Access());
+  Q4T_CHECK(Ok(added));
+  auto mismatch = Parse(R"([{"type":"mcp_approval_response","id":"decision3",
+    "approval_request_id":"approval3","request_id":"other","approve":true}])");
+  auto rejected = states.Append(id, mismatch, {}, Access());
+  Q4T_CHECK(rejected.http_status == 400 &&
+            rejected.value.GetString("param") == "items[0].request_id");
+  auto invalid = Parse(R"({"type":"mcp_approval_response","request_id":"solo",
+    "approve":true})");
+  ChatPlanError error;
+  Q4T_CHECK(!ValidateResponsesItemShape(invalid, ResponsesItemShape::kInput,
+                                        &error, "input[0]"));
+  Q4T_CHECK(states.ListItems(id, {}, Access()).value.GetArray("data")
+                ->array.size() == 2);
+  Q4T_CHECK(states.RetrieveItem(id, "decision1", {}, Access("client:b"))
+                .http_status == 404);
+  return true;
+}
+
 Q4T_TEST(conversation_state_include_projection_preserves_full_history) {
   Fixture f;
   ObjectStore objects(f.options);

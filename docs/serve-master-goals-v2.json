@@ -885,6 +885,11 @@
         "remaining": [
           "MCP approval request_id and locally supplied shell output call_id in public Conversations input and readback"
         ]
+      },
+      "mcp_approval_identifiers_20261126": {
+        "stage": "native_cpu_and_sdk",
+        "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
+        "issued": false
       }
     },
     {
@@ -3714,6 +3719,11 @@
         "remaining": [
           "MCP approval request_id and locally supplied shell output call_id in public Conversations input and readback"
         ]
+      },
+      "mcp_approval_identifiers_20261126": {
+        "stage": "native_cpu_and_sdk",
+        "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
+        "issued": false
       }
     },
     {
@@ -8798,6 +8808,11 @@
         "receipt": "evidence/serve-stored-content-parts-20261126/node-pages.json",
         "python": "evidence/serve-stored-content-parts-20261126/delivery.json",
         "method": "GET /v1/chat/completions/{completion_id}/messages"
+      },
+      "mcp_approval_identifiers_20261126": {
+        "stage": "native_cpu_and_sdk",
+        "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
+        "issued": false
       }
     },
     {

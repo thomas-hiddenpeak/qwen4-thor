@@ -35227,6 +35227,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
@@ -36995,13 +36998,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
               "approval_request_id",
               "approve",
               "id",
-              "type"
+              "type",
+              "request_id"
             ],
             "additionalProperties": false
           },
@@ -37767,13 +37774,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
               "approval_request_id",
               "approve",
               "id",
-              "type"
+              "type",
+              "request_id"
             ],
             "additionalProperties": false
           },
@@ -44157,13 +44168,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
               "approval_request_id",
               "approve",
               "id",
-              "type"
+              "type",
+              "request_id"
             ],
             "additionalProperties": false
           },
@@ -102545,7 +102560,7 @@
           ],
           "cancelled_stream": "Resource is cancelled; original events end without fabricated response.cancelled/completed or Chat DONE.",
           "query": "Closed route-specific fields; repeated include[] is an array; exact decimal integers and true/false booleans.",
-          "type_graph_sha256": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75"
+          "type_graph_sha256": "abf96793ba63856743558bba470be2045d3e5657c1a4dca3f9fdb7d2fad3ece0"
         }
       },
       "serve-preflight-v1.schema.json": {
