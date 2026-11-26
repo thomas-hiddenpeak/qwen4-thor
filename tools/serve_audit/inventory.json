@@ -4371,7 +4371,7 @@
     "src/server/agent_registration.cpp": "15f7913d2a5056d946dcd85078947f9fae93586978134b1cbaedf38d913d5da8",
     "src/server/agent_session.cpp": "abe2b8aa4634bb26b12c73959db4e6365145c6d85ee1a27b651260d788dc2482",
     "src/server/agent_session_cancel.cpp": "8b14afccadc2f06ff9feb70c400ec73b54e789aeb581c530920ea5ffbddaba5e",
-    "src/server/agent_session_events.cpp": "58829f3adc036c00e316fa20e47e3f2da1b6868396d617932df19c783c23f74d",
+    "src/server/agent_session_events.cpp": "61020544c4bc51990e6e97bab973033bd1002fa070fa167a98de04396a77a7f1",
     "src/server/agent_session_http.cpp": "87cafcd1663ceabd92566150b3759cd25e03d40f94f75be380cfa02c0b099119",
     "src/server/agent_session_internal.h": "7d43cba829e891f93d49056ea83e6b1d49c3f3fde47d14e9b95de26ea8ab3ecd",
     "src/server/agent_session_mcp.cpp": "b6ccf100c0e1d819556c21b4b2f572e24e27fb02f02c8a68e1ef0de29dcbbb74",

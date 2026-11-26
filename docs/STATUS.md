@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #160 的两次公开检查发现 Agent 轮次查询和失败事件给出的错误类别可能不同。订阅现在从该轮持久化的同一响应读取原始错误，再按 Agent 合同生成事件。现有回归的 12 种失败输入和拒绝输出后下一轮历史均通过。rev530 仍含此缺陷，修复版的真实 HTTP 待验。[回归记录](evidence/serve-responses-errors-20261126/agent-turn-events.json)
+
 三代 Python SDK 的流式完成辅助方法在失败终态统一抛出 RuntimeError。需从 response.failed 事件或按 ID 查询读取失败对象。相同终态在 Node 7.47.0 的 finalResponse() 中直接返回。三版 Python 默认及严格模式均验证游标 3 只收到序号 4、游标 4 无新事件；用已交付的有评分成功流对照，六种配置都取得完整正文。11 月 8 日的旧 CPU 成功夹具缺少 token 原始字节，原始严格校验失败另存，首个支持持久读取的版本已携带这些字节。[客户端对照](evidence/serve-responses-errors-20261126/python-aggregate.json)
 
 rev530 已发行 Responses 失败分类、取消流序号和旧 Beta 工具输出修复。分别终止模型并触发主网关致命退出后，严格客户端均用原 ID 和游标读回相同的失败正文与终态，跨客户访问为 404，独立 Chat 答 42。主包与回退包各用同一组 36 份实际回包及终态校验封包合同。默认意图保持 STOPPED，发行启动模型 0 次，13 份客户与恢复记录保持完整。[发行与回退记录](evidence/serve-responses-errors-20261126/delivery.json)
