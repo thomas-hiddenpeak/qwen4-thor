@@ -1,0 +1,65 @@
+{
+  "stage": "native_tls_business_verified",
+  "issued": false,
+  "prior_revision": 542,
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 42.404,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "client": {
+    "sdk": "3.55.1",
+    "conversation": "conv_0f43f978ee6c3f5a7ce48fdc13e8182b",
+    "original_ids": [
+      "item_d67ad9820b449b8d0c3e0027af28fb0c",
+      "item_7ad661812d69abb5187291dee8f22817",
+      "cmp_e9f681b6f142d7e703be64a266a3738a"
+    ],
+    "compaction_ids": [
+      "cmp_e9f681b6f142d7e703be64a266a3738a",
+      "cmp_d0e88fe8b7d59890a8b948c8784539d0"
+    ],
+    "append_items": 3,
+    "peer": 404,
+    "invalid_trigger": 400,
+    "answer": "28617",
+    "independent_chat": "720041",
+    "exact_answer": true,
+    "files": {
+      "created": "5c840df5349a284eba03e01227f70335920382411d5e2511020867eb2ebc2c31",
+      "original": "5401afd41b9f13b397f92c8d499bf51c0ca258b326ee042f27f436bd7bc6493e",
+      "after_invalid": "5401afd41b9f13b397f92c8d499bf51c0ca258b326ee042f27f436bd7bc6493e",
+      "appended": "1f589b9914f0976d8165b89f4e6e5f7273ae7685795ecb15a125fcf2a406fae8",
+      "whole": "f5055867ff4f0104a8a307c3f71a2c869eb358100bc6863b524e389449be6d1e",
+      "sealed_0": "d48d1f62981b1c0a2851c8b666b79a4b951b7014338a837d706e6dd3d56b2058",
+      "sealed_1": "d6fa06c8b5535836e993ee76754735613c56c536f1f3dfb1cda13a6f73b3282c",
+      "resumed": "3b45b314365e2af7cfc12be89e8b2aecbadd40668b864f3960b4532cf1d98a98",
+      "independent": "19441b97832f986e45230f1590e3edd9e2c17652aa8db0183352f5dc5f5237cf"
+    }
+  },
+  "engine": "f7d8556195feffc4ef52887432a447faa8fa6b1da0e03bec12427f2b442d2263",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "sdk_driver": "fb03595afcd95d65a72fa6e4a2c509a00c3a0a96fb20d772a7046a8f27d4381b",
+  "cpu_sha256": "35d60daecc3d567fce9e05741ddf290867b9bedf417c8be80d93fcccf9573716",
+  "repair_sha256": "edc30c2665656206662206ee34c97c48a14245f1971deca21567d1a531e33f1d",
+  "prompt_sha256": "e06f6b148b352c57eae23eae912e0a947be3fe616972d0b288ea6d456e2ab37a",
+  "lease_sha256": "27124796133c9ff02672a17aad2af48001f8db1ff2141dfda1a203bf876adb4a",
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "local_sha256": "87291a5fb580c46c7208a6861f866be635cce7191e2ff0e39849e2a34bfa56e7",
+  "schema_validated": [
+    "created",
+    "original",
+    "after_invalid",
+    "appended",
+    "whole",
+    "sealed_0",
+    "sealed_1",
+    "resumed",
+    "independent"
+  ],
+  "model_request_limit": 4
+}

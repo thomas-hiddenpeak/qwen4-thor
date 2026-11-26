@@ -3040,11 +3040,12 @@
         "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
       },
       "conversation_compaction_20261126": {
-        "stage": "prompt_revised_after_observed_refusal",
+        "stage": "native_https_verified",
         "issued": false,
         "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
         "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json",
-        "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json"
+        "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json",
+        "business": "evidence/serve-conversation-compaction-20261126/business.json"
       }
     },
     {
@@ -3692,11 +3693,12 @@
         "profiles": "evidence/serve-stored-content-parts-20261126/profiles.json"
       },
       "conversation_compaction_20261126": {
-        "stage": "prompt_revised_after_observed_refusal",
+        "stage": "native_https_verified",
         "issued": false,
         "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
         "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json",
-        "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json"
+        "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json",
+        "business": "evidence/serve-conversation-compaction-20261126/business.json"
       },
       "conversation_item_identifiers_20261126": {
         "stage": "reproduced",
@@ -8774,11 +8776,12 @@
         "python_transport": "offline replay of native reads and events"
       },
       "conversation_compaction_20261126": {
-        "stage": "prompt_revised_after_observed_refusal",
+        "stage": "native_https_verified",
         "issued": false,
         "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
         "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json",
-        "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json"
+        "prompt": "evidence/serve-conversation-compaction-20261126/prompt.json",
+        "business": "evidence/serve-conversation-compaction-20261126/business.json"
       }
     },
     {
