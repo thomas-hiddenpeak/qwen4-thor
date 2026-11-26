@@ -31,12 +31,18 @@ COMPACT_WINDOW_REVIEWED = {}
 MCP_ERROR_RECORD = 'q4t-profile-business-v86'
 MCP_ERROR_FORMAT = 'q4t-mcp-error-reader-source-v1'
 MCP_ERROR_RECEIPT = 'mcp-error-reader-handoff.json'
-MCP_ERROR_REVIEWED = {}
+MCP_ERROR_REVIEWED = {
+    'primary': '23a7dbe063d502452028b6c5c031ce46e1e478aab22b4ffac74361920907204e',
+    'light': '0e2f5f1946f086ae4c468f21d3b3882b6ce5d1c1508eff1cb6153514b92260d4',
+}
 
 CACHE_RETENTION_RECORD = 'q4t-profile-business-v85'
 CACHE_RETENTION_FORMAT = 'q4t-response-cache-retention-source-v1'
 CACHE_RETENTION_RECEIPT = 'response-cache-retention-handoff.json'
-CACHE_RETENTION_REVIEWED = {}
+CACHE_RETENTION_REVIEWED = {
+    'primary': '56b9fc32ecd98a3678cd6d54c6efbf37b6ff355a1c5da7df65d102d23e42d767',
+    'light': '8c44ff6c8bfe6ba6d84b0bbf123171f6c140e0ef7dd132d3716f7394c4ee6d53',
+}
 
 LAYER_RECORD = 'q4t-profile-business-v84'
 LAYER_FORMAT = 'q4t-video-layer-source-v1'
@@ -711,6 +717,10 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '1cfeabca03225efefc7031ac907b67cf4daa6a8f1c9434b0609947d93d5c1a2e':
+        'd886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684',
+    '49aba35cbfe9dc1062385384f2a8ce4734b5c4c5ae3f00e96b01178afec2a95b':
+        'a93a47261ea7bd97cf1ffbd119cc374ee11d07740b6ae1c8257cfd8c126ad780',
     'c4567531c43c2b9c531d9cc700d4eeaeeab1348508ede91231e670e85a9e24bb':
         '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     '2290b024c2271c4d85716086b1504ee9eb1f425e60199a8b619181e809fdc9ec':
