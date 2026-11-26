@@ -854,7 +854,7 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "optional_resource_updates_20261126": {
-        "stage": "profiles_verified",
+        "stage": "issued",
         "methods": [
           "/v1/agents/{agent_id}",
           "/v1/agents/sessions/{session_id}",
@@ -863,10 +863,12 @@
         ],
         "receipt": "evidence/serve-optional-resource-updates-20261126/cpu.json",
         "device_https_pending": false,
-        "release_pending": true,
+        "release_pending": false,
         "device_https": "evidence/serve-optional-resource-updates-20261126/https.json",
         "combined_device": "evidence/serve-tool-map-references-20261126/business.json",
-        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json"
+        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json",
+        "revision": 536,
+        "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
       }
     },
     {
@@ -1381,12 +1383,14 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "tool_dictionary_references_20261126": {
-        "stage": "profiles_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
         "device_qualified": true,
-        "issued": false,
+        "issued": true,
         "business": "evidence/serve-tool-map-references-20261126/business.json",
-        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json"
+        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json",
+        "revision": 536,
+        "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
       }
     },
     {
@@ -1425,7 +1429,7 @@
     {
       "id": "A04",
       "required": true,
-      "state": "implementation_in_progress",
+      "state": "implemented_validated_delivered",
       "implementation": "工具选择/allowed_tools、legacy functions迁移、自定义工具形状、逐片参数/多调用流及完成语义",
       "acceptance": "标准客户端重组调用与参数；截断不执行工具、最终结果关联一致；不将只发终态冒充增量工具流",
       "depends_on": [
@@ -1443,9 +1447,9 @@
         "evidence/serve-tool-enum-padding-20261123/README.md"
       ],
       "release": {
-        "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
-        "manifest_sha256": "6be35d371a166bbfe78e769cc65ddce5897cbc68fdac0becc17602a7234a5d40",
-        "record": "docs/evidence/serve-custom-tools-20261108/delivery-01/result.json"
+        "binary_sha256": "30e23fda5afc2197958960bb2554473e24a74aae872c9b03a0fd89ebcc009e70",
+        "manifest_sha256": "9a5fd7f90d7a7e0c7cd5af87829dfedd3bdceef331c7760180567396f522e0f1",
+        "record": "evidence/serve-tool-map-references-20261126/delivery.json"
       },
       "accepted_subsets": [
         {
@@ -1464,9 +1468,7 @@
           "full_task_complete": true
         }
       ],
-      "remaining_required": [
-        "Validate and deliver the model-visible local reference correction for advisory dictionary tools"
-      ],
+      "remaining_required": [],
       "active_subset": null,
       "current_audit": {
         "date": "2026-11-16",
@@ -1477,12 +1479,19 @@
         "existing_evidence_reviewed": true
       },
       "tool_dictionary_references_20261126": {
-        "stage": "profiles_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
         "device_qualified": true,
-        "issued": false,
+        "issued": true,
         "business": "evidence/serve-tool-map-references-20261126/business.json",
-        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json"
+        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json",
+        "revision": 536,
+        "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
+      },
+      "previous_release": {
+        "binary_sha256": "f8677aaff4795529dfb8a2fd516887cb44c265d1f5ff22514765c970941c13b7",
+        "manifest_sha256": "6be35d371a166bbfe78e769cc65ddce5897cbc68fdac0becc17602a7234a5d40",
+        "record": "docs/evidence/serve-custom-tools-20261108/delivery-01/result.json"
       }
     },
     {
@@ -9940,8 +9949,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 534,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev534-preflight.json",
+        "revision": 536,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev536-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11670,7 +11679,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev534_delivered_remaining_deliveries",
+      "state": "rev536_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13015,7 +13024,8 @@
       "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json",
       "current_failure_delivery": "evidence/serve-responses-errors-20261126/delivery.json",
       "current_movie_clip_delivery": "evidence/serve-video-clipping-20261126/delivery.json",
-      "current_region_clip_delivery": "evidence/serve-video-regions-20261126/delivery.json"
+      "current_region_clip_delivery": "evidence/serve-video-regions-20261126/delivery.json",
+      "current_tool_map_delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13120,16 +13130,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "45e3324d3c993e26d499b3fcf0bf6e67a0a0cec3",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/region-shape-delivery-soak-src",
+        "source_commit": "a0796d6c380e6538ab91290bca1a45c9b95ab381",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/tool-map-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/region-shape-client-primary-01/bundle",
-          "manifest_sha256": "283ba946ff06f34ca9f6121183e5bcfaca9af9582c082ee272c1de4cabf17ff6"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/tool-map-client-primary-01/bundle",
+          "manifest_sha256": "9a5fd7f90d7a7e0c7cd5af87829dfedd3bdceef331c7760180567396f522e0f1"
         },
-        "revision": 534,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/region-shape-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "5130207abf15a5949cedeea45fca53296a58bd6af39e293c18f832840bcaae72",
-        "handoff_sha256": "62d22db5d24d2f1c85feb6f9be321c817f598f4cd336d78b82cdafc5c841b07c",
+        "revision": 536,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/tool-map-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "c5fa30b540928da37f6a5e09a241098877080afcdbbb8a9c4f454107f7ee0260",
+        "handoff_sha256": "2fca50ea8e93b00cedbd0e577181a83f227233b06a5f4644c3b87b942a8a110b",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13540,9 +13550,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 534,
-        "receipt": "evidence/serve-video-regions-20261126/delivery.json",
-        "plan_sha256": "5130207abf15a5949cedeea45fca53296a58bd6af39e293c18f832840bcaae72",
+        "revision": 536,
+        "receipt": "evidence/serve-tool-map-references-20261126/delivery.json",
+        "plan_sha256": "c5fa30b540928da37f6a5e09a241098877080afcdbbb8a9c4f454107f7ee0260",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
