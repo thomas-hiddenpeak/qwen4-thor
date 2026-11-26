@@ -925,8 +925,9 @@
         ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
-        "device_status": "corrected_history_and_output_classification_pending_TLS",
-        "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json"
+        "device_status": "real_window_signed; historical_approval_dispatch_repaired_on_CPU",
+        "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json",
+        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json"
       }
     },
     {
@@ -3201,8 +3202,9 @@
         ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
-        "device_status": "corrected_history_and_output_classification_pending_TLS",
-        "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json"
+        "device_status": "real_window_signed; historical_approval_dispatch_repaired_on_CPU",
+        "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json",
+        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json"
       },
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
@@ -9286,8 +9288,9 @@
         ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
-        "device_status": "corrected_history_and_output_classification_pending_TLS",
-        "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json"
+        "device_status": "real_window_signed; historical_approval_dispatch_repaired_on_CPU",
+        "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json",
+        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json"
       }
     },
     {

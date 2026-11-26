@@ -1,0 +1,112 @@
+{
+  "scope": "Real model-produced, sealed standalone compaction. CPU replay through the approval execution phase, and loopback MCP integration on a separately approved call.",
+  "device_before_repair": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 66.107,
+    "unchanged_default": true,
+    "original_store_unchanged": true,
+    "phases": []
+  },
+  "device_cases": {
+    "video": "HTTP 502 compaction_refused",
+    "2.33.0": "HTTP 502 compaction_refused",
+    "3.55.1": "real compact returned 200, peer replay rejected, owner returned 400 mcp_definition_required"
+  },
+  "device_case_sha256": {
+    "failures": {
+      "video": {
+        "returncode": 1,
+        "diagnostic_sha256": "545e4c56c3e72e131165947c5472e8e39a24f6e6e1e437480ec11841f3423403"
+      },
+      "2.33.0": {
+        "returncode": 1,
+        "diagnostic_sha256": "fbd3971a6fda05419472ab9f3ad7a9e738c1dca60d7eb133825408715d78b48e"
+      },
+      "3.55.1": {
+        "returncode": 1,
+        "diagnostic_sha256": "0f84454f9c74f4188e560d35871870f5fce92530024989e8da52ffa089688908"
+      }
+    },
+    "completed": []
+  },
+  "lease_sha256": "ea55f96508046789ece253cc4d362b36847ff38743b70f85f7e1e7b7fd237f5c",
+  "real_window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+  "model_source": "19d1c9b313dfff6af5ac1c91d9956bcdac6826555aeba4e63730a42deeed286f",
+  "native": {
+    "cases": {
+      "before-current": {
+        "returncode": 7,
+        "diagnostic": "400 mcp_definition_required"
+      },
+      "after-current": {
+        "returncode": 0,
+        "model_items": 7,
+        "sealed_revision_present": true,
+        "original_question_last": true,
+        "summary_text_sha256": "96be314b1ea5ad8749d3b5f1f50a21ab714a9fb73d74b2d24076f138b0c22160"
+      },
+      "after-old": {
+        "returncode": 0,
+        "model_items": 7,
+        "sealed_revision_present": true,
+        "original_question_last": true,
+        "summary_text_sha256": "96be314b1ea5ad8749d3b5f1f50a21ab714a9fb73d74b2d24076f138b0c22160"
+      },
+      "after-foreign": {
+        "returncode": 5,
+        "diagnostic": "invalid_encrypted_content Encrypted state is invalid for this client, model or item"
+      },
+      "after-conflict": {
+        "returncode": 5,
+        "diagnostic": "invalid_encrypted_content Compaction origin prefix does not match"
+      },
+      "after-tamper": {
+        "returncode": 5,
+        "diagnostic": "invalid_encrypted_content Compaction origin prefix does not match"
+      },
+      "after-fresh": {
+        "returncode": 7,
+        "diagnostic": "400 mcp_definition_required"
+      },
+      "after-no_seal": {
+        "returncode": 7,
+        "diagnostic": "400 mcp_definition_required"
+      }
+    },
+    "source_files_unchanged": 25,
+    "http_window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7"
+  },
+  "regressions": [
+    "[PASS] responses_mcp_execution_approval_resume_and_retry_never_repeat_call",
+    "[PASS] responses_mcp_execution_denial_and_truncation_do_not_dispatch",
+    "[PASS] responses_mcp_policy_refresh_does_not_approve_original_call",
+    "3 tests, 3 passed, 0 failed, 0 skipped"
+  ],
+  "inactive_tool_checks": "The repeated approved window has no queued MCP approval. A new explicit approval requires its declaration. No second tool call reached the local server.",
+  "current_projection_sha256": "2ead870a30419eb2c2de7ba3d555c0412ec31fbd1e2b15d111241c72f1c2cf0b",
+  "older_projection_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+  "previous_video_input_verified": true,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "candidate": {
+    "files": {
+      "q4t": "f225ca066ed5e69ffaa0c0f0444f66aa31566c8086d3f26f39a414c72eb1ac83",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "de3b25545ede1fe9be9c3bb18b02f39a294b382e337f58ec384ab72edea7f032",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "device_after_repair": "pending"
+}

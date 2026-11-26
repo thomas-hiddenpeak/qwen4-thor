@@ -58,6 +58,43 @@ def verify_video(owner, model, record, capture):
                 usage=window["usage"])
 
 
+def verify_saved_window(params):
+    """Submit a previously issued window through the public strict SDK."""
+    window = CompactWindow.model_validate(params["window"], strict=True)
+    items = window.to_dict()["output"]
+    if items != params["window"]["output"]:
+        raise ValueError("Typed window changed the stored input")
+    payload = dict(model="qwen3.8-flash-next", input=items, max_output_tokens=96,
+                   temperature=0, reasoning={"effort": "none"}, store=False)
+    target = Path(params["capture"])
+    target.mkdir(mode=0o700)
+    with ExitStack() as clients:
+        def connect(key):
+            return clients.enter_context(openai.OpenAI(
+                api_key=key, base_url=params["base"], max_retries=0, timeout=90,
+                _strict_response_validation=True,
+                http_client=openai.DefaultHttpxClient(verify=params["certificate"])))
+        try:
+            connect(params["other"]).responses.create(**payload)
+        except openai.BadRequestError as error:
+            if error.code != "invalid_encrypted_content":
+                raise
+        else:
+            raise ValueError("Foreign client opened the stored window")
+        raw = connect(params["key"]).responses.with_raw_response.create(**payload)
+        path = target / "response.json"
+        path.write_bytes(raw.http_response.content)
+        row = raw.parse()
+        if row.status != "completed" or any(x.type == "mcp_call" for x in row.output):
+            raise ValueError("Saved history caused another MCP call or an incomplete answer")
+        answer = row.output_text.strip()
+        return dict(sdk=openai.__version__, answer=answer,
+                    exact_answer=answer.casefold() == params["answer"].casefold(),
+                    foreign_code="invalid_encrypted_content",
+                    usage=row.usage.to_dict(), http_status=raw.http_response.status_code,
+                    response_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+
+
 def run(params):
     target = Path(params["capture"])
     target.mkdir(mode=0o700)
@@ -129,4 +166,6 @@ def run(params):
 
 
 if __name__ == "__main__":
-    print(json.dumps(run(json.load(sys.stdin))))
+    params = json.load(sys.stdin)
+    execute = verify_saved_window if params.get("operation") == "replay" else run
+    print(json.dumps(execute(params)))
