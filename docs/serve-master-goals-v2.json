@@ -854,7 +854,7 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "optional_resource_updates_20261126": {
-        "stage": "candidate_native_https",
+        "stage": "profiles_verified",
         "methods": [
           "/v1/agents/{agent_id}",
           "/v1/agents/sessions/{session_id}",
@@ -865,7 +865,8 @@
         "device_https_pending": false,
         "release_pending": true,
         "device_https": "evidence/serve-optional-resource-updates-20261126/https.json",
-        "combined_device": "evidence/serve-tool-map-references-20261126/business.json"
+        "combined_device": "evidence/serve-tool-map-references-20261126/business.json",
+        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json"
       }
     },
     {
@@ -1380,11 +1381,12 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "tool_dictionary_references_20261126": {
-        "stage": "candidate_native_https",
+        "stage": "profiles_verified",
         "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
         "device_qualified": true,
         "issued": false,
-        "business": "evidence/serve-tool-map-references-20261126/business.json"
+        "business": "evidence/serve-tool-map-references-20261126/business.json",
+        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json"
       }
     },
     {
@@ -1475,11 +1477,12 @@
         "existing_evidence_reviewed": true
       },
       "tool_dictionary_references_20261126": {
-        "stage": "candidate_native_https",
+        "stage": "profiles_verified",
         "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
         "device_qualified": true,
         "issued": false,
-        "business": "evidence/serve-tool-map-references-20261126/business.json"
+        "business": "evidence/serve-tool-map-references-20261126/business.json",
+        "profiles": "evidence/serve-tool-map-references-20261126/profiles.json"
       }
     },
     {
