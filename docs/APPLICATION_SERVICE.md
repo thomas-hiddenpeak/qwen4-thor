@@ -1,5 +1,9 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### Chat 视频帧与 H.264 文件回答
+
+Chat 支持 video_frames 和按载荷识别的图像、帧输入。两帧 Chat、流式图像和 H.264 文件已在真实托管包上验证。模型进程退出或切换回退包后仍可按原 Responses ID 获取文件视频的回答。[rev526 记录](evidence/serve-visual-frame-parts-20261126/delivery.json)
+
 ### 普通图像回答与拒答
 
 已解析的普通图像请求可返回 output_text。真正的拒答使用 refusal，流式客户可区分两类增量。Responses 的旧 user 字段可省略、传字符串或传 null。服务仍根据接入凭据隔离已保存的回答。[rev524 业务记录](evidence/serve-visual-answer-encoding-20261126/delivery.json)
