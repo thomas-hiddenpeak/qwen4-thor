@@ -1,0 +1,674 @@
+{
+  "stage": "device_verified",
+  "issued": false,
+  "engine": "0a63eee75c14b2304b4d23efb6154b0c8e27f5d63183b99e0258346bce64ecac",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "sdk_driver": "14afc65648a4e2dc4526b45e17bd3ec9813804cd5a63ea3873d727f12827bbb4",
+  "sdk": {
+    "saved": {
+      "response": "resp_543c64ae48d49a5aed2717bd9893b9c3",
+      "file": "file_aaa09734d0924738441f418b0b26a6ce",
+      "resource_sha256": "bcde74b9f10033b2c22f07ebaadfdf7a555146909e1692c08d375b23db262f65",
+      "get": 200,
+      "foreign": 404,
+      "deleted": 404
+    },
+    "sdk": "3.55.1",
+    "responses": {
+      "uploaded": {
+        "response": "resp_543c64ae48d49a5aed2717bd9893b9c3",
+        "status": "completed",
+        "colors": {
+          "top_left": "red"
+        },
+        "input_tokens": 904
+      },
+      "inline": {
+        "response": "resp_e4da170cf2238cf3c2dfe4b4e5bfb998",
+        "status": "completed",
+        "colors": {
+          "top_left": "black",
+          "top_right": "green",
+          "bottom_left": "blue",
+          "bottom_right": "black"
+        },
+        "input_tokens": 1019,
+        "events": [
+          [
+            0,
+            "response.created"
+          ],
+          [
+            1,
+            "response.in_progress"
+          ],
+          [
+            2,
+            "response.output_item.added"
+          ],
+          [
+            3,
+            "response.content_part.added"
+          ],
+          [
+            4,
+            "response.output_text.delta"
+          ],
+          [
+            5,
+            "response.output_text.delta"
+          ],
+          [
+            6,
+            "response.output_text.delta"
+          ],
+          [
+            7,
+            "response.output_text.delta"
+          ],
+          [
+            8,
+            "response.output_text.delta"
+          ],
+          [
+            9,
+            "response.output_text.delta"
+          ],
+          [
+            10,
+            "response.output_text.delta"
+          ],
+          [
+            11,
+            "response.output_text.delta"
+          ],
+          [
+            12,
+            "response.output_text.delta"
+          ],
+          [
+            13,
+            "response.output_text.delta"
+          ],
+          [
+            14,
+            "response.output_text.delta"
+          ],
+          [
+            15,
+            "response.output_text.delta"
+          ],
+          [
+            16,
+            "response.output_text.delta"
+          ],
+          [
+            17,
+            "response.output_text.delta"
+          ],
+          [
+            18,
+            "response.output_text.delta"
+          ],
+          [
+            19,
+            "response.output_text.delta"
+          ],
+          [
+            20,
+            "response.output_text.delta"
+          ],
+          [
+            21,
+            "response.output_text.delta"
+          ],
+          [
+            22,
+            "response.output_text.delta"
+          ],
+          [
+            23,
+            "response.output_text.delta"
+          ],
+          [
+            24,
+            "response.output_text.delta"
+          ],
+          [
+            25,
+            "response.output_text.delta"
+          ],
+          [
+            26,
+            "response.output_text.delta"
+          ],
+          [
+            27,
+            "response.output_text.delta"
+          ],
+          [
+            28,
+            "response.output_text.delta"
+          ],
+          [
+            29,
+            "response.output_text.delta"
+          ],
+          [
+            30,
+            "response.output_text.delta"
+          ],
+          [
+            31,
+            "response.output_text.delta"
+          ],
+          [
+            32,
+            "response.output_text.delta"
+          ],
+          [
+            33,
+            "response.output_text.delta"
+          ],
+          [
+            34,
+            "response.output_text.delta"
+          ],
+          [
+            35,
+            "response.output_text.delta"
+          ],
+          [
+            36,
+            "response.output_text.delta"
+          ],
+          [
+            37,
+            "response.output_text.delta"
+          ],
+          [
+            38,
+            "response.output_text.delta"
+          ],
+          [
+            39,
+            "response.output_text.delta"
+          ],
+          [
+            40,
+            "response.output_text.delta"
+          ],
+          [
+            41,
+            "response.output_text.delta"
+          ],
+          [
+            42,
+            "response.output_text.delta"
+          ],
+          [
+            43,
+            "response.output_text.done"
+          ],
+          [
+            44,
+            "response.content_part.done"
+          ],
+          [
+            45,
+            "response.output_item.done"
+          ],
+          [
+            46,
+            "response.completed"
+          ]
+        ]
+      },
+      "replay": {
+        "response": "resp_c6b6ae8f33462e5742da9e9b67692fbb",
+        "status": "completed",
+        "colors": {
+          "top_left": "red",
+          "top_right": "black",
+          "bottom_left": "black",
+          "bottom_right": "yellow"
+        },
+        "input_tokens": 1060,
+        "events": [
+          [
+            0,
+            "response.created"
+          ],
+          [
+            1,
+            "response.in_progress"
+          ],
+          [
+            2,
+            "response.output_item.added"
+          ],
+          [
+            3,
+            "response.content_part.added"
+          ],
+          [
+            4,
+            "response.output_text.delta"
+          ],
+          [
+            5,
+            "response.output_text.delta"
+          ],
+          [
+            6,
+            "response.output_text.delta"
+          ],
+          [
+            7,
+            "response.output_text.delta"
+          ],
+          [
+            8,
+            "response.output_text.delta"
+          ],
+          [
+            9,
+            "response.output_text.delta"
+          ],
+          [
+            10,
+            "response.output_text.delta"
+          ],
+          [
+            11,
+            "response.output_text.delta"
+          ],
+          [
+            12,
+            "response.output_text.delta"
+          ],
+          [
+            13,
+            "response.output_text.delta"
+          ],
+          [
+            14,
+            "response.output_text.delta"
+          ],
+          [
+            15,
+            "response.output_text.delta"
+          ],
+          [
+            16,
+            "response.output_text.delta"
+          ],
+          [
+            17,
+            "response.output_text.delta"
+          ],
+          [
+            18,
+            "response.output_text.delta"
+          ],
+          [
+            19,
+            "response.output_text.delta"
+          ],
+          [
+            20,
+            "response.output_text.delta"
+          ],
+          [
+            21,
+            "response.output_text.delta"
+          ],
+          [
+            22,
+            "response.output_text.delta"
+          ],
+          [
+            23,
+            "response.output_text.delta"
+          ],
+          [
+            24,
+            "response.output_text.delta"
+          ],
+          [
+            25,
+            "response.output_text.delta"
+          ],
+          [
+            26,
+            "response.output_text.delta"
+          ],
+          [
+            27,
+            "response.output_text.delta"
+          ],
+          [
+            28,
+            "response.output_text.delta"
+          ],
+          [
+            29,
+            "response.output_text.delta"
+          ],
+          [
+            30,
+            "response.output_text.delta"
+          ],
+          [
+            31,
+            "response.output_text.delta"
+          ],
+          [
+            32,
+            "response.output_text.done"
+          ],
+          [
+            33,
+            "response.content_part.done"
+          ],
+          [
+            34,
+            "response.output_item.done"
+          ],
+          [
+            35,
+            "response.completed"
+          ]
+        ]
+      }
+    },
+    "foreign": 404,
+    "malformed": 400,
+    "counted": 904,
+    "deleted_before_replay": true,
+    "independent_chat": "42",
+    "sources": [
+      "10a22b246f9d04d4ec2c4c619cfe83a96f4247df4b7c7051987edd3123620379",
+      "534b403d5164475cdba9793d720ef8bf645033a6db362ba9f030977f53cd5b84"
+    ]
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 49.267,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "protected": {
+    "build/q4t": "d36a124cf0ff9a0090bde240810d21cd2236bf8c8eb96e5f5b48350c5fdf7c28",
+    "build/service/manifest.json": "703046bff3f2f7701a00027060849d41621e36837190d03b2334481afe3fc62b",
+    "build/service.release.json": "6d77bba3733b87cb1582095874a3e997846cf964a76ca9a48fec3fb134a717f8",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "lease_sha256": "82b0f83901f58ae4028f7ed51b1f048d907b051838fdf75083db68712265c152",
+  "frozen_snapshots": [
+    {
+      "source_sha256": "534b403d5164475cdba9793d720ef8bf645033a6db362ba9f030977f53cd5b84",
+      "raw_region_sha256": "e55c11a57298d67f4c528aad64b0dd2c713509ed89f62f4d33c949950ff10728",
+      "snapshot_sha256": "1da68259e3d2e648a283a7ce1fcb284b46a81d300414f354543af6fdd72c30b4",
+      "expected_rgb_sha256": "91800c94635711c456c4a4c6172007e15cf7990aeef4f0b4f0a3a95730c150c8",
+      "frames": [
+        {
+          "source_index": 0,
+          "timestamp_ns": 0,
+          "duration_ns": 500000000,
+          "sha256": "9c687849649e86d1eec2b1d106f8402011190271820ae283324cc9aef4ff2d7c"
+        },
+        {
+          "source_index": 1,
+          "timestamp_ns": 500000000,
+          "duration_ns": 500000000,
+          "sha256": "9c687849649e86d1eec2b1d106f8402011190271820ae283324cc9aef4ff2d7c"
+        },
+        {
+          "source_index": 2,
+          "timestamp_ns": 1000000000,
+          "duration_ns": 500000000,
+          "sha256": "9c687849649e86d1eec2b1d106f8402011190271820ae283324cc9aef4ff2d7c"
+        },
+        {
+          "source_index": 3,
+          "timestamp_ns": 1500000000,
+          "duration_ns": 500000000,
+          "sha256": "9c687849649e86d1eec2b1d106f8402011190271820ae283324cc9aef4ff2d7c"
+        }
+      ]
+    },
+    {
+      "source_sha256": "10a22b246f9d04d4ec2c4c619cfe83a96f4247df4b7c7051987edd3123620379",
+      "raw_region_sha256": "dbaf6c45070a31f4d96205436a5b0082c2abb709122ce8b668bbb0cfbd821218",
+      "snapshot_sha256": "74b21ccd665131035daab188a9d88c3db6c23a3afe10ad3007133c5c6d9cb9fe",
+      "expected_rgb_sha256": "c3eadfb0ce9eeb3a483066d2bb024860cac0b06ce9f59dba4c433a5548674fad",
+      "frames": [
+        {
+          "source_index": 0,
+          "timestamp_ns": 0,
+          "duration_ns": 500000000,
+          "sha256": "9cb1880eee2ab1ce84d7b09ec362cae838c44244816d9501a452a7a99f20f81e"
+        },
+        {
+          "source_index": 1,
+          "timestamp_ns": 500000000,
+          "duration_ns": 500000000,
+          "sha256": "9cb1880eee2ab1ce84d7b09ec362cae838c44244816d9501a452a7a99f20f81e"
+        },
+        {
+          "source_index": 2,
+          "timestamp_ns": 1000000000,
+          "duration_ns": 500000000,
+          "sha256": "9cb1880eee2ab1ce84d7b09ec362cae838c44244816d9501a452a7a99f20f81e"
+        },
+        {
+          "source_index": 3,
+          "timestamp_ns": 1500000000,
+          "duration_ns": 500000000,
+          "sha256": "9cb1880eee2ab1ce84d7b09ec362cae838c44244816d9501a452a7a99f20f81e"
+        }
+      ]
+    }
+  ],
+  "track_grid_limit": {
+    "reference": "https://developer.apple.com/documentation/quicktime-file-format/track_header_atom/track_width",
+    "measurements": [
+      {
+        "case": "reference-plain",
+        "tkhd_fixed16": [
+          8388608,
+          4194304
+        ],
+        "status": 0,
+        "stdout": "128 64 4\n0 0 500000000\n2 1000000000 500000000\n3 1500000000 500000000\n",
+        "stderr": "",
+        "frames": [
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          }
+        ],
+        "source_sha256": "80e440d2fc111c922d94c4905c011880034b32906913759e34d0aef3c49a8609"
+      },
+      {
+        "case": "reference-clip",
+        "tkhd_fixed16": [
+          8388608,
+          4194304
+        ],
+        "status": 0,
+        "stdout": "128 64 4\n0 0 500000000\n2 1000000000 500000000\n3 1500000000 500000000\n",
+        "stderr": "",
+        "frames": [
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          }
+        ],
+        "source_sha256": "2d9ccb1cebc01c298365d9273d43b5dad0c80903af0f9df542777109d8c3f759"
+      },
+      {
+        "case": "integral-plain",
+        "tkhd_fixed16": [
+          6291456,
+          3145728
+        ],
+        "status": 0,
+        "stdout": "128 64 4\n0 0 500000000\n2 1000000000 500000000\n3 1500000000 500000000\n",
+        "stderr": "",
+        "frames": [
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          }
+        ],
+        "source_sha256": "b5e1e21369e01460b16db13269b85cbd8a458a86e3d9e7a949d87a74c5f6b798"
+      },
+      {
+        "case": "integral-clip",
+        "tkhd_fixed16": [
+          6291456,
+          3145728
+        ],
+        "status": 0,
+        "stdout": "96 48 4\n0 0 500000000\n2 1000000000 500000000\n3 1500000000 500000000\n",
+        "stderr": "",
+        "frames": [
+          {
+            "size": [
+              96,
+              48
+            ],
+            "sha256": "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77"
+          },
+          {
+            "size": [
+              96,
+              48
+            ],
+            "sha256": "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77"
+          },
+          {
+            "size": [
+              96,
+              48
+            ],
+            "sha256": "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77"
+          }
+        ],
+        "source_sha256": "d15d1f60a94d7e90a57f50348660e21a32cefa64fa5d31cc79d663c2ebafcca7"
+      },
+      {
+        "case": "fractional-plain",
+        "tkhd_fixed16": [
+          6324224,
+          3145728
+        ],
+        "status": 0,
+        "stdout": "128 64 4\n0 0 500000000\n2 1000000000 500000000\n3 1500000000 500000000\n",
+        "stderr": "",
+        "frames": [
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          },
+          {
+            "size": [
+              128,
+              64
+            ],
+            "sha256": "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+          }
+        ],
+        "source_sha256": "63d9f0cd4e111dac5aec81afbb3b459c400bf30c70594aa1ebe16c0c4e795fca"
+      },
+      {
+        "case": "fractional-clip",
+        "tkhd_fixed16": [
+          6324224,
+          3145728
+        ],
+        "status": 1,
+        "stdout": "",
+        "stderr": "400 invalid_file_video Invalid video container or frames\n",
+        "frames": [],
+        "source_sha256": "b05bc1d79cd2f52eeb5368c153b44d613a958428c6e3b3823d663abfb00a308d"
+      }
+    ]
+  },
+  "recorded_get": {
+    "sha256": "bcde74b9f10033b2c22f07ebaadfdf7a555146909e1692c08d375b23db262f65",
+    "official_schema": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "local_schema": "c8e4461f19811e3b326a7a88b7650d41cddf443cc9980b3295b8973e18704b1b"
+  },
+  "receipts": {
+    "region-shape-business-01/result.json": "142c1dfdeda0d22c7164a4d34c5c4c373755e4319eb1333c3676757d285f3400",
+    "region-shape-business-01/plan.json": "324a7f51acb82bbaa2501c47d58af06becd03aa6366adcfcbac874133738e2dc",
+    "region-shape-business-01/create/sdk-result.json": "cecd1ca9c74c2ff5647e3e760eadb8562a4801c55dd77ac4d3147eb3f8e6c06f"
+  }
+}

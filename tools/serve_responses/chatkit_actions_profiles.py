@@ -8,7 +8,7 @@ from typing import Callable
 
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
-from tools.serve_responses import eval_cancel_profiles, failure_profiles, video_clip_profiles
+from tools.serve_responses import eval_cancel_profiles, failure_profiles, video_clip_profiles, tool_map_profiles
 from tools.serve_responses import frame_profiles, media_profiles, visual_profiles
 from tools.serve_responses import chatkit_image_profiles as images
 from tools.serve_responses import chatkit_widget_profiles as widgets
@@ -163,6 +163,14 @@ class Handoff:
 
 
 def handoff(plan):
+    if tool_map_profiles.KEY in plan:
+        return Handoff(tool_map_profiles.KEY, tool_map_profiles.RELEASE, tool_map_profiles.ACTOR,
+                       reuse.TOOL_MAP_RECEIPT, reuse.REGION_RECEIPT, reuse.REGION_REVIEWED,
+                       tool_map_profiles.check)
+    if video_clip_profiles.REGION_KEY in plan:
+        return Handoff(video_clip_profiles.REGION_KEY, video_clip_profiles.REGION_RELEASE,
+                       video_clip_profiles.ACTOR, reuse.REGION_RECEIPT, video_clip_profiles.RECEIPT,
+                       reuse.VIDEO_CLIP_REVIEWED, video_clip_profiles.check_regions)
     if video_clip_profiles.KEY in plan:
         return Handoff(video_clip_profiles.KEY, video_clip_profiles.RELEASE, video_clip_profiles.ACTOR,
                        video_clip_profiles.RECEIPT, failure_profiles.RECEIPT,
@@ -218,9 +226,11 @@ def verify(phase, plan, capabilities):
     prior = profile_record.read(prior_file)
     name, change = plan['name'], plan[spec.key]
     expected = dict(prior['capabilities'], protocol_source_sha256=change['protocol'])
+    if spec.key == video_clip_profiles.REGION_KEY:
+        expected['file_inputs'] = reuse.region_file_inputs(expected['file_inputs'])
     if spec.key == video_clip_profiles.KEY:
         expected['file_inputs'] = reuse.clipped_file_inputs(expected['file_inputs'])
-    if spec.key in (visual_profiles.KEY, frame_profiles.KEY):
+    if spec.key in (visual_profiles.KEY, frame_profiles.KEY, tool_map_profiles.KEY):
         expected['template'] = dict(expected['template'],
                                     renderer_source_sha256=package.sha(ROOT / 'src/server/chat_template.cpp'))
     package.require(package.sha(prior_file) == change['previous'] == spec.reviewed[name]
@@ -241,15 +251,18 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
-    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY):
+    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
+        if spec.key == tool_map_profiles.KEY:
+            module, wire = tool_map_profiles, 'tool-map-wire'
         params.update(settings.get('fixture', {}), certificate=plan['tls']['certificate'])
         previous = (package.read(stage.out.parent/'primary'/spec.receipt)
                     if plan['name'] == 'light' else None)
         with (stage.out/'responses-sdk.stderr').open('xb') as errors:
-            row = module.exercise(params, settings['interpreter'], errors, stage.out/wire, previous)
+            extra = {'regions': True} if spec.key == video_clip_profiles.REGION_KEY else {}
+            row = module.exercise(params, settings['interpreter'], errors, stage.out/wire, previous, **extra)
         package.save(stage.out/spec.receipt, row)
         verify(stage.out, plan, capabilities)
         return

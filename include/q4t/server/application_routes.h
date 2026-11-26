@@ -1077,6 +1077,16 @@ inline bool EnvironmentTemplateMethodAllowed(std::string_view method,
            target.substr(0, target.find('?')) != kEnvironmentTemplatesPath));
 }
 
+// Omission of an update body is equivalent to an empty object on these
+// resources. Creation and action endpoints have their own body contracts.
+inline bool IsOptionalResourceUpdate(std::string_view target) {
+  const auto path = target.substr(0, target.find('?'));
+  return (path != "/v1/agents" && IsAgentRegistrationTarget(target)) ||
+         ParseAgentSessionRoute(target).kind == AgentSessionRouteKind::kSession ||
+         (path != kEnvironmentTemplatesPath && IsEnvironmentTemplateTarget(target)) ||
+         ParseWebhookRoute(target).kind == WebhookRouteKind::kEndpoint;
+}
+
 inline constexpr std::string_view kHostedEnvironmentsPath = "/v1/agents/environments";
 enum class HostedRouteKind { kNone, kCollection, kResource, kFiles };
 struct HostedRoute {

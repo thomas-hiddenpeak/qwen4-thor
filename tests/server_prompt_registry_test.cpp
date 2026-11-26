@@ -1476,6 +1476,15 @@ Q4T_TEST(environment_template_seals_private_inputs_and_preserves_patch_semantics
     id = created.value.GetString("id");
     Q4T_CHECK(created.http_status == 201 && id.starts_with("environment_template_") &&
               created.value.GetString("object") == "agent.environment.template");
+    const auto path = root + "/" + id;
+    auto unchanged = HandleEnvironmentTemplate(objects, "POST", path, "", Access());
+    Q4T_CHECK(Ok(unchanged));
+    const auto stored = HandleEnvironmentTemplate(objects, "GET", path, "", Access());
+    Q4T_CHECK(Ok(stored) && OutputJson(stored.value) ==
+                                OutputJson(unchanged.value));
+    Q4T_CHECK(HandleEnvironmentTemplate(objects, "POST", path, "null", Access()).http_status == 400);
+    Q4T_CHECK(HandleEnvironmentTemplate(objects, "POST", path, "{", Access()).http_status == 400);
+    Q4T_CHECK(HandleEnvironmentTemplate(objects, "POST", path, "", Access("client:peer")).http_status == 404);
     auto wire = OutputJson(created.value);
     for (const auto* confidential : {"private-environment-value", "private-setup-token",
                                       "SGVsbG8=", "private.example"})
@@ -2902,6 +2911,15 @@ Q4T_TEST(agent_registration_owned_crud_defaults_and_stored_pagination) {
   Q4T_CHECK(Ok(first));
   const auto id = first.value.GetString("id");
   const auto path = "/v1/agents/" + id;
+  auto unchanged = api("POST", path);
+  Q4T_CHECK(Ok(unchanged));
+  const auto stored = api("GET", path);
+  Q4T_CHECK(Ok(stored) && OutputJson(stored.value) ==
+                              OutputJson(unchanged.value));
+  Q4T_CHECK(api("POST", path, "null").http_status == 400);
+  Q4T_CHECK(api("POST", path, "{").http_status == 400);
+  Q4T_CHECK(api("POST", path, "", Access("client:peer")).http_status == 404);
+  Q4T_CHECK(api("POST", "/v1/agents").http_status == 400);
   Q4T_CHECK(id.starts_with("agent_") && first.value.GetString("object") == "agent");
   Q4T_CHECK(first.value.Find("compaction")->GetBool("async"));
   Q4T_CHECK(first.value.Find("multi_agent")->GetInt("max_concurrent_subagents") == 6);

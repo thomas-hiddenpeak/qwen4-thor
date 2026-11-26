@@ -1,5 +1,13 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### 字典工具调用与空正文更新
+
+rev536 已发行字典工具参数引用修复及四个可省略正文的更新入口。严格 Python 客户端按模型给出的版本读取两份真实发布记录，按原工具调用 ID 回填，流式得到受保护文件数 13。模型进程退出及网关故障切换至独立回退包后，原 Chat 和 Agent 的摘要一致，跨客户读取返回 404，独立 Chat 均答 42。发布保持 STOPPED，13 份客户与恢复状态摘要一致。[发行记录](evidence/serve-tool-map-references-20261126/delivery.json)
+
+### QuickTime 非矩形裁剪与历史续读
+
+rev534 已发行非矩形 QuickDraw 视频区域。主、轻配置和两个独立恢复包均能在删除上传文件后续问原视频；故障接管后返回原响应相同正文，随后补答此前未披露的右下角黄色。每个包核对 9 个原始 GET、21 个与持久记录配对的 SDK 回答和其中 15 个流序列。两个配置以原响应 ID 交接，嵌套文档中的区域视频也能逐帧还原。发布时服务意图保持 STOPPED，13 份客户与恢复状态摘要一致。轨道尺寸一致性和多轨合成仍待实现。[发行记录](evidence/serve-video-regions-20261126/delivery.json)
+
 ### QuickTime 矩形裁剪与历史续读
 
 rev532 已发行视频矩形裁剪和 Agent 失败事件的错误类别修复。自监护替换模型和主网关致命退出切至独立回退包后，原客户都能用原 ID 读到相同的回答，并从已删除源文件的冻结视频补答左下角颜色。两份封包的合同均通过 9 个原始 GET 正文及 21 个与原生持久化记录配对的严格 SDK 回答校验，其中 15 个回答核对了实际流事件序列。发行意图保持 STOPPED，13 份客户与恢复记录的哈希一致。后续继续处理非矩形区域、小数轨道尺寸和多轨合成。[发行记录](evidence/serve-video-clipping-20261126/delivery.json)
@@ -50,8 +58,8 @@ Python 3.42.1、3.55.1 与 Node 7.47.0 均可通过类型化方法发出冻结�
 | ChatKit 语音输入 | 浏览器使用有效的会话密钥向 `/v1/chatkit` 发送 `input.transcribe`，得到 `{"text":"…"}`。部署须配置原生 ASR 模型。 | rev496 已用 WAV、WebM/Opus 验证中文录音、错误处理和接管后的转写。[发行回执](evidence/serve-chatkit-composer-20261125/delivery.json) |
 | ChatKit 消息反馈和实体提及 | rev490 已发行。浏览器保留评价与标签，管理 SDK 显示提及文本。 | 两份公开 schema 与 49 项配置迁移检查已通过。模型、持久化和恢复验收见[记录](evidence/serve-chatkit-20261125/feedback.json)。 |
 | ChatKit 文档两步上传 | 浏览器调用 `attachments.create`，随后按返回地址、凭证和媒体类型 PUT 原始字节。完成前无法引用文件。有效期为 5 分钟或剩余会话时间中的较短者。 | 原生前置采用外部 Host、协议和部署前缀。自定义公开地址可设置 `Q4T_CHATKIT_PUBLIC_BASE`。原生 TLS 实机已用该文档完成两轮问答，rev492 验收了配置切换、模型重启与回退接管。[验证记录](evidence/serve-chatkit-20261125/upload.json) |
-| ChatKit 图片附件 | 候选支持视觉模型按文件 ID 读取图片及源文件删除后的重试。直接上传 PNG、两阶段上传 JPEG 已核对真实像素、模型答案与快照；短验记录有间歇拒答。 | 视觉配置使用 `--allow-media --no-mtp`。浏览器仍以普通文件显示，图片预览待实现。[业务回执](evidence/serve-chatkit-image-attachments-20261126/business.json) |
-| ChatKit 文档直传 | 浏览器按会话配置分段上传文件，模型读取真实文件，同一线程可在删除上传源后续谈。 | 已验收权限、容量、附件删除和标准历史返回。rev478 已验收部署接管后的原附件与工具回填。两阶段文档上传见上一行。图片预览待实现。[业务回执](evidence/serve-chatkit-20261125/attachments.json) |
+| ChatKit 图片附件 | rev516 已发行。模型根据文件 ID 读取原图，文件删除后可从冻结快照重试。真实业务记录保留了间歇拒答。 | 直接上传和两阶段上传均支持 PNG 预览。两阶段的只读地址在预约时返回，上传完成后可显示图片；预览依赖失效和会话到期已有单独验收。[发行回执](evidence/serve-chatkit-image-attachments-20261126/delivery.json) · [浏览器实测](evidence/serve-chatkit-image-attachments-20261126/reserved-previews.json) |
+| ChatKit 文档直传 | 浏览器按会话配置分段上传文件，模型读取真实文件，同一线程可在删除上传源后续谈。 | 已验收权限、容量、附件删除和标准历史返回。rev478 已验收部署接管后的原附件与工具回填。两阶段文档上传见本表的「ChatKit 文档两步上传」。[业务回执](evidence/serve-chatkit-20261125/attachments.json) |
 | ChatKit 会话与线程（rev478） | 官方 SDK 六项会话和线程管理操作；浏览器消息与函数结果回填、流式回答和历史分页。 | 同项目按用户、工作流及历史策略过滤。主包故障后，重新签发的用户会话可以接续原线程、附件及待回填调用。[发行回执](evidence/serve-chatkit-20261125/delivery.json) |
 | Webhook | rev472 提供八项管理方法及后台 Responses、Batch 终态通知，独立 HTTPS 发送器验签、重试并可跨进程接手。 | 需部署方显式配置目的地。订阅方按稳定事件 ID 去重。默认部署关闭出站，订阅和待投递记录可以跨故障接手。[发行回执](evidence/serve-webhooks-20261124/delivery.json)。[实测回执](evidence/serve-webhooks-20261124/lifecycle.json) |
 | Agents 托管工作区 | rev474 支持共享工作区、空闲挂起和检查点恢复。rev476 增加含至少两项 Files 引用的异步预热，准备期间可接入会话。 | 客户可订阅就绪或失败事件。创建成功后可删除原文件；准备任务按客户、任务轮转，源文件固定最长一小时。模型退出与独立回退后均恢复了原工作区和待回填调用，两个上传源均已删除。[发行回执](evidence/serve-webhooks-20261124/preparation-delivery.json) |

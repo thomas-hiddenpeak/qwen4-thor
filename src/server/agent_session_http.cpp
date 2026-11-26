@@ -276,9 +276,11 @@ ObjectReply Handle(int fd, ObjectStore& objects, ClientAdmission& clients,
        route.kind == Kind::kSubagent || route.kind == Kind::kSubagentTurn))
     return Invalid("Unexpected query", "query");
   if (route.kind == Kind::kSession && method == "POST") {
-    Json request;
-    auto parsed = io::ParseJson(body, &request, true, kSchemaJsonLimits);
-    if (!parsed) return Invalid(parsed.message(), "body");
+    auto request = Object();
+    if (!body.empty()) {
+      auto parsed = io::ParseJson(body, &request, true, kSchemaJsonLimits);
+      if (!parsed) return Invalid(parsed.message(), "body");
+    }
     return UpdateAgentSession(objects, std::string(route.session), request,
                               config, access);
   }

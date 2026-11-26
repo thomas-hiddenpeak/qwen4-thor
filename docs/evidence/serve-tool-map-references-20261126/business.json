@@ -1,0 +1,120 @@
+{
+  "stage": "candidate_native_https",
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 43.524,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "engine": "30e23fda5afc2197958960bb2554473e24a74aae872c9b03a0fd89ebcc009e70",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "sdk": {
+    "sdk": "3.55.1",
+    "call_id": "call_chatcmpl-auto-f2dd658a3724680dae6dc160e73da02e_0",
+    "arguments": {
+      "versions": {
+        "primary": 534,
+        "previous": 532
+      }
+    },
+    "records": {
+      "primary": {
+        "revision": 534,
+        "protected": 13,
+        "source_sha256": "2f5936d0de1bc41678c2d667b19cbb96d049f117509c8b4ff7ba95a69be74488"
+      },
+      "previous": {
+        "revision": 532,
+        "protected": 13,
+        "source_sha256": "ac65e335cf22266a9c8e9f94ab548ae92875d914f8f34359087e52108b89e0dd"
+      }
+    },
+    "reply": "13",
+    "finish_reasons": [
+      "tool_calls",
+      "stop"
+    ],
+    "text_deltas": 2
+  },
+  "driver": {
+    "sha256": "182314789739825c3362cb3d109961a1227f198827d73fbc11ab77fafe77026c",
+    "records": {
+      "primary": "2f5936d0de1bc41678c2d667b19cbb96d049f117509c8b4ff7ba95a69be74488",
+      "previous": "ac65e335cf22266a9c8e9f94ab548ae92875d914f8f34359087e52108b89e0dd"
+    }
+  },
+  "sdk_captures": {
+    "followup.jsonl": "26d96775d13a4e40c60b2d4463445ef97ad82496b1a1317836515d530c4ba883",
+    "lookup.json": "145b139435cd71ff67d3af46e00a3ceda26f2130f74c758682d29d060c736da5",
+    "tool-output.json": "6b9c8582ae46f7d609f98fc59dd5ca0d15ee5b24e6a37f78f4e1669a8d6c739e"
+  },
+  "optional_updates": {
+    "resources": [
+      {
+        "path": "/agents/agent_6bf4320c99077594e12ab430d958dcec",
+        "stable_fields_sha256": "49d8b8043397f665158611daf233ec1b8545e7649df4f4ade038930c33758fbe",
+        "post": [
+          200,
+          200,
+          200
+        ],
+        "foreign": 404,
+        "null": 400,
+        "malformed": 400,
+        "invalid_media_type": 415
+      },
+      {
+        "path": "/agents/environments/templates/environment_template_98ebcc3bab6e56b1a4868536d386335b",
+        "stable_fields_sha256": "9f13b13c76225ce7c82e778875d50b5b2fab0ac4d8aa6314eaeef44ca6d2a872",
+        "post": [
+          200,
+          200,
+          200
+        ],
+        "foreign": 404,
+        "null": 400,
+        "malformed": 400,
+        "invalid_media_type": 415
+      },
+      {
+        "path": "/agents/sessions/agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+        "stable_fields_sha256": "d68ce501a7d2738b9c002ed0e9d903b4fabb608f95a29c2742ecc005cdf8edf0",
+        "post": [
+          200,
+          200,
+          200
+        ],
+        "foreign": 404,
+        "null": 400,
+        "malformed": 400,
+        "invalid_media_type": 415
+      },
+      {
+        "path": "/webhook_endpoints/whe_abe898d2dc9d2de4a303aeff37d8afaa",
+        "stable_fields_sha256": "e0d9a8bf60f0a5f533eaa390ce592261e62b9a5da1f780dd817779e3acd9d3f0",
+        "post": [
+          200,
+          200,
+          200
+        ],
+        "foreign": 404,
+        "null": 400,
+        "malformed": 400,
+        "invalid_media_type": 415
+      }
+    ],
+    "required_bodies": {
+      "/agents": 400,
+      "/agents/sessions": 400,
+      "/webhook_endpoints": 400,
+      "/agents/sessions/agent_session_c313e3728aabc00c94284d1a8bcd16ca/events": 400
+    },
+    "historical_failed_turn": "turn_424601ccb80bfe426554c4c50b03b6e3",
+    "independent_chat": "42"
+  },
+  "lease_sha256": "09b00358068a6066e3cac9f1ec14ec26d01e148132573362bfd104fc8d0fea29",
+  "issued": false
+}

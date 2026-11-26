@@ -211,7 +211,8 @@ ObjectReply ValidateVideoPixels(std::string_view source,
           static_cast<int64_t>(source.size()))
     return Invalid();
   const auto format = pixels.conversion.GetString("format");
-  const bool clipped = format == "q4t.cpu_video_png.v6";
+  const bool complex = format == "q4t.cpu_video_png.v7";
+  const bool clipped = complex || format == "q4t.cpu_video_png.v6";
   if (clipped || format == "q4t.cpu_video_png.v4" ||
       format == "q4t.cpu_video_png.v5") {
     const auto* display = pixels.conversion.Find("display_geometry");
@@ -224,8 +225,23 @@ ObjectReply ValidateVideoPixels(std::string_view source,
           video_detail::MovieDisplay().SelectTrack(source, clipped);
       if (!actual || actual->matrices != recorded) return Invalid();
       video_detail::DisplayClips clips;
-      if (clipped && (!RectClips(*display, &clips) || clips != actual->clips))
-        return Invalid();
+      if (clipped) {
+        const auto& original = actual->clips;
+        if (!RectClips(*display, &clips) || clips.movie != original.movie ||
+            clips.track != original.track ||
+            clips.track_size != original.track_size ||
+            complex != original.Complex())
+          return Invalid();
+        if (complex) {
+          for (const auto& [key, region] :
+               {std::pair{"movie_region_sha256", &original.movie_region},
+                std::pair{"track_region_sha256", &original.track_region}}) {
+            if (display->GetString(key) !=
+                (*region ? Digest((*region)->Bytes()) : ""))
+              return Invalid();
+          }
+        }
+      }
     } catch (...) {
       return Invalid();
     }
@@ -261,7 +277,9 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   const bool affine = conversion.GetString("format") == "q4t.cpu_video_png.v4";
   const bool projective =
       conversion.GetString("format") == "q4t.cpu_video_png.v5";
-  const bool clipped = conversion.GetString("format") == "q4t.cpu_video_png.v6";
+  const bool complex = conversion.GetString("format") == "q4t.cpu_video_png.v7";
+  const bool clipped =
+      complex || conversion.GetString("format") == "q4t.cpu_video_png.v6";
   const bool transformed = affine || projective || clipped;
   const bool geometry =
       transformed || conversion.GetString("format") == "q4t.cpu_video_png.v3";
@@ -279,11 +297,13 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
   if (geometry) {
     const auto* display = conversion.Find("display_geometry");
     if (!display || !display->IsObject() ||
-        display->object.size() != (clipped       ? 10U
+        display->object.size() != (complex       ? 12U
+                                   : clipped     ? 10U
                                    : transformed ? 7U
                                                  : 5U) ||
         display->GetString("policy") !=
-            (clipped ? "quicktime-rect-clips-black-bilinear16"
+            (complex   ? "quicktime-region-clips-black-bilinear16"
+             : clipped ? "quicktime-rect-clips-black-bilinear16"
              : projective
                  ? "projective-square-pixels-tight-integer512-bilinear16"
              : affine ? "affine-square-pixels-tight-bilinear16"
@@ -304,6 +324,21 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
     if (clipped) {
       video_detail::DisplayClips clips;
       if (!RectClips(*display, &clips)) return Invalid();
+      if (complex) {
+        bool has_region = false;
+        for (const auto& [key, box] :
+             {std::pair{"movie_region_sha256", &clips.movie},
+              std::pair{"track_region_sha256", &clips.track}}) {
+          const auto* digest = display->Find(key);
+          if (!digest || !digest->IsString()) return Invalid();
+          if (digest->str.empty()) continue;
+          if (!Sha(digest->str) || !*box || (*box)->left == (*box)->right ||
+              (*box)->top == (*box)->bottom)
+            return Invalid();
+          has_region = true;
+        }
+        if (!has_region) return Invalid();
+      }
       const auto status = video_detail::UseTrackGrid(
           clips.track_size[0], clips.track_size[1], limits, &shape);
       if (status == video_detail::Failure::kCapacity) return Capacity();
@@ -335,8 +370,8 @@ ObjectReply ValidateVideoSnapshot(std::string_view source_sha256,
         height = output.height;
       }
       if (status == video_detail::Failure::kCapacity) return Capacity();
-      if (status != video_detail::Failure::kNone ||
-          width != pixels.width || height != pixels.height)
+      if (status != video_detail::Failure::kNone || width != pixels.width ||
+          height != pixels.height)
         return Invalid();
     } else if (!((pixels.width == shape.square_width &&
                   pixels.height == shape.square_height) ||
@@ -543,7 +578,8 @@ ObjectReply DecodeVideoContainer(std::string_view source,
   std::string trailing;
   if (!process->CollectOutput(&trailing, 0, deadline, cancelled))
     return Failed(process->Failure());
-  if (next.conversion.GetString("format") != "q4t.cpu_video_png.v6") {
+  const auto format = next.conversion.GetString("format");
+  if (format != "q4t.cpu_video_png.v6" && format != "q4t.cpu_video_png.v7") {
     try {
       const auto selected = video_detail::MovieDisplay().SelectTrack(source);
       if (selected && selected->clips.Any()) return Invalid();

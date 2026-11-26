@@ -1,0 +1,123 @@
+{
+  "stage": "cpu_candidate",
+  "previous_source": "30ad891b9866d97dae4a5d0889719fdfc20ebb0d",
+  "original_supplied_clip": {
+    "status": 400,
+    "error": "invalid_file_video",
+    "png_count": 0,
+    "stderr_sha256": "f3e216805b8e271fd9979966c8780ea3a89062409d55e7cc451ecd1031a0b9a9"
+  },
+  "fixture": {
+    "path": "tests/fixtures/file_video/region-clips.mov",
+    "sha256": "10a22b246f9d04d4ec2c4c619cfe83a96f4247df4b7c7051987edd3123620379"
+  },
+  "native_cpu": {
+    "tests": 35,
+    "log_sha256": "be289620d2a9fd20dcc4c78684f8ddbe16fc17bedf640099cfe9aa9cf4f0f513",
+    "pixel_method": "Literal RGB masks applied independently to three reference frames of the same H.264 stream; time, index, and duration also checked.",
+    "cases": [
+      {
+        "case": "diagonal",
+        "sha256": "c0c560a981b7165db58df2d69b2609375a9242deaa1ca34c92f1b8d66dd90d54",
+        "visible_pixels": 4096,
+        "rgb_sha256": [
+          "c3eadfb0ce9eeb3a483066d2bb024860cac0b06ce9f59dba4c433a5548674fad",
+          "c3eadfb0ce9eeb3a483066d2bb024860cac0b06ce9f59dba4c433a5548674fad",
+          "c3eadfb0ce9eeb3a483066d2bb024860cac0b06ce9f59dba4c433a5548674fad"
+        ]
+      },
+      {
+        "case": "hole",
+        "sha256": "132de0646adb2194790314175a7d395afe119efad3844df478dbb630804fb8a8",
+        "visible_pixels": 5567,
+        "rgb_sha256": [
+          "8e2b5cfda06f8da6081204e84d69aa194128760f89528227b36a9fd11e8959be",
+          "8e2b5cfda06f8da6081204e84d69aa194128760f89528227b36a9fd11e8959be",
+          "8e2b5cfda06f8da6081204e84d69aa194128760f89528227b36a9fd11e8959be"
+        ]
+      },
+      {
+        "case": "islands",
+        "sha256": "488ac808fc10bba3385213643767918adc636681163a1fc2082607e5515e94e7",
+        "visible_pixels": 1268,
+        "rgb_sha256": [
+          "3264bc7d4ae204f2a693d47071850669f91a2c597749584660015086b0586e36",
+          "3264bc7d4ae204f2a693d47071850669f91a2c597749584660015086b0586e36",
+          "3264bc7d4ae204f2a693d47071850669f91a2c597749584660015086b0586e36"
+        ]
+      },
+      {
+        "case": "alternating",
+        "sha256": "b5425c0738cddf083675f2127e6eca88fffe23d502aba48a693107dd944c156a",
+        "visible_pixels": 4096,
+        "rgb_sha256": [
+          "54a16dbd489bc4c01a22ceadf1c4014f55ae1d08de62a2a566e688666557cb2a",
+          "54a16dbd489bc4c01a22ceadf1c4014f55ae1d08de62a2a566e688666557cb2a",
+          "54a16dbd489bc4c01a22ceadf1c4014f55ae1d08de62a2a566e688666557cb2a"
+        ]
+      },
+      {
+        "case": "intersection",
+        "sha256": "ee0db0555d14b0a69800946ef264e4ee02fa9c73e4217f20e3c4cd1002638d8a",
+        "visible_pixels": 578,
+        "rgb_sha256": [
+          "290bc91e303f32b19b39a48185f929d6ee3557e5240a94a25e762083db0791b5",
+          "290bc91e303f32b19b39a48185f929d6ee3557e5240a94a25e762083db0791b5",
+          "290bc91e303f32b19b39a48185f929d6ee3557e5240a94a25e762083db0791b5"
+        ]
+      },
+      {
+        "case": "translated-movie",
+        "sha256": "5c176a0b211890573b9efe79ad43d12aa32a076c1f01a62cd26f67a7cd5639c9",
+        "visible_pixels": 1008,
+        "rgb_sha256": [
+          "a1408020c1e069f8907116da1c36f25371a0ba0477cee6f1493ac83f8ffc8eef",
+          "a1408020c1e069f8907116da1c36f25371a0ba0477cee6f1493ac83f8ffc8eef",
+          "a1408020c1e069f8907116da1c36f25371a0ba0477cee6f1493ac83f8ffc8eef"
+        ]
+      },
+      {
+        "case": "one-pixel",
+        "sha256": "e2347682a33a58227596e3bccabc59267bcffff2639d7f1d753d03db8eac947c",
+        "visible_pixels": 1,
+        "rgb_sha256": [
+          "a214ddb5e60f3d1e511a5c2a8ae2c6adadc40df6a02f8c07c7d0a61bf8b9ca09",
+          "a214ddb5e60f3d1e511a5c2a8ae2c6adadc40df6a02f8c07c7d0a61bf8b9ca09",
+          "a214ddb5e60f3d1e511a5c2a8ae2c6adadc40df6a02f8c07c7d0a61bf8b9ca09"
+        ]
+      }
+    ]
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1391,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "source_sha256": {
+    "cmake/ChatProtocolIdentity.cmake": "f5a23cca85b0f08e8697a6c6a929b868065682ae0fe481771158b347e1e30e6b",
+    "src/server/chat_capabilities.cpp": "428013d8673eeac4655cd9ca8686f62a95bd5ac6f2cedfe68a965a4c157c037e",
+    "src/server/file_video_region.h": "01cd09daf0b5555d946fc6f952e551e221a828c245e3bab47aad20dedfc064da",
+    "src/server/file_video_orientation.h": "8aa6fa3c346c6857fd1587a72e8d45bdc9cd7d992bf606731bfcf55048933358",
+    "src/server/file_video_clipping.h": "df231e0e8f2ad5e34bcdc757df3ce651ff6f24ca41e8a3149957d3246e89f441",
+    "src/server/file_video_worker.cpp": "61c2f7b3da4f3013a66d81053f1370faec48574f0cc92037971fbb03ae921d00",
+    "src/server/file_video.cpp": "cc02ba4ee9e342df210eb586a347706f06928ec11a77f0c8011e3eadfda654b4",
+    "src/server/file_snapshot.cpp": "9af6073803b7055c1d37e728200d38d31e01f3aae849818ee24df7b536981b28",
+    "tests/server_file_video_clip_test.cpp": "58e37a7ffdace64a744024779d072120ed53b84735dd5836e7a19dd0f055bcf3",
+    "tests/fixtures/file_video/generate_region_clips.py": "d461bfda0082e209259a070c17c3b4267e376a26215a6cd18f2b2d63478246e6"
+  },
+  "references": [
+    "https://developer.apple.com/documentation/quicktime-file-format/clipping_region_atom",
+    "https://preserve.mactech.com/articles/mactech/Vol.05/05.06/ConvertPict2Rgn/index.html"
+  ],
+  "remaining": [
+    "actual authenticated SDK business and frozen GET/continuation",
+    "capacity qualifications, recovery and release",
+    "fractional track grids and multi-track composition"
+  ]
+}

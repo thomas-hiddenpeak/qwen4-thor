@@ -1,0 +1,88 @@
+{
+  "stage": "verified_saved_native_objects_and_python_clients",
+  "scope": "Four GET replies were re-read through the native Agent HTTP handler using a copy of the real TLS run’s object directory. The five event bodies were re-projected from its Responses journals and correlated with the original Node observation by type, event ID and error. The Python transports ran locally.",
+  "capture_sha256": "630da14570c008b3acab0fa974a428a70021116eaca4a97fece3b82775b1e4be",
+  "driver_sha256": "a532f1233ea25c7570ea6672a40516080328a897f524909488cf266ca48ff884",
+  "original_node_receipt_sha256": "fb28cf504010c39c20a519e9a66793fe136bd3d14b3d0235158124db4df3f2d6",
+  "old_sdk_bare_dict": {
+    "version": "2.8.1",
+    "mode": "default",
+    "method": "GET session",
+    "symptom": "ValueError: not enough values to unpack (expected 2, got 0)",
+    "stack_sha256": "c204514452e91d08ccdf97533410fa7ef95511ba32419677814d438e4463d0a2",
+    "correction": "Pass dict[str, Any] to cast_to and openai.Stream[dict[str, Any]] to stream_cls."
+  },
+  "matrix": [
+    {
+      "sdk": "3.42.1",
+      "strict": false,
+      "interface": "beta.agents.sessions",
+      "requests": 5,
+      "events": 5,
+      "error": "rate_limit_exceeded",
+      "terminal": "idle",
+      "peer_status": 404,
+      "input_sha256": "630da14570c008b3acab0fa974a428a70021116eaca4a97fece3b82775b1e4be"
+    },
+    {
+      "sdk": "3.42.1",
+      "strict": true,
+      "interface": "beta.agents.sessions",
+      "requests": 5,
+      "events": 5,
+      "error": "rate_limit_exceeded",
+      "terminal": "idle",
+      "peer_status": 404,
+      "input_sha256": "630da14570c008b3acab0fa974a428a70021116eaca4a97fece3b82775b1e4be"
+    },
+    {
+      "sdk": "3.55.1",
+      "strict": false,
+      "interface": "beta.agents.sessions",
+      "requests": 5,
+      "events": 5,
+      "error": "rate_limit_exceeded",
+      "terminal": "idle",
+      "peer_status": 404,
+      "input_sha256": "630da14570c008b3acab0fa974a428a70021116eaca4a97fece3b82775b1e4be"
+    },
+    {
+      "sdk": "3.55.1",
+      "strict": true,
+      "interface": "beta.agents.sessions",
+      "requests": 5,
+      "events": 5,
+      "error": "rate_limit_exceeded",
+      "terminal": "idle",
+      "peer_status": 404,
+      "input_sha256": "630da14570c008b3acab0fa974a428a70021116eaca4a97fece3b82775b1e4be"
+    },
+    {
+      "sdk": "2.8.1",
+      "strict": false,
+      "interface": "generic GET and Stream[dict[str, Any]]",
+      "requests": 5,
+      "events": 5,
+      "error": "rate_limit_exceeded",
+      "terminal": "idle",
+      "peer_status": 404,
+      "input_sha256": "630da14570c008b3acab0fa974a428a70021116eaca4a97fece3b82775b1e4be"
+    },
+    {
+      "sdk": "2.8.1",
+      "strict": true,
+      "interface": "generic GET and Stream[dict[str, Any]]",
+      "requests": 5,
+      "events": 5,
+      "error": "rate_limit_exceeded",
+      "terminal": "idle",
+      "peer_status": 404,
+      "input_sha256": "630da14570c008b3acab0fa974a428a70021116eaca4a97fece3b82775b1e4be"
+    }
+  ],
+  "counterexamples_rejected": [
+    "event_error",
+    "event_id",
+    "foreign_status"
+  ]
+}

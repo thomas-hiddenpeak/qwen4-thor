@@ -1,0 +1,76 @@
+{
+  "stage": "candidate_native_https",
+  "seconds": 43.879,
+  "model_starts": 1,
+  "engine_sha256": "99cc8a091f8bf5efafbd75ef76e26f0839f8d4b02abfaaa2ae8acc73616db898",
+  "ingress_sha256": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "actor_sha256": "b18d4483e20a38c0017d5e6e52c7d556401471a8c0e0dd88b66e99b1d39eff20",
+  "lease_sha256": "7712808583f98bbbf39ee05384ad2d310a497bcc3668f7b40dd3a7e05a0dd684",
+  "protected_default_unchanged": true,
+  "ports_released": true,
+  "original_32_members_verified": true,
+  "required_body_controls": {
+    "/agents": 400,
+    "/agents/sessions": 400,
+    "/webhook_endpoints": 400,
+    "/agents/sessions/agent_session_c313e3728aabc00c94284d1a8bcd16ca/events": 400
+  },
+  "observed": [
+    {
+      "path": "/agents/agent_6238590448ad3b0e71aa27274c546eda",
+      "stable_fields_sha256": "9c1bf80ac425518675f723859348e588a382f84dcc6cd620c781d5436cb811f7",
+      "post": [
+        200,
+        200,
+        200
+      ],
+      "foreign": 404,
+      "null": 400,
+      "malformed": 400,
+      "invalid_media_type": 415
+    },
+    {
+      "path": "/agents/environments/templates/environment_template_7d6eb47f8f1d0b784bf09bb140f7da7c",
+      "stable_fields_sha256": "661773971ecfaa65bbeb50ed265ed9239bbe229d585830502b59cdbbecb15d4c",
+      "post": [
+        200,
+        200,
+        200
+      ],
+      "foreign": 404,
+      "null": 400,
+      "malformed": 400,
+      "invalid_media_type": 415
+    },
+    {
+      "path": "/agents/sessions/agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+      "stable_fields_sha256": "d68ce501a7d2738b9c002ed0e9d903b4fabb608f95a29c2742ecc005cdf8edf0",
+      "post": [
+        200,
+        200,
+        200
+      ],
+      "foreign": 404,
+      "null": 400,
+      "malformed": 400,
+      "invalid_media_type": 415
+    },
+    {
+      "path": "/webhook_endpoints/whe_dc200113fe59c465c5b6c87b771f75e6",
+      "stable_fields_sha256": "89dfe4deb0dcdb900283246669efbd39e9aca9ef7900d0115d8a572ba44fc5f4",
+      "post": [
+        200,
+        200,
+        200
+      ],
+      "foreign": 404,
+      "null": 400,
+      "malformed": 400,
+      "invalid_media_type": 415
+    }
+  ],
+  "failed_turn": "turn_424601ccb80bfe426554c4c50b03b6e3",
+  "failed_code": "rate_limit_exceeded",
+  "independent_chat": "42",
+  "issued": false
+}

@@ -1,0 +1,31 @@
+{
+  "status": "prepared_awaiting_authorized_maintenance_window",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/tool-map-delivery-soak-src/.q4t-work/cold536-01/plan.json",
+  "plan_sha256": "33b1d28d975a3a418fabef62a1a5e62cbcde1e35ad1d190cc549446bd7efb040",
+  "service_id": "b54c3e9a-9814-49ab-a952-f8d94247a369",
+  "source": "a0796d6c380e6538ab91290bca1a45c9b95ab381",
+  "limits": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 1,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "publication": 536,
+  "registered_package": "9a5fd7f90d7a7e0c7cd5af87829dfedd3bdceef331c7760180567396f522e0f1",
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "30e23fda5afc2197958960bb2554473e24a74aae872c9b03a0fd89ebcc009e70",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "d9453b40ae9381b0f11ea6ff99be17294748740839afe856d2019431946974e4",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "9a5fd7f90d7a7e0c7cd5af87829dfedd3bdceef331c7760180567396f522e0f1",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "724b7e33a2de65e3a9eab843be0482d0618720073e0cfccb50a7b18c2d1dcd3c",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "model_actions": 0,
+  "host_filter_installed": false,
+  "host_units_modified": false,
+  "check_sha256": "a111ebf2279f67489a6aa8f24b9874df82140acfd6f3c1af571c92c94c725c8f",
+  "host_unit_baseline": {
+    "jtop.service": "MainPID=2731017\nId=jtop.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled",
+    "nvargus-daemon.service": "MainPID=2750\nId=nvargus-daemon.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled"
+  }
+}
