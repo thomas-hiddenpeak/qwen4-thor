@@ -3175,16 +3175,17 @@
         "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "failed_mcp_real_tls_verified",
+        "state": "capacity_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "capacity profiles, supervised recovery and issue of MCP reader change",
-          "older SDK closed union for programmatic tools"
+          "managed recovery and release",
+          "older strict program union"
         ],
         "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
         "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
-        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json",
+        "capacity": "docs/evidence/serve-mcp-error-sdk-20261127/profiles.json"
       }
     },
     {
@@ -7867,16 +7868,17 @@
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "failed_mcp_real_tls_verified",
+        "state": "capacity_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "capacity profiles, supervised recovery and issue of MCP reader change",
-          "older SDK closed union for programmatic tools"
+          "managed recovery and release",
+          "older strict program union"
         ],
         "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
         "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
-        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json",
+        "capacity": "docs/evidence/serve-mcp-error-sdk-20261127/profiles.json"
       }
     },
     {
@@ -9243,16 +9245,17 @@
         "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "failed_mcp_real_tls_verified",
+        "state": "capacity_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "capacity profiles, supervised recovery and issue of MCP reader change",
-          "older SDK closed union for programmatic tools"
+          "managed recovery and release",
+          "older strict program union"
         ],
         "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
         "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
-        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json",
+        "capacity": "docs/evidence/serve-mcp-error-sdk-20261127/profiles.json"
       }
     },
     {
