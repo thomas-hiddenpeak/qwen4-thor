@@ -525,11 +525,24 @@ def schema(graph):
     def root(name):
         return definitions[str(graph['roots'][name])]
 
-    # The SDK declares OutputItem[] here but its own comment and the official
-    # compact guide require preserved user messages and a replayable input
-    # window. Adapt only the compact result, never ordinary response outputs.
+    # ItemField uses resource-shaped messages in compact responses. The same
+    # window is also valid input, including the original non-assistant IDs.
+    input_items = root('input_item')['anyOf']
+    variants = [definitions[item['$ref'].rsplit('/', 1)[1]] for item in input_items]
+    input_message, = [variant for variant in variants
+                      if set(variant.get('properties', {})) == {'role', 'type', 'status', 'content'}]
+    message = copy.deepcopy(input_message)
+    message['properties']['id'] = dict(type='string', minLength=1, maxLength=128,
+                                       pattern='^[A-Za-z0-9_-]+$')
+    message['required'] = ['type', 'id', 'role', 'content', 'status']
+    definitions['retained_input_message'] = dict(allOf=[message, ref('conversation_item')])
+    input_items.append(ref('retained_input_message'))
     root('compacted_response')['properties']['output'] = dict(
-        type='array', maxItems=4096, items=ref('input_item'))
+        type='array', maxItems=4096, items={
+            'allOf': [ref('input_item'), {
+                'if': {'properties': {'type': {'const': 'message'}}},
+                'then': {'required': ['id', 'status']}}],
+            'required': ['type']})
 
     # The pinned SDK describes include_obfuscation on streaming deltas but
     # omits that optional property from most delta interfaces. Preserve the

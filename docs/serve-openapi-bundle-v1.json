@@ -29123,6 +29123,9 @@
               },
               {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/552"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/retained_input_message"
               }
             ]
           },
@@ -44993,7 +44996,29 @@
                 "type": "array",
                 "maxItems": 4096,
                 "items": {
-                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_item"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_item"
+                    },
+                    {
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "const": "message"
+                          }
+                        }
+                      },
+                      "then": {
+                        "required": [
+                          "id",
+                          "status"
+                        ]
+                      }
+                    }
+                  ],
+                  "required": [
+                    "type"
+                  ]
                 }
               },
               "usage": {
@@ -97081,6 +97106,44 @@
               },
               {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/transcription_error"
+              }
+            ]
+          },
+          "retained_input_message": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/4"
+                  },
+                  "role": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/42"
+                  },
+                  "status": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/43"
+                  },
+                  "type": {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/39"
+                  },
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[A-Za-z0-9_-]+$"
+                  }
+                },
+                "required": [
+                  "type",
+                  "id",
+                  "role",
+                  "content",
+                  "status"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/conversation_item"
               }
             ]
           },

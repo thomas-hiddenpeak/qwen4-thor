@@ -102,6 +102,9 @@
         },
         {
           "$ref": "#/$defs/552"
+        },
+        {
+          "$ref": "#/$defs/retained_input_message"
         }
       ]
     },
@@ -15972,7 +15975,29 @@
           "type": "array",
           "maxItems": 4096,
           "items": {
-            "$ref": "#/$defs/input_item"
+            "allOf": [
+              {
+                "$ref": "#/$defs/input_item"
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "message"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "id",
+                    "status"
+                  ]
+                }
+              }
+            ],
+            "required": [
+              "type"
+            ]
           }
         },
         "usage": {
@@ -68060,6 +68085,44 @@
         },
         {
           "$ref": "#/$defs/transcription_error"
+        }
+      ]
+    },
+    "retained_input_message": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "content": {
+              "$ref": "#/$defs/4"
+            },
+            "role": {
+              "$ref": "#/$defs/42"
+            },
+            "status": {
+              "$ref": "#/$defs/43"
+            },
+            "type": {
+              "$ref": "#/$defs/39"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "role",
+            "content",
+            "status"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "$ref": "#/$defs/conversation_item"
         }
       ]
     },

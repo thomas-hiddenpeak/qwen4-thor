@@ -295,13 +295,14 @@ Status ResponsesCompactionWindow(const Json& retained, const Json& compaction,
   auto result = retained;
   result.array.push_back(compaction);
   for (size_t i = 0; i < result.array.size(); ++i) {
-    auto& item = result.array[i];
-    if (item.GetString("type") == "message" &&
-        item.GetString("role") != "assistant")
-      Remove(&item, {"id"});
+    const auto& item = result.array[i];
+    const auto path = "output[" + std::to_string(i) + ']';
+    if (item.GetString("type") == "message" && !ValidId(item.GetString("id"))) {
+      *error = {"compaction_output_invalid", path + ".id", 500};
+      return Status::Fail("Invalid compacted message identity");
+    }
     auto status =
-        ValidateResponsesItemShape(item, ResponsesItemShape::kInput, error,
-                                   "output[" + std::to_string(i) + ']');
+        ValidateResponsesItemShape(item, ResponsesItemShape::kInput, error, path);
     if (!status) return status;
   }
   *window = std::move(result);

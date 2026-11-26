@@ -14,6 +14,7 @@
 #include "q4t/server/responses_api.h"
 #include "q4t/server/responses_crypto.h"
 #include "q4t/server/responses_execution.h"
+#include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_reasoning.h"
 #include "q4t/test.h"
 
@@ -378,8 +379,9 @@ Q4T_TEST(compaction_returned_window_is_replayable_without_losing_message_data) {
   Json window;
   ChatPlanError error;
   Q4T_CHECK(ResponsesCompactionWindow(plan.retained, item, &window, &error));
-  Q4T_CHECK(window.array.size() == 3 && !window.array[0].Has("id") &&
-            !window.array[1].Has("id") &&
+  Q4T_CHECK(window.array.size() == 3 &&
+            window.array[0].GetString("id") == "sys" &&
+            window.array[1].GetString("id") == "u2" &&
             window.array[2].GetString("id") == "cmp_1");
   for (size_t i = 0; i < plan.retained.array.size(); ++i) {
     Q4T_CHECK(OutputJson(Field(&window.array[i], "content")) ==
@@ -393,6 +395,24 @@ Q4T_TEST(compaction_returned_window_is_replayable_without_losing_message_data) {
   auto preserved = Parse(R"({"untouched":true})");
   Q4T_CHECK(!ResponsesCompactionWindow(invalid, item, &preserved, &error));
   Q4T_CHECK(preserved.GetBool("untouched"));
+  for (const bool omit_id : {false, true}) {
+    auto malformed = plan.retained;
+    if (omit_id) {
+      std::erase_if(malformed.array[0].object,
+                    [](const auto& field) { return field.first == "id"; });
+    } else {
+      String(&malformed.array[0], "id", "");
+    }
+    Q4T_CHECK(!ResponsesCompactionWindow(malformed, item, &preserved, &error));
+    Q4T_CHECK(error.param == "output[0].id" && preserved.GetBool("untouched"));
+  }
+  for (const auto& bad_id : {std::string("invalid id"), std::string(129, 'a')}) {
+    auto malformed = plan.retained.array[0];
+    String(&malformed, "id", bad_id);
+    Q4T_CHECK(!ValidateResponsesItemShape(malformed, ResponsesItemShape::kInput,
+                                          &error, "input[0]"));
+    Q4T_CHECK(error.param == "input[0].id");
+  }
   return true;
 }
 
@@ -739,7 +759,7 @@ Q4T_TEST(compaction_standalone_returns_preserved_users_and_replayable_state) {
   const auto& output = *result.GetArray("output");
   Q4T_CHECK(output.array.size() == 4 &&
             output.array[1].GetString("role") == "user" &&
-            !output.array[1].Has("id"));
+            !output.array[1].GetString("id").empty());
   ResponsesExecution resumed(objects);
   auto next = ExecutionRequest(false);
   Field(&next, "input") = output;
