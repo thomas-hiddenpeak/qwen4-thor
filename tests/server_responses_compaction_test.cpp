@@ -815,6 +815,38 @@ Q4T_TEST(compaction_standalone_returns_preserved_users_and_replayable_state) {
   return true;
 }
 
+Q4T_TEST(compaction_standalone_returns_file_and_replays_its_prepared_text) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto request = Parse(R"({"model":"cpu-model","input":[
+    {"type":"message","role":"user","id":"msg_file","status":"completed",
+     "content":[{"type":"input_file","filename":"release.txt",
+                 "file_data":"data:text/plain;base64,cmVsZWFzZSBub3Rl"}]},
+    {"role":"assistant","content":"The review covered the release note."},
+    {"role":"user","content":"Keep the original attachment."}]})");
+  const auto original = request.GetArray("input")->array.front();
+  ResponsesExecution run(objects, nullptr, false, true);
+  Q4T_CHECK(Ok(run.Prepare(request, Config(), Access(), 10)));
+  const auto prepared = run.Generation().input.items.array.front();
+  Q4T_CHECK(prepared.GetArray("content")->array.front().GetString("type") ==
+            "input_text");
+  Q4T_CHECK(Ok(run.SelectCompaction(600, Config())));
+  std::string wire;
+  Q4T_CHECK(Ok(run.Begin(&wire)) && Ok(run.StartCompaction(&wire)));
+  Q4T_CHECK(Ok(run.CompleteCompaction("The review is complete.", 8, Config(),
+                                      Measured(120), &wire)));
+  Q4T_CHECK(Ok(run.Finish(false, 0, {600, 0, 8, 0}, 11, &wire)));
+  const auto window = *Parse(run.ResultJson()).GetArray("output");
+  Q4T_CHECK(OutputJson(window.array.front()) == OutputJson(original));
+  auto next = ExecutionRequest(false);
+  Field(&next, "input") = window;
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(Ok(resumed.Prepare(next, Config(), Access(), 12)));
+  Q4T_CHECK(OutputJson(resumed.Generation().input.items.array.front()) ==
+            OutputJson(prepared));
+  return true;
+}
+
 Q4T_TEST(compaction_standalone_noop_is_honest_zero_generation) {
   Fixture f;
   ObjectStore objects(f.options);

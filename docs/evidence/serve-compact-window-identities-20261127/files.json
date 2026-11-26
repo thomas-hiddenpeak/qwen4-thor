@@ -119,5 +119,21 @@
       "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
     },
     "protocol_sources": 1104
+  },
+  "execution_regression": {
+    "name": "compaction_standalone_returns_file_and_replays_its_prepared_text",
+    "before_commit": "98350349b",
+    "before_result": [
+      "  CHECK failed: OutputJson(window.array.front()) == OutputJson(original) (line 840)",
+      "[FAIL] compaction_standalone_returns_file_and_replays_its_prepared_text",
+      "1 tests, 0 passed, 1 failed, 0 skipped"
+    ],
+    "after_result": [
+      "[PASS] compaction_retains_original_file_bytes_outside_the_summary_prompt",
+      "[PASS] compaction_standalone_returns_preserved_users_and_replayable_state",
+      "[PASS] compaction_standalone_returns_file_and_replays_its_prepared_text",
+      "3 tests, 3 passed, 0 failed, 0 skipped"
+    ],
+    "worker": "native text document and object workers, PrivateDevices=yes"
   }
 }

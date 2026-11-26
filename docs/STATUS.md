@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已新增可重复的原生执行回归，覆盖文件解析、独立压缩、窗口返回和原样续答。同一用例在修复前因返回的文件被换成文本而失败，候选通过。[回归记录](evidence/serve-compact-window-identities-20261127/files.json)
+
 Node SDK 7.47.0 的高层 compact 可完整读取真实 MCP 与视频压缩窗口。其返回声明使用输出项数组，TypeScript 5.9.3 严格编译时无法直接传回 create。按可回填输入声明窗口后，无需类型断言即可编译，实际 HTTP 续答请求的每个输入字段都与原窗口一致。 设备短验使用 Python 严格资源类型。[Node 复核](evidence/serve-compact-window-identities-20261127/node-sdk.json)
 
 又复核了三条已删除源文件的真实记录。文本上传、带 QuickDraw 区域的视频和带编辑列表的视频均按原消息 ID 从所属客户的快照准备，独立压缩与回填后逐项得到相同的文本或视频帧。原始持久记录摘要一致。 下一步核对 TLS 上的真实模型回答。[快照复核](evidence/serve-compact-window-identities-20261127/file-snapshots.json)
