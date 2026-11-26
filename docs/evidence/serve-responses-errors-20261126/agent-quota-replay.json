@@ -1,0 +1,241 @@
+{
+  "original_tls_receipt_sha256": "fb28cf504010c39c20a519e9a66793fe136bd3d14b3d0235158124db4df3f2d6",
+  "node_driver_receipt_sha256": "9d8dd2d2b4200957b2133cd6c1606942eeb172b2d2bd986bbdef10e3bbdab75d",
+  "projection_source": {
+    "src/server/agent_session_http.cpp": "87cafcd1663ceabd92566150b3759cd25e03d40f94f75be380cfa02c0b099119",
+    "src/server/agent_session_events.cpp": "61020544c4bc51990e6e97bab973033bd1002fa070fa167a98de04396a77a7f1",
+    "src/server/agent_session_turn.cpp": "1a15e70c58de41ded85d4fa57b75595a63e7d2a101c3624c529c6056e15c98a3"
+  },
+  "native_source_commit": "222e0a9b5d17512c5eacf3046c433bed87b8b48a",
+  "cpu_capture_driver_sha256": "72c88c4849dca0c38cbe2de765ab936f18362798ed2dcf3faed81c4f2aaa20fa",
+  "object_directory_files": 32,
+  "source_manifest_sha256": "ba5d67aff3b2b235cb38a057901afac0e5d63b5a224f6984b93055b45a35ba4b",
+  "copied_file_contents_unchanged": true,
+  "journal_events": 29,
+  "events_correlated_by_node_id": 5,
+  "http": {
+    "turn": {
+      "status": 200,
+      "body": "{\"id\":\"turn_424601ccb80bfe426554c4c50b03b6e3\",\"session_id\":\"agent_session_c313e3728aabc00c94284d1a8bcd16ca\",\"agent_id\":\"agent_8477206f4e14932f5f65a74da41f5eb3\",\"subagent_id\":null,\"object\":\"agent.session.turn\",\"status\":\"failed\",\"created_at\":1795667189,\"started_at\":1795667189,\"completed_at\":1795667189,\"error\":{\"code\":\"rate_limit_exceeded\",\"message\":\"client minute quota unavailable\"},\"usage\":{\"input_tokens\":0,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":0,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":0}}",
+      "http_sha256": "5a8cda34f09e43b9bc80413fc090eb8c017cdb8b970baecc8a98d51cd6b239d2",
+      "body_sha256": "4df8f6d650870ae55dce5c2e5913aa28d0e01116b22eeb3601637f16ed474db4"
+    },
+    "turns": {
+      "status": 200,
+      "body": "{\"object\":\"list\",\"data\":[{\"id\":\"turn_9b25d344543f8fd21bb339eedf9d32b1\",\"session_id\":\"agent_session_c313e3728aabc00c94284d1a8bcd16ca\",\"agent_id\":\"agent_8477206f4e14932f5f65a74da41f5eb3\",\"subagent_id\":null,\"object\":\"agent.session.turn\",\"status\":\"completed\",\"created_at\":1795667189,\"started_at\":1795667189,\"completed_at\":1795667189,\"error\":null,\"usage\":{\"input_tokens\":101,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":2,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":103}},{\"id\":\"turn_424601ccb80bfe426554c4c50b03b6e3\",\"session_id\":\"agent_session_c313e3728aabc00c94284d1a8bcd16ca\",\"agent_id\":\"agent_8477206f4e14932f5f65a74da41f5eb3\",\"subagent_id\":null,\"object\":\"agent.session.turn\",\"status\":\"failed\",\"created_at\":1795667189,\"started_at\":1795667189,\"completed_at\":1795667189,\"error\":{\"code\":\"rate_limit_exceeded\",\"message\":\"client minute quota unavailable\"},\"usage\":{\"input_tokens\":0,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":0,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":0}},{\"id\":\"turn_3cacfc35962aebca9029b9425d239395\",\"session_id\":\"agent_session_c313e3728aabc00c94284d1a8bcd16ca\",\"agent_id\":\"agent_8477206f4e14932f5f65a74da41f5eb3\",\"subagent_id\":null,\"object\":\"agent.session.turn\",\"status\":\"completed\",\"created_at\":1795667250,\"started_at\":1795667250,\"completed_at\":1795667250,\"error\":null,\"usage\":{\"input_tokens\":142,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":3,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":145}}],\"first_id\":\"turn_9b25d344543f8fd21bb339eedf9d32b1\",\"last_id\":\"turn_3cacfc35962aebca9029b9425d239395\",\"has_more\":false}",
+      "http_sha256": "1b7af67cf54d1bc47036d307921864f98b9985628fa8ff5ce3af8a646a79b198",
+      "body_sha256": "f0eb8b7e9ca3795914f7986183078f499c27a41c55b03a3b743a4c30de926f24"
+    },
+    "session": {
+      "status": 200,
+      "body": "{\"id\":\"agent_session_c313e3728aabc00c94284d1a8bcd16ca\",\"object\":\"agent.session\",\"agent\":{\"id\":\"agent_8477206f4e14932f5f65a74da41f5eb3\",\"model\":\"qwen3.8-flash-next\",\"reasoning\":{\"effort\":\"none\",\"summary\":null},\"instructions\":\"Answer arithmetic questions with the decimal integer only.\",\"name\":null,\"service_tier\":\"auto\",\"text\":{\"verbosity\":\"medium\",\"format\":{\"type\":\"text\"}},\"multi_agent\":{\"enabled\":false,\"max_concurrent_subagents\":null},\"experimental\":{\"time_awareness\":false},\"compaction\":{\"async\":true},\"tools\":[]},\"environment\":{\"type\":\"none\"},\"created_at\":1795667189,\"last_active_at\":1795667250,\"error\":null,\"usage\":{\"input_tokens\":243,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":5,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":248},\"metadata\":{},\"required_actions\":[],\"status\":\"idle\",\"vault_ids\":[],\"review\":\"none\"}",
+      "http_sha256": "3c60e847f09d47e045879e2c079cc1e511c46f4fa042d2e6ac743db312ee2fb8",
+      "body_sha256": "eb18302ddce626551a3ec2fde78232c29bf6bd791ac9fc2080469908d815929e"
+    },
+    "foreign": {
+      "status": 404,
+      "body": "{\"error\":{\"message\":\"Object not found\",\"type\":\"invalid_request_error\",\"code\":\"object_not_found\",\"param\":null}}",
+      "http_sha256": "cdce3fe7571ff3e5c27ca2c1050b33f0253951487acbfe29e08c32f63b6eac08",
+      "body_sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    }
+  },
+  "quota_projection": [
+    {
+      "session_id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+      "turn_id": "turn_424601ccb80bfe426554c4c50b03b6e3",
+      "turn": {
+        "id": "turn_424601ccb80bfe426554c4c50b03b6e3",
+        "session_id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+        "agent_id": "agent_8477206f4e14932f5f65a74da41f5eb3",
+        "subagent_id": null,
+        "object": "agent.session.turn",
+        "status": "queued",
+        "created_at": 1795667189,
+        "started_at": null,
+        "completed_at": null,
+        "error": null,
+        "usage": null
+      },
+      "type": "agent.session.turn.created",
+      "event_id": "evt_bbe50a67290610be95c5c212e3a1e05da416a2bbd9d1ec3b35ea2b8e5b43791c"
+    },
+    {
+      "session": {
+        "id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+        "object": "agent.session",
+        "agent": {
+          "id": "agent_8477206f4e14932f5f65a74da41f5eb3",
+          "model": "qwen3.8-flash-next",
+          "reasoning": {
+            "effort": "none",
+            "summary": null
+          },
+          "instructions": "Answer arithmetic questions with the decimal integer only.",
+          "name": null,
+          "service_tier": "auto",
+          "text": {
+            "verbosity": "medium",
+            "format": {
+              "type": "text"
+            }
+          },
+          "multi_agent": {
+            "enabled": false,
+            "max_concurrent_subagents": null
+          },
+          "experimental": {
+            "time_awareness": false
+          },
+          "compaction": {
+            "async": true
+          },
+          "tools": []
+        },
+        "environment": {
+          "type": "none"
+        },
+        "created_at": 1795667189,
+        "last_active_at": 1795667189,
+        "error": null,
+        "usage": {
+          "input_tokens": 101,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 103
+        },
+        "metadata": {},
+        "required_actions": [],
+        "status": "in_progress",
+        "vault_ids": [],
+        "review": "none"
+      },
+      "type": "agent.session.in_progress",
+      "event_id": "evt_c841a175b6d83687fd6f809053e327898ac3f0816399bca6ae8358358c7b59de"
+    },
+    {
+      "session_id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+      "turn_id": "turn_424601ccb80bfe426554c4c50b03b6e3",
+      "turn": {
+        "id": "turn_424601ccb80bfe426554c4c50b03b6e3",
+        "session_id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+        "agent_id": "agent_8477206f4e14932f5f65a74da41f5eb3",
+        "subagent_id": null,
+        "object": "agent.session.turn",
+        "status": "in_progress",
+        "created_at": 1795667189,
+        "started_at": 1795667189,
+        "completed_at": null,
+        "error": null,
+        "usage": null
+      },
+      "type": "agent.session.turn.in_progress",
+      "event_id": "evt_64344da166f42ad94708f2f24fc691a6a83ceea790a37a8aa0af25aa1b4c62fe"
+    },
+    {
+      "session_id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+      "turn_id": "turn_424601ccb80bfe426554c4c50b03b6e3",
+      "turn": {
+        "id": "turn_424601ccb80bfe426554c4c50b03b6e3",
+        "session_id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+        "agent_id": "agent_8477206f4e14932f5f65a74da41f5eb3",
+        "subagent_id": null,
+        "object": "agent.session.turn",
+        "status": "failed",
+        "created_at": 1795667189,
+        "started_at": 1795667189,
+        "completed_at": 1795667189,
+        "error": {
+          "code": "rate_limit_exceeded",
+          "message": "client minute quota unavailable"
+        },
+        "usage": {
+          "input_tokens": 0,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 0,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 0
+        }
+      },
+      "usage": {
+        "input_tokens": 0,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 0,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 0
+      },
+      "type": "agent.session.turn.failed",
+      "event_id": "evt_398c49d3284aaa35629ef78fd2b1182c2a7eec53b94494f3b679b9c8378aeb64"
+    },
+    {
+      "session": {
+        "id": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+        "object": "agent.session",
+        "agent": {
+          "id": "agent_8477206f4e14932f5f65a74da41f5eb3",
+          "model": "qwen3.8-flash-next",
+          "reasoning": {
+            "effort": "none",
+            "summary": null
+          },
+          "instructions": "Answer arithmetic questions with the decimal integer only.",
+          "name": null,
+          "service_tier": "auto",
+          "text": {
+            "verbosity": "medium",
+            "format": {
+              "type": "text"
+            }
+          },
+          "multi_agent": {
+            "enabled": false,
+            "max_concurrent_subagents": null
+          },
+          "experimental": {
+            "time_awareness": false
+          },
+          "compaction": {
+            "async": true
+          },
+          "tools": []
+        },
+        "environment": {
+          "type": "none"
+        },
+        "created_at": 1795667189,
+        "last_active_at": 1795667189,
+        "error": null,
+        "usage": {
+          "input_tokens": 101,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 103
+        },
+        "metadata": {},
+        "required_actions": [],
+        "status": "idle",
+        "vault_ids": [],
+        "review": "none"
+      },
+      "type": "agent.session.idle",
+      "event_id": "evt_b071f5a6803b5225f2fdaf645f7323697801340ab730984cae7836043f1e7da9"
+    }
+  ]
+}
