@@ -1,0 +1,55 @@
+{
+  "real_model": "pending",
+  "scope": "native HTTP, previously generated real MCP denial and approval, GPU inaccessible to fixture",
+  "strict_sdk": {
+    "rows": {
+      "2.8.1": {
+        "sdk": "2.8.1",
+        "id": "resp_b10b7c6a9b91952b64c30673b6e79d61",
+        "approved_id": "resp_fb29b55a96a7006c7ce3384683ea1ffc",
+        "string_error": true,
+        "get_sha256": "b00ce114d2e0fd92fd327d6da500093109b0253ef92acf0d996049dcb4779d6c",
+        "events": 38,
+        "cursor": 6,
+        "resumed": 31,
+        "foreign_404": 2
+      },
+      "3.42.1": {
+        "sdk": "3.42.1",
+        "id": "resp_b10b7c6a9b91952b64c30673b6e79d61",
+        "approved_id": "resp_fb29b55a96a7006c7ce3384683ea1ffc",
+        "string_error": false,
+        "get_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+        "events": 38,
+        "cursor": 6,
+        "resumed": 31,
+        "foreign_404": 2
+      },
+      "3.55.1": {
+        "sdk": "3.55.1",
+        "id": "resp_b10b7c6a9b91952b64c30673b6e79d61",
+        "approved_id": "resp_fb29b55a96a7006c7ce3384683ea1ffc",
+        "string_error": false,
+        "get_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+        "events": 38,
+        "cursor": 6,
+        "resumed": 31,
+        "foreign_404": 2
+      }
+    },
+    "unchanged_files": 7,
+    "model_starts": 0
+  },
+  "build": {
+    "files": {
+      "q4t": "1178ccbd8ea9737932d8d6ebd083e6641c358cec47b92ef91f467fb6be8efb8d",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "4cf9425066acefb6165259624653e3f7b8d5d101a81b3b2c3a0fd9b052881632",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "driver_sha256": "8c8a95b6fa947c6e75ebff052195d9a3c8b3d2a5313cd9dbaf7cabb403ff4a8d",
+  "fixture_sha256": "d82dce70505b1181eacb8d0769c164609737a5c130ff1c53693f7c08724a553e"
+}
