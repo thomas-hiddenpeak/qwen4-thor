@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <limits>
 
+#include "file_video_orientation.h"
 #include "file_video_protocol.h"
 
 namespace q4t::server::video_detail {
@@ -13,17 +14,21 @@ struct DisplayGeometry {
   bool operator==(const DisplayGeometry&) const = default;
 };
 
-// A QuickTime clip lives in the track's declared display space; sample the
-// decoded image onto that grid before applying either clip or matrix.
-inline Failure UseTrackGrid(uint32_t width, uint32_t height,
+// Integral tracks can be resized directly by the decoder pipeline. The
+// fractional renderer maps coded pixel centers to the exact track rectangle.
+inline Failure UseTrackGrid(const TrackSize& size,
                             const FileVideoLimits& limits,
                             DisplayGeometry* geometry) {
+  const uint64_t width = (uint64_t(size[0]) + 65535) >> 16;
+  const uint64_t height = (uint64_t(size[1]) + 65535) >> 16;
   if (!width || !height) return Failure::kInvalid;
   if (width > limits.max_edge || height > limits.max_edge ||
-      uint64_t(width) * height > limits.max_frame_pixels)
+      width * height > limits.max_frame_pixels)
     return Failure::kCapacity;
-  geometry->square_width = width;
-  geometry->square_height = height;
+  geometry->square_width =
+      FractionalTrack(size) ? geometry->coded_width : width;
+  geometry->square_height =
+      FractionalTrack(size) ? geometry->coded_height : height;
   return Failure::kNone;
 }
 

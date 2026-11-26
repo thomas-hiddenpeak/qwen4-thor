@@ -33,6 +33,11 @@ exact bytes; no color labels or expected answers are placed in the clip.
 实际媒体身份和生成命令见`geometry-identity.json`。没有GPU/模型访问，
 未使用第三方图片或视频；生成器及产物均属项目测试资料。
 
+`tall-pixels.mp4` 的 `tkhd` 声明 64×64，编码栅格为 128×64，像素比为 1:2。
+按轨道宽高解码得到 64×64。旧版本曾输出 128×128；随附的
+`tall-pixels-v3.json` 和 `tall-pixels-v3.png` 取自 rev550 的原生解码器，
+其三帧 PNG 字节相同，用于验证历史快照仍可回读。
+
 ## MP4 alternate tracks
 
 `alternate-tracks.mp4` contains the original three-second colour sequence and

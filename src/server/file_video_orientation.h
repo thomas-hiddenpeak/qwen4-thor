@@ -21,9 +21,13 @@ enum class DisplayDirection {
   kAntiTranspose
 };
 
+using TrackSize = std::array<uint32_t, 2>;  // Unsigned 16.16 display extents.
+inline bool FractionalTrack(const TrackSize& size) {
+  return ((size[0] | size[1]) & 0xffff) != 0;
+}
 struct DisplayClips {
   std::optional<ClipRect> movie, track;
-  std::array<uint16_t, 2> track_size{};
+  TrackSize track_size{};
   std::optional<QuickDrawRegion> movie_region{}, track_region{};
   bool Complex() const { return movie_region || track_region; }
   bool Any() const { return movie.has_value() || track.has_value(); }
@@ -146,17 +150,14 @@ class MovieDisplay {
     if (read_clips) {
       result.clips.movie = Clip(movie, &result.clips.movie_region);
       result.clips.track = Clip(selected, &result.clips.track_region);
-      if (result.clips.Any()) {
-        const size_t at = track[0] == 0 ? 76 : 88;
-        Require(track.size() >= at + 8);
-        for (size_t i = 0; i < result.clips.track_size.size(); ++i) {
-          const auto raw = Big(track.substr(at + i * 4, 4));
-          // The clipped renderer currently samples whole-pixel track grids.
-          // Rounding a fractional source rectangle can expose the wrong edge.
-          Require(raw && !(raw & 0xffff));
-          result.clips.track_size[i] = static_cast<uint16_t>(raw >> 16);
-        }
-      }
+      const size_t at = track[0] == 0 ? 76 : 88;
+      Require(track.size() >= at + 8);
+      for (size_t i = 0; i < 2; ++i)
+        result.clips.track_size[i] = uint32_t(Big(track.substr(at + i * 4, 4)));
+      const auto& size = result.clips.track_size;
+      // A track without declared dimensions falls back to the decoded grid.
+      Require((size[0] && size[1]) ||
+              (!size[0] && !size[1] && !result.clips.Any()));
     }
     if (result.has_alternates) {
       const auto scale = Big(header.substr(header[0] == 0 ? 12 : 20, 4));

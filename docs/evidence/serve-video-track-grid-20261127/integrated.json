@@ -1,0 +1,240 @@
+{
+  "stage": "integrated_native_cpu_verified",
+  "native_source": "8c22fd49f99607316f391fd9850427b49058b6e3",
+  "cpu_predecessor_sha256": "769ec09e7bf81f217d6c6ece33f4968f2b8b2261034cb6a0f501058cbba1f643",
+  "previous_product": {
+    "binary": "91ca3b94f494db8391ac5158e89cb3bce08b6c5c9bebf3e275d651405a7612a0",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_manifest": "361bf40f9ce3ef449a1ccc1efbb265f95b03de4157bf4a81f469156d8437a092",
+    "matched_sources": 1102
+  },
+  "product": {
+    "binary": "8048c6875d4e527a7dbb249abbfcdce2425ec651edbadef2871d481b1aff3f21",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_manifest": "1bcbd2e03842badf903ef35381569faee129c6f49f1ea59071140b4fa72701c5",
+    "matched_sources": 1102
+  },
+  "sdk_driver_sha256": "32a6eb6b4da97d966e6a739cffe1c7e390a0cd841c719802031a13c29f8d06fb",
+  "fixture": {
+    "path": "tests/fixtures/file_video/rect-clips.mov",
+    "sha256": "76e7c2319fa3574d5a70e6316bd8e5261a69c38f1ffc5acdee8269a79d8e09a6"
+  },
+  "paired_cpu": [
+    {
+      "case": "reference",
+      "extent_fixed16": [
+        8388608,
+        4194304
+      ],
+      "size": [
+        128,
+        64
+      ],
+      "rgb_sha256": [
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327",
+        "2cd6662dc0d19f0b3e32a9d9e5ffecdee37cda282c670e2c016447e751c08327"
+      ],
+      "source_sha256": [
+        "80e440d2fc111c922d94c4905c011880034b32906913759e34d0aef3c49a8609",
+        "2d9ccb1cebc01c298365d9273d43b5dad0c80903af0f9df542777109d8c3f759"
+      ],
+      "png_sha256": [
+        "2713d366f115bd2cfefdc0be04876fea1e31ceb2f39b48e494ca10eec8ac2b4f",
+        "2713d366f115bd2cfefdc0be04876fea1e31ceb2f39b48e494ca10eec8ac2b4f",
+        "2713d366f115bd2cfefdc0be04876fea1e31ceb2f39b48e494ca10eec8ac2b4f"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "integral",
+      "extent_fixed16": [
+        6291456,
+        3145728
+      ],
+      "size": [
+        96,
+        48
+      ],
+      "rgb_sha256": [
+        "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77",
+        "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77",
+        "3d60cf14a5dda381f27f7f3013c2718c1948c38c13a7ecb1ec25e8bf57eb0e77"
+      ],
+      "source_sha256": [
+        "b5e1e21369e01460b16db13269b85cbd8a458a86e3d9e7a949d87a74c5f6b798",
+        "d15d1f60a94d7e90a57f50348660e21a32cefa64fa5d31cc79d663c2ebafcca7"
+      ],
+      "png_sha256": [
+        "51a9804622d2baf3fe2c31fc7effc62a5abfd6e624fbac2fbc2a6976c31d9826",
+        "51a9804622d2baf3fe2c31fc7effc62a5abfd6e624fbac2fbc2a6976c31d9826",
+        "51a9804622d2baf3fe2c31fc7effc62a5abfd6e624fbac2fbc2a6976c31d9826"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "fractional",
+      "extent_fixed16": [
+        6324224,
+        3145728
+      ],
+      "size": [
+        97,
+        48
+      ],
+      "rgb_sha256": [
+        "6d6b84cd977f76a4e61ab273a4cb8d0f6fbc94403a03ccf68eb1a5a453a821bc",
+        "6d6b84cd977f76a4e61ab273a4cb8d0f6fbc94403a03ccf68eb1a5a453a821bc",
+        "6d6b84cd977f76a4e61ab273a4cb8d0f6fbc94403a03ccf68eb1a5a453a821bc"
+      ],
+      "source_sha256": [
+        "63d9f0cd4e111dac5aec81afbb3b459c400bf30c70594aa1ebe16c0c4e795fca",
+        "b05bc1d79cd2f52eeb5368c153b44d613a958428c6e3b3823d663abfb00a308d"
+      ],
+      "png_sha256": [
+        "583b1f4552c22e0d51682fda566582f0ebf50d06828442c399e9ac1813321262",
+        "583b1f4552c22e0d51682fda566582f0ebf50d06828442c399e9ac1813321262",
+        "583b1f4552c22e0d51682fda566582f0ebf50d06828442c399e9ac1813321262"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "quarter",
+      "extent_fixed16": [
+        6307840,
+        3194880
+      ],
+      "size": [
+        97,
+        49
+      ],
+      "rgb_sha256": [
+        "a07f3b0113a9f8ff878c0a62b7ddb9790e222ec6f3dc3195019539e4692061d4",
+        "a07f3b0113a9f8ff878c0a62b7ddb9790e222ec6f3dc3195019539e4692061d4",
+        "a07f3b0113a9f8ff878c0a62b7ddb9790e222ec6f3dc3195019539e4692061d4"
+      ],
+      "source_sha256": [
+        "62ec5db80762f7c75f36f4da053558be0a900e2a5898957caf8ea74da2baeb89",
+        "1d8135dbd87bdec5082f70f319d156ba8e78f5ccac115c991cbd180c0c35eaa7"
+      ],
+      "png_sha256": [
+        "26d13c0b6bc2578bfa5896745e6c4deaacc3dfa71ac7a642cf432386f0d85bdb",
+        "26d13c0b6bc2578bfa5896745e6c4deaacc3dfa71ac7a642cf432386f0d85bdb",
+        "26d13c0b6bc2578bfa5896745e6c4deaacc3dfa71ac7a642cf432386f0d85bdb"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    },
+    {
+      "case": "three_quarters",
+      "extent_fixed16": [
+        6340608,
+        3162112
+      ],
+      "size": [
+        97,
+        49
+      ],
+      "rgb_sha256": [
+        "2c9236030d02a4b3c917c4f581ba689a157f1a0c69bfea410b9190283c56a262",
+        "2c9236030d02a4b3c917c4f581ba689a157f1a0c69bfea410b9190283c56a262",
+        "2c9236030d02a4b3c917c4f581ba689a157f1a0c69bfea410b9190283c56a262"
+      ],
+      "source_sha256": [
+        "de3165bc616cc5e5aa0a3016d9365d93bce97159c2b74c9805faaa0dda9e41c0",
+        "d1a49979b22b066107653960732cea5db202d330e78deaadd81fa90fcf4c2f5b"
+      ],
+      "png_sha256": [
+        "318da22835b46088385ea98bf8fb0d2bd4e6f564e692430e3613ddbd7b3eb1c2",
+        "318da22835b46088385ea98bf8fb0d2bd4e6f564e692430e3613ddbd7b3eb1c2",
+        "318da22835b46088385ea98bf8fb0d2bd4e6f564e692430e3613ddbd7b3eb1c2"
+      ],
+      "timing": [
+        "0 0 500000000",
+        "2 1000000000 500000000",
+        "3 1500000000 500000000"
+      ]
+    }
+  ],
+  "capture_sha256": "d1c5be42e0d45c4383a9abf88d79e84772a717584a9a0399097a46801b156ac8",
+  "source_equality": "10 native decodes; 30 RGB frames and timing equal to earlier acceptance",
+  "cpu_tests": 49,
+  "handoff_and_prior_tests": 8,
+  "profile_contract": "v82 bound to actual v81 primary/light; real v82 qualification pending",
+  "tested_predecessors": {
+    "primary": {
+      "prior": "9d1040ded9d883e8e7ea34836bd3f6f45dfc4bb9ee541d7346c2678862c76910",
+      "reconstructed": true,
+      "rejected_missing_receipts": 2,
+      "rejected_wrong_geometry": 2
+    },
+    "light": {
+      "prior": "a9730796f469417ed76b068f67b07ee28aa1290c1f412f746d249fbbd3c03637",
+      "reconstructed": true,
+      "rejected_missing_receipts": 2,
+      "rejected_wrong_geometry": 2
+    }
+  },
+  "issued": false,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1392,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "native_capability_tests": {
+    "cases": [
+      "chat_capabilities_files_separates_capacity_storage_and_consumption",
+      "chat_capabilities_native_video_separates_model_and_codec_readiness",
+      "chat_capabilities_native_responses_state_and_recovery"
+    ],
+    "settings": {
+      "media": [
+        false,
+        true
+      ],
+      "mtp": [
+        false,
+        true
+      ]
+    },
+    "new_snapshot": "q4t.cpu_video_png.v8",
+    "previous_clipping": "q4t.cpu_video_png.v7"
+  },
+  "historical_response_bindings": {
+    "historical_fixture": "region-shape-business-01",
+    "fixture_sdk_sha256": "cecd1ca9c74c2ff5647e3e760eadb8562a4801c55dd77ac4d3147eb3f8e6c06f",
+    "stored_responses": 3,
+    "independent_snapshots": 2,
+    "rejected": [
+      "wrong_owner",
+      "swapped",
+      "wrong_parent",
+      "binding_hash",
+      "snapshot_hash",
+      "wrong_deleted_file",
+      "wrong_inline_bytes",
+      "fresh_instead_of_history"
+    ]
+  }
+}

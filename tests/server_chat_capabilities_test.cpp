@@ -200,6 +200,15 @@ Q4T_TEST(chat_capabilities_native_video_separates_model_and_codec_readiness) {
       Q4T_CHECK(video &&
                 video->GetString("profile") == "q4t-native-video-input-v1");
       Q4T_CHECK(video->GetBool("model_media_enabled") == media);
+      const auto* grid = video->Find("track_display_size");
+      const auto* regions = video->Find("region_clipping");
+      Q4T_CHECK(grid && grid->GetString("source") == "quicktime-tkhd-fixed16" &&
+                grid->GetString("fractional_sampling") ==
+                    "pixel-center-bilinear16" &&
+                grid->GetBool("clips_optional") &&
+                grid->GetString("frozen_conversion") == "q4t.cpu_video_png.v8");
+      Q4T_CHECK(regions && regions->GetString("frozen_conversion") ==
+                               "q4t.cpu_video_png.v7");
       Q4T_CHECK(video->GetBool("runtime_codec_checked_on_request") &&
                 video->GetBool("shared_work_budget") &&
                 video->GetBool("timestamps") &&
