@@ -1,0 +1,91 @@
+{
+  "stage": "device_verified_candidate",
+  "affected_release": 530,
+  "deployment": "installed revision unchanged; corrected combined candidate separately built and tested",
+  "agent_changeset": "61020544c4bc51990e6e97bab973033bd1002fa070fa167a98de04396a77a7f1",
+  "build": {
+    "engine": "d36a124cf0ff9a0090bde240810d21cd2236bf8c8eb96e5f5b48350c5fdf7c28",
+    "previous": "4f94080ae75c546efbd48f90c1d861bd8f0d6c83d720d215125eb7897b8c9687",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "cuda_probe": "70d0ab325f27fabd3849a21cd44e4c857bafb75089459804f09859e3dbd6e7c5",
+    "previous_cuda_probe": "e9c27b6d283a5a456dad5eaf99c71a5906324a766bc3c5f6b44b5a467cce4344",
+    "probe_difference": "nvcc temporary source filename in ELF string table",
+    "runtime_files": 1100,
+    "changed": [
+      "src/server/agent_session_events.cpp"
+    ]
+  },
+  "device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 105.863,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "events": {
+    "sdk": "7.47.0",
+    "session": "agent_session_c313e3728aabc00c94284d1a8bcd16ca",
+    "failed_turn": "turn_424601ccb80bfe426554c4c50b03b6e3",
+    "first_answer": "2",
+    "submitted": 202,
+    "event_error": {
+      "code": "rate_limit_exceeded",
+      "message": "client minute quota unavailable"
+    },
+    "read_error": {
+      "code": "rate_limit_exceeded",
+      "message": "client minute quota unavailable"
+    },
+    "events": [
+      {
+        "type": "agent.session.turn.created",
+        "id": "evt_bbe50a67290610be95c5c212e3a1e05da416a2bbd9d1ec3b35ea2b8e5b43791c"
+      },
+      {
+        "type": "agent.session.in_progress",
+        "id": "evt_c841a175b6d83687fd6f809053e327898ac3f0816399bca6ae8358358c7b59de"
+      },
+      {
+        "type": "agent.session.turn.in_progress",
+        "id": "evt_64344da166f42ad94708f2f24fc691a6a83ceea790a37a8aa0af25aa1b4c62fe"
+      },
+      {
+        "type": "agent.session.turn.failed",
+        "id": "evt_398c49d3284aaa35629ef78fd2b1182c2a7eec53b94494f3b679b9c8378aeb64"
+      },
+      {
+        "type": "agent.session.idle",
+        "id": "evt_b071f5a6803b5225f2fdaf645f7323697801340ab730984cae7836043f1e7da9"
+      }
+    ],
+    "session_status": "idle",
+    "final_answer": "42",
+    "turn_statuses": [
+      "completed",
+      "failed",
+      "completed"
+    ],
+    "foreign": 404,
+    "actor_sha256": "49828202d735ad64ddd2bf81152d4b3ed74a385d2a35f5046df2c46b84b25c8c"
+  },
+  "earlier_attempts": {
+    "agent-corrected-clip-business-01": {
+      "result": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 1.123,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "result_sha256": "5fd42c70ccbdf9153ad6f38996e20c7b259a966cfd8899fd8314bbbb512adff5"
+    }
+  },
+  "raw_sha256": {
+    "agent-corrected-clip-business-02/plan.json": "daae3c2865056008ed0b81f2cf407bebc426dba24e79305d40a378e9194c3c40",
+    "agent-corrected-clip-business-02/result.json": "91ef276f9835bab67541476181ea7a21851688e2afb8374c7151a87f233ddaa1",
+    "agent-corrected-clip-business-02/create/agent-turn.json": "9d8dd2d2b4200957b2133cd6c1606942eeb172b2d2bd986bbdef10e3bbdab75d",
+    "agent-corrected-clip-lease-02/exit.json": "9f0faa11ffb6c0fa937f17ac69a6ab955ff77a74e5bbb2dda6b869e4f782f172"
+  }
+}
