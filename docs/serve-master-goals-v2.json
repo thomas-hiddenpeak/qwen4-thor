@@ -854,7 +854,7 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "optional_resource_updates_20261126": {
-        "stage": "targeted_cpu",
+        "stage": "candidate_native_https",
         "methods": [
           "/v1/agents/{agent_id}",
           "/v1/agents/sessions/{session_id}",
@@ -862,8 +862,9 @@
           "/v1/webhook_endpoints/{webhook_endpoint_id}"
         ],
         "receipt": "evidence/serve-optional-resource-updates-20261126/cpu.json",
-        "device_https_pending": true,
-        "release_pending": true
+        "device_https_pending": false,
+        "release_pending": true,
+        "device_https": "evidence/serve-optional-resource-updates-20261126/https.json"
       }
     },
     {
@@ -6487,11 +6488,17 @@
         ]
       },
       "quickdraw_regions_20261126": {
-        "stage": "profiles_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-video-regions-20261126/cpu.json",
         "http": "evidence/serve-video-regions-20261126/business.json",
         "remaining_track_grid": "With identical 128x64 source frames and 96x48 declared track size, no clip renders 128x64 but a full clip renders 96x48. Fractional width is ignored without clipping and rejects with a clip. Correct both paths and verify identical pictures for a full-canvas clip.",
-        "profiles": "evidence/serve-video-regions-20261126/profiles.json"
+        "profiles": "evidence/serve-video-regions-20261126/profiles.json",
+        "revision": 534,
+        "delivery": "evidence/serve-video-regions-20261126/delivery.json",
+        "unresolved": [
+          "uniform integral and fractional track grid with exposed and full-clip tracks",
+          "multiple enabled video tracks"
+        ]
       }
     },
     {
@@ -9927,8 +9934,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 532,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev532-preflight.json",
+        "revision": 534,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev534-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11657,7 +11664,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev532_delivered_remaining_deliveries",
+      "state": "rev534_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13001,7 +13008,8 @@
       "current_visual_frame_delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json",
       "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json",
       "current_failure_delivery": "evidence/serve-responses-errors-20261126/delivery.json",
-      "current_movie_clip_delivery": "evidence/serve-video-clipping-20261126/delivery.json"
+      "current_movie_clip_delivery": "evidence/serve-video-clipping-20261126/delivery.json",
+      "current_region_clip_delivery": "evidence/serve-video-regions-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13106,16 +13114,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "30ad891b9866d97dae4a5d0889719fdfc20ebb0d",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-delivery-soak-src",
+        "source_commit": "45e3324d3c993e26d499b3fcf0bf6e67a0a0cec3",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/region-shape-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-client-primary-01/bundle",
-          "manifest_sha256": "703046bff3f2f7701a00027060849d41621e36837190d03b2334481afe3fc62b"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/region-shape-client-primary-01/bundle",
+          "manifest_sha256": "283ba946ff06f34ca9f6121183e5bcfaca9af9582c082ee272c1de4cabf17ff6"
         },
-        "revision": 532,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "e6664d743df464cf2069e524c272d5cc67fee2d0db113702419c959055d4eac2",
-        "handoff_sha256": "682133da358440197ec378023abdfbec6ee5ba2a0c5779a23a8df457de1f95d1",
+        "revision": 534,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/region-shape-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "5130207abf15a5949cedeea45fca53296a58bd6af39e293c18f832840bcaae72",
+        "handoff_sha256": "62d22db5d24d2f1c85feb6f9be321c817f598f4cd336d78b82cdafc5c841b07c",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13526,9 +13534,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 532,
-        "receipt": "evidence/serve-video-clipping-20261126/delivery.json",
-        "plan_sha256": "e6664d743df464cf2069e524c272d5cc67fee2d0db113702419c959055d4eac2",
+        "revision": 534,
+        "receipt": "evidence/serve-video-regions-20261126/delivery.json",
+        "plan_sha256": "5130207abf15a5949cedeea45fca53296a58bd6af39e293c18f832840bcaae72",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
