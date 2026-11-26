@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主、轻两种真实配置分别重新启动模型并打开密封历史。两版 SDK 在每种配置下均答出版本号 560，视频续答为 Blue。6 份回答都由新请求生成，6 次跨客户提交均被拒绝。主配置用时 43.749 秒，轻配置用时 38.74 秒，各启动模型一次。下一步验证托管故障接管和可回退发行。 [主轻验收](evidence/serve-compact-window-identities-20261127/profiles.json)
+
 README 增加官方 Python SDK 压缩并继续对话的可运行示例。客户端可以直接读取压缩窗口 JSON，原样保留输入消息、媒体和既有工具决定；另给出严格字段校验入口。2.33.0 与 3.55.1 均以真实 SDK 重放既有 HTTP 正文，验证完整窗口、新问题位置及续答内容。接续主轻配置实机验收。 [示例验证](evidence/serve-compact-window-identities-20261127/sdk-example.json)
 
 新增跨进程压缩窗口验收驱动。两版真实 Python SDK 通过回环 HTTP 重放此前签发的工具和视频窗口，主、轻两组夹具共完成 6 次续答和 6 次跨客户拒绝；另以 11 个反例检查输入替换、响应复用、读者版本及前代发行记录。源库 24 个文件逐一校验。夹具复用已捕获的模型正文，接下来由主、轻配置实机生成新回答。 [驱动回执](evidence/serve-compact-window-identities-20261127/handoff-driver.json)

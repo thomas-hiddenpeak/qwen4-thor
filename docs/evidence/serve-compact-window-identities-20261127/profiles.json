@@ -1,0 +1,173 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 564,
+  "build": {
+    "engine": "f225ca066ed5e69ffaa0c0f0444f66aa31566c8086d3f26f39a414c72eb1ac83",
+    "ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684"
+  },
+  "openapi_sha256": "04516e227a91ed1e058f6107d86d7a8762f9a6af72c011780adc57f541f03d4b",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "phase": "primary",
+        "cases": {
+          "release-old": {
+            "sdk": "2.33.0",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1089,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 1082
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1093
+            },
+            "http_status": 200,
+            "response_sha256": "c2d774bfb8a8efdc9d2874fc72e8a885d32aee61b489aa1e6b1d110a8062fda5",
+            "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "response_id": "resp_52d324cc2607c9263fdccc25fd95bb62"
+          },
+          "release-current": {
+            "sdk": "3.55.1",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1089,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 1082
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1093
+            },
+            "http_status": 200,
+            "response_sha256": "a304b6562081dbce8b165ef1c8797dc6dbda9424800b3c4d525c04ef089f7ebd",
+            "window_sha256": "2ead870a30419eb2c2de7ba3d555c0412ec31fbd1e2b15d111241c72f1c2cf0b",
+            "response_id": "resp_f933ea450fd9966e816efe9648d16f30"
+          },
+          "video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1133,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1135
+            },
+            "http_status": 200,
+            "response_sha256": "bae95181a6d8e7fc21e1cfc85b2471c07722f14d038b9e278e066b679f6e8ce7",
+            "window_sha256": "1e3732da397c782cdd2dc7ec639a60b4b2d2f5c8d79fc2ea7b871523279edaec",
+            "response_id": "resp_036546df462f72a4c6e823d6da9ce572"
+          }
+        }
+      },
+      "seconds": 43.749,
+      "starts": 1,
+      "record_sha256": "3cc6f3e21fe4bc56e789c1dba8c4aee5854a9a275240e4a7acece3033f52b1b1",
+      "receipt_sha256": "a8dbc6083513a6ba822118b6aed117332baa14594f1f8bb5f292cc492d98880c",
+      "predecessor": "23a7dbe063d502452028b6c5c031ce46e1e478aab22b4ffac74361920907204e"
+    },
+    "light": {
+      "sdk": {
+        "phase": "light",
+        "cases": {
+          "release-old": {
+            "sdk": "2.33.0",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1089,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 1082
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1093
+            },
+            "http_status": 200,
+            "response_sha256": "239d2643a4bde3398fa34507f77ea1fab5836a9665a6dcc5ada87c2aa9708d99",
+            "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "response_id": "resp_3ece39c5a9b391a5032f9281af42c168"
+          },
+          "release-current": {
+            "sdk": "3.55.1",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1089,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 1082
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1093
+            },
+            "http_status": 200,
+            "response_sha256": "a6f0539b89e956559eb053b5ff967fc251511199868e9396424fdb6e1282b7b6",
+            "window_sha256": "2ead870a30419eb2c2de7ba3d555c0412ec31fbd1e2b15d111241c72f1c2cf0b",
+            "response_id": "resp_4f3ae1ab7b7a3c1873818700b3af2270"
+          },
+          "video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1133,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1135
+            },
+            "http_status": 200,
+            "response_sha256": "8d265aea39cdae37337bcf0b6d0910c5e487332cd87e7ad96680e4ff7d8548c1",
+            "window_sha256": "1e3732da397c782cdd2dc7ec639a60b4b2d2f5c8d79fc2ea7b871523279edaec",
+            "response_id": "resp_2eb28394896d056515f0cec32cda2bb2"
+          }
+        }
+      },
+      "seconds": 38.74,
+      "starts": 1,
+      "record_sha256": "b9ede4efceb00ccf7cbd46673cf75e00cb9acbbbf9db5d8969847a810fecf756",
+      "receipt_sha256": "c4a304e77a8159748c8c08daa97f7702d4156324acd3ad1fcf1eead19ac1e885",
+      "predecessor": "0e2f5f1946f086ae4c468f21d3b3882b6ce5d1c1508eff1cb6153514b92260d4"
+    }
+  },
+  "business_evidence": "cc066368ac2f5638ea4c48115b5e1544738bbff09bed823292e2e5c50fe2bc27",
+  "lease_exit": "4329bb498be6e83429a88ade456e4eca7d98508d74d3cb6512f7d641fd2fb89e",
+  "acceptance": "b9b93fbb4ba2d1a1ad7a81b5003807f0a05ed2ca937c41a4821a3189448b6324",
+  "qualification": "74465d6894570b0b230616e4e60d1b6cee69887822bb24a0fb7596cfa68e6d44",
+  "default_preserved": true
+}
