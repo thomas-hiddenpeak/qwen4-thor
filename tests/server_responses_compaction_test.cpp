@@ -151,6 +151,46 @@ Q4T_TEST(compaction_plan_standalone_preserves_user_and_media_items) {
   return true;
 }
 
+Q4T_TEST(compaction_places_memory_before_the_unchanged_suffix) {
+  auto history = History();
+  history.array.insert(history.array.end() - 1,
+                       Message("policy", "developer", "Keep the audit trail"));
+  const auto plan = Plan(history, ResponsesCompactionMode::kStandalone);
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  StateCipher cipher(store);
+  Json sealed, expanded;
+  Q4T_CHECK(Ok(SealResponsesCompaction(cipher, plan, "Verified result: 42.",
+                                       "cmp_order", Config(), Access(),
+                                       &sealed, &expanded)));
+  Json replay;
+  Q4T_CHECK(Ok(OpenResponsesCompaction(cipher, plan.retained, sealed, Config(),
+                                       Access(), &replay)));
+  Q4T_CHECK(OutputJson(expanded) == OutputJson(replay));
+  Q4T_CHECK(replay.array.size() == 5);
+  Q4T_CHECK(replay.array[0].GetString("id") == "sys");
+  Q4T_CHECK(replay.array[1].GetString("id") == "u1");
+  Q4T_CHECK(replay.array[2].GetString("role") == "assistant");
+  Q4T_CHECK(replay.array[3].GetString("id") == "policy");
+  Q4T_CHECK(replay.array[4].GetString("id") == "u2");
+  return true;
+}
+
+Q4T_TEST(compaction_standalone_summary_uses_the_historical_prefix) {
+  auto history = History();
+  auto original = Plan(history, ResponsesCompactionMode::kStandalone);
+  history.array.back() = Message("another_user", "user", "A new question");
+  auto changed = Plan(history, ResponsesCompactionMode::kStandalone);
+  Q4T_CHECK(OutputJson(original.request) == OutputJson(changed.request));
+  Q4T_CHECK(OutputJson(original.retained) != OutputJson(changed.retained));
+  auto prefix = History();
+  prefix.array.pop_back();
+  const auto prompt =
+      original.request.GetArray("messages")->array.back().GetString("content");
+  Q4T_CHECK(prompt.ends_with(OutputJson(prefix)));
+  return true;
+}
+
 Q4T_TEST(compaction_retains_original_file_bytes_outside_the_summary_prompt) {
   auto history = History();
   auto& parts = Field(&history.array[1], "content").array;
@@ -1081,7 +1121,31 @@ Q4T_TEST(compaction_reasoning_deltas_are_never_written_into_sealed_memory) {
   ResponseDelta invalid;
   invalid.kind = ResponseDelta::Kind::kTool;
   Q4T_CHECK(!CheckCompactionDelta(invalid));
-  invalid.kind = ResponseDelta::Kind::kRefusal;
-  Q4T_CHECK(!CheckCompactionDelta(invalid));
+  Q4T_CHECK(Ok(CheckCompactionFinish(false, parser)));
+  Q4T_CHECK(CheckCompactionFinish(true, parser).code == "compaction_incomplete");
+  return true;
+}
+
+Q4T_TEST(compaction_classifies_complete_refusal_after_parsing) {
+  const auto request = Parse(R"({"messages":[],"enable_thinking":false})");
+  for (const bool closed : {false, true}) {
+    ChatResponseParser parser;
+    Q4T_CHECK(parser.Init(request, "<think>\n\n</think>\n\n", "resp_refusal", true));
+    std::vector<ResponseDelta> deltas;
+    Q4T_CHECK(parser.Append("<q4t_refusal>private refusal", &deltas));
+    Q4T_CHECK(!deltas.empty());
+    for (const auto& delta : deltas) Q4T_CHECK(CheckCompactionDelta(delta));
+    if (closed) Q4T_CHECK(parser.Append("</q4t_refusal>", &deltas));
+    const auto finished = parser.Finish(false, &deltas);
+    Q4T_CHECK(finished.ok() == closed);
+    if (closed) {
+      const auto reply = CheckCompactionFinish(false, parser);
+      Q4T_CHECK(reply.http_status == 502 && reply.code == "compaction_refused");
+      Q4T_CHECK(reply.message.find("private refusal") == std::string::npos);
+      Q4T_CHECK(parser.Content().empty());
+      Q4T_CHECK(CheckCompactionFinish(true, parser).code ==
+                "compaction_incomplete");
+    }
+  }
   return true;
 }

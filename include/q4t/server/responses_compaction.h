@@ -4,9 +4,13 @@
 #include "q4t/server/state_cipher.h"
 
 namespace q4t::server {
+class ChatResponseParser;
 struct ResponseDelta;
 // Only the parser's final Content() is eligible for the encrypted memory.
 Status CheckCompactionDelta(const ResponseDelta& delta);
+// Call after the output parser has successfully finalized the stream.
+ObjectReply CheckCompactionFinish(bool length_limited,
+                                  const ChatResponseParser& parser);
 
 enum class ResponsesCompactionMode { kAutomatic, kStandalone };
 
@@ -31,8 +35,7 @@ Status PlanResponsesCompaction(const io::Json& history,
 // The wrapper carries its original item ID because the public input contract
 // permits an omitted ID. The ID is authenticated by the inner AEAD binding.
 std::string ResponsesCompactionId(std::string_view opaque);
-// Return replayable public input forms. Canonical stored non-assistant
-// messages have server IDs, but the SDK input message contract omits them.
+// Return replayable public input forms with the original message identities.
 Status ResponsesCompactionWindow(const io::Json& retained,
                                  const io::Json& compaction, io::Json* window,
                                  ChatPlanError* error);

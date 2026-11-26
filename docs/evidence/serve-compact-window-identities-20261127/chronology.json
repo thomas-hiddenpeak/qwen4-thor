@@ -1,0 +1,126 @@
+{
+  "scope": "CPU history order, model-output classification, next-turn eligibility and privacy-safe observation",
+  "record": {
+    "cases": {
+      "before": {
+        "question_index": 5,
+        "memory_index": 6,
+        "question_in_summary": true,
+        "report_in_summary": true,
+        "summary_items": 8,
+        "retained_ids": [
+          "item_debe03b3e7e161287e9d4ee39e6033f3",
+          "mcpl_3bbb5962cd8b05db3e46f0ac3a682c15",
+          "mcpr_7f5f479d4962769d118859d70a86432f",
+          "item_d2b190fcd13e243c2ad835b731bc81ae",
+          "mcp_44dcebc78df179ebb94fba7d5bbac671",
+          "msg_compact_release_question"
+        ],
+        "wire_sha256": "ef5d2c4563403b778362d78b9ac8fab494d3116f9cdb9d3f94bcae728c6ac5c2"
+      },
+      "after": {
+        "question_index": 6,
+        "memory_index": 5,
+        "question_in_summary": false,
+        "report_in_summary": true,
+        "summary_items": 7,
+        "retained_ids": [
+          "item_debe03b3e7e161287e9d4ee39e6033f3",
+          "mcpl_3bbb5962cd8b05db3e46f0ac3a682c15",
+          "mcpr_7f5f479d4962769d118859d70a86432f",
+          "item_d2b190fcd13e243c2ad835b731bc81ae",
+          "mcp_44dcebc78df179ebb94fba7d5bbac671",
+          "msg_compact_release_question"
+        ],
+        "wire_sha256": "69a94d89f59d1876d74f085692421745f312aa370de65fbb7c4ca9b0b5c9c56b"
+      }
+    },
+    "fixture_summary": true,
+    "denial_record": "resp_23f5393860c93829077e69f040447b7b",
+    "source_files_unchanged": 25
+  },
+  "previous_failures": [
+    "  CHECK failed: replay.array[2].GetString(\"role\") == \"assistant\" (line 173)",
+    "[FAIL] compaction_places_memory_before_the_unchanged_suffix",
+    "  CHECK failed: OutputJson(original.request) == OutputJson(changed.request) (line 184)",
+    "[FAIL] compaction_standalone_summary_uses_the_historical_prefix",
+    "2 tests, 0 passed, 2 failed, 0 skipped"
+  ],
+  "compaction_tests": [
+    "[PASS] compaction_plan_preserves_instructions_and_current_turn",
+    "[PASS] compaction_plan_standalone_preserves_user_and_media_items",
+    "[PASS] compaction_places_memory_before_the_unchanged_suffix",
+    "[PASS] compaction_standalone_summary_uses_the_historical_prefix",
+    "[PASS] compaction_retains_original_file_bytes_outside_the_summary_prompt",
+    "[PASS] compaction_pending_parallel_tool_spans_are_not_summarized",
+    "[PASS] compaction_invalid_tool_history_cannot_be_hidden_in_memory",
+    "[PASS] compaction_real_cipher_replays_full_retained_or_omitted_origin",
+    "[PASS] compaction_cipher_accepts_optional_id_and_semantic_message_forms",
+    "[PASS] compaction_cipher_rejects_tamper_scope_model_id_and_prefix",
+    "[PASS] compaction_noop_never_invents_model_memory_or_usage",
+    "[PASS] compaction_bounds_duplicate_ids_and_output_budget",
+    "[PASS] compaction_cancelled_or_expired_state_never_mutates_output",
+    "[PASS] compaction_optional_id_enters_actual_response_generation_plan",
+    "[PASS] compaction_returned_window_is_replayable_without_losing_message_data",
+    "[PASS] compaction_replay_restores_only_failed_mcp_errors_before_a_seal",
+    "[PASS] compaction_and_encrypted_reasoning_form_one_authenticated_history",
+    "[PASS] compaction_request_shape_is_separate_and_stateless",
+    "[PASS] compaction_execution_threshold_and_plain_requests_do_not_load_keys",
+    "[PASS] compaction_execution_trigger_is_not_a_model_message",
+    "[PASS] compaction_output_lifecycle_has_one_done_and_no_tool_events",
+    "[PASS] compaction_execution_does_not_accept_nonreducing_memory",
+    "[PASS] compaction_execution_measurement_failure_preserves_original_window",
+    "[PASS] compaction_execution_cancellation_after_measurement_has_no_done",
+    "[PASS] responses_pro_compaction_and_summary_share_actual_remaining_budget",
+    "[PASS] compaction_execution_budget_cannot_refill_or_skip_primary",
+    "[PASS] compaction_standalone_returns_preserved_users_and_replayable_state",
+    "[PASS] compaction_standalone_returns_file_and_replays_its_prepared_text",
+    "[PASS] compaction_standalone_noop_is_honest_zero_generation",
+    "[PASS] compaction_stored_chain_preserves_history_and_removes_old_trigger",
+    "[PASS] compaction_background_checkpoint_and_cancel_never_finish_pending_item",
+    "[PASS] compaction_route_is_generation_not_observation_or_cancellation",
+    "[PASS] compaction_window_capacity_never_returns_an_unreplayable_result",
+    "[PASS] conversation_compact_create_reopens_sealed_history",
+    "[PASS] conversation_compact_append_detects_racing_change_and_preserves_ids",
+    "[PASS] compaction_reasoning_deltas_are_never_written_into_sealed_memory",
+    "[PASS] compaction_classifies_complete_refusal_after_parsing",
+    "37 tests, 37 passed, 0 failed, 0 skipped"
+  ],
+  "sessions": [
+    "[PASS] agent_session_keeps_rejected_model_output_out_of_the_next_turn",
+    "[PASS] agent_session_turn_reports_the_original_failure_category",
+    "2 tests, 2 passed, 0 failed, 0 skipped"
+  ],
+  "log_projection": "three recognized reasons map to their own non-private codes",
+  "evidence_sha256": {
+    "tests-before.log": "82e6402ee4bc7af657d0f45d5aad8ccd2a16b925a82806c78e619176432c6dcd",
+    "tests-after.log": "1a21426dcd22744c62bf5cc4ba44c86c5778ac5b4fe7316b9fd824387abcdd6f",
+    "agent-tests.log": "84b607475b5b20479044b27d52f30dc62c83f9c4022a1b71590df374097bc183",
+    "ops-02.log": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad",
+    "inventory-final.json": "bd34a6e0ea4070b11e1a6a4332d285e2f36dc0325661832926e96d65cb698cc8",
+    "replay.json": "5ddc719a55a9aba8e0cefdf9bec0bb0d95b7fa243908b997b6c8ff77ee0f4393"
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "engine": {
+    "files": {
+      "q4t": "19d1c9b313dfff6af5ac1c91d9956bcdac6826555aeba4e63730a42deeed286f",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "de3b25545ede1fe9be9c3bb18b02f39a294b382e337f58ec384ab72edea7f032",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "original_model_results": "business-failures.json",
+  "device_qualification": "pending"
+}

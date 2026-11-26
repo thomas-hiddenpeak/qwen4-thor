@@ -18,6 +18,7 @@ ERRORS = set(ABORTS + RECEIVE + WRITE + STATES) | {
     'constraint_resource_exhausted', 'constraint_worker_failed',
     'structured_output_incomplete', 'structured_output_invalid',
     'response_parse_failed', 'gpu_unhealthy', 'internal_error',
+    'compaction_refused', 'compaction_incomplete', 'compaction_not_reduced',
     'invalid_request', 'invalid_cancellation', 'request_not_found',
     'body_capacity_exhausted', 'observation_capacity_exhausted',
     'invalid_request_id_header'}

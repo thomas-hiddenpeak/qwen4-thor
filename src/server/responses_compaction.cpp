@@ -217,10 +217,7 @@ Status PlanResponsesCompaction(const Json& history,
   size_t pending = items.size();
   for (const auto& [id, begin] : calls)
     if (!returns.contains(id)) pending = std::min(pending, begin);
-  if (pending < items.size()) {
-    tail = std::min(tail, pending);
-    for (size_t i = pending; i < items.size(); ++i) keep[i] = true;
-  }
+  for (size_t i = pending; i < items.size(); ++i) keep[i] = true;
   std::vector<std::pair<size_t, size_t>> spans;
   for (const auto& [id, end] : returns) spans.emplace_back(calls.at(id), end);
   std::sort(spans.begin(), spans.end());
@@ -233,19 +230,27 @@ Status PlanResponsesCompaction(const Json& history,
                      [](bool value) { return value; }))
       continue;
     for (size_t j = begin; j <= end; ++j) keep[j] = true;
-    tail = std::min(tail, begin);
   }
+  size_t summary_end = 0;
   for (size_t i = 0; i < items.size(); ++i) {
     if (keep[i]) {
       result.retained.array.push_back(items[i]);
-      if (i < tail) ++result.memory_index;
     } else {
       ++result.compacted_items;
+      // One memory represents the discarded turns up to this position.
+      // Keep every subsequent user turn and intact tool span after it.
+      result.memory_index = result.retained.array.size();
+      summary_end = i + 1;
     }
   }
   if (result.compacted_items) {
-    if (HasFileInputs(history)) {
-      auto transcript = history;
+    // Standalone replay appends the unchanged suffix after the memory. Its
+    // new requests are not part of the historical transcript to summarize.
+    const auto end = mode == ResponsesCompactionMode::kStandalone
+                         ? summary_end : items.size();
+    if (end < items.size() || HasFileInputs(history)) {
+      auto transcript = Array();
+      transcript.array.assign(items.begin(), items.begin() + end);
       OmitInlineFileBytes(&transcript);
       source = OutputJson(transcript);
     }
@@ -281,13 +286,25 @@ Status CheckCompactionDelta(const ResponseDelta& delta) {
   switch (delta.kind) {
     case ResponseDelta::Kind::kContent:
     case ResponseDelta::Kind::kReasoning:
-      return {};
     case ResponseDelta::Kind::kRefusal:
-      return Status::Fail("Compaction model refused to produce memory");
+      // Private output. Validate the complete refusal frame before reporting
+      // a refusal; only final ordinary content is eligible for sealing.
+      return {};
     case ResponseDelta::Kind::kTool:
       return Status::Fail("Compaction model emitted a tool call");
   }
   return Status::Fail("Unexpected compaction output");
+}
+
+ObjectReply CheckCompactionFinish(bool length_limited,
+                                  const ChatResponseParser& parser) {
+  if (length_limited)
+    return Error(502, "compaction_incomplete",
+                 "Compaction memory exhausted its output budget");
+  if (parser.HasRefusal())
+    return Error(502, "compaction_refused",
+                 "Compaction model refused to produce memory");
+  return {};
 }
 
 std::string ResponsesCompactionId(std::string_view opaque) {

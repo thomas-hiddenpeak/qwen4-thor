@@ -19,6 +19,8 @@ window = client.post("/responses/compact", cast_to=CompactWindow, body=request)
 resumed = client.responses.create(model=model, input=window.to_dict()["output"])
 ```
 
+独立压缩回填后，较早历史的摘要位于未改动的后续消息之前。模型明确拒绝生成摘要时返回 HTTP 502 和 `compaction_refused`；输出预算耗尽时为 `compaction_incomplete`。两种错误均不会签发压缩窗口。[定向验证](evidence/serve-compact-window-identities-20261127/chronology.json)
+
 在创建 `OpenAI` 客户端时启用 `_strict_response_validation=True`，或对高层 `with_raw_response.compact` 的返回值使用 `CompactWindow.model_validate(raw.http_response.json(), strict=True)`。2.33.0 和 3.55.1 都能把全部 7 项按 SDK 类型读取，序列化后和原始 JSON 完全相同。验证覆盖两条用户消息、工具清单、审批请求与决定、失败的工具调用和加密摘要。[双版本验证](evidence/serve-compact-window-identities-20261127/typed-client.json)
 
 Node SDK 7.47.0 的默认 `responses.compact` 能读回完整 JSON。若将默认返回的输出项数组传给 `responses.create`，TypeScript 5.9.3 的严格编译会报 TS2769。q4t 返回的窗口可原样用作输入，客户端可用下面的类型声明。类型参数仅在编译期生效。带有 MCP 拒绝记录和视频附件的两份原生窗口已用于本机 HTTP 验证，续答请求的输入逐字段等于原窗口。[Node SDK 验证](evidence/serve-compact-window-identities-20261127/node-sdk.json)

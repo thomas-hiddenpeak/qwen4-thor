@@ -4870,10 +4870,13 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             std::max(restored_prefix, cache_written_tokens), compacted_primary);
       }
       if (compaction_step) {
-        if (finish_reason == "length") {
+        const auto finish =
+            CheckCompactionFinish(finish_reason == "length", response_parser);
+        if (!finish.ok()) {
           err_guard.ok = false;
-          SendError(fd, 502, "Compaction memory exhausted its output budget",
-                    {}, "compaction_incomplete", "context_management");
+          diagnostic.Outcome("error", finish.ClientCode());
+          SendError(fd, finish.http_status, finish.ClientMessage(), {},
+                    finish.ClientCode(), "context_management");
           return;
         }
         std::string compact_wire;

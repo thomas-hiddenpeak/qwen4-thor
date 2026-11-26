@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+修复压缩摘要在回填时排到最新问题之后的错误。实际工具拒绝历史的 CPU 对照显示，原来的问题和摘要位于下标 5、6，修复后为 6、5；六个原始保留项的 ID 相同。独立摘要仅处理需要替换的历史前缀。完整拒答、输出额度耗尽和格式错误分别处理，模型未生成有效摘要时 Agent 仍可提交下一回合。37 个压缩检查、两个 Agent 检查及诊断投影检查通过。 正在复验原始发行清单与视频。[定向回执](evidence/serve-compact-window-identities-20261127/chronology.json)
+
 实际归档视频通过独立原生 TLS 验收。官方 Python SDK 3.55.1 读回带原附件 ID 和内容的加密压缩窗口，原样回填后模型答出末帧为蓝色。两份 HTTP 正文均通过官方与本地模式校验。一次模型启动、两次生成，用时 44.742 秒。 含工具拒绝的原始摘要请求仍待解决。[实机视频记录](evidence/serve-compact-window-identities-20261127/video-business.json)
 
 包含实际工具拒绝历史和重复发行清单的独立压缩在原生 TLS 下两次返回 502。384 token 时摘要耗尽预算；同一模型和输入在 1024 token 时产生显式拒答。两次各启动一代模型，源客户记录和设备默认包均未改变。原请求没有签发压缩窗口，视频项也尚未触达。 下一步独立检查真实视频和项目发行记录。[两次原始结果](evidence/serve-compact-window-identities-20261127/business-failures.json)
