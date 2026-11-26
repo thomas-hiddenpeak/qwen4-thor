@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Agent 会话的原生配额失败已在 Python 2.8.1、3.42.1 和 3.55.1 默认与严格模式复核。2.8.1 缺少类型化 Agents 入口，使用参数化字典即可通过通用接口读回原会话、失败轮次和订阅。下一步继续验证剩余客户端和资源恢复组合。[客户端记录](SDK_STREAM_COMPATIBILITY.md)
+
 修复候选用一次模型启动完成真实 TLS 验收（105.863 秒）。Node SDK 7.47.0 在同一 Agent 会话收到 202，随后收到与轮次查询一致的 rate_limit_exceeded，失败后会话回到 idle，其他客户查询返回 404。配额窗口恢复后，同一会话答出 42，三轮状态为成功、失败、成功。已安装的 rev530 仍需由修复封包替换。[设备回执](evidence/serve-responses-errors-20261126/agent-turn-http.json)
 
 PR #160 的两次公开检查发现 Agent 轮次查询和失败事件给出的错误类别可能不同。订阅现在从该轮持久化的同一响应读取原始错误，再按 Agent 合同生成事件。现有回归的 12 种失败输入和拒绝输出后下一轮历史均通过。rev530 仍含此缺陷，修复版的真实 HTTP 待验。[回归记录](evidence/serve-responses-errors-20261126/agent-turn-events.json)

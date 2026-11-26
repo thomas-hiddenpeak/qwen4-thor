@@ -8609,6 +8609,16 @@
         "affected_release": 530,
         "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json",
         "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json"
+      },
+      "agent_quota_python_clients_20261126": {
+        "stage": "verified",
+        "python": [
+          "2.8.1 via generic GET",
+          "3.42.1 and 3.55.1 via typed Agents"
+        ],
+        "receipt": "evidence/serve-responses-errors-20261126/agent-quota-python.json",
+        "node_tls": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
+        "python_transport": "offline replay of native reads and events"
       }
     },
     {
