@@ -2958,9 +2958,10 @@
         "delivery": "evidence/serve-responses-errors-20261126/delivery.json"
       },
       "agent_failure_events_20261126": {
-        "stage": "cpu_corrected_real_http_pending",
+        "stage": "device_verified_publication_pending",
         "affected_release": 530,
-        "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json"
+        "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json",
+        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json"
       }
     },
     {
@@ -8626,9 +8627,10 @@
         "aggregate_clients": "evidence/serve-responses-errors-20261126/python-aggregate.json"
       },
       "agent_failure_events_20261126": {
-        "stage": "cpu_corrected_real_http_pending",
+        "stage": "device_verified_publication_pending",
         "affected_release": 530,
-        "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json"
+        "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json",
+        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json"
       }
     },
     {
