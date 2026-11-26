@@ -21,6 +21,18 @@ resumed = client.responses.create(model=model, input=window.to_dict()["output"])
 
 在创建 `OpenAI` 客户端时启用 `_strict_response_validation=True`，或对高层 `with_raw_response.compact` 的返回值使用 `CompactWindow.model_validate(raw.http_response.json(), strict=True)`。2.33.0 和 3.55.1 都能把全部 7 项按 SDK 类型读取，序列化后和原始 JSON 完全相同。验证覆盖两条用户消息、工具清单、审批请求与决定、失败的工具调用和加密摘要。[双版本验证](evidence/serve-compact-window-identities-20261127/typed-client.json)
 
+Node SDK 7.47.0 的默认 `responses.compact` 能读回完整 JSON。若将默认返回的输出项数组传给 `responses.create`，TypeScript 5.9.3 的严格编译会报 TS2769。q4t 返回的窗口可原样用作输入，客户端可用下面的类型声明。类型参数仅在编译期生效。带有 MCP 拒绝记录和视频附件的两份原生窗口已用于本机 HTTP 验证，续答请求的输入逐字段等于原窗口。[Node SDK 验证](evidence/serve-compact-window-identities-20261127/node-sdk.json)
+
+```typescript
+import type { CompactedResponse, ResponseInputItem } from 'openai/resources/responses/responses';
+
+type CompactWindow = Omit<CompactedResponse, 'output'> & {
+  output: (ResponseInputItem & {id: string})[];
+};
+const window = await client.post<CompactWindow>('/responses/compact', {body: request});
+const resumed = await client.responses.create({model, input: window.output});
+```
+
 ### 较早 Python SDK 读取程序化工具
 
 Python 2.8.1 的严格 `responses.retrieve` 不能解析较晚加入的 `program` 项和 `programmatic_tool_calling` 工具。其通用 `client.get(path, cast_to=dict[str, Any])` 可读取两种原生资源。订阅时使用 `stream=True`、`stream_cls=openai.Stream[dict[str, Any]]`、`options={"params": {"stream": "true"}, "headers": {"Accept": "text/event-stream"}}`，续读将 `starting_after` 加入 `params`。2.8.1 和 3.55.1 均完整读取两份真实记录的 144 和 6 个事件以及两个后缀，程序代码、工具定义和调用者字段逐项等于原件。3.55.1 的高层严格入口也通过。[程序化工具读取记录](evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json)
