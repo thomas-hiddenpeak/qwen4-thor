@@ -487,6 +487,7 @@ set(protocol_inputs
   src/server/file_video_orientation.h
   src/server/file_video_affine.h
   src/server/file_video_clipping.h
+  src/server/file_video_region.h
   src/server/file_video_integer.h
   src/server/file_video_projective.h
   src/server/file_webp_worker.cpp

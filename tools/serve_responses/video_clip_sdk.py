@@ -22,6 +22,24 @@ def sample(source, track, movie):
     return bytes(data)
 
 
+def region_samples(source):
+    # Change only the three rows of inversion points. Both masks have exactly
+    # the same bounding box and the same compressed video.
+    at = source.rindex(b'clip') + 12
+    end = 32767
+    diagonal = (0, 0, 64, end, 32, 0, 128, end, 64, 64, 128, end, end)
+    other = (0, 64, 128, end, 32, 0, 128, end, 64, 0, 64, end, end)
+    if source[at - 4:at] != b'crgn' or struct.unpack_from('>Hhhhh', source, at) != (36, 0, 0, 64, 128):
+        raise ValueError('unexpected original QuickDraw fixture')
+    if struct.unpack_from('>13h', source, at + 10) != diagonal:
+        raise ValueError('unexpected original inversion points')
+    def change(words):
+        data = bytearray(source)
+        struct.pack_into('>13h', data, at + 10, *words)
+        return bytes(data)
+    return source, change(other), change((*diagonal[:-1], 0))
+
+
 def hidden(get):
     try:
         get()
@@ -54,9 +72,17 @@ def main():
                                  max_retries=0, timeout=60, _strict_response_validation=True)
         owner, peer = sdk(plan['key']), sdk(plan['other'])
         source = Path(plan['fixture']).read_bytes()
-        whole = (0, 0, 64, 128)
-        left = sample(source, whole, (0, 0, 64, 64))
-        right = sample(source, (0, 64, 64, 128), whole)
+        if plan.get('quickdraw_region', False):
+            left, right, invalid = region_samples(source)
+            left_colors = ('red', 'black', 'black', 'yellow')
+            right_colors = ('black', 'green', 'blue', 'black')
+        else:
+            whole = (0, 0, 64, 128)
+            left = sample(source, whole, (0, 0, 64, 64))
+            right = sample(source, (0, 64, 64, 128), whole)
+            invalid = sample(source, (32, 0, 0, 64), whole)
+            left_colors = ('red', 'black', 'blue', 'black')
+            right_colors = ('black', 'green', 'black', 'yellow')
         original = owner.files.create(purpose='user_data',file=('sample-a.mov',left,'video/quicktime'))
         assert original.bytes == len(left)
         corner = ('top_left','top_right','bottom_left','bottom_right')
@@ -77,7 +103,7 @@ def main():
         uploaded = content(dict(file_id=original.id))
         if handoff:
             # The retained answer contains only one color. Later turns must
-            # recover the bottom-left color from the stored video input.
+            # recover the remaining colors from the stored video input.
             uploaded[0]['content'][1]['text'] = 'Name the color at the center of the top-left quadrant.'
             first_common = dict(common, text=dict(format=dict(type='json_schema',name='corner',
                 strict=True,schema=dict(type='object',properties={'top_left':props['top_left']},
@@ -92,7 +118,6 @@ def main():
             assert response.status=='completed' and values==dict(zip(corner,expected)),(label,values)
             return dict(response=response.id,status=response.status,colors=values,
                         input_tokens=response.usage.input_tokens)
-        left_colors=('red','black','blue','black')
         summary=dict(uploaded=check('uploaded',first,('red',) if handoff else left_colors))
         assert counted.input_tokens==first.usage.input_tokens
         hidden(lambda: peer.responses.retrieve(first.id))
@@ -109,7 +134,7 @@ def main():
             return row
         inline=content(dict(filename='sample-b.mov',file_data='data:video/quicktime;base64,'+
                             base64.b64encode(right).decode()))
-        summary['inline']=streamed('inline',dict(input=inline),('black','green','black','yellow'))
+        summary['inline']=streamed('inline',dict(input=inline),right_colors)
         assert owner.files.delete(original.id).deleted
         summary['replay']=streamed('replay',dict(previous_response_id=first.id,input='For the earlier video: '+question),left_colors)
         transfer = {}
@@ -123,7 +148,6 @@ def main():
                 summary['restored'] = streamed('restored', dict(previous_response_id=restored['response'],
                     input='For the earlier video: '+question), left_colors)
                 transfer['restored'] = restored
-        invalid=sample(source,(32,0,0,64),whole)
         try:owner.responses.input_tokens.count(model=common['model'],input=content(dict(
             filename='sample-c.mov',file_data='data:video/quicktime;base64,'+base64.b64encode(invalid).decode())))
         except openai.BadRequestError as err:assert err.code=='invalid_file_video',err.code

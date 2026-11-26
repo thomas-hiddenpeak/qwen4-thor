@@ -163,6 +163,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if video_clip_profiles.REGION_KEY in plan:
+        return Handoff(video_clip_profiles.REGION_KEY, video_clip_profiles.REGION_RELEASE,
+                       video_clip_profiles.ACTOR, reuse.REGION_RECEIPT, video_clip_profiles.RECEIPT,
+                       reuse.VIDEO_CLIP_REVIEWED, video_clip_profiles.check_regions)
     if video_clip_profiles.KEY in plan:
         return Handoff(video_clip_profiles.KEY, video_clip_profiles.RELEASE, video_clip_profiles.ACTOR,
                        video_clip_profiles.RECEIPT, failure_profiles.RECEIPT,
@@ -218,6 +222,8 @@ def verify(phase, plan, capabilities):
     prior = profile_record.read(prior_file)
     name, change = plan['name'], plan[spec.key]
     expected = dict(prior['capabilities'], protocol_source_sha256=change['protocol'])
+    if spec.key == video_clip_profiles.REGION_KEY:
+        expected['file_inputs'] = reuse.region_file_inputs(expected['file_inputs'])
     if spec.key == video_clip_profiles.KEY:
         expected['file_inputs'] = reuse.clipped_file_inputs(expected['file_inputs'])
     if spec.key in (visual_profiles.KEY, frame_profiles.KEY):
@@ -241,7 +247,7 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
-    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY):
+    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
@@ -249,7 +255,8 @@ def business(stage, capabilities):
         previous = (package.read(stage.out.parent/'primary'/spec.receipt)
                     if plan['name'] == 'light' else None)
         with (stage.out/'responses-sdk.stderr').open('xb') as errors:
-            row = module.exercise(params, settings['interpreter'], errors, stage.out/wire, previous)
+            extra = {'regions': True} if spec.key == video_clip_profiles.REGION_KEY else {}
+            row = module.exercise(params, settings['interpreter'], errors, stage.out/wire, previous, **extra)
         package.save(stage.out/spec.receipt, row)
         verify(stage.out, plan, capabilities)
         return

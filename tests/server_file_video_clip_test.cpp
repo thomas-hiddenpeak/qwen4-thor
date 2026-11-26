@@ -177,3 +177,146 @@ Q4T_TEST(file_video_rect_clip_tracks_use_the_declared_grid_and_pixel_budget) {
                 .http_status == 413);
   return true;
 }
+
+Q4T_TEST(file_video_region_decodes_diagonal_quadrants_and_binds_source) {
+  const auto original = q4t::test::video_affine::Source({}, "region-clips.mov");
+  auto unclipped = original;
+  unclipped.replace(unclipped.rfind("clip"), 4, "free");
+  FileVideoPixels before, after;
+  Q4T_CHECK(Decode(unclipped, &before).ok() && Decode(original, &after).ok());
+  Q4T_CHECK(after.width == 128 && after.height == 64 &&
+            before.frames.size() == after.frames.size() &&
+            after.frames.size() >= 2);
+  Q4T_CHECK(after.conversion.GetString("format") == "q4t.cpu_video_png.v7");
+  for (size_t i = 0; i < after.frames.size(); ++i) {
+    Q4T_CHECK(before.frames[i].timestamp_ns == after.frames[i].timestamp_ns &&
+              before.frames[i].duration_ns == after.frames[i].duration_ns);
+    auto expected = Rgb(before.frames[i], 128, 64);
+    Q4T_CHECK(expected.size() == 128 * 64 * 3);
+    for (int y = 0; y < 64; ++y)
+      for (int x = 0; x < 128; ++x)
+        if ((y < 32) != (x < 64))
+          std::fill_n(expected.begin() + 3 * (128 * y + x), 3, 0);
+    Q4T_CHECK(Rgb(after.frames[i], 128, 64) == expected);
+  }
+  auto digest = after.conversion.GetString("source_sha256");
+  auto& display = Field(after.conversion, "display_geometry");
+  Q4T_CHECK(ValidateVideoPixels(original, {}, after).ok());
+  Q4T_CHECK(display.GetString("movie_region_sha256").empty());
+  auto& retained = Field(display, "track_region_sha256");
+  Q4T_CHECK(retained.str.size() == 64);
+  retained = String(std::string(64, 'f'));
+  Q4T_CHECK(ValidateVideoPixels(original, {}, after).http_status == 400);
+  retained = String("");
+  Q4T_CHECK(ValidateVideoSnapshot(digest, {}, after).http_status == 400);
+  return true;
+}
+
+namespace {
+std::string RegionWords(std::initializer_list<int16_t> words) {
+  std::string bytes(10, '\0');
+  for (auto value : words) {
+    bytes.push_back(char(uint16_t(value) >> 8));
+    bytes.push_back(char(uint16_t(value) & 255));
+  }
+  return bytes;
+}
+}  // namespace
+
+Q4T_TEST(file_video_region_hole_and_negative_projective_coordinates) {
+  constexpr int16_t end = INT16_MAX;
+  const ClipRect bounds{-3, -4, 4, 5};
+  const auto bytes = RegionWords(
+      {-3, -4, 5, end, -1, -2, 2, end, 2, -2, 2, end, 4, -4, 5, end, end});
+  DisplayClips clips;
+  clips.movie = bounds;
+  clips.movie_region.emplace(bytes, bounds);
+  auto track = kIdentityMatrix;
+  track[6] = -2 * 65536;
+  for (int y = -5; y <= 5; ++y)
+    for (int x = -6; x <= 6; ++x) {
+      const bool expected = x >= -4 && x < 5 && y >= -3 && y < 4 &&
+                            !(x >= -2 && x < 2 && y >= -1 && y < 2);
+      for (int sign : {1, -1}) {
+        auto transform = track;
+        for (auto& value : transform) value *= sign;
+        Q4T_CHECK(VisibleAt(clips, transform, 2 * (x + 2) + 1, 2 * y + 1, 2) ==
+                  expected);
+      }
+    }
+  return true;
+}
+
+Q4T_TEST(file_video_region_rejects_incomplete_or_inconsistent_inversion_rows) {
+  constexpr int16_t e = INT16_MAX;
+  const auto original = q4t::test::video_affine::Source({}, "region-clips.mov");
+  // This fixture has a trailing clip/crgn in the selected track. Keep all atom
+  // lengths intact so each counterexample reaches the region decoder.
+  const size_t clip = original.rfind("clip");
+  Q4T_CHECK(clip != original.npos && original.substr(clip + 8, 4) == "crgn");
+  const size_t at = clip + 12;
+  Q4T_CHECK(original.size() >= at + 36 && uint8_t(original[at + 1]) == 36);
+  for (auto [offset, value] :
+       std::vector<std::pair<size_t, int16_t>>{{0, 34},
+                                               {2, -1},
+                                               {4, -1},
+                                               {8, 127},
+                                               {12, 64},
+                                               {14, 129},
+                                               {16, 12},
+                                               {18, 0},
+                                               {28, 1},
+                                               {32, 10},
+                                               {34, 2}}) {
+    auto bad = original;
+    bad[at + offset] = char(uint16_t(value) >> 8);
+    bad[at + offset + 1] = char(uint16_t(value) & 255);
+    bool rejected = false;
+    try {
+      MovieDisplay().SelectTrack(bad);
+    } catch (const std::runtime_error&) {
+      rejected = true;
+    }
+    Q4T_CHECK(rejected);
+  }
+  // Two legal scanlines with even point counts can still leave edges open.
+  bool rejected = false;
+  try {
+    QuickDrawRegion open(RegionWords({0, 0, 2, e, 4, 0, 3, e, e}),
+                         {0, 0, 4, 3});
+  } catch (const std::runtime_error&) {
+    rejected = true;
+  }
+  Q4T_CHECK(rejected);
+  return true;
+}
+
+Q4T_TEST(file_video_region_large_encoding_preserves_sparse_pixel_membership) {
+  // Two rows of 15,000 distinct inversions exceed the signed 16-bit length
+  // boundary. The second row closes the region without a full-size bitmap.
+  std::string bytes(10, '\0');
+  const auto word = [&](int16_t value) {
+    bytes.push_back(char(uint16_t(value) >> 8));
+    bytes.push_back(char(uint16_t(value) & 255));
+  };
+  for (int16_t y : {-12, 17}) {
+    word(y);
+    for (int x = -7000; x < 8000; ++x) word(x);
+    word(INT16_MAX);
+  }
+  word(INT16_MAX);
+  const ClipRect bounds{-12, -7000, 17, 7999};
+  const uint16_t header[] = {uint16_t(bytes.size()), uint16_t(bounds.top),
+                             uint16_t(bounds.left), uint16_t(bounds.bottom),
+                             uint16_t(bounds.right)};
+  for (size_t i = 0; i < 5; ++i) {
+    bytes[2 * i] = char(header[i] >> 8);
+    bytes[2 * i + 1] = char(header[i] & 255);
+  }
+  QuickDrawRegion region(bytes, bounds);
+  for (int x = -7001; x <= 8000; ++x) {
+    Q4T_CHECK(region.Contains(x, 0) == (x >= -7000 && x < 7999 && x % 2 == 0));
+    Q4T_CHECK(!region.Contains(x, -13) && !region.Contains(x, 17));
+  }
+  return true;
+}
