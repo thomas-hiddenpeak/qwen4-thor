@@ -8,6 +8,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
+#include "q4t/server/file_expansion.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_item_shape.h"
@@ -90,6 +91,20 @@ bool Media(const Json& value) {
   return std::any_of(value.object.begin(), value.object.end(),
                      [](const auto& field) { return Media(field.second); });
 }
+// Inline file bytes stay in the authenticated window. The summary model
+// only needs the descriptor and adjacent text of an attachment we retain.
+void OmitInlineFileBytes(Json* value) {
+  if (value->IsArray()) {
+    for (auto& child : value->array) OmitInlineFileBytes(&child);
+  } else if (value->GetString("type") == "input_file" &&
+             value->Has("file_data")) {
+    Set(value, "file_data", String("[original attachment retained]"));
+  } else if (value->IsObject()) {
+    for (auto& [name, child] : value->object)
+      if (name == "content" || name == "output" || name == "results")
+        OmitInlineFileBytes(&child);
+  }
+}
 Status ValidateHistory(const Json& history, ChatPlanError* error) {
   if (!history.IsArray() || history.array.size() > 4096) {
     *error = {"input_limit_exceeded", "input", 400};
@@ -150,7 +165,7 @@ Status PlanResponsesCompaction(const Json& history,
   *error = {};
   auto valid = ValidateHistory(history, error);
   if (!valid) return valid;
-  const auto source = OutputJson(history);
+  auto source = OutputJson(history);
   if (source.size() > kCryptoPlaintextLimit) {
     *error = {"compaction_source_limit", "input", 400};
     return Status::Fail("Compaction source exceeds bounded input storage");
@@ -229,6 +244,11 @@ Status PlanResponsesCompaction(const Json& history,
     }
   }
   if (result.compacted_items) {
+    if (HasFileInputs(history)) {
+      auto transcript = history;
+      OmitInlineFileBytes(&transcript);
+      source = OutputJson(transcript);
+    }
     auto messages = Array(
         {Object(
              {{"role", String("system")},

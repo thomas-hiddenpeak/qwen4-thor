@@ -3197,6 +3197,11 @@
           "upstream SDK output-only union rejects retained user messages on strict parsing"
         ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json"
+      },
+      "compact_file_replay_20261127": {
+        "state": "native_cpu_preservation_and_replay_verified",
+        "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
+        "remaining": "Actual TLS video answer following standalone compaction"
       }
     },
     {
@@ -6854,6 +6859,11 @@
         "paired_control": "evidence/serve-video-layer-composition-20261127/paired-business-controls.json",
         "business": "evidence/serve-video-layer-composition-20261127/business.json",
         "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json"
+      },
+      "compact_file_replay_20261127": {
+        "state": "native_cpu_preservation_and_replay_verified",
+        "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
+        "remaining": "Actual TLS video answer following standalone compaction"
       }
     },
     {
@@ -12281,6 +12291,11 @@
         "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
         "revision": 526,
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "compact_file_replay_20261127": {
+        "state": "native_cpu_preservation_and_replay_verified",
+        "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
+        "remaining": "Actual TLS video answer following standalone compaction"
       }
     },
     {

@@ -35,6 +35,29 @@ def check_window(window, expected_user, question, original_error, legacy_error=F
     return [u["id"] for u in users]
 
 
+def verify_video(owner, model, record, capture):
+    original = record["message"]
+    question = dict(role="user", content=record["question"])
+    raw = owner.responses.with_raw_response.compact(
+        model=model, input=[original, dict(role="assistant", content=record["report"]),
+                            question], instructions="Summarize the review briefly.")
+    window = capture("video_compact", raw)
+    typed = CompactWindow.model_validate(window, strict=True)
+    if typed.to_dict() != window or not window["usage"]["output_tokens"]:
+        raise ValueError("Video compaction did not produce a typed model summary")
+    retained, = [i for i in window["output"] if i.get("id") == original["id"]]
+    if retained != original:
+        raise ValueError("Stored video file descriptor was changed")
+    resumed = owner.responses.with_raw_response.create(
+        model=model, input=window["output"], max_output_tokens=96, temperature=0,
+        reasoning={"effort": "none"}, store=False)
+    capture("video_resumed", resumed)
+    text = resumed.parse().output_text.strip()
+    return dict(answer=text, exact_answer=text.casefold() == record["answer"].casefold(),
+                original_item=original["id"], file_preserved=(retained == original),
+                usage=window["usage"])
+
+
 def run(params):
     target = Path(params["capture"])
     target.mkdir(mode=0o700)
@@ -93,11 +116,14 @@ def run(params):
                 item["type"] == "mcp_call" for item in answer["output"]):
             raise ValueError("Unexpected continuation lifecycle or tool call")
         text = resumed.parse().output_text.strip()
+        video = None
+        if "video" in params:
+            video = verify_video(owner, model, params["video"], capture)
         return dict(sdk=openai.__version__, source=params["source"], original_ids=ids,
                     output_items=len(window["output"]), usage=window["usage"],
                     raw_compact=True, typed_window_round_trip=True, strict_compact=strict, foreign_status=400,
                     foreign_code="invalid_encrypted_content", answer=text,
-                    exact_answer=(text == str(params["revision"])), files=hashes)
+                    exact_answer=(text == str(params["revision"])), video=video, files=hashes)
 
 
 if __name__ == "__main__":

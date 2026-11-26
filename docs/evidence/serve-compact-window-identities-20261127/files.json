@@ -1,0 +1,123 @@
+{
+  "scope": "Native CPU, isolated object stores, fixed model summary, no CUDA devices",
+  "original_visual_business_sha256": "92fc3f91d063708066910bb7b0b194f7b73eb0e33eca6ed52b3ebab7c02a3782",
+  "original_stored_response_sha256": "0dc45b1f0c9ef26dc49623ca9f4ef627ec04aa88858be263e5813368a9a5cf57",
+  "cases": {
+    "inline-text": {
+      "before": {
+        "exit_code": 0,
+        "original_types": [
+          "input_file"
+        ],
+        "retained": {
+          "same": false,
+          "types": [
+            "input_text"
+          ]
+        },
+        "response": {
+          "same": false,
+          "types": [
+            "input_text"
+          ]
+        }
+      },
+      "after": {
+        "exit_code": 0,
+        "original_types": [
+          "input_file"
+        ],
+        "retained": {
+          "same": true,
+          "types": [
+            "input_file"
+          ]
+        },
+        "response": {
+          "same": true,
+          "types": [
+            "input_file"
+          ]
+        },
+        "rendered_replay_identical": true,
+        "rendered_types": [
+          "input_text"
+        ],
+        "encoded_bytes_in_summary": false
+      },
+      "old_diagnostic": "",
+      "compact_sha256": "2f37cf325df8dfca57b28b67f1eca03f83d4b6b12f8e36a4d665e8461370ef03",
+      "prepared_replay_sha256": "691026191792e408a13d9e47a06bbcbfbfa27850b896fccab4204fa4ef2121b6"
+    },
+    "actual-visual": {
+      "before": {
+        "exit_code": 3,
+        "original_types": [
+          "input_file",
+          "input_text"
+        ]
+      },
+      "after": {
+        "exit_code": 0,
+        "original_types": [
+          "input_file",
+          "input_text"
+        ],
+        "retained": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "response": {
+          "same": true,
+          "types": [
+            "input_file",
+            "input_text"
+          ]
+        },
+        "rendered_replay_identical": true,
+        "rendered_types": [
+          "input_text",
+          "input_video_frames",
+          "input_text"
+        ],
+        "encoded_bytes_in_summary": false
+      },
+      "old_diagnostic": "400 invalid_request: Value is outside the item enum {\"param\":\"input[0].content[1].type\"}",
+      "compact_sha256": "f5e35309a85b812eaad9010131c55b2f0a2e5843fd3f9b422bd0c665e80a6ae0",
+      "prepared_replay_sha256": "d5c44c1e5c5f6630b71b83a48dfc8011cf3e411de2938ec9884226d98300a671"
+    }
+  },
+  "controls": [
+    "[PASS] compaction_plan_preserves_instructions_and_current_turn",
+    "[PASS] compaction_plan_standalone_preserves_user_and_media_items",
+    "[PASS] compaction_retains_original_file_bytes_outside_the_summary_prompt",
+    "[PASS] compaction_replay_restores_only_failed_mcp_errors_before_a_seal",
+    "[PASS] compaction_execution_does_not_accept_nonreducing_memory",
+    "[PASS] compaction_standalone_returns_preserved_users_and_replayable_state",
+    "6 tests, 6 passed, 0 failed, 0 skipped"
+  ],
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "engine": {
+    "files": {
+      "q4t": "9f96cd17339590ebaead55d553bcccaea8664f4d4ca6b0bd6dc15260f20252a3",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "de3b25545ede1fe9be9c3bb18b02f39a294b382e337f58ec384ab72edea7f032",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  }
+}

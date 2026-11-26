@@ -151,6 +151,20 @@ Q4T_TEST(compaction_plan_standalone_preserves_user_and_media_items) {
   return true;
 }
 
+Q4T_TEST(compaction_retains_original_file_bytes_outside_the_summary_prompt) {
+  auto history = History();
+  auto& parts = Field(&history.array[1], "content").array;
+  parts.push_back(Parse(R"({"type":"input_file","filename":"release.txt",
+    "file_data":"data:text/plain;base64,cmVsZWFzZSBub3Rl"})"));
+  const auto plan = Plan(history, ResponsesCompactionMode::kStandalone);
+  Q4T_CHECK(OutputJson(plan.retained.array[1]) == OutputJson(history.array[1]));
+  const auto prompt = OutputJson(plan.request);
+  Q4T_CHECK(prompt.find("release.txt") != prompt.npos &&
+            prompt.find("Remember the result 42") != prompt.npos &&
+            prompt.find("cmVsZWFzZSBub3Rl") == prompt.npos);
+  return true;
+}
+
 Q4T_TEST(compaction_pending_parallel_tool_spans_are_not_summarized) {
   auto history = History();
   history.array.pop_back();
