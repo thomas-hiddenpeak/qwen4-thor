@@ -29,6 +29,13 @@ Q4T_TEST(prompt_cache_retention_bounds_and_modern_ttl_are_independent) {
   Q4T_CHECK(ParsePromptCacheOptions(
       Read(R"({"prompt_cache_retention":"in_memory"})"), &options, &param));
   auto lifetime = PromptCacheLifetime(options, 1800, false);
+  PromptCacheOptions legacy;
+  Q4T_CHECK(ParsePromptCacheOptions(
+      Read(R"({"prompt_cache_retention":"in-memory"})"), &legacy, &param));
+  const auto old_lifetime = PromptCacheLifetime(legacy, 1800, false);
+  Q4T_CHECK(legacy.retention_requested && legacy.retention == options.retention &&
+            old_lifetime.write_seconds == lifetime.write_seconds &&
+            old_lifetime.max_age_seconds == lifetime.max_age_seconds);
   Q4T_CHECK(lifetime.write_seconds == 1800 && lifetime.max_age_seconds == 3600);
   Q4T_CHECK(ParsePromptCacheOptions(Read(R"({"prompt_cache_retention":"24h"})"),
                                     &options, &param));

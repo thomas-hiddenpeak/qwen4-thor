@@ -1,8 +1,14 @@
 # 官方 SDK 的流式兼容记录
 
+### Responses 的缓存驻留字段
+
+稳定版 Python SDK 从 2.8.0 到 2.32.x 使用 `in-memory`，2.33.0 起使用 `in_memory`。原生入口按 SDK 自带的语言和版本头选择 JSON 和 SSE 响应的拼写，`Vary` 声明两项请求头。两种输入写法对应同一缓存策略，`24h` 可跨版本使用。没有版本信息的客户端收到当前拼写。持久记录和事件日志统一使用 `in_memory`。SDK 版本仅用于响应表示。[上游修正](https://github.com/openai/openai-python/commit/f9d2d1359688a6247ecba858fc687173c480c9c8)
+
+Responses 已按客户端版本处理缓存驻留字段。Python SDK 2.8.1 严格模式可读取原先解析失败的历史响应；2.8.1、3.42.1、3.55.1 的默认与严格模式共六组均可交给 Node 续读。五份新响应跨版本创建、重启后读取，落盘记录的 SHA-256 全部一致。CPU 验证已完成，原生 TLS 真实模型和发行待验。[CPU 验证](evidence/serve-response-cache-retention-20261127/cpu.json)
+
 ### 成功响应的跨客户端游标续读
 
-两份真实成功响应通过原生 CPU HTTP 服务交给官方 SDK。Node 7.47.0 从 Python 提供的游标 14 和 17 分别读到余下 14 和 18 个事件；重启测试服务后得到相同正文，越界游标返回 400，其他客户读取返回 404。Python 三个版本的六种配置中五种通过。2.8.1 严格模式在 GET 解析时报缓存枚举错误，已保存三份原始响应的定位证据。下一步修复旧客户端，并在真实主轻配置和托管恢复中验证游标交接。[兼容记录](evidence/serve-video-layer-composition-20261127/sdk-cursor.json)
+两份真实成功响应通过原生 CPU HTTP 服务交给官方 SDK。Node 7.47.0 从 Python 提供的游标 14 和 17 分别读到余下 14 和 18 个事件；重启测试服务后得到相同正文，越界游标返回 400，其他客户读取返回 404。Python 三个版本的六种配置中五种通过。2.8.1 严格模式在 GET 解析时报缓存枚举错误，已保存三份原始响应的定位证据。以上为修复前的记录。[兼容记录](evidence/serve-video-layer-composition-20261127/sdk-cursor.json)
 
 Node 的底层迭代器用服务端游标读取后续事件；高级接口 `finalResponse()` 读取全部事件来重建最终对象，并向监听器交付游标之后的事件。两条路径的序号、文本增量、消息 ID 与终态均与原流一致。两个客户端收到的原始 GET 正文已逐字节核对。
 

@@ -99,6 +99,7 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
   output->append("\r\n");
   pos += 2;
   bool seen_type = false, call_location = false;
+  bool cache_sdk_vary = false;
   unsigned preparation_headers = 0;
   std::vector<std::string> connection;
   while (pos < raw.size()) {
@@ -152,7 +153,10 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
     }
     // Preserve the runner's public response metadata, never private headers,
     // cookies, hop-by-hop options or a second response on this connection.
-    if (name == "content-length" || name == "content-type" ||
+    const bool sdk_vary = name == "vary" &&
+        value == "X-Stainless-Lang, X-Stainless-Package-Version";
+    if (sdk_vary) cache_sdk_vary = true;
+    if (name == "content-length" || name == "content-type" || sdk_vary ||
         (name == "location" && call_location) || name == "retry-after" || name == "www-authenticate" ||
         name == "allow" || preparation) {
       output->append(field);
@@ -164,7 +168,8 @@ bool ResponseHeaders(std::string_view raw, Connection& client,
   if (*chunked && length->has_value()) return false;
   for (const auto& field : connection)
     if (server::http::Protected(field) || PreparationHeader(field) ||
-        (call_location && field == "location"))
+        (call_location && field == "location") ||
+        (cache_sdk_vary && field == "vary"))
       return false;
   if ((status == 204 || status == 304) && length->value_or(0) != 0)
     return false;

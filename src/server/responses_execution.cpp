@@ -738,6 +738,9 @@ Status ResponsesExecution::Capture(std::string_view wire, Json* events,
         value.GetInt("sequence_number", -1) !=
             static_cast<int64_t>(events->array.size() + added.array.size()))
       return Status::Fail("Invalid native Responses event sequence");
+    // Store one canonical journal regardless of the subscriber that created it.
+    if (value.Has("response"))
+      SetResponseCacheRetentionSpelling(Field(value, "response"), false);
     added.array.push_back(std::move(value));
     wire.remove_prefix(end + 4);
   }

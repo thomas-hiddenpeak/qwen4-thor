@@ -91,6 +91,11 @@ def graph_definitions(graph, prefix='', roots=None):
 def schema(graph):
     assert graph['profile'] == 'q4t-openai-application-types-v1'
     definitions = graph_definitions(graph)
+    # Both SDK generations expose the same retention policy with different
+    # punctuation. The native store and current HTTP representation use "_".
+    create = graph['nodes'][graph['roots']['response_create']]
+    retention = next(f['type'] for f in create['fields'] if f['name'] == 'prompt_cache_retention')
+    definitions[str(retention)]['anyOf'].append({'const': 'in-memory'})
     # The frozen SDK names the approval target approval_request_id. The HTTP
     # resource requires request_id as well. Inputs may use the SDK spelling.
     for index, node in enumerate(graph['nodes']):

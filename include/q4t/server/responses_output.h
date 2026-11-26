@@ -33,6 +33,9 @@ using ResponsesReasoningSeal =
 // use the base type; Responses input_items preserves the Item lifecycle.
 io::Json ResponsesPublicValue(io::Json value);
 
+// Change only the deprecated retention enum on a Response envelope.
+void SetResponseCacheRetentionSpelling(io::Json& response, bool legacy);
+
 // Serialize an HTTP resource or SSE event, including records from older
 // releases. The stored snapshot keeps the native recovery diagnostic.
 io::Json ResponsesWireValue(io::Json value);

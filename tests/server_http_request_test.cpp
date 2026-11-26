@@ -20,7 +20,8 @@
 
 namespace {
 
-bool Read(const std::string& wire, std::string* body) {
+bool Read(const std::string& wire, std::string* body,
+          q4t::server::HttpRequestHeaders* headers = nullptr) {
   int fd[2];
   if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd) != 0) return false;
   // A separate writer also exercises partial reads and requests > socket buf.
@@ -35,7 +36,8 @@ bool Read(const std::string& wire, std::string* body) {
     shutdown(fd[0], SHUT_WR);
   });
   std::string method, path;
-  const bool ok = q4t::server::ReadHttpRequest(fd[1], &method, &path, body);
+  const bool ok = q4t::server::ReadHttpRequest(fd[1], &method, &path, body,
+                                              30000, nullptr, nullptr, headers);
   shutdown(fd[1], SHUT_RDWR);
   writer.join();
   close(fd[0]);
@@ -65,6 +67,34 @@ Q4T_TEST(http_transcription_large_fixed_and_chunked_binary_bodies) {
   }
   Q4T_CHECK(!IsTranscriptionTarget("/v1/audio/transcriptions-extra"));
   Q4T_CHECK(!IsTranscriptionTarget("/v1/audio/transcriptions/"));
+  return true;
+}
+
+Q4T_TEST(http_responses_cache_spelling_matches_the_published_sdk_range) {
+  const std::string lang = "X-Stainless-Lang: python\r\n";
+  const std::string version = "X-Stainless-Package-Version: ";
+  const std::string old = version + "2.8.1\r\n";
+  q4t::server::HttpRequestHeaders parsed;
+  std::string body;
+  for (const auto& [headers, expected] :
+       std::vector<std::pair<std::string, std::string>>{
+           {lang + version + "2.8.0\r\n", "2.8.0"},
+           {old + lang, "2.8.1"},
+           {lang + version + "2.32.0\r\n", "2.32.0"},
+           {lang + version + "2.7.2\r\n", ""},
+           {lang + version + "2.33.0\r\n", ""},
+           {lang + version + "3.8.1\r\n", ""},
+           {lang + version + "2.8.1rc1\r\n", ""},
+           {lang + version + "2.08.1\r\n", ""},
+           {lang + version + "2.8.\r\n", ""},
+           {"X-Stainless-Lang: js\r\n" + old, ""},
+           {old, ""}, {lang + old + old, ""}, {lang + old + lang, ""},
+           {lang + old + "Connection: x-stainless-package-version\r\n", ""},
+           {lang + old + "Connection: x-stainless-lang\r\n", ""}}) {
+    Q4T_CHECK(Read("GET /v1/responses/resp_example HTTP/1.1\r\nHost: test\r\n" +
+                       headers + "\r\n", &body, &parsed));
+    Q4T_CHECK(parsed.legacy_cache_sdk_version == expected);
+  }
   return true;
 }
 

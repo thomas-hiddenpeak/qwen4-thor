@@ -554,6 +554,7 @@ int ResponsesApiFixture(int argc, char** argv) {
         detail::SendSimple(fd, 200, "OK", "{}", "application/json");
         return 0;
       }
+      http.SetLegacyCacheRetention(!headers.legacy_cache_sdk_version.empty());
       StateAccess access{headers.authorization == "Bearer cpu-a"
                              ? "client:cpu-a"
                              : "client:cpu-b",

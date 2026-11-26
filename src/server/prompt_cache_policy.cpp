@@ -66,10 +66,12 @@ Status ParsePromptCacheOptions(const io::Json& request,
   if (const auto* retention = request.Find("prompt_cache_retention");
       retention && !retention->IsNull()) {
     if (!retention->IsString() ||
-        (retention->str != "in_memory" && retention->str != "24h"))
+        (retention->str != "in_memory" && retention->str != "in-memory" &&
+         retention->str != "24h"))
       return Invalid("prompt_cache_retention", "Invalid cache retention",
                      error_param);
-    options->retention = retention->str;
+    options->retention = retention->str == "in-memory" ? "in_memory"
+                                                       : retention->str;
     options->retention_requested = true;
     options->requested = true;
   }

@@ -840,6 +840,7 @@
         {
           "enum": [
             "in_memory",
+            "in-memory",
             "24h"
           ]
         },

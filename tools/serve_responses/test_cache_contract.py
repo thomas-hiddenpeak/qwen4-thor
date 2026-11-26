@@ -34,6 +34,17 @@ class CacheContract(unittest.TestCase):
         request["prompt_cache_retention"] = None
         self.assertEqual(list(validator.iter_errors(request)), [])
 
+    def test_cache_retention_spellings_and_unknown_value(self):
+        chat = Draft202012Validator(chat_schema())
+        for value in ("in-memory", "in_memory", "24h", None, "in memory"):
+            with self.subTest(retention=value):
+                valid = value != "in memory"
+                request = dict(input="hello", prompt_cache_retention=value)
+                self.assertEqual(not errors(request, "response_create"), valid)
+                request = dict(messages=[dict(role="user", content="hello")],
+                               prompt_cache_retention=value)
+                self.assertEqual(chat.is_valid(request), valid)
+
     def test_actual_cpp_terminal_values(self):
         root = Path(os.environ["Q4T_TEST_OUTPUT_DIR"])
         seen = []

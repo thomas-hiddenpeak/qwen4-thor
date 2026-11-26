@@ -1,0 +1,384 @@
+{
+  "outcome": "PASS",
+  "scope": "CPU-only native loopback, PrivateDevices=yes, zero model starts; real-model TLS qualification remains open",
+  "upstream_fix": "https://github.com/openai/openai-python/commit/f9d2d1359688a6247ecba858fc687173c480c9c8",
+  "tagged_sources": [
+    {
+      "tag": "v2.7.2",
+      "sha256": "599728b609cdbb752b460ac294c5cd609022b159460b5d8c5fd845f85e981584",
+      "definition": null,
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.7.2/src/openai/types/responses/response.py"
+    },
+    {
+      "tag": "v2.8.0",
+      "sha256": "308afd7a51afad8b13e8e4254669268b28b4d358b88d1f10a8a48ec62db126d7",
+      "definition": "prompt_cache_retention: Optional[Literal[\"in-memory\", \"24h\"]] = None",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.8.0/src/openai/types/responses/response.py"
+    },
+    {
+      "tag": "v2.8.1",
+      "sha256": "308afd7a51afad8b13e8e4254669268b28b4d358b88d1f10a8a48ec62db126d7",
+      "definition": "prompt_cache_retention: Optional[Literal[\"in-memory\", \"24h\"]] = None",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.8.1/src/openai/types/responses/response.py"
+    },
+    {
+      "tag": "v2.32.0",
+      "sha256": "14fafde5aecdc3b34a0f1c7345f3cc4723c8188c866d419b071f2004a2856dfd",
+      "definition": "prompt_cache_retention: Optional[Literal[\"in-memory\", \"24h\"]] = None",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.32.0/src/openai/types/responses/response.py"
+    },
+    {
+      "tag": "v2.33.0",
+      "sha256": "f530a099cc7960700fba4afd40380736d4d66d22f8938ff05772ad2269bc216e",
+      "definition": "prompt_cache_retention: Optional[Literal[\"in_memory\", \"24h\"]] = None",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.33.0/src/openai/types/responses/response.py"
+    },
+    {
+      "tag": "v3.55.1",
+      "sha256": "2cb58867f09783cdd0d892d968f4103d4e23d573e427112c575abcd390da7bb5",
+      "definition": "prompt_cache_retention: Optional[Literal[\"in_memory\", \"24h\"]] = None",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.55.1/src/openai/types/responses/response.py"
+    }
+  ],
+  "prior_failure": "docs/evidence/serve-video-layer-composition-20261127/sdk-cursor.json",
+  "cpp_tests": [
+    "[PASS] http_responses_cache_spelling_matches_the_published_sdk_range",
+    "[PASS] http_beta_header_matches_complete_case_sensitive_selection",
+    "[PASS] prompt_cache_retention_bounds_and_modern_ttl_are_independent",
+    "3 tests, 3 passed, 0 failed, 0 skipped"
+  ],
+  "schema_tests": [
+    "...",
+    "----------------------------------------------------------------------",
+    "Ran 3 tests in 0.016s",
+    "",
+    "OK"
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "compiled": {
+    "q4t": "06598f4299c4267b31b76e0b1a21249164ac311e410d141bd531f4ad669cdb08",
+    "q4t-ingress": "a93a47261ea7bd97cf1ffbd119cc374ee11d07740b6ae1c8257cfd8c126ad780",
+    "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+    "q4t-cuda-probe": "9e15f8adb92d76864e8f54f6c514a5cd03e65af3d336ae65ca7f4f8ed3689dc5",
+    "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+  },
+  "fixture_sha256": "05f7bdea8f59fdd51a6227b5e1d51bab2f93209418440176864c5f3c385c0d60",
+  "client_sha256": "c1749b479326b4d6ab82644847b6f6404ad283df20d90b7b082ddd000344c959",
+  "cursor": [
+    {
+      "python": "2.8.1",
+      "mode": "default",
+      "node": "7.47.0",
+      "result_sha256": "6025dc827d84ff905c697cd048cb0e75e43113ef0bdd44c5229012b8106d9d6e",
+      "counterexamples": [],
+      "records": {
+        "inline": {
+          "cursor": 14,
+          "delivered": 14,
+          "canonical_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449"
+        },
+        "replay": {
+          "cursor": 17,
+          "delivered": 18,
+          "canonical_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b"
+        }
+      }
+    },
+    {
+      "python": "2.8.1",
+      "mode": "strict",
+      "node": "7.47.0",
+      "result_sha256": "5465774aec58cbaf345709b1fa6525c13b4b58dc19d7e57ca342038caaea2652",
+      "counterexamples": [
+        "changed_suffix",
+        "changed_resource",
+        "changed_text",
+        "different_cursor"
+      ],
+      "records": {
+        "inline": {
+          "cursor": 14,
+          "delivered": 14,
+          "canonical_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449"
+        },
+        "replay": {
+          "cursor": 17,
+          "delivered": 18,
+          "canonical_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b"
+        }
+      }
+    },
+    {
+      "python": "3.42.1",
+      "mode": "default",
+      "node": "7.47.0",
+      "result_sha256": "cb12b07b938bb670489377c694be1ec3aaa6fa0b349da1798de6f828b34eea1e",
+      "counterexamples": [],
+      "records": {
+        "inline": {
+          "cursor": 14,
+          "delivered": 14,
+          "canonical_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449"
+        },
+        "replay": {
+          "cursor": 17,
+          "delivered": 18,
+          "canonical_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b"
+        }
+      }
+    },
+    {
+      "python": "3.42.1",
+      "mode": "strict",
+      "node": "7.47.0",
+      "result_sha256": "7cb7a72eed7c51dfcfd87a3a0e5c9d6cf7bae93c7dfe6d335e70abe7c4073fa2",
+      "counterexamples": [
+        "changed_suffix",
+        "changed_resource",
+        "changed_text",
+        "different_cursor"
+      ],
+      "records": {
+        "inline": {
+          "cursor": 14,
+          "delivered": 14,
+          "canonical_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449"
+        },
+        "replay": {
+          "cursor": 17,
+          "delivered": 18,
+          "canonical_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b"
+        }
+      }
+    },
+    {
+      "python": "3.55.1",
+      "mode": "default",
+      "node": "7.47.0",
+      "result_sha256": "e6b6169c570a3fc0c5f0b349140fecd2a21eccf32562a8d75a0fb707262827d4",
+      "counterexamples": [],
+      "records": {
+        "inline": {
+          "cursor": 14,
+          "delivered": 14,
+          "canonical_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449"
+        },
+        "replay": {
+          "cursor": 17,
+          "delivered": 18,
+          "canonical_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b"
+        }
+      }
+    },
+    {
+      "python": "3.55.1",
+      "mode": "strict",
+      "node": "7.47.0",
+      "result_sha256": "0a71c1f69a3ad6a88e50dc09939e3aa7613787a67bb415840340904c7d169137",
+      "counterexamples": [
+        "changed_suffix",
+        "changed_resource",
+        "changed_text",
+        "different_cursor"
+      ],
+      "records": {
+        "inline": {
+          "cursor": 14,
+          "delivered": 14,
+          "canonical_sha256": "814657ec3afe5c1a6566e1845e8c000d98f328d9d2ba0eec52252498dc8cf449"
+        },
+        "replay": {
+          "cursor": 17,
+          "delivered": 18,
+          "canonical_sha256": "e7c57ee0da033a16cc1ebf025cc6dc0d8ab84e87c453a022a29b9cf78ca3c79b"
+        }
+      }
+    }
+  ],
+  "fresh": {
+    "cross_version": {
+      "legacy-alias": {
+        "create": {
+          "sdk": "2.8.1",
+          "retention": "in-memory",
+          "id": "resp_00743504cfd7bbee6ae333357fe7eef2",
+          "events": 9,
+          "emitted": 9,
+          "get_sha256": "02d0b3dc6fe40c5a07ff2f93fef1048a3366cdf940a5c09bbfe588c13b224327",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        },
+        "reopen": {
+          "sdk": "3.55.1",
+          "retention": "in_memory",
+          "id": "resp_00743504cfd7bbee6ae333357fe7eef2",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "88a69d452e52d3366827f3fb86d8e5471a67b539f464ea0f27268f0b4a2eca77",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        }
+      },
+      "modern": {
+        "create": {
+          "sdk": "3.55.1",
+          "retention": "in_memory",
+          "id": "resp_a44d5cb4f00d3d52914ed96235ecff36",
+          "events": 9,
+          "emitted": 9,
+          "get_sha256": "95e95bab8f0cf924610cd2769112c078b5c5023f9f25a59c3c7d18e9fc43e8ed",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        },
+        "reopen": {
+          "sdk": "2.8.1",
+          "retention": "in-memory",
+          "id": "resp_a44d5cb4f00d3d52914ed96235ecff36",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "8cafc6305f73928f6ec21d7f5ff0f26115d9e84565e2a3283110970632200f1f",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        }
+      },
+      "extended": {
+        "create": {
+          "sdk": "2.8.1",
+          "retention": "24h",
+          "id": "resp_b18a5331c0f2d628c6ed53e239d02fd3",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "ca2ca318458837d730489d04554d4c070710b0542224239d8f83626de71d8f77",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        },
+        "reopen": {
+          "sdk": "3.55.1",
+          "retention": "24h",
+          "id": "resp_b18a5331c0f2d628c6ed53e239d02fd3",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "ca2ca318458837d730489d04554d4c070710b0542224239d8f83626de71d8f77",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        }
+      },
+      "null": {
+        "create": {
+          "sdk": "3.55.1",
+          "retention": "in_memory",
+          "id": "resp_e8ce7ac809d4c06016a6e875a6de7d36",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "424b7f1fe094593afc30aee7041d3c812cf96447997d6c9f843fc7003217079e",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        },
+        "reopen": {
+          "sdk": "2.8.1",
+          "retention": "in-memory",
+          "id": "resp_e8ce7ac809d4c06016a6e875a6de7d36",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "37e649e25949811fd2a0b540de3db09cbfb76c04ff081a2f93a8434299fb2c6f",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        }
+      },
+      "omitted": {
+        "create": {
+          "sdk": "2.8.1",
+          "retention": "in-memory",
+          "id": "resp_fcfda2cf38ca7e55387fabb7c9eee6a3",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "1656e5601a86917dbe5bda61474c6cb370372451148a7ba20c17fc81730d5e85",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        },
+        "reopen": {
+          "sdk": "3.55.1",
+          "retention": "in_memory",
+          "id": "resp_fcfda2cf38ca7e55387fabb7c9eee6a3",
+          "events": 9,
+          "emitted": 0,
+          "get_sha256": "d1b05576d3c75c65e40f86777db34cdec210f278fe8ee91a50287a7cbfef8e8b",
+          "foreign": 404,
+          "cache_options": {
+            "mode": "implicit",
+            "ttl": "30m"
+          }
+        }
+      }
+    },
+    "frozen_record_sha256": {
+      "legacy-alias": "87f74513abbb5bfa787dc7d3c80b98247e623d35f8170ef9b8b5ab48913202ad",
+      "modern": "2c6749135c8230035ff8c647d79ee617a158cb49ba0a49776da763237dd307d0",
+      "extended": "bcfda7c0628e6a52f459e4149be15a94088c67058ca3470554a4cf17c522b2b0",
+      "null": "3d6097f2283e2b0360f9cf23d0486da22d4e23234f1cc3c185ef077a82d76456",
+      "omitted": "3f45bef7459867a8f1e1f1dc4a140c6e2e430db73c459fa2543b3b5798cd3af1"
+    },
+    "get_vary": [
+      "X-Stainless-Lang",
+      "X-Stainless-Package-Version"
+    ],
+    "assertions": "Native store and response-bearing events canonical; fields outside prompt_cache_retention identical after restart; customer metadata unchanged; peer 404"
+  },
+  "source_sha256": {
+    "include/q4t/server/http_request.h": "74397de18d41348e2b90b6c46e03c203aa6fe807e7b83bf0190018d6e4d91839",
+    "include/q4t/server/http_response.h": "91618afbd42c71ac4a9a25e473e27986f4992fe6712b8ab06103a68e42f37b49",
+    "include/q4t/server/responses_output.h": "485bafc224c435994e165cac23bc2b95a1da81dfad6f8b56b17637d65c788282",
+    "src/server/chat_http.cpp": "3db4a52d95620fa4358b1de193ed4418362862d64a4ab07aba007790204cb5d8",
+    "src/server/http_request.cpp": "033eae452011a6377a42531fc86dbb8a890614db06ae661cacc76169e83391f0",
+    "src/server/http_response.cpp": "bc72d4808a948b76effd5f01ea9131113ba295da24141ab84d0214a6ff0205a0",
+    "src/server/prompt_cache_policy.cpp": "ff1465e9636de3a3dce4c6fa953c2fb0141de2f481ea99bf8076676dfdfe9c0a",
+    "src/server/responses_execution.cpp": "77ec31bf2649847ae7304c12c68a590844b5236e45a929c8ebedc337d2ab71a4",
+    "src/server/responses_output.cpp": "555a9648878e2b136c1f686e79f97fc87a986515270ae96489dc76badcbd8bc5",
+    "src/service/ingress_main.cpp": "a29217b600c49faa7875eb07bd3b67c9cba4911f638e811da3369e16dd861728",
+    "src/service/ingress_transport.cpp": "26d8a96f66610572f240770eff3503b53af6b2b3e31a80e5e4ac36f90895018f",
+    "tests/server_http_request_test.cpp": "42fa72ba31b534758daee1734190f8f5da74c608507a570f66d12cf37d569841",
+    "tests/server_prompt_cache_test.cpp": "911142d9b8610df0c059989c7750f5f788f910caf08a3db8ef71b4c7337ba35d",
+    "tests/server_responses_api_test.cpp": "547637c26dfb39b32a494cea171dd15383520e3552d2cfb712374c2c44708ec9",
+    "tools/serve_protocol/build_contract.py": "632263c0264edbac466823ec8e30b0cab17c19dc0c5c11ad167b09b94d4e4587",
+    "tools/serve_responses/build_contract.py": "cdfe79473c423a0755d713bfa582f74b4c62a26a1b053dbdd858f715b684fab4",
+    "tools/serve_responses/test_cache_contract.py": "e64bdbfc08c472d8536824f331451780199eb0cdb78c0f2f8fd69131be0b4d4e",
+    "tools/serve_audit/response_cache_retention.py": "c1749b479326b4d6ab82644847b6f6404ad283df20d90b7b082ddd000344c959"
+  }
+}

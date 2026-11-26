@@ -22192,6 +22192,7 @@
               {
                 "enum": [
                   "in_memory",
+                  "in-memory",
                   "24h"
                 ]
               },
@@ -25908,6 +25909,7 @@
               {
                 "enum": [
                   "in_memory",
+                  "in-memory",
                   "24h"
                 ]
               },
@@ -39239,6 +39241,9 @@
               },
               {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/817"
+              },
+              {
+                "const": "in-memory"
               }
             ]
           },

@@ -12,6 +12,7 @@
 #include <algorithm>
 
 #include <charconv>
+#include <optional>
 #include <string_view>
 
 #include "q4t/server/client_identity.h"
@@ -22,6 +23,24 @@ namespace {
 
 using http::IsToken;
 using http::Trim;
+
+// Python SDK 2.8.0 introduced "in-memory". 2.33.0 changed the spelling.
+bool UsesLegacyCacheRetention(std::string_view version) {
+  if (!version.starts_with("2.")) return false;
+  version.remove_prefix(2);
+  const auto dot = version.find('.');
+  if (dot == version.npos) return false;
+  const auto number = [](std::string_view digits, unsigned* value) {
+    if (digits.empty() || (digits.size() > 1 && digits.front() == '0'))
+      return false;
+    const auto end = digits.data() + digits.size();
+    const auto parsed = std::from_chars(digits.data(), end, *value);
+    return parsed.ec == std::errc{} && parsed.ptr == end;
+  };
+  unsigned minor = 0, patch = 0;
+  return number(version.substr(0, dot), &minor) && minor >= 8 && minor < 33 &&
+         number(version.substr(dot + 1), &patch);
+}
 
 }  // namespace
 
@@ -186,6 +205,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   bool seen_length = false, seen_host = false;
   bool seen_id = false, seen_type = false;
   bool seen_authorization = false;
+  std::optional<bool> python_sdk;
+  std::optional<std::string_view> sdk_version;
   bool seen_client = false, seen_gateway = false;
   bool seen_origin = false, seen_cors_method = false, seen_cors_headers = false;
   bool seen_transfer = false, seen_expect = false;
@@ -374,6 +395,10 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
         return false;
       }
       headers->agent_event_key = value;
+    } else if (name == "x-stainless-lang") {
+      python_sdk = !python_sdk.has_value() && value == "python";
+    } else if (name == "x-stainless-package-version") {
+      sdk_version = sdk_version ? std::string_view{} : value;
     } else if (name == "openai-beta") {
       auto remaining = value;
       for (;;) {
@@ -403,6 +428,13 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     pos = end + 2;
   }
   if (version == "HTTP/1.1" && !seen_host) return false;
+  if (python_sdk.value_or(false) && sdk_version &&
+      UsesLegacyCacheRetention(*sdk_version) &&
+      std::find(connection.begin(), connection.end(), "x-stainless-lang") ==
+          connection.end() &&
+      std::find(connection.begin(), connection.end(),
+                "x-stainless-package-version") == connection.end())
+    headers->legacy_cache_sdk_version = *sdk_version;
   if (seen_length && seen_transfer) return false;
   for (const auto& option : connection)
     if (http::Protected(option)) return false;
