@@ -103,6 +103,7 @@ struct EmbeddingStepResult;
 class RequestDiagnostics;
 class AsrStreamPass;
 struct NativeChatSpeech;
+struct ConversationCompaction;
 
 // Fixed-bucket, lock-free latency histogram (Prometheus style). Buckets are
 // le boundaries in seconds; sum is accumulated in microseconds.
@@ -439,14 +440,16 @@ class ChatServer {
                   std::shared_ptr<RequestControl> owner = {},
                   const io::Json* frozen_inputs = nullptr,
                   const BatchResponseLink* batch_parent = nullptr,
-                  class NativeChatGeneration* native = nullptr);
+                  class NativeChatGeneration* native = nullptr,
+                  const ConversationCompaction* conversation = nullptr);
   void HandleChatImpl(int fd, const std::string& body,
                       detail::ResponseState* response_state, bool completion,
                       class ResponsesExecution* responses,
                       std::shared_ptr<RequestControl> background = {},
                       struct InternalModelStep* internal = nullptr,
                       const io::Json* frozen_inputs = nullptr,
-                      NativeChatGeneration* native = nullptr);
+                      NativeChatGeneration* native = nullptr,
+                      const ConversationCompaction* conversation = nullptr);
   BatchRowResult RunBatchRequest(const std::string& endpoint,
                                  const BatchInputRow& row,
                                  const io::Json& frozen_inputs,

@@ -876,6 +876,13 @@
         "issued": false,
         "business": "evidence/serve-stored-content-parts-20261126/business.json",
         "profiles": "evidence/serve-stored-content-parts-20261126/profiles.json"
+      },
+      "conversation_item_identifiers_20261126": {
+        "stage": "reproduced",
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
+        "remaining": [
+          "MCP approval request_id and locally supplied shell output call_id in public Conversations input and readback"
+        ]
       }
     },
     {
@@ -3031,6 +3038,11 @@
         "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
         "publication_revision": 532,
         "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
+      },
+      "conversation_compaction_20261126": {
+        "stage": "built_and_targeted_cpu",
+        "issued": false,
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json"
       }
     },
     {
@@ -3676,6 +3688,18 @@
         "issued": false,
         "business": "evidence/serve-stored-content-parts-20261126/business.json",
         "profiles": "evidence/serve-stored-content-parts-20261126/profiles.json"
+      },
+      "conversation_compaction_20261126": {
+        "stage": "built_and_targeted_cpu",
+        "issued": false,
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json"
+      },
+      "conversation_item_identifiers_20261126": {
+        "stage": "reproduced",
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
+        "remaining": [
+          "MCP approval request_id and locally supplied shell output call_id in public Conversations input and readback"
+        ]
       }
     },
     {
@@ -8744,6 +8768,11 @@
         "receipt": "evidence/serve-responses-errors-20261126/agent-quota-python.json",
         "node_tls": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
         "python_transport": "offline replay of native reads and events"
+      },
+      "conversation_compaction_20261126": {
+        "stage": "built_and_targeted_cpu",
+        "issued": false,
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json"
       }
     },
     {

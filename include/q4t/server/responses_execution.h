@@ -25,6 +25,7 @@
 #include "q4t/server/vector_search_execution.h"
 
 namespace q4t::server {
+struct ConversationCompaction;
 namespace chatkit_detail {
 struct RetryHistory;
 }
@@ -244,6 +245,8 @@ class ResponsesExecution {
   bool CompactionSelected() const { return compaction_selected_; }
   bool StandaloneCompaction() const { return standalone_compaction_; }
   std::string ResultJson() const;
+  ObjectReply CommitConversationCompaction(
+      const ConversationCompaction& conversation);
   // Storage keeps full result evidence; create-stream projection obeys include.
   std::string PublicWire(std::string_view wire) const;
   io::Json PublicResponse() const;

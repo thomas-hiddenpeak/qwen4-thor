@@ -14,6 +14,16 @@ struct ItemViewOptions {
   std::vector<std::string> include;
 };
 
+// Captured before the compact model step. Publication checks the same owner
+// and revision and appends the sealed item together with its new inputs.
+struct ConversationCompaction {
+  std::string id, scope;
+  int64_t revision = 0;
+  size_t prefix_items = 0, new_items = 0;
+  io::Json metadata, input;
+  ItemViewOptions view;
+};
+
 enum class StoredItemView { kInputList, kConversation, kAgentSession };
 
 ObjectReply NormalizeConversationMetadata(const io::Json& metadata);
@@ -43,6 +53,15 @@ class ConversationState {
   ObjectReply Erase(const std::string& id, const StateAccess& access);
   ObjectReply Append(const std::string& id, const io::Json& items,
                      const ItemViewOptions& options, const StateAccess& access);
+  ObjectReply PlanCompaction(const std::string& id, const io::Json& metadata,
+                             const io::Json& raw, const io::Json& resolved,
+                             const ItemViewOptions& view,
+                             const StateAccess& access,
+                             ConversationCompaction* plan);
+  ObjectReply CommitCompaction(const ConversationCompaction& plan,
+                               const io::Json& resolved_input,
+                               const io::Json& sealed_item,
+                               const StateAccess& access);
   ObjectReply ListItems(const std::string& id, const ItemViewOptions& options,
                         const StateAccess& access);
   ObjectReply RetrieveItem(const std::string& id, const std::string& item_id,
@@ -55,6 +74,9 @@ class ConversationState {
 
  private:
   ObjectReply Read(const std::string& id, const StateAccess& access);
+  ObjectReply AppendAtRevision(const std::string& id, const io::Json& items,
+                               const ItemViewOptions& options,
+                               const StateAccess& access, int64_t revision);
   ObjectReply Publish(const std::string& id, int64_t revision, io::Json data,
                       const io::Json& new_items, const StateAccess& access);
   ObjectStore& objects_;

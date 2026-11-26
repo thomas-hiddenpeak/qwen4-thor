@@ -1,5 +1,7 @@
 #include "q4t/server/responses_execution.h"
 
+#include "q4t/server/conversation_state.h"
+
 #include <algorithm>
 #include <stdexcept>
 
@@ -141,6 +143,17 @@ ObjectReply ResponsesExecution::CompleteCompaction(
   compaction_window_ = std::move(window);
   compaction_completed_ = true;
   return {};
+}
+
+ObjectReply ResponsesExecution::CommitConversationCompaction(
+    const ConversationCompaction& conversation) {
+  if (!standalone_compaction_ || !plan_.finished || !compaction_completed_ ||
+      compaction_window_.array.empty() ||
+      output_.Snapshot().GetString("status") != "completed")
+    return Error(502, "compaction_incomplete",
+                 "Context compaction did not finish");
+  return ConversationState(objects_).CommitCompaction(
+      conversation, plan_.own_input, compaction_window_.array.back(), access_);
 }
 
 std::string ResponsesExecution::ResultJson() const {
