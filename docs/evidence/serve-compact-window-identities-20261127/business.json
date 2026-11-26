@@ -1,0 +1,155 @@
+{
+  "source_commit": "246bde99efb9c89867019f325858d7b622c72c6b",
+  "scope": "Replay of signed MCP and video histories and separate fresh MCP compaction on Python 2.33.0",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 59.144,
+    "scope": "only archived windows on two readers and source video; new old-SDK summary recorded independently",
+    "unchanged_default": true,
+    "original_store_unchanged": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "compiled": {
+    "files": {
+      "q4t": "f225ca066ed5e69ffaa0c0f0444f66aa31566c8086d3f26f39a414c72eb1ac83",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "de3b25545ede1fe9be9c3bb18b02f39a294b382e337f58ec384ab72edea7f032",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "model_requests": 5,
+  "foreign_rejections": 4,
+  "receipts": {
+    "release-old": {
+      "returncode": 0,
+      "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+      "sdk": "2.33.0",
+      "answer": "560",
+      "exact_answer": true,
+      "foreign_code": "invalid_encrypted_content",
+      "usage": {
+        "input_tokens": 1089,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 1082
+        },
+        "output_tokens": 4,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1093
+      },
+      "http_status": 200,
+      "response_sha256": "d8e9de068fd954144808e978029a6edd53e9515702f02f27f745da472de07292"
+    },
+    "release-current": {
+      "returncode": 0,
+      "window_sha256": "2ead870a30419eb2c2de7ba3d555c0412ec31fbd1e2b15d111241c72f1c2cf0b",
+      "sdk": "3.55.1",
+      "answer": "560",
+      "exact_answer": true,
+      "foreign_code": "invalid_encrypted_content",
+      "usage": {
+        "input_tokens": 1089,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 1082
+        },
+        "output_tokens": 4,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1093
+      },
+      "http_status": 200,
+      "response_sha256": "49aa4ec58b513c789c5f02ea626214449394007ab9ce6bfc84d087521927aeb3"
+    },
+    "video": {
+      "returncode": 0,
+      "window_sha256": "1e3732da397c782cdd2dc7ec639a60b4b2d2f5c8d79fc2ea7b871523279edaec",
+      "sdk": "3.55.1",
+      "answer": "Blue",
+      "exact_answer": true,
+      "foreign_code": "invalid_encrypted_content",
+      "usage": {
+        "input_tokens": 1133,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 2,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1135
+      },
+      "http_status": 200,
+      "response_sha256": "5d99d2adcd41a3174d3d4c57ebd67698bbaa85ec7c9c7a38e6c8f6a4f53e7456"
+    },
+    "fresh-old": {
+      "returncode": 0,
+      "window_sha256": null,
+      "sdk": "2.33.0",
+      "source": "resp_23f5393860c93829077e69f040447b7b",
+      "original_ids": [
+        "item_debe03b3e7e161287e9d4ee39e6033f3",
+        "msg_compact_release_question"
+      ],
+      "output_items": 7,
+      "usage": {
+        "input_tokens": 1563,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 383,
+        "output_tokens_details": {
+          "reasoning_tokens": 383
+        },
+        "total_tokens": 1946
+      },
+      "raw_compact": true,
+      "typed_window_round_trip": true,
+      "strict_compact": "type_rejected",
+      "foreign_status": 400,
+      "foreign_code": "invalid_encrypted_content",
+      "answer": "560",
+      "exact_answer": true,
+      "video": null,
+      "files": {
+        "compact": "34874efb1b8d9a902a763e8f3881714e4ce3642951f27c884f2c60715ddbc471",
+        "resumed": "57a8c038baac5514247371f1d29abc6f26092aa32d72c26680739912c983f3ed"
+      },
+      "vary": {
+        "compact": [
+          "x-stainless-lang",
+          "x-stainless-package-version"
+        ],
+        "resumed": [
+          "x-stainless-lang",
+          "x-stainless-package-version"
+        ]
+      }
+    }
+  },
+  "hashes": {
+    "exit.json": "8d5fdd417e8be8e5d0ec23dbe727c8758e66ab5fdb7e1ae102259dc3affbd8ef",
+    "plan.json": "f714d0a8debc2960a62d66c30efa7d620b9d1f530c9b100c02397f6c82efbe83",
+    "model.log": "444b9e42df948af10305e80585145fcd92b8088f5bb98849bfe84a116ab0e195",
+    "case-results.json": "64997365534bfd633d004a51e06a7f8caaac1f99ce5ffc6b6c5885a87bf3b411",
+    "openapi.json": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+  },
+  "original_signed_window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+  "earlier_failure": "On run 03 rightful-owner replay returned 400 mcp_definition_required. Two independent fresh compactions there returned compaction_refused, including video.",
+  "limitations": [
+    "Current SDK signed the MCP window in run 03; successful continuation is on the repaired binary in run 04.",
+    "The video window was signed on the earlier candidate. Fresh video compaction on this binary is pending.",
+    "The optional CompactWindow adapter validates retained messages. The stock SDK strict compact return type rejects them.",
+    "Managed capacity, failover and installed release are pending."
+  ]
+}

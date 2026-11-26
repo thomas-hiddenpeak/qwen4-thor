@@ -917,17 +917,18 @@
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       },
       "compact_message_identity_20261127": {
-        "state": "native_cpu_contract_and_replay_verified",
+        "state": "signed_history_replayed_over_tls",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
         "remaining": [
-          "actual model-produced standalone compaction and follow-up on both readers",
-          "upstream SDK output-only union rejects retained user messages on strict parsing"
+          "managed capacity, recovery and issued release",
+          "upstream strict compact output type excludes retained user messages"
         ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
-        "device_status": "real_window_signed; historical_approval_dispatch_repaired_on_CPU",
+        "device_status": "original_owner_400_repaired_verified_both_readers",
         "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json",
-        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json"
+        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json",
+        "business": "evidence/serve-compact-window-identities-20261127/business.json"
       }
     },
     {
@@ -3194,23 +3195,25 @@
         "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
       },
       "compact_message_identity_20261127": {
-        "state": "native_cpu_contract_and_replay_verified",
+        "state": "signed_history_replayed_over_tls",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
         "remaining": [
-          "actual model-produced standalone compaction and follow-up on both readers",
-          "upstream SDK output-only union rejects retained user messages on strict parsing"
+          "managed capacity, recovery and issued release",
+          "upstream strict compact output type excludes retained user messages"
         ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
-        "device_status": "real_window_signed; historical_approval_dispatch_repaired_on_CPU",
+        "device_status": "original_owner_400_repaired_verified_both_readers",
         "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json",
-        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json"
+        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json",
+        "business": "evidence/serve-compact-window-identities-20261127/business.json"
       },
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "managed recovery and stopped publication",
-        "business": "evidence/serve-compact-window-identities-20261127/video-business.json"
+        "remaining": "fresh video compaction on repaired binary, managed recovery and publication",
+        "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
+        "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json"
       }
     },
     {
@@ -6872,8 +6875,9 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "managed recovery and stopped publication",
-        "business": "evidence/serve-compact-window-identities-20261127/video-business.json"
+        "remaining": "fresh video compaction on repaired binary, managed recovery and publication",
+        "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
+        "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json"
       }
     },
     {
@@ -9280,17 +9284,18 @@
         "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json"
       },
       "compact_message_identity_20261127": {
-        "state": "native_cpu_contract_and_replay_verified",
+        "state": "signed_history_replayed_over_tls",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
         "remaining": [
-          "actual model-produced standalone compaction and follow-up on both readers",
-          "upstream SDK output-only union rejects retained user messages on strict parsing"
+          "managed capacity, recovery and issued release",
+          "upstream strict compact output type excludes retained user messages"
         ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
-        "device_status": "real_window_signed; historical_approval_dispatch_repaired_on_CPU",
+        "device_status": "original_owner_400_repaired_verified_both_readers",
         "chronology_errors": "evidence/serve-compact-window-identities-20261127/chronology.json",
-        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json"
+        "approval_dispatch": "evidence/serve-compact-window-identities-20261127/sealed-approval.json",
+        "business": "evidence/serve-compact-window-identities-20261127/business.json"
       }
     },
     {
@@ -12309,8 +12314,9 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "managed recovery and stopped publication",
-        "business": "evidence/serve-compact-window-identities-20261127/video-business.json"
+        "remaining": "fresh video compaction on repaired binary, managed recovery and publication",
+        "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
+        "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json"
       }
     },
     {
