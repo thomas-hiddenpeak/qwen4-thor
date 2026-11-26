@@ -2,6 +2,8 @@
 
 ### Responses 的缓存驻留字段
 
+原生 TLS 网关用一次模型启动完成严格客户端验收，用时 41.4 秒。旧版客户端读到了原先报错的历史响应。新旧客户端分别查询发行记录，各自回答 558；互换客户端后，GET 正文和 SSE 事件仅缓存驻留字段的拼写不同。旧版和新版异步客户端还在正文中段关闭连接，分别从同一游标取回 18 个后续事件。七次跨客户读取均返回 404。默认服务保持停止。下一步验证发行包交接。[业务验收](evidence/serve-response-cache-retention-20261127/business.json)
+
 稳定版 Python SDK 从 2.8.0 到 2.32.x 使用 `in-memory`，2.33.0 起使用 `in_memory`。原生入口按 SDK 自带的语言和版本头选择 JSON 和 SSE 响应的拼写，`Vary` 声明两项请求头。两种输入写法对应同一缓存策略，`24h` 可跨版本使用。没有版本信息的客户端收到当前拼写。持久记录和事件日志统一使用 `in_memory`。SDK 版本仅用于响应表示。[上游修正](https://github.com/openai/openai-python/commit/f9d2d1359688a6247ecba858fc687173c480c9c8)
 
 Responses 已按客户端版本处理缓存驻留字段。Python SDK 2.8.1 严格模式可读取原先解析失败的历史响应；2.8.1、3.42.1、3.55.1 的默认与严格模式共六组均可交给 Node 续读。五份新响应跨版本创建、重启后读取，落盘记录的 SHA-256 全部一致。CPU 验证已完成，原生 TLS 真实模型和发行待验。[CPU 验证](evidence/serve-response-cache-retention-20261127/cpu.json)

@@ -909,9 +909,10 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_http_cpu_verified",
+        "status": "native_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "native TLS device verification and delivery"
+        "remaining": "release qualification",
+        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json"
       }
     },
     {
@@ -3145,9 +3146,10 @@
         "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_http_cpu_verified",
+        "status": "native_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "native TLS device verification and delivery"
+        "remaining": "release qualification",
+        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json"
       }
     },
     {
@@ -9137,10 +9139,11 @@
         "legacy_strict_cache_retention_pending": true
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_http_cpu_verified",
+        "status": "native_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "native TLS device verification and delivery",
-        "async_disconnect": "docs/evidence/serve-response-cache-retention-20261127/async-cursor.json"
+        "remaining": "release qualification",
+        "async_disconnect": "docs/evidence/serve-response-cache-retention-20261127/async-cursor.json",
+        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json"
       }
     },
     {
