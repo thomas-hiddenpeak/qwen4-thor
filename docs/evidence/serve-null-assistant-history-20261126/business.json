@@ -1,0 +1,54 @@
+{
+  "stage": "verified_native_https",
+  "issued": false,
+  "previous_revision": 538,
+  "engine_sha256": "edf0e22d5a15bdb14a5f07c6ea9662a332279a1974ed25913492d8f264247432",
+  "ingress_sha256": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "sdk_driver_sha256": "a1e612cdadb25f57d4dc143f157facaadbbf1f1722c16aef012f5640f4ff7fd1",
+  "source_record_sha256": "0808c8fea5310c821b4815de087e35854995e986834e0552950a0904d9272470",
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "validated_response_objects": {
+    "ChatCompletionMessageList": 1,
+    "CreateChatCompletionResponse": 1,
+    "CreateChatCompletionStreamResponse": 5
+  },
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.862,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "client": {
+    "sdk": "3.55.1",
+    "revision": 536,
+    "source_sha256": "0808c8fea5310c821b4815de087e35854995e986834e0552950a0904d9272470",
+    "saved": {
+      "chat_id": "chatcmpl-auto-36e3fa8149e4be15bfd93e09550af7c6",
+      "call_id": "call_chatcmpl-auto-36e3fa8149e4be15bfd93e09550af7c6_0",
+      "empty_id": "chatmsg_9e135b98f1e013b8cb3a52b60b093de914201c727fd61cdcf0dae9cd5e27769e",
+      "history_sha256": "fb5d3da9fdee0e985c209b6e59b4000f0e5a5e10e7e35d93e1ee0922b06bb78b",
+      "peer": 404,
+      "strict_empty_page": true,
+      "strict_mixed_page": false
+    },
+    "restored": null,
+    "reply": "13",
+    "finishes": [
+      "stop"
+    ],
+    "usage": 194,
+    "independent_chat": "720041",
+    "missing_content_status": 400,
+    "chunks": 5
+  },
+  "captures": {
+    "original-history.json": "fb5d3da9fdee0e985c209b6e59b4000f0e5a5e10e7e35d93e1ee0922b06bb78b",
+    "lookup.json": "43c8dbef794a513ad70110f7dbba6a53abf1d90353e36d3698aeaeb6d7af9918",
+    "chunks.jsonl": "f16bd19b6e6c2fff229b4761619bb1117cb92a5c865bb5d9771d12784d5311ce"
+  },
+  "strict_lease_sha256": "62fe112b7c11e91b6e412f5ed86cf6838fa48c1d246fc6dd0ebb52db24eab6c1",
+  "model_requests": 3
+}
