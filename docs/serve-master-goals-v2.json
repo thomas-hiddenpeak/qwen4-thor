@@ -9966,8 +9966,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 536,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev536-preflight.json",
+        "revision": 538,
+        "receipt": "evidence/serve-reclaim-pressure-20261126/delivery.json",
         "model_starts": 0,
         "executed": false
       }
@@ -10083,11 +10083,13 @@
         "evidence": "evidence/serve-resource-charge-20261126/sized-pool.json"
       },
       "reclaim_pressure_20261126": {
-        "stage": "real_managed_pressure_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-reclaim-pressure-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "real_business_pending": false,
-        "business": "evidence/serve-reclaim-pressure-20261126/business.json"
+        "business": "evidence/serve-reclaim-pressure-20261126/business.json",
+        "revision": 538,
+        "delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json"
       }
     },
     {
@@ -11720,7 +11722,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev536_delivered_remaining_deliveries",
+      "state": "rev538_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13066,7 +13068,8 @@
       "current_failure_delivery": "evidence/serve-responses-errors-20261126/delivery.json",
       "current_movie_clip_delivery": "evidence/serve-video-clipping-20261126/delivery.json",
       "current_region_clip_delivery": "evidence/serve-video-regions-20261126/delivery.json",
-      "current_tool_map_delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
+      "current_tool_map_delivery": "evidence/serve-tool-map-references-20261126/delivery.json",
+      "current_reclaim_pressure_delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13171,16 +13174,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "a0796d6c380e6538ab91290bca1a45c9b95ab381",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/tool-map-delivery-soak-src",
+        "source_commit": "b08721977b681c179b7d52afd9ec63e7644cee93",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/tool-map-client-primary-01/bundle",
-          "manifest_sha256": "9a5fd7f90d7a7e0c7cd5af87829dfedd3bdceef331c7760180567396f522e0f1"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-client-primary-01/bundle",
+          "manifest_sha256": "e0556ec52df7d6fd7b752b68647f9403199d326bb6aca54f26cd1b70ffe73b58"
         },
-        "revision": 536,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/tool-map-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "c5fa30b540928da37f6a5e09a241098877080afcdbbb8a9c4f454107f7ee0260",
-        "handoff_sha256": "2fca50ea8e93b00cedbd0e577181a83f227233b06a5f4644c3b87b942a8a110b",
+        "revision": 538,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "6ed211e0087898ad6961b444e709d2b9c284e5efa8b7943660bf17a5869acff0",
+        "handoff_sha256": "54094785ec1e00746f679765feab15accc47a44c1902ee25a84314479cd7b532",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13591,9 +13594,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 536,
-        "receipt": "evidence/serve-tool-map-references-20261126/delivery.json",
-        "plan_sha256": "c5fa30b540928da37f6a5e09a241098877080afcdbbb8a9c4f454107f7ee0260",
+        "revision": 538,
+        "receipt": "evidence/serve-reclaim-pressure-20261126/delivery.json",
+        "plan_sha256": "6ed211e0087898ad6961b444e709d2b9c284e5efa8b7943660bf17a5869acff0",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

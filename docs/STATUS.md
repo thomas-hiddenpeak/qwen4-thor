@@ -12,6 +12,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 完整构建的预检程序复验了 42 组提示和 token ID。另有 12 个历史组合逐字节及逐 token 一致，覆盖 developer、推理别名、乱序工具回填，以及空助手轮次之前的图片或视频帧；10 项角色与历史原生用例通过。Python SDK 3.55.1 的严格历史类型只接受 assistant，已用该版本独立复现；官方 HTTP 类型可返回六种真实角色。下一步按实际角色分别核对 HTTPS 回读和工具续答。[构建与兼容记录](evidence/serve-null-assistant-history-20261126/full-build.json)
 
 聊天历史中显式的 assistant.content=null 现在保留空轮次及已有推理内容。此前服务在预检返回 400。候选与独立 Jinja 模板、分词器在 21 个历史样例的两种模式下共 42 次逐字节及逐 token 相符，包含五项工具 JSON 包装。17 项输入形状与 7 项原生测试通过。下一步验证真实 HTTPS Chat、历史回读和工具续答。[验证记录](evidence/serve-null-assistant-history-20261126/cpu.json)
+rev538 已发行资源压力降级修复。独立回退包在真实内核限流下完成主、轻、主三代 Chat；主包受控网关故障后，一次探测选中该回退包，原 Chat 和 Agent 摘要一致，真实工具回填后的回答为 13，新 Chat 回答 42。发布前后服务意图为 STOPPED，13 份受保护状态摘要一致。整机统一内存硬上限与冷启动组合仍待验。[发行记录](evidence/serve-reclaim-pressure-20261126/delivery.json)
 
 独立资源域里的真实模型已完成主配置、轻配置、主配置三代切换，各完成一条 Chat 并回答 42。内核 high 事件从 147116 增至 150091；移除有界压力后，控制器沿用发行包的冷却、最短轻配置驻留和恢复窗口。历时 508.2 秒，已归还 GPU 租约并删除测试资源域。下一步核验可回退发布。[业务记录](evidence/serve-reclaim-pressure-20261126/business.json)
 
