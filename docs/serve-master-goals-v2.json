@@ -895,13 +895,13 @@
         "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
       },
       "local_shell_20261126": {
-        "stage": "cpu_verified",
+        "stage": "native_tls_business_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
-          "real Native TLS model-issued local shell call and follow-up",
           "managed profile and recovery delivery"
-        ]
+        ],
+        "business": "evidence/serve-local-shell-20261126/business.json"
       }
     },
     {
@@ -3071,13 +3071,13 @@
         "delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "cpu_verified",
+        "stage": "native_tls_business_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
-          "real Native TLS model-issued local shell call and follow-up",
           "managed profile and recovery delivery"
-        ]
+        ],
+        "business": "evidence/serve-local-shell-20261126/business.json"
       }
     },
     {
@@ -3753,13 +3753,13 @@
         "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
       },
       "local_shell_20261126": {
-        "stage": "cpu_verified",
+        "stage": "native_tls_business_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
-          "real Native TLS model-issued local shell call and follow-up",
           "managed profile and recovery delivery"
-        ]
+        ],
+        "business": "evidence/serve-local-shell-20261126/business.json"
       }
     },
     {
@@ -7589,13 +7589,13 @@
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "cpu_verified",
+        "stage": "native_tls_business_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
-          "real Native TLS model-issued local shell call and follow-up",
           "managed profile and recovery delivery"
-        ]
+        ],
+        "business": "evidence/serve-local-shell-20261126/business.json"
       }
     },
     {
@@ -8865,13 +8865,13 @@
         "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
       },
       "local_shell_20261126": {
-        "stage": "cpu_verified",
+        "stage": "native_tls_business_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
-          "real Native TLS model-issued local shell call and follow-up",
           "managed profile and recovery delivery"
-        ]
+        ],
+        "business": "evidence/serve-local-shell-20261126/business.json"
       }
     },
     {
