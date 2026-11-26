@@ -1,0 +1,141 @@
+{
+  "stage": "native_tls_business_verified",
+  "issued": false,
+  "prior_revision": 540,
+  "engine": "da03ea719e2641448f1995f8f1974f977d95a4d5dfdb09732781e3f39ebe3582",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "sdk_driver": "35dc3f95cf209f94910e137c4c6e3de9537c34d8a8a80c97cf382d836d69c976",
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "published_candidate_schema_sha256": "87291a5fb580c46c7208a6861f866be635cce7191e2ff0e39849e2a34bfa56e7",
+  "limits": {
+    "model_starts": 1,
+    "generations": 2,
+    "seconds": 295
+  },
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.543,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "client": {
+    "sdk": "3.55.1",
+    "chat_id": "chatcmpl-auto-1a6d9a1290c4fc64568b9b7ea98859f7",
+    "reply": "Green",
+    "color_correct": true,
+    "independent_chat": "720041",
+    "message_ids": [
+      "chatmsg_88d3dfca2b8ff00e77b9c8c36017d1bf9340a82181f1be577cece88340bd0230",
+      "chatmsg_9609534f29f9d3357790db78cad7a35516e4b16573d3da4a5a35ac9726b8981a",
+      "chatmsg_f34123669dcaf61f97ca0b0f38b73c8bd7876e4a1bb31be2db521eb2f10f2217"
+    ],
+    "peer": 404,
+    "history_sha256": "cd4cde5f922d3c6d0a1d79aca3b60c8665fcf343a95f6b88524123278508c20b",
+    "frame_count": 2,
+    "cursor": "chatmsg_9609534f29f9d3357790db78cad7a35516e4b16573d3da4a5a35ac9726b8981a"
+  },
+  "wire_history": {
+    "object": "list",
+    "data": [
+      {
+        "role": "user",
+        "content": "I will send an image and a clip.",
+        "id": "chatmsg_88d3dfca2b8ff00e77b9c8c36017d1bf9340a82181f1be577cece88340bd0230",
+        "name": null,
+        "content_parts": null
+      },
+      {
+        "role": "assistant",
+        "content": "Ready.",
+        "id": "chatmsg_9609534f29f9d3357790db78cad7a35516e4b16573d3da4a5a35ac9726b8981a",
+        "name": null,
+        "content_parts": [
+          {
+            "text": "Ready",
+            "type": "text"
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ],
+        "original_content_parts": [
+          {
+            "text": "Ready"
+          },
+          {
+            "type": "text",
+            "text": "."
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": "Inspect the still image and the video. What color is the still image? Reply with one English color word.",
+        "id": "chatmsg_f34123669dcaf61f97ca0b0f38b73c8bd7876e4a1bb31be2db521eb2f10f2217",
+        "name": null,
+        "content_parts": [
+          {
+            "text": "Inspect the still image and the video. ",
+            "type": "text"
+          },
+          {
+            "image_url": {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AAABBUlEQVR42u3RMQ0AAAjAsPk3DS44SJMpWGvS5ywALMACLMACLMACDFiABViABViABRiwAAuwAAuwAAuwAAMWYAEWYAEWYAEGLMACLMACLMACDFiABViABViABViAAQuwAAuwAAuwAAMWYAEWYAEWYAEGbAFgARZgARZgARZgwAIswAIswAIswIAFWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgwAIswAIswAIswAIMWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgAQYswAIswAIswAIMWIAFWIAFWIAFWIABC7AAC7AAC7AAAxZgARZgARZgAQYswAIswLptAWwZoc6sY+wnAAAAAElFTkSuQmCC"
+            },
+            "type": "image_url"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AAABBUlEQVR42u3RMQ0AAAjAsPk3DS44SJMpWKvR6ywALMACLMACLMACDFiABViABViABRiwAAuwAAuwAAuwAAMWYAEWYAEWYAEGLMACLMACLMACDFiABViABViABViAAQuwAAuwAAuwAAMWYAEWYAEWYAEGbAFgARZgARZgARZgwAIswAIswAIswIAFWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgwAIswAIswAIswAIMWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgAQYswAIswAIswAIMWIAFWIAFWIAFWIABC7AAC7AAC7AAAxZgARZgARZgAQYswAIswDptAco9oc7lOC5RAAAAAElFTkSuQmCC"
+            }
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AAABBUlEQVR42u3RMQ0AAAjAsPk3DS44SJMpWKvR6ywALMACLMACLMACDFiABViABViABRiwAAuwAAuwAAuwAAMWYAEWYAEWYAEGLMACLMACLMACDFiABViABViABViAAQuwAAuwAAuwAAMWYAEWYAEWYAEGbAFgARZgARZgARZgwAIswAIswAIswIAFWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgwAIswAIswAIswAIMWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgAQYswAIswAIswAIMWIAFWIAFWIAFWIABC7AAC7AAC7AAAxZgARZgARZgAQYswAIswDptAco9oc7lOC5RAAAAAElFTkSuQmCC"
+            }
+          },
+          {
+            "type": "text",
+            "text": "What color is the still image? Reply with one English color word."
+          }
+        ],
+        "original_content_parts": [
+          {
+            "text": "Inspect the still image and the video. "
+          },
+          {
+            "image_url": "iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AAABBUlEQVR42u3RMQ0AAAjAsPk3DS44SJMpWGvS5ywALMACLMACLMACDFiABViABViABRiwAAuwAAuwAAuwAAMWYAEWYAEWYAEGLMACLMACLMACDFiABViABViABViAAQuwAAuwAAuwAAMWYAEWYAEWYAEGbAFgARZgARZgARZgwAIswAIswAIswIAFWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgwAIswAIswAIswAIMWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgAQYswAIswAIswAIMWIAFWIAFWIAFWIABC7AAC7AAC7AAAxZgARZgARZgAQYswAIswLptAWwZoc6sY+wnAAAAAElFTkSuQmCC"
+          },
+          {
+            "type": "video_frames",
+            "video_frames": [
+              "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AAABBUlEQVR42u3RMQ0AAAjAsPk3DS44SJMpWKvR6ywALMACLMACLMACDFiABViABViABRiwAAuwAAuwAAuwAAMWYAEWYAEWYAEGLMACLMACLMACDFiABViABViABViAAQuwAAuwAAuwAAMWYAEWYAEWYAEGbAFgARZgARZgARZgwAIswAIswAIswIAFWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgwAIswAIswAIswAIMWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgAQYswAIswAIswAIMWIAFWIAFWIAFWIABC7AAC7AAC7AAAxZgARZgARZgAQYswAIswDptAco9oc7lOC5RAAAAAElFTkSuQmCC",
+              {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AAABBUlEQVR42u3RMQ0AAAjAsPk3DS44SJMpWKvR6ywALMACLMACLMACDFiABViABViABRiwAAuwAAuwAAuwAAMWYAEWYAEWYAEGLMACLMACLMACDFiABViABViABViAAQuwAAuwAAuwAAMWYAEWYAEWYAEGbAFgARZgARZgARZgwAIswAIswAIswIAFWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgwAIswAIswAIswAIMWIAFWIAFWIAFGLAAC7AAC7AACzBgARZgARZgARZgAQYswAIswAIswAIMWIAFWIAFWIAFWIABC7AAC7AAC7AAAxZgARZgARZgAQYswAIswDptAco9oc7lOC5RAAAAAElFTkSuQmCC"
+              }
+            ],
+            "video_timestamps": [
+              0,
+              1
+            ]
+          },
+          {
+            "type": "text",
+            "text": "What color is the still image? Reply with one English color word."
+          }
+        ]
+      }
+    ],
+    "first_id": "chatmsg_88d3dfca2b8ff00e77b9c8c36017d1bf9340a82181f1be577cece88340bd0230",
+    "last_id": "chatmsg_f34123669dcaf61f97ca0b0f38b73c8bd7876e4a1bb31be2db521eb2f10f2217",
+    "has_more": false
+  },
+  "lease_status": "COMPLETED",
+  "wire_bytes": 4118
+}

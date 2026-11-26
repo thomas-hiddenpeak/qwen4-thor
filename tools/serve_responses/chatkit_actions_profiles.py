@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 from typing import Callable
 
+from tools.serve_chat_storage import parts_profiles
 from tools.serve_preflight import null_history_profiles
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
@@ -164,6 +165,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if parts_profiles.KEY in plan:
+        return Handoff(parts_profiles.KEY, parts_profiles.RELEASE, parts_profiles.ACTOR,
+                       reuse.PARTS_RECEIPT, reuse.NULL_HISTORY_RECEIPT, reuse.NULL_HISTORY_REVIEWED,
+                       parts_profiles.check)
     if null_history_profiles.KEY in plan:
         return Handoff(null_history_profiles.KEY, null_history_profiles.RELEASE, null_history_profiles.ACTOR,
                        reuse.NULL_HISTORY_RECEIPT, reuse.TOOL_MAP_RECEIPT, reuse.TOOL_MAP_REVIEWED,
@@ -256,12 +261,15 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
-    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY):
+    if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY,
+                    parts_profiles.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
         if spec.key == tool_map_profiles.KEY:
             module, wire = tool_map_profiles, 'tool-map-wire'
+        elif spec.key == parts_profiles.KEY:
+            module, wire = parts_profiles, 'stored-parts-wire'
         elif spec.key == null_history_profiles.KEY:
             module, wire = null_history_profiles, 'null-history-wire'
         params.update(settings.get('fixture', {}), certificate=plan['tls']['certificate'])

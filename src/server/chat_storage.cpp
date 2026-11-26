@@ -50,21 +50,87 @@ Json Page(Json values, bool more) {
                  {"last_id", std::move(last)},
                  {"has_more", Boolean(more)}});
 }
-// Stored input arrays predate the public response projection. Project refusal
-// parts when reading so earlier conversations keep their original disk bytes.
+// Raw image bytes were validated at admission. Recognize their base64 magic
+// prefixes to expose a usable data URI without decoding or fetching at read.
+std::string_view InlineImageMime(std::string_view url) {
+  if (url.starts_with("iVBORw0KGgo")) return "image/png";
+  if (url.starts_with("/9j/")) return "image/jpeg";
+  if (url.starts_with("R0lGOD")) return "image/gif";
+  if (url.starts_with("UklGR")) return "image/webp";
+  return {};
+}
+
+bool NeedsPartProjection(const Json& part) {
+  if (!part.Has("type") || part.Has("video_frames")) return true;
+  const auto* image = part.Find("image_url");
+  if (!image) return false;
+  const auto* url = image->Find("url");
+  return image->IsString() || (url && !InlineImageMime(url->str).empty());
+}
+
+Json StoredImageUrl(Json image) {
+  if (image.IsString()) image = Object({{"url", std::move(image)}});
+  auto& url = Field(image, "url").str;
+  const auto mime = InlineImageMime(url);
+  if (!mime.empty()) url.insert(0, "data:" + std::string(mime) + ";base64,");
+  return image;
+}
+
+Json StoredText(const Json& parts) {
+  std::string text;
+  bool has_text = false;
+  for (const auto& part : parts.array) {
+    const auto* value = part.Find("text");
+    if (!value || !value->IsString()) continue;
+    text += value->str;
+    has_text = true;
+  }
+  return has_text ? String(std::move(text)) : Json();
+}
+
+// Project on read so existing records keep their IDs and original disk bytes.
+// A video has no stored-message wire type. Its frames appear in source order;
+// original_content_parts retains grouping, timestamps and source spellings.
 Json PublicStoredMessage(Json message) {
   const auto* parts = message.GetArray("content_parts");
-  if (message.GetString("role") != "assistant" || !parts ||
-      parts->array.size() != 1 ||
-      parts->array.front().GetString("type") != "refusal")
+  if (!parts) return message;
+  if (message.GetString("role") == "assistant" && parts->array.size() == 1 &&
+      parts->array.front().GetString("type") == "refusal") {
+    const auto* text = parts->array.front().Find("refusal");
+    if (!text || !text->IsString()) return message;
+    auto original = *parts;
+    const auto* refusal = message.Find("refusal");
+    if (!refusal || refusal->IsNull()) Set(&message, "refusal", *text);
+    Set(&message, "content_parts", Json());
+    Set(&message, "original_content_parts", std::move(original));
     return message;
-
-  const auto* text = parts->array.front().Find("refusal");
-  if (!text || !text->IsString()) return message;
-  auto original = *parts;
-  const auto* refusal = message.Find("refusal");
-  if (!refusal || refusal->IsNull()) Set(&message, "refusal", *text);
-  Set(&message, "content_parts", Json());
+  }
+  if (std::none_of(parts->array.begin(), parts->array.end(),
+                   NeedsPartProjection))
+    return message;
+  auto original = std::move(Field(message, "content_parts"));
+  auto projected = Array();
+  for (const auto& part : original.array) {
+    if (const auto* frames = part.GetArray("video_frames")) {
+      for (const auto& frame : frames->array)
+        projected.array.push_back(
+            Object({{"type", String("image_url")},
+                    {"image_url", StoredImageUrl(frame)}}));
+      if (const auto* marker = part.Find("prompt_cache_breakpoint");
+          marker && !frames->array.empty())
+        Set(&projected.array.back(), "prompt_cache_breakpoint", *marker);
+      continue;
+    }
+    auto& item = projected.array.emplace_back(part);
+    if (const auto* image = part.Find("image_url")) {
+      Set(&item, "type", String("image_url"));
+      Set(&item, "image_url", StoredImageUrl(*image));
+    } else if (!part.Has("type") && part.Has("text")) {
+      Set(&item, "type", String("text"));
+    }
+  }
+  Set(&message, "content", StoredText(original));
+  Set(&message, "content_parts", std::move(projected));
   Set(&message, "original_content_parts", std::move(original));
   return message;
 }
@@ -193,15 +259,7 @@ ObjectReply StoredChats::Save(const Json& request, const Json& response,
     const auto* content = message.Find("content");
     if (content && content->IsArray()) {
       auto parts = *content;
-      std::string text;
-      bool has_text = false;
-      for (const auto& part : parts.array) {
-        if (part.GetString("type") == "text") {
-          text += part.GetString("text");
-          has_text = true;
-        }
-      }
-      Set(&message, "content", has_text ? String(std::move(text)) : Json());
+      Set(&message, "content", StoredText(parts));
       Set(&message, "content_parts", std::move(parts));
     } else {
       if (!content) Set(&message, "content", Json());
@@ -328,7 +386,7 @@ ObjectReply StoredChats::Messages(const std::string& id,
     return Invalid("Invalid list options", "query");
   auto result = Read(id, access);
   if (!result.ok()) return result;
-  auto messages = *result.value.Find("data")->GetArray("messages");
+  auto& messages = Field(Field(result.value, "data"), "messages");
   if (options.descending)
     std::reverse(messages.array.begin(), messages.array.end());
   size_t index = 0;

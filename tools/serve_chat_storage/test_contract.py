@@ -44,6 +44,21 @@ class StoredChatContract(unittest.TestCase):
                         {k: v for k, v in msg.items() if k != 'content_parts'}):
             self.assertTrue(errors(invalid, 'stored_chat_message'))
 
+    def test_native_parts_are_lossless_and_public_parts_are_typed(self):
+        text = dict(text='项目')
+        url = 'data:image/png;base64,AA=='
+        video = dict(video_frames=[url, url], video_timestamps=[0, 2])
+        msg = dict(id='chatmsg_1', role='user', content='项目',
+                   original_content_parts=[text, video],
+                   content_parts=[dict(type='text', **text)] +
+                       [dict(type='image_url', image_url=dict(url=url))] * 2)
+        self.assertFalse(errors(msg, 'stored_chat_message'))
+        for native in (text, video, dict(type='image_url', image_url=url)):
+            self.assertTrue(errors(dict(msg, content_parts=[native]),
+                                   'stored_chat_message'))
+        self.assertTrue(errors(dict(msg, original_content_parts=[
+            dict(type='refusal', refusal='x'), text]), 'stored_chat_message'))
+
     def test_raw_sdk_page_checks_schema_cursors_and_empty_pages(self):
         from jsonschema import ValidationError
         from tools.serve_chat_storage.python_client import (

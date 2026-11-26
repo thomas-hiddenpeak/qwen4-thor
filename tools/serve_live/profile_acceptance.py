@@ -249,7 +249,7 @@ class Stage(workers.ice.Stage):
             'chatkit_image_handoff', 'chatkit_widget_handoff', 'agent_session_control_handoff',
             'response_media_handoff', 'visual_answer_handoff', 'visual_frame_handoff', 'eval_cancel_handoff',
             'response_failure_handoff', 'video_clip_handoff', 'quickdraw_region_handoff', 'tool_map_handoff',
-            'null_assistant_history_handoff'}.intersection(self.plan):
+            'null_assistant_history_handoff', 'stored_parts_handoff'}.intersection(self.plan):
             from tools.serve_responses import chatkit_actions_profiles
             chatkit_actions_profiles.business(self, capabilities)
         if 'chatkit_retry_handoff' in self.plan:

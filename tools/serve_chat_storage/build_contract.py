@@ -59,13 +59,22 @@ def definitions():
         result['chat_input_'+name] = message_rewrite(shape)
     props = copy.deepcopy(message['$defs']['message']['properties'])
     props = message_rewrite(props)
+    # Standard stored parts always carry a discriminator and object-shaped URLs.
+    parts = ('textPart', 'imagePart', 'filePart', 'audioPart')
+    wire_parts = []
+    for name in parts:
+        shape = dict(allOf=[ref('chat_input_'+name)], required=['type'])
+        if name == 'imagePart':
+            shape['properties'] = dict(image_url=dict(type='object'))
+        wire_parts.append(shape)
     props.update(id=identifier, name=dict(type=['string', 'null']),
                  content=dict(type=['string', 'null']),
-                 content_parts=dict(anyOf=[dict(type='null'), dict(type='array',
-                     items=dict(oneOf=[ref('chat_input_'+name) for name in
-                         ('textPart', 'imagePart', 'videoPart', 'filePart', 'audioPart')]))]))
-    props['original_content_parts'] = dict(type='array', minItems=1, maxItems=1,
-                                          items=ref('chat_input_refusalPart'))
+                 content_parts=dict(anyOf=[dict(type='null'),
+                     dict(type='array', items=dict(oneOf=wire_parts))]))
+    props['original_content_parts'] = dict(oneOf=[
+        dict(type='array', minItems=1, maxItems=1, items=ref('chat_input_refusalPart')),
+        dict(type='array', minItems=1, items=dict(oneOf=[
+            ref('chat_input_'+name) for name in (*parts, 'videoPart')]))])
     result['stored_chat_message'] = obj(props, ('id', 'role', 'content', 'content_parts'))
     for name, item in [('stored_chat_list', 'stored_chat'),
                        ('stored_chat_messages', 'stored_chat_message')]:
