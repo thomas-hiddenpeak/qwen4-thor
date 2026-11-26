@@ -3088,7 +3088,7 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_direct_and_program_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
@@ -3096,7 +3096,8 @@
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
         "business": "evidence/serve-client-patch-20261126/business.json",
-        "program_business": "evidence/serve-client-patch-20261126/program.json"
+        "program_business": "evidence/serve-client-patch-20261126/program.json",
+        "profiles": "evidence/serve-client-patch-20261126/profiles.json"
       }
     },
     {
@@ -3786,7 +3787,7 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_direct_and_program_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
@@ -3794,7 +3795,8 @@
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
         "business": "evidence/serve-client-patch-20261126/business.json",
-        "program_business": "evidence/serve-client-patch-20261126/program.json"
+        "program_business": "evidence/serve-client-patch-20261126/program.json",
+        "profiles": "evidence/serve-client-patch-20261126/profiles.json"
       }
     },
     {
@@ -7636,7 +7638,7 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_direct_and_program_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
@@ -7644,7 +7646,8 @@
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
         "business": "evidence/serve-client-patch-20261126/business.json",
-        "program_business": "evidence/serve-client-patch-20261126/program.json"
+        "program_business": "evidence/serve-client-patch-20261126/program.json",
+        "profiles": "evidence/serve-client-patch-20261126/profiles.json"
       }
     },
     {
@@ -8928,7 +8931,7 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_direct_and_program_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
@@ -8936,7 +8939,8 @@
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
         "business": "evidence/serve-client-patch-20261126/business.json",
-        "program_business": "evidence/serve-client-patch-20261126/program.json"
+        "program_business": "evidence/serve-client-patch-20261126/program.json",
+        "profiles": "evidence/serve-client-patch-20261126/profiles.json"
       }
     },
     {

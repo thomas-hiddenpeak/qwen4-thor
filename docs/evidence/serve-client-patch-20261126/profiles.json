@@ -1,0 +1,94 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 548,
+  "build": {
+    "engine": "c34f8cf73fab5e373861ecbc163b5b66a67aa5f12129742ff3f66d42934d036b",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "original": "resp_75cd12dec804db57f496576f9a9be436",
+        "follow": "resp_0d160b01df3452e1aa831f2b44555212",
+        "program": "resp_b9f355e36cd043e595bc4b3ccf6d94f8",
+        "program_follow": "resp_a4a30565207adb06ac13578570c1c08a",
+        "peer": 404,
+        "saved": {
+          "id": "resp_75cb5c4872582318a96c66e0f6b117cd",
+          "response_sha256": "a153e4c2dfaebd896899f40136b204c1a8bb39c0606539e6acd61714c1223307",
+          "inputs_sha256": "1a05bc02485f31eb494d3914ec02205b971fbadfd00c6be92ea1bc4f91684829"
+        },
+        "restored": null,
+        "result": "failed ENOENT",
+        "independent_chat": "720041",
+        "wire_sha256": {
+          "direct_call": "6a170c50c1aae2c0012d6dafe68ef7e14db541b60a0d85ef16e590432bbe9d4d",
+          "direct_completed": "e911f3c9e30b691f7242dff688fae449b43f28222d18c188918dcc1025fc2fe1",
+          "direct_inputs": "bfc929804faf0d14fc989bdf6a8165717f65267067365b95366e9290dbd10f14",
+          "program_call": "f6a6c3decfc49845d8af34dea49d01734a3368a583cffcde7b0767bd285c9f1f",
+          "program_completed": "cd00a0fcc35edc26dffb3a8965b29820bc2807f99e39c19d482444df8da1fb60",
+          "program_inputs": "ea55f57d4dec1a9271e36e5f4c51eda5d265164452bc6ee2394ef57e74420353",
+          "create": "a153e4c2dfaebd896899f40136b204c1a8bb39c0606539e6acd61714c1223307",
+          "current_response": "a153e4c2dfaebd896899f40136b204c1a8bb39c0606539e6acd61714c1223307",
+          "current_inputs": "1a05bc02485f31eb494d3914ec02205b971fbadfd00c6be92ea1bc4f91684829",
+          "independent": "0d75cd157a0f2c83c904ee4415b4e4365e0072cf4c694601b00ba106bca2a85e"
+        }
+      },
+      "seconds": 43.044,
+      "starts": 1,
+      "record_sha256": "0c2594edafea9df9943d219a8b3ddf093f1298cebbc048c7e6b5966ea372eb2b",
+      "receipt_sha256": "c814fad7aad3a6b690690d9c44e841518289900978e90c0218d35e620e603dd1",
+      "predecessor": "c07ac86d9a8ee13907f8fa2543a20e431363dd97e85c1ee3426608ac5aa2c1d2"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "original": "resp_75cd12dec804db57f496576f9a9be436",
+        "follow": "resp_0d160b01df3452e1aa831f2b44555212",
+        "program": "resp_b9f355e36cd043e595bc4b3ccf6d94f8",
+        "program_follow": "resp_a4a30565207adb06ac13578570c1c08a",
+        "peer": 404,
+        "saved": {
+          "id": "resp_8d8c838bc76c0b8b2d07ca29e52e3ab5",
+          "response_sha256": "a8fa36a94f2042242fc684835cb5c4957db2d1735b1332472b1731a377323bd2",
+          "inputs_sha256": "7dd316f2fe704757b6b81937cfe8b3d775d5cc54fc941640970105c8d4a7a9d5"
+        },
+        "restored": {
+          "id": "resp_75cb5c4872582318a96c66e0f6b117cd",
+          "response_sha256": "a153e4c2dfaebd896899f40136b204c1a8bb39c0606539e6acd61714c1223307",
+          "inputs_sha256": "1a05bc02485f31eb494d3914ec02205b971fbadfd00c6be92ea1bc4f91684829"
+        },
+        "result": "failed ENOENT",
+        "independent_chat": "720041",
+        "wire_sha256": {
+          "direct_call": "6a170c50c1aae2c0012d6dafe68ef7e14db541b60a0d85ef16e590432bbe9d4d",
+          "direct_completed": "e911f3c9e30b691f7242dff688fae449b43f28222d18c188918dcc1025fc2fe1",
+          "direct_inputs": "bfc929804faf0d14fc989bdf6a8165717f65267067365b95366e9290dbd10f14",
+          "program_call": "f6a6c3decfc49845d8af34dea49d01734a3368a583cffcde7b0767bd285c9f1f",
+          "program_completed": "cd00a0fcc35edc26dffb3a8965b29820bc2807f99e39c19d482444df8da1fb60",
+          "program_inputs": "ea55f57d4dec1a9271e36e5f4c51eda5d265164452bc6ee2394ef57e74420353",
+          "restored_response": "a153e4c2dfaebd896899f40136b204c1a8bb39c0606539e6acd61714c1223307",
+          "restored_inputs": "1a05bc02485f31eb494d3914ec02205b971fbadfd00c6be92ea1bc4f91684829",
+          "create": "a8fa36a94f2042242fc684835cb5c4957db2d1735b1332472b1731a377323bd2",
+          "current_response": "a8fa36a94f2042242fc684835cb5c4957db2d1735b1332472b1731a377323bd2",
+          "current_inputs": "7dd316f2fe704757b6b81937cfe8b3d775d5cc54fc941640970105c8d4a7a9d5",
+          "independent": "e344b64462b9408e91f4f6c16f76e06fd006c34da55d9bb9871ded02fe07d9fc"
+        }
+      },
+      "seconds": 40.311,
+      "starts": 1,
+      "record_sha256": "7e9975255a9f3695feca9cc2256eb0c0b38190ea128bd3e040702adfb6734d2b",
+      "receipt_sha256": "a36e14812b823863b2281f2a0831ed381ec354539cd8048b8bb5d5a01fa625c0",
+      "predecessor": "6d7e4ab4489bb12efbc3979b8799d9b7684c13631a4fdbe33bfb60b223427bde"
+    }
+  },
+  "business_evidence": "929e01c5ee846cbf5839bbf11f4d80b951c31a4d82c20ce695ba7b681b1e81db",
+  "program_evidence": "f2b8aac9de54d3caca3af20f9d254d14a7496f39a8c92cd5a5b0a5419baefbcc",
+  "lease_exit": "0d70afef6c515b2e12604da40abd34bba0fa203aea199284c9b500363cbb81cf",
+  "acceptance": "e36b2d9270d2428765fed0768f669f3aa8bacc998230c865682f8a2d663387c3",
+  "qualification": "c8af26ed73acff41f97c49aa305cda099984156abb280d31496ecc5c9277b3ca",
+  "default_preserved": true
+}

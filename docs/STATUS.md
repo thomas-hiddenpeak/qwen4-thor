@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主配置 43.0 秒，轻配置 40.3 秒。两个配置都按原 ID 读回四个补丁响应和两份输入页，HTTP 字节与首次业务一致。原程序接收新的实际失败回执并返回 failed ENOENT，轻配置还读回了主配置的新续答。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-client-patch-20261126/profiles.json)
+
 主、轻配置的补丁接管驱动已接入。驱动校验直接调用和程序调用的四个原响应及两份输入页，再从原待回填程序续答。5 项 CPU 用例通过，包括键文件保留、对象 ID 碰撞拒绝和历史 HTTP 内容篡改。设备配置验证待执行。
 
 模型经官方 SDK 生成 JavaScript，程序请求删除客户端工作区内一个不存在的文件。实际系统调用返回 ENOENT；原程序收到 failed 与 ENOENT，模型读回相同结果。冒用程序 ID 返回 400，跨客户端返回 404。5 份 HTTP 资源通过双份 schema 校验，独立 Chat 正常。接下来复核主、轻配置接管原始记录。[设备记录](evidence/serve-client-patch-20261126/program.json)
