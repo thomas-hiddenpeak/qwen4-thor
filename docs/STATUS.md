@@ -17,6 +17,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 本地 shell 已接入 Responses 的工具声明、选择、模型输出、流事件和客户端结果回填。服务保留条目 ID 与模型调用 ID；旧 SDK 省略 call_id 时可重用所属客户端的原记录。8 项定向 C++ 检查、Python 3.55.1 与 Node 7.47.0 HTTP 读回通过。真实模型业务、恢复和发行待验。[CPU 证据](evidence/serve-local-shell-20261126/cpu.json)
 
+rev546 已发行 MCP 审批关联字段兼容。模型故障及网关切换回退包后仍按原 ID 读回 rev544 的批准与拒绝，响应与输入页保持相同字节。修改拒绝决定返回 409，跨客户端查询返回 404，独立 Chat 正常。登记时模型启动为零，13 份受保护状态通过复核。NVML 冷启动所需的相机与 jtop 维护窗口已由用户暂缓，两项服务继续运行。[发行记录](evidence/serve-mcp-approval-identifiers-20261126/delivery.json)
+
 主配置 39.5 秒，轻配置 37.7 秒。两种配置都按原 ID 读回 rev544 的真实 MCP 批准与拒绝，响应与输入页的原始 HTTP 字节跨配置相同。修改拒绝决定返回 409，冲突关联返回 400，另一把 Key 获得 404。独立 Chat 均返回 720041。下一步验证模型和网关故障后的同一批对象。[配置记录](evidence/serve-mcp-approval-identifiers-20261126/profiles.json)
 
 已用发行版 rev544 通过 TLS 和 Python SDK 3.55.1 生成两条 MCP 审批旧记录。原始对象仅有 approval_request_id，批准执行了一次资料读取，拒绝分支没有执行。已固定旧库 24 个文件及两个完整输入页的预期摘要，供主、轻配置和恢复验收按原 ID 独立读回。[旧记录来源](evidence/serve-mcp-approval-identifiers-20261126/legacy-source.json)
