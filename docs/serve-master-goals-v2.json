@@ -1399,12 +1399,14 @@
         "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
       },
       "nullable_assistant_history_20261126": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-null-assistant-history-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "full_build": "evidence/serve-null-assistant-history-20261126/full-build.json",
         "business": "evidence/serve-null-assistant-history-20261126/business.json",
-        "profiles": "evidence/serve-null-assistant-history-20261126/profiles.json"
+        "profiles": "evidence/serve-null-assistant-history-20261126/profiles.json",
+        "revision": 540,
+        "delivery": "evidence/serve-null-assistant-history-20261126/delivery.json"
       },
       "stored_content_parts_20261126": {
         "stage": "native_https_verified",
@@ -9986,8 +9988,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 538,
-        "receipt": "evidence/serve-reclaim-pressure-20261126/delivery.json",
+        "revision": 540,
+        "receipt": "evidence/serve-null-assistant-history-20261126/delivery.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11742,7 +11744,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev538_delivered_remaining_deliveries",
+      "state": "rev540_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13089,7 +13091,8 @@
       "current_movie_clip_delivery": "evidence/serve-video-clipping-20261126/delivery.json",
       "current_region_clip_delivery": "evidence/serve-video-regions-20261126/delivery.json",
       "current_tool_map_delivery": "evidence/serve-tool-map-references-20261126/delivery.json",
-      "current_reclaim_pressure_delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json"
+      "current_reclaim_pressure_delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json",
+      "current_null_history_delivery": "evidence/serve-null-assistant-history-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13194,16 +13197,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "b08721977b681c179b7d52afd9ec63e7644cee93",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-delivery-soak-src",
+        "source_commit": "6bdec9b198b14384f5eadc8b9a5d811e20dde537",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/null-history-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-client-primary-01/bundle",
-          "manifest_sha256": "e0556ec52df7d6fd7b752b68647f9403199d326bb6aca54f26cd1b70ffe73b58"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/null-history-client-primary-01/bundle",
+          "manifest_sha256": "8c0d949038a191d5003915236031dc8ddc771b85c3b2b84b6b17c8dab78f83b2"
         },
-        "revision": 538,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "6ed211e0087898ad6961b444e709d2b9c284e5efa8b7943660bf17a5869acff0",
-        "handoff_sha256": "54094785ec1e00746f679765feab15accc47a44c1902ee25a84314479cd7b532",
+        "revision": 540,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/null-history-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "11f4402501f4626b0a5a774827862aa00caea41789f7d8c64b3b941ac1eb761c",
+        "handoff_sha256": "20fecf37af221edd769957e677df2e7919dbe7901a90938a83f8989cedbed7d8",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13614,9 +13617,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 538,
-        "receipt": "evidence/serve-reclaim-pressure-20261126/delivery.json",
-        "plan_sha256": "6ed211e0087898ad6961b444e709d2b9c284e5efa8b7943660bf17a5869acff0",
+        "revision": 540,
+        "receipt": "evidence/serve-null-assistant-history-20261126/delivery.json",
+        "plan_sha256": "11f4402501f4626b0a5a774827862aa00caea41789f7d8c64b3b941ac1eb761c",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
