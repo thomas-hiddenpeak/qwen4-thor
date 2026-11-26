@@ -74,6 +74,8 @@ struct HttpRequestHeaders {
   std::vector<std::pair<std::string, std::string>> trailers;
   HttpReceiveFailure failure = HttpReceiveFailure::kNone;
   int system_error = 0;
+  // Validated presentation hint. Never used for identity or cache policy.
+  std::string legacy_cache_sdk_version;
 };
 
 // Reservation spans reading, parsing, queueing and response completion.

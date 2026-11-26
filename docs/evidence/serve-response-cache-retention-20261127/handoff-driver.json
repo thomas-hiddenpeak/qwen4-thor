@@ -1,0 +1,50 @@
+{
+  "scope": "closed native TLS captures and locally rehearsed migration; no candidate profile registered",
+  "seed_objects": 8,
+  "source_bytes": 33851,
+  "canonical": {
+    "old": {
+      "id": "resp_0415adadcb211e244bec18e1deac46f4",
+      "resource": "22e0cb1c1ed1297319358e3c703d543e37df7632a744c3a12e81b53aac3606cd",
+      "events": "891abbe28bc93b2e39d27d02fc6960cc494ea91291d1c1a6def0320eea685e91"
+    },
+    "current": {
+      "id": "resp_c87fca7cf78a175adedf88eb326ad214",
+      "resource": "46ca18946348f283e4b2b25f9d72118c3614f917da499cf90f43d458eabcd9f2",
+      "events": "f9a69ba321358c753e73870e06786575d6aa7a1c8844e8e3171d61c03e09f9f5"
+    }
+  },
+  "parents": {
+    "primary": {
+      "predecessor": "7ff3cd08a248bd5b994142a9eaae14d61c6150bdece24af490dd44cdc60a6c09",
+      "provisional": "c60abb8eacc78c4a39416e09e2b4c11990b203c4ac7e7c9c8a9b79f74e348d64",
+      "counterexamples": 3
+    },
+    "light": {
+      "predecessor": "4c627cddf1b60b1e131ca632e9a5645af8b93c01b8ffcf8ea5c3f621428d3877",
+      "provisional": "f4451ac2fe46f45b8ba053cfefd3d222c2dfcc2fa43b8ade4702063ab2882783",
+      "counterexamples": 3
+    }
+  },
+  "original": "21478243a85cd4002170e193cc6f53df932a2e95",
+  "business_sha256": "5c84bfb3fcfce48e3f83142b32b4606c8455beec3b94c527de2076bee7ea92c6",
+  "cpu_log": [
+    "............",
+    "----------------------------------------------------------------------",
+    "Ran 12 tests in 0.009s",
+    "",
+    "OK"
+  ],
+  "floating_representation": "SDK 2.8.1 returns the saved event completion second as integer, 3.55.1 as floating point. Verify numeric type and equality to the raw GET before digesting the terminal event. Boolean, fractional mismatch and string counterexamples are rejected.",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

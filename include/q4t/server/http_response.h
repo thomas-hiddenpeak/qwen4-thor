@@ -97,6 +97,15 @@ class HttpResponseContext {
   HttpResponseContext(const HttpResponseContext&) = delete;
   HttpResponseContext& operator=(const HttpResponseContext&) = delete;
   static HttpResponseContext* Current(int fd);
+  static bool LegacyCacheRetention();
+  void SetLegacyCacheRetention(bool enabled) {
+    legacy_cache_retention_ = enabled;
+  }
+  const char* ResponsesCacheVaryHeader() const {
+    return legacy_cache_retention_.has_value()
+               ? "Vary: X-Stainless-Lang, X-Stainless-Package-Version\r\n"
+               : "";
+  }
   bool CapturesJson() const { return captured_ != nullptr; }
   bool CapturesResponses() const { return responses_capture_ != nullptr; }
   bool BeginCapturedResponses();
@@ -284,6 +293,7 @@ class HttpResponseContext {
   std::optional<double> realtime_temperature_;
   const io::Json* realtime_startup_ = nullptr;
   bool responses_multi_agent_ = false;
+  std::optional<bool> legacy_cache_retention_;
   bool assistants_beta_ = false;
   bool agents_beta_ = false;
   bool chatkit_beta_ = false;

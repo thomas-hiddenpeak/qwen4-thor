@@ -12,6 +12,7 @@ from tools.serve_responses import local_shell_profiles as local_shell
 from tools.serve_responses import client_patch_profiles as patch
 from tools.serve_responses import client_shell_profiles as shell
 from tools.serve_responses import chatkit_interrupted_retry_profiles as interrupted
+from tools.serve_responses import cache_retention_profiles as cache_retention
 from tools.serve_responses import video_layer_profiles as layers
 from tools.serve_responses import video_track_grid_profiles as grid
 from tools.serve_responses import program_fork_profiles as forks
@@ -174,6 +175,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if cache_retention.KEY in plan:
+        return Handoff(cache_retention.KEY, cache_retention.RELEASE, cache_retention.ACTOR,
+                       reuse.CACHE_RETENTION_RECEIPT, reuse.LAYER_RECEIPT, reuse.LAYER_REVIEWED,
+                       cache_retention.check)
     if layers.KEY in plan:
         return Handoff(layers.KEY, layers.RELEASE, layers.ACTOR, reuse.LAYER_RECEIPT,
                        reuse.INTERRUPTED_RETRY_RECEIPT, reuse.INTERRUPTED_RETRY_REVIEWED, layers.check)
@@ -297,7 +302,10 @@ def verify(phase, plan, capabilities):
                     and prior['capacity'] == plan['capacity'] and package.same_json(expected, capabilities),
                     'unexpected change in release identity, capacity or runtime declarations')
     previous = package.read(phase.parent / 'primary' / spec.receipt) if name == 'light' else None
-    spec.check(package.read(phase / spec.receipt), previous)
+    row = package.read(phase / spec.receipt)
+    spec.check(row, previous)
+    if spec.key == cache_retention.KEY:
+        cache_retention.verify_captures(phase/'cache-retention-wire', row)
     inherited = prior['business']['live']['evidence_sha256']
     package.require(COMMON <= inherited.keys() and spec.predecessor in inherited,
                     'missing reviewed predecessor evidence')
@@ -310,6 +318,16 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
+    if spec.key == cache_retention.KEY:
+        params['certificate'] = plan['tls']['certificate']
+        previous = (package.read(stage.out.parent/'primary'/spec.receipt)
+                    if plan['name'] == 'light' else None)
+        with (stage.out/'responses-sdk.stderr').open('xb') as errors:
+            row = cache_retention.exercise(params, plan[spec.key]['interpreters'], errors,
+                                           stage.out/'cache-retention-wire', previous)
+        package.save(stage.out/spec.receipt, row)
+        verify(stage.out, plan, capabilities)
+        return
     if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY,
                     parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY, local_shell.KEY, patch.KEY, shell.KEY, forks.KEY, grid.KEY, layers.KEY):
         settings = plan[spec.key]

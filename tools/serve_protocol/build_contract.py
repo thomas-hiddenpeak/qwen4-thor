@@ -284,7 +284,7 @@ def chat_schema():
                                 "fast", None], default="auto"),
         session_id=hex64, prefix_cache_scope=hex64,
         prompt_cache_key=nullable(dict(type="string", maxLength=512)),
-        prompt_cache_retention=nullable(dict(enum=["in_memory", "24h"])),
+        prompt_cache_retention=nullable(dict(enum=["in_memory", "in-memory", "24h"])),
         prompt_cache_options=obj(dict(
             mode=dict(enum=["implicit", "explicit"], default="implicit"),
             ttl=dict(const="30m", default="30m"))),

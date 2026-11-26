@@ -129,6 +129,9 @@ void ProjectValue(io::Json& value, bool wire) {
         Set(&part, "logprobs", Array());
   const auto object = value.GetString("object");
   if (object == "response" || object == "response.compaction") {
+    if (wire && object == "response")
+      SetResponseCacheRetentionSpelling(
+          value, detail::HttpResponseContext::LegacyCacheRetention());
     // The API expresses a required local shell using an allowed-tools list.
     // Apply the projection on replay as well as newly generated responses.
     const auto* choice = value.Find("tool_choice");
@@ -152,6 +155,14 @@ void ProjectValue(io::Json& value, bool wire) {
   }
 }
 }  // namespace
+
+void SetResponseCacheRetentionSpelling(io::Json& response, bool legacy) {
+  if (response.GetString("object") != "response") return;
+  if (response.GetString("prompt_cache_retention") ==
+      (legacy ? "in_memory" : "in-memory"))
+    responses_detail::Field(response, "prompt_cache_retention").str =
+        legacy ? "in-memory" : "in_memory";
+}
 
 io::Json ResponsesPublicValue(io::Json value) {
   ProjectValue(value, false);

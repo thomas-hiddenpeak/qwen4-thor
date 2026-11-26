@@ -1,8 +1,18 @@
 # 官方 SDK 的流式兼容记录
 
+### Responses 的缓存驻留字段
+
+原生 TLS 网关用一次模型启动完成严格客户端验收，用时 41.4 秒。旧版客户端读到了原先报错的历史响应。新旧客户端分别查询发行记录，各自回答 558；互换客户端后，GET 正文和 SSE 事件仅缓存驻留字段的拼写不同。旧版和新版异步客户端还在正文中段关闭连接，分别从同一游标取回 18 个后续事件。七次跨客户读取均返回 404。默认服务保持停止。下一步验证发行包交接。[业务验收](evidence/serve-response-cache-retention-20261127/business.json)
+
+稳定版 Python SDK 从 2.8.0 到 2.32.x 使用 `in-memory`，2.33.0 起使用 `in_memory`。原生入口按 SDK 自带的语言和版本头选择 JSON 和 SSE 响应的拼写，`Vary` 声明两项请求头。两种输入写法对应同一缓存策略，`24h` 可跨版本使用。没有版本信息的客户端收到当前拼写。持久记录和事件日志统一使用 `in_memory`。SDK 版本仅用于响应表示。[上游修正](https://github.com/openai/openai-python/commit/f9d2d1359688a6247ecba858fc687173c480c9c8)
+
+Responses 已按客户端版本处理缓存驻留字段。Python SDK 2.8.1 严格模式可读取原先解析失败的历史响应；2.8.1、3.42.1、3.55.1 的默认与严格模式共六组均可交给 Node 续读。五份新响应跨版本创建、重启后读取，落盘记录的 SHA-256 全部一致。CPU 验证已完成，原生 TLS 真实模型和发行待验。[CPU 验证](evidence/serve-response-cache-retention-20261127/cpu.json)
+
 ### 成功响应的跨客户端游标续读
 
-两份真实成功响应通过原生 CPU HTTP 服务交给官方 SDK。Node 7.47.0 从 Python 提供的游标 14 和 17 分别读到余下 14 和 18 个事件；重启测试服务后得到相同正文，越界游标返回 400，其他客户读取返回 404。Python 三个版本的六种配置中五种通过。2.8.1 严格模式在 GET 解析时报缓存枚举错误，已保存三份原始响应的定位证据。下一步修复旧客户端，并在真实主轻配置和托管恢复中验证游标交接。[兼容记录](evidence/serve-video-layer-composition-20261127/sdk-cursor.json)
+官方 AsyncOpenAI 2.8.1、3.42.1 和 3.55.1 严格模式均在两份真实历史回答的正文中段关闭了流。每次创建新客户端，使用原游标分别收回 14 和 18 个事件，逐片拼回原文。高级接口取得相同终态，其他客户从同一游标读取均返回 404。此次使用 CPU 回放服务。[异步验收](evidence/serve-response-cache-retention-20261127/async-cursor.json)
+
+两份真实成功响应通过原生 CPU HTTP 服务交给官方 SDK。Node 7.47.0 从 Python 提供的游标 14 和 17 分别读到余下 14 和 18 个事件；重启测试服务后得到相同正文，越界游标返回 400，其他客户读取返回 404。Python 三个版本的六种配置中五种通过。2.8.1 严格模式在 GET 解析时报缓存枚举错误，已保存三份原始响应的定位证据。以上为修复前的记录。[兼容记录](evidence/serve-video-layer-composition-20261127/sdk-cursor.json)
 
 Node 的底层迭代器用服务端游标读取后续事件；高级接口 `finalResponse()` 读取全部事件来重建最终对象，并向监听器交付游标之后的事件。两条路径的序号、文本增量、消息 ID 与终态均与原流一致。两个客户端收到的原始 GET 正文已逐字节核对。
 
@@ -18,6 +28,10 @@ Node 7.47.0 经原生 HTTPS 开启会话事件订阅。发送第二个回合返�
 旧版通用调用须带 `OpenAI-Beta: agents=v1`。传入 `cast_to=dict[str, Any]`，订阅时另传 `stream=True`、`stream_cls=openai.Stream[dict[str, Any]]` 和 `Accept: text/event-stream`。2.8.1 默认模式在收到合法的会话 JSON 后，使用裸 `dict` 会抛出 `ValueError`。通用调用返回普通字典。[可运行的客户端示例](../tools/serve_audit/agent_turn_quota_sdk.py)
 
 Python 验证使用原设备业务的对象副本。原生 HTTP 处理器重新读取四份响应，事件投影与 Node 当时收到的五个事件逐项核对 ID 和类型。使用相应版本的解释器运行 `python -I -B tools/serve_audit/agent_turn_quota_sdk.py`，加 `--strict` 可复核该 SDK 的严格模式。[六组验证结果](evidence/serve-responses-errors-20261126/agent-quota-python.json)
+
+### 工具响应的严格客户端
+
+三版严格 Python SDK 读取了五份真实工具响应。普通函数的 JSON、成功 MCP 的 JSON 和 SSE 均通过。原普通函数是未开启流的后台请求，重放按合同返回 400。2.8.1 在失败 MCP 的错误对象和程序化工具类型上仍无法解析。3.42.1、3.55.1 均通过相应 JSON 和 SSE。旧版错误字段保留全部内容转为 JSON 字符串后，独立 SDK 实验可读回原错误和 38 个事件，原生实现待补。[原始记录和类型定义](evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json)
 
 ### Assistants Runs 与工具回填
 
