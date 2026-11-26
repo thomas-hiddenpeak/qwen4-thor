@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev548 已发行本地 shell 工具的客户端调用、流事件和结果回填。模型恢复和主网关故障切换后，原响应与回填页可按原 ID 逐字节读回，新续答取回相同的架构名。历史选择器按官方格式显示。登记时模型启动为零，13 份受保护状态通过复核。按设备维护授权，jtop 和相机守护进程已停止并取消开机自启；清理后 NVML 正常采样，冷启动验收仍暂缓。[发行记录](evidence/serve-local-shell-20261126/delivery.json)
+
 主配置 42.7 秒，轻配置 41.3 秒。两个配置均按原 ID 读回本地 shell 请求、结果和后续响应，HTTP 字节与首次业务一致。每次新续答均从历史中返回 qwen4_exp，跨客户 404，独立 Chat 返回 720041。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-local-shell-20261126/profiles.json)
 
 本机模型通过原生 TLS 和官方 SDK 发出 local_shell_call。客户端实际读取项目文档首行，使用旧 SDK 的单 ID 形式回填，模型答出 qwen4_exp；跨客户端查询返回 404，错误的调用 ID 返回 400。首次遗留的响应经原 ID 读回，只修正选择器；另一响应与输入页逐字节相同。下一步跨配置和进程故障复核。[设备记录](evidence/serve-local-shell-20261126/business.json)

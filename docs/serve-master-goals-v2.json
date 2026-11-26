@@ -897,14 +897,16 @@
         "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
-        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json",
+        "revision": 548,
+        "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       }
     },
     {
@@ -3074,14 +3076,16 @@
         "delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
-        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json",
+        "revision": 548,
+        "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       }
     },
     {
@@ -3759,14 +3763,16 @@
         "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
-        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json",
+        "revision": 548,
+        "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       }
     },
     {
@@ -7596,14 +7602,16 @@
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
-        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json",
+        "revision": 548,
+        "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       }
     },
     {
@@ -8875,14 +8883,16 @@
         "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "profile_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
         "business": "evidence/serve-local-shell-20261126/business.json",
-        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json",
+        "revision": 548,
+        "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       }
     },
     {
@@ -10130,8 +10140,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 546,
-        "receipt": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json",
+        "revision": 548,
+        "receipt": "evidence/serve-local-shell-20261126/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -10140,6 +10150,16 @@
         "scope": "NVML-unavailable cold acceptance with temporary stop of nvargus-daemon and jtop",
         "other_development": "continue",
         "model_starts": 0
+      },
+      "host_service_cleanup_20261126": {
+        "receipt": "evidence/serve-local-shell-20261126/delivery.json",
+        "services": [
+          "jtop",
+          "nvargus-daemon"
+        ],
+        "disabled": true,
+        "normal_nvml_after_stop": true,
+        "cold_test_executed": false
       }
     },
     {
@@ -11892,7 +11912,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev546_delivered_remaining_deliveries",
+      "state": "rev548_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13243,7 +13263,8 @@
       "current_null_history_delivery": "evidence/serve-null-assistant-history-20261126/delivery.json",
       "current_stored_parts_delivery": "evidence/serve-stored-content-parts-20261126/delivery.json",
       "current_conversation_compaction_delivery": "evidence/serve-conversation-compaction-20261126/delivery.json",
-      "current_mcp_approval_identifiers_delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
+      "current_mcp_approval_identifiers_delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json",
+      "current_local_shell_delivery": "evidence/serve-local-shell-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13348,16 +13369,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "406d22aded835dd896adf15a08f68434adff4ce9",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/approval-ids-delivery-soak-src",
+        "source_commit": "ca83334963d1580c5c9d587a4f10fadc57b65ef8",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/local-shell-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/approval-ids-client-primary-01/bundle",
-          "manifest_sha256": "df8e157668ae83bd09b140b4f4410ca17df0c82a880a5ac354064462a7263904"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/local-shell-client-primary-01/bundle",
+          "manifest_sha256": "d585bcaf48f3f138a5b96161a719274d88d49772a0c77a17a0d1903a10577629"
         },
-        "revision": 546,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/approval-ids-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "55f27a6dde4cbd0e0815f8c008cc1f99a005934cf4d7e3cb5c166f8272cfc6f6",
-        "handoff_sha256": "9d6eee602ebdb933c3c77ff65ad8cbd6016f2a2b62308a2d9ca3537dae524033",
+        "revision": 548,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/local-shell-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "9339e84cf4dc913c145d2a31a383bcc8fbc017aa171674b30b512f7cfad2f87f",
+        "handoff_sha256": "9f7b3df40839ae9b2c447ee967a707d2d091a5857a7d9902c0f3e8d02956bd06",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13768,9 +13789,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 546,
-        "receipt": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json",
-        "plan_sha256": "55f27a6dde4cbd0e0815f8c008cc1f99a005934cf4d7e3cb5c166f8272cfc6f6",
+        "revision": 548,
+        "receipt": "evidence/serve-local-shell-20261126/delivery.json",
+        "plan_sha256": "9339e84cf4dc913c145d2a31a383bcc8fbc017aa171674b30b512f7cfad2f87f",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
