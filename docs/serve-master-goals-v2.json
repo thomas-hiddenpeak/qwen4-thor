@@ -1393,11 +1393,12 @@
         "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
       },
       "nullable_assistant_history_20261126": {
-        "stage": "real_tls_business",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-null-assistant-history-20261126/cpu.json",
         "issued": false,
         "full_build": "evidence/serve-null-assistant-history-20261126/full-build.json",
-        "business": "evidence/serve-null-assistant-history-20261126/business.json"
+        "business": "evidence/serve-null-assistant-history-20261126/business.json",
+        "profiles": "evidence/serve-null-assistant-history-20261126/profiles.json"
       }
     },
     {
