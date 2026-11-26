@@ -1,0 +1,47 @@
+{
+  "stage": "targeted_cpu",
+  "issued": false,
+  "old_product": {
+    "binary": "60df5e81c86184e9d5df8e6b7420fccdad327515baf57658ab8c192235534078",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "protocol_sources": 1102,
+    "source_manifest": "3e2662e873c369f8341aec5c64e3178576fc90c10c1473349d6f0e5f0778d813"
+  },
+  "old_probe_source": "f935307b69ce26d4d3eee82a3b2f51b2c198738163f419ac48764308817d09c9",
+  "original_failure": [
+    "[FAIL] program_child_after_two_different_results_retains_distinct_identity",
+    "1 tests, 0 passed, 1 failed, 0 skipped",
+    "first_args={\"n\":2} second_args={\"n\":3} equal_item=1 equal_call=1",
+    ""
+  ],
+  "product": {
+    "binary": "79ac0ecab2b46d521fc6208966dee861e1121d0867bb6eceaa64a4bcf2feb712",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_manifest": "f455762adc941a6397a7cbffc2fd7d3e45216c746d2b063dc5e34b4895c22dd7",
+    "protocol_sources": 1102
+  },
+  "verified": [
+    "[PASS] chat_capabilities_native_file_search_conditions_and_output_types",
+    "[PASS] responses_shell_history_preserves_actions_and_each_command_outcome",
+    "[PASS] responses_local_shell_environment_selection_and_skill_metadata",
+    "[PASS] responses_local_shell_stream_exposes_only_typed_actions",
+    "[PASS] responses_client_patch_emits_a_complete_typed_operation",
+    "[PASS] responses_shell_stream_keeps_commands_and_completion_distinct",
+    "[PASS] responses_program_result_caller_and_identity_cannot_be_rebound",
+    "[PASS] responses_program_patch_preserves_client_failure_after_reopen",
+    "[PASS] responses_program_shell_reopens_with_canonical_commands_and_outcomes",
+    "[PASS] responses_program_forks_keep_independent_terminal_item_ids",
+    "[PASS] responses_program_child_identity_tracks_results_consumed_by_the_vm",
+    "[PASS] responses_program_legacy_dependent_call_reopens_without_downgrading_new_parents",
+    "[PASS] responses_mcp_program_actual_call_standard_items_and_private_authority",
+    "[PASS] responses_mcp_program_parallel_client_result_preserves_causal_order",
+    "[PASS] responses_mcp_program_branches_bind_calls_to_prior_client_results",
+    "15 tests, 15 passed, 0 failed, 0 skipped"
+  ],
+  "inventory_mutations": 40,
+  "sdk_driver_sha256": "bc265e369281e977a1ab022057be73a0dbe2709c0344a1a2bb1623cc18f14b20",
+  "remaining": [
+    "native TLS business verification",
+    "release handoff"
+  ]
+}

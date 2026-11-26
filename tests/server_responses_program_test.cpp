@@ -1,4 +1,5 @@
 #include "q4t/server/responses_program.h"
+#include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/responses_output.h"
 
 #include <cstdlib>
@@ -353,7 +354,8 @@ Q4T_TEST(responses_program_patch_preserves_client_failure_after_reopen) {
     ObjectStore store(f.options);
     StateCipher cipher(store);
     const auto invalid = Array({Create(
-        cipher, "await tools.apply_patch({type:'update_file',path:'draft.md'});",
+        cipher,
+        "await tools.apply_patch({type:'update_file',path:'draft.md'});",
         tools)});
     Q4T_CHECK(!Run(cipher, invalid, &calls).ok() && calls.array.empty());
     history = Array({Create(
@@ -476,4 +478,111 @@ Q4T_TEST(responses_program_forks_keep_independent_terminal_item_ids) {
       String("prog_out_" +
              Digest(history.array[0].GetString("call_id")).substr(0, 56)));
   return Ok(Run(cipher, history, &retry)) && retry.array.empty();
+}
+
+Q4T_TEST(responses_program_child_identity_tracks_results_consumed_by_the_vm) {
+  Fixture f;
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  for (const bool same_args : {false, true}) {
+    const std::string arg = same_args ? "2" : "a.value";
+    auto history = Array({Create(
+        cipher, "const a=await tools.read({n:1});const b=await tools.read({n:" +
+                    arg + "});text(b.value);")});
+    Json calls, first, second, retry;
+    Q4T_CHECK(Ok(Run(cipher, history, &calls)) && calls.array.size() == 1);
+    history.array.push_back(calls.array.front());
+    history.array.push_back(
+        Result(calls.array.front(), String(R"({"value":2})")));
+    Q4T_CHECK(Ok(Run(cipher, history, &first)) && first.array.size() == 1);
+    Q4T_CHECK(Ok(Run(cipher, history, &retry)) &&
+              OutputJson(retry) == OutputJson(first));
+    Set(&history.array.back(), "output", String(R"({"value":3})"));
+    Q4T_CHECK(Ok(Run(cipher, history, &second)) && second.array.size() == 1);
+    const auto& a = first.array[0];
+    const auto& b = second.array[0];
+    Q4T_CHECK(a.GetString("arguments") == R"({"n":2})" &&
+              b.GetString("arguments") ==
+                  (same_args ? R"({"n":2})" : R"({"n":3})"));
+    Q4T_CHECK(a.GetString("id") != b.GetString("id") &&
+              a.GetString("call_id") != b.GetString("call_id"));
+    history.array.push_back(a);
+    Q4T_CHECK(!Run(cipher, history, &retry).ok());
+    history.array.back() = b;
+    history.array.push_back(Result(b, String(R"({"value":8})")));
+    Q4T_CHECK(Ok(Run(cipher, history, &retry)) &&
+              retry.array[0].GetString("result") == "8");
+  }
+  return true;
+}
+
+Q4T_TEST(
+    responses_program_legacy_dependent_call_reopens_without_downgrading_new_parents) {
+  Fixture f;
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  auto parent = Create(cipher,
+                       "const a=await tools.read({n:1});const b=await "
+                       "tools.read({n:a.value});text(b.value);");
+  auto original = parent;
+  const StateCipherBinding binding{
+      Config().model,
+      Digest(std::string(identity::kTemplateReference) + ':' +
+             identity::kRenderer),
+      "responses.program.v1", parent.GetString("id")};
+  std::string plain, sealed;
+  Q4T_CHECK(Ok(
+      cipher.Open(parent.GetString("fingerprint"), binding, Access(), &plain)));
+  auto payload = Parse(plain);
+  Q4T_CHECK(std::erase_if(payload.object, [](const auto& field) {
+              return field.first == "result_bound_calls";
+            }) == 1);
+  Q4T_CHECK(Ok(cipher.Seal(OutputJson(payload), binding, Access(), &sealed)));
+  Set(&parent, "fingerprint", String(sealed));
+  auto history = Array({parent});
+  Json result;
+  Q4T_CHECK(Ok(Run(cipher, history, &result)) && result.array.size() == 1);
+  history.array.push_back(result.array[0]);
+  history.array.push_back(Result(result.array[0], String(R"({"value":2})")));
+  Q4T_CHECK(Ok(Run(cipher, history, &result)) && result.array.size() == 1);
+  auto legacy = result.array[0];
+  const auto old_id =
+      "call_p_" + Digest(parent.GetString("call_id") + ":1").substr(0, 56);
+  Q4T_CHECK(old_id != legacy.GetString("call_id"));
+  Set(&legacy, "call_id", String(old_id));
+  Set(&legacy, "id", String("fc_" + Digest(old_id).substr(0, 56)));
+  history.array.push_back(legacy);
+  history.array.push_back(Result(legacy, String(R"({"value":9})")));
+  Q4T_CHECK(Ok(Run(cipher, history, &result)) &&
+            result.array[0].GetString("result") == "9");
+  history.array[0] = original;
+  return !Run(cipher, history, &result).ok();
+}
+
+Q4T_TEST(responses_program_child_identity_preserves_vm_object_key_order) {
+  Fixture f;
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  auto tools = Tools();
+  auto& definition = tools.array[1];
+  std::erase_if(definition.object, [](const auto& field) {
+    return field.first == "output_schema";
+  });
+  auto history =
+      Array({Create(cipher,
+                    "const a=await tools.read({n:1});"
+                    "await tools.read({n:Object.keys(a)[0]==='left'?2:3});",
+                    tools)});
+  Json initial, left, right;
+  Q4T_CHECK(Ok(Run(cipher, history, &initial)) && initial.array.size() == 1);
+  history.array.push_back(initial.array.front());
+  history.array.push_back(
+      Result(initial.array.front(), String(R"({"left":0,"right":0})")));
+  Q4T_CHECK(Ok(Run(cipher, history, &left)) && left.array.size() == 1);
+  Set(&history.array.back(), "output", String(R"({"right":0,"left":0})"));
+  Q4T_CHECK(Ok(Run(cipher, history, &right)) && right.array.size() == 1);
+  Q4T_CHECK(left.array[0].GetString("arguments") == R"({"n":2})" &&
+            right.array[0].GetString("arguments") == R"({"n":3})");
+  return left.array[0].GetString("call_id") !=
+         right.array[0].GetString("call_id");
 }

@@ -11,6 +11,7 @@ from tools.serve_responses import approval_identifiers_profiles as approval_ids
 from tools.serve_responses import local_shell_profiles as local_shell
 from tools.serve_responses import client_patch_profiles as patch
 from tools.serve_responses import client_shell_profiles as shell
+from tools.serve_responses import program_fork_profiles as forks
 from tools.serve_responses import conversation_compaction_profiles as compact_profiles
 from tools.serve_preflight import null_history_profiles
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
@@ -170,6 +171,9 @@ class Handoff:
 
 
 def handoff(plan):
+    if forks.KEY in plan:
+        return Handoff(forks.KEY, forks.RELEASE, forks.ACTOR, reuse.FORK_RECEIPT,
+                       reuse.CLIENT_SHELL_RECEIPT, reuse.CLIENT_SHELL_REVIEWED, forks.check)
     if shell.KEY in plan:
         return Handoff(shell.KEY, shell.RELEASE, shell.ACTOR, reuse.CLIENT_SHELL_RECEIPT,
                        reuse.PATCH_RECEIPT, reuse.PATCH_REVIEWED, shell.check)
@@ -291,12 +295,14 @@ def business(stage, capabilities):
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
     if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY,
-                    parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY, local_shell.KEY, patch.KEY, shell.KEY):
+                    parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY, local_shell.KEY, patch.KEY, shell.KEY, forks.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
         if spec.key == tool_map_profiles.KEY:
             module, wire = tool_map_profiles, 'tool-map-wire'
+        elif spec.key == forks.KEY:
+            module, wire = forks, 'program-fork-wire'
         elif spec.key == shell.KEY:
             module, wire = shell, 'client-shell-wire'
         elif spec.key == patch.KEY:
