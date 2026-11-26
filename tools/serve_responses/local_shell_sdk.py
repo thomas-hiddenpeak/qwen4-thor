@@ -74,6 +74,14 @@ def exercise(params):
         (work / "inputs.json").write_bytes(raw.http_response.content)
         saved = [i for i in raw.http_response.json()["data"] if i["type"] == tool_result["type"]]
         assert saved == [dict(tool_result, call_id=call["call_id"])]
+        for label, ident in (("call", response["id"]), ("completed", answer.id)):
+            stored = owner.responses.with_raw_response.retrieve(ident)
+            resource = stored.http_response.json()
+            assert resource["id"] == ident and resource["status"] == "completed"
+            if label == "call":
+                actual = [i for i in resource["output"] if i["type"] == "local_shell_call"]
+                assert actual == [call]
+            (work / (label + ".json")).write_bytes(stored.http_response.content)
         for read in (lambda: other.responses.retrieve(response["id"]),
                      lambda: other.responses.input_items.list(answer.id)):
             try:

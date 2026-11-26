@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+本地 shell 的设备验收会按模型调用响应和回填响应各自的原 ID 读取完整资源，供后续接管逐字节复核。
+
 本地 shell 已接入 Responses 的工具声明、选择、模型输出、流事件和客户端结果回填。服务保留条目 ID 与模型调用 ID；旧 SDK 省略 call_id 时可重用所属客户端的原记录。8 项定向 C++ 检查、Python 3.55.1 与 Node 7.47.0 HTTP 读回通过。真实模型业务、恢复和发行待验。[CPU 证据](evidence/serve-local-shell-20261126/cpu.json)
 
 主配置 39.5 秒，轻配置 37.7 秒。两种配置都按原 ID 读回 rev544 的真实 MCP 批准与拒绝，响应与输入页的原始 HTTP 字节跨配置相同。修改拒绝决定返回 409，冲突关联返回 400，另一把 Key 获得 404。独立 Chat 均返回 720041。下一步验证模型和网关故障后的同一批对象。[配置记录](evidence/serve-mcp-approval-identifiers-20261126/profiles.json)
