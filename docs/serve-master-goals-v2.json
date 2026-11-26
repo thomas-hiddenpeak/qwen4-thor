@@ -912,7 +912,8 @@
         "status": "native_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
         "remaining": "release qualification",
-        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json"
+        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json"
       }
     },
     {
@@ -3162,7 +3163,8 @@
         "status": "native_tls_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
         "remaining": "release qualification",
-        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json"
+        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json"
       }
     },
     {
@@ -9197,7 +9199,8 @@
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
         "remaining": "release qualification",
         "async_disconnect": "docs/evidence/serve-response-cache-retention-20261127/async-cursor.json",
-        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json"
+        "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json"
       }
     },
     {
