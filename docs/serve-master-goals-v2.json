@@ -9999,6 +9999,16 @@
         "physical_ram_limit_proved": false,
         "device_receipt": "evidence/serve-resource-charge-20261126/device.json",
         "model_starts": 0
+      },
+      "sized_cuda_pool_20261126": {
+        "stage": "device_observed",
+        "model_starts": 0,
+        "requested_bytes": 33554432,
+        "reported_bytes": 33554432,
+        "pool_capacity_refused": true,
+        "out_of_pool_allocation_observed": true,
+        "physical_ram_limit_proved": false,
+        "evidence": "evidence/serve-resource-charge-20261126/sized-pool.json"
       }
     },
     {
