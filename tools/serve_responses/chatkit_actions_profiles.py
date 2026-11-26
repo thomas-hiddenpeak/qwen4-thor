@@ -7,6 +7,7 @@ import subprocess
 from typing import Callable
 
 from tools.serve_chat_storage import parts_profiles
+from tools.serve_responses import conversation_compaction_profiles as compact_profiles
 from tools.serve_preflight import null_history_profiles
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
 from tools.serve_responses import agent_session_control_profiles as session_controls
@@ -165,6 +166,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if compact_profiles.KEY in plan:
+        return Handoff(compact_profiles.KEY, compact_profiles.RELEASE, compact_profiles.ACTOR,
+                       reuse.COMPACT_RECEIPT, reuse.PARTS_RECEIPT, reuse.PARTS_REVIEWED,
+                       compact_profiles.check)
     if parts_profiles.KEY in plan:
         return Handoff(parts_profiles.KEY, parts_profiles.RELEASE, parts_profiles.ACTOR,
                        reuse.PARTS_RECEIPT, reuse.NULL_HISTORY_RECEIPT, reuse.NULL_HISTORY_REVIEWED,
@@ -262,12 +267,14 @@ def business(stage, capabilities):
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
     if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY,
-                    parts_profiles.KEY):
+                    parts_profiles.KEY, compact_profiles.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
         if spec.key == tool_map_profiles.KEY:
             module, wire = tool_map_profiles, 'tool-map-wire'
+        elif spec.key == compact_profiles.KEY:
+            module, wire = compact_profiles, 'compact-conversation-wire'
         elif spec.key == parts_profiles.KEY:
             module, wire = parts_profiles, 'stored-parts-wire'
         elif spec.key == null_history_profiles.KEY:
