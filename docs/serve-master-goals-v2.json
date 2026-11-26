@@ -3129,13 +3129,15 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
         "business": "evidence/serve-program-forks-20261126/business.json",
-        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -3866,13 +3868,15 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
         "business": "evidence/serve-program-forks-20261126/business.json",
-        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -7755,13 +7759,15 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
         "business": "evidence/serve-program-forks-20261126/business.json",
-        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -9086,13 +9092,15 @@
         "delivery": "evidence/serve-shell-history-20261126/delivery.json"
       },
       "program_dependent_calls_20261126": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "receipt": "evidence/serve-program-forks-20261126/cpu.json",
-        "issued": false,
+        "issued": true,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json",
         "business": "evidence/serve-program-forks-20261126/business.json",
-        "profiles": "evidence/serve-program-forks-20261126/profiles.json"
+        "profiles": "evidence/serve-program-forks-20261126/profiles.json",
+        "revision": 554,
+        "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       }
     },
     {
@@ -10340,8 +10348,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 552,
-        "receipt": "evidence/serve-shell-history-20261126/delivery.json",
+        "revision": 554,
+        "receipt": "evidence/serve-program-forks-20261126/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12112,7 +12120,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev552_delivered_remaining_deliveries",
+      "state": "rev554_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13466,7 +13474,8 @@
       "current_mcp_approval_identifiers_delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json",
       "current_local_shell_delivery": "evidence/serve-local-shell-20261126/delivery.json",
       "current_client_patch_delivery": "evidence/serve-client-patch-20261126/delivery.json",
-      "current_client_shell_delivery": "evidence/serve-shell-history-20261126/delivery.json"
+      "current_client_shell_delivery": "evidence/serve-shell-history-20261126/delivery.json",
+      "current_program_fork_delivery": "evidence/serve-program-forks-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13571,16 +13580,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "059a0225a2d17b4c567235dc48853248291b8d8e",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/client-shell-delivery-soak-src",
+        "source_commit": "a58954090886b7b6777ec302e1e38b8bd0f70504",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-fork-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/client-shell-client-primary-01/bundle",
-          "manifest_sha256": "3b8b42d1168f145c24c3e1ffdf4b1a5553e8ec91a56feaae4edda3cedea6fe62"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-fork-client-primary-01/bundle",
+          "manifest_sha256": "169fc0bcc4834112e84a38ed9e97f508220e61c9d36a6c650eb380dc90dbdbdd"
         },
-        "revision": 552,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/client-shell-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "40c9476a30355d26dce1ed82ca8d8295b640409bb83358c327a5246271cdc508",
-        "handoff_sha256": "af3f6c887f28c5a9dbca39d68c6ab128fca1be7e5671ee2a82507a9ea02a6a45",
+        "revision": 554,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-fork-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "1b205ac0cb9e214811af7d5f287d20857a72b2e65e297fb3266470cc392e4897",
+        "handoff_sha256": "002018fc33f3dfae9fdb463c44287b20cfc9540f8a3206b7f1f3a1281aa84e86",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13991,9 +14000,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 552,
-        "receipt": "evidence/serve-shell-history-20261126/delivery.json",
-        "plan_sha256": "40c9476a30355d26dce1ed82ca8d8295b640409bb83358c327a5246271cdc508",
+        "revision": 554,
+        "receipt": "evidence/serve-program-forks-20261126/delivery.json",
+        "plan_sha256": "1b205ac0cb9e214811af7d5f287d20857a72b2e65e297fb3266470cc392e4897",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
