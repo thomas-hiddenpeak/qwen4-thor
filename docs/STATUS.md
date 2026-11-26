@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+压缩窗口已按 Python SDK 版本返回 MCP 拒绝错误。2.33.0 收到可无损还原的 JSON 字符串，3.55.1 收到结构化对象。两种窗口均通过项目合同，同一客户原样重放可恢复摘要；另一客户和修改过的决定均被拒绝。旧版只在加密窗口之前还原该字符串。两个 SDK 目前剩下相同的用户消息严格类型限制。 下一步进行双版本 TLS 续答。[定向验证](evidence/serve-compact-window-identities-20261127/mcp-replay.json)
+
 Python 2.33.0 和 3.55.1 均可使用官方高层入口的 `responses.with_raw_response.compact(...).http_response.json()` 直接读取完整窗口。两版返回的 HTTP 字节均与各自的原生记录相同；显式 `.parse()` 仍有前述类型限制。7 项错误窗口反例被拒绝。 下一步从真实模型的摘要恢复发行版本号。[验证记录](evidence/serve-compact-window-identities-20261127/sdk-raw.json)
 
 独立压缩现在保留用户、系统和开发者消息的原始 ID。使用真实 MCP 拒绝记录和固定摘要做 CPU 验证，7 项窗口通过官方 HTTP 与本地合同，同一客户原样回填可准备续答，换客户无法解封。9 项定向检查通过。Python 2.33.0、3.55.1 的高层严格接口仍拒绝用户消息，通用 POST 可完整读回。待验是真实模型压缩后续答。[定向验证](evidence/serve-compact-window-identities-20261127/cpu.json)

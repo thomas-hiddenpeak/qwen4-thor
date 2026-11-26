@@ -37873,7 +37873,7 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/668"
               },
               "input": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/679"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_create_replay_input"
               },
               "instructions": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
@@ -44550,7 +44550,7 @@
             "type": "object",
             "properties": {
               "input": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1151"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_compact_replay_input"
               },
               "instructions": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
@@ -44998,7 +44998,7 @@
                 "items": {
                   "allOf": [
                     {
-                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_item"
+                      "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_window_item"
                     },
                     {
                       "if": {
@@ -45047,7 +45047,7 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666"
               },
               "input": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1151"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_tokens_request_replay_input"
               },
               "instructions": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
@@ -97147,6 +97147,131 @@
               }
             ]
           },
+          "compact_legacy_mcp_call": {
+            "type": "object",
+            "properties": {
+              "approval_request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "arguments": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "error": {
+                "type": "string",
+                "minLength": 2,
+                "contentMediaType": "application/json",
+                "contentSchema": {
+                  "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/523"
+                }
+              },
+              "id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "name": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "output": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
+              },
+              "server_label": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              "status": {
+                "const": "failed"
+              },
+              "type": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/532"
+              }
+            },
+            "required": [
+              "arguments",
+              "id",
+              "name",
+              "server_label",
+              "type",
+              "status",
+              "error"
+            ],
+            "additionalProperties": false
+          },
+          "compact_window_item": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/input_item"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_legacy_mcp_call"
+              }
+            ]
+          },
+          "compact_replay_input": {
+            "type": "array",
+            "maxItems": 4096,
+            "items": {
+              "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_window_item"
+            },
+            "contains": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "compaction"
+                },
+                "encrypted_content": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "type",
+                "encrypted_content"
+              ]
+            }
+          },
+          "response_create_replay_input": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/680"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_replay_input"
+              }
+            ]
+          },
+          "response_compact_replay_input": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/908"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_replay_input"
+              }
+            ]
+          },
+          "input_tokens_request_replay_input": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/21"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/908"
+              },
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_replay_input"
+              }
+            ]
+          },
           "image_options": {
             "type": "object",
             "properties": {
@@ -99657,7 +99782,7 @@
                     "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
                   },
                   "input": {
-                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/679"
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_create_replay_input"
                   },
                   "reasoning": {
                     "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818",
@@ -99954,7 +100079,7 @@
                         "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
                       },
                       "input": {
-                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/679"
+                        "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/response_create_replay_input"
                       },
                       "reasoning": {
                         "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/818",
@@ -101085,6 +101210,42 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "type": "array",
+                    "maxItems": 4096,
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_window_item"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_call"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
+                        }
+                      ]
+                    },
+                    "contains": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "compaction"
+                        },
+                        "encrypted_content": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "encrypted_content"
+                      ]
+                    }
                   }
                 ]
               },
@@ -101410,6 +101571,42 @@
                         }
                       ]
                     }
+                  },
+                  {
+                    "type": "array",
+                    "maxItems": 4096,
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_window_item"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_call"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
+                        }
+                      ]
+                    },
+                    "contains": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "compaction"
+                        },
+                        "encrypted_content": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "encrypted_content"
+                      ]
+                    }
                   }
                 ]
               },
@@ -101473,6 +101670,42 @@
                         {
                           "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
                         }
+                      ]
+                    }
+                  },
+                  {
+                    "type": "array",
+                    "maxItems": 4096,
+                    "items": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/compact_window_item"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_call"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_input_result"
+                        },
+                        {
+                          "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_output_message"
+                        }
+                      ]
+                    },
+                    "contains": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "compaction"
+                        },
+                        "encrypted_content": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "encrypted_content"
                       ]
                     }
                   }

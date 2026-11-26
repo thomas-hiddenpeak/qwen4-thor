@@ -1,0 +1,109 @@
+{
+  "scope": "Real stored MCP denial on two isolated CPU stores; fixed compaction summary",
+  "versions": {
+    "2.33.0": {
+      "raw_compact_sha256": "b9ec7cb2ef835c812b4b8ae5375647b2d4803da545efc9090b5859aa3ae53a8d",
+      "legacy_json_error": true,
+      "wire_matches_official_http": false,
+      "canonical_http_valid": true,
+      "application_compact_valid": true,
+      "replay_contracts": [
+        "response_create",
+        "response_compact",
+        "input_tokens_request"
+      ],
+      "native": {
+        "owner": "prepared",
+        "foreign_status": 400,
+        "altered_rejected": true,
+        "foreign_code": "invalid_encrypted_content"
+      },
+      "sdk": {
+        "sdk": "2.33.0",
+        "wire_sha256": "b9ec7cb2ef835c812b4b8ae5375647b2d4803da545efc9090b5859aa3ae53a8d",
+        "raw_compact_http_bytes_equal": true,
+        "strict_parse": "user_messages_type_rejected",
+        "strict_failure_indexes": [
+          0,
+          5
+        ],
+        "items": 7,
+        "negative_cases": {
+          "missing_user_id": "rejected",
+          "wrong_user": "rejected",
+          "rewritten_question": "rejected",
+          "missing_question": "rejected",
+          "denial_dropped": "rejected",
+          "damaged_seal": "rejected",
+          "assistant_leaked": "rejected"
+        }
+      }
+    },
+    "3.55.1": {
+      "raw_compact_sha256": "4836c8c74bd5026c123120cd7ee1b6976f738f552c0c39549cbf095f03ed6632",
+      "legacy_json_error": false,
+      "wire_matches_official_http": true,
+      "canonical_http_valid": true,
+      "application_compact_valid": true,
+      "replay_contracts": [
+        "response_create",
+        "response_compact",
+        "input_tokens_request"
+      ],
+      "native": {
+        "owner": "prepared",
+        "foreign_status": 400,
+        "altered_rejected": true,
+        "foreign_code": "invalid_encrypted_content"
+      },
+      "sdk": {
+        "sdk": "3.55.1",
+        "wire_sha256": "4836c8c74bd5026c123120cd7ee1b6976f738f552c0c39549cbf095f03ed6632",
+        "raw_compact_http_bytes_equal": true,
+        "strict_parse": "user_messages_type_rejected",
+        "strict_failure_indexes": [
+          0,
+          5
+        ],
+        "items": 7,
+        "negative_cases": {
+          "missing_user_id": "rejected",
+          "wrong_user": "rejected",
+          "rewritten_question": "rejected",
+          "missing_question": "rejected",
+          "denial_dropped": "rejected",
+          "damaged_seal": "rejected",
+          "assistant_leaked": "rejected"
+        }
+      }
+    }
+  },
+  "controls": [
+    "[PASS] compaction_cipher_rejects_tamper_scope_model_id_and_prefix",
+    "[PASS] compaction_returned_window_is_replayable_without_losing_message_data",
+    "[PASS] compaction_replay_restores_only_failed_mcp_errors_before_a_seal",
+    "[PASS] compaction_standalone_returns_preserved_users_and_replayable_state",
+    "4 tests, 4 passed, 0 failed, 0 skipped"
+  ],
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "engine": {
+    "files": {
+      "q4t": "733577a9005a8bb40e4b58f9930f7d19a2f5c6dab9986a9578e5a9e7dcc1d153",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "de3b25545ede1fe9be9c3bb18b02f39a294b382e337f58ec384ab72edea7f032",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  }
+}

@@ -8,7 +8,7 @@ import sys
 import openai
 
 
-def check_window(window, expected_user, question, original_error):
+def check_window(window, expected_user, question, original_error, legacy_error=False):
     if window.get("object") != "response.compaction":
         raise ValueError("Expected a standalone compaction")
     output = window["output"]
@@ -18,7 +18,12 @@ def check_window(window, expected_user, question, original_error):
     if users != [expected_user, question] or any(u["status"] != "completed" for u in users):
         raise ValueError("Original user message or status changed")
     failed, = [i for i in output if i["type"] == "mcp_call"]
-    if failed["status"] != "failed" or failed["error"] != original_error:
+    error = failed["error"]
+    if isinstance(error, str) != legacy_error:
+        raise ValueError("Unexpected MCP error representation")
+    if legacy_error:
+        error = json.loads(error)
+    if failed["status"] != "failed" or error != original_error:
         raise ValueError("Retained MCP decision changed")
     memory, = [i for i in output if i["type"] == "compaction"]
     if not memory["encrypted_content"].startswith("q4tc1:" + memory["id"] + ":"):
@@ -59,7 +64,8 @@ def run(params):
             model=model, previous_response_id=params["source"], input=inputs,
             instructions="Write a short handoff. Keep the exact publication revision from the report.")
         window = capture("compact", raw)
-        ids = check_window(window, params["original_user"], question, params["error"])
+        ids = check_window(window, params["original_user"], question, params["error"],
+                           params["legacy_error"])
         try:
             raw.parse()
             strict = "parsed"

@@ -173,6 +173,6 @@ std::string ResponsesExecution::ResultJson() const {
                           {"usage", *snapshot.Find("usage")}});
   if (const auto* image = snapshot.Find("image"))
     Set(&resource, "image", *image);
-  return OutputJson(ResponsesPublicValue(std::move(resource)));
+  return OutputJson(ResponsesWireValue(std::move(resource)));
 }
 }  // namespace q4t::server

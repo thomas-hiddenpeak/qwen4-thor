@@ -920,9 +920,10 @@
         "state": "native_cpu_contract_and_replay_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
         "remaining": [
-          "actual model-produced standalone compaction and follow-up",
-          "high-level Python SDK strict window type and older MCP error representation"
-        ]
+          "actual model-produced standalone compaction and follow-up on both readers",
+          "upstream SDK output-only union rejects retained user messages on strict parsing"
+        ],
+        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json"
       }
     },
     {
@@ -3192,9 +3193,10 @@
         "state": "native_cpu_contract_and_replay_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
         "remaining": [
-          "actual model-produced standalone compaction and follow-up",
-          "high-level Python SDK strict window type and older MCP error representation"
-        ]
+          "actual model-produced standalone compaction and follow-up on both readers",
+          "upstream SDK output-only union rejects retained user messages on strict parsing"
+        ],
+        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json"
       }
     },
     {
@@ -9261,9 +9263,10 @@
         "state": "native_cpu_contract_and_replay_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
         "remaining": [
-          "actual model-produced standalone compaction and follow-up",
-          "high-level Python SDK strict window type and older MCP error representation"
-        ]
+          "actual model-produced standalone compaction and follow-up on both readers",
+          "upstream SDK output-only union rejects retained user messages on strict parsing"
+        ],
+        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json"
       }
     },
     {

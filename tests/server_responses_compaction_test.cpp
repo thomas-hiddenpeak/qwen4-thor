@@ -416,6 +416,38 @@ Q4T_TEST(compaction_returned_window_is_replayable_without_losing_message_data) {
   return true;
 }
 
+Q4T_TEST(compaction_replay_restores_only_failed_mcp_errors_before_a_seal) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState state(objects);
+  const auto call = Parse(R"({"type":"mcp_call","id":"mcp_x","name":"read",
+    "server_label":"project","arguments":"{}","status":"failed",
+    "error":{"type":"mcp_tool_execution_error","content":{"code":"denied"}}})");
+  const auto seal = Parse(R"({"type":"compaction","id":"cmp_x",
+    "encrypted_content":"opaque"})");
+  Json canonical = Parse("[]");
+  canonical.array = {call, seal};
+  auto legacy = canonical;
+  String(&legacy.array[0], "error", OutputJson(*call.Find("error")));
+  const auto normal = state.ResolveItems(canonical, Access());
+  const auto replay = state.ResolveItems(legacy, Access());
+  Q4T_CHECK(Ok(normal) && Ok(replay));
+  Q4T_CHECK(OutputJson(normal.value) == OutputJson(replay.value));
+  Q4T_CHECK(legacy.array[0].Find("error")->IsString());
+  for (const auto invalid : {"bad json", "[]", "{\"type\":\"unknown\"}",
+                             "{\"type\":1,\"type\":2}"}) {
+    auto altered = legacy;
+    String(&altered.array[0], "error", invalid);
+    Q4T_CHECK(state.ResolveItems(altered, Access()).http_status == 400);
+  }
+  auto plain = legacy;
+  plain.array.pop_back();
+  Q4T_CHECK(state.ResolveItems(plain, Access()).http_status == 400);
+  std::reverse(legacy.array.begin(), legacy.array.end());
+  Q4T_CHECK(state.ResolveItems(legacy, Access()).http_status == 400);
+  return true;
+}
+
 Q4T_TEST(compaction_and_encrypted_reasoning_form_one_authenticated_history) {
   Fixture f;
   ObjectStore store(f.options);

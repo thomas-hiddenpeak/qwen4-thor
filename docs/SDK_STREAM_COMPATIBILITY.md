@@ -4,9 +4,11 @@
 
 `POST /v1/responses/compact` 返回的用户消息包含原始 ID、状态、角色和输入内容。原样回填整个 `output` 可在同一客户范围内恢复加密摘要。官方 HTTP 合同与项目合同均已用包含真实 MCP 拒绝记录的 7 项窗口核对。
 
-Python 2.33.0 和 3.55.1 的高层严格 `responses.compact` 都拒绝窗口里的两条用户消息。2.33.0 还拒绝第 5 项的结构化 MCP 错误。两版均可用公开的 `client.post("/responses/compact", cast_to=dict[str, Any], body=request)` 读取完整响应。调用方若需要逐字段验证，可对返回值校验发行包中的压缩响应合同。[验证记录](evidence/serve-compact-window-identities-20261127/cpu.json)
+Python 2.33.0 和 3.55.1 的高层严格 `responses.compact` 都拒绝窗口里的两条用户消息。旧候选中，2.33.0 还拒绝第 5 项的结构化 MCP 错误。两版均可用公开的 `client.post("/responses/compact", cast_to=dict[str, Any], body=request)` 读取完整响应。调用方若需要逐字段验证，可对返回值校验发行包中的压缩响应合同。[验证记录](evidence/serve-compact-window-identities-20261127/cpu.json)
 
 Python 2.33.0 和 3.55.1 均可使用官方高层入口的 `responses.with_raw_response.compact(...).http_response.json()` 直接读取完整窗口。两版返回的 HTTP 字节均与各自的原生记录相同；显式 `.parse()` 仍有前述类型限制。7 项错误窗口反例被拒绝。[原始响应验证](evidence/serve-compact-window-identities-20261127/sdk-raw.json)
+
+压缩窗口已按 Python SDK 版本返回 MCP 拒绝错误。2.33.0 收到可无损还原的 JSON 字符串，3.55.1 收到结构化对象。两种窗口均通过项目合同，同一客户原样重放可恢复摘要；另一客户和修改过的决定均被拒绝。旧版只在加密窗口之前还原该字符串。两个 SDK 目前剩下相同的用户消息严格类型限制。[压缩重放记录](evidence/serve-compact-window-identities-20261127/mcp-replay.json)
 
 ### 较早 Python SDK 读取程序化工具
 
