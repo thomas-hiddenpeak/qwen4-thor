@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+容量接续验收现核对原空消息 ID、完整历史摘要、原调用 ID 及跨客户 404，并要求接管后以新 ID 执行工具查询与流式续答。7 项驱动与旧回执检查通过，覆盖篡改历史、复用 ID、替换来源、错误终态及错误数据类型。下一步执行主、轻配置的真实接续。
+
 真实 HTTPS 工具闭环已通过。空助手轮次之后，模型调用 lookup_release 读取 rev536，按原调用 ID 回填后流式答出 13；原历史读回保持 null，跨客户读取为 404，独立 Chat 答出 720041。一次模型启动耗时 39.862 秒。完整混合角色页符合官方 HTTP schema，固定 Python SDK 默认方式可读取；其严格模式可读取单条空助手，拒绝页内 user 角色。下一步验证双配置接续与独立回退。[业务记录](evidence/serve-null-assistant-history-20261126/business.json)
 
 完整构建的预检程序复验了 42 组提示和 token ID。另有 12 个历史组合逐字节及逐 token 一致，覆盖 developer、推理别名、乱序工具回填，以及空助手轮次之前的图片或视频帧；10 项角色与历史原生用例通过。Python SDK 3.55.1 的严格历史类型只接受 assistant，已用该版本独立复现；官方 HTTP 类型可返回六种真实角色。下一步按实际角色分别核对 HTTPS 回读和工具续答。[构建与兼容记录](evidence/serve-null-assistant-history-20261126/full-build.json)
