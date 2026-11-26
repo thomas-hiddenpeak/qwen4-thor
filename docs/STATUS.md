@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Python 2.33.0 和 3.55.1 均可使用官方高层入口的 `responses.with_raw_response.compact(...).http_response.json()` 直接读取完整窗口。两版返回的 HTTP 字节均与各自的原生记录相同；显式 `.parse()` 仍有前述类型限制。7 项错误窗口反例被拒绝。 下一步从真实模型的摘要恢复发行版本号。[验证记录](evidence/serve-compact-window-identities-20261127/sdk-raw.json)
+
 独立压缩现在保留用户、系统和开发者消息的原始 ID。使用真实 MCP 拒绝记录和固定摘要做 CPU 验证，7 项窗口通过官方 HTTP 与本地合同，同一客户原样回填可准备续答，换客户无法解封。9 项定向检查通过。Python 2.33.0、3.55.1 的高层严格接口仍拒绝用户消息，通用 POST 可完整读回。待验是真实模型压缩后续答。[定向验证](evidence/serve-compact-window-identities-20261127/cpu.json)
 
 MCP 配置交接驱动已在两个独立原生 HTTP 进程上复核原批准和拒绝，八项反例均被拒绝。另验证较早 Python SDK 的公开通用传输入口可读取原程序化工具及游标，保留其高层严格类型失败。下一步以已发行的缓存兼容版本为前驱验收主、轻配置。[交接驱动](evidence/serve-mcp-error-sdk-20261127/handoff-driver.json)

@@ -6,6 +6,8 @@
 
 Python 2.33.0 和 3.55.1 的高层严格 `responses.compact` 都拒绝窗口里的两条用户消息。2.33.0 还拒绝第 5 项的结构化 MCP 错误。两版均可用公开的 `client.post("/responses/compact", cast_to=dict[str, Any], body=request)` 读取完整响应。调用方若需要逐字段验证，可对返回值校验发行包中的压缩响应合同。[验证记录](evidence/serve-compact-window-identities-20261127/cpu.json)
 
+Python 2.33.0 和 3.55.1 均可使用官方高层入口的 `responses.with_raw_response.compact(...).http_response.json()` 直接读取完整窗口。两版返回的 HTTP 字节均与各自的原生记录相同；显式 `.parse()` 仍有前述类型限制。7 项错误窗口反例被拒绝。[原始响应验证](evidence/serve-compact-window-identities-20261127/sdk-raw.json)
+
 ### 较早 Python SDK 读取程序化工具
 
 Python 2.8.1 的严格 `responses.retrieve` 不能解析较晚加入的 `program` 项和 `programmatic_tool_calling` 工具。其通用 `client.get(path, cast_to=dict[str, Any])` 可读取两种原生资源。订阅时使用 `stream=True`、`stream_cls=openai.Stream[dict[str, Any]]`、`options={"params": {"stream": "true"}, "headers": {"Accept": "text/event-stream"}}`，续读将 `starting_after` 加入 `params`。2.8.1 和 3.55.1 均完整读取两份真实记录的 144 和 6 个事件以及两个后缀，程序代码、工具定义和调用者字段逐项等于原件。3.55.1 的高层严格入口也通过。[程序化工具读取记录](evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json)

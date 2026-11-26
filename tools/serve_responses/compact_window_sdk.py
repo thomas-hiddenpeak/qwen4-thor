@@ -1,0 +1,93 @@
+"""Verify a replayable standalone compaction of a real stored tool decision."""
+from contextlib import ExitStack
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+import openai
+
+
+def check_window(window, expected_user, question, original_error):
+    if window.get("object") != "response.compaction":
+        raise ValueError("Expected a standalone compaction")
+    output = window["output"]
+    users = [item for item in output if item.get("role") == "user"]
+    if [u["id"] for u in users] != [expected_user["id"], question["id"]]:
+        raise ValueError("Original user message identities changed")
+    if users != [expected_user, question] or any(u["status"] != "completed" for u in users):
+        raise ValueError("Original user message or status changed")
+    failed, = [i for i in output if i["type"] == "mcp_call"]
+    if failed["status"] != "failed" or failed["error"] != original_error:
+        raise ValueError("Retained MCP decision changed")
+    memory, = [i for i in output if i["type"] == "compaction"]
+    if not memory["encrypted_content"].startswith("q4tc1:" + memory["id"] + ":"):
+        raise ValueError("Missing sealed compaction state")
+    if any(i.get("role") == "assistant" for i in output):
+        raise ValueError("Expected the archived assistant report to be summarized")
+    return [u["id"] for u in users]
+
+
+def run(params):
+    target = Path(params["capture"])
+    target.mkdir(mode=0o700)
+    hashes = {}
+
+    def capture(label, raw):
+        response = raw.http_response
+        response.raise_for_status()
+        path = target / (label + ".json")
+        path.write_bytes(response.content)
+        hashes[label] = hashlib.sha256(response.content).hexdigest()
+        return response.json()
+
+    with ExitStack() as clients:
+        def connect(key):
+            return clients.enter_context(openai.OpenAI(
+                api_key=key, base_url=params["base"], max_retries=0, timeout=90,
+                _strict_response_validation=True,
+                http_client=openai.DefaultHttpxClient(verify=params["certificate"])))
+
+        owner, peer = connect(params["key"]), connect(params["other"])
+        model = "qwen3.8-flash-next"
+        question_id = "msg_compact_release_question"
+        prompt = "Return only the publication revision number from the archived release report."
+        question = dict(type="message", id=question_id, role="user", status="completed",
+                        content=[dict(type="input_text", text=prompt)])
+        inputs = [dict(role="assistant", content=params["report"]), question]
+        raw = owner.responses.with_raw_response.compact(
+            model=model, previous_response_id=params["source"], input=inputs,
+            instructions="Write a short handoff. Keep the exact publication revision from the report.")
+        window = capture("compact", raw)
+        ids = check_window(window, params["original_user"], question, params["error"])
+        try:
+            raw.parse()
+            strict = "parsed"
+        except openai.APIResponseValidationError:
+            strict = "type_rejected"
+
+        replay = dict(model=model, input=window["output"], max_output_tokens=96,
+                      temperature=0, reasoning={"effort": "none"}, store=False)
+        try:
+            peer.responses.create(**replay)
+        except openai.BadRequestError as error:
+            if error.code != "invalid_encrypted_content":
+                raise
+        else:
+            raise ValueError("Another customer opened the sealed window")
+
+        resumed = owner.responses.with_raw_response.create(**replay)
+        answer = capture("resumed", resumed)
+        if answer["status"] != "completed" or any(
+                item["type"] == "mcp_call" for item in answer["output"]):
+            raise ValueError("Unexpected continuation lifecycle or tool call")
+        text = resumed.parse().output_text.strip()
+        return dict(sdk=openai.__version__, source=params["source"], original_ids=ids,
+                    output_items=len(window["output"]), usage=window["usage"],
+                    raw_compact=True, strict_compact=strict, foreign_status=400,
+                    foreign_code="invalid_encrypted_content", answer=text,
+                    exact_answer=(text == str(params["revision"])), files=hashes)
+
+
+if __name__ == "__main__":
+    print(json.dumps(run(json.load(sys.stdin))))

@@ -1,0 +1,37 @@
+{
+  "scope": "CPU replay of genuine native compact resource; response bytes preserved before typed decoding",
+  "versions": {
+    "2.33.0": {
+      "sdk": "2.33.0",
+      "wire_sha256": "c5cc6d4af4f010f0362766fcf2b63b7be8872078accd2260aa0ca2875e69d235",
+      "raw_compact_http_bytes_equal": true,
+      "strict_parse": "rejected",
+      "items": 7,
+      "negative_cases": {
+        "missing_user_id": "rejected",
+        "wrong_user": "rejected",
+        "rewritten_question": "rejected",
+        "missing_question": "rejected",
+        "denial_dropped": "rejected",
+        "damaged_seal": "rejected",
+        "assistant_leaked": "rejected"
+      }
+    },
+    "3.55.1": {
+      "sdk": "3.55.1",
+      "wire_sha256": "b96df3a58d1516075c54d278a7bcf4375ed4a26fa4c74502e4f37d3cbeb6f658",
+      "raw_compact_http_bytes_equal": true,
+      "strict_parse": "rejected",
+      "items": 7,
+      "negative_cases": {
+        "missing_user_id": "rejected",
+        "wrong_user": "rejected",
+        "rewritten_question": "rejected",
+        "missing_question": "rejected",
+        "denial_dropped": "rejected",
+        "damaged_seal": "rejected",
+        "assistant_leaked": "rejected"
+      }
+    }
+  }
+}
