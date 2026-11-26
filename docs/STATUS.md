@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+视频元数据读取器现可枚举启用轨道，保留轨道 ID、替代组、每轨时长、变换、显示尺寸，并按有符号层级给出绘制顺序。两项原生 CPU 用例通过，26 份容器的 52 次旧选择接口对照一致。合成像素和冻结快照仍待实现。[读取器验收](evidence/serve-video-layer-composition-20261127/reader.json)
+
 两条均启用、均未加入替代组的视频轨道目前返回 HTTP 400。已用同一份 H.264 源构造并排、前轨遮挡和后轨遮挡三例，两条轨单独解码都成功。对每例保留四个时间点的 RGB 参照，包括较短轨道结束后的画面。下一步实现共同影片坐标中的图层合成、时序及快照回读。[复现记录](evidence/serve-video-layer-composition-20261127/baseline.json)
 
 Python SDK 3.55.1 现可独立核对重试后的 ChatKit 消息列表。两组真实历史消息在模拟游标上传给官方严格类型解析器，验证了正序和倒序翻页，并拒绝重复页和损坏的消息类型。下一步在同一原生 TLS 短验中核对四条真实消息、旧回答移除、已删除文件及跨客户 404。[客户端记录](evidence/serve-chatkit-interrupted-retry-20261127/python-client.json)

@@ -1,0 +1,32 @@
+{
+  "stage": "layer_metadata_cpu_verified",
+  "issued": false,
+  "composite_decode_verified": false,
+  "previous_reader": "558806af12052bf1851d5b1b1fbd839b746cbd714b8818d221dcd29e68891d7b",
+  "reader": "b93cc38cfbf7fd7b190b40512d964148f29a446f26ca9cf614be0faf42a0e50c",
+  "tests": "5d268037625a6252f3fec13765a4f2109e8808e3d0cc4e5f06a231ff918e0eb9",
+  "tests_passed": 2,
+  "checks": [
+    "signed layer ordering and reversed spatial priority",
+    "original track IDs, independent durations, matrices and declared dimensions",
+    "version 1 header field offsets, wide identifier and alternate group",
+    "disabled sole track fallback"
+  ],
+  "previous_select_track": {
+    "inputs": 26,
+    "comparisons": 52,
+    "identical": true,
+    "report_sha256": "7e0b94bee229e3537dc232175646ea66a38daa2a5baa9914111353dd74dd997d"
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1392,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

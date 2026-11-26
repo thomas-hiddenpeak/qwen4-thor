@@ -4626,7 +4626,7 @@
     "src/server/file_video_clipping.h": "df231e0e8f2ad5e34bcdc757df3ce651ff6f24ca41e8a3149957d3246e89f441",
     "src/server/file_video_geometry.h": "6a070ef429dd3abfc1c56d0dd70d3b714c11e7c30f75ce33b3765c50f483f61f",
     "src/server/file_video_integer.h": "c9950f3e70ad0034b35b69769ae8e2d87b22180f0d9fe5b52caa34449e2d97b0",
-    "src/server/file_video_orientation.h": "558806af12052bf1851d5b1b1fbd839b746cbd714b8818d221dcd29e68891d7b",
+    "src/server/file_video_orientation.h": "b93cc38cfbf7fd7b190b40512d964148f29a446f26ca9cf614be0faf42a0e50c",
     "src/server/file_video_projective.h": "5bab0391714719cbaf3524f4870374cfb216f82f2918b29a23934d55426cd324",
     "src/server/file_video_protocol.h": "91af4d72c1ad1887076668b32e805f6b9f074a8d04d5aa73adcf9ad55b59d9de",
     "src/server/file_video_region.h": "01cd09daf0b5555d946fc6f952e551e221a828c245e3bab47aad20dedfc064da",
