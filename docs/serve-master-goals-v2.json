@@ -889,7 +889,8 @@
       "mcp_approval_identifiers_20261126": {
         "stage": "native_cpu_and_sdk",
         "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json"
       }
     },
     {
@@ -3723,7 +3724,8 @@
       "mcp_approval_identifiers_20261126": {
         "stage": "native_cpu_and_sdk",
         "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json"
       }
     },
     {
@@ -8812,7 +8814,8 @@
       "mcp_approval_identifiers_20261126": {
         "stage": "native_cpu_and_sdk",
         "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json"
       }
     },
     {

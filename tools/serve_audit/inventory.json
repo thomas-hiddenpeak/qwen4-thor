@@ -5187,7 +5187,7 @@
     "tools/serve_recovery/version_registration.py": "8f127f8423fcba9a383232f596ed8e25239953725f092c0680acba9518cecede",
     "tools/serve_recovery/version_runtime.py": "2d3303bb16d919249dc7dedb11e5d4095f8df775a0ae3c2bba70bb1d1a655726",
     "tools/serve_recovery/version_store.py": "a47cf1833259fc5dd9fecb2cbcf28d5e734008f5ae9348f37199f4bc88e09097",
-    "tools/serve_responses/generate_item_types.mjs": "559745384edbac95c895988410684101db0e49e0d522eb8602959670d4f97689",
+    "tools/serve_responses/generate_item_types.mjs": "6290030805c24c7f81caad60fcebdd47e4800b4235a399eed08766721fb520f1",
     "tools/serve_responses/prepare_meteor_lexicon.py": "b76f17463dd9152690c32fa17b85c5913bb0d132ffef9a3fba8204abeb8c78c7",
     "tools/serve_service/acceptance.py": "a0d52e8c055c6afc1478ee5f65e93daa563c6143e79f529a92d0e73723488cf7",
     "tools/serve_service/auxiliary.py": "9b818763694570b63efa394e01fc327300d8ee375bc8f7009023937b1061bbdf",

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+MCP 的新增关联名已纳入 HTTP 声明，固定 SDK 的来源哈希和判定独立保留。首版候选触发了 SDK 来源校验失败；修正后 647 条原生与 TypeScript 对照均一致，历史字段默认值检查、4 项原生回归、Python SDK 和重开旧对象均通过。[复核记录](evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json)
+
 已修复 MCP 审批响应的 HTTP 字段兼容。原生接口此前对同时提供一致 request_id 与 approval_request_id 的申请返回 400。候选保留 SDK 单字段输入，公共读取补全双字段，原存储对象无需改写；指向不同申请的输入返回 400，重用同一 ID 改变批准决定返回 409。3 项原生 CPU 回归、发布声明及官方 Python SDK 分页通过。实际 MCP 审批执行仍待候选短验。[CPU 证据](evidence/serve-mcp-approval-identifiers-20261126/cpu.json)
 
 主配置用时 42.5 秒，轻量配置用时 47.3 秒。按原 ID 读回的会话整页和压缩对象摘要一致，只携带密文续答得到 28617。两种配置的独立 Chat 均返回 720041。下一步验证发布包和回退包。[配置记录](evidence/serve-conversation-compaction-20261126/profiles.json)

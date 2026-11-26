@@ -1,0 +1,71 @@
+{
+  "stage": "final_scoped_cpu",
+  "prior_cpu": "8742d20a6f29673a6fad1dffac23cdd7e0fcb0dc2c8f7c96eae7485cd8297ae9",
+  "initial_failure": "A first candidate applied the HTTP alias to the upstream SDK graph reference in the application declaration. The frozen request-field oracle detected the changed graph digest.",
+  "failed_test": "0bd460a251008b3bcfdead0c7bd551581e6a107c042156ac22c5e697151c4ec1",
+  "frozen_sdk_sources_match": true,
+  "regenerated_clean_sdk_graph": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75",
+  "wire_overlay": {
+    "schema": "fc56f81c9530bfc120a2e5c56578d2c2b87a825f41b66de59f4394d5af323acf",
+    "openapi": "ccb3e46ce4d2001542233cdc492bd922b64e87561f255653367a35d5bfe99b32",
+    "native_graph": "24f98a44c4ab0c6743a86621b981b0c2368763ec8319e8d1ad24839632367eb1"
+  },
+  "item_oracle": {
+    "count": 647,
+    "differences": 0,
+    "original_vectors_unchanged": true,
+    "fixture": "7678a9f5e783e4c7df13287c28f640814d2e48a622c6755b6bfed1b342016b16",
+    "changed_keys": [
+      "graph_sha256"
+    ]
+  },
+  "request_fields": "8fc491c33af10c373d8f98a2362fd7e66cdc6c96497aa5aa59d429264ca5ac92",
+  "http": {
+    "status": "PASS",
+    "old_http": 400,
+    "old_source_sha256": "25b6c9a04d9d0cf4901c97e165d8a3dbd0237f8bf08abf3b4cea7e8c48d51ce4",
+    "candidate_fixture_sha256": "5a162d9718b8627f76d702c879ebf2a1810173284e654cd7406a9f9935f1f8e8",
+    "public_schema": "ccb3e46ce4d2001542233cdc492bd922b64e87561f255653367a35d5bfe99b32",
+    "official_schema": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "pages": {
+      "old-retrieve.wire": "d796ef9c0e15978f4902249c8756471391e05b14e3fd07e483369d827749cf12",
+      "appended.wire": "84e957635230deddc7719bb76559120750d5b1e0d589b09b65d5f6c5269b098e",
+      "listed.wire": "2654a1ad165f2d6578890d48bbd448e7d4d38b52eeac73dd4859ea739c2ff4ea"
+    },
+    "rollback_rejects_conflict": true,
+    "old_disk_object_count": 4,
+    "old_read_without_rewrite": true,
+    "replayed_old_and_new": true,
+    "changed_decision": 409,
+    "peer": 404,
+    "errors": {
+      "mismatch": "items[0].request_id",
+      "null": "items[0].request_id",
+      "type": "items[0].request_id",
+      "alias-only": "items[0].approval_request_id"
+    },
+    "model_starts": 0
+  },
+  "sdk": {
+    "sdk": "3.55.1",
+    "original": "conv_b1922b377aace7508a0b9ec5ddcb4d06",
+    "pages": 2,
+    "target": "approval_sdk",
+    "decision": false,
+    "conflict": 400,
+    "peer": 404
+  },
+  "guard": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1391,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "targeted_log": "d13b5c84ade40005f40fae395fd2ddddec0fb9d1b529149055217b50ab483bb0",
+  "model_starts": 0
+}
