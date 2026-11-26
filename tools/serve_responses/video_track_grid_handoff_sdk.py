@@ -110,7 +110,7 @@ def exercise(plan):
                 assert event.sequence_number == len(events)
                 events.append(event.type)
                 if layered:
-                    wire.append(event.model_dump(mode='json', exclude_unset=True))
+                    wire.append(event.model_dump(mode='json', by_alias=True, exclude_unset=True))
                 if event.type == 'response.completed':
                     answer = event.response
         assert events[0] == 'response.created' and events[-1] == 'response.completed'

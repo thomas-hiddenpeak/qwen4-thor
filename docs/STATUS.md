@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+首次双轨 TLS 短验用时 40.7 秒。已从真实存储复核六份 PNG 与参照一致；模型在首问返回类型为 refusal 的回答。首个视觉分组内左上角从红变绿，是否导致拒答尚未证实。已构造对照，仅让较长轨道的第二个画面重复第一帧，其余像素、时间、层序、问法和模型设置保持一致。两种层序的 12 个输出均与单轨合成参照相同。验收客户端现显式报告模型拒答，并使用 SDK 的协议字段名保存结构化响应，已用原失败和三份历史成功响应复核。[原失败](evidence/serve-video-layer-composition-20261127/first-business-attempt.json) · [对照输入](evidence/serve-video-layer-composition-20261127/paired-business-controls.json)
+
 主、轻配置的多轨视频交接驱动已接入。它按响应 ID 核对删除源文件前后的历史输入，要求新续问辨认首帧和末帧，并检查 SSE 文本逐片重组后与持久响应一致。两段历史真实流共 83 个事件通过复核，14 个流反例被拒绝。两份相反层序的原片经隔离解码，15 个轨道、时间、额度或快照反例均被拒绝；13 项交接及相邻迁移检查通过。候选程序和网关已构建，后续用真实模型验收。[交接回执](evidence/serve-video-layer-composition-20261127/handoff-driver.json)
 
 多轨视频的 SDK 验收已准备两份遮挡顺序相反的原片。默认采样下，两片各六帧与独立单轨合成参照逐像素一致，首帧左下象限分别为红色和蓝色。业务驱动将通过原生 TLS 核对上传、内联输入、删除原文件后的 SSE 续问、历史资源及冻结 PNG。GPU 模型结果待验，预算为一次启动、四次生成、340 秒。[验收输入](evidence/serve-video-layer-composition-20261127/business-controls.json)

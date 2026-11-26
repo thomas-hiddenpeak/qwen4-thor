@@ -64,11 +64,20 @@ def hidden(get):
     raise AssertionError('resource unexpectedly accessible')
 
 
+def response_colors(label, response):
+    refusals = [part.refusal for item in response.output if item.type == 'message'
+                for part in item.content if part.type == 'refusal']
+    if refusals:
+        raise AssertionError((label, 'model refusal', refusals))
+    assert response.status == 'completed' and response.output_text, (label, response.status)
+    return json.loads(response.output_text)
+
+
 def saved_resource(owner, peer, rid, file_id, destination):
     raw = owner.responses.with_raw_response.retrieve(rid)
     resource = raw.parse()
     assert raw.status_code == 200 and resource.id == rid and resource.status == 'completed'
-    assert json.loads(resource.output_text) == {'top_left': 'red'}
+    assert response_colors('saved', resource) == {'top_left': 'red'}
     destination.write_bytes(raw.http_response.content)
     return dict(response=rid, file=file_id, resource_sha256=hashlib.sha256(
         raw.http_response.content).hexdigest(), get=raw.status_code,
@@ -150,8 +159,8 @@ def main():
         first = owner.responses.create(**first_common,input=uploaded)
         def check(label,response,expected):
             assert response is not None
-            (capture/(label+'.json')).write_text(response.model_dump_json())
-            values=json.loads(response.output_text)
+            (capture/(label+'.json')).write_text(response.model_dump_json(by_alias=True, exclude_unset=True))
+            values = response_colors(label, response)
             assert response.status=='completed' and values==dict(zip(corner,expected)),(label,values)
             return dict(response=response.id,status=response.status,colors=values,
                         input_tokens=response.usage.input_tokens)
@@ -191,7 +200,7 @@ def main():
                 raw = owner.responses.with_raw_response.retrieve(reply['response'])
                 parsed = raw.parse()
                 assert parsed.id == reply['response'] and parsed.status == 'completed'
-                assert json.loads(parsed.output_text) == reply['colors']
+                assert response_colors(label, parsed) == reply['colors']
                 data = raw.http_response.content
                 (capture/(label+'-response.json')).write_bytes(data)
                 transfer['resources'][label] = hashlib.sha256(data).hexdigest()

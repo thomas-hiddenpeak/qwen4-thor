@@ -1,0 +1,45 @@
+{
+  "run": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 40.697,
+    "unchanged_default": true,
+    "phases": []
+  },
+  "lease_sha256": "dcec6a16d63fa813b64d8b0b1069cb118810f921b81848929d069f4f142b8aec",
+  "response_id": "resp_be2d1c5053cb2d8e52e4b634b880a6f9",
+  "status": "completed",
+  "output": [
+    {
+      "refusal": "\nI cannot answer this question because the provided video frames do not contain a top-left quadrant with a discernible color at its center. The frames show large blocks of color, but the specific request to identify the color at the center of the top-left quadrant cannot be fulfilled with certainty based on the visual evidence provided.\n",
+      "type": "refusal"
+    }
+  ],
+  "usage": {
+    "input_tokens": 1089,
+    "input_tokens_details": {
+      "cache_write_tokens": 1082,
+      "cached_tokens": 0,
+      "cache_write_tokens_details": null
+    },
+    "output_tokens": 79,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1168
+  },
+  "frozen_source_sha256": "bd74ab7c48b726d525b6a3556793636addc4ae4810f8a58d5ecf25586dc01242",
+  "snapshot": "input_snapshot_945e4755f19ea2241a48776eab736dc7",
+  "actual_png_sha256": {
+    "0": "dab66f8e23752ffb8d5eae94d9b1069ae3c4eaa6ccb17223f72e63ea42c51177",
+    "1": "4bd03f87add3e1edb09e5b6c3b1f0959669d28f2a9f2dcc8237c9d978227cd46",
+    "2": "bed4b3a703913facc429289ff154655d5c01b650f97a2de3e46edb4da78d634c",
+    "3": "ec054072c49e47e18445de334b0386a1a12c2a546075469b5656d96bb562a258",
+    "4": "d05b06e7f2772e7a04344d6947c36ce35f871f78029f0ee79702a59d61b79e44",
+    "5": "f07a0e167e282e62bc4870d35c312f893213ad7da99c5744648a0eecc653f216"
+  },
+  "matches_independent_control": true,
+  "clock": "First two source samples at 0 and 0.5 s share one visual group; upper-left red and green in those two samples. This is a possible source of ambiguity, not a demonstrated cause of refusal.",
+  "sdk_capture_sha256": "8227c4b0ff1cd63ca00c2d7d24e22efcc2d9c47476163d94547a890ff47466bc",
+  "original_durable_response_record_sha256": "b153c8c79eb7bf31e6fece5ed9e5a8ed2780d111e9d8411530f3e8dd2b71d4c1"
+}

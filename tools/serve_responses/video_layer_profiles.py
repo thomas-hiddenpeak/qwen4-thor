@@ -22,8 +22,14 @@ COLORS = {'first_bottom_left': 'red', 'last_bottom_right': 'black'}
 def snapshot_ids(proof, decode, controls):
     names = ('first-in-front', 'second-in-front')
     original = [decode['normal_decode'][name]['source_sha256'] for name in names]
-    frozen = proof['frozen']
     require = package.require
+    paired = controls.get('paired_sources')
+    if paired is not None:
+        require([paired[name]['original_sha256'] for name in names] == original
+                and all(controls['frames'][name][0]['png_sha256'] == controls['frames'][name][1]['png_sha256']
+                        for name in names), 'a business input lost its original or first two-frame control')
+        original = [paired[name]['sha256'] for name in names]
+    frozen = proof['frozen']
     require(proof['sdk']['sources'] == original and len(set(original)) == 2 and
             set(frozen) == set(original), 'wrong uploaded or inline video')
     ids = {}
@@ -63,14 +69,14 @@ def snapshot_ids(proof, decode, controls):
 
 def prepare(out, build, deployment, interpreter, source):
     proof = package.read(PROOF)
-    ids = snapshot_ids(proof, package.read(ROOT/'composition.json'), package.read(ROOT/'business-controls.json'))
+    ids = snapshot_ids(proof, package.read(ROOT/'composition.json'), package.read(ROOT/'paired-business-controls.json'))
     sdk = subprocess.check_output([interpreter, '-IB', '-c', 'import openai;print(openai.__version__)'],
                                   text=True, timeout=15).strip()
     package.require(proof['run']['status'] == 'PASS' and sdk == proof['sdk']['sdk'] and
                     proof['product'] == {'binary': package.sha(build/'q4t'), 'ingress': package.sha(build/'q4t-ingress')},
                     'native layered video business, product or SDK changed')
     lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.INTERRUPTED_RETRY_REVIEWED, KEY,
-                                [ACTOR, PROOF, RELEASE, ROOT/'composition.json', ROOT/'business-controls.json',
+                                [ACTOR, PROOF, RELEASE, ROOT/'composition.json', ROOT/'paired-business-controls.json',
                                  Path(approvals.__file__), Path(video_snapshot_bindings.__file__),
                                  Path(grid.__file__), Path(__file__)])
     store = out/'state/application-objects'

@@ -23,8 +23,53 @@ def boxes(data, start, end):
         start += size
 
 
-def variants():
+def paired_intro(source):
+    """Repeat the first independent picture across the first two-frame vision group."""
+    data = bytearray(source)
+
+    def child(parent, kind):
+        match, = [(a, b) for key, a, b in boxes(data, *parent) if key == kind]
+        return match
+
+    root = (0, len(data))
+    mdat, end = child(root, b"mdat")
+    movie = child(root, b"moov")
+    tracks = [(a, b) for key, a, b in boxes(data, *movie) if key == b"trak"]
+    tables = [child(child(child(track, b"mdia"), b"minf"), b"stbl") for track in tracks]
+    sizes, _ = child(tables[0], b"stsz")
+    mapping, _ = child(tables[0], b"stsc")
+    if (end > movie[0] or len(tables) != 2 or
+            struct.unpack_from(">II", data, sizes + 4) != (0, 6) or
+            struct.unpack_from(">7I", data, mapping + 4) != (2, 1, 1, 1, 5, 2, 1)):
+        raise ValueError("unrecognized original movie sample layout")
+    offsets, _ = child(tables[0], b"stco")
+    first, second = struct.unpack_from(">II", data, offsets + 8)
+    n, m = struct.unpack_from(">II", data, sizes + 12)
+    if not mdat <= first < first + n <= second < second + m <= end:
+        raise ValueError("invalid first two samples")
+    picture = bytes(data[first:first + n])
+    growth = n - m
+    # The following moov moves with the insertion. Its absolute chunk offsets
+    # point into mdat and must account for the changed size of sample two.
+    for table in tables:
+        start, stop = child(table, b"stco")
+        count, = struct.unpack_from(">I", data, start + 4)
+        if start + 8 + count * 4 != stop:
+            raise ValueError("invalid chunk table")
+        for at in range(start + 8, stop, 4):
+            offset, = struct.unpack_from(">I", data, at)
+            if offset > second:
+                struct.pack_into(">I", data, at, offset + growth)
+    struct.pack_into(">I", data, sizes + 16, n)
+    struct.pack_into(">I", data, mdat - 8, end - mdat + 8 + growth)
+    data[second:second + m] = picture
+    return bytes(data)
+
+
+def variants(*, repeat_intro=False):
     source = FIXTURE.read_bytes()
+    if repeat_intro:
+        source = paired_intro(source)
     movie, = [(start, end) for kind, start, end in boxes(source, 0, len(source))
               if kind == b"moov"]
     tracks = []
@@ -52,7 +97,9 @@ def variants():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
-    out = parser.parse_args().output
+    parser.add_argument("--paired-intro", action="store_true")
+    args = parser.parse_args()
+    out = args.output
     out.mkdir(parents=True, exist_ok=True)
-    for name, data in variants():
+    for name, data in variants(repeat_intro=args.paired_intro):
         (out / (name + ".mp4")).write_bytes(data)
