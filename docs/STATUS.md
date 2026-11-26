@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+聊天历史中显式的 assistant.content=null 现在保留空轮次及已有推理内容。此前服务在预检返回 400。候选与独立 Jinja 模板、分词器在 21 个历史样例的两种模式下共 42 次逐字节及逐 token 相符，包含五项工具 JSON 包装。17 项输入形状与 7 项原生测试通过。下一步验证真实 HTTPS Chat、历史回读和工具续答。[验证记录](evidence/serve-null-assistant-history-20261126/cpu.json)
+
 独立资源域里的真实模型已完成主配置、轻配置、主配置三代切换，各完成一条 Chat 并回答 42。内核 high 事件从 147116 增至 150091；移除有界压力后，控制器沿用发行包的冷却、最短轻配置驻留和恢复窗口。历时 508.2 秒，已归还 GPU 租约并删除测试资源域。下一步核验可回退发布。[业务记录](evidence/serve-reclaim-pressure-20261126/business.json)
 
 资源域的 memory.high 计数在相邻采样间持续增加时，现在能提出轻配置降级，并在计数继续增加时推迟升档。Thor 独立资源域实测 4.2 秒内有 502 次 high 事件，八个内存读数全部低于 64 MiB；原控制器未识别，新控制器在持续时间达标后识别。17 项针对性 CPU 与内核用例通过，历史适配包仍可按原摘要核验。下一步用真实服务验证降档和恢复。[内核记录](evidence/serve-reclaim-pressure-20261126/cpu.json)

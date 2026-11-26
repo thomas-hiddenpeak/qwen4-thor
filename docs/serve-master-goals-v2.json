@@ -1391,6 +1391,11 @@
         "profiles": "evidence/serve-tool-map-references-20261126/profiles.json",
         "revision": 536,
         "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
+      },
+      "nullable_assistant_history_20261126": {
+        "stage": "targeted_cpu",
+        "receipt": "evidence/serve-null-assistant-history-20261126/cpu.json",
+        "issued": false
       }
     },
     {

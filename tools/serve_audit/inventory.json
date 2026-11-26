@@ -4484,7 +4484,7 @@
     "src/server/chat_speech_prompt.cpp": "8ae4eaf7d1fbbe522e65ff0b05760b466b0e4ce7abd0d4ec8e093283b713cd2a",
     "src/server/chat_storage.cpp": "58bcb7f5d214ead7937f9fbf584bbeb585aaae7f173dbadf73998418fbc41d73",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "79d5dd67fb55ec9161f40e19fc60833da256764170b66bced356e57cf49af22c",
+    "src/server/chat_template.cpp": "f72370336a1d03e66397f52b1ad002230d4ce5b0bcb826a9e74ddf469061280d",
     "src/server/chat_tool_history.cpp": "a8c6210b9d3ffc644c69f55e27956e85176aa977398398b5422bef7ad0d4973c",
     "src/server/chat_tts_backend.cpp": "4cbd1c256e1a949a9b05fb52664706af09c13247cc25bcca72b8d173a3790946",
     "src/server/chat_tts_execution.cpp": "8adb04490a52a5d353ba3e3497ad1acc252bd057b9eee7220942bd354cf64f1f",

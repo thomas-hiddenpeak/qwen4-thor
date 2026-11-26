@@ -162,7 +162,7 @@
         "src/server/chat_template.cpp",
         "src/server/chat_prompt.cpp"
       ],
-      "contract": "System/developer instruction messages retain order as native system ChatML; no required user role. Participant names are JSON quoted with escaped angle brackets and limited to4096 UTF-8 bytes, never authorization identity. Assistant refusal strings/one refusal content part are rendered as text. Content is required unless assistant has nonempty tool_calls or a refusal string. Other media and content shapes remain role-checked."
+      "contract": "System/developer instruction messages retain order as native system ChatML; no required user role. Participant names are JSON quoted with escaped angle brackets and limited to4096 UTF-8 bytes, never authorization identity. Assistant refusal strings/one refusal content part are rendered as text. An explicit null assistant content preserves the empty turn. Omitting assistant content requires tool calls, a legacy function call, a refusal string or an audio reference. Other media and content shapes remain role-checked."
     },
     {
       "id": "reasoning-aliases",
@@ -696,7 +696,7 @@
     "src/server/chat_server.cpp": "bdc85f2ffa73fe3d7d7d252f838605ea7871b0abb0900c8f0d9d948308ebda4b",
     "src/server/chat_storage.cpp": "58bcb7f5d214ead7937f9fbf584bbeb585aaae7f173dbadf73998418fbc41d73",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "79d5dd67fb55ec9161f40e19fc60833da256764170b66bced356e57cf49af22c",
+    "src/server/chat_template.cpp": "f72370336a1d03e66397f52b1ad002230d4ce5b0bcb826a9e74ddf469061280d",
     "src/server/chat_tool_history.cpp": "a8c6210b9d3ffc644c69f55e27956e85176aa977398398b5422bef7ad0d4973c",
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",

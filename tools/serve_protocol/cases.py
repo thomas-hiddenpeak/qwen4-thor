@@ -298,6 +298,11 @@ def cases():
         add(role+"-late", dict(messages=[*base()["messages"], dict(role=role, content="rules")]))
     add("mixed-instructions", dict(messages=[dict(role="system", content="a"), dict(role="developer", content="b"), *base()["messages"]]))
     add("no-user", dict(messages=[dict(role="assistant", content="hi")]))
+    add("assistant-explicit-null-history", dict(messages=[
+        dict(role="user", content="a"), dict(role="assistant", content=None),
+        dict(role="user", content="b")]))
+    add("assistant-missing-content", dict(messages=[dict(role="assistant")]), False)
+    add("user-null-content", dict(messages=[dict(role="user", content=None)]), False)
     add("tool-wrapper-not-query", dict(messages=[dict(role="user", content=" <tool_response>x</tool_response> ")]))
     for value, accepted in ((None, True), ("", True), ("name", True), (17, False)):
         add("message-name-"+str(value), dict(messages=[dict(role="user", content="q", name=value)]), accepted)

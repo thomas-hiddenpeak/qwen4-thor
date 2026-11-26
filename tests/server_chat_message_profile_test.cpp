@@ -456,10 +456,32 @@ Q4T_TEST(chat_message_profile_developer_system_equivalence) {
   return true;
 }
 
+Q4T_TEST(chat_null_assistant_content_preserves_history_and_turn_boundaries) {
+  Json request;
+  Q4T_CHECK(Read(R"([{"role":"user","content":"one"},
+      {"role":"assistant","content":null,"reasoning_content":"work"},
+      {"role":"user","content":"two"}])", &request));
+  Q4T_CHECK(ValidateChatContract(request, "m", false));
+  std::string prompt;
+  std::vector<q4t::server::ChatMessageSpan> spans;
+  Q4T_CHECK(RenderChatPrompt(request, {"one", "", "two"}, &prompt, &spans));
+  Q4T_CHECK(prompt == WithAdapter(
+      "<|im_start|>user\none<|im_end|>\n"
+      "<|im_start|>assistant\n<think>\nwork\n</think>\n\n<|im_end|>\n"
+      "<|im_start|>user\ntwo<|im_end|>\n"
+      "<|im_start|>assistant\n<think>\n\n</think>\n\n"));
+  Q4T_CHECK(spans.size() == 3 && spans[1].source_size == 0);
+  const auto& message = request.Find("messages")->array[1];
+  Q4T_CHECK(message.Has("content") && message.Find("content")->IsNull());
+  return true;
+}
+
 Q4T_TEST(chat_message_profile_rejects_invalid_shapes) {
   const std::pair<const char*, const char*> cases[] = {
       {R"([{"role":"user"}])", "messages[0].content"},
       {R"([{"role":"system","content":null}])", "messages[0].content"},
+      {R"([{"role":"user","content":null}])", "messages[0].content"},
+      {R"([{"role":"assistant"}])", "messages[0].content"},
       {R"([{"role":"developer","content":[]}])", "messages[0].content"},
       {R"([{"role":"assistant","tool_calls":[]}])", "messages[0].content"},
       {R"([{"role":"tool","content":42}])", "messages[0].content"},
