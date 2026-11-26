@@ -871,9 +871,10 @@
         "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
       },
       "stored_content_parts_20261126": {
-        "stage": "targeted_cpu_verified",
+        "stage": "native_https_verified",
         "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "business": "evidence/serve-stored-content-parts-20261126/business.json"
       }
     },
     {
@@ -912,7 +913,6 @@
         "existing_evidence_reviewed": true
       },
       "remaining_required": [
-        "Verify actual stored Chat multimodal HTTP projection with its originating model request, SDK, ordered frames, historical assistant text and independent Chat.",
         "Deliver that read projection with an accepted rollback and integrate it on main; reconcile the linked evidence for each A02 exit."
       ],
       "chat_style_parity_20261116": {
@@ -1407,9 +1407,10 @@
         "profiles": "evidence/serve-null-assistant-history-20261126/profiles.json"
       },
       "stored_content_parts_20261126": {
-        "stage": "targeted_cpu_verified",
+        "stage": "native_https_verified",
         "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "business": "evidence/serve-stored-content-parts-20261126/business.json"
       },
       "acceptance_matrix": "SERVE_CHAT_HISTORY_ACCEPTANCE_2026-11-26.md"
     },
@@ -3666,9 +3667,10 @@
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       },
       "stored_content_parts_20261126": {
-        "stage": "targeted_cpu_verified",
+        "stage": "native_https_verified",
         "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
-        "issued": false
+        "issued": false,
+        "business": "evidence/serve-stored-content-parts-20261126/business.json"
       }
     },
     {

@@ -13,4 +13,6 @@
 
 当前存储候选与空助手候选之间，`src/`、`include/` 和构建定义的唯一差异在 `src/server/chat_storage.cpp`。两者共用前述 54 组模板验证，新增读取行为单独验收。Python SDK 3.55.1 默认模式可以读取混合角色页，其可选严格模式对整页施加了仅助手角色的限制。应用可通过 SDK 的原始响应入口，按官方 HTTP schema 校验完整历史。[固定 SDK 结果](evidence/serve-null-assistant-history-20261126/business.json) · [官方消息列表](https://developers.openai.com/api/reference/resources/chat/subresources/completions/subresources/messages/methods/list)
 
-待完成的是存储候选的实际视觉 HTTPS 回读、可回退发行及主线集成。原始视听素材的模型质量和独立语音听感记录继续随对应任务追踪。
+实际视觉 HTTPS 已通过：绿色静态图、蓝色视频、原助手文本、两帧的时间与顺序均已核对。[模型结果与实际历史](evidence/serve-stored-content-parts-20261126/business.json)
+
+待完成的是存储候选的可回退发行及主线集成。原始视听素材的模型质量和独立语音听感记录继续随对应任务追踪。
