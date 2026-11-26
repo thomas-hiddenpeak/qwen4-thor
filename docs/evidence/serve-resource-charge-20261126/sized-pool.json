@@ -1,0 +1,56 @@
+{
+  "stage": "device_observed",
+  "model_starts": 0,
+  "result": {
+    "driver": 13020,
+    "runtime": 13030,
+    "requested_limit": 33554432,
+    "attribute_status": "cudaSuccess",
+    "reported_limit": 33554432,
+    "allocation_size": 25165824,
+    "held": 25165824,
+    "initial_reserved": 33554432,
+    "concurrent_result": "cudaErrorMemoryAllocation",
+    "both_used": 25165824,
+    "both_reserved": 33554432,
+    "ordinary_bytes": 12582912,
+    "pool_with_ordinary": 25165824,
+    "after_free": 0,
+    "retained": 33554432,
+    "trimmed": 0,
+    "reallocated": true,
+    "original_pool_restored": true
+  },
+  "request_denied": true,
+  "observed_backing_within_requested": true,
+  "reported_limit": 33554432,
+  "lease_sha256": "7b95ed30e0f7fa758bc1aa9de769155fe088701e919b9746390a2cc5b4a7b6f1",
+  "source_sha256": "49e5818d57c1cd84a9ecbc2512c8237cd564abb07964adbfa0f50e8b01e8edd5",
+  "binary_sha256": "712e7383eb4f437136f3068bc3027e18359b1ee49f6af4449472d27e1c4fb739",
+  "protected": {
+    "q4t": "0a63eee75c14b2304b4d23efb6154b0c8e27f5d63183b99e0258346bce64ecac",
+    "q4t.release.json": "1dbacec6f324980132588f3d9ba282b5136b9e22ad0a1d93881d2545bcec3ad9",
+    "service/manifest.json": "283ba946ff06f34ca9f6121183e5bcfaca9af9582c082ee272c1de4cabf17ff6",
+    "service.release.json": "1e5b0e752e8cefe3d3321cc2b94f6971c731ea99c18176f73f02537de23bce12",
+    "service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16",
+    "service-native-state/service-publication/policy.json": "92d03821e3b495c024cc4bf273d20409bf8d5ea240dd052945aac9aca02f0de2",
+    "service-native-state/version-selection/policy.json": "f92bfec2fee491a841ace464343c6aa51ecabe1b834bc7120fd152a42d5c34d4"
+  },
+  "whole_device_limit_proved": false,
+  "source": "sized-pool-probe.cpp",
+  "protocol": "one isolated process on Thor, no models; two nonblocking streams; write each allocation fully and verify its final byte; independent ordinary allocation and pool restoration",
+  "previous_attempts": [
+    {
+      "lease_sha256": "09fe1547272f788a9364696c7397c243a699e1a70408bcc1bf72b9252e6465b7",
+      "status": "COMMAND_FAILED",
+      "cause": "private launcher import before CUDA access",
+      "cuda_calls": 0
+    },
+    {
+      "lease_sha256": "ec7138c49dc8b5e357039bafe10a41335146e198983c0cccc53cb60f28117cae",
+      "status": "COMMAND_FAILED",
+      "cause": "private launcher import before CUDA access",
+      "cuda_calls": 0
+    }
+  ]
+}
