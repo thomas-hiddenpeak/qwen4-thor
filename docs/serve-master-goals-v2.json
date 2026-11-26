@@ -6759,7 +6759,7 @@
         "integrated_cpu": "evidence/serve-video-track-grid-20261127/integrated.json"
       },
       "quicktime_active_layers_20261127": {
-        "stage": "first_native_model_refusal_preserved_paired_control_ready",
+        "stage": "native_tls_verified",
         "original": "evidence/serve-video-layer-composition-20261127/baseline.json",
         "targets": [
           "independent enabled track selection",
@@ -6774,7 +6774,8 @@
         "business_controls": "evidence/serve-video-layer-composition-20261127/business-controls.json",
         "handoff_driver": "evidence/serve-video-layer-composition-20261127/handoff-driver.json",
         "first_attempt": "evidence/serve-video-layer-composition-20261127/first-business-attempt.json",
-        "paired_control": "evidence/serve-video-layer-composition-20261127/paired-business-controls.json"
+        "paired_control": "evidence/serve-video-layer-composition-20261127/paired-business-controls.json",
+        "business": "evidence/serve-video-layer-composition-20261127/business.json"
       }
     },
     {
