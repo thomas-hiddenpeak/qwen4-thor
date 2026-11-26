@@ -1,0 +1,170 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 554,
+  "build": {
+    "engine": "8048c6875d4e527a7dbb249abbfcdce2425ec651edbadef2871d481b1aff3f21",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "history": {
+          "uploaded": {
+            "response": "resp_13b78d6fe1e908386936f5f3f6d8af55",
+            "previous": null,
+            "sha256": "d1d3b6c4ed3a65ae837e9b0b00df536ca3f9bf5b805e743495a55e2c88e381f9",
+            "peer": 404
+          },
+          "inline": {
+            "response": "resp_4f3e7c366457f177d999479d0cc9d2b6",
+            "previous": null,
+            "sha256": "e07593ccef9b0b1fc9e87beb8c425ddb35e616df6e7470f20ed931cfbdba55ad",
+            "peer": 404
+          },
+          "replay": {
+            "response": "resp_9ad3ddb3cecf242e951460eba9b5112f",
+            "previous": "resp_13b78d6fe1e908386936f5f3f6d8af55",
+            "sha256": "f5cce23b7e72bb042ad5e249ceedd9c049ef4750c38d9d44f741170ef05cb024",
+            "peer": 404
+          }
+        },
+        "deleted": 404,
+        "restored": null,
+        "saved": {
+          "response": "resp_f60069bfc41ba28e92b263738d386358",
+          "previous": "resp_13b78d6fe1e908386936f5f3f6d8af55",
+          "sha256": "4a40dffdcff65d5b07d6007b0d93d2d565bf28c90869b98906b3e629db44391b",
+          "peer": 404
+        },
+        "colors": {
+          "top_right": "green",
+          "bottom_right": "yellow"
+        },
+        "events": [
+          "response.created",
+          "response.in_progress",
+          "response.output_item.added",
+          "response.content_part.added",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.done",
+          "response.content_part.done",
+          "response.output_item.done",
+          "response.completed"
+        ],
+        "independent_chat": "42"
+      },
+      "seconds": 42.42,
+      "starts": 1,
+      "record_sha256": "c5aa3df34136466d52e8b2c9c4d59950cc74ba584ad152938fb761596db1de03",
+      "receipt_sha256": "78d0d8d9656ae17ecd8953093b8dc204cfc30c71d92912c43135c2a443f21962",
+      "predecessor": "9d1040ded9d883e8e7ea34836bd3f6f45dfc4bb9ee541d7346c2678862c76910"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "history": {
+          "uploaded": {
+            "response": "resp_13b78d6fe1e908386936f5f3f6d8af55",
+            "previous": null,
+            "sha256": "d1d3b6c4ed3a65ae837e9b0b00df536ca3f9bf5b805e743495a55e2c88e381f9",
+            "peer": 404
+          },
+          "inline": {
+            "response": "resp_4f3e7c366457f177d999479d0cc9d2b6",
+            "previous": null,
+            "sha256": "e07593ccef9b0b1fc9e87beb8c425ddb35e616df6e7470f20ed931cfbdba55ad",
+            "peer": 404
+          },
+          "replay": {
+            "response": "resp_9ad3ddb3cecf242e951460eba9b5112f",
+            "previous": "resp_13b78d6fe1e908386936f5f3f6d8af55",
+            "sha256": "f5cce23b7e72bb042ad5e249ceedd9c049ef4750c38d9d44f741170ef05cb024",
+            "peer": 404
+          }
+        },
+        "deleted": 404,
+        "restored": {
+          "response": "resp_f60069bfc41ba28e92b263738d386358",
+          "previous": "resp_13b78d6fe1e908386936f5f3f6d8af55",
+          "sha256": "4a40dffdcff65d5b07d6007b0d93d2d565bf28c90869b98906b3e629db44391b",
+          "peer": 404
+        },
+        "saved": {
+          "response": "resp_ac3b934bbd5e2aa46d957070af27ad69",
+          "previous": "resp_13b78d6fe1e908386936f5f3f6d8af55",
+          "sha256": "14583f93c47d07bcf52f2071d89dc5c7108fc141e1f71704d5953b235e9b24a1",
+          "peer": 404
+        },
+        "colors": {
+          "top_right": "green",
+          "bottom_right": "yellow"
+        },
+        "events": [
+          "response.created",
+          "response.in_progress",
+          "response.output_item.added",
+          "response.content_part.added",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.delta",
+          "response.output_text.done",
+          "response.content_part.done",
+          "response.output_item.done",
+          "response.completed"
+        ],
+        "independent_chat": "42"
+      },
+      "seconds": 44.056,
+      "starts": 1,
+      "record_sha256": "b5ee96a9a4deb6a783661eaecf75cfdb3f4cca962408c73ced1fe94a66878786",
+      "receipt_sha256": "82f44c587608308e01bfefcdcfee6907d56855888cc5c48a0923042012bd6c27",
+      "predecessor": "a9730796f469417ed76b068f67b07ee28aa1290c1f412f746d249fbbd3c03637"
+    }
+  },
+  "business_evidence": "222f3ec2ec03aa7aa390efd81c7a4b9a6eed50327d0d1ac2be3cb4d6057021f3",
+  "lease_exit": "0bcdec4fb2da381d35075e26fb1d9238c4e01a02d53d632c5308d0f27277396d",
+  "acceptance": "0fae97bc1684b6ce71276e8f138b59cc6c40038bb2068f81a59282ab0ca1fa95",
+  "qualification": "2fcbabebd7ceebae41ca1150bad44937f90a31af8ef0d12ad6081c7465a9a874",
+  "default_preserved": true
+}

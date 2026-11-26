@@ -1,0 +1,96 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 552,
+  "build": {
+    "engine": "73cb5d651a8053287ce21506da5b14dc81f7fff8e56d43f1c1aad8b216544821",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "original": "resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9",
+        "follow": "resp_ebb5edef5e7e2c50c99e871ad06fc33c",
+        "child": "call_p_55b617cc35d62afe173af2f387f94c16849830a6e91245479c44d1d0",
+        "child_item": "fc_1399633c2456b875ad9f79e021931a3ce038800b03954b0420d747b2",
+        "result": "552:219",
+        "saved": {
+          "id": "resp_0047f9f427679b8f86b873420ce78626",
+          "pending": "resp_f5d5ecde85efe631da16ce8df2783ac1",
+          "response_sha256": "e329471d1a4eeafd46590f08a048d20329cd1819978a9ba724dd38cee60f3e34",
+          "inputs_sha256": "2f1ed76e4d3c1aa9c21bb25fb4bf670f90bdeeb629383249250738f567af3f9c"
+        },
+        "restored": null,
+        "peer": 404,
+        "independent_chat": "720041",
+        "wire_sha256": {
+          "original": "a9c4d44a181ec6d338ce2530b75ed33ec69a67b6a541b95f2e528214db2268c9",
+          "pending_548": "9235ec904c38e0f757595bf5ecca437d19abdc8d8c675bb909a369f32e6e0a6b",
+          "answer_548": "df42d3b53bb177ae9dcddaf8b26354ae3612f3c11c481f3fde10ac9b27fedd1a",
+          "pending_550": "ef21d4a1ed2360e24083f60ffbeea7892236713c9a071d1eae2c0155742fb1e0",
+          "answer_550": "173fd207969a279c915fb91714dc169fbf41dd9a238bb57a7b7d65a881dcd9c3",
+          "branch": "6c7dc2acbff7238a08f25dff3af9691c555dc4289e96a2223ea851507431d28a",
+          "create": "e329471d1a4eeafd46590f08a048d20329cd1819978a9ba724dd38cee60f3e34",
+          "current_response": "e329471d1a4eeafd46590f08a048d20329cd1819978a9ba724dd38cee60f3e34",
+          "current_inputs": "2f1ed76e4d3c1aa9c21bb25fb4bf670f90bdeeb629383249250738f567af3f9c",
+          "independent": "b6317b5340e1a599573513695015120a6d0dd8ce669d8c97fc3fddfdda7cf752"
+        },
+        "sdk": "3.55.1"
+      },
+      "seconds": 45.791,
+      "starts": 1,
+      "record_sha256": "9d1040ded9d883e8e7ea34836bd3f6f45dfc4bb9ee541d7346c2678862c76910",
+      "receipt_sha256": "511f9ee7939995b3cfcc2b9b004dec089529f2847e51428f23891db7649530d5",
+      "predecessor": "a7c560d2d82131d5c12af7fa9a10596c1fe14c27a4f535c27854d8f41ca6b72a"
+    },
+    "light": {
+      "sdk": {
+        "original": "resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9",
+        "follow": "resp_ebb5edef5e7e2c50c99e871ad06fc33c",
+        "child": "call_p_55b617cc35d62afe173af2f387f94c16849830a6e91245479c44d1d0",
+        "child_item": "fc_1399633c2456b875ad9f79e021931a3ce038800b03954b0420d747b2",
+        "result": "552:219",
+        "saved": {
+          "id": "resp_cfe2b0b96b694d4057f6a18f7c97101d",
+          "pending": "resp_abe06ef2d78f15b469f433116964c606",
+          "response_sha256": "6e4f4c64fb7599236e886b9b29e0293dd5a113931295ddea56fe850165863302",
+          "inputs_sha256": "3b93434fc8bd4c5b257e78c6c5ddc012c8701565ba8c5fc1657522dbfdeb397c"
+        },
+        "restored": {
+          "id": "resp_0047f9f427679b8f86b873420ce78626",
+          "pending": "resp_f5d5ecde85efe631da16ce8df2783ac1",
+          "response_sha256": "e329471d1a4eeafd46590f08a048d20329cd1819978a9ba724dd38cee60f3e34",
+          "inputs_sha256": "2f1ed76e4d3c1aa9c21bb25fb4bf670f90bdeeb629383249250738f567af3f9c"
+        },
+        "peer": 404,
+        "independent_chat": "720041",
+        "wire_sha256": {
+          "original": "a9c4d44a181ec6d338ce2530b75ed33ec69a67b6a541b95f2e528214db2268c9",
+          "pending_548": "9235ec904c38e0f757595bf5ecca437d19abdc8d8c675bb909a369f32e6e0a6b",
+          "answer_548": "df42d3b53bb177ae9dcddaf8b26354ae3612f3c11c481f3fde10ac9b27fedd1a",
+          "pending_550": "ef21d4a1ed2360e24083f60ffbeea7892236713c9a071d1eae2c0155742fb1e0",
+          "answer_550": "173fd207969a279c915fb91714dc169fbf41dd9a238bb57a7b7d65a881dcd9c3",
+          "branch": "2478807928dfd11df4e357e6c21625d82cdbdee4abf286044bd5ed7174430069",
+          "restored_response": "e329471d1a4eeafd46590f08a048d20329cd1819978a9ba724dd38cee60f3e34",
+          "restored_inputs": "2f1ed76e4d3c1aa9c21bb25fb4bf670f90bdeeb629383249250738f567af3f9c",
+          "create": "6e4f4c64fb7599236e886b9b29e0293dd5a113931295ddea56fe850165863302",
+          "current_response": "6e4f4c64fb7599236e886b9b29e0293dd5a113931295ddea56fe850165863302",
+          "current_inputs": "3b93434fc8bd4c5b257e78c6c5ddc012c8701565ba8c5fc1657522dbfdeb397c",
+          "independent": "7920b67b21a7b1cb48de91506cb3f3927e51c8379d8100492faba4cc16faf095"
+        },
+        "sdk": "3.55.1"
+      },
+      "seconds": 41.025,
+      "starts": 1,
+      "record_sha256": "a9730796f469417ed76b068f67b07ee28aa1290c1f412f746d249fbbd3c03637",
+      "receipt_sha256": "dbd1d983f25d40d4f42885e5ca1d248b2f5e76081962b5357af4b628563b5820",
+      "predecessor": "89c6d8e36fd13e8a99b0e228672e88d72a32a89f744a034f0ee6a3b9f2234124"
+    }
+  },
+  "business_evidence": "9aab1fd349aa6c24392fe07ccbb5f2affc2cb7d42d8074c6cb0a23e7d61d373a",
+  "lease_exit": "0272d55efeb6e13826e7a322f4af51de6d974653b71fa0e15ad3c4b2792707b8",
+  "acceptance": "03bef9da9c1653fb39260abd4915e3afee4e4979264b0bc9653d1dfa1cf86592",
+  "qualification": "5a3a318aab2fae05495624af24dda4e2233b82e7fe05193aa9dbdf316fb92d76",
+  "default_preserved": true
+}
