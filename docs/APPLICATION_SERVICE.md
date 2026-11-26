@@ -15,7 +15,7 @@ q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖�
 
 Python 3.42.1、3.55.1 与 Node 7.47.0 均可通过类型化方法发出冻结范围中 231 组 HTTP 动词和路径。Python 2.8.1 中有 107 项缺少对应的方法，另有 1 项使用历史路径。逐项表包括两个语言的调用名称。该表只检查 SDK 实际发出的请求；服务端支持状态与业务验收另见发行回执。[逐方法对照](evidence/serve-sdk-routes-20261126/methods.json)
 
-候选版本以相同的客户身份和父级 Eval 校验处理两条取消路径。Python 2.8.1 在运行资源本身发送 POST，当前 SDK 在该资源的 `/cancel` 子路径发送 POST。候选的实际 TLS 业务验收见阶段记录。[验证记录](evidence/serve-sdk-routes-20261126/cpu.json)
+候选版本以相同的客户身份和父级 Eval 校验处理两条取消路径。Python 2.8.1 在运行资源本身发送 POST，当前 SDK 在该资源的 `/cancel` 子路径发送 POST。两代客户端在原生 TLS 上对同一运行完成了取消与复查，另一客户读取或取消均为 404。[HTTP 记录](evidence/serve-sdk-routes-20261126/business.json)
 
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |
 |---|---|---|
