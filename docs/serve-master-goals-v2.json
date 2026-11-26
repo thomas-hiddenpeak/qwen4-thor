@@ -3203,9 +3203,10 @@
         "device_status": "summary_budget_then_explicit_refusal"
       },
       "compact_file_replay_20261127": {
-        "state": "native_cpu_preservation_and_replay_verified",
+        "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Actual TLS video answer following standalone compaction"
+        "remaining": "managed recovery and stopped publication",
+        "business": "evidence/serve-compact-window-identities-20261127/video-business.json"
       }
     },
     {
@@ -6865,9 +6866,10 @@
         "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json"
       },
       "compact_file_replay_20261127": {
-        "state": "native_cpu_preservation_and_replay_verified",
+        "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Actual TLS video answer following standalone compaction"
+        "remaining": "managed recovery and stopped publication",
+        "business": "evidence/serve-compact-window-identities-20261127/video-business.json"
       }
     },
     {
@@ -12299,9 +12301,10 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "compact_file_replay_20261127": {
-        "state": "native_cpu_preservation_and_replay_verified",
+        "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Actual TLS video answer following standalone compaction"
+        "remaining": "managed recovery and stopped publication",
+        "business": "evidence/serve-compact-window-identities-20261127/video-business.json"
       }
     },
     {
