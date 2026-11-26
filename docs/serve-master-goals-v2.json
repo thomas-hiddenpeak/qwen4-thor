@@ -909,12 +909,13 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_tls_verified",
+        "status": "capacity_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "release qualification",
+        "remaining": "managed recovery and release",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
-        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json"
       }
     },
     {
@@ -3161,12 +3162,13 @@
         "delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_tls_verified",
+        "status": "capacity_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "release qualification",
+        "remaining": "managed recovery and release",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
-        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json"
       },
       "tool_output_sdk_range_20261127": {
         "state": "reproduced",
@@ -9217,13 +9219,14 @@
         "delivery": "evidence/serve-video-layer-composition-20261127/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_tls_verified",
+        "status": "capacity_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "release qualification",
+        "remaining": "managed recovery and release",
         "async_disconnect": "docs/evidence/serve-response-cache-retention-20261127/async-cursor.json",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
-        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json"
       },
       "tool_output_sdk_range_20261127": {
         "state": "reproduced",

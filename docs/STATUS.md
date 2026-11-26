@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主、轻两个配置分别启动一次模型。两侧用不同版本 SDK 重新打开已封存的两个响应，并各自查询发行记录。轻配置用新版客户端接过主配置由旧版创建的响应，核对了完整正文和事件历史。两个容量记录均可还原各自的已发行前驱。下一步验证托管故障后的相同交接。[容量验收](evidence/serve-response-cache-retention-20261127/profiles.json)
+
 三版严格 Python SDK 读取了五份真实工具响应。普通函数的 JSON、成功 MCP 的 JSON 和 SSE 均通过。原普通函数是未开启流的后台请求，重放按合同返回 400。2.8.1 在失败 MCP 的错误对象和程序化工具类型上仍无法解析。3.42.1、3.55.1 均通过相应 JSON 和 SSE。旧版错误字段保留全部内容转为 JSON 字符串后，独立 SDK 实验可读回原错误和 38 个事件，原生实现待补。[工具兼容检查](evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json)
 
 缓存兼容容量驱动已完整走过两次独立启动的 CPU HTTP 服务。两侧使用真实的两个 SDK 和已保存的模型响应；新版客户端在第二个进程内读回第一侧新增的响应，正文与事件摘要一致。四个更改归属、事件或交接信息的反例均被拒绝。新回答由测试夹具固定返回 560，后续仍需设备模型回答。[CPU HTTP 回执](evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json)
