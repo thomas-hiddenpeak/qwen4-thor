@@ -11,6 +11,7 @@ from tools.serve_responses import approval_identifiers_profiles as approval_ids
 from tools.serve_responses import local_shell_profiles as local_shell
 from tools.serve_responses import client_patch_profiles as patch
 from tools.serve_responses import client_shell_profiles as shell
+from tools.serve_responses import video_track_grid_profiles as grid
 from tools.serve_responses import program_fork_profiles as forks
 from tools.serve_responses import conversation_compaction_profiles as compact_profiles
 from tools.serve_preflight import null_history_profiles
@@ -171,6 +172,9 @@ class Handoff:
 
 
 def handoff(plan):
+    if grid.KEY in plan:
+        return Handoff(grid.KEY, grid.RELEASE, grid.ACTOR, reuse.GRID_RECEIPT,
+                       reuse.FORK_RECEIPT, reuse.FORK_REVIEWED, grid.check)
     if forks.KEY in plan:
         return Handoff(forks.KEY, forks.RELEASE, forks.ACTOR, reuse.FORK_RECEIPT,
                        reuse.CLIENT_SHELL_RECEIPT, reuse.CLIENT_SHELL_REVIEWED, forks.check)
@@ -269,6 +273,8 @@ def verify(phase, plan, capabilities):
         expected['responses'] = reuse.client_patch_capability(expected['responses'])
     if spec.key == local_shell.KEY:
         expected['responses'] = reuse.local_shell_capability(expected['responses'])
+    if spec.key == grid.KEY:
+        expected['file_inputs'] = reuse.track_grid_file_inputs(expected['file_inputs'])
     if spec.key == video_clip_profiles.REGION_KEY:
         expected['file_inputs'] = reuse.region_file_inputs(expected['file_inputs'])
     if spec.key == video_clip_profiles.KEY:
@@ -295,12 +301,14 @@ def business(stage, capabilities):
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
     if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY,
-                    parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY, local_shell.KEY, patch.KEY, shell.KEY, forks.KEY):
+                    parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY, local_shell.KEY, patch.KEY, shell.KEY, forks.KEY, grid.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
         if spec.key == tool_map_profiles.KEY:
             module, wire = tool_map_profiles, 'tool-map-wire'
+        elif spec.key == grid.KEY:
+            module, wire = grid, 'video-track-grid-wire'
         elif spec.key == forks.KEY:
             module, wire = forks, 'program-fork-wire'
         elif spec.key == shell.KEY:

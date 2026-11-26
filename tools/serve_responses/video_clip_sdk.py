@@ -166,6 +166,17 @@ def main():
                 summary['restored'] = streamed('restored', dict(previous_response_id=restored['response'],
                     input='For the earlier video: '+question), left_colors)
                 transfer['restored'] = restored
+        if plan.get('track_grid'):
+            transfer['resources'] = {}
+            for label, reply in summary.items():
+                raw = owner.responses.with_raw_response.retrieve(reply['response'])
+                parsed = raw.parse()
+                assert parsed.id == reply['response'] and parsed.status == 'completed'
+                assert json.loads(parsed.output_text) == reply['colors']
+                data = raw.http_response.content
+                (capture/(label+'-response.json')).write_bytes(data)
+                transfer['resources'][label] = hashlib.sha256(data).hexdigest()
+            assert transfer['resources']['uploaded'] == transfer['saved']['resource_sha256']
         try:owner.responses.input_tokens.count(model=common['model'],input=content(dict(
             filename='sample-c.mov',file_data='data:video/quicktime;base64,'+base64.b64encode(invalid).decode())))
         except openai.BadRequestError as err:assert err.code=='invalid_file_video',err.code
