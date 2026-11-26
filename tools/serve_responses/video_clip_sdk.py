@@ -7,7 +7,6 @@ import ssl
 import struct
 import sys
 
-import httpx
 import openai
 
 
@@ -28,7 +27,7 @@ def main():
     capture = Path(plan['capture'])
     capture.mkdir(mode=0o700)
     context = ssl.create_default_context(cafile=plan['certificate'])
-    with httpx.Client(verify=context, trust_env=False) as client:
+    with openai.DefaultHttpxClient(verify=context, trust_env=False) as client:
         def sdk(key):
             return openai.OpenAI(base_url=plan['base'], api_key=key, http_client=client,
                                  max_retries=0, timeout=60, _strict_response_validation=True)
