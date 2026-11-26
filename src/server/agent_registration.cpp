@@ -299,10 +299,12 @@ ObjectReply HandleAgentRegistration(ObjectStore& objects,
     return result;
   }
   if (split != target.npos) return Invalid("Unexpected query", "query");
-  Json input;
+  auto input = Object();
   if (method == "POST") {
-    auto parsed = io::ParseJson(body, &input, true, kSchemaJsonLimits);
-    if (!parsed) return Invalid(parsed.message(), "body");
+    if (collection || !body.empty()) {
+      auto parsed = io::ParseJson(body, &input, true, kSchemaJsonLimits);
+      if (!parsed) return Invalid(parsed.message(), "body");
+    }
     auto checked =
         Validate(input, collection ? AgentRegistrationShape::kCreate
                                    : AgentRegistrationShape::kUpdate);

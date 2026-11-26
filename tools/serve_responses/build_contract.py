@@ -1005,7 +1005,9 @@ def add_openapi(paths, response, error):
         if body:
             optional = path in ('/v1/threads', '/v1/conversations', '/v1/responses/input_tokens', '/v1/vaults',
                                 '/v1/agents/environments/templates')
-            operation['requestBody'] = dict(required=not optional and body != 'webhook_rotate',
+            optional_object = body in ('agents_update', 'agent_session_update',
+                                       'hosted_template_update', 'webhook_update', 'webhook_rotate')
+            operation['requestBody'] = dict(required=not (optional or optional_object),
                 content={'application/json': dict(schema=nullable(external(body))
                     if optional else external(body))})
         if body in ('skill_upload','skill_version_upload'):

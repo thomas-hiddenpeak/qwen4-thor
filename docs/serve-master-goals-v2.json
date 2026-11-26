@@ -852,6 +852,18 @@
         "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
         "revision": 526,
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "optional_resource_updates_20261126": {
+        "stage": "targeted_cpu",
+        "methods": [
+          "/v1/agents/{agent_id}",
+          "/v1/agents/sessions/{session_id}",
+          "/v1/agents/environments/templates/{environment_template_id}",
+          "/v1/webhook_endpoints/{webhook_endpoint_id}"
+        ],
+        "receipt": "evidence/serve-optional-resource-updates-20261126/cpu.json",
+        "device_https_pending": true,
+        "release_pending": true
       }
     },
     {

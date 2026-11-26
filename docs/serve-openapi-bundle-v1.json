@@ -8538,7 +8538,7 @@
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "agents_update",
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -9361,7 +9361,7 @@
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "hosted_template_update",
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -11811,7 +11811,7 @@
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "webhook_update",
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
@@ -13103,7 +13103,7 @@
         "x-q4t-query-contract": "no query",
         "x-q4t-body-contract": "agent_session_update",
         "requestBody": {
-          "required": true,
+          "required": false,
           "content": {
             "application/json": {
               "schema": {
