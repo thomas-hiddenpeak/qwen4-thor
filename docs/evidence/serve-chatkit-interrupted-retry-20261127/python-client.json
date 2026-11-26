@@ -1,0 +1,37 @@
+{
+  "archived_fixture_sha256": "84e79707b7c580e6ae00c5aa50ae9ad2a7339d704a8a66bc9a5624d62c0a147b",
+  "profiles": [
+    {
+      "sdk": "3.55.1",
+      "thread": "cthr_012a3e710eb70612679ae1f80408e208",
+      "visible": [
+        "item_9439973d901c82a23aefc245259b247c",
+        "msg_1e4652ecafd4a6509ddc73f120ba7217"
+      ],
+      "pages_per_order": 2,
+      "peer": 404,
+      "deleted": 404,
+      "items_sha256": "e410b5efcce63cee8d54197b607e7cb762cc0c07208158ca90161c20593a7f3b"
+    },
+    {
+      "sdk": "3.55.1",
+      "thread": "cthr_3a4f211fefd08e8a4cf2319b8a4f245a",
+      "visible": [
+        "item_4f22299f0b1ab0997616e91f339a1388",
+        "msg_d47c056dba608d0645ab8f1c781814f6"
+      ],
+      "pages_per_order": 2,
+      "peer": 404,
+      "deleted": 404,
+      "items_sha256": "02ce6c5135b9e84b9dff01b9e2826efaf4fb22334f67ae82b87134487577addd"
+    }
+  ],
+  "scope": "Archived genuine thread items, emulated cursor and 404; no live service",
+  "rejected_per_thread": [
+    "repeated page",
+    "invalid item type"
+  ],
+  "stage": "cpu_verified",
+  "actor_sha256": "9b1bd1a5a53b06630e38dc297b35289e66442f4b7f243401fbc62ad4240d3b31",
+  "actual_native_accepted": false
+}

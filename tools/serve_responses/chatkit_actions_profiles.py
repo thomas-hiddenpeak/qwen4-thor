@@ -11,6 +11,7 @@ from tools.serve_responses import approval_identifiers_profiles as approval_ids
 from tools.serve_responses import local_shell_profiles as local_shell
 from tools.serve_responses import client_patch_profiles as patch
 from tools.serve_responses import client_shell_profiles as shell
+from tools.serve_responses import chatkit_interrupted_retry_profiles as interrupted
 from tools.serve_responses import video_track_grid_profiles as grid
 from tools.serve_responses import program_fork_profiles as forks
 from tools.serve_responses import conversation_compaction_profiles as compact_profiles
@@ -172,6 +173,9 @@ class Handoff:
 
 
 def handoff(plan):
+    if interrupted.KEY in plan:
+        return Handoff(interrupted.KEY, interrupted.RELEASE, interrupted.ACTOR, reuse.INTERRUPTED_RETRY_RECEIPT,
+                       reuse.GRID_RECEIPT, reuse.GRID_REVIEWED, interrupted.check)
     if grid.KEY in plan:
         return Handoff(grid.KEY, grid.RELEASE, grid.ACTOR, reuse.GRID_RECEIPT,
                        reuse.FORK_RECEIPT, reuse.FORK_REVIEWED, grid.check)
@@ -344,6 +348,11 @@ def business(stage, capabilities):
         package.save(stage.out / spec.receipt, row)
         verify(stage.out, plan, capabilities)
         return
+    if spec.key == interrupted.KEY:
+        command = plan['command']
+        params['interruptedRetry'] = dict(release=str(interrupted.RELEASE),
+                                          capture=str(stage.out/'interrupted-retry-wire'),
+                                          store=command[command.index('--object-store-dir') + 1])
     if spec.actor == frame_profiles.ACTOR:
         params.update(frame_profiles.sdk_parameters(stage))
     if spec.actor == visual_profiles.ACTOR:

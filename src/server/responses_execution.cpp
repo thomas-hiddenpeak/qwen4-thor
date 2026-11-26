@@ -322,7 +322,7 @@ ObjectReply ResponsesExecution::Prepare(
       return Error(413, "mcp_credential_source_capacity", identity.message());
   }
   auto resolved = state_.Resolve(envelope_, access_, &plan_, cancelled,
-                                 agent_session_id_, chatkit_thread);
+                                 agent_session_id_, chatkit_thread, retry);
   if (!resolved.ok()) return resolved;
   if (retry) {
     auto restored = chatkit_detail::ApplyRetryHistory(*retry, &plan_);
