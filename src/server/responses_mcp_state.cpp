@@ -710,9 +710,11 @@ ObjectReply ResponsesMcpState::Propose(
     const auto* call = program_origin->Find("call");
     const auto* after = call ? call->Find("after_results") : nullptr;
     const auto* positions = program_origin->GetArray("positions");
+    const auto* context = program_origin->Find("result_context");
     if (caller != "programmatic" ||
         !InputFields(*program_origin,
-                     {"program_id", "call_id", "index", "call", "positions"},
+                     {"program_id", "call_id", "index", "call", "positions",
+                      "result_context"},
                      &param, "program") ||
         !program_origin->GetString("program_id").starts_with("prog_") ||
         !ValidId(program_origin->GetString("program_id")) ||
@@ -730,10 +732,14 @@ ObjectReply ResponsesMcpState::Propose(
         after->AsInt() > index->AsInt() || !positions ||
         positions->array.size() > 64 ||
         static_cast<size_t>(index->AsInt()) >= positions->array.size() ||
+        (context && (after->AsInt() == 0 || !context->IsString() ||
+                     context->str.size() != 64 ||
+                     context->str.find_first_not_of("0123456789abcdef") !=
+                         std::string::npos)) ||
         !Same(positions->array[index->AsInt()], *after) ||
-        reserved_id !=
-            ResponsesMcpProgramCallId(program_origin->GetString("call_id"),
-                                      index->AsInt()))
+        reserved_id != ResponsesMcpProgramCallId(
+                           program_origin->GetString("call_id"), index->AsInt(),
+                           context ? context->str : ""))
       return Invalid("MCP program invocation differs from its owned origin");
     for (size_t i = 0; i < positions->array.size(); ++i)
       if (!IsInputInteger(positions->array[i]) ||

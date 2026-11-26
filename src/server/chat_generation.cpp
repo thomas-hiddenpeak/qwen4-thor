@@ -2032,7 +2032,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         ? request_id + "_" + detail::NewRequestId("round_")
         : sampling.choices == 1 ? request_id
                                 : request_id + "_choice_" + std::to_string(choice_index);
-    if (responses) response_parser.EmitToolAfterValidation(kApplyPatchToolName);
+    if (responses) {
+      response_parser.EmitToolAfterValidation(kApplyPatchToolName);
+      response_parser.EmitToolAfterValidation(kShellToolName);
+    }
     s = response_parser.Init(
         req, prompt, call_scope,
         (collect_chat && !responses) || compaction_step || moderation_step,

@@ -19,7 +19,8 @@ Status ValidateResponsesAllowedCallers(const io::Json& definition,
 bool ResponsesToolAllows(const io::Json& definition, std::string_view caller);
 std::string ResponsesMcpProgramNamespace(std::string_view server_label);
 std::string ResponsesMcpProgramCallId(std::string_view program_call_id,
-                                      size_t index);
+                                      size_t index,
+                                      std::string_view result_context = {});
 io::Json NativeResponsesProgramDefinition(
     const io::Json& active_tools, bool parallel = true,
     const std::vector<ResponsesMcpBinding>* mcp = nullptr);
@@ -40,6 +41,9 @@ struct ResponsesProgramState {
   io::Json worker_input;
   io::Json terminal;
   std::vector<io::Json> calls;
+  // Entry n binds the first n+1 results actually delivered to the VM.
+  std::vector<std::string> result_contexts;
+  bool legacy_child_ids = false;
   size_t input_index = 0;
 };
 

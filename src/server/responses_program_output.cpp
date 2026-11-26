@@ -109,10 +109,10 @@ Status ResponsesOutput::AppendProgramItems(const io::Json& items,
     const auto type = item.GetString("type");
     if (type != "program" && type != "program_output" &&
         type != "function_call" && type != "custom_tool_call" &&
-        type != "apply_patch_call")
+        type != "apply_patch_call" && type != "shell_call")
       return Status::Fail("Invalid program output item");
     if ((type == "function_call" || type == "custom_tool_call" ||
-         type == "apply_patch_call") &&
+         type == "apply_patch_call" || type == "shell_call") &&
         (!item.Find("caller") ||
          item.Find("caller")->GetString("type") != "program" ||
          item.GetString("status") != "completed"))
@@ -121,15 +121,14 @@ Status ResponsesOutput::AppendProgramItems(const io::Json& items,
     auto status = ValidateResponsesItemShape(ResponsesPublicValue(item),
                                              ResponsesItemShape::kOutput,
                                              &error, "program");
-    if (status) status = Charge(OutputJson(item).size() + 8 * sizeof(io::Json));
+    if (status) status = ChargeItem(item);
     if (!status) return status;
   }
   for (const auto& item : items.array) {
     const auto index = Items().array.size();
     Items().array.push_back(item);
     call_indices_.push_back(std::numeric_limits<size_t>::max());
-    Event("response.output_item.added",
-          Object({{"output_index", Number(index)}, {"item", item}}), wire);
+    EmitItemAdded(index, wire);
     if (item.GetString("type") == "program") {
       // Program has no status field in the frozen SDK shape.
       Event("response.output_item.done",

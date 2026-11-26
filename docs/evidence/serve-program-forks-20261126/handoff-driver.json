@@ -1,0 +1,34 @@
+{
+  "stage": "handoff_driver_cpu",
+  "issued": false,
+  "modules": {
+    "tools/serve_responses/program_fork_profiles.py": "3f84c4b651eca1146a358299f07865f8bce0cbada0a2c836e6c817840e6fc556",
+    "tools/serve_responses/program_fork_handoff_sdk.py": "8daca01175c745d797ebf3f570b380e48cb0d09d29da2fb91e33dd028ba64815",
+    "tools/serve_responses/test_program_fork_profiles.py": "adfcf540ea7f68c96cfddc3237aca7898c14128f843a4a05f98a6d41020c51bb",
+    "tools/serve_live/profile_qualification.py": "1f8bc20fb1b32009ebc181a2fdd8f2ebd66528fd3431f56dce99678c6d09ecf4",
+    "tools/serve_live/profile_acceptance.py": "1b0a2a50bb8cdf0c1faa03bfd3327077539d4af1f1031c74877366c7c642ae41",
+    "tools/serve_responses/chatkit_actions_profiles.py": "38d450033131d27328c657645285adda678813d7db42a0a6d7168779413506b0",
+    "tools/serve_recovery/profile_live_reuse.py": "11cae8fb56caf412d8acc7c086ade302e042f016d76f9898148aa2a737dfeba4"
+  },
+  "previous_records": {
+    "primary": {
+      "original": "a7c560d2d82131d5c12af7fa9a10596c1fe14c27a4f535c27854d8f41ca6b72a",
+      "reversible": true,
+      "missing_predecessors_rejected": 2,
+      "capability_substitution_rejected": true
+    },
+    "light": {
+      "original": "89c6d8e36fd13e8a99b0e228672e88d72a32a89f744a034f0ee6a3b9f2234124",
+      "reversible": true,
+      "missing_predecessors_rejected": 2,
+      "capability_substitution_rejected": true
+    }
+  },
+  "cpu_tests": 7,
+  "log_sha256": "e4c48823122eb2606a5f221e73b989825a67e413a4145cd2d8d14233d89850d8",
+  "audit_mutations": 40,
+  "pending": [
+    "native original store",
+    "capacity takeover and managed recovery"
+  ]
+}

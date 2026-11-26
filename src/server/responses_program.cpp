@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <ctime>
+#include <optional>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -64,10 +65,35 @@ Json Caller(const Json& program) {
   return Object(
       {{"type", String("program")}, {"caller_id", *program.Find("call_id")}});
 }
-std::string CallId(const Json& program, size_t index) {
-  return "call_p_" +
-         Digest(program.GetString("call_id") + ':' + std::to_string(index))
-             .substr(0, 56);
+std::string InvocationDigest(std::string_view parent, size_t index,
+                             std::string_view context) {
+  auto input = std::string(parent) + ':' + std::to_string(index);
+  if (!context.empty()) {
+    input += ':';
+    input += context;
+  }
+  return Digest(input).substr(0, 56);
+}
+
+void AddResult(ResponsesProgramState* state, size_t index, Json value) {
+  auto entry = Object({{"index", Number(index)}, {"value", std::move(value)}});
+  // The VM can observe object insertion order and the sign of zero.
+  // Bind the same JSON encoding that its worker parses.
+  auto identity = Digest(OutputJson(entry));
+  const auto& previous = state->result_contexts;
+  state->result_contexts.push_back(
+      previous.empty() ? std::move(identity)
+                       : Digest(previous.back() + ':' + identity));
+  Field(state->worker_input, "results").array.push_back(std::move(entry));
+}
+
+std::optional<std::string_view> ResultContext(
+    const ResponsesProgramState& state, const Json& call) {
+  const auto count = call.GetInt("after_results", 0);
+  if (count < 0 || static_cast<size_t>(count) > state.result_contexts.size())
+    return std::nullopt;
+  if (!count) return std::string_view{};
+  return state.result_contexts[count - 1];
 }
 const Json* FindTool(const Json& tools, std::string_view key) {
   for (const auto& tool : tools.array)
@@ -98,18 +124,36 @@ ObjectReply Shape(const Json& item, const std::string& path) {
   return status ? ObjectReply{} : Invalid(status.message(), error.param);
 }
 Json Child(const Json& program, const Json& tool, const Json& call,
-           size_t index, const Json* positions = nullptr) {
-  if (tool.GetString("type") == "mcp")
+           size_t index, std::string_view context,
+           const Json* positions = nullptr) {
+  if (tool.GetString("type") == "mcp") {
+    auto origin = Object({{"program_id", *program.Find("id")},
+                          {"call_id", *program.Find("call_id")},
+                          {"index", Number(index)},
+                          {"call", call},
+                          {"positions", positions ? *positions : Array()}});
+    if (!context.empty())
+      Set(&origin, "result_context", String(std::string(context)));
     return Object({{"type", String(kResponsesProgramMcpIntent)},
                    {"id", String(ResponsesMcpProgramCallId(
-                              program.GetString("call_id"), index))},
-                   {"origin", Object({{"program_id", *program.Find("id")},
-                                      {"call_id", *program.Find("call_id")},
-                                      {"index", Number(index)},
-                                      {"call", call},
-                                      {"positions",
-                                       positions ? *positions : Array()}})}});
-  const auto call_id = CallId(program, index);
+                              program.GetString("call_id"), index, context))},
+                   {"origin", std::move(origin)}});
+  }
+  const auto call_id =
+      "call_p_" +
+      InvocationDigest(program.GetString("call_id"), index, context);
+  if (tool.GetString("type") == "shell") {
+    Json action;
+    if (!ParseResponsesShellAction(call.GetString("arguments"), &action))
+      return {};
+    return Object({{"id", String("sh_" + Digest(call_id).substr(0, 56))},
+                   {"type", String("shell_call")},
+                   {"call_id", String(call_id)},
+                   {"status", String("completed")},
+                   {"action", std::move(action)},
+                   {"environment", Object({{"type", String("local")}})},
+                   {"caller", Caller(program)}});
+  }
   if (tool.GetString("type") == "apply_patch") {
     Json operation;
     if (!io::ParseJson(call.GetString("arguments"), &operation, true,
@@ -147,12 +191,14 @@ ObjectReply CallsContract(const ResponsesProgramState& program,
     if (!tool) return Invalid("Program called a tool outside its authority");
     const auto& definition = *tool->Find("definition");
     const auto param = "program.calls[" + std::to_string(i) + ']';
-    if (tool->GetString("type") == "apply_patch") {
-      const auto item = Child(program.program, *tool, call, i);
+    if (tool->GetString("type") == "apply_patch" ||
+        tool->GetString("type") == "shell") {
+      const auto item = Child(program.program, *tool, call, i, {});
       ChatPlanError error;
       if (!ValidateResponsesItemShape(item, ResponsesItemShape::kOutput, &error,
                                       param))
-        return Invalid("Invalid program patch operation", param);
+        return Invalid(
+            "Invalid program " + tool->GetString("type") + " operation", param);
     } else if (tool->GetString("type") == "function" ||
                tool->GetString("type") == "mcp") {
       Json arguments;
@@ -178,10 +224,9 @@ ObjectReply CallsContract(const ResponsesProgramState& program,
 }  // namespace
 
 std::string ResponsesMcpProgramCallId(std::string_view program_call_id,
-                                      size_t index) {
-  return "mcp_p_" +
-         Digest(std::string(program_call_id) + ':' + std::to_string(index))
-             .substr(0, 56);
+                                      size_t index,
+                                      std::string_view result_context) {
+  return "mcp_p_" + InvocationDigest(program_call_id, index, result_context);
 }
 
 Status ValidateResponsesAllowedCallers(const Json& definition,
@@ -233,13 +278,20 @@ ObjectReply CreateResponsesProgram(
   const auto add = [&](const Json& tool, const std::string& space) -> Status {
     auto checked = ValidateResponsesAllowedCallers(tool, &error, "tools");
     if (!checked) return checked;
-    if (tool.GetString("type") == "apply_patch" &&
+    const auto type = tool.GetString("type");
+    if ((type == "apply_patch" || type == "shell") &&
         ResponsesToolAllows(tool, "programmatic")) {
-      tools.array.push_back(Object({{"key", String(kApplyPatchToolName)},
-                                    {"type", String("apply_patch")},
-                                    {"name", String("apply_patch")},
-                                    {"namespace", String("")},
-                                    {"definition", tool}}));
+      if (type == "shell" &&
+          (!tool.Find("environment") ||
+           tool.Find("environment")->GetString("type") != "local"))
+        return Status::Fail("Program requires a local client shell");
+      tools.array.push_back(Object(
+          {{"key",
+            String(type == "shell" ? kShellToolName : kApplyPatchToolName)},
+           {"type", String(type)},
+           {"name", String(type)},
+           {"namespace", String("")},
+           {"definition", tool}}));
     } else if ((tool.GetString("type") == "function" ||
                 tool.GetString("type") == "custom") &&
                ResponsesToolAllows(tool, "programmatic"))
@@ -308,6 +360,7 @@ ObjectReply CreateResponsesProgram(
   Plaintext plaintext;
   plaintext.bytes =
       OutputJson(Object({{"version", Number(1)},
+                         {"result_bound_calls", Boolean(true)},
                          {"program", item},
                          {"tools", std::move(tools)},
                          {"seed", Number(seed)},
@@ -406,11 +459,14 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
       limits.max_string_bytes = kStateBytes;
       if (!io::ParseJson(plaintext.bytes, &payload, true, limits) ||
           payload.GetInt("version") != 1 || !payload.Find("program") ||
+          (payload.Has("result_bound_calls") &&
+           !payload.GetBool("result_bound_calls")) ||
           !Same(*payload.Find("program"), PlainProgram(item)) ||
           !payload.GetArray("tools") || !payload.Has("seed") ||
           !payload.Has("epoch_ms") || !payload.Has("expires_at"))
         return Invalid("Program differs from authenticated origin", path);
       ResponsesProgramState state;
+      state.legacy_child_ids = !payload.Has("result_bound_calls");
       state.program = item;
       state.tools = *payload.GetArray("tools");
       state.input_index = i;
@@ -440,8 +496,14 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
       const auto* call = origin.Find("call");
       const auto* tool =
           call ? FindTool(state.tools, call->GetString("key")) : nullptr;
-      const auto canonical_id =
-          ResponsesMcpProgramCallId(state.program.GetString("call_id"), index);
+      const auto context = call ? ResultContext(state, *call) : std::nullopt;
+      if (!context) return Invalid("Invalid program result position", path);
+      const auto bound = origin.GetString("result_context");
+      if (bound != *context && !(bound.empty() && state.legacy_child_ids))
+        return Invalid(
+            "MCP program child belongs to a different result history", path);
+      const auto canonical_id = ResponsesMcpProgramCallId(
+          state.program.GetString("call_id"), index, bound);
       if (!tool || tool->GetString("type") != "mcp" || index >= kCalls ||
           origin.GetString("program_id") != state.program.GetString("id") ||
           payload.Find("call")->GetString("id") != canonical_id ||
@@ -477,9 +539,7 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
         } else if (!Parse(canonical.GetString("output"), &value)) {
           return Invalid("MCP result is not an authenticated native value");
         }
-        Field(state.worker_input, "results")
-            .array.push_back(Object(
-                {{"index", Number(index)}, {"value", std::move(value)}}));
+        AddResult(&state, index, std::move(value));
       }
       continue;
     }
@@ -500,10 +560,10 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
     }
     const bool invocation = type == "function_call" ||
                             type == "custom_tool_call" ||
-                            type == "apply_patch_call";
-    const bool output = type == "function_call_output" ||
-                        type == "custom_tool_call_output" ||
-                        type == "apply_patch_call_output";
+                            type == "apply_patch_call" || type == "shell_call";
+    const bool output =
+        type == "function_call_output" || type == "custom_tool_call_output" ||
+        type == "apply_patch_call_output" || type == "shell_call_output";
     if (!invocation && !output) {
       if (program_call) return Invalid("Invalid program caller item", path);
       continue;
@@ -524,27 +584,40 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
     if (invocation) {
       const auto index = state.calls.size();
       const bool patch = type == "apply_patch_call";
+      const bool shell = type == "shell_call";
       const auto key =
-          patch ? kApplyPatchToolName
-                : ResponsesToolModelName(
-                      item.GetString("namespace"), item.GetString("name"),
-                      type == "function_call" ? "function" : "custom");
+          shell   ? kShellToolName
+          : patch ? kApplyPatchToolName
+                  : ResponsesToolModelName(
+                        item.GetString("namespace"), item.GetString("name"),
+                        type == "function_call" ? "function" : "custom");
       const auto* tool = FindTool(state.tools, key);
       if (!tool || index >= kCalls ||
           item.GetString("status", "completed") != "completed")
         return Invalid("Unauthorized or incomplete program child", path);
+      auto canonical = item;
+      std::string arguments;
+      if (shell) {
+        Json action;
+        if (!ParseResponsesShellAction(OutputJson(*item.Find("action")),
+                                       &action))
+          return Invalid("Invalid program shell action", path + ".action");
+        arguments = OutputJson(action);
+        Set(&canonical, "action", std::move(action));
+      } else if (patch) {
+        arguments = OutputJson(*item.Find("operation"));
+      } else {
+        arguments =
+            item.GetString(type == "function_call" ? "arguments" : "input");
+      }
       auto call = Object(
           {{"key", String(key)},
-           {"arguments",
-            String(patch ? OutputJson(*item.Find("operation"))
-                         : item.GetString(type == "function_call" ? "arguments"
-                                                                  : "input"))},
+           {"arguments", String(std::move(arguments))},
            {"after_results",
             Number(state.worker_input.GetArray("results")->array.size())}});
       const auto causal = positions.find(state.program.GetString("call_id"));
       if (causal != positions.end() && index < causal->second.size())
         Set(&call, "after_results", Number(causal->second[index]));
-      auto canonical = item;
       if (!canonical.Has("status"))
         Set(&canonical, "status", String("completed"));
       std::erase_if(canonical.object, [](const auto& field) {
@@ -553,7 +626,14 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
                (field.first == "async" && field.second.IsBool() &&
                 !field.second.boolean);
       });
-      if (!Same(Child(state.program, *tool, call, index), canonical) ||
+      const auto context = ResultContext(state, call);
+      if (!context) return Invalid("Invalid program result position", path);
+      const bool matches =
+          Same(Child(state.program, *tool, call, index, *context), canonical);
+      const bool legacy =
+          !matches && state.legacy_child_ids && !context->empty() &&
+          Same(Child(state.program, *tool, call, index, {}), canonical);
+      if ((!matches && !legacy) ||
           !calls
                .emplace(item.GetString("call_id"),
                         std::make_pair(owner->second, index))
@@ -569,20 +649,23 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
       const auto& call = state.calls[index];
       const bool custom = call.GetString("type") == "custom_tool_call";
       const bool patch = call.GetString("type") == "apply_patch_call";
+      const bool shell = call.GetString("type") == "shell_call";
+      const auto status = item.GetString("status", "completed");
       if (type != call.GetString("type") + "_output" ||
-          (!patch && item.GetString("status", "completed") != "completed"))
+          (!patch && status != "completed" &&
+           !(shell && status == "incomplete")))
         return Invalid("Program result type or status changed", path);
       for (const auto* field : {"name", "namespace"})
         if (Nonnull(item, field) &&
             item.GetString(field) != call.GetString(field))
           return Invalid("Program result identity changed", path);
       const auto* output_value = item.Find("output");
-      if (patch) {
-        auto outcome = Object({{"status", *item.Find("status")}});
+      if (patch || shell) {
+        auto outcome = Object({{"status", String(status)}});
+        if (shell && item.Has("max_output_length"))
+          Set(&outcome, "max_output_length", *item.Find("max_output_length"));
         if (output_value) Set(&outcome, "output", *output_value);
-        Field(state.worker_input, "results")
-            .array.push_back(Object(
-                {{"index", Number(index)}, {"value", std::move(outcome)}}));
+        AddResult(&state, index, std::move(outcome));
         continue;
       }
       if (!output_value) return Invalid("Missing program result", path);
@@ -600,9 +683,7 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
         if (io::ParseJson(output_value->str, &decoded, true, kSchemaJsonLimits))
           value = std::move(decoded);
       }
-      Field(state.worker_input, "results")
-          .array.push_back(
-              Object({{"index", Number(index)}, {"value", std::move(value)}}));
+      AddResult(&state, index, std::move(value));
     }
   }
   auto validated = ValidateToolResultSchemas(
@@ -641,8 +722,10 @@ ObjectReply AdvanceResponsesProgram(const ResponsesProgramState& program,
     positions.array.push_back(*call.Find("after_results"));
   for (size_t i = program.calls.size(); i < calls.array.size(); ++i) {
     const auto* tool = FindTool(program.tools, calls.array[i].GetString("key"));
+    const auto context = ResultContext(program, calls.array[i]);
+    if (!context) return Invalid("Invalid program result position");
     result.array.push_back(
-        Child(program.program, *tool, calls.array[i], i, &positions));
+        Child(program.program, *tool, calls.array[i], i, *context, &positions));
   }
   if (executed.value.GetString("status") != "suspended") {
     std::string output;
@@ -660,14 +743,15 @@ ObjectReply AdvanceResponsesProgram(const ResponsesProgramState& program,
       if (!encoded)
         return Error(502, "program_output_invalid", encoded.message());
     }
-    result.array.push_back(Object(
-        {{"id",
-          String("prog_out_" +
-                 Digest(program.program.GetString("call_id")).substr(0, 56))},
-         {"call_id", *program.program.Find("call_id")},
-         {"type", String("program_output")},
-         {"status", String(executed.value.GetString("status"))},
-         {"result", String(std::move(output))}}));
+    auto terminal = Object({{"type", String("program_output")},
+                            {"call_id", *program.program.Find("call_id")},
+                            {"status", *executed.value.Find("status")},
+                            {"result", String(std::move(output))}});
+    // Sibling responses can return different results to the same program.
+    // Content-address the immutable terminal item while retaining its parent.
+    Set(&terminal, "id",
+        String("prog_out_" + Digest(OutputJson(terminal)).substr(0, 56)));
+    result.array.push_back(std::move(terminal));
   }
   *emitted = std::move(result);
   return {};

@@ -1204,6 +1204,59 @@ text(winner+":"+last.content[0].text);
   return true;
 }
 
+Q4T_TEST(responses_mcp_program_branches_bind_calls_to_prior_client_results) {
+  Server server;
+  ExecutionFixture fixture;
+  ObjectStore objects(fixture.options);
+  const auto config = ExecutionConfig(server);
+  auto request = ProgramRequest(server);
+  AddClientTool(&request);
+  ResponsesExecution parent(objects);
+  std::string wire;
+  bool waiting = false;
+  Q4T_CHECK(
+      ExecutionOk(parent.Prepare(request, config, ExecutionAccess(), 42)) &&
+      ExecutionOk(parent.Begin(&wire)) &&
+      ProgramCode(&parent,
+                  "const v=await tools.local({});"
+                  "const r=await tools['mcp:project'].read_project({n:v.n});"
+                  "text(v.n+':'+r.content[0].text);",
+                  &wire) &&
+      ExecutionOk(parent.RunPrograms(1, &waiting, {})) && waiting);
+  const auto first = OutputItem(parent, "function_call");
+  Q4T_CHECK(!first.IsNull() &&
+            ExecutionOk(parent.Finish(false, 1, {}, 43, &wire)));
+  Set(&request, "previous_response_id", String(parent.Id()));
+  ResponsesMcpState state(objects, config);
+  std::set<std::string> ids, contexts;
+  for (int n : {2, 3}) {
+    Set(&request, "input",
+        Array({Object(
+            {{"type", String("function_call_output")},
+             {"call_id", *first.Find("call_id")},
+             {"caller", *first.Find("caller")},
+             {"output", String(OutputJson(Object({{"n", Number(n)}})))}})}));
+    ResponsesExecution branch(objects);
+    Q4T_CHECK(
+        ExecutionOk(branch.Prepare(request, config, ExecutionAccess(), 44)) &&
+        ExecutionOk(branch.Begin(&wire)) &&
+        ExecutionOk(branch.RunPrograms(0, &waiting, {})) && !waiting);
+    const auto call = OutputItem(branch, "mcp_call");
+    const auto owned = state.Inspect(call.GetString("id"), ExecutionAccess());
+    Q4T_CHECK(ExecutionOk(owned));
+    const auto* origin = owned.value.Find("program_origin");
+    Q4T_CHECK(origin && origin->GetString("result_context").size() == 64 &&
+              origin->Find("call") &&
+              origin->Find("call")->GetInt("after_results") == 1 &&
+              contexts.insert(origin->GetString("result_context")).second &&
+              ids.insert(call.GetString("id")).second &&
+              OutputItem(branch, "program_output").GetString("result") ==
+                  std::to_string(n) + ":document result");
+    Q4T_CHECK(ContinueExecution(&branch, config) && FinishExecution(&branch));
+  }
+  return server.calls == 2;
+}
+
 Q4T_TEST(responses_mcp_program_remote_error_keeps_native_structured_content) {
   Server server;
   server.handler = [&](const Request& r, int fd, std::stop_token) {

@@ -68,7 +68,7 @@ class ChatResponseParser {
   }
   // Some typed response items need a complete operation before publication.
   void EmitToolAfterValidation(std::string name) {
-    complete_tool_ = std::move(name);
+    complete_tools_.insert(std::move(name));
   }
   std::string MessageJson() const;
   const std::string& Content() const { return content_; }
@@ -105,7 +105,7 @@ class ChatResponseParser {
   Region region_ = Region::kContent;
   Status status_;
   std::string id_prefix_;
-  std::string complete_tool_;
+  std::unordered_set<std::string> complete_tools_;
   std::string pending_;
   size_t pending_offset_ = 0;
   size_t tool_scan_ = 0;

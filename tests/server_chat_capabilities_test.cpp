@@ -100,13 +100,23 @@ Q4T_TEST(chat_capabilities_native_file_search_conditions_and_output_types) {
             static_cast<int64_t>(kVectorSearchQueries));
     Q4T_CHECK(search->GetString("results_include") ==
               "file_search_call.results");
+    const auto* shell = response->Find("shell");
+    Q4T_CHECK(shell && shell->GetString("executor") == "client" &&
+              !shell->GetBool("automatic_execution", true) &&
+              shell->GetString("result_item") == "shell_call_output");
+    const auto* environments = shell->GetArray("environments");
+    Q4T_CHECK(environments && environments->array.size() == 1 &&
+              environments->array.front().str == "local");
     const auto* items = response->GetArray("output_items");
     constexpr const char* expected[] = {
-        "message",          "reasoning",          "function_call",
-        "custom_tool_call", "local_shell_call",   "apply_patch_call",
-        "compaction",       "file_search_call",   "web_search_call",
-        "tool_search_call", "tool_search_output", "program",
-        "program_output",   "mcp_list_tools",     "mcp_approval_request",
+        "message",          "reasoning",
+        "function_call",    "custom_tool_call",
+        "local_shell_call", "apply_patch_call",
+        "shell_call",       "compaction",
+        "file_search_call", "web_search_call",
+        "tool_search_call", "tool_search_output",
+        "program",          "program_output",
+        "mcp_list_tools",   "mcp_approval_request",
         "mcp_call"};
     Q4T_CHECK(items && items->array.size() == std::size(expected));
     for (const auto* type : expected)
