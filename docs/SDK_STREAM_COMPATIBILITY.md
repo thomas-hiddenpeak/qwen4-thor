@@ -1,5 +1,18 @@
 # 官方 SDK 的流式兼容记录
 
+### Managed Agents 会话的配额失败
+
+Node 7.47.0 经原生 HTTPS 开启会话事件订阅。发送第二个回合返回 202，订阅随后收到 `agent.session.turn.failed`，错误码为 `rate_limit_exceeded`。会话回到 `idle`，配额窗口恢复后使用同一会话得到 42。[设备验收](evidence/serve-responses-errors-20261126/agent-turn-http.json)
+
+| Python SDK | 客户端入口 | 默认模式和严格模式的结果 |
+|---|---|---|
+| 3.42.1、3.55.1 | `beta.agents.sessions` | 会话、轮次、轮次列表和五个事件的公开字段一致。另一客户查询该轮次得到 404。 |
+| 2.8.1 | 通用 `get` 与 `openai.Stream` | 同样的 JSON、事件和 404 可读。此版没有 `beta.agents.sessions` 类型化入口。 |
+
+旧版通用调用须带 `OpenAI-Beta: agents=v1`。传入 `cast_to=dict[str, Any]`，订阅时另传 `stream=True`、`stream_cls=openai.Stream[dict[str, Any]]` 和 `Accept: text/event-stream`。2.8.1 默认模式在收到合法的会话 JSON 后，使用裸 `dict` 会抛出 `ValueError`。通用调用返回普通字典。[可运行的客户端示例](../tools/serve_audit/agent_turn_quota_sdk.py)
+
+Python 验证使用原设备业务的对象副本。原生 HTTP 处理器重新读取四份响应，事件投影与 Node 当时收到的五个事件逐项核对 ID 和类型。使用相应版本的解释器运行 `python -I -B tools/serve_audit/agent_turn_quota_sdk.py`，加 `--strict` 可复核该 SDK 的严格模式。[六组验证结果](evidence/serve-responses-errors-20261126/agent-quota-python.json)
+
 ### Assistants Runs 与工具回填
 
 实测任务让模型调用 `get_release`，从项目发布记录取出版本号 460，按原工具调用 ID 回填并取得最终答案。下表对应同一个真实任务。[原生 TLS 验收](evidence/serve-assistants-20261124/runs.json)
