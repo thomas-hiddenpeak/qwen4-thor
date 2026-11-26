@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+原生 TLS 通过 Python SDK 3.55.1 实际批准与拒绝两个 MCP 请求，批准分支从 docs/MODEL.md 读取一次并返回来源，拒绝分支没有执行，另一把 Key 读取原记录返回 404。两项决定均能按原审批 ID 和双字段读回，6 份回包通过官方及随包声明验证。1 次模型启动，共 53.7 秒。[业务记录](evidence/serve-mcp-approval-identifiers-20261126/business.json)
+
 MCP 的新增关联名已纳入 HTTP 声明，固定 SDK 的来源哈希和判定独立保留。首版候选触发了 SDK 来源校验失败；修正后 647 条原生与 TypeScript 对照均一致，历史字段默认值检查、4 项原生回归、Python SDK 和重开旧对象均通过。[复核记录](evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json)
 
 已修复 MCP 审批响应的 HTTP 字段兼容。原生接口此前对同时提供一致 request_id 与 approval_request_id 的申请返回 400。候选保留 SDK 单字段输入，公共读取补全双字段，原存储对象无需改写；指向不同申请的输入返回 400，重用同一 ID 改变批准决定返回 409。3 项原生 CPU 回归、发布声明及官方 Python SDK 分页通过。实际 MCP 审批执行仍待候选短验。[CPU 证据](evidence/serve-mcp-approval-identifiers-20261126/cpu.json)

@@ -1,0 +1,49 @@
+{
+  "stage": "native_https_verified",
+  "issued": false,
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 53.727,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "product": {
+    "head": "5a6f3819a50c308f37726f0c348f372e9b60d446",
+    "engine": "c9738d8a0817305ff989ee5ca5ff03369ca40f83bc6255423f4cc07752b1cd67",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1101,
+    "full_build_log": "119d60016dd3d5707499cf3528ae79ed08008a5ed860df8ffd5ec75c61c78626",
+    "incremental_exit_code": 0,
+    "incremental_build_log": "6ed2a4bebcc0e9182267bbdd59040a4ac20c10464ac143319a2fde8c35723c1e",
+    "incremental_link_required": false
+  },
+  "client": {
+    "sdk": "3.55.1",
+    "approved_id": "mcpr_8ce671bce0e2eeb155a571c6cf3ac156",
+    "denied_id": "mcpr_0b5a9a01d6c5ce140b7027b99cdec842",
+    "peer": 404,
+    "mismatch": 400,
+    "dual_field_readback": true
+  },
+  "raw_sha256": {
+    "approved": "aebb9f6bea6171ee4b916e714b311e609de177f8a19b8e89b6f3f28c91a29382",
+    "approved_inputs": "2bbd10bd3640fd0a931b381a35d6900dfcd9ff166f60de831a692c52358bd981",
+    "denied": "21f39601cf8287c3999e54f2533d3889fd1c8c6dd31c49d53ee248a6b3e17430",
+    "denied_inputs": "08eed25dd85d03fef1bc4817b49d43217383c5e322d64291e85d8a7b6ae1d685",
+    "requested": "da69129277d72834249f718f31a6c0802cf465d7285925edfbdb57504e71c6c2",
+    "requested_denial": "7d9f6d5ccd42ffc5e2bdde23eda5e75fc5142b2faa8a7d3b981fd47ff6e00cbf"
+  },
+  "source_citation": "[docs/MODEL.md:L1-L3]",
+  "source_record_sha256": "e0aa1200137f605427d80d107c4be1b2e92809bb990dc9eadfc6f873e082a16f",
+  "peer_calls": 1,
+  "peer_reads": 1,
+  "peer_receipt_sha256": "1e30092e38dab1f24491ed13b30bd57e5ceaf2fc1d16b4e262aefcd9a66b847d",
+  "lease_sha256": "4c0580c774d80cbabaacdd08079d1688dbb3f9c5b8e1f8aed1d91e27a0483839",
+  "oracles": "3ca61c45c2e2d2dd8be6cfac95a4b6ed963c812b31cba1f6f293b54034ee95e8",
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "published_schema_sha256": "ccb3e46ce4d2001542233cdc492bd922b64e87561f255653367a35d5bfe99b32",
+  "previous_revision": 544
+}
