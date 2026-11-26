@@ -1,0 +1,95 @@
+{
+  "stage": "shell_history_cpu_verified",
+  "issued": false,
+  "base": "8f9f5fd528f2caf5dd1cb881a6892ec3f133750d",
+  "old": {
+    "official_inputs_validated": 2,
+    "native_return": 1,
+    "actual": "503 input[0] Responses input requires client-scoped resolution",
+    "candidate": "c34f8cf73fab5e373861ecbc163b5b66a67aa5f12129742ff3f66d42934d036b"
+  },
+  "request": {
+    "input": [
+      {
+        "type": "shell_call",
+        "call_id": "call_project",
+        "status": "completed",
+        "environment": {
+          "type": "local"
+        },
+        "action": {
+          "commands": [
+            "head -n 1 docs/MODEL.md"
+          ],
+          "timeout_ms": 1000,
+          "max_output_length": 1024
+        }
+      },
+      {
+        "type": "shell_call_output",
+        "call_id": "call_project",
+        "status": "completed",
+        "output": [
+          {
+            "stdout": "architecture=qwen4_exp\n",
+            "stderr": "",
+            "outcome": {
+              "type": "exit",
+              "exit_code": 0
+            }
+          }
+        ],
+        "max_output_length": 1024
+      }
+    ]
+  },
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "after": [
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_project",
+          "type": "function",
+          "function": {
+            "name": "q4t_builtin_shell",
+            "arguments": "{\"commands\":[\"head -n 1 docs/MODEL.md\"],\"timeout_ms\":1000,\"max_output_length\":1024,\"environment\":{\"type\":\"local\"}}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_project",
+      "content": "{\"status\":\"completed\",\"output\":[{\"stdout\":\"architecture=qwen4_exp\\n\",\"stderr\":\"\",\"outcome\":{\"type\":\"exit\",\"exit_code\":0}}],\"max_output_length\":1024}"
+    }
+  ],
+  "access_path": [
+    "ParseResponsesEnvelope",
+    "ResponsesState.Resolve",
+    "PrepareResponsesGeneration"
+  ],
+  "verification": {
+    "tests": [
+      "responses_shell_history_preserves_actions_and_each_command_outcome",
+      "responses_context_keeps_shell_history_with_its_command_output",
+      "responses_patch_history_preserves_the_operation_and_failure",
+      "responses_context_removes_a_patch_call_with_its_failed_result",
+      "responses_local_shell_history_binds_real_argv_and_result",
+      "responses_consecutive_synchronous_tool_rounds_keep_call_boundaries"
+    ],
+    "log_sha256": "fad809d135c05f65fcc31d15cd9365a0d74176f3641dc5e9d2aeebf32dd4bed3",
+    "audit_mutations": 40,
+    "native_cpu_objects": [
+      "responses_input",
+      "responses_plan"
+    ],
+    "predecessor_shared_libraries": true
+  },
+  "pending": [
+    "newly generated shell operations, selectors and SSE",
+    "programmatic tools, client and hosted shell environments",
+    "real SDK business and delivery"
+  ]
+}

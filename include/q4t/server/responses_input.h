@@ -11,6 +11,7 @@
 
 namespace q4t::server {
 
+inline constexpr char kShellToolName[] = "q4t_builtin_shell";
 inline constexpr char kApplyPatchToolName[] = "q4t_builtin_apply_patch";
 io::Json ResponsesPatchFunction();
 

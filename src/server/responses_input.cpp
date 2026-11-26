@@ -57,7 +57,8 @@ Status ItemMetadata(const Json& item, std::string_view path,
                     ChatPlanError* error) {
   // These variants have their own status/nullable contract in the SDK graph.
   const auto kind = item.GetString("type");
-  if (kind == "apply_patch_call" || kind == "apply_patch_call_output") {
+  if (kind == "apply_patch_call" || kind == "apply_patch_call_output" ||
+      kind == "shell_call" || kind == "shell_call_output") {
     if (Nonnull(item, "id") &&
         (item.GetString("id").empty() || item.GetString("id").size() > 256))
       return Invalid(error, std::string(path) + ".id", "invalid item ID");
@@ -568,7 +569,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   size_t activation = 0;
   std::deque<std::string> server_searches;
   LocalShellHistory local_shell;
-  std::unordered_set<std::string> patch_calls;
+  std::unordered_map<std::string, std::string> client_result_types;
 
   Json assistant =
       Object({{"role", String("assistant")}, {"content", String("")}});
@@ -1119,36 +1120,50 @@ Status NormalizeResponsesInput(const io::Json& request,
       expected.emplace(id, false);
       returned.insert(id);
       ++automatic_returns;
-    } else if (type == "apply_patch_call" || type == "apply_patch_call_output") {
+    } else if (type == "apply_patch_call" ||
+               type == "apply_patch_call_output" || type == "shell_call" ||
+               type == "shell_call_output") {
       const auto id = item.GetString("call_id");
       if (id.empty() || id.size() > 256)
-        return Invalid(error, path + ".call_id", "Invalid patch call ID");
+        return Invalid(error, path + ".call_id", "Invalid client tool call ID");
       status = DirectCaller(item, path, error);
       if (!status) return status;
-      if (type == "apply_patch_call") {
-        if (item.GetString("status") != "completed")
-          return Invalid(error, path + ".status", "Patch call is unfinished");
+      const bool patch = type.starts_with("apply_patch_");
+      const auto state = item.GetString("status", "completed");
+      if (state == "in_progress")
+        return Invalid(error, path + ".status", "Client tool is unfinished");
+      if (!type.ends_with("_output")) {
         if (results.size() > automatic_returns) {
           status = flush();
           if (!status) return status;
         }
         if (!call_ids.insert(id).second)
-          return Invalid(error, path + ".call_id", "Duplicate patch call ID");
-        patch_calls.insert(id);
+          return Invalid(error, path + ".call_id", "Duplicate client call ID");
+        client_result_types.emplace(id, type + "_output");
         if (assistant_path.empty()) assistant_path = path;
-        auto function = Object({
-            {"name", String(kApplyPatchToolName)},
-            {"arguments", String(OutputJson(*item.Find("operation")))}});
+        auto arguments = patch ? *item.Find("operation") : *item.Find("action");
+        if (!patch) {
+          if (const auto* environment = item.Find("environment"))
+            Set(&arguments, "environment", *environment);
+          if (state != "completed") Set(&arguments, "status", String(state));
+        }
+        auto function = Object(
+            {{"name", String(patch ? kApplyPatchToolName : kShellToolName)},
+             {"arguments", String(OutputJson(arguments))}});
         calls.array.push_back(Object({{"id", String(id)},
                                       {"type", String("function")},
                                       {"function", std::move(function)}}));
       } else {
-        if (!patch_calls.contains(id) || !returned.insert(id).second)
+        const auto match = client_result_types.find(id);
+        if (match == client_result_types.end() || match->second != type ||
+            !returned.insert(id).second)
           return Invalid(error, path + ".call_id",
-                         "Orphan or duplicate patch result");
-        auto outcome = Object({{"status", *item.Find("status")}});
-        if (const auto* text = item.Find("output"))
-          Set(&outcome, "output", *text);
+                         "Orphan, mismatched or duplicate client result");
+        auto outcome = Object({{"status", String(state)}});
+        if (const auto* value = item.Find("output"))
+          Set(&outcome, "output", *value);
+        if (const auto* limit = item.Find("max_output_length"))
+          Set(&outcome, "max_output_length", *limit);
         results.emplace_back(Object({{"role", String("tool")},
                                      {"tool_call_id", String(id)},
                                      {"content", String(OutputJson(outcome))}}),

@@ -3098,6 +3098,16 @@
         "business": "evidence/serve-client-patch-20261126/business.json",
         "program_business": "evidence/serve-client-patch-20261126/program.json",
         "profiles": "evidence/serve-client-patch-20261126/profiles.json"
+      },
+      "shell_history_20261126": {
+        "stage": "shell_history_cpu_verified",
+        "receipt": "evidence/serve-shell-history-20261126/history.json",
+        "issued": false,
+        "pending": [
+          "newly generated shell operations, selectors and SSE",
+          "programmatic tools, client and hosted shell environments",
+          "real SDK business and delivery"
+        ]
       }
     },
     {
@@ -3797,6 +3807,16 @@
         "business": "evidence/serve-client-patch-20261126/business.json",
         "program_business": "evidence/serve-client-patch-20261126/program.json",
         "profiles": "evidence/serve-client-patch-20261126/profiles.json"
+      },
+      "shell_history_20261126": {
+        "stage": "shell_history_cpu_verified",
+        "receipt": "evidence/serve-shell-history-20261126/history.json",
+        "issued": false,
+        "pending": [
+          "newly generated shell operations, selectors and SSE",
+          "programmatic tools, client and hosted shell environments",
+          "real SDK business and delivery"
+        ]
       }
     },
     {
@@ -7648,6 +7668,16 @@
         "business": "evidence/serve-client-patch-20261126/business.json",
         "program_business": "evidence/serve-client-patch-20261126/program.json",
         "profiles": "evidence/serve-client-patch-20261126/profiles.json"
+      },
+      "shell_history_20261126": {
+        "stage": "shell_history_cpu_verified",
+        "receipt": "evidence/serve-shell-history-20261126/history.json",
+        "issued": false,
+        "pending": [
+          "newly generated shell operations, selectors and SSE",
+          "programmatic tools, client and hosted shell environments",
+          "real SDK business and delivery"
+        ]
       }
     },
     {
@@ -8941,6 +8971,16 @@
         "business": "evidence/serve-client-patch-20261126/business.json",
         "program_business": "evidence/serve-client-patch-20261126/program.json",
         "profiles": "evidence/serve-client-patch-20261126/profiles.json"
+      },
+      "shell_history_20261126": {
+        "stage": "shell_history_cpu_verified",
+        "receipt": "evidence/serve-shell-history-20261126/history.json",
+        "issued": false,
+        "pending": [
+          "newly generated shell operations, selectors and SSE",
+          "programmatic tools, client and hosted shell environments",
+          "real SDK business and delivery"
+        ]
       }
     },
     {

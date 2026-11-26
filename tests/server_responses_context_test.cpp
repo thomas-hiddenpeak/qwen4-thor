@@ -208,3 +208,25 @@ Q4T_TEST(responses_context_removes_a_patch_call_with_its_failed_result) {
             f.plan.truncated_items == 2);
   return true;
 }
+
+Q4T_TEST(responses_context_keeps_shell_history_with_its_command_output) {
+  Fixture f;
+  Q4T_CHECK(f.Prepare(R"([{"type":"shell_call","call_id":"s",
+    "action":{"commands":["read project"]}},
+    {"type":"shell_call_output","call_id":"s","output":[{"stdout":"line",
+     "stderr":"","outcome":{"type":"exit","exit_code":0}}]},
+    {"role":"user","content":"next"}])"));
+  std::vector<size_t> measured;
+  Q4T_CHECK(FitResponsesContext(
+      f.envelope, f.config,
+      [&](const auto& candidate, auto* error) -> q4t::Status {
+        measured.push_back(candidate.input.items.array.size());
+        if (measured.back() == 1) return {};
+        error->code = "context_length_exceeded";
+        return q4t::Status::Fail("fixture context limit");
+      },
+      &f.plan, &f.error));
+  Q4T_CHECK(measured == std::vector<size_t>({3, 1}) &&
+            f.plan.truncated_items == 2);
+  return true;
+}
