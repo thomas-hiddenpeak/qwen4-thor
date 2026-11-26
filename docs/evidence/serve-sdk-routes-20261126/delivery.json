@@ -1,0 +1,487 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 528,
+    "version_revision": 193,
+    "profile_revision": 83,
+    "previous_profile_revision": 82,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "5ecf9f0efcaf67f4ddd40508f5de3a11a42209eb03e692b3f61d34ed3f685722",
+    "fallback": "005bd4542f10457aa36928faee496236a0230802c436b6b64ac8efe248bc98ef",
+    "engine": "b23ed5665b9dcb25f3eab772251e469c15431fd5e072107aa0acfeef7a955605",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 526,
+  "previous_primary": "43d4615d8306f0cbce6fe9303012ec833d29357e7a2eca43029ff3c205bcff7a",
+  "source_commit": "aacaaef7a767311882870ea4be385e7c3c7c9d5a",
+  "recovery": {
+    "fallback": {
+      "seconds": 180.996,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": "evalrun_772f20a6c6ad6a7f0726af694366052e",
+        "current": "evalrun_706b59cfc60b10ce408b9578f5d62af3",
+        "resource_sha256": "892cd0ae838209ac167bf453324d65fa9b00085668e572076123b9bafd081f5c",
+        "peer": 404,
+        "port": 18161,
+        "egress": false
+      },
+      "original_eval": "eval_d070b3c3358a158e29eb6ef49ad8f2ee",
+      "original_run": "evalrun_772f20a6c6ad6a7f0726af694366052e",
+      "new_run": "evalrun_706b59cfc60b10ce408b9578f5d62af3",
+      "original_digest": "892cd0ae838209ac167bf453324d65fa9b00085668e572076123b9bafd081f5c",
+      "restored_deleted": 404,
+      "foreign_cancel": 404,
+      "malformed": 400,
+      "sdk": [
+        "2.8.1",
+        "3.55.1"
+      ],
+      "fresh_chat": "42",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "lease_sha256": "6e91f80b4cb3b0bb04f08edb16287736c25e56191e78284872f9ad42cbd62d4e",
+      "accepted_sha256": "a2547bebca6aa7266fa8f2758bf4403b64b05ef11c6d5204376f2570a783128d",
+      "original_sdk_sha256": "45d534cbbf655fd448b45191d970f912dece3bbed4682de6ccf2e6c95e57dd57",
+      "restored_sdk_sha256": "8f954ec5ffd84c67399ad64f28e7aaee6ed7944d32099d19d23ffed2a7f44693"
+    },
+    "primary": {
+      "seconds": 275.587,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": "evalrun_940c7c213008e7dd245ef5b5cd8a8577",
+        "current": "evalrun_1db70ffdc888973006f5e87dcecc7c5c",
+        "resource_sha256": "79a20c291ed18e7e38875647e7bd9b14a0931b2b5605da1e304f0ccf937b6318",
+        "peer": 404,
+        "port": 18161,
+        "egress": false
+      },
+      "original_eval": "eval_0467b676e22f1bedd81e091158b04fc5",
+      "original_run": "evalrun_940c7c213008e7dd245ef5b5cd8a8577",
+      "new_run": "evalrun_1db70ffdc888973006f5e87dcecc7c5c",
+      "original_digest": "79a20c291ed18e7e38875647e7bd9b14a0931b2b5605da1e304f0ccf937b6318",
+      "restored_deleted": 404,
+      "foreign_cancel": 404,
+      "malformed": 400,
+      "sdk": [
+        "2.8.1",
+        "3.55.1"
+      ],
+      "fresh_chat": "42",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "lease_sha256": "83d87d6fd00ae9078d0e2c2a227172f310ceb5df0952628b5a636d4cbf5960ac",
+      "accepted_sha256": "be2dced2e2738271060b6ded9589ca2959746649c079cf8ce0fd7230c475457b",
+      "original_sdk_sha256": "fa7c10003cfe2ff1cb554fc39206ebb793c2a9d250cbdf20c5542a8c3008001b",
+      "restored_sdk_sha256": "1ef00da8565bcbaaa59af2c2d05e3bf6a2498d140a1869a164b8d4508f31b6c2",
+      "takeover": {
+        "selected": "fallback",
+        "manifest": "005bd4542f10457aa36928faee496236a0230802c436b6b64ac8efe248bc98ef",
+        "probes": 1,
+        "signal": 6
+      }
+    }
+  },
+  "wire": {
+    "status": "PASS",
+    "packages": [
+      {
+        "slot": "primary",
+        "manifest_sha256": "5ecf9f0efcaf67f4ddd40508f5de3a11a42209eb03e692b3f61d34ed3f685722",
+        "openapi_sha256": "40fb0bf8e4d21c76340827b50534b3a5cc2936c52c0bc516076e87a87020239e",
+        "official_response_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+        "official_schema_route": "/evals/{eval_id}/runs/{run_id}/cancel",
+        "responses": 15,
+        "non_string_status_rejected": true,
+        "observations": [
+          {
+            "stage": "primary",
+            "client": "2.8.1",
+            "body_sha256": "d356161ec981cbd34c9288f839fc97f0e7d7f25dc69a47434d9a824efea9bb8a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "cf95102ea98538c8900688a31c4d14a695402962478ae4167f76661d1884bc03"
+          },
+          {
+            "stage": "primary",
+            "client": "3.55.1",
+            "body_sha256": "d356161ec981cbd34c9288f839fc97f0e7d7f25dc69a47434d9a824efea9bb8a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "cf95102ea98538c8900688a31c4d14a695402962478ae4167f76661d1884bc03"
+          },
+          {
+            "stage": "light",
+            "client": "2.8.1",
+            "body_sha256": "f80cf756de16d317b46825fffd86e165b08785e58a3a237846931f6665427862",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "57ea41d6aa0504718772f15b41a5668b5bc01aa0356e6f776dde8e6e5123c802"
+          },
+          {
+            "stage": "light",
+            "client": "3.55.1",
+            "body_sha256": "f80cf756de16d317b46825fffd86e165b08785e58a3a237846931f6665427862",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "57ea41d6aa0504718772f15b41a5668b5bc01aa0356e6f776dde8e6e5123c802"
+          },
+          {
+            "stage": "light",
+            "client": "3.55.1",
+            "body_sha256": "46b7886d7a99785ace4ff473e46ad8140eea18190779933c72957d283fef5523",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "129f2cf5f72f25d652605a3ea39581732355a0cfcc550f40ab758897c5fdb71a"
+          },
+          {
+            "stage": "fallback-prepare",
+            "client": "2.8.1",
+            "body_sha256": "4f28543170db1e9e088c4b159be24b9ac17422f73d11d01eaf72d44a46b1d00a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "abd4dbb7bea2cab000d176c3884a9d48ff13bd1b65f0d72d83c74476902c66e6"
+          },
+          {
+            "stage": "fallback-prepare",
+            "client": "3.55.1",
+            "body_sha256": "4f28543170db1e9e088c4b159be24b9ac17422f73d11d01eaf72d44a46b1d00a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "abd4dbb7bea2cab000d176c3884a9d48ff13bd1b65f0d72d83c74476902c66e6"
+          },
+          {
+            "stage": "fallback-restore",
+            "client": "2.8.1",
+            "body_sha256": "79741b89b1a9473250af88e8f14d58b29ffc2f6eabbe0aea643b8b36c1de8f5f",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "530454907ab972205f875855b754c3afffbc45805361939c4f758b755284d39b"
+          },
+          {
+            "stage": "fallback-restore",
+            "client": "3.55.1",
+            "body_sha256": "79741b89b1a9473250af88e8f14d58b29ffc2f6eabbe0aea643b8b36c1de8f5f",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "530454907ab972205f875855b754c3afffbc45805361939c4f758b755284d39b"
+          },
+          {
+            "stage": "fallback-restore",
+            "client": "3.55.1",
+            "body_sha256": "4f28543170db1e9e088c4b159be24b9ac17422f73d11d01eaf72d44a46b1d00a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "abd4dbb7bea2cab000d176c3884a9d48ff13bd1b65f0d72d83c74476902c66e6"
+          },
+          {
+            "stage": "takeover-prepare",
+            "client": "2.8.1",
+            "body_sha256": "8b544aee2c152760aedc4b4ea4fbcfeb4257f0ebd3df9774fe669a7ac3260f63",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "dd9b874b6b8893b3ca9242306c7078824b2666209a6dcf3ae383532ce06f7abc"
+          },
+          {
+            "stage": "takeover-prepare",
+            "client": "3.55.1",
+            "body_sha256": "8b544aee2c152760aedc4b4ea4fbcfeb4257f0ebd3df9774fe669a7ac3260f63",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "dd9b874b6b8893b3ca9242306c7078824b2666209a6dcf3ae383532ce06f7abc"
+          },
+          {
+            "stage": "takeover-restore",
+            "client": "2.8.1",
+            "body_sha256": "4e5b09a92f26c77e9aa1ffa6ab0c4528c339840156786e8265311b1bda06d700",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "da087974d0937a83a4041ccbab93979cb4c6e9b083ca2f52cb03db30570263e4"
+          },
+          {
+            "stage": "takeover-restore",
+            "client": "3.55.1",
+            "body_sha256": "4e5b09a92f26c77e9aa1ffa6ab0c4528c339840156786e8265311b1bda06d700",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "da087974d0937a83a4041ccbab93979cb4c6e9b083ca2f52cb03db30570263e4"
+          },
+          {
+            "stage": "takeover-restore",
+            "client": "3.55.1",
+            "body_sha256": "8b544aee2c152760aedc4b4ea4fbcfeb4257f0ebd3df9774fe669a7ac3260f63",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "dd9b874b6b8893b3ca9242306c7078824b2666209a6dcf3ae383532ce06f7abc"
+          }
+        ]
+      },
+      {
+        "slot": "fallback",
+        "manifest_sha256": "005bd4542f10457aa36928faee496236a0230802c436b6b64ac8efe248bc98ef",
+        "openapi_sha256": "40fb0bf8e4d21c76340827b50534b3a5cc2936c52c0bc516076e87a87020239e",
+        "official_response_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+        "official_schema_route": "/evals/{eval_id}/runs/{run_id}/cancel",
+        "responses": 15,
+        "non_string_status_rejected": true,
+        "observations": [
+          {
+            "stage": "primary",
+            "client": "2.8.1",
+            "body_sha256": "d356161ec981cbd34c9288f839fc97f0e7d7f25dc69a47434d9a824efea9bb8a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "cf95102ea98538c8900688a31c4d14a695402962478ae4167f76661d1884bc03"
+          },
+          {
+            "stage": "primary",
+            "client": "3.55.1",
+            "body_sha256": "d356161ec981cbd34c9288f839fc97f0e7d7f25dc69a47434d9a824efea9bb8a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "cf95102ea98538c8900688a31c4d14a695402962478ae4167f76661d1884bc03"
+          },
+          {
+            "stage": "light",
+            "client": "2.8.1",
+            "body_sha256": "f80cf756de16d317b46825fffd86e165b08785e58a3a237846931f6665427862",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "57ea41d6aa0504718772f15b41a5668b5bc01aa0356e6f776dde8e6e5123c802"
+          },
+          {
+            "stage": "light",
+            "client": "3.55.1",
+            "body_sha256": "f80cf756de16d317b46825fffd86e165b08785e58a3a237846931f6665427862",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "57ea41d6aa0504718772f15b41a5668b5bc01aa0356e6f776dde8e6e5123c802"
+          },
+          {
+            "stage": "light",
+            "client": "3.55.1",
+            "body_sha256": "46b7886d7a99785ace4ff473e46ad8140eea18190779933c72957d283fef5523",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "129f2cf5f72f25d652605a3ea39581732355a0cfcc550f40ab758897c5fdb71a"
+          },
+          {
+            "stage": "fallback-prepare",
+            "client": "2.8.1",
+            "body_sha256": "4f28543170db1e9e088c4b159be24b9ac17422f73d11d01eaf72d44a46b1d00a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "abd4dbb7bea2cab000d176c3884a9d48ff13bd1b65f0d72d83c74476902c66e6"
+          },
+          {
+            "stage": "fallback-prepare",
+            "client": "3.55.1",
+            "body_sha256": "4f28543170db1e9e088c4b159be24b9ac17422f73d11d01eaf72d44a46b1d00a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "abd4dbb7bea2cab000d176c3884a9d48ff13bd1b65f0d72d83c74476902c66e6"
+          },
+          {
+            "stage": "fallback-restore",
+            "client": "2.8.1",
+            "body_sha256": "79741b89b1a9473250af88e8f14d58b29ffc2f6eabbe0aea643b8b36c1de8f5f",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "530454907ab972205f875855b754c3afffbc45805361939c4f758b755284d39b"
+          },
+          {
+            "stage": "fallback-restore",
+            "client": "3.55.1",
+            "body_sha256": "79741b89b1a9473250af88e8f14d58b29ffc2f6eabbe0aea643b8b36c1de8f5f",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "530454907ab972205f875855b754c3afffbc45805361939c4f758b755284d39b"
+          },
+          {
+            "stage": "fallback-restore",
+            "client": "3.55.1",
+            "body_sha256": "4f28543170db1e9e088c4b159be24b9ac17422f73d11d01eaf72d44a46b1d00a",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "abd4dbb7bea2cab000d176c3884a9d48ff13bd1b65f0d72d83c74476902c66e6"
+          },
+          {
+            "stage": "takeover-prepare",
+            "client": "2.8.1",
+            "body_sha256": "8b544aee2c152760aedc4b4ea4fbcfeb4257f0ebd3df9774fe669a7ac3260f63",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "dd9b874b6b8893b3ca9242306c7078824b2666209a6dcf3ae383532ce06f7abc"
+          },
+          {
+            "stage": "takeover-prepare",
+            "client": "3.55.1",
+            "body_sha256": "8b544aee2c152760aedc4b4ea4fbcfeb4257f0ebd3df9774fe669a7ac3260f63",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "dd9b874b6b8893b3ca9242306c7078824b2666209a6dcf3ae383532ce06f7abc"
+          },
+          {
+            "stage": "takeover-restore",
+            "client": "2.8.1",
+            "body_sha256": "4e5b09a92f26c77e9aa1ffa6ab0c4528c339840156786e8265311b1bda06d700",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}",
+            "status": 200,
+            "json_sha256": "da087974d0937a83a4041ccbab93979cb4c6e9b083ca2f52cb03db30570263e4"
+          },
+          {
+            "stage": "takeover-restore",
+            "client": "3.55.1",
+            "body_sha256": "4e5b09a92f26c77e9aa1ffa6ab0c4528c339840156786e8265311b1bda06d700",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "da087974d0937a83a4041ccbab93979cb4c6e9b083ca2f52cb03db30570263e4"
+          },
+          {
+            "stage": "takeover-restore",
+            "client": "3.55.1",
+            "body_sha256": "8b544aee2c152760aedc4b4ea4fbcfeb4257f0ebd3df9774fe669a7ac3260f63",
+            "method": "POST",
+            "path": "/v1/evals/{eval_id}/runs/{run_id}/cancel",
+            "status": 200,
+            "json_sha256": "dd9b874b6b8893b3ca9242306c7078824b2666209a6dcf3ae383532ce06f7abc"
+          }
+        ]
+      }
+    ]
+  },
+  "profiles_sha256": "293f0cdd44bed9c86c5d952c87a4949125d51b98a9dac6311af195ee88002af9",
+  "business_sha256": "7bf92e20a905b17e0f0ca9ff95f4a7fb25abf9f9fff8095249f3096e28ce6f39",
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "d845cfef58558513ed8d8037b9bb953d96637344093b1e10873efc1e3e747bcb"
+        ],
+        "sha256": "e539e156848611ee5b90d9d5fe81de45281d9674b284c1b7a5a1953ef1a9b60d",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "a914af86-20ee-4e8d-b3d6-47ed86828726"
+        ],
+        "sha256": "8df7c2f94ebde3fe83d30f29d35a8082f11e226720e69ae31f99570875d27b89",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "e3334437-19cc-4984-a04b-20a00b3040de"
+        ],
+        "sha256": "83e7f903211d9a5af87557dd1002ebefd650936a17dd60234466b7e757924781",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71
+  },
+  "soak": {
+    "source_commit": "aacaaef7a767311882870ea4be385e7c3c7c9d5a",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-client-primary-01/bundle",
+      "manifest_sha256": "5ecf9f0efcaf67f4ddd40508f5de3a11a42209eb03e692b3f61d34ed3f685722"
+    },
+    "revision": 528,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "f07cf22364cdd5573869552f53ad13528f5bd929e959ea14e3f18b4af4d543eb",
+    "handoff_sha256": "700a740d37080768c955648936b10658a7936c66df949da391b466624d8e023e",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev528-preflight.json",
+  "predecessor_release_head": "618118791a9cb7badea1a5fb6727771a679f49fc",
+  "cancellation_race_sha256": "e58f0839cd626fbff3a6b0be3829bf27355ec52fdf6198b79a8c2acbc6d1588f",
+  "sdk_route_matrix_sha256": "29d308c67660c3657714426669a9df3127b40ef0743088423fe7ec697b28f8ba",
+  "historic_reader_sha256": "640e0492ff8605adb71880220d7e3802a0faedc5670ef082b8cc8ff048285af7",
+  "limitations": {
+    "sdk_scope": "Transport checks for 231 current methods, scoped native business for Eval cancellation and ownership. Legacy cancellation is a compatibility alias.",
+    "deferred_media_methods": 12,
+    "genuine_device_cold_start": false,
+    "long_run_hours": 0
+  },
+  "retained_day_plan": {
+    "status": "PASS",
+    "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-delivery-soak-src",
+    "generation": "d845cfef58558513ed8d8037b9bb953d96637344093b1e10873efc1e3e747bcb",
+    "manifest": "f007cbd22e2092bb9bbc34bb8015f59996a2dcbce41e387e8a767c53a4416955",
+    "unchanged_plan": "d6dc1ace1089baf5371b51f37e087c1b09a632c921f59733853a7e6d39646c08",
+    "protected_raw_files": 28,
+    "executed_hours": 0,
+    "bindings": {
+      "q4t": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/d845cfef58558513ed8d8037b9bb953d96637344093b1e10873efc1e3e747bcb/q4t",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-client-primary-01/bundle/engine/q4t",
+        "sha256": "b2f878818f2d2307d1ff7acf6221a16fa710c0b8dccfad845ff9ce731a15f286"
+      },
+      "q4t.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/d845cfef58558513ed8d8037b9bb953d96637344093b1e10873efc1e3e747bcb/q4t.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-client-primary-01/bundle/engine/q4t.release.json",
+        "sha256": "5f69e05efc2903154180c682a19752881e5486e375c50afca6cebb7889ac9922"
+      },
+      "service.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/d845cfef58558513ed8d8037b9bb953d96637344093b1e10873efc1e3e747bcb/service.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-client-primary-01/service.release.json",
+        "sha256": "d2de0adf47f01bca105eee8799e4863b2af75c7cf91853edf2efa76bf7e0d3fa"
+      }
+    }
+  }
+}

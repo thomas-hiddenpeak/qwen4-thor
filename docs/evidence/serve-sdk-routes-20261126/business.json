@@ -1,0 +1,43 @@
+{
+  "stage": "native_tls_sdk_verified",
+  "issued": false,
+  "source": "8f40ab0a2f060d5f9ee3312a836886817aec4754",
+  "engine": "160f4b7cb63c0ca9a74adb8c18c2fb69203fc3795f5d38d11f9361b95653fdaa",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "tls_sdk_sha256": "149a0762b63eb3d69632dbe7c9a0f866fb8f5f51858b1d8a99450459ec679de5",
+  "client_matrix": "cpu.json",
+  "lease_sha256": "e2fcf742b12ec1b1d88d324a5d26889a9cced453a09f88abb3a51b03f76685d3",
+  "outcome": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 36.279,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "old": {
+    "sdk": "2.8.1",
+    "eval_id": "eval_9a20a81bc55daac1b4a9159073320adf",
+    "run_id": "evalrun_0104780b4a48c856521830c30a15cede",
+    "path": "/v1/evals/eval_9a20a81bc55daac1b4a9159073320adf/runs/evalrun_0104780b4a48c856521830c30a15cede",
+    "before": "in_progress",
+    "status": "canceled",
+    "http": 200,
+    "peer": 404,
+    "malformed": 400,
+    "foreign_cancel": 404
+  },
+  "current": {
+    "sdk": "3.55.1",
+    "eval_id": "eval_9a20a81bc55daac1b4a9159073320adf",
+    "run_id": "evalrun_0104780b4a48c856521830c30a15cede",
+    "path": "/v1/evals/eval_9a20a81bc55daac1b4a9159073320adf/runs/evalrun_0104780b4a48c856521830c30a15cede/cancel",
+    "before": "canceled",
+    "status": "canceled",
+    "http": 200,
+    "peer": 404,
+    "fresh_chat": "42",
+    "deleted": 404
+  }
+}

@@ -63,10 +63,12 @@ def accepted_source(path, manifest, primary, package):
         from tools.serve_recovery import profile_record
         return profile_record.accepted_source(path, manifest, primary, package)
     registry_path = path.parent/'qualified/registry.json'
-    require(accepted['registry_sha256'] == sha(registry_path) and
+    light = read(path.parent/'qualified/light.json')
+    require('reused_business' not in primary and 'reused_business' not in light and
+        accepted['registry_sha256'] == sha(registry_path) and
         same_json(read(registry_path), manifest['recovery_profiles']) and
         same_json(read(path.parent/'qualified/primary.json'), primary) and
-        same_json(read(path.parent/'qualified/light.json'),
+        same_json(light,
                   read(Path(package)/'profile-light.json')),
         'managed Realtime requires exact accepted primary/light identities')
     return read(path)

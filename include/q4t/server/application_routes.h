@@ -1182,6 +1182,13 @@ inline EvalRoute ParseEvalRoute(std::string_view target) {
       !ValidApplicationId(path)) return {};
   return {Kind::kOutput, eval, run, path};
 }
+// Older Python SDKs cancel with POST on the run itself.
+inline EvalRoute EvalOperation(std::string_view method, std::string_view target) {
+  auto route = ParseEvalRoute(target);
+  if (method == "POST" && route.kind == EvalRouteKind::kRun)
+    route.kind = EvalRouteKind::kCancel;
+  return route;
+}
 inline bool IsEvalTarget(std::string_view target) {
   return ParseEvalRoute(target).kind != EvalRouteKind::kNone;
 }
@@ -1190,8 +1197,8 @@ inline std::string_view EvalAllow(EvalRouteKind kind) {
   switch (kind) {
     case Kind::kCollection:
     case Kind::kRuns: return "GET, POST";
-    case Kind::kEval: return "GET, POST, DELETE";
-    case Kind::kRun: return "GET, DELETE";
+    case Kind::kEval:
+    case Kind::kRun: return "GET, POST, DELETE";
     case Kind::kCancel: return "POST";
     case Kind::kOutputs:
     case Kind::kReport:
@@ -1293,7 +1300,7 @@ inline bool IsResponseCancellation(std::string_view method,
 
 inline bool IsCancellationRequest(std::string_view method,
                                   std::string_view target) {
-  return (method == "POST" && ParseEvalRoute(target).kind ==
+  return (method == "POST" && EvalOperation(method, target).kind ==
                                   EvalRouteKind::kCancel) ||
          (method == "POST" && ParseAssistantRunRoute(target).kind ==
                                   AssistantRunRouteKind::kCancel) ||

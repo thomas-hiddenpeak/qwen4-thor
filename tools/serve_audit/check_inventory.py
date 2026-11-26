@@ -393,7 +393,7 @@ def current_surface(root):
     for path, methods in (('/v1/evals', ('GET', 'POST')),
                           ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/evals/{eval_id}/runs', ('GET', 'POST')),
-                          ('/v1/evals/{eval_id}/runs/{run_id}', ('GET', 'DELETE')),
+                          ('/v1/evals/{eval_id}/runs/{run_id}', ('GET', 'POST', 'DELETE')),
                           ('/v1/evals/{eval_id}/runs/{run_id}/cancel', ('POST',)),
                           ('/v1/evals/{eval_id}/runs/{run_id}/report', ('GET',)),
                           ('/v1/evals/{eval_id}/runs/{run_id}/output_items', ('GET',)),

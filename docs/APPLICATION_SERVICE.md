@@ -1,5 +1,9 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### 旧版 SDK 的 Evals 取消
+
+Python 2.8.1 在 Run 资源上发送 POST，新版客户端访问同一资源的 /cancel。两个入口共享所有者检查、状态和取消操作，恢复后可继续使用原 Eval 和 Run ID。[rev528 记录](evidence/serve-sdk-routes-20261126/delivery.json)
+
 ### Chat 视频帧与 H.264 文件回答
 
 Chat 支持 video_frames 和按载荷识别的图像、帧输入。两帧 Chat、流式图像和 H.264 文件已在真实托管包上验证。模型进程退出或切换回退包后仍可按原 Responses ID 获取文件视频的回答。[rev526 记录](evidence/serve-visual-frame-parts-20261126/delivery.json)
@@ -18,6 +22,12 @@ rev522 的 `POST /v1/audio/speech` 由请求体的 `response_format` 选择编�
 
 
 q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖官方接口目录中的 157 条推理与应用路径，共 231 个必做 HTTP 方法。组织管理、云账单和微调训练由范围决定排除。逐方法对照区分接口声明和真实业务验收。[范围决定](evidence/serve-scope-decision-20261120/README.md) · [实际进展和发行身份](STATUS.md)
+
+### 客户端版本和 Eval Run 取消
+
+Python 3.42.1、3.55.1 与 Node 7.47.0 均可通过类型化方法发出冻结范围中 231 组 HTTP 动词和路径。Python 2.8.1 中有 107 项缺少对应的方法，另有 1 项使用历史路径。逐项表包括两个语言的调用名称。该表只检查 SDK 实际发出的请求；服务端支持状态与业务验收另见发行回执。[逐方法对照](evidence/serve-sdk-routes-20261126/methods.json)
+
+候选版本以相同的客户身份和父级 Eval 校验处理两条取消路径。Python 2.8.1 在运行资源本身发送 POST，当前 SDK 在该资源的 `/cancel` 子路径发送 POST。两代客户端在原生 TLS 上对同一运行完成了取消与复查，另一客户读取或取消均为 404。[HTTP 记录](evidence/serve-sdk-routes-20261126/business.json)
 
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |
 |---|---|---|
