@@ -1,0 +1,142 @@
+{
+  "stage": "real_managed_pressure_verified",
+  "issued": false,
+  "source": "a4ade18f581332bfb058fefad130a50baabac09e",
+  "base": "9a5fd7f90d7a7e0c7cd5af87829dfedd3bdceef331c7760180567396f522e0f1",
+  "candidate": "1732082fa74c2d422d4fe128353908a4c20453a38cedfce170750b305777ec9e",
+  "engine": "30e23fda5afc2197958960bb2554473e24a74aae872c9b03a0fd89ebcc009e70",
+  "controller_changes": {
+    "source/tools/serve_recovery/profile_controller.py": "1f5264319b26a9d06f6a3134a61a20fdcdc529d87e8390989c6ac1dcf10940c6",
+    "source/tools/serve_recovery/resource_client.py": "215208ede8450637ed09d7cff2c6a3eaafc20f40f3670789e7dec3cafd24fea2",
+    "source/tools/serve_recovery/resource_compat.py": "484ba6980ba935048a931cacb012f7ab86426c3736574318791b713c25c3b54f"
+  },
+  "policy": {
+    "version": 1,
+    "degrade_below_mib": 8192,
+    "recover_above_mib": 16384,
+    "pressure_seconds": 30,
+    "recovery_seconds": 120,
+    "minimum_light_seconds": 300,
+    "cooldown_seconds": 300,
+    "switches_per_hour": 2,
+    "switches_per_day": 4
+  },
+  "role_observations": [
+    {
+      "selected": "primary",
+      "generation": 1,
+      "pid": 700561,
+      "elapsed": 74.7918176818639,
+      "history": []
+    },
+    {
+      "selected": "light",
+      "generation": 2,
+      "pid": 701905,
+      "elapsed": 150.95216062199324,
+      "history": [
+        {
+          "at_logical_ns": 35234710734,
+          "reason": "sustained_memory_pressure",
+          "request_id": "c015d017-10a1-470b-ae3d-709caa90697b",
+          "source": "primary",
+          "source_generation": 1,
+          "target": "light",
+          "target_sha256": "a14aef7989723d111d5ff116c9e0be7928eef5339350cef45f94a11a500bc839"
+        }
+      ]
+    },
+    {
+      "selected": "primary",
+      "generation": 3,
+      "pid": 704994,
+      "elapsed": 495.33527686074376,
+      "history": [
+        {
+          "at_logical_ns": 35234710734,
+          "reason": "sustained_memory_pressure",
+          "request_id": "c015d017-10a1-470b-ae3d-709caa90697b",
+          "source": "primary",
+          "source_generation": 1,
+          "target": "light",
+          "target_sha256": "a14aef7989723d111d5ff116c9e0be7928eef5339350cef45f94a11a500bc839"
+        },
+        {
+          "at_logical_ns": 335352281664,
+          "reason": "sustained_memory_recovery",
+          "request_id": "bd561262-5336-40fb-99b0-bcfd7627530d",
+          "source": "light",
+          "source_generation": 2,
+          "target": "primary",
+          "target_sha256": "627ebdd0badbf29d0b185e98939e8ee5e3e50cef8c49e543ec0b504b62702c1e"
+        }
+      ]
+    }
+  ],
+  "chats": [
+    {
+      "id": "chatcmpl-auto-b7164e7e26206c9ee07c0b4a7e416a13",
+      "answer": "42",
+      "selected": "primary"
+    },
+    {
+      "id": "chatcmpl-auto-27ea7df55566dd0750ee2445e490e170",
+      "answer": "42",
+      "selected": "light"
+    },
+    {
+      "id": "chatcmpl-auto-c236c37288f00b8631c2a57bcfd801d5",
+      "answer": "42",
+      "selected": "primary"
+    }
+  ],
+  "switches": [
+    {
+      "at_logical_ns": 35234710734,
+      "reason": "sustained_memory_pressure",
+      "request_id": "c015d017-10a1-470b-ae3d-709caa90697b",
+      "source": "primary",
+      "source_generation": 1,
+      "target": "light",
+      "target_sha256": "a14aef7989723d111d5ff116c9e0be7928eef5339350cef45f94a11a500bc839"
+    },
+    {
+      "at_logical_ns": 335352281664,
+      "reason": "sustained_memory_recovery",
+      "request_id": "bd561262-5336-40fb-99b0-bcfd7627530d",
+      "source": "light",
+      "source_generation": 2,
+      "target": "primary",
+      "target_sha256": "627ebdd0badbf29d0b185e98939e8ee5e3e50cef8c49e543ec0b504b62702c1e"
+    }
+  ],
+  "resource": {
+    "memory_high_bytes": 8589934592,
+    "baseline": 1238974464,
+    "peak_private_held": 7294451712,
+    "kernel_high_start": 147116,
+    "kernel_high_end": 150091,
+    "minimum_physical_available": 25933058048,
+    "samples": 112,
+    "after_release": 163553280
+  },
+  "receipts": {
+    "business-01/business.json": "16750f746c916b789a19cf6753d423f345b3f4a4acb7b504e5b41e421c1592e4",
+    "business-01/cleanup.json": "eb70b78dca405b7e7ae20dc821c692e5f7a039fe8123b17ab0c73e433f4cadaa",
+    "business-01/lease/exit.json": "14372dbafd1a5f6815dd01b2e672262ce1be0b3734fde9670803a24de9644a3d",
+    "business-01/pressure-load.json": "89758ffee8c660f98d0eb774c36db2469664abc92fef2fc9384225eb1d397154",
+    "host-business/result.json": "15b744a5db0c21af78cd92127849c70a6ae4f258f3122ce8d00e33cf5376a3e2",
+    "host-preflight-02/result.json": "e4c7876046fe68e88089aaf75f404119ce85c08404dcf77e45704f3b3f8768f9"
+  },
+  "cleanup": {
+    "stop": 0,
+    "outer_exit": 0,
+    "model_lifetimes": 3,
+    "chats": 3,
+    "original_protected": true,
+    "seconds": 508.23153137788177
+  },
+  "domain_removed": true,
+  "lease_released": true,
+  "physical_ram_limit_proved": false
+}

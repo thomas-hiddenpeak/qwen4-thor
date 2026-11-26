@@ -273,16 +273,76 @@ def legacy_imports(raw):
         b'from tools.serve_recovery import profile_memory as resource_client\n')
 
 
-def changes(original, *, profile_history):
+# The original source profile is still used by signed recovery packages.
+ORIGINAL_CLIENT_SHA256 = 'eaf41ac8a9eccdf261007b80887b7a6fd9eda95a58290ab65cda196dcfbc6f92'
+
+
+def client_source(reclaim):
+    raw = Path(resource_client.__file__).read_bytes()
+    if reclaim:
+        return raw
+    start = raw.index(b'class ReclaimPressure:')
+    previous = raw[:start] + raw[raw.index(b'class Observer:', start):]
+    ledger.require(hashlib.sha256(previous).hexdigest() == ORIGINAL_CLIENT_SHA256,
+                   'historical resource client differs')
+    return previous
+
+
+def hooks(name, reclaim):
+    parts = PATCHES[name]
+    if name != 'profile_controller.py' or not reclaim:
+        return parts
+    original = (
+        '            recover = resources is None or resource_memory.recovery_clear(observed, now, extra)\n'
+        '            result = self.detector.assess(self.launch, controller.watchdog.snapshot(), now,\n'
+        "                ready=controller.phase == 'READY' and (self.launch != 'light' or recover))\n"
+        "            if self.launch == 'primary' and controller.phase == 'READY':\n"
+        "                if self.resource_pressure.assess(observed, now, state['configuration']['pressure_seconds']):\n"
+        "                    result = dict(target='light', reason='sustained_memory_pressure')\n"
+        '            else: self.resource_pressure.reset()\n'
+    )
+    replacement = (
+        '            pressure = self.resource_pressure.observe(\n'
+        "                observed if controller.phase == 'READY' else None, now,\n"
+        "                state['configuration']['pressure_seconds'], extra)\n"
+        '            recover = resources is None or self.resource_pressure.clear\n'
+        '            result = self.detector.assess(self.launch, controller.watchdog.snapshot(), now,\n'
+        "                ready=controller.phase == 'READY' and (self.launch != 'light' or recover))\n"
+        "            if self.launch == 'primary' and pressure:\n"
+        "                result = dict(target='light', reason='sustained_memory_pressure')\n"
+    )
+    init = 'self.resource_pressure = resource_memory.Pressure()'
+    ledger.require(all(sum(after.count(fragment) for _,after in parts) == 1
+                       for fragment in (init, original)), 'resource pressure hooks require review')
+    return [(before, after.replace(original, replacement).replace(
+        init, 'self.resource_pressure = resource_memory.ReclaimPressure()')) for before, after in parts]
+
+
+def client_variant(package):
+    direct = package/(PREFIX+'resource_client.py')
+    if direct.is_file():
+        raw = direct.read_bytes()
+    else:
+        memory = (package/(PREFIX+'profile_memory.py')).read_bytes()
+        ledger.require(memory.startswith(BOOTSTRAP.encode()) and memory.count(MARKER.encode()) == 1,
+                       'unrecognized embedded resource client')
+        raw = memory.split(MARKER.encode(),1)[1]
+    if raw == client_source(True):
+        return True
+    ledger.require(raw == client_source(False), 'unrecognized resource client bytes')
+    return False
+
+
+def changes(original, *, profile_history, reclaim=True):
     original = Path(original)
     control = (original/cold_compat.SOURCE).read_bytes()
     if not cold_compat.aware(original): control = cold_compat.adapted(control)
-    helper = Path(resource_client.__file__).read_bytes()
+    helper = client_source(reclaim)
     memory = (original/(PREFIX+'profile_memory.py')).read_bytes()
     ledger.require(MARKER.encode() not in memory, 'resource adapter cannot reapply to its own output')
     result = {PREFIX+'controller.py': legacy_imports(apply(control, PATCHES['controller.py'])),
         PREFIX+'profile_controller.py': legacy_imports(apply(
-            (original/(PREFIX+'profile_controller.py')).read_bytes(), PATCHES['profile_controller.py'])),
+            (original/(PREFIX+'profile_controller.py')).read_bytes(), hooks('profile_controller.py', reclaim))),
         PREFIX+'profile_memory.py': BOOTSTRAP.encode()+memory+MARKER.encode()+helper}
     if profile_history: result[profile_compat.SOURCE] = Path(profile_policy.__file__).read_bytes()
     return result
@@ -292,17 +352,14 @@ def aware(package):
     """Recognize the actual hooks and exact client, not a capability flag."""
     package = Path(package)
     try:
-        for name, fragments in PATCHES.items():
+        reclaim = client_variant(package)
+        for name in PATCHES:
             text = (package/(PREFIX+name)).read_bytes()
+            fragments = hooks(name, reclaim)
             native = all(text.count(new.encode()) == 1 for _,new in fragments)
             legacy = all(text.count(legacy_imports(new.encode())) == 1 for _,new in fragments)
             if not (native or legacy): return False
-        helper = Path(resource_client.__file__).read_bytes()
-        direct = package/(PREFIX+'resource_client.py')
-        if direct.exists(): return direct.read_bytes() == helper
-        memory = (package/(PREFIX+'profile_memory.py')).read_bytes()
-        return memory.startswith(BOOTSTRAP.encode()) and memory.count(MARKER.encode()) == 1 and \
-            memory.split(MARKER.encode(),1)[1] == helper
+        return True
     except (OSError, ValueError, UnicodeError): return False
 
 
@@ -311,7 +368,7 @@ def verify(original, original_sha, target, target_sha, *, read_bundle=bundle.ver
     first = read_bundle(original, original_sha); second = read_bundle(target, target_sha)
     ledger.require(12 <= first['version'] <= 16, 'resource adapter needs a retained qualified service')
     profile_history = first['files'][profile_compat.SOURCE] != second['files'].get(profile_compat.SOURCE)
-    replacements = changes(original, profile_history=profile_history)
+    replacements = changes(original, profile_history=profile_history, reclaim=client_variant(target))
     expected = copy.deepcopy(first)
     for name,data in replacements.items():
         expected['files'][name] = hashlib.sha256(data).hexdigest()

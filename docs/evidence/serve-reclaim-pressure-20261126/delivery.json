@@ -1,0 +1,107 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 538,
+    "version_revision": 198,
+    "profile_revision": 87,
+    "previous_profile_revision": 87,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "e0556ec52df7d6fd7b752b68647f9403199d326bb6aca54f26cd1b70ffe73b58",
+    "fallback": "1732082fa74c2d422d4fe128353908a4c20453a38cedfce170750b305777ec9e",
+    "engine": "30e23fda5afc2197958960bb2554473e24a74aae872c9b03a0fd89ebcc009e70",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 536,
+  "previous_primary": "9a5fd7f90d7a7e0c7cd5af87829dfedd3bdceef331c7760180567396f522e0f1",
+  "controller_source": "b08721977b681c179b7d52afd9ec63e7644cee93",
+  "engine_source": "a0796d6c380e6538ab91290bca1a45c9b95ab381",
+  "pressure_result": "business.json",
+  "cpu_result": "cpu.json",
+  "pressure_tested_package": "1732082fa74c2d422d4fe128353908a4c20453a38cedfce170750b305777ec9e",
+  "gateway_takeover": {
+    "starts": 2,
+    "seconds": 280.154,
+    "signal": 6,
+    "probes": 1,
+    "original_and_restored_tool_answer": "13",
+    "fresh_chat": "42",
+    "same_guardian": true,
+    "cross_owner_status": 404,
+    "original_chat_digest": "064314610796abd0514a115cd2c90174206582333bd773993b20517c4ce8f5e8",
+    "original_agent_fields_digest": "46829bbf9a1dd9b46449b4e59dd996a8056ab9f08e678df4d240f3c853b83b47",
+    "selected_manifest": "1732082fa74c2d422d4fe128353908a4c20453a38cedfce170750b305777ec9e",
+    "ports_free": true,
+    "remaining_owned_processes": 0
+  },
+  "handoff": {
+    "day": {
+      "source_commit": "b08721977b681c179b7d52afd9ec63e7644cee93",
+      "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-delivery-soak-src",
+      "package": {
+        "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-client-primary-01/bundle",
+        "manifest_sha256": "e0556ec52df7d6fd7b752b68647f9403199d326bb6aca54f26cd1b70ffe73b58"
+      },
+      "revision": 538,
+      "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-delivery-soak-src/.q4t-work/day-01/plan.json",
+      "plan_sha256": "6ed211e0087898ad6961b444e709d2b9c284e5efa8b7943660bf17a5869acff0",
+      "handoff_sha256": "54094785ec1e00746f679765feab15accc47a44c1902ee25a84314479cd7b532",
+      "checked": true,
+      "source_files": 700,
+      "hours_executed": 0
+    },
+    "cold": {
+      "status": "PREPARED",
+      "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/reclaim-delivery-soak-src/.q4t-work/cold538-01/plan.json",
+      "plan_sha256": "154ceb2c0715ea273abeac04288f93909b3efe04dfc85acbe1aa042900332f02",
+      "service_id": "9f7e70c8-5bcf-4950-bc7c-d6c354977cfa",
+      "source": "b08721977b681c179b7d52afd9ec63e7644cee93",
+      "limits": {
+        "starts": 1,
+        "chats": 3,
+        "probes": 1,
+        "controls": 2000,
+        "seconds": 600
+      },
+      "publication": 538,
+      "registered_package": "e0556ec52df7d6fd7b752b68647f9403199d326bb6aca54f26cd1b70ffe73b58",
+      "protected": {
+        "/home/rm01/models/dev/qwen4-thor/build/q4t": "30e23fda5afc2197958960bb2554473e24a74aae872c9b03a0fd89ebcc009e70",
+        "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "8997c59009d26612c086e376a7984dee56bf705c7e61ef323153ca72fe35047f",
+        "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "e0556ec52df7d6fd7b752b68647f9403199d326bb6aca54f26cd1b70ffe73b58",
+        "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "3d9fec01bf1758f27db05b97f70adee154df77a7ce9bca6ee90950cdfda627a7",
+        "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+      },
+      "model_actions": 0,
+      "host_filter_installed": false,
+      "host_units_modified": false
+    }
+  },
+  "bound_leases": {
+    "reclaim-primary-lease-02": "92ba68164ceebdce6bb9d7fb66cb170dcd588eb4084c59b6e59f03765f721a39",
+    "reclaim-maintenance-lease-01": "e74e0f2ed51d75430f4f0602178f56d69ab45291368671577abc9e889fa81f45",
+    "reclaim-publish-lease-01": "ae5cbec660c278f35b8be0b2f0793ae15a9ef47b68ae23f5e8f5c20c52f287dd"
+  },
+  "stopped_publication_inputs": 28,
+  "declared_methods": {
+    "required_methods": 231,
+    "exact_success_declarations": 219
+  },
+  "query_defaults": {
+    "checked": 71,
+    "matching": 71
+  },
+  "remaining": [
+    "Unified physical memory hard limit",
+    "Combined cold and pressure operation",
+    "Physical NVML-unavailable cold run",
+    "User-owned 24-hour soak"
+  ],
+  "prior_launch_failure": {
+    "stage": "relative harness path before service init",
+    "child_returncode": 2,
+    "model_starts": 0
+  }
+}

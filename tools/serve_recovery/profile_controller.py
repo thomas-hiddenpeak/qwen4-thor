@@ -26,7 +26,7 @@ class Profiles:
         self.selection = profile_runtime.Selection(binding, registry, boot,
             configuration=controller.manifest['recovery_profile_policy'])
         self.detector = None
-        self.resource_pressure = resource_memory.Pressure()
+        self.resource_pressure = resource_memory.ReclaimPressure()
         self.launch = None
         self.memory_fault = False
         self.generation = 0
@@ -120,13 +120,14 @@ class Profiles:
             observed = None if resources is None else resources.snapshot()
             q = self.registry['qualifications']
             extra = q['primary']['startup_required_bytes']-q['light']['startup_required_bytes']
-            recover = resources is None or resource_memory.recovery_clear(observed, now, extra)
+            pressure = self.resource_pressure.observe(
+                observed if controller.phase == 'READY' else None, now,
+                state['configuration']['pressure_seconds'], extra)
+            recover = resources is None or self.resource_pressure.clear
             result = self.detector.assess(self.launch, controller.watchdog.snapshot(), now,
                 ready=controller.phase == 'READY' and (self.launch != 'light' or recover))
-            if self.launch == 'primary' and controller.phase == 'READY':
-                if self.resource_pressure.assess(observed, now, state['configuration']['pressure_seconds']):
-                    result = dict(target='light', reason='sustained_memory_pressure')
-            else: self.resource_pressure.reset()
+            if self.launch == 'primary' and pressure:
+                result = dict(target='light', reason='sustained_memory_pressure')
             if result is not None:
                 runtime.prepare(result['target'], result['reason'], controller.grant['generation'])
             if controller.phase == 'READY' and self.launch == 'light':
