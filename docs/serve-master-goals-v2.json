@@ -864,7 +864,8 @@
         "receipt": "evidence/serve-optional-resource-updates-20261126/cpu.json",
         "device_https_pending": false,
         "release_pending": true,
-        "device_https": "evidence/serve-optional-resource-updates-20261126/https.json"
+        "device_https": "evidence/serve-optional-resource-updates-20261126/https.json",
+        "combined_device": "evidence/serve-tool-map-references-20261126/business.json"
       }
     },
     {
@@ -1379,10 +1380,11 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "tool_dictionary_references_20261126": {
-        "stage": "targeted_cpu",
+        "stage": "candidate_native_https",
         "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
-        "device_qualified": false,
-        "issued": false
+        "device_qualified": true,
+        "issued": false,
+        "business": "evidence/serve-tool-map-references-20261126/business.json"
       }
     },
     {
@@ -1473,10 +1475,11 @@
         "existing_evidence_reviewed": true
       },
       "tool_dictionary_references_20261126": {
-        "stage": "targeted_cpu",
+        "stage": "candidate_native_https",
         "receipt": "evidence/serve-tool-map-references-20261126/cpu.json",
-        "device_qualified": false,
-        "issued": false
+        "device_qualified": true,
+        "issued": false,
+        "business": "evidence/serve-tool-map-references-20261126/business.json"
       }
     },
     {
