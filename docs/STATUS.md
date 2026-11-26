@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+本机四项 CPU 用例通过，逐项校验客户端补丁版本的 16 种输出，以及旧版 shell 归属恢复与其他内联输入的存储边界。后续由公开 CI 复查。
+
+PR #172 的公开 CI 在旧断言上失败，本机复现两项。现按 32 个 SDK 输入逐项检查对象存储访问，其中唯一需要读取归属记录的是旧版 shell 结果；能力清单逐一核对包含 local_shell_call 的 15 种输出。本机四项 CPU 检查全部通过，等待新提交的公开 CI。[复核记录](evidence/serve-local-shell-20261126/host-contracts.json)
+
 rev550 已发行客户端补丁工具。主、轻配置与两条托管故障路径都能按原 ID 读回直接调用和程序调用的四个响应、两份输入页。原程序在恢复后能重新接收实际 ENOENT 并继续回答。停止状态下登记新包，13 份受保护状态通过核对。[发行记录](evidence/serve-client-patch-20261126/delivery.json)
 
 主配置 43.0 秒，轻配置 40.3 秒。两个配置都按原 ID 读回四个补丁响应和两份输入页，HTTP 字节与首次业务一致。原程序接收新的实际失败回执并返回 failed ENOENT，轻配置还读回了主配置的新续答。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-client-patch-20261126/profiles.json)

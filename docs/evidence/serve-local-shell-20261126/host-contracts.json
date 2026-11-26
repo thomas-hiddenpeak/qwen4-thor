@@ -1,0 +1,22 @@
+{
+  "source": "a48910f1f895982da7fc439e3e11bd2311028533",
+  "original_ci_job": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45835830922/job/139964308767",
+  "original_local": [
+    "  CHECK failed: items && items->array.size() == 14 (line 104)",
+    "[FAIL] chat_capabilities_native_file_search_conditions_and_output_types",
+    "  CHECK failed: objects.Health().workers_started == 0 (line 532)",
+    "[FAIL] conversation_state_resolves_all_declared_input_variants",
+    "[PASS] conversation_state_optional_reference_discriminator_and_scope",
+    "[PASS] conversation_state_rejects_bad_input_before_reference_io",
+    "4 tests, 2 passed, 2 failed, 0 skipped"
+  ],
+  "verified_local": [
+    "[PASS] chat_capabilities_native_file_search_conditions_and_output_types",
+    "[PASS] conversation_state_resolves_all_declared_input_variants",
+    "[PASS] conversation_state_optional_reference_discriminator_and_scope",
+    "[PASS] conversation_state_rejects_bad_input_before_reference_io",
+    "4 tests, 4 passed, 0 failed, 0 skipped"
+  ],
+  "scope": "test contracts only",
+  "device": "Jetson AGX Thor"
+}
