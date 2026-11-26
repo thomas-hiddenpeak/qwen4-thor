@@ -7,6 +7,7 @@
 仓库中的视觉示例客户端曾在读取能力后拒绝已启用媒体的主配置，OpenAPI 也误写为必须关闭 MTP。现按 runtime.media_enabled 进入预检；单槽服务可加载文本草稿，含视觉 token 的请求使用主模型逐步解码。已从主、轻配置的真实能力记录核对两个模式。12 项 CPU 检查通过，公开合同已同步生成。下一步用该示例经原生 TLS 请求图像。[核验记录](evidence/serve-visual-frame-parts-20261126/client-discovery.json)
 
 复查发现此前的 video_url 用例直接调用渲染器，绕过了 Chat 对该输入的拒绝。真实入口按 image_url 和 video_frames 内容字段接收媒体，type 可省略。候选依照相同字段生成普通视觉回答的提示；新用例经过公开请求校验及媒体准备，检查有类型和无类型的图像与视频、原始模式、工具和 JSON。旧程序在该用例失败，候选 8 项原生用例及 40 项来源变异检查通过。下一步对真实视频帧和 H.264 文件做原生 TLS 短验。[CPU 回执](evidence/serve-visual-frame-parts-20261126/cpu.json)
+rev524 已发行普通图像回答与可空 user 字段修复。托管模型退出及主网关切换后，原来的两条图像回答和一条拒答均可按 ID 取回，另一客户读取三项均为 404。新图像请求仍得到 Blue 和 Green，应拒答的请求保留 refusal，独立 Chat 答 42。两套包各自的公开合同都通过了 9 条请求、9 条响应和 114 条已保存事件的校验。发布时保持 STOPPED，13 份受保护记录摘要一致。视频帧与省略类型的媒体另行跟踪。[发行回执](evidence/serve-visual-answer-encoding-20261126/delivery.json)
 
 主、轻配置分别从原生 TLS 取得 Blue 和 Green，并保留真实拒答。轻配置按原 ID 读回主配置两条普通视觉回答和一条拒答，逐项相同；另一客户读这三项均收到 404。两套配置还分别拒绝了数值 user，独立 Chat 均返回 42。两套配置各启动一次，耗时 66.997 秒和 62.549 秒。首轮主配置 SDK 已通过，但验收器仍要求旧模板摘要而报错；修正后核对了实际新模板及其余全部声明。下一步验证托管包故障接手。[配置回执](evidence/serve-visual-answer-encoding-20261126/profiles.json)
 
