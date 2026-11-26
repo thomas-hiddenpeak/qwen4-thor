@@ -10009,6 +10009,12 @@
         "out_of_pool_allocation_observed": true,
         "physical_ram_limit_proved": false,
         "evidence": "evidence/serve-resource-charge-20261126/sized-pool.json"
+      },
+      "reclaim_pressure_20261126": {
+        "stage": "cpu_and_kernel_validated",
+        "receipt": "evidence/serve-reclaim-pressure-20261126/cpu.json",
+        "issued": false,
+        "real_business_pending": true
       }
     },
     {

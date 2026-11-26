@@ -69,6 +69,18 @@ class AdapterTests(unittest.TestCase):
         result=subprocess.run([sys.executable,'-I','-B','-c',program,str(target/'source')],capture_output=True,text=True,timeout=4)
         self.assertEqual(result.returncode,0,result.stderr);self.assertEqual(result.stdout.strip(),'retained-import-ok')
 
+    def test_mixed_reclaim_hooks_and_original_client_cannot_be_selected(self):
+        target = Path(self.prepare()['payload'])
+        self.assertTrue(adapter.client_variant(target))
+        source = target/(adapter.PREFIX+'profile_memory.py')
+        prefix, helper = source.read_bytes().split(adapter.MARKER.encode())
+        self.assertEqual(helper, adapter.client_source(True))
+        source.chmod(0o600)
+        source.write_bytes(prefix+adapter.MARKER.encode()+adapter.client_source(False))
+        self.assertFalse(adapter.aware(target))
+        source.write_bytes(prefix+adapter.MARKER.encode()+helper+b'\n')
+        self.assertFalse(adapter.aware(target))
+
     def test_resigned_unrelated_change_is_rejected_and_adapter_cannot_reapply(self):
         receipt=self.prepare();target=Path(receipt['payload'])
         with self.assertRaises(ValueError):adapter.changes(target,profile_history=True)

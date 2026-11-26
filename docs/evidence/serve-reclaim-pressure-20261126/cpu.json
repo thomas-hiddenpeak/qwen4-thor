@@ -1,0 +1,118 @@
+{
+  "stage": "targeted_cpu_and_kernel",
+  "memory_high": 67108864,
+  "max_bytes": 268435456,
+  "pressure_seconds": 2,
+  "samples": [
+    {
+      "ms": 0.0,
+      "current": 22347776,
+      "high_events": 0,
+      "old": false,
+      "candidate": false
+    },
+    {
+      "ms": 607.134,
+      "current": 22323200,
+      "high_events": 72,
+      "old": false,
+      "candidate": false
+    },
+    {
+      "ms": 1139.069,
+      "current": 22523904,
+      "high_events": 93,
+      "old": false,
+      "candidate": false
+    },
+    {
+      "ms": 1666.873,
+      "current": 22568960,
+      "high_events": 113,
+      "old": false,
+      "candidate": false
+    },
+    {
+      "ms": 2519.722,
+      "current": 22568960,
+      "high_events": 372,
+      "old": false,
+      "candidate": false
+    },
+    {
+      "ms": 3071.566,
+      "current": 22511616,
+      "high_events": 410,
+      "old": false,
+      "candidate": true
+    },
+    {
+      "ms": 3623.547,
+      "current": 22388736,
+      "high_events": 447,
+      "old": false,
+      "candidate": true
+    },
+    {
+      "ms": 4219.737,
+      "current": 22401024,
+      "high_events": 502,
+      "old": false,
+      "candidate": true
+    }
+  ],
+  "original_samples_sha256": "5f019818b74016c2479b84c097fcf113acaad1fcd21d0dc8c8f7528fecf584bf",
+  "checks": {
+    "targeted-final": {
+      "cases": 14,
+      "sha256": "1dde033959a7e1369b2de7043aac585844d5325402d88de27b390d108fa218c1"
+    },
+    "version-root": {
+      "cases": 2,
+      "sha256": "670c14180b4522936a02ba27d6110b8b777d215a3ed6de0d4b19e6349790a46b"
+    },
+    "actual-kernel": {
+      "cases": 1,
+      "sha256": "2f8ce7be29534cf4c6553f33de066aff8e19d97b74fb7eb36f1dfcc383d514e7"
+    }
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1390,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "original_retained_manifest": "10155da318447ff4a14115b341e8d7591cf026fcff21484781f1fd4f465408a0",
+  "verified_historical_adapter": "5993494254afc76d3963be42cd3adcf10729068a376a07e4786fd2bbc79e938b",
+  "updated_retained_source_sha256": {
+    "source/tools/serve_recovery/controller.py": "1e50289795a8e790d7ceadb76304b667e088a8c0ef8f623bf23c6b4a4226765a",
+    "source/tools/serve_recovery/profile_controller.py": "de43fd906c54bedd6b5a9ca905b60853954b603eeeb2edce381b88dc0e8b9996",
+    "source/tools/serve_recovery/profile_memory.py": "f8de38d3e38bd678439ba291e632b791f878790bcc8ecfc37e0a6921b7ba8c55"
+  },
+  "retained_replay": [
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true
+  ],
+  "hardware_business_pending": true,
+  "model_starts": 0,
+  "limitations": [
+    "Physical GPU and unified DRAM hard limit remains unresolved",
+    "Cold device maintenance remains pending"
+  ],
+  "harness_notes": [
+    "The first isolated checkout lacked the gateway module; no domain was created. Missing CPU fixtures were then materialized from Git.",
+    "Kernel setup requires root. Two targeted version-entry cases passed with the documented root fixture after an unprivileged module-wide invocation.",
+    "Direct historical package verification rejected the audited model ctime change. The existing content-qualified historical reader verified both original descriptors."
+  ]
+}

@@ -93,6 +93,43 @@ class Pressure:
         return at-self.since >= seconds*ledger.SECOND
 
 
+class ReclaimPressure:
+    """Combine instantaneous usage with new reclaim events from the same domain."""
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.last = None
+        self.domain = None
+        self.events = 0
+        self.since = None
+        self.clear = False
+
+    def observe(self, value, now, seconds, extra):
+        if not fresh(value, now):
+            self.reset()
+            return False
+        at = value['sampled_monotonic_ns']
+        events = value['memory_events']['high']
+        domain = value['binding_sha256']
+        if self.last is not None:
+            if (domain != self.domain or at < self.last or
+                    at - self.last > MAX_AGE or events < self.events):
+                self.reset()
+            elif at == self.last:
+                return False
+        reclaim = self.last is not None and events > self.events
+        self.clear = (self.last is not None and not reclaim and
+                      recovery_clear(value, now, extra))
+        self.domain, self.last, self.events = domain, at, events
+        if not reclaim and value['memcg']['memory.current'] < value['high_bytes']:
+            self.since = None
+            return False
+        if self.since is None:
+            self.since = at
+        return at - self.since >= seconds * ledger.SECOND
+
+
 class Observer:
     """One bounded owned worker; failures never restart a model or free a live slot."""
     def __init__(self, binding, lease_fd, *, worker, factory=jobs.Job, clock=time.monotonic):

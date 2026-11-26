@@ -1,6 +1,7 @@
 """Scoped native memory observations and CPU-only qualified degradation."""
 from copy import deepcopy
 import json
+import mmap
 import os
 from pathlib import Path
 import select
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 from tools.serve_recovery import controller, ledger, profile_controller, profile_memory, profile_policy
 from tools.serve_recovery import resource_memory as memory, resource_launch, resource_kernel as kernel
+from tools.serve_recovery import resource_client
 from tools.serve_recovery import test_resource_install as fixtures, test_profile_policy
 
 
@@ -57,10 +59,63 @@ class PressureTests(unittest.TestCase):
         runtime=mock.Mock();runtime.ready.return_value=True;runtime.state=state
         profiles=profile_controller.Profiles.__new__(profile_controller.Profiles)
         profiles.registry=registry;profiles.selection=runtime;profiles.launch=selected
-        profiles.detector=None;profiles.resource_pressure=memory.Pressure()
+        profiles.detector=None;profiles.resource_pressure=resource_client.ReclaimPressure()
         actor=SimpleNamespace(phase='READY',reason='serving',grant={'generation':1},
             watchdog=mock.Mock(),resource_memory=mock.Mock())
         return profiles,actor,runtime
+
+    def test_reclaim_between_samples_degrades_and_blocks_promotion(self):
+        for selected in ('primary', 'light'):
+            profiles, actor, runtime = self.coordinator(selected)
+            for second in range(40):
+                runtime.nanos.return_value = second * ledger.SECOND
+                actor.watchdog.snapshot.return_value = dict(state='OPEN', sampled_monotonic=second,
+                    total_bytes=128*1024**3, available_bytes=120*1024**3)
+                value = observed(second, current=1, high=10**9)
+                value['memory_events']['high'] = 50 + second
+                actor.resource_memory.snapshot.return_value = value
+                self.assertFalse(profiles.switch_ready(actor))
+                if second < 3 or selected == 'light':
+                    runtime.prepare.assert_not_called()
+            if selected == 'primary':
+                self.assertTrue(runtime.prepare.called)
+                self.assertTrue(all(c.args == ('light','sustained_memory_pressure',1)
+                                    for c in runtime.prepare.call_args_list))
+            else:
+                for second in range(40, 71):
+                    runtime.nanos.return_value = second * ledger.SECOND
+                    actor.watchdog.snapshot.return_value['sampled_monotonic'] = second
+                    value = deepcopy(value)
+                    value['sampled_monotonic_ns'] = second * ledger.SECOND
+                    actor.resource_memory.snapshot.return_value = value
+                    self.assertFalse(profiles.switch_ready(actor))
+                    if second < 70:
+                        runtime.prepare.assert_not_called()
+                runtime.prepare.assert_called_once_with('primary','sustained_memory_recovery',1)
+
+    def test_reclaim_streak_needs_distinct_fresh_samples_from_one_counter(self):
+        p = resource_client.ReclaimPressure()
+        def poll(second, count, *, domain='a', now=None):
+            value = observed(second, current=1)
+            value['memory_events']['high'] = count
+            value['binding_sha256'] = domain*64
+            return p.observe(value, (second if now is None else now)*ledger.SECOND, 2, 0)
+        self.assertFalse(poll(0, 90))
+        self.assertFalse(poll(1, 91))
+        self.assertFalse(poll(1, 91, now=2))
+        self.assertFalse(p.clear)
+        self.assertFalse(poll(2, 91))
+        self.assertTrue(p.clear)
+        self.assertFalse(poll(3, 92))
+        self.assertFalse(poll(4, 93, domain='b'))
+        self.assertFalse(p.clear)
+        self.assertFalse(poll(5, 94, domain='b'))
+        self.assertFalse(poll(6, 0, domain='b'))
+        self.assertFalse(poll(9, 100, domain='b'))
+        self.assertFalse(p.clear)
+        self.assertFalse(poll(10, 101, domain='b'))
+        self.assertFalse(poll(11, 102, domain='b', now=14))
+        self.assertFalse(p.clear)
 
     def test_memcg_high_proposes_qualified_light_even_with_abundant_host_ram(self):
         profiles,actor,runtime=self.coordinator('primary')
@@ -115,6 +170,20 @@ class KernelTests(fixtures.InstallationTests):
         self.assertGreater(value['physical']['total_bytes'],value['max_bytes'])
         self.assertFalse(value['physical_ram_limit'])
 
+    def test_real_reclaim_pulses_survive_sampling_below_threshold(self):
+        samples = self.run_sample('reclaim')
+        previous = memory.Pressure()
+        current = resource_client.ReclaimPressure()
+        proposals = []
+        for value in samples:
+            at = value['sampled_monotonic_ns']
+            self.assertLess(value['memcg']['memory.current'], value['high_bytes'])
+            self.assertFalse(previous.assess(value, at, 2))
+            proposals.append(current.observe(value, at, 2, 0))
+        self.assertTrue(all(a['memory_events']['high'] < b['memory_events']['high']
+                            for a, b in zip(samples, samples[1:])))
+        self.assertTrue(proposals[-1])
+
     def test_live_cpu_collector_is_reaped_before_slot_is_reused(self):
         result=self.run_sample('observer')
         self.assertTrue(result['observed']);self.assertTrue(result['reaped']);self.assertEqual(result['models'],0)
@@ -151,6 +220,20 @@ class KernelTests(fixtures.InstallationTests):
 def child(directory,mode):
     publication=resource_launch.install.read_public(directory)
     binding=dict(directory=str(directory),publication=publication)
+    if mode=='reclaim':
+        leaf=Path(publication['record']['root'])/'service'
+        high=publication['record']['policy']['service']['memory_high_bytes']
+        samples=[memory.sample(binding)]
+        for _ in range(7):
+            current=int((leaf/'memory.current').read_text())
+            amount=max(0,high-current)+1024*1024
+            assert 0 < amount <= high + 1024*1024
+            with mmap.mmap(-1,amount) as pages:
+                pages[::4096]=b'x'*len(range(0,amount,4096))
+                time.sleep(.04)
+            time.sleep(.45)
+            samples.append(memory.sample(binding))
+        print(json.dumps(samples),flush=True);return
     if mode=='high':
         leaf=Path(publication['record']['root'])/'service'
         current=int((leaf/'memory.current').read_text())
