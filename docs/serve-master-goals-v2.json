@@ -3088,14 +3088,15 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "native_direct_and_program_business_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "programmatic SDK, packaged profiles, recovery and release"
+          "packaged profiles, recovery and release"
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
-        "business": "evidence/serve-client-patch-20261126/business.json"
+        "business": "evidence/serve-client-patch-20261126/business.json",
+        "program_business": "evidence/serve-client-patch-20261126/program.json"
       }
     },
     {
@@ -3785,14 +3786,15 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "native_direct_and_program_business_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "programmatic SDK, packaged profiles, recovery and release"
+          "packaged profiles, recovery and release"
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
-        "business": "evidence/serve-client-patch-20261126/business.json"
+        "business": "evidence/serve-client-patch-20261126/business.json",
+        "program_business": "evidence/serve-client-patch-20261126/program.json"
       }
     },
     {
@@ -7634,14 +7636,15 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "native_direct_and_program_business_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "programmatic SDK, packaged profiles, recovery and release"
+          "packaged profiles, recovery and release"
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
-        "business": "evidence/serve-client-patch-20261126/business.json"
+        "business": "evidence/serve-client-patch-20261126/business.json",
+        "program_business": "evidence/serve-client-patch-20261126/program.json"
       }
     },
     {
@@ -8925,14 +8928,15 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "client_patch_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "native_direct_and_program_business_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "programmatic SDK, packaged profiles, recovery and release"
+          "packaged profiles, recovery and release"
         ],
         "direct": "evidence/serve-client-patch-20261126/direct.json",
-        "business": "evidence/serve-client-patch-20261126/business.json"
+        "business": "evidence/serve-client-patch-20261126/business.json",
+        "program_business": "evidence/serve-client-patch-20261126/program.json"
       }
     },
     {
