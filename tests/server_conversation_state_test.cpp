@@ -469,8 +469,6 @@ Q4T_TEST(conversation_state_metadata_and_query_contract) {
 
 Q4T_TEST(conversation_state_resolves_all_declared_input_variants) {
   Fixture f;
-  ObjectStore objects(f.options);
-  ResponsesState responses(objects);
   const auto path = fs::path(__FILE__).parent_path() /
                     "fixtures/responses_items/sdk_vectors.json";
   std::ifstream source(path);
@@ -485,6 +483,8 @@ Q4T_TEST(conversation_state_resolves_all_declared_input_variants) {
     if (input.GetString("type") == "item_reference" ||
         (!input.Has("role") && input.GetString("type").empty()))
       continue;
+    ObjectStore objects(f.options);
+    ResponsesState responses(objects);
     auto items = Parse("[]");
     items.array.push_back(input);
     if (input.GetString("type") == "compaction") {
@@ -498,6 +498,9 @@ Q4T_TEST(conversation_state_resolves_all_declared_input_variants) {
     }
     auto canonical = responses.ResolveItems(items, Access());
     Q4T_CHECK(Ok(canonical) && canonical.value.array.size() == 1);
+    // Only a legacy shell result looks up its owner-scoped call binding.
+    const bool lookup = input.GetString("type") == "local_shell_call_output";
+    Q4T_CHECK(objects.Health().workers_started == (lookup ? 1u : 0u));
     ++resolved;
     const auto& item = canonical.value.array.front();
     Q4T_CHECK(!item.GetString("id").empty());
@@ -529,7 +532,6 @@ Q4T_TEST(conversation_state_resolves_all_declared_input_variants) {
     ++conversation_shapes;
   }
   Q4T_CHECK(resolved == 32 && conversation_shapes == 31);
-  Q4T_CHECK(objects.Health().workers_started == 0);
   return true;
 }
 
