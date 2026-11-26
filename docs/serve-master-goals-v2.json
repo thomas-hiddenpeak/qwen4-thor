@@ -845,9 +845,9 @@
         "issued": false
       },
       "visual_frame_parts_live_20261126": {
-        "stage": "targeted_native_tls_sdk_passed",
+        "stage": "managed_profiles_validated",
         "issued": false,
-        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json"
       }
     },
     {
@@ -1353,9 +1353,9 @@
         "issued": false
       },
       "visual_frame_parts_live_20261126": {
-        "stage": "targeted_native_tls_sdk_passed",
+        "stage": "managed_profiles_validated",
         "issued": false,
-        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json"
       }
     },
     {
@@ -6390,9 +6390,9 @@
         "issued": false
       },
       "visual_frame_parts_live_20261126": {
-        "stage": "targeted_native_tls_sdk_passed",
+        "stage": "managed_profiles_validated",
         "issued": false,
-        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json"
       }
     },
     {
@@ -8527,9 +8527,9 @@
         "issued": false
       },
       "visual_frame_parts_live_20261126": {
-        "stage": "targeted_native_tls_sdk_passed",
+        "stage": "managed_profiles_validated",
         "issued": false,
-        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json"
       }
     },
     {
@@ -11489,9 +11489,9 @@
         "issued": false
       },
       "visual_frame_parts_live_20261126": {
-        "stage": "targeted_native_tls_sdk_passed",
+        "stage": "managed_profiles_validated",
         "issued": false,
-        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
+        "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json"
       }
     },
     {

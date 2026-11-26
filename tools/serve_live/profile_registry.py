@@ -96,6 +96,7 @@ def prepare(source, manifest_sha256, stage, observations, output):
                   profile_live_reuse.WEBHOOK_RECORD: 'ACCEPT_WEBHOOK_PRIMARY_LIGHT',
                   profile_live_reuse.HOSTED_LIFECYCLE_RECORD: 'ACCEPT_HOSTED_ENVIRONMENT_LIFECYCLE_PRIMARY_LIGHT',
                   profile_live_reuse.PREPARATION_RECORD: 'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT',
+                  profile_live_reuse.FRAME_RECORD: 'ACCEPT_VISUAL_FRAME_PRIMARY_LIGHT',
                   profile_live_reuse.VISUAL_ANSWER_RECORD: 'ACCEPT_VISUAL_ANSWER_PRIMARY_LIGHT',
                   profile_live_reuse.MEDIA_HANDOFF_RECORD: 'ACCEPT_RESPONSE_MEDIA_PRIMARY_LIGHT',
                   profile_live_reuse.SESSION_CONTROL_RECORD: 'ACCEPT_AGENT_SESSION_CONTROL_PRIMARY_LIGHT',

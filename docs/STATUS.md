@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主、轻配置各经原生 TLS 读出绿色视频帧、流式蓝色图像和 H.264 的蓝色末帧，分别耗时 41.487 和 37.636 秒。轻配置保留主配置的原视频响应 ID 和内容，另一客户读取为 404。两侧独立 Chat 均答 42。两份新资格记录均能还原 rev524 对应的前驱，下一步在托管包验证进程替换和网关回退。[配置回执](evidence/serve-visual-frame-parts-20261126/profiles.json)
+
 实际 Chat 的两帧绿色视频得到绿色回答，省略类型的蓝色图像经流式返回蓝色。原生 TLS 下，Node SDK 从六秒红转蓝 H.264 视频读出末段蓝色并保存为 output_text。三个版本的 Python SDK 均从同一响应 ID 读回原文，其他客户均收到 404。2.8.1 的私有严格模式拒绝 prompt_cache_retention 的 in_memory 值，两版 3.x 的严格模式均通过。仓库视觉示例也经主配置的原生 TLS 回答绿色，输入 token 数与预检相同。本次启动一次模型，耗时 39.342 秒，独立 Chat 回答 42。待验托管配置交接与交付。[验收回执](evidence/serve-visual-frame-parts-20261126/business.json)
 
 两帧 160×160 视频的首个真实 Chat 收到 503。源视频形状的 100 个 patch 让旧 cuBLASLt 临时区偏离 256 字节边界 128 字节。同一块显存、同一批六种 GEMM 只换对齐地址，六项从 INVALID_VALUE 变为成功；原本已对齐的 256 patch 对照全部成功。候选按同一公式分配和使用临时区，保留设备保护并记录前向阶段错误。下一步原样复验视频请求。[对齐与失败记录](evidence/serve-visual-frame-parts-20261126/workspace.json)
