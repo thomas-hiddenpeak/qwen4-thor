@@ -6367,6 +6367,11 @@
         "stage": "targeted_client_cpu_verified",
         "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
         "issued": false
+      },
+      "vision_workspace_alignment_20261126": {
+        "stage": "device_cause_reproduced",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
+        "issued": false
       }
     },
     {
@@ -9161,6 +9166,11 @@
         "profiles": "evidence/serve-agent-turn-output-recovery-20261126/profiles.json",
         "revision": 520,
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "vision_workspace_alignment_20261126": {
+        "stage": "device_cause_reproduced",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
+        "issued": false
       }
     },
     {
@@ -11437,6 +11447,11 @@
       "media_client_discovery_20261126": {
         "stage": "targeted_client_cpu_verified",
         "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
+        "issued": false
+      },
+      "vision_workspace_alignment_20261126": {
+        "stage": "device_cause_reproduced",
+        "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
         "issued": false
       }
     },

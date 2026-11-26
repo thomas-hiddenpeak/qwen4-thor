@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+两帧 160×160 视频的首个真实 Chat 收到 503。源视频形状的 100 个 patch 让旧 cuBLASLt 临时区偏离 256 字节边界 128 字节。同一块显存、同一批六种 GEMM 只换对齐地址，六项从 INVALID_VALUE 变为成功；原本已对齐的 256 patch 对照全部成功。候选按同一公式分配和使用临时区，保留设备保护并记录前向阶段错误。下一步原样复验视频请求。[对齐与失败记录](evidence/serve-visual-frame-parts-20261126/workspace.json)
+
 仓库中的视觉示例客户端曾在读取能力后拒绝已启用媒体的主配置，OpenAPI 也误写为必须关闭 MTP。现按 runtime.media_enabled 进入预检；单槽服务可加载文本草稿，含视觉 token 的请求使用主模型逐步解码。已从主、轻配置的真实能力记录核对两个模式。12 项 CPU 检查通过，公开合同已同步生成。下一步用该示例经原生 TLS 请求图像。[核验记录](evidence/serve-visual-frame-parts-20261126/client-discovery.json)
 
 复查发现此前的 video_url 用例直接调用渲染器，绕过了 Chat 对该输入的拒绝。真实入口按 image_url 和 video_frames 内容字段接收媒体，type 可省略。候选依照相同字段生成普通视觉回答的提示；新用例经过公开请求校验及媒体准备，检查有类型和无类型的图像与视频、原始模式、工具和 JSON。旧程序在该用例失败，候选 8 项原生用例及 40 项来源变异检查通过。下一步对真实视频帧和 H.264 文件做原生 TLS 短验。[CPU 回执](evidence/serve-visual-frame-parts-20261126/cpu.json)

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+两帧 160×160 视频的首个真实 Chat 收到 503。源视频形状的 100 个 patch 让旧 cuBLASLt 临时区偏离 256 字节边界 128 字节。同一块显存、同一批六种 GEMM 只换对齐地址，六项从 INVALID_VALUE 变为成功；原本已对齐的 256 patch 对照全部成功。候选按同一公式分配和使用临时区，保留设备保护并记录前向阶段错误。下一步原样复验视频请求。[对齐与失败记录](evidence/serve-visual-frame-parts-20261126/workspace.json)
+
 视频跨配置验收将由轻配置用原始响应 ID 读回主配置的 H.264 末帧回答，并检查同一 ID 对另一客户返回 404。普通视频请求保留独立的生成与取回检查，接手结果待实测。
 
 仓库中的视觉示例客户端曾在读取能力后拒绝已启用媒体的主配置，OpenAPI 也误写为必须关闭 MTP。现按 runtime.media_enabled 进入预检；单槽服务可加载文本草稿，含视觉 token 的请求使用主模型逐步解码。已从主、轻配置的真实能力记录核对两个模式。12 项 CPU 检查通过，公开合同已同步生成。下一步用该示例经原生 TLS 请求图像。[核验记录](evidence/serve-visual-frame-parts-20261126/client-discovery.json)

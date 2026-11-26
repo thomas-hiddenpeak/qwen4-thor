@@ -679,7 +679,7 @@
     "src/server/chat_generation.cpp": "cef6818b31daabda4175717cae1a43b1f8eaadd8756a2d642f6bdc1ff5f4220b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "927c8f4aa3f1cbe28189ed5c9984c357bab44da9649dc9439e9af07ecb436304",
-    "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
+    "src/server/chat_input.cpp": "4c1cea17d0540f5e8e83d7fe4745b41a7a880c55ee092aed78fddde28cef7eae",
     "src/server/chat_input_tokens.cpp": "de0d6d136512718d8af03282a9cc36d19a2f067d932fdc9a734a99ea016729de",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "0623a6552ba0ea9538fedb2222563b0cf545dda071f78353186049df2f9010e7",
@@ -763,7 +763,7 @@
     "src/text/tokenizer.cpp": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541",
     "src/vision/media_plan.cpp": "08358a12f3fffa7837e629058ab7a16718d28f1dcfb7ffdb596ca0ec33303283",
     "src/vision/processor.cpp": "77ab978cb844941681b834d1fd242d8d5348d19c9422f656bb0596341572d58f",
-    "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
+    "src/vision/vision.cu": "58d471a4cdfd47f9d9d8efd7eb92ec0a66ccc8cf7a69c523442d2b370170fe36",
     "tools/examples/chat_client.py": "1a1e7a35ca0c4d7db4132c79fd4ba2e18d6b3e975d6976a62c7f503f13c83710",
     "tools/examples/js/chat_client.mjs": "69fe7d61b3794943f88dc9ff46d9e27b03f90a607f6684cbfe52645d156e2b55"
   }
