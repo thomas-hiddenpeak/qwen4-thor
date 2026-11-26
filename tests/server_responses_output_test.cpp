@@ -403,10 +403,65 @@ Q4T_TEST(responses_output_failure_has_no_success_or_tool_done) {
   Q4T_CHECK(wire.find("response.completed") == wire.npos);
   Q4T_CHECK(output.Snapshot().GetString("status") == "failed");
   Q4T_CHECK(output.Snapshot().Find("usage")->IsNull());
+  Q4T_CHECK(output.Snapshot().Find("error")->GetString("code") ==
+            "explicit_cancel");
   Q4T_CHECK(!output.Finish(false, 1, {}, 43, &part));
   std::vector<Json> events;
   Q4T_CHECK(Events(wire, &events));
+  Json resource;
+  Q4T_CHECK(q4t::io::ParseJson(output.Json(), &resource));
+  const auto* error = resource.Find("error");
+  Q4T_CHECK(error && error->GetString("code") == "server_error");
+  Q4T_CHECK(error->GetString("type") == "explicit_cancel" &&
+            error->GetString("message") == "request cancelled");
+  Q4T_CHECK(OutputJson(*events.back().Find("response")) == output.Json());
   Q4T_CHECK(Save("failure", output, wire));
+  return true;
+}
+
+Q4T_TEST(responses_output_failure_classification) {
+  for (const auto& [native, expected] :
+       {std::pair{"client_tpm_exhausted", "rate_limit_exceeded"},
+        {"client_rpm_exhausted", "rate_limit_exceeded"},
+        {"client_prompt_limit_exceeded", "invalid_prompt"},
+        {"context_length_exceeded", "invalid_prompt"},
+        {"response_storage_exhausted", "server_error"},
+        {"image_file_not_found", "image_file_not_found"},
+        {"rate_limit_exceeded", "rate_limit_exceeded"},
+        {"vector_store_timeout", "vector_store_timeout"}}) {
+    ResponsesOutput output;
+    std::string wire;
+    Q4T_CHECK(output.Init(Options(), "resp_cause", 42, false));
+    Q4T_CHECK(output.Start(&wire) && output.Fail(native, "detail", &wire));
+    Json value;
+    Q4T_CHECK(q4t::io::ParseJson(output.Json(), &value));
+    const auto* error = value.Find("error");
+    Q4T_CHECK(error && error->GetString("code") == expected);
+    if (std::string_view(native) == expected)
+      Q4T_CHECK(!error->Has("type"));
+    else
+      Q4T_CHECK(error->GetString("type") == native);
+    Q4T_CHECK(OutputJson(ResponsesWireValue(value)) == output.Json());
+  }
+  for (const auto* input :
+       {R"({"type":"error","code":"object_commit_unknown"})",
+        R"({"object":"response","status":"cancelled","error":null})",
+        R"({"type":"mcp_call","error":{"code":"tool_error"}})"}) {
+    Json value;
+    Q4T_CHECK(q4t::io::ParseJson(input, &value));
+    Q4T_CHECK(OutputJson(ResponsesWireValue(value)) == OutputJson(value));
+  }
+  Json recorded;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"object":"response","status":"failed",
+    "error":{"code":"runner_error","message":"detail","type":"original",
+             "param":"input"},"output":[{"type":"mcp_call","error":{"code":53}}]})",
+                               &recorded));
+  const auto projected = ResponsesWireValue(recorded);
+  Q4T_CHECK(projected.Find("error")->GetString("code") == "server_error" &&
+            projected.Find("error")->GetString("type") == "original" &&
+            projected.Find("error")->GetString("param") == "input" &&
+            OutputJson(*projected.Find("output")) ==
+                OutputJson(*recorded.Find("output")));
   return true;
 }
 
@@ -567,9 +622,9 @@ Q4T_TEST(responses_output_http_failure_uses_native_terminal_once) {
     Q4T_CHECK(Events(wire.substr(begin + 4), &events));
     Q4T_CHECK(events.size() == 3);
     Q4T_CHECK(events.back().GetString("type") == "response.failed");
-    Q4T_CHECK(
-        events.back().Find("response")->Find("error")->GetString("code") ==
-        "explicit_cancel");
+    const auto* error = events.back().Find("response")->Find("error");
+    Q4T_CHECK(error && error->GetString("code") == "server_error" &&
+              error->GetString("type") == "explicit_cancel");
   }
   return true;
 }

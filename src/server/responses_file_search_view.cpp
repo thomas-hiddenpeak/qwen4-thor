@@ -34,7 +34,7 @@ void HideResponse(Json* response, const ResponsesEnvelope& envelope) {
 Json ResponsesExecution::PublicResponse() const {
   auto response = output_.Snapshot();
   HideResponse(&response, envelope_);
-  return ResponsesPublicValue(std::move(response));
+  return ResponsesWireValue(std::move(response));
 }
 
 std::string ResponsesExecution::PublicWire(std::string_view wire) const {

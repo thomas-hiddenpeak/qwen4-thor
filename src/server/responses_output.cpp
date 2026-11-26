@@ -1,5 +1,6 @@
 #include "q4t/server/responses_output.h"
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 
@@ -70,6 +71,38 @@ io::Json EventProbabilities(io::Json probabilities) {
   }
   return probabilities;
 }
+// ResponseErrorCode from the pinned Responses contract. Keep recognized
+// provider codes, including image failures, intact when replaying records.
+std::string_view PublicFailureCode(std::string_view code) {
+  constexpr std::string_view known[] = {"server_error",
+                                        "rate_limit_exceeded",
+                                        "invalid_prompt",
+                                        "data_residency_mismatch",
+                                        "bio_policy",
+                                        "misalignment_policy_violation",
+                                        "vector_store_timeout",
+                                        "invalid_image",
+                                        "invalid_image_format",
+                                        "invalid_base64_image",
+                                        "invalid_image_url",
+                                        "image_too_large",
+                                        "image_too_small",
+                                        "image_parse_error",
+                                        "image_content_policy_violation",
+                                        "invalid_image_mode",
+                                        "image_file_too_large",
+                                        "unsupported_image_media_type",
+                                        "empty_image_file",
+                                        "failed_to_download_image",
+                                        "image_file_not_found"};
+  if (std::ranges::find(known, code) != std::end(known)) return code;
+  if (code == "client_rpm_exhausted" || code == "client_tpm_exhausted")
+    return "rate_limit_exceeded";
+  if (code == "context_length_exceeded" ||
+      code == "client_prompt_limit_exceeded")
+    return "invalid_prompt";
+  return "server_error";
+}
 }  // namespace
 
 io::Json ResponsesPublicValue(io::Json value) {
@@ -87,6 +120,28 @@ io::Json ResponsesPublicValue(io::Json value) {
       Set(&value, "response", ResponsesPublicValue(Field(value, "response")));
     if (value.Has("item"))
       Set(&value, "item", ResponsesPublicValue(Field(value, "item")));
+  }
+  return value;
+}
+
+io::Json ResponsesWireValue(io::Json value) {
+  value = ResponsesPublicValue(std::move(value));
+  auto& response =
+      value.GetString("type") == "response.failed" && value.Has("response")
+          ? Field(value, "response")
+          : value;
+  if (response.GetString("object") != "response" ||
+      response.GetString("status") != "failed" || !response.Has("error"))
+    return value;
+  auto& error = Field(response, "error");
+  if (!error.IsObject()) return value;
+  const auto code = error.GetString("code");
+  const auto public_code = PublicFailureCode(code);
+  if (public_code != code) {
+    const auto* type = error.Find("type");
+    if (!code.empty() && (!type || type->IsNull()))
+      Set(&error, "type", String(code));
+    Set(&error, "code", String(std::string(public_code)));
   }
   return value;
 }
@@ -179,7 +234,8 @@ void ResponsesOutput::Event(std::string_view type, io::Json fields,
   }
   Set(&fields, "type", String(std::string(type)));
   Set(&fields, "sequence_number", Number(sequence_++));
-  fields = ResponsesPublicValue(std::move(fields));
+  fields = type == "response.failed" ? ResponsesWireValue(std::move(fields))
+                                     : ResponsesPublicValue(std::move(fields));
   ApplyDeltaObfuscation(&fields, obfuscation_);
   *wire += "event: " + std::string(type) + "\r\ndata: " + OutputJson(fields) +
            "\r\n\r\n";
@@ -745,7 +801,7 @@ Status ResponsesOutput::Fail(std::string_view code, std::string_view message,
 }
 
 std::string ResponsesOutput::Json() const {
-  return OutputJson(ResponsesPublicValue(response_));
+  return OutputJson(ResponsesWireValue(response_));
 }
 
 std::string ResponsesOutput::RenderStreamError(void* owner, int status,

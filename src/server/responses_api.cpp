@@ -78,7 +78,8 @@ void ServePreparedBackgroundResponse(
   if (stream) {
     ServeResponsesState(fd, objects, "GET", target, "", access, &jobs);
   } else {
-    detail::SendSimple(fd, 200, "OK", OutputJson(result.value),
+    detail::SendSimple(fd, 200, "OK",
+                       OutputJson(ResponsesWireValue(std::move(result.value))),
                        "application/json", {access.deadline});
   }
 }
@@ -107,7 +108,7 @@ bool Terminal(std::string_view status) {
 Json ViewResponse(Json response, const ItemViewOptions& view) {
   for (auto& item : Field(response, "output").array)
     item = ProjectStoredItem(item, view);
-  return ResponsesPublicValue(std::move(response));
+  return ResponsesWireValue(std::move(response));
 }
 Json ViewEvent(Json event, const ResponsesReadPlan& plan) {
   if (event.Has("response"))
@@ -329,8 +330,10 @@ void ServeResponsesState(int fd, ObjectStore& objects, std::string_view method,
                     : Error(503, "background_unavailable",
                             "Background executor unavailable");
       if (result.ok())
-        detail::SendSimple(fd, 200, "OK", OutputJson(result.value),
-                           "application/json", {access.deadline});
+        detail::SendSimple(
+            fd, 200, "OK",
+            OutputJson(ResponsesWireValue(std::move(result.value))),
+            "application/json", {access.deadline});
       else
         send_error(result);
       return;

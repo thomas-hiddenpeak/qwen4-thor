@@ -2944,6 +2944,10 @@
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json",
         "revision": 524,
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
+      },
+      "responses_failure_20261126": {
+        "stage": "native_cpu_and_sdk_pass",
+        "evidence": "evidence/serve-responses-errors-20261126/cpu.json"
       }
     },
     {
@@ -8570,6 +8574,10 @@
         "events": 22,
         "receipt": "evidence/serve-assistants-20261124/python-streams.json",
         "matrix": "SDK_STREAM_COMPATIBILITY.md"
+      },
+      "responses_failure_20261126": {
+        "stage": "native_cpu_and_sdk_pass",
+        "evidence": "evidence/serve-responses-errors-20261126/cpu.json"
       }
     },
     {

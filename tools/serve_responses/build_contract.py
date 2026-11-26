@@ -532,14 +532,6 @@ def schema(graph):
     response['allOf'] = [{'if': dict(required=['status'], properties=dict(
         status=dict(enum=['completed', 'incomplete']))), 'then': dict(
         required=['usage'], properties=dict(usage=dict(type='object')))}]
-    # Q4T codes identify the actual native failure instead of replacing it
-    # with an unrelated hosted-provider error. Keep the remaining shape.
-    error_union = graph['nodes'][next(f['type'] for f in
-        graph['nodes'][graph['roots']['response']]['fields'] if f['name'] == 'error')]
-    for index in error_union['variants']:
-        node = definitions[str(index)]
-        if isinstance(node, dict) and node.get('type') == 'object':
-            node['properties']['code'] = dict(type='string', minLength=1)
 
     request = root('response_create')
     # The SDK exposes this model style option only on count. Native create
@@ -686,7 +678,7 @@ def schema(graph):
                 'Files multipart uses binary file and bracket-encoded expires_after fields; explicit native capacity and storage quotas remain separate',
                 'Files HTTP list uses string first_id/last_id; native empty pages use empty strings and has_more=false, not nullable cursors from other list resources',
                 'official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage',
-                'native store echo and native response error codes',
+                'native store echo; original native failures use the optional ResponseError.type',
                 'count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract',
                 'optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage',
                 'SDK-documented include_obfuscation adds optional string padding to delta events only',

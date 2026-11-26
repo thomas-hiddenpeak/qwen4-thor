@@ -6,6 +6,7 @@
 #include <filesystem>
 
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_api.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_output.h"
 #include "q4t/test.h"
@@ -394,6 +395,49 @@ Q4T_TEST(responses_state_interruption_preserves_committed_agent_items) {
   Q4T_CHECK(saved->array[3].GetString("status") == "incomplete");
   Q4T_CHECK(saved->array[4].GetString("status") == "failed");
   Q4T_CHECK(saved->array[5].GetString("status") == "in_progress");
+  return true;
+}
+
+Q4T_TEST(responses_legacy_failure_projects_get_and_resumed_event) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState state(objects);
+  ResponseStatePlan plan;
+  Q4T_CHECK(Ok(state.Resolve(Envelope(R"({"input":"hi"})"), Access(), &plan)));
+  auto started = Snapshot(plan, "in_progress");
+  Q4T_CHECK(Ok(state.Begin(started, Access(), &plan)));
+  auto failed = Snapshot(plan, "failed");
+  Set(&failed, "error", Parse(R"({"code":"background_execution_interrupted",
+                                 "message":"Previous execution process exited"})"));
+  auto events = Parse(R"([{"type":"response.created","sequence_number":0},
+                          {"type":"response.failed","sequence_number":1}])");
+  Set(&events.array[0], "response", started);
+  Set(&events.array[1], "response", failed);
+  Q4T_CHECK(Ok(state.Finish(failed, events, Access(), &plan)));
+  const auto before = state.ReadRecord(plan.id, Access());
+  Q4T_CHECK(Ok(before));
+  ResponsesReadPlan read;
+  ResponsesReplay replay;
+  const auto path = "/v1/responses/" + plan.id;
+  Q4T_CHECK(Ok(PlanResponsesRead("GET", path, "", &read)));
+  const auto result = ReadResponsesState(objects, read, Access(), &replay);
+  Q4T_CHECK(Ok(result));
+  const auto* error = result.value.Find("error");
+  Q4T_CHECK(error && error->GetString("code") == "server_error");
+  Q4T_CHECK(error->GetString("type") == "background_execution_interrupted" &&
+            error->GetString("message") == "Previous execution process exited");
+  Q4T_CHECK(Ok(PlanResponsesRead("GET", path + "?stream=true&starting_after=0",
+                                 "", &read)));
+  Q4T_CHECK(Ok(ReadResponsesState(objects, read, Access(), &replay)));
+  Set(&events.array[1], "response", result.value);
+  Q4T_CHECK(replay.terminal && replay.last_sequence == 1 &&
+            replay.wire == "event: response.failed\r\ndata: " +
+                               OutputJson(events.array[1]) + "\r\n\r\n");
+  Q4T_CHECK(ReadResponsesState(objects, read, Access("client:b"), &replay)
+                    .http_status == 404 &&
+            replay.wire.empty());
+  Q4T_CHECK(OutputJson(state.ReadRecord(plan.id, Access()).value) ==
+            OutputJson(before.value));
   return true;
 }
 

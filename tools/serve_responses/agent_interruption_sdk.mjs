@@ -33,7 +33,13 @@ if (plan.mode === 'recover' || plan.mode === 'recover-drain') {
   await assert.rejects(other.retrieve(plan.id, { betas }), error => error.status === 404);
   assert.equal(restored.id, plan.id);
   assert.equal(restored.status, 'failed');
-  assert.equal(restored.error.code, draining ? 'service_draining' : 'background_execution_interrupted');
+  const cause = draining ? 'service_draining' : 'background_execution_interrupted';
+  if (plan.legacy_error_code === true) {
+    assert.equal(restored.error.code, cause);
+  } else {
+    assert.equal(restored.error.code, 'server_error');
+    assert.equal(restored.error.type, cause);
+  }
   let additional = [];
   if (draining) {
     assert.deepEqual(restored.output.slice(0, plan.items.length), plan.items);
@@ -57,7 +63,10 @@ if (plan.mode === 'recover' || plan.mode === 'recover-drain') {
         assert.equal(event.output_index, plan.items.length);
         assert.deepEqual(event.item, additional[0]);
       }
-      if (event.type === 'response.failed') assert.deepEqual(event.response.output, restored.output);
+      if (event.type === 'response.failed') {
+        assert.deepEqual(event.response.output, restored.output);
+        assert.deepEqual(event.response.error, restored.error);
+      }
       assert.ok(replay.length <= 64);
     }
     assert.equal(replay.at(-1), 'response.failed');

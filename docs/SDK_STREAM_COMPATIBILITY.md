@@ -18,3 +18,13 @@ Python 的 `get_final_run_steps()` 只收集本次订阅收到创建事件的步
 ```sh
 python -I -B tools/serve_audit/assistant_run_sdk.py --workspace /path/to/acceptance-workspace
 ```
+
+### Responses 失败回包
+
+失败资源和终态事件使用官方枚举表达错误类别。例如，前台生成中途被显式取消，客户收到 `response.failed`、`error.code = server_error` 和 `error.type = explicit_cancel`。原消息保留。正常取消后台作业继续返回 `status = cancelled` 和空错误。内部恢复逻辑按原始故障名分流。
+
+原生 CPU 程序输出的 5 个事件和对应 JSON 已用 Python 2.8.1、3.42.1、3.55.1 的默认和严格模式重放。三个 SDK 的错误模型均拒绝原来的 `explicit_cancel` 公开代码。读取历史持久记录时按同一规则投影，原记录仍可由旧包读取。[测试数据与摘要](evidence/serve-responses-errors-20261126/cpu.json)
+
+```sh
+python -I -B tools/serve_audit/response_failure_replay.py --strict
+```

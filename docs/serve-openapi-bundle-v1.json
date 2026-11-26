@@ -39980,8 +39980,7 @@
             "type": "object",
             "properties": {
               "code": {
-                "type": "string",
-                "minLength": 1
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/869"
               },
               "message": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
@@ -102413,7 +102412,7 @@
             "Files multipart uses binary file and bracket-encoded expires_after fields; explicit native capacity and storage quotas remain separate",
             "Files HTTP list uses string first_id/last_id; native empty pages use empty strings and has_more=false, not nullable cursors from other list resources",
             "official HTTP examples use usage:null for active/cancelled responses; completed/incomplete require actual usage",
-            "native store echo and native response error codes",
+            "native store echo; original native failures use the optional ResponseError.type",
             "count endpoint uses actual model templates; native create also accepts the model-owned friendly/pragmatic personality presets from the count SDK contract",
             "optional q4t_moderation_usage discloses bounded auxiliary classifier tokens separately from business usage",
             "SDK-documented include_obfuscation adds optional string padding to delta events only",

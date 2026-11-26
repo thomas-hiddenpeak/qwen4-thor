@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Responses 失败资源现按官方固定枚举返回 error.code，原始故障名保存在 error.type。旧程序的实时输出及持久读取两个用例均复现缺陷；候选九项原生检查通过。同一份五事件失败流经三版 Python SDK 默认及严格模式解析，部分工具参数保持未完成。旧记录的读取、续流、跨客户隔离与原字节保留均有 CPU 回归。下一步验证实际 TLS 取消、故障记录重读和独立新业务。[验证回执](evidence/serve-responses-errors-20261126/cpu.json)
+
 补齐 Assistants Runs 的 Python 流式兼容记录。三代 SDK 的默认和严格模式均读回原 Node TLS 验收的 22 个事件，保留工具 ID、参数、回填输出和最终正文。回填订阅的步骤汇总只包含本订阅创建的步骤，原工具的完成事件可单独读取。[SDK 兼容矩阵](SDK_STREAM_COMPATIBILITY.md)
 
 主、轻配置均以 Python 2.8.1 经历史路径取消真实运行，再以 3.55.1 的标准路径复查。轻配置对主配置原运行重复取消，完整响应经报告 URL 原点归一化后摘要一致，跨客户访问为 404。两侧各启动一次模型。接续测试已绑定两份资格记录，下一步验证托管模型退出和独立回退包接管。[配置回执](evidence/serve-sdk-routes-20261126/profiles.json)
