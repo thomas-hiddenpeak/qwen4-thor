@@ -3140,14 +3140,15 @@
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       },
       "chatkit_interrupted_retry_20261127": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
         "real_business_accepted": true,
         "issued": false,
         "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json",
         "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json",
         "business": "evidence/serve-chatkit-interrupted-retry-20261127/business.json",
-        "python_native": "evidence/serve-chatkit-interrupted-retry-20261127/python-native.json"
+        "python_native": "evidence/serve-chatkit-interrupted-retry-20261127/python-native.json",
+        "profiles": "evidence/serve-chatkit-interrupted-retry-20261127/profiles.json"
       }
     },
     {
@@ -3889,14 +3890,15 @@
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       },
       "chatkit_interrupted_retry_20261127": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
         "real_business_accepted": true,
         "issued": false,
         "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json",
         "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json",
         "business": "evidence/serve-chatkit-interrupted-retry-20261127/business.json",
-        "python_native": "evidence/serve-chatkit-interrupted-retry-20261127/python-native.json"
+        "python_native": "evidence/serve-chatkit-interrupted-retry-20261127/python-native.json",
+        "profiles": "evidence/serve-chatkit-interrupted-retry-20261127/profiles.json"
       }
     },
     {
@@ -9138,10 +9140,11 @@
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       },
       "chatkit_interrupted_retry_20261127": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json",
         "actual_client": true,
-        "python_native": "evidence/serve-chatkit-interrupted-retry-20261127/python-native.json"
+        "python_native": "evidence/serve-chatkit-interrupted-retry-20261127/python-native.json",
+        "profiles": "evidence/serve-chatkit-interrupted-retry-20261127/profiles.json"
       }
     },
     {
