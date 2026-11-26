@@ -1,6 +1,11 @@
 """Exercise scoped failure observations and cross-capacity replay checks."""
 from copy import deepcopy
+import json
+import os
+from pathlib import Path
+import tempfile
 import unittest
+from unittest import mock
 
 from tools.serve_responses import failure_profiles as profiles
 from tools.serve_service import package
@@ -49,3 +54,27 @@ class FailureProfilesTest(unittest.TestCase):
             changed['live'][key] = value
             with self.subTest(key=key), self.assertRaises(RuntimeError):
                 profiles.check(changed)
+
+    def test_seed_creates_an_exclusive_private_record(self):
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            rid = self.first['id']
+            source = base / ('a' * 64 + '.response.' + rid + '.json')
+            data = dict(response=dict(id=rid, status='failed', error=dict(
+                code=self.first['cause'], message='stopped')), events=[dict(
+                type='response.failed', sequence_number=self.first['sequence'])])
+            source.write_text(json.dumps(dict(record=dict(data=data))))
+            proof = base / 'proof.json'
+            proof.write_text(json.dumps(dict(strict_python=dict(self.first, source_sha256=package.sha(source)))))
+            store = base / 'private'
+            with mock.patch.object(profiles, 'PROOF', proof):
+                old_mask = os.umask(0o002)
+                try:
+                    params = profiles.seed(source, store)
+                finally:
+                    os.umask(old_mask)
+                self.assertEqual(params['id'], rid)
+                self.assertEqual((store/source.name).stat().st_mode & 0o777, 0o600)
+                self.assertEqual((store/source.name).read_bytes(), source.read_bytes())
+                with self.assertRaises(FileExistsError):
+                    profiles.seed(source, store)

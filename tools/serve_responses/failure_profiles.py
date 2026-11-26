@@ -1,5 +1,6 @@
 """Check failed Responses across capacity changes and owned process replacement."""
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -30,7 +31,9 @@ def seed(source, store):
                     response['error']['code'] == witness['cause'] and last['type'] == 'response.failed'
                     and last['sequence_number'] == witness['sequence'], 'wrong historical failure or cursor')
     store.mkdir(mode=0o700, exist_ok=True, parents=True)
-    with (store/source.name).open('xb') as dest, source.open('rb') as original:
+    with source.open('rb') as original, os.fdopen(os.open(
+            store/source.name, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'wb') as dest:
+        os.fchmod(dest.fileno(), 0o600)
         shutil.copyfileobj(original, dest)
     package.require(package.sha(store/source.name) == witness['source_sha256'], 'incomplete fixture copy')
     return dict(id=response['id'], cause=response['error']['code'], message=response['error']['message'],
