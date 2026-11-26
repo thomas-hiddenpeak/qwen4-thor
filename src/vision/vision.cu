@@ -32,6 +32,21 @@ namespace {
 
 constexpr int kBlock = 256;
 constexpr float kRopeTheta = 10000.0f;
+constexpr size_t kGemmWorkspaceBytes = 32u << 20;
+
+// cuBLASLt requires a 256-byte-aligned workspace even when the preceding
+// BF16 tensors end on a smaller boundary (for example a 10 x 10 patch grid).
+constexpr size_t GemmWorkspaceOffset(size_t patches, int hidden, int mlp) {
+  constexpr size_t alignment = 256;
+  // x, x2, ln, qkv (3H), ctx, attn_out, mlp2 and pos occupy 10H.
+  const size_t bytes = patches * (10u * size_t(hidden) + size_t(mlp)) *
+                       sizeof(uint16_t);
+  return (bytes + alignment - 1) / alignment * alignment;
+}
+
+static_assert(GemmWorkspaceOffset(100, 1152, 4304) == 3164928);
+static_assert(GemmWorkspaceOffset(256, 1152, 4304) == 8101888);
+
 
 // No server dependency: media and serving share the pure allocation policy.
 struct CudaAllocator {
@@ -568,30 +583,7 @@ bool VisionTower::Allocate(const std::vector<ImageShape>& shapes,
   }
   const int H = cfg.hidden_size;
   const int I = cfg.intermediate_size;
-  // Workspace layout (BF16), in elements:
-  //   x        : total_L * H          (current block input / running trunk)
-  //   x2       : total_L * H          (ping-pong for residual add)
-  //   ln       : total_L * H          (layer-norm output)
-  //   qkv      : total_L * 3*H        (qkv projection)
-  //   ctx      : total_L * H          (attention context)
-  //   attn_out : total_L * H          (attn proj output)
-  //   mlp1     : total_L * I          (fc1 output)
-  //   mlp2     : total_L * H          (fc2 output)
-  //   pos      : total_L * H          (pos embed)
-  //   merged   : (total_L/4) * 4*H    (merger input, max over images)
-  //   gemm_ws  : cuBLASLt workspace
-  size_t el = 0;
-  el += static_cast<size_t>(total_L) * H;  // x
-  el += static_cast<size_t>(total_L) * H;  // x2
-  el += static_cast<size_t>(total_L) * H;  // ln
-  el += static_cast<size_t>(total_L) * 3 * H;  // qkv
-  el += static_cast<size_t>(total_L) * H;  // ctx
-  el += static_cast<size_t>(total_L) * H;  // attn_out
-  el += static_cast<size_t>(total_L) * I;  // mlp1
-  el += static_cast<size_t>(total_L) * H;  // mlp2
-  el += static_cast<size_t>(total_L) * H;  // pos
-  const size_t gemm_ws = 32u * 1024u * 1024u;  // 32MB cuBLASLt workspace
-  ws_bytes = el * sizeof(uint16_t) + gemm_ws;
+  ws_bytes = GemmWorkspaceOffset(total_L, H, I) + kGemmWorkspaceBytes;
   // Re-allocate the workspace (idempotent: free any prior allocation so the
   // tower can be reused across requests of differing image sizes).
   FreeOwned(d_ws);
@@ -824,35 +816,24 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
     return false;
   }
 
-  // Workspace layout (BF16 elements).
-  const size_t gemm_ws_bytes = 32u * 1024u * 1024u;
-  size_t el = 0;
+  const size_t hidden_elements = static_cast<size_t>(total_L) * H;
   auto* x = tower.d_ws;
-  el += static_cast<size_t>(total_L) * H;
-  auto* x2 = x + el;
-  el += static_cast<size_t>(total_L) * H;
-  auto* ln = x2 + static_cast<size_t>(total_L) * H;
-  el += static_cast<size_t>(total_L) * H;
-  auto* qkv = ln + static_cast<size_t>(total_L) * H;
-  el += static_cast<size_t>(total_L) * 3 * H;
-  auto* ctx = qkv + static_cast<size_t>(total_L) * 3 * H;
-  el += static_cast<size_t>(total_L) * H;
-  auto* attn_out = ctx + static_cast<size_t>(total_L) * H;
-  el += static_cast<size_t>(total_L) * H;
-  auto* mlp1 = attn_out + static_cast<size_t>(total_L) * H;
-  el += static_cast<size_t>(total_L) * I;
+  auto* x2 = x + hidden_elements;
+  auto* ln = x2 + hidden_elements;
+  auto* qkv = ln + hidden_elements;
+  auto* ctx = qkv + 3 * hidden_elements;
+  auto* attn_out = ctx + hidden_elements;
+  auto* mlp1 = attn_out + hidden_elements;
   auto* mlp2 = mlp1 + static_cast<size_t>(total_L) * I;
-  el += static_cast<size_t>(total_L) * H;
-  auto* pos = mlp2 + static_cast<size_t>(total_L) * H;
-  el += static_cast<size_t>(total_L) * H;
-  auto* gemm_ws = reinterpret_cast<uint16_t*>(
-      reinterpret_cast<uint8_t*>(tower.d_ws) + el * sizeof(uint16_t));
-
+  auto* pos = mlp2 + hidden_elements;
+  auto* gemm_ws = reinterpret_cast<uint8_t*>(tower.d_ws) +
+                  GemmWorkspaceOffset(total_L, H, I);
+  cublasStatus_t gemm_status = CUBLAS_STATUS_SUCCESS;
   auto gemm = [&](const uint16_t* a, const uint16_t* b, uint16_t* c, int M,
                   int N, int K) {
-    return model::Bf16Gemm(a, b, c, M, N, K, 1.0f, 0.0f, gemm_ws,
-                           gemm_ws_bytes, stream)
-               .status == CUBLAS_STATUS_SUCCESS;
+    gemm_status = model::Bf16Gemm(a, b, c, M, N, K, 1.0f, 0.0f, gemm_ws,
+                                  kGemmWorkspaceBytes, stream).status;
+    return gemm_status == CUBLAS_STATUS_SUCCESS;
   };
   auto add_bias = [&](const uint16_t* a, const uint16_t* b, uint16_t* c,
                       int rows, int dim) {
@@ -861,6 +842,11 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
   };
   auto set_err = [err](const std::string& s) {
     if (err) *err = s;
+  };
+
+  auto set_gemm_err = [&](const std::string& stage) {
+    set_err(stage + " (cuBLAS status " +
+            std::to_string(static_cast<int>(gemm_status)) + ")");
   };
 
   // Markers only enqueue events on the same stream as the original work.
@@ -880,7 +866,7 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
   // 1. patch_embed: x = pixel_values @ W_patch^T + b_patch.
   if (!begin(ForwardStage::kPatch)) return false;
   if (!gemm(pixel_values, w.d_patch_w, x, total_L, H, in_dim)) {
-    set_err("patch gemm");
+    set_gemm_err("patch gemm");
     return false;
   }
   add_bias(x, w.d_patch_b, x, total_L, H);
@@ -928,7 +914,7 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
       if (!begin(ForwardStage::kQkv)) return false;
       if (!gemm(ln + offset * H, w.d_qkv_w[i], qkv + offset * 3 * H, L, 3 * H,
                 H)) {
-        set_err("qkv gemm block " + std::to_string(i));
+        set_gemm_err("qkv gemm block " + std::to_string(i));
         return false;
       }
       add_bias(qkv + offset * 3 * H, w.d_qkv_b[i], qkv + offset * 3 * H, L,
@@ -956,7 +942,7 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
       if (!begin(ForwardStage::kProjection)) return false;
       if (!gemm(ctx + offset * H, w.d_attn_proj_w[i], attn_out + offset * H,
                 L, H, H)) {
-        set_err("attn proj gemm block " + std::to_string(i));
+        set_gemm_err("attn proj gemm block " + std::to_string(i));
         return false;
       }
       add_bias(attn_out + offset * H, w.d_attn_proj_b[i], attn_out + offset * H,
@@ -972,14 +958,14 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
       end();
       if (!begin(ForwardStage::kMlp)) return false;
       if (!gemm(ln + offset * H, w.d_fc1_w[i], mlp1 + offset * I, L, I, H)) {
-        set_err("fc1 gemm block " + std::to_string(i));
+        set_gemm_err("fc1 gemm block " + std::to_string(i));
         return false;
       }
       add_bias(mlp1 + offset * I, w.d_fc1_b[i], mlp1 + offset * I, L, I);
       GeluTanhKernel<<<(L * I + kBlock - 1) / kBlock, kBlock, 0, stream>>>(
           mlp1 + offset * I, L * I);
       if (!gemm(mlp1 + offset * I, w.d_fc2_w[i], mlp2 + offset * H, L, H, I)) {
-        set_err("fc2 gemm block " + std::to_string(i));
+        set_gemm_err("fc2 gemm block " + std::to_string(i));
         return false;
       }
       add_bias(mlp2 + offset * H, w.d_fc2_b[i], mlp2 + offset * H, L, H);
@@ -997,7 +983,7 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
     // so [L, H] viewed as [L/4, 4*H] is the correct merge (no data movement).
     if (!gemm(ln + offset * H, w.d_merger_fc1_w, mlp1 + offset * I, merged_n,
               4 * H, 4 * H)) {
-      set_err("merger fc1 gemm");
+      set_gemm_err("merger fc1 gemm");
       return false;
     }
     add_bias(mlp1 + offset * I, w.d_merger_fc1_b, mlp1 + offset * I, merged_n,
@@ -1007,7 +993,7 @@ bool VisionForward(const VisionTower& tower, const uint16_t* pixel_values,
     if (!gemm(mlp1 + offset * I, w.d_merger_fc2_w,
               out + merged_offset * cfg.out_hidden_size, merged_n,
               cfg.out_hidden_size, 4 * H)) {
-      set_err("merger fc2 gemm");
+      set_gemm_err("merger fc2 gemm");
       return false;
     }
     add_bias(out + merged_offset * cfg.out_hidden_size, w.d_merger_fc2_b,

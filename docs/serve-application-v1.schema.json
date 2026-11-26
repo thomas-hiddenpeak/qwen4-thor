@@ -8989,7 +8989,15 @@
           "$ref": "#/$defs/860"
         },
         "user": {
-          "$ref": "#/$defs/27"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/27"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "deprecated": true
         },
         "image": {
           "$ref": "#/$defs/image_options"
@@ -72048,7 +72056,15 @@
           "$ref": "#/$defs/860"
         },
         "user": {
-          "$ref": "#/$defs/27"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/27"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "deprecated": true
         },
         "image": {
           "$ref": "#/$defs/image_options"

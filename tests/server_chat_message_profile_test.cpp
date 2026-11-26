@@ -363,6 +363,54 @@ Q4T_TEST(chat_schema_prompt_preserves_contract_and_message_boundaries) {
   return true;
 }
 
+Q4T_TEST(chat_plain_visual_answers_keep_observations_separate_from_refusals) {
+  constexpr auto guidance = "For a visual observation, begin directly";
+  const std::string image =
+      R"("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNgYPgPAAEDAQAIicLsAAAAAElFTkSuQmCC")";
+  const std::string frames = "[" + image + "," + image + "]";
+  for (const auto& [part, video] :
+       std::vector<std::pair<std::string, bool>>{
+           {R"({"type":"image_url","image_url":{"url":)" + image + "}}", false},
+           {R"({"image_url":)" + image + "}", false},
+           {R"({"type":"video_frames","video_frames":)" + frames + "}", true},
+           {R"({"video_frames":)" + frames + R"(,"video_timestamps":[0,1]})",
+            true}}) {
+    const auto messages = R"([{"role":"user","content":[)" + part +
+                          R"(,{"type":"text","text":"Describe it"}]}])";
+    for (const auto& [options, expected] :
+         std::vector<std::pair<std::string, bool>>{
+             {"", true}, {R"(,"response_format":{"type":"text"})", true},
+             {R"(,"response_format":{"type":"json_object"})", false},
+             {R"(,"tools":[{"type":"function","function":{"name":"read"}}])",
+              false},
+             {R"(,"parse_response":false)", false}}) {
+      Json request;
+      Q4T_CHECK(q4t::io::ParseJson("{\"messages\":" + messages + options + "}",
+                                   &request, true));
+      std::string prompt, param;
+      std::vector<q4t::server::VisionItem> items;
+      Q4T_CHECK(ValidateChatContract(request, "m", true, &param));
+      Q4T_CHECK(q4t::server::PrepareChatPrompt(request, {}, &prompt, &items,
+                                              &param));
+      Q4T_CHECK(items.size() == 1);
+      Q4T_CHECK(items[0].kind == (video ? q4t::server::VisionItem::kVideo
+                                       : q4t::server::VisionItem::kImage));
+      Q4T_CHECK(prompt.find(video ? "<|video_pad|>" : "<|image_pad|>") !=
+                prompt.npos);
+      Q4T_CHECK((prompt.find(guidance) != prompt.npos) == expected);
+      Q4T_CHECK((prompt.find(q4t::server::kRefusalInstruction) != prompt.npos) ==
+                request.GetBool("parse_response", true));
+    }
+  }
+  Json text_only;
+  Q4T_CHECK(Read(R"([{"role":"user","content":"image_url <|image_pad|>"}])",
+                 &text_only));
+  std::string prompt;
+  Q4T_CHECK(RenderChatPrompt(text_only, {"image_url <|image_pad|>"}, &prompt));
+  Q4T_CHECK(prompt.find(guidance) == prompt.npos);
+  return true;
+}
+
 Q4T_TEST(chat_schema_prompt_preserves_tools_and_unconstrained_template) {
   Json request;
   Q4T_CHECK(q4t::io::ParseJson(R"({"enable_thinking":false,

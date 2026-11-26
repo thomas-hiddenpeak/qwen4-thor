@@ -1,0 +1,284 @@
+{
+  "stage": "issued",
+  "upstream_wire": {
+    "revision": "926a7b8133226630bac025350e84b0ca5c31d45a",
+    "sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "checked": {
+      "request": 9,
+      "response": 9,
+      "event": 114
+    },
+    "failed": {
+      "request": 9
+    },
+    "matches": [
+      "#/components/schemas/EasyInputMessage",
+      "#/components/schemas/Item"
+    ],
+    "negative_controls": 3,
+    "reason": "For all nine SDK requests the upstream input item matched both EasyInputMessage and Item; oneOf therefore failed. Both alternatives independently accept the real item and reject an invalid role. Actual responses and persisted events validated against unmodified upstream definitions."
+  },
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 524,
+    "version_revision": 191,
+    "profile_revision": 81,
+    "previous_profile_revision": 80,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "77df228557884c14f2b8c57d17f092cc6bbf721e548e1314080dace0ee9e80b2",
+    "fallback": "f52502146f9d26653c44820a0ee4f73274fe125750769e600e81b5ab41660fc4",
+    "engine": "d350194a7edb8e6ff7b337fa9e2ab4775b92de3e85186777b1adf1383d427ca3",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 522,
+  "previous_primary": "55451cb7e3500f3348f8b00dad063f98ac805eb7e901fda70bd8b2d792ba5cea",
+  "source_commit": "a152203b667544bab1ae4ab9a1d91bb3f2c0438d",
+  "recovery": {
+    "fallback": {
+      "seconds": 227.612,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": [
+          "resp_8ab103bfc7e2d4a48669aa5a01a15174",
+          "resp_6d8ddded0ce5950a753a1510f9b7de0f",
+          "resp_93390ce7bffc547551a1b211812120c3"
+        ],
+        "current": [
+          "resp_715f17afe0ba6ab5f72aade873b5d7e1",
+          "resp_12959b2ad5743c0624685f448b463e4e"
+        ],
+        "refusal": "resp_7ec1e92f85f67e9f39653af79643c0ba",
+        "port": 18161,
+        "egress": false
+      },
+      "restored_parts": [
+        "output_text",
+        "output_text",
+        "refusal"
+      ],
+      "fresh_colors": [
+        "Blue",
+        "Green"
+      ],
+      "fresh_refusal": "refusal",
+      "wire_errors": [
+        {
+          "status": 400,
+          "param": "user"
+        },
+        {
+          "status": 400,
+          "param": "user"
+        }
+      ],
+      "fresh_chat": "42",
+      "sdk": "7.47.0",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "lease_sha256": "3a07aec3cbff78a9ade2c8346e11740810c558e78220a94d91862faca554cc3e",
+      "accepted_sha256": "bc978a8364fa15723a45dde43fda7641617281e7a7c89a42ce24a73f409bb4d0",
+      "original_sdk_sha256": "393d752673189ddb33d84ee5d9e437a90f10bdbdccc58d8bac9f7c3befe6f401",
+      "restored_sdk_sha256": "faed1be9afd83a805ea8d02351fc0f7f625f584aa118091193acd3547ae97bc2"
+    },
+    "primary": {
+      "seconds": 324.585,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": [
+          "resp_816a6c8fc92dd4cb4a4aa7d1ee0bcf88",
+          "resp_86b2cf2f08f758d4d2a59070218a7a59",
+          "resp_dd34a7187feb15a6e57e0c09729818fc"
+        ],
+        "current": [
+          "resp_53705476a1767bd96eb6e20c18ef6782",
+          "resp_283806d96980bdf1dd2eef7ec7673858"
+        ],
+        "refusal": "resp_05c64af8f43730ae863474d5a6e0eac5",
+        "port": 18161,
+        "egress": false
+      },
+      "restored_parts": [
+        "output_text",
+        "output_text",
+        "refusal"
+      ],
+      "fresh_colors": [
+        "Blue",
+        "Green"
+      ],
+      "fresh_refusal": "refusal",
+      "wire_errors": [
+        {
+          "status": 400,
+          "param": "user"
+        },
+        {
+          "status": 400,
+          "param": "user"
+        }
+      ],
+      "fresh_chat": "42",
+      "sdk": "7.47.0",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "lease_sha256": "afdec56d4a16b40048b783e0328d7905030a9d7da687d704fd3dab0806730b94",
+      "accepted_sha256": "862833240024ff91710627f347a140227d070ecbb6883f7591e7e017add59e2a",
+      "original_sdk_sha256": "b7fe1bc4ec1f905c6e78b7deb1886e16dc366b28f022ed6bb657d726bf5308fb",
+      "restored_sdk_sha256": "76286b668ec26af4bed41e52791ea0617caaec7caeffe6c075991e3164f14808",
+      "takeover": {
+        "selected": "fallback",
+        "manifest": "f52502146f9d26653c44820a0ee4f73274fe125750769e600e81b5ab41660fc4",
+        "probes": 1,
+        "signal": 6
+      }
+    }
+  },
+  "wire": {
+    "status": "PASS",
+    "packages": [
+      {
+        "slot": "primary",
+        "manifest_sha256": "77df228557884c14f2b8c57d17f092cc6bbf721e548e1314080dace0ee9e80b2",
+        "schema_sha256": "31878b30bd1a92a0dac6d52876c1054575dc02d9aa7c0798fe71605f27696e5f",
+        "openapi_sha256": "f97b2de9e0bda028b7ef216827745ac5589d9fd42558c9e6d4f5839c95e2dfd6",
+        "requests": 9,
+        "responses": 9,
+        "persisted_events": 114,
+        "numeric_boolean_array_object_rejected": true
+      },
+      {
+        "slot": "fallback",
+        "manifest_sha256": "f52502146f9d26653c44820a0ee4f73274fe125750769e600e81b5ab41660fc4",
+        "schema_sha256": "31878b30bd1a92a0dac6d52876c1054575dc02d9aa7c0798fe71605f27696e5f",
+        "openapi_sha256": "f97b2de9e0bda028b7ef216827745ac5589d9fd42558c9e6d4f5839c95e2dfd6",
+        "requests": 9,
+        "responses": 9,
+        "persisted_events": 114,
+        "numeric_boolean_array_object_rejected": true
+      }
+    ]
+  },
+  "profiles_sha256": "5bd1da7f55e79732180759cb10443b8e50408eb885deddff8cf1d6e88a6e7542",
+  "business_sha256": "46e247b52dddb5e033001eb5692a10d6d81e1ddcc74f9c92ee572de1343de6b4",
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "e108e245dacf170c459c8e22bcf8e5cd2fad7440a925e695c6af20e2e7d1efd6"
+        ],
+        "sha256": "c8f9cafda06202159b98f85a61ed8dd8c68351079dde5129b4b9349edf7ffd0b",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "b12f6c68-5d12-49d3-b678-c561d802fde4"
+        ],
+        "sha256": "54ca87b917a2fbade97345756a51045207394b5ea42d55317ff3414b60ad6cf9",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "791d5cf9-79c9-422b-8e2d-ff1f19195261"
+        ],
+        "sha256": "c3492067122144d42231971915cbc8acfcf0590f24369631fd1d9c9fde7af475",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71
+  },
+  "soak": {
+    "source_commit": "a152203b667544bab1ae4ab9a1d91bb3f2c0438d",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/visual-answer-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/visual-answer-client-primary-01/bundle",
+      "manifest_sha256": "77df228557884c14f2b8c57d17f092cc6bbf721e548e1314080dace0ee9e80b2"
+    },
+    "revision": 524,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/visual-answer-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "d10a037d3d365bcddf96fe6c69278a2b3a81dcd7bf1e868db6da3f321d1dd5a2",
+    "handoff_sha256": "d51ec4a0f6c4b0a915271fffc63b9d01da68fcaff0cf0ed3aeda3d8b17f9002d",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev524-preflight.json",
+  "predecessor_main_merge": {
+    "pr": 156,
+    "head": "9338f4d1881ce8a43940b5c26b32df69c8856613",
+    "merge": "f57f1b54c44ceb459d38df6ce97243740a43975a",
+    "checks": {
+      "pull_request": {
+        "conclusion": "success",
+        "databaseId": 45719666434,
+        "event": "pull_request",
+        "headSha": "9338f4d1881ce8a43940b5c26b32df69c8856613",
+        "status": "completed",
+        "workflowName": "Public host contracts"
+      },
+      "push": {
+        "conclusion": "success",
+        "databaseId": 45719658370,
+        "event": "push",
+        "headSha": "9338f4d1881ce8a43940b5c26b32df69c8856613",
+        "status": "completed",
+        "workflowName": "Public host contracts"
+      }
+    }
+  },
+  "limitations": {
+    "visual_scope": "Real ordinary typed image input. Public video_frames and untyped media guidance need their own verification. The earlier video_url renderer fixture bypassed public validation.",
+    "deferred_media_methods": 12,
+    "genuine_device_cold_start": false,
+    "long_run_hours": 0
+  },
+  "retained_day_plan": {
+    "status": "PASS",
+    "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/meteor-delivery-soak-src",
+    "generation": "e108e245dacf170c459c8e22bcf8e5cd2fad7440a925e695c6af20e2e7d1efd6",
+    "manifest": "7dfb9b72b077da248b1c2ec72f965d6b12f37fcd007a4e64460d19ff945f037c",
+    "unchanged_plan": "ff0729a62f5c4c509d3f22ef4a7a0ee00e15878b85d80bbc5116101402f14ede",
+    "protected_raw_files": 28,
+    "executed_hours": 0,
+    "bindings": {
+      "q4t": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e108e245dacf170c459c8e22bcf8e5cd2fad7440a925e695c6af20e2e7d1efd6/q4t",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/meteor-client-primary-01/bundle/engine/q4t",
+        "sha256": "307515ad581c0c50be1f14beadeed1daa80ccc63330af61cb1af19d37b99387e"
+      },
+      "q4t.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e108e245dacf170c459c8e22bcf8e5cd2fad7440a925e695c6af20e2e7d1efd6/q4t.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/meteor-client-primary-01/bundle/engine/q4t.release.json",
+        "sha256": "e2c90384abee5a931df20e34df9c7e664fc88619de5a736f3bcd68a8314e25fc"
+      },
+      "service.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e108e245dacf170c459c8e22bcf8e5cd2fad7440a925e695c6af20e2e7d1efd6/service.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/meteor-client-primary-01/service.release.json",
+        "sha256": "65e1606586baee5e9c7a7465d48df646300110c86411c354af6e7dd9d2298a70"
+      }
+    }
+  }
+}

@@ -258,9 +258,15 @@ bool ChatServer::RunVisionPipeline(
   runtime::ExecutionActivity forward_progress(
       runtime::ExecutionActivityKind::kMediaForward);
   TimingScope forward_timing(timing, TimingStage::kForward);
-  if (detail::DeviceMemoryFault("vision.forward", request_id) != cudaSuccess ||
-      !vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, err,
+  const int forward_fault = detail::DeviceMemoryFault("vision.forward", request_id);
+  if (forward_fault != cudaSuccess) {
+    record({DeviceMemoryState::kFailure, forward_fault});
+    return false;
+  }
+  if (!vision::VisionForward(*vision_tower_, d_pixels, shapes, d_out, err,
                              nullptr, forward_events.Active())) {
+    std::fprintf(stderr, "[q4t][vision-forward] id=%s detail=%s\n", request_id,
+                 err ? err->c_str() : "unavailable");
     timing_failure();
     return false;
   }

@@ -1,0 +1,60 @@
+{
+  "stage": "public_input_regression_verified",
+  "issued": false,
+  "predecessor_source": "a152203b667544bab1ae4ab9a1d91bb3f2c0438d",
+  "engine": "69b6fb04f168579f2476d9a021856dfd2fe381da2f35c9d23902d1e7a8ea2c91",
+  "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb",
+  "renderer_sha256": "eeef7e2798ea5adddeac67ac85dc2cbda032ca4c0c79164522c6728d95b4c7f2",
+  "sdk_driver": "244a5f0ab534c21e866e626e6e4e4989ffe35a6a1b5b55c0baf479c686ae14e5",
+  "native": {
+    "baseline": {
+      "cases": [
+        "chat_plain_visual_answers_keep_observations_separate_from_refusals"
+      ],
+      "exit_code": 1
+    },
+    "candidate": {
+      "cases": [
+        "chat_plain_visual_answers_keep_observations_separate_from_refusals",
+        "chat_schema_prompt_preserves_contract_and_message_boundaries",
+        "chat_schema_prompt_preserves_tools_and_unconstrained_template",
+        "refusal_template_native_instruction_and_raw_cache_identity",
+        "refusal_parser_every_split_preserves_text_and_source_offsets",
+        "refusal_parser_marker_data_and_natural_language_are_not_signals",
+        "refusal_parser_incomplete_malformed_and_capacity_terminals",
+        "refusal_parser_requires_independent_matching_receipt"
+      ],
+      "exit_code": 0
+    }
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 246,
+    "native_routes": 408,
+    "reviewed_source_anchors": 1389,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "previous_test": "The direct renderer used video_url and did not go through Chat validation or the frame adapter. The public validator rejects video_url; admitted video uses video_frames, also used by the file decoder. Undiscriminated image_url parts are also legal. Existing genuine image and refusal results keep their scope.",
+  "native_test_inputs": [
+    "typed image_url object",
+    "untagged image_url string",
+    "typed video_frames",
+    "untagged video_frames with timestamps"
+  ],
+  "variants": [
+    "default parsed",
+    "explicit text",
+    "JSON object",
+    "tool",
+    "raw"
+  ],
+  "evidence": {
+    "old_sha256": "158ccb02d34189e8516ea68789e12c4356db1c7356ac8f63b0af809e0d1101fa",
+    "new_sha256": "ccb7b2aa649021af499ccad30c24a94ec85b209deef88961fdf2cfad853905b4"
+  },
+  "next": "Native TLS Chat video, streaming untagged image, real H.264 Responses input, actual public preflight and rejection control."
+}

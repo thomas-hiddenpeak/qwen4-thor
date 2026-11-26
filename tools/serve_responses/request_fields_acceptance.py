@@ -22,15 +22,16 @@ def requests():
     instruction = dict(plain, service_tier='ultrafast', stream=True,
                        stream_options=dict(include_obfuscation=False))
     instruction['instructions'] = instruction.pop('input')
-    return dict(fast=dict(plain, service_tier='fast'), instructions=instruction)
+    return dict(fast=dict(plain, service_tier='fast', user=None), instructions=instruction)
 
 
 def invalid_requests():
     base = dict(input='Compute 17+25.', instructions='Answer only the number.')
     rows = [(name, dict(base, **{name: None})) for name in (
         'access_programs', 'input', 'model', 'prompt_cache_options',
-        'text', 'tool_choice', 'tools', 'user')]
-    rows += [('reasoning.mode', dict(base, reasoning=dict(mode=None),
+        'text', 'tool_choice', 'tools')]
+    rows += [('user', dict(base, user=42, prompt=dict(id='prompt_missing'))),
+             ('reasoning.mode', dict(base, reasoning=dict(mode=None),
                                      prompt=dict(id='prompt_missing'))),
              ('input', dict(base, input=True, prompt=dict(id='prompt_missing')))]
     return rows

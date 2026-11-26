@@ -65,7 +65,7 @@
         "src/server/responses_execution.cpp",
         "src/server/responses_tokens.cpp"
       ],
-      "contract": "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools/user and reasoning.mode; nullable fields keep their own defaults. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."
+      "contract": "Responses create rejects explicit null for access_programs/input/model/prompt_cache_options/text/tool_choice/tools and reasoning.mode. The deprecated user field accepts a string or null; null uses the same effective options as omission. Input type and original envelope are checked before prompt state lookup, then expanded requests are checked against effective client limits. Count and compact normalize only their separately nullable SDK fields. All seven SDK service-tier values are accepted; execution reports the actual default scheduler tier without claiming hosted pricing, dedicated capacity or latency guarantees."
     },
     {
       "id": "responses-input-tokens",
@@ -679,7 +679,7 @@
     "src/server/chat_generation.cpp": "cef6818b31daabda4175717cae1a43b1f8eaadd8756a2d642f6bdc1ff5f4220b",
     "src/server/chat_health.cpp": "2380e984879a0daaff9a0582664be5ac7e3f02d3b21b7ac6489eb0cc1caeb7f7",
     "src/server/chat_http.cpp": "8a82c04402f28bbdc15490359447179b8a721c793d031d6f1f2947e5f6e3ad38",
-    "src/server/chat_input.cpp": "be2b4ac180dba62168cfec46068c611a3e604b666d6fac1c0a1bb79204526613",
+    "src/server/chat_input.cpp": "4c1cea17d0540f5e8e83d7fe4745b41a7a880c55ee092aed78fddde28cef7eae",
     "src/server/chat_input_tokens.cpp": "de0d6d136512718d8af03282a9cc36d19a2f067d932fdc9a734a99ea016729de",
     "src/server/chat_memory.cpp": "e96bf490b378a6e405379d8cc4a4a5c899ce224a52782eb797237c3e64262801",
     "src/server/chat_metrics.cpp": "0623a6552ba0ea9538fedb2222563b0cf545dda071f78353186049df2f9010e7",
@@ -696,7 +696,7 @@
     "src/server/chat_server.cpp": "bdc85f2ffa73fe3d7d7d252f838605ea7871b0abb0900c8f0d9d948308ebda4b",
     "src/server/chat_storage.cpp": "58bcb7f5d214ead7937f9fbf584bbeb585aaae7f173dbadf73998418fbc41d73",
     "src/server/chat_storage_options.cpp": "44a9da20f7f72b2fc448a02d09fdfb112c38b7cb0a9c8eca3296e43d5c32d99c",
-    "src/server/chat_template.cpp": "b49990fcc0e45e19ad18dc411e28bf4d05e640d0a8318ef30a0083bd725aba52",
+    "src/server/chat_template.cpp": "eeef7e2798ea5adddeac67ac85dc2cbda032ca4c0c79164522c6728d95b4c7f2",
     "src/server/chat_tool_history.cpp": "a8c6210b9d3ffc644c69f55e27956e85176aa977398398b5422bef7ad0d4973c",
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
@@ -743,7 +743,7 @@
     "src/server/responses_jobs.cpp": "93c5f29eae80146a804c556c999fe0d09b0f46b388b79bd485f5cc2939890d79",
     "src/server/responses_output.cpp": "f19643d231a11a62ed3f0bcdd1bb08d54b4f30146611f83933f68be3c710c353",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
-    "src/server/responses_plan.cpp": "ca7396832f6788e013e24aa0a66940de28668eb943ed04718e596d260f1e0d84",
+    "src/server/responses_plan.cpp": "ead110920e92df449f2cdce42e2661ce018dbc6e6cdfdbef01c9971d5123f688",
     "src/server/responses_state.cpp": "53e83ca4a1636a264cc019c72624c278a37a455544463f92d8599b424041883c",
     "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
     "src/server/sampling.cpp": "b27733666708e0aa0be1ae6ae9d109d9b9500d3daca7a39dc56ec501dcbe1b8c",
@@ -763,7 +763,7 @@
     "src/text/tokenizer.cpp": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541",
     "src/vision/media_plan.cpp": "08358a12f3fffa7837e629058ab7a16718d28f1dcfb7ffdb596ca0ec33303283",
     "src/vision/processor.cpp": "77ab978cb844941681b834d1fd242d8d5348d19c9422f656bb0596341572d58f",
-    "src/vision/vision.cu": "5660a1716cd2ad14264e70d5c65d39840e75dc7ebd76513df6adccb3bed19414",
+    "src/vision/vision.cu": "58d471a4cdfd47f9d9d8efd7eb92ec0a66ccc8cf7a69c523442d2b370170fe36",
     "tools/examples/chat_client.py": "1a1e7a35ca0c4d7db4132c79fd4ba2e18d6b3e975d6976a62c7f503f13c83710",
     "tools/examples/js/chat_client.mjs": "69fe7d61b3794943f88dc9ff46d9e27b03f90a607f6684cbfe52645d156e2b55"
   }

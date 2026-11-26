@@ -1,5 +1,9 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### 普通图像回答与拒答
+
+已解析的普通图像请求可返回 output_text。真正的拒答使用 refusal，流式客户可区分两类增量。Responses 的旧 user 字段可省略、传字符串或传 null。服务仍根据接入凭据隔离已保存的回答。[rev524 业务记录](evidence/serve-visual-answer-encoding-20261126/delivery.json)
+
 ### Responses 图像上下文
 
 通过 Responses 的 `image.context_compression` 可选择图像输入策略。字段按请求生效，取回已有回答时会返回原策略；compact 会保留客户提交的原图与 detail。[业务回执](evidence/serve-image-speech-recovery-20261126/delivery.json)

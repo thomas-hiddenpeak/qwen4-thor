@@ -545,6 +545,9 @@ def schema(graph):
     # The SDK exposes this model style option only on count. Native create
     # accepts the same real preset so counted and generated prompts agree.
     personality = dict(type='string', enum=['friendly', 'pragmatic'], maxLength=64)
+    # The HTTP ModelResponseProperties allows null for this deprecated field.
+    request['properties']['user'] = dict(nullable(request['properties']['user']),
+                                         deprecated=True)
     request['properties']['personality'] = personality
     response['properties']['personality'] = personality
     root('input_tokens_request')['properties']['personality'] = personality

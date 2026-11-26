@@ -1,0 +1,282 @@
+{
+  "stage": "device_alignment_diagnosed_candidate_built",
+  "issued": false,
+  "original_failure": {
+    "outcome": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 33.811,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "engine": "69b6fb04f168579f2476d9a021856dfd2fe381da2f35c9d23902d1e7a8ea2c91",
+    "http_status": 503,
+    "public_code": "device_memory_failure",
+    "logged_code": 999,
+    "response_sha256": "b9d88e1dcd65d7b32147c308d1092d5da40d75caa3661cc0fb0a0e0cd063e8a0",
+    "model_log_sha256": "226246413e497211ded0bf8b943d9dbb6e7c24e34e7c861c1e72b9265961c383",
+    "lease_sha256": "92e60917ee1a4d60ee370be4927421e72a29e53df8b9dadffd3c6e5e930b3326"
+  },
+  "probe": {
+    "workspace_alignment_bytes": 256,
+    "rows": [
+      {
+        "patches": 100,
+        "offset": 128,
+        "M": 100,
+        "N": 1152,
+        "K": 1536,
+        "cublas": 7,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 128,
+        "M": 100,
+        "N": 3456,
+        "K": 1152,
+        "cublas": 7,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 128,
+        "M": 100,
+        "N": 4304,
+        "K": 1152,
+        "cublas": 7,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 128,
+        "M": 100,
+        "N": 1152,
+        "K": 4304,
+        "cublas": 7,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 128,
+        "M": 25,
+        "N": 4608,
+        "K": 4608,
+        "cublas": 7,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 128,
+        "M": 25,
+        "N": 2560,
+        "K": 4608,
+        "cublas": 7,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 0,
+        "M": 100,
+        "N": 1152,
+        "K": 1536,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 0,
+        "M": 100,
+        "N": 3456,
+        "K": 1152,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 0,
+        "M": 100,
+        "N": 4304,
+        "K": 1152,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 0,
+        "M": 100,
+        "N": 1152,
+        "K": 4304,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 0,
+        "M": 25,
+        "N": 4608,
+        "K": 4608,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 100,
+        "offset": 0,
+        "M": 25,
+        "N": 2560,
+        "K": 4608,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 1152,
+        "K": 1536,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 3456,
+        "K": 1152,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 4304,
+        "K": 1152,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 1152,
+        "K": 4304,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 64,
+        "N": 4608,
+        "K": 4608,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 64,
+        "N": 2560,
+        "K": 4608,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 1152,
+        "K": 1536,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 3456,
+        "K": 1152,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 4304,
+        "K": 1152,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 256,
+        "N": 1152,
+        "K": 4304,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 64,
+        "N": 4608,
+        "K": 4608,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      },
+      {
+        "patches": 256,
+        "offset": 0,
+        "M": 64,
+        "N": 2560,
+        "K": 4608,
+        "cublas": 0,
+        "plan": 1,
+        "sync": 0
+      }
+    ],
+    "source_sha256": "8766478204564b0300c846ada87f745b44c981567056ee7bc3a8db9413bfbae3",
+    "log_sha256": "e8daec471d9d6ef1cc983c00ee559ef11fd2131a0a2318fdc2a5ccf222ce6597",
+    "lease_sha256": "f639af926ff81a24056d4b91b788facb7a26cd2b882f245e827f2017708924fe"
+  },
+  "engine": "e34e80ee67899f008740f5d2aaaf4eb627089c333897d969d7fcaa57c74e5332",
+  "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 246,
+    "native_routes": 408,
+    "reviewed_source_anchors": 1389,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "next": "Repeat the same 160-pixel inputs on the corrected engine through the native TLS service."
+}
