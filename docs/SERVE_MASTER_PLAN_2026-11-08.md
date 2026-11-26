@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+实际 Chat 的两帧绿色视频得到绿色回答，省略类型的蓝色图像经流式返回蓝色。原生 TLS 下，Node SDK 从六秒红转蓝 H.264 视频读出末段蓝色并保存为 output_text。三个版本的 Python SDK 均从同一响应 ID 读回原文，其他客户均收到 404。2.8.1 的私有严格模式拒绝 prompt_cache_retention 的 in_memory 值，两版 3.x 的严格模式均通过。仓库视觉示例也经主配置的原生 TLS 回答绿色，输入 token 数与预检相同。本次启动一次模型，耗时 39.342 秒，独立 Chat 回答 42。待验托管配置交接与交付。[验收回执](evidence/serve-visual-frame-parts-20261126/business.json)
+
 两帧 160×160 视频的首个真实 Chat 收到 503。源视频形状的 100 个 patch 让旧 cuBLASLt 临时区偏离 256 字节边界 128 字节。同一块显存、同一批六种 GEMM 只换对齐地址，六项从 INVALID_VALUE 变为成功；原本已对齐的 256 patch 对照全部成功。候选按同一公式分配和使用临时区，保留设备保护并记录前向阶段错误。下一步原样复验视频请求。[对齐与失败记录](evidence/serve-visual-frame-parts-20261126/workspace.json)
 
 仓库中的视觉示例客户端曾在读取能力后拒绝已启用媒体的主配置，OpenAPI 也误写为必须关闭 MTP。现按 runtime.media_enabled 进入预检；单槽服务可加载文本草稿，含视觉 token 的请求使用主模型逐步解码。已从主、轻配置的真实能力记录核对两个模式。12 项 CPU 检查通过，公开合同已同步生成。下一步用该示例经原生 TLS 请求图像。[核验记录](evidence/serve-visual-frame-parts-20261126/client-discovery.json)

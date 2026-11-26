@@ -843,6 +843,11 @@
         "stage": "targeted_client_cpu_verified",
         "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
         "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "targeted_native_tls_sdk_passed",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
       }
     },
     {
@@ -1342,6 +1347,11 @@
         "stage": "targeted_client_cpu_verified",
         "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
         "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "targeted_native_tls_sdk_passed",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
       }
     },
     {
@@ -6372,6 +6382,11 @@
         "stage": "device_cause_reproduced",
         "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
         "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "targeted_native_tls_sdk_passed",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
       }
     },
     {
@@ -8502,6 +8517,11 @@
         "stage": "targeted_client_cpu_verified",
         "receipt": "evidence/serve-visual-frame-parts-20261126/client-discovery.json",
         "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "targeted_native_tls_sdk_passed",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
       }
     },
     {
@@ -11453,6 +11473,11 @@
         "stage": "device_cause_reproduced",
         "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
         "issued": false
+      },
+      "visual_frame_parts_live_20261126": {
+        "stage": "targeted_native_tls_sdk_passed",
+        "issued": false,
+        "receipt": "evidence/serve-visual-frame-parts-20261126/business.json"
       }
     },
     {

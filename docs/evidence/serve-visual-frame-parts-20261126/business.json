@@ -1,0 +1,173 @@
+{
+  "stage": "targeted_native_tls_sdk_passed",
+  "issued": false,
+  "source": "a0a6e91301b2a5829ef602897ea01f0e3adbe4fd",
+  "engine": "e34e80ee67899f008740f5d2aaaf4eb627089c333897d969d7fcaa57c74e5332",
+  "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb",
+  "alignment_receipt": "workspace.json",
+  "node_driver_sha256": "00c073cfc8b533cbe3891043527c63143ccfd6408ea4e0e07bdbac4d874fe2b3",
+  "python_driver_sha256": "3a90cd1d45db821e220a2936aee498f3b399d27a94e588c126598e242eb6328f",
+  "native_cpu_cases": 8,
+  "inventory_mutations": 40,
+  "lease_sha256": "e8753ffec5f28e289c291c5afaf3642993499361e5f395ea83a0c3f0e08b8ca8",
+  "outcome": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.342,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "source_video_sha256": "c51e7f8936131626788bc4fdbbe41f0cc9a0455aa22113f15380595fd95109d7",
+  "source_images": {
+    "green": "81d294c6c31e7bae9c728628d13cf3da30a33045ebe659741c0ea479ef9df509",
+    "blue": "78501ffe57b89b043ce29590b546a4d85b159a3bc381afbd2fba3bd3f764f828"
+  },
+  "sdk": {
+    "sdk": "7.47.0",
+    "previews": [
+      {
+        "guidance": true,
+        "prompt_sha256": "10148f5df96bf0673f42f20f6811541ded33ba5fe026da2aac2e25532bfbcee1",
+        "prompt_tokens": 162,
+        "visual_tokens": 25
+      },
+      {
+        "guidance": true,
+        "prompt_sha256": "10148f5df96bf0673f42f20f6811541ded33ba5fe026da2aac2e25532bfbcee1",
+        "prompt_tokens": 162,
+        "visual_tokens": 25
+      },
+      {
+        "guidance": true,
+        "prompt_sha256": "6a0441bf98e7fa4ec83e9b4998ea9063b99fad922c8ca34c462079ef32b462ab",
+        "prompt_tokens": 195,
+        "visual_tokens": 64
+      }
+    ],
+    "invalid_video_url": 400,
+    "chat_video": {
+      "role": "assistant",
+      "content": "Green"
+    },
+    "chat_untyped_image": {
+      "text": "Blue",
+      "refusal": "",
+      "finish": "stop"
+    },
+    "file_video": {
+      "id": "resp_15e95d049c25ea0a22bc10c8b837fa0b",
+      "parts": [
+        {
+          "type": "output_text",
+          "text": "Blue",
+          "annotations": [],
+          "logprobs": []
+        }
+      ],
+      "peer": 404,
+      "sha256": "c51e7f8936131626788bc4fdbbe41f0cc9a0455aa22113f15380595fd95109d7"
+    },
+    "independent": "42",
+    "restored": null,
+    "controls": {
+      "templates": true,
+      "chat_video": true,
+      "chat_untyped_image": true,
+      "file_video": true,
+      "independent": true
+    },
+    "passed": true
+  },
+  "python": [
+    {
+      "sdk": "2.8.1",
+      "observations": [
+        {
+          "strict": false,
+          "id": "resp_15e95d049c25ea0a22bc10c8b837fa0b",
+          "part": "output_text",
+          "text": "Blue",
+          "retention": "in_memory",
+          "peer_status": 404
+        },
+        {
+          "strict": true,
+          "validation_errors": [
+            {
+              "path": [
+                "prompt_cache_retention"
+              ],
+              "kind": "literal_error"
+            }
+          ],
+          "peer_status": 404
+        }
+      ]
+    },
+    {
+      "sdk": "3.42.1",
+      "observations": [
+        {
+          "strict": false,
+          "id": "resp_15e95d049c25ea0a22bc10c8b837fa0b",
+          "part": "output_text",
+          "text": "Blue",
+          "retention": "in_memory",
+          "peer_status": 404
+        },
+        {
+          "strict": true,
+          "id": "resp_15e95d049c25ea0a22bc10c8b837fa0b",
+          "part": "output_text",
+          "text": "Blue",
+          "retention": "in_memory",
+          "peer_status": 404
+        }
+      ]
+    },
+    {
+      "sdk": "3.55.1",
+      "observations": [
+        {
+          "strict": false,
+          "id": "resp_15e95d049c25ea0a22bc10c8b837fa0b",
+          "part": "output_text",
+          "text": "Blue",
+          "retention": "in_memory",
+          "peer_status": 404
+        },
+        {
+          "strict": true,
+          "id": "resp_15e95d049c25ea0a22bc10c8b837fa0b",
+          "part": "output_text",
+          "text": "Blue",
+          "retention": "in_memory",
+          "peer_status": 404
+        }
+      ]
+    }
+  ],
+  "stored_record_sha256": "0dc45b1f0c9ef26dc49623ca9f4ef627ec04aa88858be263e5813368a9a5cf57",
+  "repository_visual_client": {
+    "output": "Green",
+    "tokens": {
+      "prompt_tokens": 268,
+      "completion_tokens": 2,
+      "total_tokens": 270
+    },
+    "media": {
+      "items": 1,
+      "visual_tokens": 64,
+      "headers_and_geometry_checked": true,
+      "pixels_decoded": false,
+      "prompt_preview": "one_placeholder_per_temporal_group",
+      "token_ids": "expanded_for_inference",
+      "execution_and_quality_validated": false
+    },
+    "actual_source_sha256": "a770a522b8571ba14e13ab85ccb0e35dc50e68037adbb15f439cf28b4d45c7a0",
+    "result_sha256": "501f3871353943cbd050807291f1dd4dafb0026914620b114268e539c2d85a2f"
+  },
+  "pending": "Managed qualification, recoverable delivery and mainline checks."
+}
