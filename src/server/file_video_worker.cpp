@@ -37,8 +37,8 @@ struct TransformedSize {
   uint32_t width = 0, height = 0;
 };
 Failure GetTransformedSize(const DisplayMatrices& matrices, uint32_t width,
-                          uint32_t height, const FileVideoLimits& limits,
-                          TransformedSize* result) {
+                           uint32_t height, const FileVideoLimits& limits,
+                           TransformedSize* result) {
   if (IsAffine(matrices.movie) && IsAffine(matrices.track)) {
     AffineGeometry geometry;
     const auto status =
@@ -261,9 +261,9 @@ struct Pipeline {
     }
     if (transform) {
       TransformedSize output;
-      const auto status = GetTransformedSize(*transform, selected.square_width,
-                                             selected.square_height,
-                                             request.limits, &output);
+      const auto status =
+          GetTransformedSize(*transform, selected.square_width,
+                             selected.square_height, request.limits, &output);
       if (status != Failure::kNone) {
         failure = status;
         return false;
@@ -441,9 +441,10 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
   const auto* matrices = track ? &track->matrices : nullptr;
   const auto direction = matrices ? matrices->Direction() : std::nullopt;
   const bool clipped = track && track->clips.Any();
+  const bool complex = clipped && track->clips.Complex();
   const bool transformed = matrices && (!direction || clipped);
-  const bool projective = matrices &&
-      (!IsAffine(matrices->movie) || !IsAffine(matrices->track));
+  const bool projective =
+      matrices && (!IsAffine(matrices->movie) || !IsAffine(matrices->track));
   auto* pipeline = api.gst_pipeline_new_fn(nullptr);
   if (!pipeline) return Failure::kCapacity;
   ScopeExit destroy([&] {
@@ -611,10 +612,10 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
         header.format != vision::MediaFormat::kPng ||
         (transformed ? (header.width != display_size.width ||
                         header.height != display_size.height)
-                : !((header.width == geometry.square_width &&
-                     header.height == geometry.square_height) ||
-                    (header.width == geometry.square_height &&
-                     header.height == geometry.square_width))))
+                     : !((header.width == geometry.square_width &&
+                          header.height == geometry.square_height) ||
+                         (header.width == geometry.square_height &&
+                          header.height == geometry.square_width))))
       return Failure::kInvalid;
     if (count == 1) {
       output->width = header.width;
@@ -668,16 +669,24 @@ Failure Decode(Runtime& api, const Request& request, const std::string& source,
        {"frames", std::move(frames)}});
   if (transformed) {
     Set(&output->conversion, "format",
-        String(clipped      ? "q4t.cpu_video_png.v6"
+        String(complex      ? "q4t.cpu_video_png.v7"
+               : clipped    ? "q4t.cpu_video_png.v6"
                : projective ? "q4t.cpu_video_png.v5"
                             : "q4t.cpu_video_png.v4"));
     auto& display = Field(output->conversion, "display_geometry");
     Set(&display, "policy",
-        String(clipped ? "quicktime-rect-clips-black-bilinear16"
+        String(complex   ? "quicktime-region-clips-black-bilinear16"
+               : clipped ? "quicktime-rect-clips-black-bilinear16"
                : projective
                    ? "projective-square-pixels-tight-integer512-bilinear16"
                    : "affine-square-pixels-tight-bilinear16"));
     if (clipped) {
+      if (complex) {
+        for (const auto& [key, region] :
+             {std::pair{"movie_region_sha256", &track->clips.movie_region},
+              std::pair{"track_region_sha256", &track->clips.track_region}})
+          Set(&display, key, String(*region ? Digest((*region)->Bytes()) : ""));
+      }
       auto size = Array();
       for (auto extent : track->clips.track_size)
         size.array.push_back(Number(extent));

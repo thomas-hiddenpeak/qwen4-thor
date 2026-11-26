@@ -75,3 +75,39 @@ class ClipProfilesTest(unittest.TestCase):
             rectangular_clipping=reuse.CLIP_CAPABILITY)))
         with self.assertRaises(reuse.ledger.LedgerError):
             reuse.clipped_file_inputs(upgraded)
+
+    def test_region_requires_issued_rectangle_capability(self):
+        original = {'native_video': {'model_media_enabled': True}}
+        rectangles = reuse.clipped_file_inputs(original)
+        regions = reuse.region_file_inputs(rectangles)
+        native = regions['native_video']
+        self.assertEqual(native['rectangular_clipping'], reuse.CLIP_CAPABILITY)
+        self.assertEqual(native['region_clipping']['encoding'], 'quickdraw-inversion-points')
+        self.assertEqual(native['region_clipping']['frozen_conversion'], 'q4t.cpu_video_png.v7')
+        self.assertNotIn('region_clipping', rectangles['native_video'])
+        for wrong in (original, regions, {'native_video': {'rectangular_clipping': {}}}):
+            with self.subTest(wrong=wrong), self.assertRaises(reuse.ledger.LedgerError):
+                reuse.region_file_inputs(wrong)
+
+    def test_region_handoff_requires_the_same_owner_and_both_diagonals(self):
+        first = package.read(clips.REGION_PROOF)['sdk']
+        clips.check_regions(first)
+        later = deepcopy(first)
+        replies = later['responses']
+        replies['restored'] = deepcopy(replies['replay'])
+        for index, reply in enumerate(replies.values(), 1):
+            reply['response'] = 'resp_' + str(index)*32
+        later['saved'].update(response=replies['uploaded']['response'], file='file_'+'1'*32)
+        later['restored'] = deepcopy(first['saved'])
+        clips.check_regions(later, first)
+        for label in ('inline','replay','restored'):
+            wrong = deepcopy(later)
+            wrong['responses'][label]['colors']['bottom_right'] = 'blue'
+            with self.subTest(label=label), self.assertRaises(RuntimeError):
+                clips.check_regions(wrong, first)
+        wrong = deepcopy(later)
+        wrong['restored']['foreign'] = 200
+        with self.assertRaises(RuntimeError):
+            clips.check_regions(wrong, first)
+        with self.assertRaises(RuntimeError):
+            clips.check_regions(self.first)

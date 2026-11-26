@@ -16,32 +16,39 @@ ACTOR = Path(__file__).with_name('video_clip_sdk.py')
 FIXTURE = ROOT / 'tests/fixtures/file_video/rect-clips.mov'
 PROOF = ROOT / 'docs/evidence/serve-video-clipping-20261126/repaired-business.json'
 RELEASE = ROOT / 'docs/evidence/serve-responses-errors-20261126/delivery.json'
+REGION_KEY = 'quickdraw_region_handoff'
+REGION_PROOF = ROOT / 'docs/evidence/serve-video-regions-20261126/business.json'
+REGION_RELEASE = PROOF.with_name('delivery.json')
+REGION_FIXTURE = FIXTURE.with_name('region-clips.mov')
 ID = re.compile(r'resp_[0-9a-f]{32}')
 DIGEST = re.compile(r'[0-9a-f]{64}')
 
 
-def prepare(out, build, deployment, interpreter):
-    proof = package.read(PROOF)
+def prepare(out, build, deployment, interpreter, *, regions=False):
+    proof_path, fixture, key, release, reviewed = (
+        (REGION_PROOF, REGION_FIXTURE, REGION_KEY, REGION_RELEASE, reuse.VIDEO_CLIP_REVIEWED)
+        if regions else (PROOF, FIXTURE, KEY, RELEASE, reuse.RESPONSE_FAILURE_REVIEWED))
+    proof = package.read(proof_path)
     sdk = subprocess.check_output([interpreter, '-IB', '-c', 'import openai; print(openai.__version__)'],
                                   text=True, timeout=15).strip()
     package.require(sdk == proof['sdk']['sdk'] and proof['device']['status'] == 'PASS'
                     and proof['engine'] == package.sha(build/'q4t')
                     and proof['ingress'] == package.sha(build/'q4t-ingress'),
                     'candidate differs from the accepted video upload')
-    lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.RESPONSE_FAILURE_REVIEWED,
-                                KEY, [ACTOR, FIXTURE, PROOF, RELEASE, Path(__file__)])
+    lifecycle.prepare_candidate(out, build, deployment, release, reviewed,
+                                key, [ACTOR, fixture, proof_path, release, Path(__file__)])
     for name in ('primary', 'light'):
         path = out/name/'plan.json'
         plan = package.read(path)
         command = plan['command']
         package.require(Path(command[command.index('--object-store-dir')+1]) ==
                         out/'state/application-objects', 'capacities must share the isolated object store')
-        plan[KEY]['interpreter'] = str(Path(interpreter).absolute())
+        plan[key]['interpreter'] = str(Path(interpreter).absolute())
         package.save(path, plan)
 
 
-def check(row, previous=None):
-    proof = package.read(PROOF)['sdk']
+def check(row, previous=None, *, regions=False):
+    proof = package.read(REGION_PROOF if regions else PROOF)['sdk']
     replies = row['responses']
     expected = {'uploaded','inline','replay'}
     if previous is not None:
@@ -76,21 +83,26 @@ def check(row, previous=None):
     if previous is None:
         package.require('restored' not in row, 'unexpected prior video response')
         return
-    check(previous)
+    check(previous, regions=regions)
     package.require(row['restored'] == previous['saved']
                     and not identifiers.intersection(v['response'] for v in previous['responses'].values())
                     and original['file'] != previous['saved']['file'],
                     'handoff lost the actual prior video, file or GET bytes')
 
 
-def exercise(params, interpreter, errors, captures, previous=None):
-    command = dict(params, handoff=True, fixture=str(FIXTURE), capture=str(captures))
+def check_regions(row, previous=None):
+    check(row, previous, regions=True)
+
+
+def exercise(params, interpreter, errors, captures, previous=None, *, regions=False):
+    command = dict(params, handoff=True, fixture=str(REGION_FIXTURE if regions else FIXTURE),
+                   capture=str(captures), quickdraw_region=regions)
     if previous is not None:
         command['previous'] = previous['saved']
     proc = subprocess.run([interpreter, '-IB', ACTOR], input=json.dumps(command), text=True,
                           stdout=subprocess.PIPE, stderr=errors, timeout=150, check=True)
     row = json.loads(proc.stdout)
-    check(row, previous)
+    check(row, previous, regions=regions)
     for name, source in [('saved',row['saved']),('restored',row.get('restored'))]:
         if source is not None:
             raw = (captures/(name+'-get.json')).read_bytes()

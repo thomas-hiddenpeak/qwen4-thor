@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <string_view>
 
+#include "file_video_region.h"
+
 namespace q4t::server::video_detail {
 enum class DisplayDirection {
   kIdentity,
@@ -19,14 +21,11 @@ enum class DisplayDirection {
   kAntiTranspose
 };
 
-// A short QuickDraw region specifies a signed, half-open rectangle.
-struct ClipRect {
-  int16_t top, left, bottom, right;
-  bool operator==(const ClipRect&) const = default;
-};
 struct DisplayClips {
   std::optional<ClipRect> movie, track;
   std::array<uint16_t, 2> track_size{};
+  std::optional<QuickDrawRegion> movie_region{}, track_region{};
+  bool Complex() const { return movie_region || track_region; }
   bool Any() const { return movie.has_value() || track.has_value(); }
   bool operator==(const DisplayClips&) const = default;
 };
@@ -145,7 +144,8 @@ class MovieDisplay {
     const auto track = Find(selected, "tkhd");
     SelectedTrack result{{global, Matrix(track, 40, 52)}, count > 1, {}, {}};
     if (read_clips) {
-      result.clips = {Clip(movie), Clip(selected)};
+      result.clips.movie = Clip(movie, &result.clips.movie_region);
+      result.clips.track = Clip(selected, &result.clips.track_region);
       if (result.clips.Any()) {
         const size_t at = track[0] == 0 ? 76 : 88;
         Require(track.size() >= at + 8);
@@ -221,18 +221,18 @@ class MovieDisplay {
     Require(result.has_value());
     return *result;
   }
-  std::optional<ClipRect> Clip(std::string_view parent) {
+  std::optional<ClipRect> Clip(std::string_view parent,
+                               std::optional<QuickDrawRegion>* shape) {
     const auto clip = Optional(parent, "clip");
     if (!clip) return std::nullopt;
     const auto region = Find(*clip, "crgn");
-    // A complex QuickDraw region shares this bounding box, but the box alone
-    // would expose pixels outside its shape.
-    Require(region.size() == 10 && Big(region.substr(0, 2)) == 10);
+    Require(region.size() >= 10 && Big(region.substr(0, 2)) == region.size());
     const auto coord = [&](size_t offset) {
       return std::bit_cast<int16_t>(uint16_t(Big(region.substr(offset, 2))));
     };
     ClipRect rect{coord(2), coord(4), coord(6), coord(8)};
     Require(rect.top <= rect.bottom && rect.left <= rect.right);
+    if (region.size() > 10) shape->emplace(region, rect);
     return rect;
   }
   static DisplayMatrix Matrix(std::string_view bytes, size_t v0, size_t v1) {
