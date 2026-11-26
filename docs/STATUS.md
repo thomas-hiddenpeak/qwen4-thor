@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #172 的公开 CI 在旧断言上失败，本机复现两项。现按 32 个 SDK 输入逐项检查对象存储访问，其中唯一需要读取归属记录的是旧版 shell 结果；能力清单逐一核对包含 local_shell_call 的 15 种输出。本机四项 CPU 检查全部通过，等待新提交的公开 CI。[复核记录](evidence/serve-local-shell-20261126/host-contracts.json)
+
 rev548 已发行本地 shell 工具的客户端调用、流事件和结果回填。模型恢复和主网关故障切换后，原响应与回填页可按原 ID 逐字节读回，新续答取回相同的架构名。历史选择器按官方格式显示。登记时模型启动为零，13 份受保护状态通过复核。按设备维护授权，jtop 和相机守护进程已停止并取消开机自启；清理后 NVML 正常采样，冷启动验收仍暂缓。[发行记录](evidence/serve-local-shell-20261126/delivery.json)
 
 主配置 42.7 秒，轻配置 41.3 秒。两个配置均按原 ID 读回本地 shell 请求、结果和后续响应，HTTP 字节与首次业务一致。每次新续答均从历史中返回 qwen4_exp，跨客户 404，独立 Chat 返回 720041。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-local-shell-20261126/profiles.json)
