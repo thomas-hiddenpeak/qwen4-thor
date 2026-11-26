@@ -47,12 +47,15 @@ def prepare(out, build, deployment, interpreter, source):
 
 
 def check(row, previous=None):
-    old = package.read(PROOF)['sdk']
+    check_handoff(row, previous, package.read(PROOF)['sdk'], {'top_right':'green', 'bottom_right':'yellow'})
+
+
+def check_handoff(row, previous, old, colors):
     parent = old['saved']['response']
     source_ids = {label: old['responses'][label]['response'] for label in ('uploaded', 'inline', 'replay')}
     package.require(len(set(source_ids.values())) == 3 and row['history'].keys() == source_ids.keys()
                     and row['sdk'] == old['sdk'] and row['deleted'] == 404
-                    and row['colors'] == {'top_right':'green', 'bottom_right':'yellow'}
+                    and row['colors'] == colors
                     and row['independent_chat'] == '42', 'video source, ownership or answer changed')
     for label, rid in source_ids.items():
         page = row['history'][label]
@@ -70,20 +73,24 @@ def check(row, previous=None):
     if previous is None:
         package.require(row['restored'] is None, 'unexpected restored continuation')
     else:
-        check(previous)
+        check_handoff(previous, None, old, colors)
         package.require(row['restored'] == previous['saved'] and row['history'] == previous['history']
                         and fresh['response'] != previous['saved']['response'],
                         'stored video continuation or earlier pictures changed during handoff')
 
 
 def exercise(params, interpreter, errors, captures, previous=None):
-    command = dict(params, original=package.read(PROOF)['sdk'], capture=str(captures))
+    return run_client(params, interpreter, errors, captures, previous, PROOF, check)
+
+
+def run_client(params, interpreter, errors, captures, previous, proof, check_result):
+    command = dict(params, original=package.read(proof)['sdk'], capture=str(captures))
     if previous is not None:
         command['previous'] = previous['saved']
     run = subprocess.run([interpreter, '-IB', ACTOR], input=json.dumps(command), text=True,
                          stdout=subprocess.PIPE, stderr=errors, timeout=150, check=True)
     row = json.loads(run.stdout)
-    check(row, previous)
+    check_result(row, previous)
     pages = dict(row['history'], current=row['saved'])
     if previous:
         pages['restored'] = row['restored']
