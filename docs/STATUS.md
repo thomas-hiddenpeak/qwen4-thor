@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+带 Agent 错误修复的主、轻配置各启动一次，分别用时 48.499 和 47.069 秒。轻配置从已删除的视频读回同一响应并补答左下角蓝色。原候选的证据单独保留，新的两份资格均可重建 rev530 前驱。下一步使用这对二进制封包验收进程退出后的接管。[配置回执](evidence/serve-video-clipping-20261126/repaired-profiles.json)
+
 组合修复候选一次启动通过真实 SDK 裁剪视频与 Agent 配额恢复验收，两份持久视频快照的 8 帧均已逐像素复核。此前的独立模型退出及主网关接管通过，但对应旧二进制；旧包未发行。新候选正在按主、轻配置验证已删除文件的跨配置续问。[组合候选回执](evidence/serve-video-clipping-20261126/repaired-business.json)
 
 修复候选用一次模型启动完成真实 TLS 验收（105.863 秒）。Node SDK 7.47.0 在同一 Agent 会话收到 202，随后收到与轮次查询一致的 rate_limit_exceeded，失败后会话回到 idle，其他客户查询返回 404。配额窗口恢复后，同一会话答出 42，三轮状态为成功、失败、成功。已安装的 rev530 仍需由修复封包替换。[设备回执](evidence/serve-responses-errors-20261126/agent-turn-http.json)
