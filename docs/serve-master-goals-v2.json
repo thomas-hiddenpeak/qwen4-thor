@@ -3040,9 +3040,10 @@
         "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
       },
       "conversation_compaction_20261126": {
-        "stage": "built_and_targeted_cpu",
+        "stage": "first_https_failed_repaired_cpu",
         "issued": false,
-        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json"
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
+        "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json"
       }
     },
     {
@@ -3690,9 +3691,10 @@
         "profiles": "evidence/serve-stored-content-parts-20261126/profiles.json"
       },
       "conversation_compaction_20261126": {
-        "stage": "built_and_targeted_cpu",
+        "stage": "first_https_failed_repaired_cpu",
         "issued": false,
-        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json"
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
+        "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json"
       },
       "conversation_item_identifiers_20261126": {
         "stage": "reproduced",
@@ -8770,9 +8772,10 @@
         "python_transport": "offline replay of native reads and events"
       },
       "conversation_compaction_20261126": {
-        "stage": "built_and_targeted_cpu",
+        "stage": "first_https_failed_repaired_cpu",
         "issued": false,
-        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json"
+        "receipt": "evidence/serve-conversation-compaction-20261126/cpu.json",
+        "first_failure": "evidence/serve-conversation-compaction-20261126/private-output.json"
       }
     },
     {

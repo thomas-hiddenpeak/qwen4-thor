@@ -1,3 +1,4 @@
+#include "q4t/server/chat_response_parser.h"
 #include "q4t/server/conversation_api.h"
 #include "q4t/server/responses_compaction.h"
 
@@ -946,5 +947,41 @@ Q4T_TEST(conversation_compact_append_detects_racing_change_and_preserves_ids) {
   auto wrong = fresh;
   wrong.scope = "another";
   Q4T_CHECK(!second.CommitConversationCompaction(wrong).ok());
+  return true;
+}
+
+Q4T_TEST(compaction_reasoning_deltas_are_never_written_into_sealed_memory) {
+  auto request = Parse(R"({"model":"cpu-model","messages":[],"enable_thinking":false})");
+  ChatResponseParser parser;
+  Q4T_CHECK(parser.Init(request, "<think>\n\n</think>\n\n", "response_fixture", true));
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Append("<think>unpublished planning</think>Retained result 42.",
+                          &deltas));
+  Q4T_CHECK(parser.Finish(false, &deltas));
+  bool reasoning = false, text = false;
+  for (const auto& delta : deltas) {
+    Q4T_CHECK(CheckCompactionDelta(delta));
+    reasoning |= delta.kind == ResponseDelta::Kind::kReasoning;
+    text |= delta.kind == ResponseDelta::Kind::kContent;
+  }
+  Q4T_CHECK(reasoning);
+  Q4T_CHECK(text);
+  Q4T_CHECK(parser.Content() == "Retained result 42.");
+  Fixture f;
+  ObjectStore objects(f.options);
+  StateCipher cipher(objects);
+  auto plan = Plan(History());
+  Json item, expanded;
+  Q4T_CHECK(Ok(SealResponsesCompaction(cipher, plan, parser.Content(), "cmp_42",
+                                       Config(), Access(), &item, &expanded)));
+  Q4T_CHECK(Ok(OpenResponsesCompaction(cipher, plan.source, item, Config(),
+                                       Access(), &expanded)));
+  Q4T_CHECK(OutputJson(expanded).find("Retained result 42.") != std::string::npos);
+  Q4T_CHECK(OutputJson(expanded).find("unpublished planning") == std::string::npos);
+  ResponseDelta invalid;
+  invalid.kind = ResponseDelta::Kind::kTool;
+  Q4T_CHECK(!CheckCompactionDelta(invalid));
+  invalid.kind = ResponseDelta::Kind::kRefusal;
+  Q4T_CHECK(!CheckCompactionDelta(invalid));
   return true;
 }

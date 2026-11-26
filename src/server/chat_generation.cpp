@@ -3592,7 +3592,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         std::string response_chunk;
         if (responses) {
-          if (compaction_step || moderation_step) {
+          if (compaction_step) {
+            response_status = CheckCompactionDelta(delta);
+          } else if (moderation_step) {
             response_status =
                 delta.kind == ResponseDelta::Kind::kContent
                     ? Status()

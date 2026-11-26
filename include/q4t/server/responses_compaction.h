@@ -4,6 +4,10 @@
 #include "q4t/server/state_cipher.h"
 
 namespace q4t::server {
+struct ResponseDelta;
+// Only the parser's final Content() is eligible for the encrypted memory.
+Status CheckCompactionDelta(const ResponseDelta& delta);
+
 enum class ResponsesCompactionMode { kAutomatic, kStandalone };
 
 // Immutable source and retained items. Only actual model output can become

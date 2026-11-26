@@ -1,5 +1,7 @@
 #include "q4t/server/responses_compaction.h"
 
+#include "q4t/server/chat_response_parser.h"
+
 #include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
@@ -252,6 +254,19 @@ Status PlanResponsesCompaction(const Json& history,
   }
   *plan = std::move(result);
   return {};
+}
+
+Status CheckCompactionDelta(const ResponseDelta& delta) {
+  switch (delta.kind) {
+    case ResponseDelta::Kind::kContent:
+    case ResponseDelta::Kind::kReasoning:
+      return {};
+    case ResponseDelta::Kind::kRefusal:
+      return Status::Fail("Compaction model refused to produce memory");
+    case ResponseDelta::Kind::kTool:
+      return Status::Fail("Compaction model emitted a tool call");
+  }
+  return Status::Fail("Unexpected compaction output");
 }
 
 std::string ResponsesCompactionId(std::string_view opaque) {

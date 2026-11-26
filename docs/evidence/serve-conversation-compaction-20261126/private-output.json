@@ -1,0 +1,168 @@
+{
+  "stage": "candidate_repaired_cpu",
+  "previous_head": "8d2aebaf6648f4d72cc0b61223bf3b9bb1acb2da",
+  "first_business": {
+    "run": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 31.014,
+      "unchanged_default": true,
+      "phases": []
+    },
+    "lease_status": "COMMAND_FAILED",
+    "lease_sha256": "d692754cf54407741ccdbef4ace470646bdf33f45c88c5c4d78122ed8419a807",
+    "http": 502,
+    "error": "response_parse_failed",
+    "diagnostic": "Private executor emitted non-text output",
+    "wire_files": 0,
+    "original_sdk_stderr_sha256": "a9c9e35b08c72ffcb74e4fc7267c112d7a2cadc3e61d2aeff3801030c6d03f25",
+    "delta_kind_recorded": false
+  },
+  "earlier_cpu_assertion": {
+    "failure": "The first synthetic parser fixture assumed whitespace after the closing delimiter was removed.",
+    "log_sha256": "6cfb0f5f099736e2dd30d14c8b074ecda7985b1dff65a288f641f79c2a13d5f2"
+  },
+  "baseline_http": {
+    "source": "468efbdbd8a20e0221be65ae55a66cc936ad8336",
+    "fixture_sha256": "25b6c9a04d9d0cf4901c97e165d8a3dbd0237f8bf08abf3b4cea7e8c48d51ce4",
+    "observed": {
+      "create_trigger": {
+        "status": 503,
+        "value": {
+          "error": {
+            "message": "Context compaction executor is not available",
+            "type": "service_unavailable_error",
+            "code": "compaction_executor_unavailable",
+            "param": null
+          }
+        },
+        "wire_sha256": "5ea38597d5a26c277f0be27850a0e2cd1bb652573fc4979263d8d24ebb967ea4"
+      },
+      "normal_create": {
+        "status": 200,
+        "value": {
+          "id": "conv_0be6227c2000706bfd976a6770dc8ec8",
+          "object": "conversation",
+          "created_at": 1795688446,
+          "metadata": {}
+        },
+        "wire_sha256": "438671342a62db11308fb40ca1500ea02cdf2570c5a323157c767df36e6fd816"
+      },
+      "before": {
+        "status": 200,
+        "value": {
+          "object": "list",
+          "data": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "Remember the register entry."
+                }
+              ],
+              "type": "message",
+              "status": "completed",
+              "id": "item_f0cd13cee9f82c688bcd28bbd8d820dc"
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "The handoff number is 28617."
+                }
+              ],
+              "type": "message",
+              "status": "completed",
+              "id": "item_9659bd6106b0830e487e0e482debb8cd"
+            }
+          ],
+          "first_id": "item_f0cd13cee9f82c688bcd28bbd8d820dc",
+          "last_id": "item_9659bd6106b0830e487e0e482debb8cd",
+          "has_more": false
+        },
+        "wire_sha256": "147a7fdd469d76b9116e36eaaf6ce3bb01f24f63071a2591845c3d99dadbbef3"
+      },
+      "append_trigger": {
+        "status": 503,
+        "value": {
+          "error": {
+            "message": "Context compaction executor is not available",
+            "type": "service_unavailable_error",
+            "code": "compaction_executor_unavailable",
+            "param": null
+          }
+        },
+        "wire_sha256": "5ea38597d5a26c277f0be27850a0e2cd1bb652573fc4979263d8d24ebb967ea4"
+      },
+      "after": {
+        "status": 200,
+        "value": {
+          "object": "list",
+          "data": [
+            {
+              "role": "user",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "Remember the register entry."
+                }
+              ],
+              "type": "message",
+              "status": "completed",
+              "id": "item_f0cd13cee9f82c688bcd28bbd8d820dc"
+            },
+            {
+              "role": "assistant",
+              "content": [
+                {
+                  "type": "input_text",
+                  "text": "The handoff number is 28617."
+                }
+              ],
+              "type": "message",
+              "status": "completed",
+              "id": "item_9659bd6106b0830e487e0e482debb8cd"
+            }
+          ],
+          "first_id": "item_f0cd13cee9f82c688bcd28bbd8d820dc",
+          "last_id": "item_9659bd6106b0830e487e0e482debb8cd",
+          "has_more": false
+        },
+        "wire_sha256": "147a7fdd469d76b9116e36eaaf6ce3bb01f24f63071a2591845c3d99dadbbef3"
+      },
+      "invalid": {
+        "status": 400,
+        "value": {
+          "error": {
+            "message": "compaction_trigger must be the final item",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": null
+          }
+        },
+        "wire_sha256": "95cb728f7bed325de9cf24cdcda94f5c3673371cfce150711a288ce62d2f089b"
+      }
+    }
+  },
+  "product": {
+    "engine": "354fb7db78713611184636f4089fd455e7fc3db52207198d462e0acc1db07eb8",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1101
+  },
+  "scoped_tests": [
+    "compaction_execution_does_not_accept_nonreducing_memory",
+    "compaction_execution_cancellation_after_measurement_has_no_done",
+    "compaction_standalone_returns_preserved_users_and_replayable_state",
+    "compaction_standalone_noop_is_honest_zero_generation",
+    "conversation_compact_create_reopens_sealed_history",
+    "conversation_compact_append_detects_racing_change_and_preserves_ids",
+    "compaction_reasoning_deltas_are_never_written_into_sealed_memory"
+  ],
+  "test_log_sha256": "f29732af8059203678635fa2014f18dc098cc364c9454b1201912b17cb8d6113",
+  "native_program_sha256": "b14d1b9ae9734d9abe266cdf0a61e4ac8ea3e6a5f574d856a721445893feda79",
+  "guard": "5a76ffdf68a8b8ef1b88cb3d18b9b28c3dd5003fd2dbaf2ab7b585f8d8bd2b04",
+  "memory_contract": "Only parser Content() is sealed; reasoning deltas are excluded, refusal and tool output still fail.",
+  "http_retry_accepted": false
+}
