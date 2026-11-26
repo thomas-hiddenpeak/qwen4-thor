@@ -407,6 +407,7 @@ Status ChatResponseParser::ParseTool(std::string_view block,
 void ChatResponseParser::ToolFragment(std::string text, bool start,
                                       std::vector<ResponseDelta>* deltas) {
   partial_call_.arguments += text;
+  if (partial_call_.name == complete_tool_) return;
   ResponseDelta delta;
   delta.kind = ResponseDelta::Kind::kTool;
   delta.call.index = partial_call_.index;
@@ -836,6 +837,12 @@ Status ChatResponseParser::Append(std::string_view text,
           partial_call_.custom != call.custom)
         return Fail("incremental tool arguments differ from validated call");
       if (!call.custom && !json_arguments) ToolFragment("}", false, deltas);
+      if (call.name == complete_tool_) {
+        ResponseDelta delta;
+        delta.kind = ResponseDelta::Kind::kTool;
+        delta.call = call;
+        deltas->push_back(std::move(delta));
+      }
       ++tool_count_;
       if (collect_) calls_.push_back(call);
       pending_offset_ += end + kToolClose.size();

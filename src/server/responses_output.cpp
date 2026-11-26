@@ -353,7 +353,21 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
     if (identity && !identity->direct)
       return Status::Fail(
           "Program-only tool cannot be emitted by a direct caller");
-    if (identity && identity->type == "local_shell") {
+    if (identity && identity->type == "apply_patch") {
+      io::Json operation;
+      if (!io::ParseJson(call->arguments, &operation, true, kSchemaJsonLimits))
+        return Status::Fail("Invalid generated patch operation");
+      item = Object({{"id", String(detail::NewRequestId("apc_"))},
+                     {"type", String("apply_patch_call")},
+                     {"call_id", String(call->id)},
+                     {"status", String("in_progress")},
+                     {"caller", Object({{"type", String("direct")}})},
+                     {"operation", std::move(operation)}});
+      ChatPlanError error;
+      auto valid = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
+                                              &error, "item");
+      if (!valid) return valid;
+    } else if (identity && identity->type == "local_shell") {
       item = Object({{"id", String(detail::NewRequestId("lsh_"))},
                      {"type", String("local_shell_call")},
                      {"call_id", String(call->id)},
@@ -479,6 +493,11 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
   }
   auto& item = Items().array[index];
   if (tool) {
+    if (item.GetString("type") == "apply_patch_call") {
+      if (!delta.tool_start)
+        return Status::Fail("Unexpected fragment after validated patch");
+      return {};
+    }
     if (item.GetString("type") == "local_shell_call") {
       // The protocol has no event for partial argv. A completed call exposes
       // the parsed action only after the model has closed the tool payload.
@@ -793,6 +812,11 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
          Items().array[i].GetString("type") == "mcp_call" ||
          (call_indices_[i] != kNoCall ? call_indices_[i] >= completed_calls
                                       : i + 1 == Items().array.size()));
+    if (Items().array[i].GetString("type") == "apply_patch_call" &&
+        call_indices_[i] >= completed_calls) {
+      if (!incomplete) return Status::Fail("Patch call was not confirmed");
+      continue;
+    }
     Set(&Items().array[i], "status",
         String(partial ? "incomplete" : "completed"));
   }
@@ -808,6 +832,9 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
       Set(&Items().array[i], "encrypted_content", String(std::move(opaque)));
     }
   for (size_t i = 0; i < Items().array.size(); ++i) {
+    if (Items().array[i].GetString("type") == "apply_patch_call" &&
+        Items().array[i].GetString("status") == "in_progress")
+      continue;
     CloseItem(i, Items().array[i].GetString("status") == "incomplete", wire);
   }
   Set(&response_, "status", String(incomplete ? "incomplete" : "completed"));
@@ -832,15 +859,19 @@ Status ResponsesOutput::Fail(std::string_view code, std::string_view message,
   wire->clear();
   if (!started_ || terminal_)
     return Status::Fail("Responses failure outside active lifecycle");
-  // No item/argument done events on a failed response.
-  for (size_t i = 0; i < Items().array.size(); ++i)
-    if (Items().array[i].GetString("type") != "compaction" &&
-        !closed_items_.contains(i)) {
-      if (Items().array[i].GetString("type") == "mcp_list_tools")
-        Set(&Items().array[i], "error", String("MCP listing interrupted"));
-      else
-        Set(&Items().array[i], "status", String("incomplete"));
-    }
+  // A patch has only in_progress/completed states. Failure terminates the
+  // response without confirming an open client operation.
+  for (size_t i = 0; i < Items().array.size(); ++i) {
+    auto& item = Items().array[i];
+    const auto type = item.GetString("type");
+    if (closed_items_.contains(i) || type == "compaction" ||
+        type == "apply_patch_call")
+      continue;
+    if (type == "mcp_list_tools")
+      Set(&item, "error", String("MCP listing interrupted"));
+    else
+      Set(&item, "status", String("incomplete"));
+  }
   Set(&response_, "status", String("failed"));
   Set(&response_, "error",
       Object({{"code", String(std::string(code))},

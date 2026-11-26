@@ -322,17 +322,17 @@ Status MapNamespaceChoice(const Json& original,
                           std::string_view path = "tool_choice") {
   *mapped = original;
   const auto type = original.GetString("type");
-  if (type == "local_shell") {
+  if (type == "local_shell" || type == "apply_patch") {
     auto status = InputFields(original, {"type"}, &error->param, path);
     if (!status) return status;
-    const bool enabled = std::ranges::any_of(identities, [](const auto& tool) {
-      return tool.type == "local_shell";
+    const auto found = std::ranges::find_if(identities, [&](const auto& tool) {
+      return tool.type == type && tool.direct;
     });
-    if (!enabled)
+    if (found == identities.end())
       return Invalid(error, std::string(path),
-                     "Local shell tool is not enabled");
+                     "Selected client tool is not enabled for direct calls");
     *mapped = Object(
-        {{"type", String("function")}, {"name", String(kLocalShellToolName)}});
+        {{"type", String("function")}, {"name", String(found->model_name)}});
   } else if (type == "function" || type == "custom") {
     Json selected;
     auto status = ToolSelection(original, &selected, path, identities, error);
@@ -355,6 +355,27 @@ Status MapNamespaceChoice(const Json& original,
   return {};
 }
 }  // namespace
+
+io::Json ResponsesPatchFunction() {
+  auto kinds = Array(
+      {String("create_file"), String("update_file"), String("delete_file")});
+  auto properties = Object({{"type", Object({{"type", String("string")},
+                                             {"enum", std::move(kinds)}})},
+                            {"path", Object({{"type", String("string")}})},
+                            {"diff", Object({{"type", String("string")}})}});
+  auto parameters =
+      Object({{"type", String("object")},
+              {"properties", std::move(properties)},
+              {"required", Array({String("type"), String("path")})},
+              {"additionalProperties", Boolean(false)}});
+  return Object(
+      {{"name", String(kApplyPatchToolName)},
+       {"description", String("Request a patch in the client workspace. "
+                              "Include diff for create and update, and only "
+                              "the path for delete. Wait for the result.")},
+       {"parameters", std::move(parameters)},
+       {"strict", Boolean(false)}});
+}
 
 std::string ResponsesToolModelName(std::string_view name_space,
                                    std::string_view name,
@@ -389,6 +410,18 @@ Status PlanResponsesToolIdentities(
       return Status::Fail("expanded tools exceed the 128-callable budget");
     }
     const auto type = tool.GetString("type");
+    if (type == "apply_patch") {
+      auto status =
+          InputFields(tool, {"type", "allowed_callers"}, &error->param, path);
+      if (status) status = ValidateResponsesAllowedCallers(tool, error, path);
+      if (!status) return status;
+      if (!space.empty() || !model_names.insert(kApplyPatchToolName).second)
+        return Invalid(error, path, "Invalid or duplicate patch tool");
+      identities->push_back({type, type, "", kApplyPatchToolName, path, false,
+                             ResponsesToolAllows(tool, "direct"),
+                             ResponsesToolAllows(tool, "programmatic")});
+      return {};
+    }
     if (type == "local_shell") {
       auto status = InputFields(tool, {"type"}, &error->param, path);
       if (!status) return status;
@@ -1380,6 +1413,15 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
         if (!ResponsesToolAllows(definition, "direct"))
           program_only.insert(kPythonToolName);
         model_paths.push_back(at);
+        continue;
+      }
+      if (type == "apply_patch") {
+        auto body = ResponsesPatchFunction();
+        tools->array.push_back(Object(
+            {{"type", String("function")}, {"function", std::move(body)}}));
+        model_paths.push_back(at);
+        if (!ResponsesToolAllows(definition, "direct"))
+          program_only.insert(kApplyPatchToolName);
         continue;
       }
       if (type == "local_shell") {

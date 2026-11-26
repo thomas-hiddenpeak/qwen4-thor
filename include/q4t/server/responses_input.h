@@ -12,6 +12,7 @@
 namespace q4t::server {
 
 inline constexpr char kApplyPatchToolName[] = "q4t_builtin_apply_patch";
+io::Json ResponsesPatchFunction();
 
 struct ResponsesInputPlan {
   io::Json items;     // Original canonical items, including metadata for A08.

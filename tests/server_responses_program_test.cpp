@@ -342,3 +342,44 @@ Q4T_TEST(responses_program_cancel_and_expiry_do_not_dispatch) {
       healthy.array[0].GetString("result") == "healthy");
   return true;
 }
+
+Q4T_TEST(responses_program_patch_preserves_client_failure_after_reopen) {
+  Fixture f;
+  const auto tools = Parse(R"([{"type":"programmatic_tool_calling"},
+      {"type":"apply_patch","allowed_callers":["programmatic"]}])");
+  Json history, calls, completed;
+  {
+    ObjectStore store(f.options);
+    StateCipher cipher(store);
+    const auto invalid = Array({Create(
+        cipher, "await tools.apply_patch({type:'update_file',path:'draft.md'});",
+        tools)});
+    Q4T_CHECK(!Run(cipher, invalid, &calls).ok() && calls.array.empty());
+    history = Array({Create(
+        cipher,
+        "const r=await tools.apply_patch({type:'delete_file',path:'draft.md'});"
+        "text(r.status+' '+r.output);",
+        tools)});
+    Q4T_CHECK(Ok(Run(cipher, history, &calls)) && calls.array.size() == 1);
+  }
+  const auto& call = calls.array[0];
+  Q4T_CHECK(call.GetString("type") == "apply_patch_call" &&
+            call.Find("operation")->GetString("path") == "draft.md" &&
+            call.Find("caller")->GetString("caller_id") ==
+                history.array[0].GetString("call_id"));
+  history.array.push_back(call);
+  history.array.push_back(Object({{"type", String("apply_patch_call_output")},
+                                  {"call_id", *call.Find("call_id")},
+                                  {"caller", *call.Find("caller")},
+                                  {"status", String("failed")},
+                                  {"output", String("file absent")}}));
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  Q4T_CHECK(Ok(Run(cipher, history, &completed)) &&
+            completed.array.size() == 1);
+  Q4T_CHECK(completed.array.front().GetString("result") ==
+            "failed file absent");
+  Set(&Field(history.array[1], "operation"), "path", String("rebound.md"));
+  Q4T_CHECK(!Run(cipher, history, &completed).ok());
+  return true;
+}

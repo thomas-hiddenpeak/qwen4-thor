@@ -2,6 +2,7 @@
 #include "q4t/server/responses_python.h"
 
 #include "q4t/server/input_contract.h"
+#include "q4t/server/responses_input.h"
 #include "q4t/server/output_schema.h"
 #include "q4t/server/responses_mcp_binding.h"
 #include "responses_json.h"
@@ -18,9 +19,16 @@ io::Json NativeResponsesProgramDefinition(
     const std::vector<ResponsesMcpBinding>* mcp) {
   auto catalog = Array();
   const auto add = [&](const Json& tool, const std::string& name_space) {
-    if (!ResponsesToolAllows(tool, "programmatic") ||
-        (tool.GetString("type") != "function" &&
-         tool.GetString("type") != "custom"))
+    if (!ResponsesToolAllows(tool, "programmatic")) return;
+    if (tool.GetString("type") == "apply_patch") {
+      auto patch = ResponsesPatchFunction();
+      Set(&patch, "type", String("apply_patch"));
+      Set(&patch, "name", String("apply_patch"));
+      catalog.array.push_back(std::move(patch));
+      return;
+    }
+    if (tool.GetString("type") != "function" &&
+        tool.GetString("type") != "custom")
       return;
     auto entry = tool;
     if (!name_space.empty()) Set(&entry, "namespace", String(name_space));

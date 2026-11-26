@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Responses 可流式返回完整的 apply_patch 操作，客户端回填成功或失败后可续答。程序工具经实际 QuickJS 子进程调用补丁，重开对象库后仍收到原失败原因。8 项 CPU 用例通过，覆盖截断、未完整的流、调用归属和无效操作。下一步用设备模型验证真实文件回执。[CPU 记录](evidence/serve-client-patch-20261126/direct.json)
+
 此前合法的 apply_patch 历史无法进入下一轮。现可回放原操作、失败原因及省略输出的成功回执，按调用 ID 和工具类型匹配；截断保留成对的请求与结果。程序子调用的结果也须匹配原父项与工具类型。5 项直接相关 CPU 用例通过。新建工具声明、模型输出与真实业务仍待完成。[历史回放证据](evidence/serve-client-patch-20261126/history.json)
 
 主配置 42.7 秒，轻配置 41.3 秒。两个配置均按原 ID 读回本地 shell 请求、结果和后续响应，HTTP 字节与首次业务一致。每次新续答均从历史中返回 qwen4_exp，跨客户 404，独立 Chat 返回 720041。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-local-shell-20261126/profiles.json)

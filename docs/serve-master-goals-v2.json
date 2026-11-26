@@ -3084,14 +3084,14 @@
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       },
       "client_patch_20261126": {
-        "stage": "history_cpu_verified",
+        "stage": "native_tool_cpu_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "tool declaration and typed output producer",
-          "program-executed child dispatch and SDK business",
-          "managed recovery and release"
-        ]
+          "native TLS SDK patch and result",
+          "packaged profiles, recovery and release"
+        ],
+        "direct": "evidence/serve-client-patch-20261126/direct.json"
       }
     },
     {
@@ -3779,14 +3779,14 @@
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       },
       "client_patch_20261126": {
-        "stage": "history_cpu_verified",
+        "stage": "native_tool_cpu_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "tool declaration and typed output producer",
-          "program-executed child dispatch and SDK business",
-          "managed recovery and release"
-        ]
+          "native TLS SDK patch and result",
+          "packaged profiles, recovery and release"
+        ],
+        "direct": "evidence/serve-client-patch-20261126/direct.json"
       }
     },
     {
@@ -7626,14 +7626,14 @@
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       },
       "client_patch_20261126": {
-        "stage": "history_cpu_verified",
+        "stage": "native_tool_cpu_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "tool declaration and typed output producer",
-          "program-executed child dispatch and SDK business",
-          "managed recovery and release"
-        ]
+          "native TLS SDK patch and result",
+          "packaged profiles, recovery and release"
+        ],
+        "direct": "evidence/serve-client-patch-20261126/direct.json"
       }
     },
     {
@@ -8915,14 +8915,14 @@
         "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       },
       "client_patch_20261126": {
-        "stage": "history_cpu_verified",
+        "stage": "native_tool_cpu_verified",
         "issued": false,
         "history": "evidence/serve-client-patch-20261126/history.json",
         "pending": [
-          "tool declaration and typed output producer",
-          "program-executed child dispatch and SDK business",
-          "managed recovery and release"
-        ]
+          "native TLS SDK patch and result",
+          "packaged profiles, recovery and release"
+        ],
+        "direct": "evidence/serve-client-patch-20261126/direct.json"
       }
     },
     {

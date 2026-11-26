@@ -21,7 +21,7 @@ AUDIO_EXTENSION_FORMAT = 'q4t-profile-migration-permit-v5'
 TTS_CAPACITY_FORMAT = 'q4t-profile-migration-permit-v6'
 VOICE_FORMAT = 'q4t-profile-migration-permit-v7'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
-    'custom_tool_call', 'local_shell_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
+    'custom_tool_call', 'local_shell_call', 'apply_patch_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
     'mcp_approval_request', 'mcp_call'))
 MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
@@ -418,6 +418,13 @@ def semantic_capabilities(value):
         ledger.require(type(items) is list and all(type(x) is str for x in items)
             and len(set(items)) == len(items) and
             set(items) <= RESPONSE_OUTPUT_TYPES, 'invalid response output capabilities')
+        if 'apply_patch_call' in items or 'apply_patch' in responses:
+            expected = dict(executor='client', automatic_execution=False,
+                            operations=['create_file', 'update_file', 'delete_file'],
+                            result_item='apply_patch_call_output')
+            ledger.require('apply_patch_call' in items and
+                           package.same_json(responses.get('apply_patch'), expected),
+                           'invalid client patch capability')
         if 'local_shell_call' in items or 'local_shell' in responses:
             shell = responses.get('local_shell')
             ledger.require('local_shell_call' in items and type(shell) is dict
