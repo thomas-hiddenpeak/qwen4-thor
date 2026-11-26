@@ -8,6 +8,7 @@ import subprocess
 from tools.serve_recovery import profile_live_reuse as reuse
 from tools.serve_responses import approval_identifiers_profiles as approvals
 from tools.serve_responses import environment_lifecycle_profiles as lifecycle
+from tools.serve_responses import video_snapshot_bindings
 from tools.serve_service import package
 
 KEY = 'video_track_grid_handoff'
@@ -29,9 +30,12 @@ def prepare(out, build, deployment, interpreter, source):
                     and proof['product']['ingress'] == package.sha(build/'q4t-ingress'),
                     'fractional snapshots, SDK or accepted product differs')
     lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.FORK_REVIEWED, KEY,
-                                [ACTOR, PROOF, RELEASE, Path(approvals.__file__), Path(__file__)])
+                                [ACTOR, PROOF, RELEASE, Path(approvals.__file__), Path(video_snapshot_bindings.__file__), Path(__file__)])
     store = out/'state/application-objects'
     approvals.seed(source, store, proof)
+    ids = dict(zip(case['sources'], case['snapshots'], strict=True))
+    package.require(video_snapshot_bindings.check(store, proof['sdk'], ids) == proof['bindings'],
+                    'copied input no longer belongs to its accepted response')
     for name in ('primary', 'light'):
         path = out/name/'plan.json'
         plan = package.read(path)

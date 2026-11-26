@@ -220,5 +220,21 @@
     },
     "new_snapshot": "q4t.cpu_video_png.v8",
     "previous_clipping": "q4t.cpu_video_png.v7"
+  },
+  "historical_response_bindings": {
+    "historical_fixture": "region-shape-business-01",
+    "fixture_sdk_sha256": "cecd1ca9c74c2ff5647e3e760eadb8562a4801c55dd77ac4d3147eb3f8e6c06f",
+    "stored_responses": 3,
+    "independent_snapshots": 2,
+    "rejected": [
+      "wrong_owner",
+      "swapped",
+      "wrong_parent",
+      "binding_hash",
+      "snapshot_hash",
+      "wrong_deleted_file",
+      "wrong_inline_bytes",
+      "fresh_instead_of_history"
+    ]
   }
 }
