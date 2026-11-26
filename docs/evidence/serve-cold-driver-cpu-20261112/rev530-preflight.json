@@ -1,0 +1,31 @@
+{
+  "status": "prepared_awaiting_authorized_maintenance_window",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-delivery-soak-src/.q4t-work/cold530-01/plan.json",
+  "plan_sha256": "7fd6cba88144292e2dfb92d821afd3abe0e24be14f1cf9dc3d546103fda632d5",
+  "service_id": "5396f8b8-88c5-47e8-bd33-d138173421aa",
+  "source": "a6da2e0f6d114b25da47870d36dada7a21885852",
+  "limits": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 1,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "publication": 530,
+  "registered_package": "0268116088f6d8871c6eb96f127a32c8b09d2f0fe978e3564f112854cd5d9978",
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "5f4c888656adb46e5523b61c63d3efa1a22b31e5f8fbb19edfd1869731af5a67",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "dd561e775ffbd91941ac770311df20fd2d184e609a9d9c9b96d7ac39c6119c95",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "0268116088f6d8871c6eb96f127a32c8b09d2f0fe978e3564f112854cd5d9978",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "af40d68b2bb5c91430d59034e488eb1d8c77c1d9e78192c25017fe7972c31d10",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "model_actions": 0,
+  "host_filter_installed": false,
+  "host_units_modified": false,
+  "check_sha256": "b88d8315bdd84d45662a63117717e082acf5ccfb28f1b9b8d2e981c4c7504b42",
+  "host_unit_baseline": {
+    "jtop.service": "MainPID=2731017\nId=jtop.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled",
+    "nvargus-daemon.service": "MainPID=2750\nId=nvargus-daemon.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled"
+  }
+}

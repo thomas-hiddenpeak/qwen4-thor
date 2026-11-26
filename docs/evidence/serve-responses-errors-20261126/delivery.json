@@ -1,0 +1,707 @@
+{
+  "stage": "issued",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 530,
+    "version_revision": 194,
+    "profile_revision": 84,
+    "previous_profile_revision": 83,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "0268116088f6d8871c6eb96f127a32c8b09d2f0fe978e3564f112854cd5d9978",
+    "fallback": "215b7c2ca3f3fb80338799e69adf954181aff3b7885d5e993c32a548a84be35f",
+    "engine": "5f4c888656adb46e5523b61c63d3efa1a22b31e5f8fbb19edfd1869731af5a67",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 528,
+  "previous_primary": "5ecf9f0efcaf67f4ddd40508f5de3a11a42209eb03e692b3f61d34ed3f685722",
+  "source_commit": "a6da2e0f6d114b25da47870d36dada7a21885852",
+  "recovery": {
+    "primary": {
+      "seconds": 270.036,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": "resp_7ffd499356b08a57dbb73c6aed6901a5",
+        "current": "resp_990a01794f625092f6f269e8d0ebd39f",
+        "resource_sha256": "b957afd74a797478d5701ec148594baaa115cfb2f767e1fe2098c07aecdb268e",
+        "peer": 404,
+        "port": 18161,
+        "egress": false
+      },
+      "restored": {
+        "id": "resp_7ffd499356b08a57dbb73c6aed6901a5",
+        "sequence": 9,
+        "get": 200,
+        "peer": 404,
+        "resource_sha256": "b957afd74a797478d5701ec148594baaa115cfb2f767e1fe2098c07aecdb268e",
+        "terminal_sha256": "732b2c0b53a3cdee4d11e9122fa771bee9b80363358b82dc234b8a05fa649b3c"
+      },
+      "fresh_chat": "42",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "original_legacy_beta": "resp_46bc4fd049c03f9120b153a65243a71c",
+      "lease_sha256": "1bd7f7d3833e533ada8d733901dbbb6080db67b0f2022f97c60b594c4e6a112a",
+      "original_sha256": "150fa8c82352de5b736762b625c0bd8e5b4f583d64f16a24c0ea6f00c66f91dd",
+      "recovered_sha256": "5e32b9103faa66aed90387dbf863a6812e040d6615b78ef3a8a495949ba8bf74",
+      "acceptance_sha256": "408fa931a6470db3e2a79aa81c79b620345f1e84149ca5f1b89b368294519dd2",
+      "takeover": {
+        "selected": "fallback",
+        "manifest": "215b7c2ca3f3fb80338799e69adf954181aff3b7885d5e993c32a548a84be35f",
+        "probes": 1,
+        "signal": 6
+      }
+    },
+    "fallback": {
+      "seconds": 173.167,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": "resp_ab36c148a82d91797318685e7850d973",
+        "current": "resp_ca0f760436ba369d82069f0c7f0178ee",
+        "resource_sha256": "e3fa2dc75bf43ca78f8528e68e69277958153899905475a0fc3abe62b25bb16e",
+        "peer": 404,
+        "port": 18161,
+        "egress": false
+      },
+      "restored": {
+        "id": "resp_ab36c148a82d91797318685e7850d973",
+        "sequence": 9,
+        "get": 200,
+        "peer": 404,
+        "resource_sha256": "e3fa2dc75bf43ca78f8528e68e69277958153899905475a0fc3abe62b25bb16e",
+        "terminal_sha256": "2c9e738f12f9a91d152dd00a8b10345a1da4476f416a1ebec08766141faec352"
+      },
+      "fresh_chat": "42",
+      "ports_free": true,
+      "remaining_owned_processes": 0,
+      "original_legacy_beta": "resp_46bc4fd049c03f9120b153a65243a71c",
+      "lease_sha256": "5050b7d9eb81ba8a5a0b8f4e101448aabfd7332b9ed8abe5cc4f4a5e9346f316",
+      "original_sha256": "22d601c17dede00439facec120120a021738323719b56152f83a6e7f6d480c27",
+      "recovered_sha256": "fcf4812cd81fb9547f6ff8eb21aa71e1bccce03a95e7daa7039a4bc9b60d5e1e",
+      "acceptance_sha256": "eac426a5fb352528a415c1e76b86068d0b3e64f356238ac82776c9ac62adf7cf"
+    }
+  },
+  "wire": {
+    "status": "PASS",
+    "packages": [
+      {
+        "slot": "primary",
+        "manifest_sha256": "0268116088f6d8871c6eb96f127a32c8b09d2f0fe978e3564f112854cd5d9978",
+        "openapi_sha256": "4da5cd5d5b0a5c85724c3d056c0de8525a01d2bec4199623fb1e4c7bb00d5415",
+        "verified": 36,
+        "observations": [
+          {
+            "stage": "primary",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "primary",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "primary",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "primary",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2b19738f2aa37ae09eebb119ba7e794ff7e067a9d5b965b375fdb0e32ea0a9b4"
+          },
+          {
+            "stage": "primary",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "794118e5e6ad9454270d180d363664b201d62d1bd7e1751e135aa1bd3e195426"
+          },
+          {
+            "stage": "light",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "light",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "light",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "light",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "6441dc3a8641722e40abfb03771d74b3641dd2b13a997d44d1f5da710fd52f8c"
+          },
+          {
+            "stage": "light",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "766af257efd8c296d74c60c355849e608c4aaf593265ada4905dbd3a231b5458"
+          },
+          {
+            "stage": "light",
+            "capture": "restored-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "794118e5e6ad9454270d180d363664b201d62d1bd7e1751e135aa1bd3e195426"
+          },
+          {
+            "stage": "light",
+            "capture": "restored-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2b19738f2aa37ae09eebb119ba7e794ff7e067a9d5b965b375fdb0e32ea0a9b4"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2c9e738f12f9a91d152dd00a8b10345a1da4476f416a1ebec08766141faec352"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "e3fa2dc75bf43ca78f8528e68e69277958153899905475a0fc3abe62b25bb16e"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "8bb30b5318640c3d2ddcdbb8f98e1653838eadce83fd5fb9437bb9c16cbd3ca2"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "2886d577010c268ccf0af3b801eac8c3c3575002daf951175365d7c29b617772"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "restored-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "e3fa2dc75bf43ca78f8528e68e69277958153899905475a0fc3abe62b25bb16e"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "restored-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2c9e738f12f9a91d152dd00a8b10345a1da4476f416a1ebec08766141faec352"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "732b2c0b53a3cdee4d11e9122fa771bee9b80363358b82dc234b8a05fa649b3c"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "b957afd74a797478d5701ec148594baaa115cfb2f767e1fe2098c07aecdb268e"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "e4d659193abb4cd3222d6ec8e61f73ae66ce628fe488140a73947aaf16caf604"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "0e947c58f923f4b52ffc041951393bd10459773d096b4147a295a583f3cf8528"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "restored-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "b957afd74a797478d5701ec148594baaa115cfb2f767e1fe2098c07aecdb268e"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "restored-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "732b2c0b53a3cdee4d11e9122fa771bee9b80363358b82dc234b8a05fa649b3c"
+          }
+        ]
+      },
+      {
+        "slot": "fallback",
+        "manifest_sha256": "215b7c2ca3f3fb80338799e69adf954181aff3b7885d5e993c32a548a84be35f",
+        "openapi_sha256": "4da5cd5d5b0a5c85724c3d056c0de8525a01d2bec4199623fb1e4c7bb00d5415",
+        "verified": 36,
+        "observations": [
+          {
+            "stage": "primary",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "primary",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "primary",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "primary",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2b19738f2aa37ae09eebb119ba7e794ff7e067a9d5b965b375fdb0e32ea0a9b4"
+          },
+          {
+            "stage": "primary",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "794118e5e6ad9454270d180d363664b201d62d1bd7e1751e135aa1bd3e195426"
+          },
+          {
+            "stage": "light",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "light",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "light",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "light",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "6441dc3a8641722e40abfb03771d74b3641dd2b13a997d44d1f5da710fd52f8c"
+          },
+          {
+            "stage": "light",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "766af257efd8c296d74c60c355849e608c4aaf593265ada4905dbd3a231b5458"
+          },
+          {
+            "stage": "light",
+            "capture": "restored-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "794118e5e6ad9454270d180d363664b201d62d1bd7e1751e135aa1bd3e195426"
+          },
+          {
+            "stage": "light",
+            "capture": "restored-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2b19738f2aa37ae09eebb119ba7e794ff7e067a9d5b965b375fdb0e32ea0a9b4"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2c9e738f12f9a91d152dd00a8b10345a1da4476f416a1ebec08766141faec352"
+          },
+          {
+            "stage": "fallback-prepare",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "e3fa2dc75bf43ca78f8528e68e69277958153899905475a0fc3abe62b25bb16e"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "8bb30b5318640c3d2ddcdbb8f98e1653838eadce83fd5fb9437bb9c16cbd3ca2"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "2886d577010c268ccf0af3b801eac8c3c3575002daf951175365d7c29b617772"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "restored-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "e3fa2dc75bf43ca78f8528e68e69277958153899905475a0fc3abe62b25bb16e"
+          },
+          {
+            "stage": "fallback-restore",
+            "capture": "restored-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "2c9e738f12f9a91d152dd00a8b10345a1da4476f416a1ebec08766141faec352"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "732b2c0b53a3cdee4d11e9122fa771bee9b80363358b82dc234b8a05fa649b3c"
+          },
+          {
+            "stage": "takeover-prepare",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "b957afd74a797478d5701ec148594baaa115cfb2f767e1fe2098c07aecdb268e"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "cancel.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "decoded-event.json",
+            "source": "decoded_sse",
+            "schema": "BetaResponseFailedEvent",
+            "sha256": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "get.json",
+            "source": "http_body",
+            "schema": "BetaResponse",
+            "sha256": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "live-decoded-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "e4d659193abb4cd3222d6ec8e61f73ae66ce628fe488140a73947aaf16caf604"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "live-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "0e947c58f923f4b52ffc041951393bd10459773d096b4147a295a583f3cf8528"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "restored-get.json",
+            "source": "http_body",
+            "schema": "Response",
+            "sha256": "b957afd74a797478d5701ec148594baaa115cfb2f767e1fe2098c07aecdb268e"
+          },
+          {
+            "stage": "takeover-restore",
+            "capture": "restored-terminal.json",
+            "source": "decoded_sse",
+            "schema": "ResponseFailedEvent",
+            "sha256": "732b2c0b53a3cdee4d11e9122fa771bee9b80363358b82dc234b8a05fa649b3c"
+          }
+        ]
+      }
+    ],
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+  },
+  "profiles_sha256": "1a8d11e4107a1b41df45004bec2c8c72aa951e7d74ca8609419e4e6332327202",
+  "business_sha256": "b0f387c7dee9ec2b104312a5b144ca67440e30ef629afb288a9d96e54fde3187",
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "e0996293d4cbf8cf4236167b10273b3c762e5aa4565ff90ccd655725ac435790"
+        ],
+        "sha256": "5f7c30f0b4730abe7cbb4b17f105467f8f9e75bb4ab04d3b28a38c12f7dcc206",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "cd045530-be18-45d4-9ed4-dd59d9e0e9d7"
+        ],
+        "sha256": "a352debe1032c28cf394b7c3887c1b4bc82005757772d64deab9b4c6cf3e5f05",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "4598d734-5f21-4859-b767-7e2a752193cd"
+        ],
+        "sha256": "fb37fd476a09b9c81ba2bfbb299d05fce1bd57a2969dbf80dea88cd5e89f68a6",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "soak": {
+    "source_commit": "a6da2e0f6d114b25da47870d36dada7a21885852",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-client-primary-01/bundle",
+      "manifest_sha256": "0268116088f6d8871c6eb96f127a32c8b09d2f0fe978e3564f112854cd5d9978"
+    },
+    "revision": 530,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "50fa375dd4fa4eabfb7276037120c5e39133a1745cb840ad41f5ab91c6eec65b",
+    "handoff_sha256": "b980e1c5fe3c48faeb93006791841387fd81515ecd01674f6880b8da48e32f7b",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold_preflight": "evidence/serve-cold-driver-cpu-20261112/rev530-preflight.json",
+  "method_declarations": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "missing_declaration": 12
+  },
+  "query_defaults": {
+    "parameters": 173,
+    "explicit": 71,
+    "matching": 71
+  },
+  "limitations": {
+    "deferred_media_methods": 12,
+    "genuine_device_cold_start": false,
+    "long_run_hours": 0
+  },
+  "retained_day_plan": {
+    "status": "PASS",
+    "worktree": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pagination-delivery-soak-src",
+    "generation": "e0996293d4cbf8cf4236167b10273b3c762e5aa4565ff90ccd655725ac435790",
+    "manifest": "faf7f3e0bc257160aaed8279c9b435fada02957d2e532262c4163e6a6ce557aa",
+    "unchanged_plan": "d0fc2a7458b52a108d12e48387c2dfe7b0dda0f9fa2e16213112458f6b175307",
+    "protected_raw_files": 28,
+    "executed_hours": 0,
+    "bindings": {
+      "q4t": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e0996293d4cbf8cf4236167b10273b3c762e5aa4565ff90ccd655725ac435790/q4t",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pagination-client-primary-01/bundle/engine/q4t",
+        "sha256": "655f31bf9864fd3c4d8f8f6625c5afb2ff551c80f6bb2091e2953be266fe20f7"
+      },
+      "q4t.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e0996293d4cbf8cf4236167b10273b3c762e5aa4565ff90ccd655725ac435790/q4t.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pagination-client-primary-01/bundle/engine/q4t.release.json",
+        "sha256": "48d8cf8f54240875ff7f430430daae93f0960b35d34be8dcdcb866088b998f64"
+      },
+      "service.release.json": {
+        "old": "/home/rm01/models/dev/qwen4-thor/build/.q4t-publication/generations/e0996293d4cbf8cf4236167b10273b3c762e5aa4565ff90ccd655725ac435790/service.release.json",
+        "new": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pagination-client-primary-01/service.release.json",
+        "sha256": "383e44a4e78441c36cca5a6caebb04d0aba855338c604828f9332a2ed7222664"
+      }
+    }
+  }
+}

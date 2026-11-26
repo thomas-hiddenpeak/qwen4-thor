@@ -2946,14 +2946,16 @@
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
       },
       "responses_failure_20261126": {
-        "stage": "managed_profiles_verified",
+        "stage": "issued_with_scoped_recovery",
         "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
         "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
         "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json",
-        "issued": false,
+        "issued": true,
         "beta_output": "evidence/serve-responses-errors-20261126/beta-result.json",
         "business": "evidence/serve-responses-errors-20261126/business.json",
-        "profiles": "evidence/serve-responses-errors-20261126/profiles.json"
+        "profiles": "evidence/serve-responses-errors-20261126/profiles.json",
+        "revision": 530,
+        "delivery": "evidence/serve-responses-errors-20261126/delivery.json"
       }
     },
     {
@@ -8584,14 +8586,16 @@
         "matrix": "SDK_STREAM_COMPATIBILITY.md"
       },
       "responses_failure_20261126": {
-        "stage": "managed_profiles_verified",
+        "stage": "issued_with_scoped_recovery",
         "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
         "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
         "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json",
-        "issued": false,
+        "issued": true,
         "beta_output": "evidence/serve-responses-errors-20261126/beta-result.json",
         "business": "evidence/serve-responses-errors-20261126/business.json",
-        "profiles": "evidence/serve-responses-errors-20261126/profiles.json"
+        "profiles": "evidence/serve-responses-errors-20261126/profiles.json",
+        "revision": 530,
+        "delivery": "evidence/serve-responses-errors-20261126/delivery.json"
       }
     },
     {
@@ -9839,8 +9843,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 528,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev528-preflight.json",
+        "revision": 530,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev530-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11569,7 +11573,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev528_delivered_remaining_deliveries",
+      "state": "rev530_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12911,7 +12915,8 @@
         "real_records": 9
       },
       "current_visual_frame_delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json",
-      "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json"
+      "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json",
+      "current_failure_delivery": "evidence/serve-responses-errors-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13016,16 +13021,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "aacaaef7a767311882870ea4be385e7c3c7c9d5a",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src",
+        "source_commit": "a6da2e0f6d114b25da47870d36dada7a21885852",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-client-primary-01/bundle",
-          "manifest_sha256": "5ecf9f0efcaf67f4ddd40508f5de3a11a42209eb03e692b3f61d34ed3f685722"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-client-primary-01/bundle",
+          "manifest_sha256": "0268116088f6d8871c6eb96f127a32c8b09d2f0fe978e3564f112854cd5d9978"
         },
-        "revision": 528,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "f07cf22364cdd5573869552f53ad13528f5bd929e959ea14e3f18b4af4d543eb",
-        "handoff_sha256": "700a740d37080768c955648936b10658a7936c66df949da391b466624d8e023e",
+        "revision": 530,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/response-failure-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "50fa375dd4fa4eabfb7276037120c5e39133a1745cb840ad41f5ab91c6eec65b",
+        "handoff_sha256": "b980e1c5fe3c48faeb93006791841387fd81515ecd01674f6880b8da48e32f7b",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13436,9 +13441,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 528,
-        "receipt": "evidence/serve-sdk-routes-20261126/delivery.json",
-        "plan_sha256": "f07cf22364cdd5573869552f53ad13528f5bd929e959ea14e3f18b4af4d543eb",
+        "revision": 530,
+        "receipt": "evidence/serve-responses-errors-20261126/delivery.json",
+        "plan_sha256": "50fa375dd4fa4eabfb7276037120c5e39133a1745cb840ad41f5ab91c6eec65b",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
