@@ -3835,7 +3835,7 @@
   },
   "sources_sha256": {
     "CMakeLists.txt": "a2e233db32a14841a08c20d01c4ec1276b3bf85a1cabf82947975d19582568dd",
-    "cmake/ChatProtocolIdentity.cmake": "4230f591ac9b8fdb41d4719cfb221b4a91fc7b34896b369af7671c9bd3f24c7c",
+    "cmake/ChatProtocolIdentity.cmake": "f5a23cca85b0f08e8697a6c6a929b868065682ae0fe481771158b347e1e30e6b",
     "cmake/CudaCleanupBoundary.cmake": "585ceb009c8c1eeb47964ddf89b11c4a0aadbc394a43bf7cf6f218efccd53aec",
     "cmake/GuardianProcess.cmake": "d6820d5e3dd50c13546a0a6dc942f680f143e1e696abdbe14e1c3f23284f6058",
     "cmake/NativeCrypto.cmake": "82af5af4ef0582fda71290a906c8d19994827a238072c6d9e3dd2ca8fcd602a2",
@@ -4440,7 +4440,7 @@
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
     "src/server/chat_audio_translation.cpp": "e0853dba46a7af885bd31863f5bcc1e6cb9b44af3d69aba8bea8af372ed5d6ce",
-    "src/server/chat_capabilities.cpp": "caa8f421fd2fd75df4a9ecba4a7c3ad32f9ce05942fc994c7bac24bdf416f8f9",
+    "src/server/chat_capabilities.cpp": "428013d8673eeac4655cd9ca8686f62a95bd5ac6f2cedfe68a965a4c157c037e",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",
@@ -4618,18 +4618,19 @@
     "src/server/file_rtf.h": "ae99c2e63cc5e5771ea23e2c15588de357d5a6e333a6587c7bd35d6a11e8c6bd",
     "src/server/file_rtf_encoding.cpp": "403a8739152fbe53094d4d1abe5894d7f6f932d203099c5347e228bd7a0c3c63",
     "src/server/file_rtf_encoding.h": "dadba820330cb95391fba72190d729af3770854da3d5f10b98cb02499ea63801",
-    "src/server/file_snapshot.cpp": "51ff9c78b7e355af5fa956f005b0a4f7df43e3679877778681ceb1eecad18d51",
+    "src/server/file_snapshot.cpp": "9af6073803b7055c1d37e728200d38d31e01f3aae849818ee24df7b536981b28",
     "src/server/file_source.cpp": "c7e57b4a354149e6f062438cabd169cca5e1d8a6ddb49eb88a3635457259f18f",
-    "src/server/file_video.cpp": "c5072e7fe22ac76ad35f838c9a281d2458089dc5d16df289db7754b173134e03",
+    "src/server/file_video.cpp": "cc02ba4ee9e342df210eb586a347706f06928ec11a77f0c8011e3eadfda654b4",
     "src/server/file_video_affine.h": "a26dda26c36769958de57a82b4452130de2578bd4a91e43f5d9bf506e0bb86ac",
-    "src/server/file_video_clipping.h": "934efd1d4fd9d6261770a486d2fc2024fb2006ccb2a5db8dc8ca13895d362a8e",
+    "src/server/file_video_clipping.h": "df231e0e8f2ad5e34bcdc757df3ce651ff6f24ca41e8a3149957d3246e89f441",
     "src/server/file_video_geometry.h": "9c0fa50125d5a2d18bbc86bbb45b6281f45ffc858b4805313ada7dfbaf03cc0c",
     "src/server/file_video_integer.h": "854b47c76ceeaf2b53167e8e871c1a9d77ca9adf1c64bb3a4f106e73a669e229",
-    "src/server/file_video_orientation.h": "49fec5461dfd8f2002f874ebbdcafa6647f3506cf92417030df0d2d451b2982e",
+    "src/server/file_video_orientation.h": "8aa6fa3c346c6857fd1587a72e8d45bdc9cd7d992bf606731bfcf55048933358",
     "src/server/file_video_projective.h": "e2558c01b5f8e6907e469c3d85066f7e15769a8c74729c731e575e8a4e889ecf",
     "src/server/file_video_protocol.h": "91af4d72c1ad1887076668b32e805f6b9f074a8d04d5aa73adcf9ad55b59d9de",
+    "src/server/file_video_region.h": "01cd09daf0b5555d946fc6f952e551e221a828c245e3bab47aad20dedfc064da",
     "src/server/file_video_sandbox.cpp": "ca6f017812a533fd57eb90fc371a4b7d0fd43cd8ebac9111af49c2b404feb92d",
-    "src/server/file_video_worker.cpp": "619aa81433b86914c6e48aead1566077b2e6dc51975ccfa4a0e029337b2143e7",
+    "src/server/file_video_worker.cpp": "61c2f7b3da4f3013a66d81053f1370faec48574f0cc92037971fbb03ae921d00",
     "src/server/file_webp.cpp": "5a0b365a1921a92106a4daf33e1f3fa6b99b9b1250bd4e9143e36abf9a23f75e",
     "src/server/file_webp_protocol.h": "feba0826d805b70b9bfef46a6fb80a26409091567cc58cdb3a11c423f62be314",
     "src/server/file_webp_worker.cpp": "26c603c13879cdd503480c5607f39c44074d1fad2fa15ae0c9ce636c5f1bb948",
@@ -13820,5 +13821,8 @@
     "direct_protections": 9,
     "new_gpu_starts": 0,
     "default_changed": false
+  },
+  "quickdraw_region_review_20261126": {
+    "review": "Whole-pixel track and movie regions bind the original inversion data to the frozen v7 conversion. Signed half-open tests use the existing exact inverse coordinates. Prior rectangle and affine records retain their original versions. Shape processing uses the existing isolated CPU video worker and no additional codec."
   }
 }

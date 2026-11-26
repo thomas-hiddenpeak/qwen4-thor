@@ -6447,6 +6447,11 @@
       "quicktime_clip_profiles_20261126": {
         "stage": "profile_verified",
         "receipt": "docs/evidence/serve-video-clipping-20261126/profiles.json"
+      },
+      "quickdraw_regions_20261126": {
+        "stage": "cpu_verified",
+        "receipt": "evidence/serve-video-regions-20261126/cpu.json",
+        "http": "pending"
       }
     },
     {
