@@ -2,7 +2,9 @@
 #include "q4t/server/eval_dispatcher.h"
 #include "q4t/model/embedding_config.h"
 
+#include <array>
 #include <atomic>
+#include <barrier>
 #include <cmath>
 #include <cstdlib>
 #include <thread>
@@ -656,6 +658,41 @@ Q4T_TEST(evals_frozen_service_preserves_queued_model_job_and_accepts_cancel) {
   auto repeated = Request(objects, "POST", detail + "/cancel");
   Q4T_CHECK(repeated.ok() && repeated.value.GetString("id") == get.id &&
             repeated.value.GetString("status") == "canceled");
+  return true;
+}
+
+Q4T_TEST(evals_concurrent_cancel_routes_return_the_same_owned_run) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  auto definition = Request(store, "POST", "/v1/evals", kDefinition);
+  Q4T_CHECK(definition.ok());
+  const auto runs =
+      "/v1/evals/" + definition.value.GetString("id") + "/runs";
+  auto run = Request(store, "POST", runs, R"({"data_source":{"type":"jsonl",
+    "source":{"type":"file_content","content":[
+      {"item":{"count":1},"sample":{"output_text":"1"}}]}}})");
+  Q4T_CHECK(run.ok());
+  const auto id = run.value.GetString("id");
+  const auto detail = runs + "/" + id;
+  std::array<ObjectReply, 4> replies;
+  std::barrier start(replies.size());
+  std::vector<std::jthread> clients;
+  for (size_t i = 0; i < replies.size(); ++i) {
+    clients.emplace_back([&, i] {
+      start.arrive_and_wait();
+      replies[i] = Request(store, "POST", i % 2 ? detail + "/cancel" : detail);
+    });
+  }
+  clients.clear();  // Join all writers before inspecting their responses.
+  for (const auto& reply : replies) {
+    Q4T_CHECK(reply.http_status == 200 && reply.ok());
+    Q4T_CHECK(reply.value.GetString("id") == id);
+    Q4T_CHECK(reply.value.GetString("status") == "canceled");
+  }
+  Q4T_CHECK(Request(store, "POST", detail, {}, "client:beta").http_status ==
+            404);
+  Q4T_CHECK(Request(store, "GET", detail).value.GetString("status") ==
+            "canceled");
   return true;
 }
 
