@@ -28,3 +28,5 @@ python -I -B tools/serve_audit/assistant_run_sdk.py --workspace /path/to/accepta
 ```sh
 python -I -B tools/serve_audit/response_failure_replay.py --strict
 ```
+
+真实 TLS 短验一次启动，用时 37.324 秒。Python 3.55.1 严格模式读取旧 Beta 故障、重复取消并从原游标续读，均返回 200。实际前台生成取消后，已编号的正文增量全部送达，最后一个事件为 response.failed。三个响应正文和两个解码后的失败终态均通过官方 HTTP 及本地合同校验。其他客户读取得到 404；原会话续答和独立 Chat 均回答 42。下一步验证主、轻配置接续以及主包与回退包恢复。[验收记录](evidence/serve-responses-errors-20261126/business.json)
