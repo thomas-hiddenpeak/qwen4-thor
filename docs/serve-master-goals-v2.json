@@ -3136,7 +3136,8 @@
         "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
         "real_business_accepted": false,
         "issued": false,
-        "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json"
+        "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json",
+        "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json"
       }
     },
     {
@@ -3874,7 +3875,8 @@
         "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
         "real_business_accepted": false,
         "issued": false,
-        "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json"
+        "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json",
+        "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json"
       }
     },
     {
@@ -9093,6 +9095,11 @@
         "issued": false,
         "vm_order": "evidence/serve-program-forks-20261126/vm-order.json",
         "handoff_driver": "evidence/serve-program-forks-20261126/handoff-driver.json"
+      },
+      "chatkit_interrupted_retry_20261127": {
+        "stage": "cpu_verified",
+        "python_client": "evidence/serve-chatkit-interrupted-retry-20261127/python-client.json",
+        "actual_client": false
       }
     },
     {

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Python SDK 3.55.1 现可独立核对重试后的 ChatKit 消息列表。两组真实历史消息在模拟游标上传给官方严格类型解析器，验证了正序和倒序翻页，并拒绝重复页和损坏的消息类型。下一步在同一原生 TLS 短验中核对四条真实消息、旧回答移除、已删除文件及跨客户 404。[客户端记录](evidence/serve-chatkit-interrupted-retry-20261127/python-client.json)
+
 ChatKit 交接驱动现保存管理端、浏览器分页的原始响应和解析后的 SSE 事件。两段历史业务流的 90 个事件和 4 个列表项通过对应协议验证，缺少消息体的完成事件被拒绝。两份设备已验 v82 记录均可从演练 v83 逐字节还原。真实中断重试的跨配置接管待设备验收。[验证记录](evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json)
 
 ChatKit 容量交接驱动会让主配置在真实发布文档的首段回答处中断并删除源文件，再由轻配置用新凭据重试同一消息。它核对原取消记录、输入项、冻结快照、替换回答、两种线程列表及租户隔离。10 项 CPU 检查通过；两份已验 v81 配置的离线演练均可从 v83 逐级还原，未将演练登记为发行资格。下一步在设备上验证真实交接及托管故障恢复。[驱动验证](evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json)
