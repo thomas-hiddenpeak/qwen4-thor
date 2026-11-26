@@ -923,7 +923,9 @@
           "actual model-produced standalone compaction and follow-up on both readers",
           "upstream SDK output-only union rejects retained user messages on strict parsing"
         ],
-        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json"
+        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
+        "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
+        "device_status": "summary_budget_then_explicit_refusal"
       }
     },
     {
@@ -3196,7 +3198,9 @@
           "actual model-produced standalone compaction and follow-up on both readers",
           "upstream SDK output-only union rejects retained user messages on strict parsing"
         ],
-        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json"
+        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
+        "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
+        "device_status": "summary_budget_then_explicit_refusal"
       },
       "compact_file_replay_20261127": {
         "state": "native_cpu_preservation_and_replay_verified",
@@ -9276,7 +9280,9 @@
           "actual model-produced standalone compaction and follow-up on both readers",
           "upstream SDK output-only union rejects retained user messages on strict parsing"
         ],
-        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json"
+        "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
+        "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
+        "device_status": "summary_budget_then_explicit_refusal"
       }
     },
     {
