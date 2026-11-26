@@ -1,0 +1,115 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 534,
+  "build": {
+    "engine": "30e23fda5afc2197958960bb2554473e24a74aae872c9b03a0fd89ebcc009e70",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "b46218d05d337fc5cca52021056f52b90513bcb34f7cf976e08ede5c97de7747",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "saved": {
+          "agent_id": "agent_6c832fe571077e81dd346970323317ea",
+          "chat_id": "chatcmpl-auto-41d94c1c258d032648ed6af77c046af7",
+          "call_id": "call_chatcmpl-auto-41d94c1c258d032648ed6af77c046af7_0",
+          "chat_sha256": "3dc533b30282dc60c86eef38ecbd0610da9c93cf5c82763e5c218c897175040d",
+          "owner_patch": 200,
+          "foreign": 404,
+          "agent_fields_sha256": "420fedc9f25ed394587830ced377f0a3c5dde8801da47c3b169b306ca6e90978"
+        },
+        "restored": null,
+        "sdk": "3.55.1",
+        "call_id": "call_chatcmpl-auto-41d94c1c258d032648ed6af77c046af7_0",
+        "arguments": {
+          "versions": {
+            "primary": 534,
+            "previous": 532
+          }
+        },
+        "records": {
+          "primary": {
+            "revision": 534,
+            "protected": 13,
+            "source_sha256": "2f5936d0de1bc41678c2d667b19cbb96d049f117509c8b4ff7ba95a69be74488"
+          },
+          "previous": {
+            "revision": 532,
+            "protected": 13,
+            "source_sha256": "ac65e335cf22266a9c8e9f94ab548ae92875d914f8f34359087e52108b89e0dd"
+          }
+        },
+        "reply": "13",
+        "finish_reasons": [
+          "tool_calls",
+          "stop"
+        ],
+        "text_deltas": 2
+      },
+      "seconds": 42.523,
+      "starts": 1,
+      "record_sha256": "91353897f1b88dd4916281832177ed7ee542ef1a8e6c81a25578b7241f8c149a",
+      "receipt_sha256": "815be1ab715c8992ec693097f136726915de6fe3040306449bc9dfe6797c5b59",
+      "predecessor": "39a046137baf97478e5f9b26505ba965671eefc4e73416479e53055d9b91c61a"
+    },
+    "light": {
+      "sdk": {
+        "saved": {
+          "agent_id": "agent_0cc4937ba0f18e02ba38fe49d3b14962",
+          "chat_id": "chatcmpl-auto-836e9a113440ceab3bd9d937eeb32980",
+          "call_id": "call_chatcmpl-auto-836e9a113440ceab3bd9d937eeb32980_0",
+          "chat_sha256": "13bd81182581cf2321a7d4f7b8ed482f57725a8a3b5edfb747c4ed1c9488bb53",
+          "owner_patch": 200,
+          "foreign": 404,
+          "agent_fields_sha256": "491896c3c12f347c831aeedf7893009c4d3e349d0d05a51e6783a255e0b96a7a"
+        },
+        "restored": {
+          "agent_id": "agent_6c832fe571077e81dd346970323317ea",
+          "chat_id": "chatcmpl-auto-41d94c1c258d032648ed6af77c046af7",
+          "call_id": "call_chatcmpl-auto-41d94c1c258d032648ed6af77c046af7_0",
+          "chat_sha256": "3dc533b30282dc60c86eef38ecbd0610da9c93cf5c82763e5c218c897175040d",
+          "owner_patch": 200,
+          "foreign": 404,
+          "agent_fields_sha256": "420fedc9f25ed394587830ced377f0a3c5dde8801da47c3b169b306ca6e90978"
+        },
+        "sdk": "3.55.1",
+        "call_id": "call_chatcmpl-auto-836e9a113440ceab3bd9d937eeb32980_0",
+        "arguments": {
+          "versions": {
+            "primary": 534,
+            "previous": 532
+          }
+        },
+        "records": {
+          "primary": {
+            "revision": 534,
+            "protected": 13,
+            "source_sha256": "2f5936d0de1bc41678c2d667b19cbb96d049f117509c8b4ff7ba95a69be74488"
+          },
+          "previous": {
+            "revision": 532,
+            "protected": 13,
+            "source_sha256": "ac65e335cf22266a9c8e9f94ab548ae92875d914f8f34359087e52108b89e0dd"
+          }
+        },
+        "reply": "13",
+        "finish_reasons": [
+          "tool_calls",
+          "stop"
+        ],
+        "text_deltas": 2
+      },
+      "seconds": 38.928,
+      "starts": 1,
+      "record_sha256": "3f4f1574bd3d077409bd418a6d50ba49fa0b60619962f3cc82962ddaedbd3bf5",
+      "receipt_sha256": "c1625d8d5395cec59d1f04e46c3add6916e5b45a95538ac5671ff6e59f9398d5",
+      "predecessor": "fcc7d3e93d1c3371e7916e9c27a6a22d41019c1865a3bffd3336ac91306c1b25"
+    }
+  },
+  "business_evidence": "e47e5124af7187899a13f8e7f3e67f2b3ac7596751654be35239c3e02921cb2f",
+  "lease_exit": "4dc3f7a0dbb192eb68cd117448955b83be763fd68f0032ee6aeebe57a032ef28",
+  "acceptance": "57bc33891ce68177931aa2ebf5c38ff1b9a18a4170b88075e2c53538ea50862c",
+  "qualification": "b3818810f728a647617780d4f05591de1f1d171332c8aa5d0bdb1fdb59eff79d",
+  "default_preserved": true
+}

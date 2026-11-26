@@ -1,0 +1,171 @@
+{
+  "stage": "targeted_cpu",
+  "original_native_regression": "model-visible schema cannot resolve the dictionary value reference",
+  "preflight": {
+    "original": {
+      "prompt_sha256": "5ac21fe91cee80ad09037b8d24d72818ec347d7344842fc956eb512d74f0cabb",
+      "probe_sha256": "db6f4becb0ac1fe98a2dd88704d8c65fa99e503132d84e9dde4d8edecacda629",
+      "tokens": 431,
+      "expected": [
+        true,
+        false,
+        false,
+        true,
+        false
+      ],
+      "observed": [
+        "unresolvable",
+        "unresolvable",
+        "unresolvable",
+        true,
+        "unresolvable"
+      ],
+      "agreement": false,
+      "reference": "#/$defs/revision",
+      "annotation": [
+        {
+          "versions": {
+            "$ref": "#/$defs/this-is-data"
+          }
+        }
+      ],
+      "original": {
+        "type": "function",
+        "function": {
+          "name": "lookup_release",
+          "description": "Read project releases by name.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "$defs": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "properties": {
+              "versions": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/revision"
+                }
+              }
+            },
+            "required": [
+              "versions"
+            ],
+            "additionalProperties": false,
+            "examples": [
+              {
+                "versions": {
+                  "$ref": "#/$defs/this-is-data"
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "candidate": {
+      "prompt_sha256": "9aef62caf3a65fda29f616ce948b81d1e70b5705941b909e9aa33d642967da19",
+      "probe_sha256": "f5e80e7cfda508fe0c5c852d00281a33fde7bb91e19bf8b1a14bb7bc85139c37",
+      "tokens": 434,
+      "expected": [
+        true,
+        false,
+        false,
+        true,
+        false
+      ],
+      "observed": [
+        true,
+        false,
+        false,
+        true,
+        false
+      ],
+      "agreement": true,
+      "reference": "#/properties/arguments/$defs/revision",
+      "annotation": [
+        {
+          "versions": {
+            "$ref": "#/$defs/this-is-data"
+          }
+        }
+      ],
+      "original": {
+        "type": "function",
+        "function": {
+          "name": "lookup_release",
+          "description": "Read project releases by name.",
+          "strict": false,
+          "parameters": {
+            "type": "object",
+            "$defs": {
+              "revision": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "properties": {
+              "versions": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/revision"
+                }
+              }
+            },
+            "required": [
+              "versions"
+            ],
+            "additionalProperties": false,
+            "examples": [
+              {
+                "versions": {
+                  "$ref": "#/$defs/this-is-data"
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "versions": {
+        "main": 532,
+        "light": 534
+      }
+    },
+    {
+      "versions": {
+        "main": "wrong"
+      }
+    },
+    {
+      "versions": {
+        "light": 0
+      }
+    },
+    {
+      "versions": {}
+    },
+    {
+      "versions": {
+        "a": 1
+      },
+      "extra": 1
+    }
+  ],
+  "native_checks": [
+    "chat_tool_history_json_adapter_preserves_refs_null_and_exact_values",
+    "chat_tool_map_references_preserve_the_declared_value_contract",
+    "chat_tool_history_native_values_keep_exact_decimal_spelling",
+    "chat_tool_history_arbitrary_json_keys_are_data_without_definitions"
+  ],
+  "renderer_sha256": "79d5dd67fb55ec9161f40e19fc60833da256764170b66bced356e57cf49af22c",
+  "tokenizer_sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+  "inventory_mutations": 40,
+  "issued": false
+}
