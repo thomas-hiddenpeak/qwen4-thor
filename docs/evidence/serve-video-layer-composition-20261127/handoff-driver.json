@@ -1,0 +1,110 @@
+{
+  "stage": "handoff_driver_cpu_verified",
+  "issued": false,
+  "product": {
+    "q4t": "239378a2c0d71e4b7e39aecebf0329057190adb30bc12784ff82cd9e0f05391c",
+    "q4t-ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+    "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f",
+    "q4t-cuda-probe": "412db90814f8f152db407e781e85c87847812e8bc670d1a026a64d964aa6eef1"
+  },
+  "profiles": "primary and light model handoff pending",
+  "source_controls": {
+    "observations": {
+      "first-in-front": {
+        "source_sha256": "bd74ab7c48b726d525b6a3556793636addc4ae4810f8a58d5ecf25586dc01242",
+        "conversion_sha256": "ce79d9b036992572dab21fd4b01d002b8bf5f057bdede3633838f895836e01af",
+        "png": {
+          "1": "4bd03f87add3e1edb09e5b6c3b1f0959669d28f2a9f2dcc8237c9d978227cd46",
+          "0": "dab66f8e23752ffb8d5eae94d9b1069ae3c4eaa6ccb17223f72e63ea42c51177",
+          "3": "ec054072c49e47e18445de334b0386a1a12c2a546075469b5656d96bb562a258",
+          "4": "d05b06e7f2772e7a04344d6947c36ce35f871f78029f0ee79702a59d61b79e44",
+          "5": "f07a0e167e282e62bc4870d35c312f893213ad7da99c5744648a0eecc653f216",
+          "2": "bed4b3a703913facc429289ff154655d5c01b650f97a2de3e46edb4da78d634c"
+        }
+      },
+      "second-in-front": {
+        "source_sha256": "b5000a18334805b087b84299d7dcaa69df52baed01ab39bff87eb40926a8135e",
+        "conversion_sha256": "0e627188283d04e932e9facac7d4ca3cd2bcdccd6988b5818a6bfc956d0c34d0",
+        "png": {
+          "1": "8532e4b8aaaeb1ef9cdb3b62e0472306cf5b3bf2bc95c3fe1709fdd015ecde5f",
+          "0": "63e6dca5d188cf3153056403b9275ef42e7a64dceec84cec29b04446df63a6bf",
+          "3": "9ade00e5e5f090c3021cee368dfd19a42e27a00e443d9b8ac628afdc1c6bde3b",
+          "4": "d05b06e7f2772e7a04344d6947c36ce35f871f78029f0ee79702a59d61b79e44",
+          "5": "f07a0e167e282e62bc4870d35c312f893213ad7da99c5744648a0eecc653f216",
+          "2": "25a78154f69e6a9ec72b352f0d26ab160660ab94f46cff6be8b5a29ce500b07a"
+        }
+      }
+    },
+    "counterexamples": {
+      "reversed_sources": "rejected",
+      "source_digest": "rejected",
+      "dimensions": "rejected",
+      "presentation_frames": "rejected",
+      "frame_oracle": "rejected",
+      "png_bytes": "rejected",
+      "wrong_track_layer": "rejected",
+      "wrong_track_id": "rejected",
+      "wrong_source_index": "rejected",
+      "held_after_track_end": "rejected",
+      "decoded_frames": "rejected",
+      "decoded_pixels": "rejected",
+      "duplicate_snapshot": "rejected",
+      "missing_snapshot": "rejected",
+      "foreign_format": "rejected"
+    },
+    "source": "real local CPU workers, temporary reference IDs, no HTTP or GPU"
+  },
+  "archived_responses_streams": {
+    "inline": {
+      "response": "resp_4f3e7c366457f177d999479d0cc9d2b6",
+      "item": "msg_2a292acbccd07b26da4132091b31467c",
+      "output_index": 0,
+      "events": 36,
+      "deltas": 28,
+      "text_sha256": "f004da1e60a9573ff8075959f13edeab594c4e724a9396064718c8ca83591918",
+      "counterexamples": [
+        "wrong_delta",
+        "lost_delta",
+        "wrong_item",
+        "wrong_output",
+        "extra_terminal",
+        "done_before_delta",
+        "wrong_final_text"
+      ],
+      "stored_sha256": "e07593ccef9b0b1fc9e87beb8c425ddb35e616df6e7470f20ed931cfbdba55ad"
+    },
+    "replay": {
+      "response": "resp_9ad3ddb3cecf242e951460eba9b5112f",
+      "item": "msg_98313bf8c0b451fef1154d6ed59f2ef2",
+      "output_index": 0,
+      "events": 47,
+      "deltas": 39,
+      "text_sha256": "6d524ec6cb6dbf972baa28d36fc8b396a63196facb8fbdd3379db32835e0ee8b",
+      "counterexamples": [
+        "wrong_delta",
+        "lost_delta",
+        "wrong_item",
+        "wrong_output",
+        "extra_terminal",
+        "done_before_delta",
+        "wrong_final_text"
+      ],
+      "stored_sha256": "f5cce23b7e72bb042ad5e249ceedd9c049ef4750c38d9d44f741170ef05cb024"
+    }
+  },
+  "historical_streams_scope": "previous track-grid package and real persisted GET resources",
+  "unit_tests": 13,
+  "tests_sha256": "26e4fc70ea6b6384bf46375bf00ad2ce38024aabcad5482770bd95e72ba6bbc6",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

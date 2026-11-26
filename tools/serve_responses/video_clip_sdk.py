@@ -64,11 +64,20 @@ def hidden(get):
     raise AssertionError('resource unexpectedly accessible')
 
 
+def response_colors(label, response):
+    refusals = [part.refusal for item in response.output if item.type == 'message'
+                for part in item.content if part.type == 'refusal']
+    if refusals:
+        raise AssertionError((label, 'model refusal', refusals))
+    assert response.status == 'completed' and response.output_text, (label, response.status)
+    return json.loads(response.output_text)
+
+
 def saved_resource(owner, peer, rid, file_id, destination):
     raw = owner.responses.with_raw_response.retrieve(rid)
     resource = raw.parse()
     assert raw.status_code == 200 and resource.id == rid and resource.status == 'completed'
-    assert json.loads(resource.output_text) == {'top_left': 'red'}
+    assert response_colors('saved', resource) == {'top_left': 'red'}
     destination.write_bytes(raw.http_response.content)
     return dict(response=rid, file=file_id, resource_sha256=hashlib.sha256(
         raw.http_response.content).hexdigest(), get=raw.status_code,
@@ -87,7 +96,21 @@ def main():
                                  max_retries=0, timeout=60, _strict_response_validation=True)
         owner, peer = sdk(plan['key']), sdk(plan['other'])
         source = Path(plan['fixture']).read_bytes()
-        if plan.get('track_grid', False):
+        layers = plan.get('active_layers')
+        if layers:
+            left, right = source, Path(layers['inline']).read_bytes()
+            assert [hashlib.sha256(raw).hexdigest() for raw in (left, right)] == layers['source_sha256']
+            # Give the two enabled video tracks the same ID; the demuxer must
+            # reject this original before any model generation.
+            invalid = bytearray(left)
+            first = invalid.index(b'tkhd') + 4
+            second = invalid.index(b'tkhd', first) + 4
+            assert invalid[first] == invalid[second] == 0
+            invalid[second + 12:second + 16] = invalid[first + 12:first + 16]
+            invalid = bytes(invalid)
+            left_colors = ('red', 'green', 'red', 'yellow')
+            right_colors = ('red', 'green', 'blue', 'yellow')
+        elif plan.get('track_grid', False):
             left, right, invalid = track_grid_samples(source)
             left_colors = right_colors = ('red', 'green', 'blue', 'yellow')
         elif plan.get('quickdraw_region', False):
@@ -107,6 +130,8 @@ def main():
         question = ('Inspect the video. Name the color at the center of each quadrant. '
                     'Return lowercase English color names for top_left, top_right, bottom_left '
                     'and bottom_right. Return only the requested object.')
+        if layers:
+            question = 'Use the first displayed frame at time zero. ' + question
         props = {k: {'type':'string','enum':['red','green','blue','yellow','black','white',
                                               'cyan','magenta']} for k in corner}
         schema = dict(type='object',properties=props,required=list(corner),additionalProperties=False)
@@ -123,6 +148,9 @@ def main():
             # The retained answer contains only one color. Later turns must
             # recover the remaining colors from the stored video input.
             uploaded[0]['content'][1]['text'] = 'Name the color at the center of the top-left quadrant.'
+            if layers:
+                uploaded[0]['content'][1]['text'] = ('Use the first displayed frame at time zero. '
+                                                     + uploaded[0]['content'][1]['text'])
             first_common = dict(common, text=dict(format=dict(type='json_schema',name='corner',
                 strict=True,schema=dict(type='object',properties={'top_left':props['top_left']},
                                         required=['top_left'],additionalProperties=False))))
@@ -131,8 +159,8 @@ def main():
         first = owner.responses.create(**first_common,input=uploaded)
         def check(label,response,expected):
             assert response is not None
-            (capture/(label+'.json')).write_text(response.model_dump_json())
-            values=json.loads(response.output_text)
+            (capture/(label+'.json')).write_text(response.model_dump_json(by_alias=True, exclude_unset=True))
+            values = response_colors(label, response)
             assert response.status=='completed' and values==dict(zip(corner,expected)),(label,values)
             return dict(response=response.id,status=response.status,colors=values,
                         input_tokens=response.usage.input_tokens)
@@ -166,13 +194,13 @@ def main():
                 summary['restored'] = streamed('restored', dict(previous_response_id=restored['response'],
                     input='For the earlier video: '+question), left_colors)
                 transfer['restored'] = restored
-        if plan.get('track_grid'):
+        if layers or plan.get('track_grid'):
             transfer['resources'] = {}
             for label, reply in summary.items():
                 raw = owner.responses.with_raw_response.retrieve(reply['response'])
                 parsed = raw.parse()
                 assert parsed.id == reply['response'] and parsed.status == 'completed'
-                assert json.loads(parsed.output_text) == reply['colors']
+                assert response_colors(label, parsed) == reply['colors']
                 data = raw.http_response.content
                 (capture/(label+'-response.json')).write_bytes(data)
                 transfer['resources'][label] = hashlib.sha256(data).hexdigest()

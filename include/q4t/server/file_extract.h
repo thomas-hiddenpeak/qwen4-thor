@@ -7,9 +7,6 @@
 #include "q4t/server/file_pdf.h"
 
 namespace q4t::server {
-struct FileVideoWorkBudget {
-  uint64_t scanned_frames = 0, decoded_pixels = 0;
-};
 struct FileExtractOptions {
   uint64_t timeout_ms = 30000;
   FileDocumentLimits document;

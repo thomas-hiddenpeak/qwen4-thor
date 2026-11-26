@@ -93,9 +93,9 @@ ObjectReply Charge(const FileDocument& document, Remaining* remaining) {
       return Capacity();
   for (const auto& video : document.videos) {
     const auto& p = video.pixels;
-    if (!Consume(p.scanned_frames, &remaining->video_scanned) ||
-        !Consume(p.scanned_frames * p.width * p.height,
-                 &remaining->video_decoded_pixels))
+    const auto work = p.Work();
+    if (!Consume(work.scanned_frames, &remaining->video_scanned) ||
+        !Consume(work.decoded_pixels, &remaining->video_decoded_pixels))
       return Capacity();
     for (const auto& frame : p.frames)
       if (!Consume(uint64_t{p.width} * p.height, &remaining->pixels) ||

@@ -88,13 +88,14 @@ ObjectReply Charge(const FileInputSnapshot& file,
       return Capacity();
   for (const auto& video : doc.videos) {
     const auto& p = video.pixels;
+    const auto work = p.Work();
     if (!Add(1, options.max_files, &next.videos) ||
         !Add(p.frames.size(), options.max_files * limits.video.sample_frames,
              &next.video_frames) ||
-        !Add(p.scanned_frames, limits.video.max_scanned_frames,
+        !Add(work.scanned_frames, limits.video.max_scanned_frames,
              &next.video_scanned_frames) ||
-        !Add(p.scanned_frames * p.width * p.height,
-             limits.video.max_decoded_pixels, &next.video_decoded_pixels) ||
+        !Add(work.decoded_pixels, limits.video.max_decoded_pixels,
+             &next.video_decoded_pixels) ||
         !Add(OutputJson(p.conversion).size(), options.max_retained_bytes,
              &next.video_metadata_bytes))
       return Capacity();

@@ -1,0 +1,106 @@
+{
+  "stage": "business_controls_prepared",
+  "model_result_pending": true,
+  "actor": "cf72ba43d8e096b3f8b1cf44157287d5111bb90b41ad6ed4912bbf26cc05a23d",
+  "sdk": "Python OpenAI 3.55.1 strict",
+  "frames": {
+    "first-in-front": [
+      {
+        "source_index": 0,
+        "timestamp_ns": 0,
+        "duration_ns": 500000000,
+        "png_sha256": "dab66f8e23752ffb8d5eae94d9b1069ae3c4eaa6ccb17223f72e63ea42c51177",
+        "rgb_sha256": "2b5378528473aadd5bc5286fddcd931be1e2d387f31a0e9e5cb8ac80904252ca"
+      },
+      {
+        "source_index": 1,
+        "timestamp_ns": 500000000,
+        "duration_ns": 500000000,
+        "png_sha256": "4bd03f87add3e1edb09e5b6c3b1f0959669d28f2a9f2dcc8237c9d978227cd46",
+        "rgb_sha256": "1b5125fea2d215469398171d8477cfe5bb5bb9907a20a42811ca62a618bdc600"
+      },
+      {
+        "source_index": 2,
+        "timestamp_ns": 1000000000,
+        "duration_ns": 500000000,
+        "png_sha256": "bed4b3a703913facc429289ff154655d5c01b650f97a2de3e46edb4da78d634c",
+        "rgb_sha256": "58209763e9e0c8b652d405ec8808818efd951fbe32b44cfaae0b9e505f23473b"
+      },
+      {
+        "source_index": 3,
+        "timestamp_ns": 1500000000,
+        "duration_ns": 500000000,
+        "png_sha256": "ec054072c49e47e18445de334b0386a1a12c2a546075469b5656d96bb562a258",
+        "rgb_sha256": "b6caeff0db44683250775055b173c32520e40b1dc22202bb0fa483ee93676f66"
+      },
+      {
+        "source_index": 4,
+        "timestamp_ns": 2000000000,
+        "duration_ns": 500000000,
+        "png_sha256": "d05b06e7f2772e7a04344d6947c36ce35f871f78029f0ee79702a59d61b79e44",
+        "rgb_sha256": "c6de8e9bc6c4278aea4be495d775f3cc2c1a83d1405fbc46942f03fb8305238e"
+      },
+      {
+        "source_index": 5,
+        "timestamp_ns": 2500000000,
+        "duration_ns": 500000000,
+        "png_sha256": "f07a0e167e282e62bc4870d35c312f893213ad7da99c5744648a0eecc653f216",
+        "rgb_sha256": "1190a9e22195540529963c3c9ced247d6802e8c3d2cb0a5e3b7616aa97b8035a"
+      }
+    ],
+    "second-in-front": [
+      {
+        "source_index": 0,
+        "timestamp_ns": 0,
+        "duration_ns": 500000000,
+        "png_sha256": "63e6dca5d188cf3153056403b9275ef42e7a64dceec84cec29b04446df63a6bf",
+        "rgb_sha256": "57bee11db1ab1b3547aecbb69b72c8a0247d82c10383091023bf9f2588ece64c"
+      },
+      {
+        "source_index": 1,
+        "timestamp_ns": 500000000,
+        "duration_ns": 500000000,
+        "png_sha256": "8532e4b8aaaeb1ef9cdb3b62e0472306cf5b3bf2bc95c3fe1709fdd015ecde5f",
+        "rgb_sha256": "f2ad5d9b0131a39523327094cd64b66f5b2dbfd7e213be62c0fb5fc9540cf503"
+      },
+      {
+        "source_index": 2,
+        "timestamp_ns": 1000000000,
+        "duration_ns": 500000000,
+        "png_sha256": "25a78154f69e6a9ec72b352f0d26ab160660ab94f46cff6be8b5a29ce500b07a",
+        "rgb_sha256": "91878b7ae11635d5296242d5fbe8275dff11345bbbd85ac45fae7da1df2b1e00"
+      },
+      {
+        "source_index": 3,
+        "timestamp_ns": 1500000000,
+        "duration_ns": 500000000,
+        "png_sha256": "9ade00e5e5f090c3021cee368dfd19a42e27a00e443d9b8ac628afdc1c6bde3b",
+        "rgb_sha256": "6a534a3b1be076ee3a8abbc6daf1989a038263a860f4eb39322e81c420505aca"
+      },
+      {
+        "source_index": 4,
+        "timestamp_ns": 2000000000,
+        "duration_ns": 500000000,
+        "png_sha256": "d05b06e7f2772e7a04344d6947c36ce35f871f78029f0ee79702a59d61b79e44",
+        "rgb_sha256": "c6de8e9bc6c4278aea4be495d775f3cc2c1a83d1405fbc46942f03fb8305238e"
+      },
+      {
+        "source_index": 5,
+        "timestamp_ns": 2500000000,
+        "duration_ns": 500000000,
+        "png_sha256": "f07a0e167e282e62bc4870d35c312f893213ad7da99c5744648a0eecc653f216",
+        "rgb_sha256": "1190a9e22195540529963c3c9ced247d6802e8c3d2cb0a5e3b7616aa97b8035a"
+      }
+    ]
+  },
+  "checks": [
+    "all 12 RGB frames match independently composed separately enabled tracks on the default sampling policy",
+    "priority reverses the initial lower-left quadrant from red to blue",
+    "last two samples retain only the longer track"
+  ],
+  "model_budget": {
+    "starts": 1,
+    "generations": 4,
+    "seconds": 340
+  }
+}

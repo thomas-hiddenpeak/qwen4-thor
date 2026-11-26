@@ -297,6 +297,38 @@ Q4T_TEST(responses_video_file_uses_temporal_input_and_count_generation_parity) {
   return true;
 }
 
+Q4T_TEST(responses_files_composed_video_shares_actual_work_across_parts) {
+  Fixture f;
+  ObjectStore objects(f.objects);
+  auto video = Bytes("file_video/alternate-tracks.mp4");
+  const auto first = video.find("tkhd"), second = video.find("tkhd", first + 4);
+  Q4T_CHECK(first != video.npos && second != video.npos);
+  video[second + 7] |= 1;
+  auto one = Request(Stored(Upload(objects, video, "composed.mp4")));
+  Set(&one, "store", Boolean(false));
+  ResponsesExecution measured(objects);
+  Q4T_CHECK(Ok(measured.Prepare(one, f.config, Access(), 42)));
+  const auto work = *measured.FileUsage();
+  Q4T_CHECK(work.video_scanned_frames == 20 && work.video_frames == 6 &&
+            work.video_decoded_pixels > work.pixels);
+  auto two = one;
+  auto& parts = Field(Field(two, "input").array.front(), "content").array;
+  parts.push_back(Stored(Upload(objects, video, "second.mp4")));
+  auto policy = std::make_shared<FileExpansionOptions>(*f.config.file_inputs);
+  f.config.file_inputs = policy;
+  auto& budget = policy->extraction.video;
+  budget.max_scanned_frames = 2 * work.video_scanned_frames;
+  budget.max_decoded_pixels = 2 * work.video_decoded_pixels;
+  ResponsesExecution exact(objects);
+  Q4T_CHECK(Ok(exact.Prepare(two, f.config, Access(), 42)));
+  Q4T_CHECK(
+      exact.FileUsage()->video_decoded_pixels == budget.max_decoded_pixels &&
+      exact.FileUsage()->video_scanned_frames == budget.max_scanned_frames);
+  --budget.max_decoded_pixels;
+  ResponsesExecution over(objects);
+  Q4T_CHECK(over.Prepare(two, f.config, Access(), 42).http_status == 413);
+  return true;
+}
 Q4T_TEST(responses_video_group_labels_preserve_actual_endpoint_intervals) {
   Fixture f;
   ObjectStore objects(f.objects);
