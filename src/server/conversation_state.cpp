@@ -176,6 +176,11 @@ Json ProjectStoredItem(const Json& item, const ItemViewOptions& options,
            options.include.end();
   };
   const auto type = result.GetString("type");
+  if (type == "mcp_approval_response" && !result.Has("request_id")) {
+    if (const auto* target = item.Find("approval_request_id");
+        target && target->IsString())
+      Set(&result, "request_id", *target);
+  }
   // The SDK's conversation union uses the base custom-call types. Its
   // Responses input_items list uses the Item variants with status instead.
   if (view == StoredItemView::kConversation &&

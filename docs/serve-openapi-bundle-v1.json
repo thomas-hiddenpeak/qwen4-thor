@@ -35227,6 +35227,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
@@ -36995,13 +36998,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
               "approval_request_id",
               "approve",
               "id",
-              "type"
+              "type",
+              "request_id"
             ],
             "additionalProperties": false
           },
@@ -37767,13 +37774,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
               "approval_request_id",
               "approve",
               "id",
-              "type"
+              "type",
+              "request_id"
             ],
             "additionalProperties": false
           },
@@ -44157,13 +44168,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/521"
+              },
+              "request_id": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               }
             },
             "required": [
               "approval_request_id",
               "approve",
               "id",
-              "type"
+              "type",
+              "request_id"
             ],
             "additionalProperties": false
           },

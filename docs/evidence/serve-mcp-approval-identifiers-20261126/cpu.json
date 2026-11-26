@@ -1,0 +1,115 @@
+{
+  "stage": "native_cpu_and_sdk",
+  "issued": false,
+  "old_failure": {
+    "status": 400,
+    "error": {
+      "error": {
+        "message": "Unknown item field",
+        "type": "invalid_request_error",
+        "code": "invalid_request",
+        "param": "items[0].request_id"
+      }
+    },
+    "page": {
+      "object": "list",
+      "data": [
+        {
+          "type": "mcp_approval_response",
+          "id": "decision_alpha",
+          "approval_request_id": "approval_alpha",
+          "approve": false
+        }
+      ],
+      "first_id": "decision_alpha",
+      "last_id": "decision_alpha",
+      "has_more": false
+    }
+  },
+  "http": {
+    "status": "PASS",
+    "old_http": 400,
+    "old_source_sha256": "25b6c9a04d9d0cf4901c97e165d8a3dbd0237f8bf08abf3b4cea7e8c48d51ce4",
+    "candidate_fixture_sha256": "5a162d9718b8627f76d702c879ebf2a1810173284e654cd7406a9f9935f1f8e8",
+    "public_schema": "2e4f43aecd112fd59c9b3be4258e004691e079e6e12f076e755de24fbaf3aec0",
+    "official_schema": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "pages": {
+      "old-retrieve.wire": "d796ef9c0e15978f4902249c8756471391e05b14e3fd07e483369d827749cf12",
+      "appended.wire": "84e957635230deddc7719bb76559120750d5b1e0d589b09b65d5f6c5269b098e",
+      "listed.wire": "2654a1ad165f2d6578890d48bbd448e7d4d38b52eeac73dd4859ea739c2ff4ea"
+    },
+    "rollback_rejects_conflict": true,
+    "old_disk_object_count": 4,
+    "old_read_without_rewrite": true,
+    "replayed_old_and_new": true,
+    "changed_decision": 409,
+    "peer": 404,
+    "errors": {
+      "mismatch": "items[0].request_id",
+      "null": "items[0].request_id",
+      "type": "items[0].request_id",
+      "alias-only": "items[0].approval_request_id"
+    },
+    "model_starts": 0
+  },
+  "sdk": {
+    "sdk": "3.55.1",
+    "original": "conv_b5b50bbcaef352c36c9e76e144a52e15",
+    "pages": 2,
+    "target": "approval_sdk",
+    "decision": false,
+    "conflict": 400,
+    "peer": 404
+  },
+  "sdk_wire": {
+    "read.wire": "331c96efe5d948d73530e3d818022535d117106557769011252aa334a25d4046",
+    "append.wire": "9b2f9943380150b76ce24b29a71c58eace885786f33e211faf1b2c1fa0faed5a"
+  },
+  "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "published_schema": "2e4f43aecd112fd59c9b3be4258e004691e079e6e12f076e755de24fbaf3aec0",
+  "graph_nodes": {
+    "519": {
+      "id_optional": true,
+      "alias_required": false
+    },
+    "620": {
+      "id_optional": false,
+      "alias_required": true
+    },
+    "654": {
+      "id_optional": false,
+      "alias_required": true
+    },
+    "1131": {
+      "id_optional": false,
+      "alias_required": true
+    }
+  },
+  "source": {
+    "src/server/contracts/openai_item_types_v1.json": "24f98a44c4ab0c6743a86621b981b0c2368763ec8319e8d1ad24839632367eb1",
+    "src/server/conversation_state.cpp": "af977979000b8a06d62a4eb1081c4de9576861919441ad3fcf68bbc8b2d57352",
+    "src/server/responses_item_shape.cpp": "fd4e5cdead1d6d2588d50face119ea9f5f29122dbf4c40032392409f261318b2",
+    "src/server/responses_state.cpp": "573f4a3358abcfadc56753cb47b05e8476cdd24c8b35e2c4b8b620ad681c1bba",
+    "tests/server_conversation_state_test.cpp": "6cee2850ad1dbe6943d5b7003b195705687bea56c9b5f72d8b84850fb9ad664b",
+    "tools/serve_responses/generate_item_types.mjs": "559745384edbac95c895988410684101db0e49e0d522eb8602959670d4f97689"
+  },
+  "scoped_tests": [
+    "conversation_approval_target_projects_legacy_and_checks_conflicts",
+    "conversation_state_include_projection_preserves_full_history",
+    "conversation_state_screenshot_absence_and_include_contract"
+  ],
+  "guard": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1391,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "test_binary": "b1a3e707eb2e91d646cd54ae78e248bb5a03133f2b8b79ab68d2f19b22a13ca8",
+  "device_model_starts": 0,
+  "open": "Real authenticated approval and target replay against the release candidate. Local shell call_id remains a separate gap."
+}

@@ -7,6 +7,7 @@ import subprocess
 from typing import Callable
 
 from tools.serve_chat_storage import parts_profiles
+from tools.serve_responses import approval_identifiers_profiles as approval_ids
 from tools.serve_responses import conversation_compaction_profiles as compact_profiles
 from tools.serve_preflight import null_history_profiles
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
@@ -166,6 +167,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if approval_ids.KEY in plan:
+        return Handoff(approval_ids.KEY, approval_ids.RELEASE, approval_ids.ACTOR,
+                       reuse.APPROVAL_IDS_RECEIPT, reuse.COMPACT_RECEIPT, reuse.COMPACT_REVIEWED,
+                       approval_ids.check)
     if compact_profiles.KEY in plan:
         return Handoff(compact_profiles.KEY, compact_profiles.RELEASE, compact_profiles.ACTOR,
                        reuse.COMPACT_RECEIPT, reuse.PARTS_RECEIPT, reuse.PARTS_REVIEWED,
@@ -267,12 +272,14 @@ def business(stage, capabilities):
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
     if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY,
-                    parts_profiles.KEY, compact_profiles.KEY):
+                    parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
         if spec.key == tool_map_profiles.KEY:
             module, wire = tool_map_profiles, 'tool-map-wire'
+        elif spec.key == approval_ids.KEY:
+            module, wire = approval_ids, 'approval-identifiers-wire'
         elif spec.key == compact_profiles.KEY:
             module, wire = compact_profiles, 'compact-conversation-wire'
         elif spec.key == parts_profiles.KEY:

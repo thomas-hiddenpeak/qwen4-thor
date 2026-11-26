@@ -885,6 +885,16 @@
         "remaining": [
           "MCP approval request_id and locally supplied shell output call_id in public Conversations input and readback"
         ]
+      },
+      "mcp_approval_identifiers_20261126": {
+        "stage": "issued",
+        "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
+        "issued": true,
+        "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
+        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
+        "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json",
+        "revision": 546,
+        "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       }
     },
     {
@@ -3717,6 +3727,16 @@
         "remaining": [
           "MCP approval request_id and locally supplied shell output call_id in public Conversations input and readback"
         ]
+      },
+      "mcp_approval_identifiers_20261126": {
+        "stage": "issued",
+        "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
+        "issued": true,
+        "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
+        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
+        "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json",
+        "revision": 546,
+        "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       }
     },
     {
@@ -8803,6 +8823,16 @@
         "receipt": "evidence/serve-stored-content-parts-20261126/node-pages.json",
         "python": "evidence/serve-stored-content-parts-20261126/delivery.json",
         "method": "GET /v1/chat/completions/{completion_id}/messages"
+      },
+      "mcp_approval_identifiers_20261126": {
+        "stage": "issued",
+        "evidence": "evidence/serve-mcp-approval-identifiers-20261126/cpu.json",
+        "issued": true,
+        "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
+        "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
+        "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json",
+        "revision": 546,
+        "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       }
     },
     {
@@ -10050,10 +10080,16 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 544,
-        "receipt": "evidence/serve-conversation-compaction-20261126/delivery.json",
+        "revision": 546,
+        "receipt": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json",
         "model_starts": 0,
         "executed": false
+      },
+      "maintenance_decision_20261126": {
+        "status": "deferred_by_user",
+        "scope": "NVML-unavailable cold acceptance with temporary stop of nvargus-daemon and jtop",
+        "other_development": "continue",
+        "model_starts": 0
       }
     },
     {
@@ -11806,7 +11842,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev544_delivered_remaining_deliveries",
+      "state": "rev546_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13156,7 +13192,8 @@
       "current_reclaim_pressure_delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json",
       "current_null_history_delivery": "evidence/serve-null-assistant-history-20261126/delivery.json",
       "current_stored_parts_delivery": "evidence/serve-stored-content-parts-20261126/delivery.json",
-      "current_conversation_compaction_delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
+      "current_conversation_compaction_delivery": "evidence/serve-conversation-compaction-20261126/delivery.json",
+      "current_mcp_approval_identifiers_delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -13261,16 +13298,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "39474478f3a31cccea3e61b7ef8a703feeadb6d3",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/conversation-compact-delivery-soak-src",
+        "source_commit": "406d22aded835dd896adf15a08f68434adff4ce9",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/approval-ids-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/conversation-compact-client-primary-01/bundle",
-          "manifest_sha256": "6064efc934d16665277eebfa6b5922498395f19052f3408b6200a6219b432035"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/approval-ids-client-primary-01/bundle",
+          "manifest_sha256": "df8e157668ae83bd09b140b4f4410ca17df0c82a880a5ac354064462a7263904"
         },
-        "revision": 544,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/conversation-compact-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "463f34e4725a2df15c2a126ebc76be1426763c4da81047e784085b7c5480df96",
-        "handoff_sha256": "662be048580e043cf6642ee12f1bfdf9bebcc69ba78d527c2e87cdb8f3ceafc8",
+        "revision": 546,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/approval-ids-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "55f27a6dde4cbd0e0815f8c008cc1f99a005934cf4d7e3cb5c166f8272cfc6f6",
+        "handoff_sha256": "9d6eee602ebdb933c3c77ff65ad8cbd6016f2a2b62308a2d9ca3537dae524033",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13681,9 +13718,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 544,
-        "receipt": "evidence/serve-conversation-compaction-20261126/delivery.json",
-        "plan_sha256": "463f34e4725a2df15c2a126ebc76be1426763c4da81047e784085b7c5480df96",
+        "revision": 546,
+        "receipt": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json",
+        "plan_sha256": "55f27a6dde4cbd0e0815f8c008cc1f99a005934cf4d7e3cb5c166f8272cfc6f6",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

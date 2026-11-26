@@ -6208,6 +6208,9 @@
         },
         "type": {
           "$ref": "#/$defs/521"
+        },
+        "request_id": {
+          "$ref": "#/$defs/3"
         }
       },
       "required": [
@@ -7976,13 +7979,17 @@
         },
         "type": {
           "$ref": "#/$defs/521"
+        },
+        "request_id": {
+          "$ref": "#/$defs/3"
         }
       },
       "required": [
         "approval_request_id",
         "approve",
         "id",
-        "type"
+        "type",
+        "request_id"
       ],
       "additionalProperties": false
     },
@@ -8748,13 +8755,17 @@
         },
         "type": {
           "$ref": "#/$defs/521"
+        },
+        "request_id": {
+          "$ref": "#/$defs/3"
         }
       },
       "required": [
         "approval_request_id",
         "approve",
         "id",
-        "type"
+        "type",
+        "request_id"
       ],
       "additionalProperties": false
     },
@@ -15138,13 +15149,17 @@
         },
         "type": {
           "$ref": "#/$defs/521"
+        },
+        "request_id": {
+          "$ref": "#/$defs/3"
         }
       },
       "required": [
         "approval_request_id",
         "approve",
         "id",
-        "type"
+        "type",
+        "request_id"
       ],
       "additionalProperties": false
     },

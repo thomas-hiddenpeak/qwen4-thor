@@ -7,6 +7,18 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev546 已发行 MCP 审批关联字段兼容。模型故障及网关切换回退包后仍按原 ID 读回 rev544 的批准与拒绝，响应与输入页保持相同字节。修改拒绝决定返回 409，跨客户端查询返回 404，独立 Chat 正常。登记时模型启动为零，13 份受保护状态通过复核。NVML 冷启动所需的相机与 jtop 维护窗口已由用户暂缓，两项服务继续运行。[发行记录](evidence/serve-mcp-approval-identifiers-20261126/delivery.json)
+
+主配置 39.5 秒，轻配置 37.7 秒。两种配置都按原 ID 读回 rev544 的真实 MCP 批准与拒绝，响应与输入页的原始 HTTP 字节跨配置相同。修改拒绝决定返回 409，冲突关联返回 400，另一把 Key 获得 404。独立 Chat 均返回 720041。下一步验证模型和网关故障后的同一批对象。[配置记录](evidence/serve-mcp-approval-identifiers-20261126/profiles.json)
+
+已用发行版 rev544 通过 TLS 和 Python SDK 3.55.1 生成两条 MCP 审批旧记录。原始对象仅有 approval_request_id，批准执行了一次资料读取，拒绝分支没有执行。已固定旧库 24 个文件及两个完整输入页的预期摘要，供主、轻配置和恢复验收按原 ID 独立读回。[旧记录来源](evidence/serve-mcp-approval-identifiers-20261126/legacy-source.json)
+
+原生 TLS 通过 Python SDK 3.55.1 实际批准与拒绝两个 MCP 请求，批准分支从 docs/MODEL.md 读取一次并返回来源，拒绝分支没有执行，另一把 Key 读取原记录返回 404。两项决定均能按原审批 ID 和双字段读回，6 份回包通过官方及随包声明验证。1 次模型启动，共 53.7 秒。[业务记录](evidence/serve-mcp-approval-identifiers-20261126/business.json)
+
+MCP 的新增关联名已纳入 HTTP 声明，固定 SDK 的来源哈希和判定独立保留。首版候选触发了 SDK 来源校验失败；修正后 647 条原生与 TypeScript 对照均一致，历史字段默认值检查、4 项原生回归、Python SDK 和重开旧对象均通过。[复核记录](evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json)
+
+已修复 MCP 审批响应的 HTTP 字段兼容。原生接口此前对同时提供一致 request_id 与 approval_request_id 的申请返回 400。候选保留 SDK 单字段输入，公共读取补全双字段，原存储对象无需改写；指向不同申请的输入返回 400，重用同一 ID 改变批准决定返回 409。3 项原生 CPU 回归、发布声明及官方 Python SDK 分页通过。实际 MCP 审批执行仍待候选短验。[CPU 证据](evidence/serve-mcp-approval-identifiers-20261126/cpu.json)
+
 A02 聊天历史验收完成。已核对模板、模型输入、真实工具回填、多模态旧对象读回、独立回退和 PR #169 主线提交。[验收记录](evidence/serve-stored-content-parts-20261126/history-exit.json)
 
 rev544 已发行会话创建和追加的原生压缩触发器。受控模型故障和网关接管后，原会话整页及密封项按同一 ID 读回，SHA-256 一致。仅凭密文续答得到 28617，另一把 Key 获得 404。登记时模型启动为零，13 份受保护状态通过复核。[发行记录](evidence/serve-conversation-compaction-20261126/delivery.json)

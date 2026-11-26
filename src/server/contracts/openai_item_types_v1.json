@@ -5900,6 +5900,11 @@
           "name": "type",
           "optional": false,
           "type": 521
+        },
+        {
+          "name": "request_id",
+          "optional": true,
+          "type": 3
         }
       ],
       "additional": null
@@ -7676,6 +7681,11 @@
           "name": "type",
           "optional": false,
           "type": 521
+        },
+        {
+          "name": "request_id",
+          "optional": true,
+          "type": 3
         }
       ],
       "additional": null
@@ -8451,6 +8461,11 @@
           "name": "type",
           "optional": false,
           "type": 521
+        },
+        {
+          "name": "request_id",
+          "optional": true,
+          "type": 3
         }
       ],
       "additional": null

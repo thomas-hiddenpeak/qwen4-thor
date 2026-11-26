@@ -543,7 +543,14 @@ Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
                      : shape == ResponsesItemShape::kConversation
                          ? "conversation_item"
                          : "";
-  return Validate(Types(), item, root, error, path);
+  auto status = Validate(Types(), item, root, error, path);
+  if (status && item.GetString("type") == "mcp_approval_response" &&
+      item.Has("request_id") &&
+      item.GetString("request_id") != item.GetString("approval_request_id")) {
+    *error = {"invalid_request", FieldPath(path, "request_id"), 400};
+    return Status::Fail("Approval request identifiers disagree");
+  }
+  return status;
 }
 Status ValidateDecisionShape(const Json& value, DecisionShape shape,
                              ChatPlanError* error) {

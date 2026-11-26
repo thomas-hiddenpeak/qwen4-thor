@@ -91,6 +91,17 @@ def graph_definitions(graph, prefix='', roots=None):
 def schema(graph):
     assert graph['profile'] == 'q4t-openai-application-types-v1'
     definitions = graph_definitions(graph)
+    # The frozen SDK names the approval target approval_request_id. The HTTP
+    # resource requires request_id as well. Inputs may use the SDK spelling.
+    for index, node in enumerate(graph['nodes']):
+        fields = {f['name']: f for f in node.get('fields', [])}
+        if ('approval_request_id' not in fields or 'approve' not in fields or
+                graph['nodes'][fields['type']['type']].get('value') != 'mcp_approval_response'):
+            continue
+        resource = definitions[str(index)]
+        resource['properties']['request_id'] = dict(resource['properties']['approval_request_id'])
+        if not fields['id']['optional']:
+            resource['required'].append('request_id')
     live = json.loads((ROOT/'src/server/contracts/openai_live_types_v1.json').read_text())
     assert live['profile'] == 'q4t-openai-live-types-v1'
     definitions.update(graph_definitions(live, 'live_', ('session_accept', 'session_refer', 'session_reject', 'session_fork', 'session_forked', 'media_create', 'media_created')))
