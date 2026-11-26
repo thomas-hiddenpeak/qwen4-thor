@@ -6415,6 +6415,16 @@
         "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
         "revision": 526,
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "quicktime_clip_cpu_20261126": {
+        "stage": "cpu_verified",
+        "receipt": "docs/evidence/serve-video-clipping-20261126/cpu.json",
+        "next": [
+          "HTTP model answer on owner upload, SSE, replay after file deletion and rejection on invalid clip",
+          "nonrectangular regions and fractional track grids",
+          "multi-layer compositing and alternate selection policy",
+          "primary/light and independent package delivery"
+        ]
       }
     },
     {

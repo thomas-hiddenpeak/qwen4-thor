@@ -19,6 +19,18 @@ enum class DisplayDirection {
   kAntiTranspose
 };
 
+// A short QuickDraw region specifies a signed, half-open rectangle.
+struct ClipRect {
+  int16_t top, left, bottom, right;
+  bool operator==(const ClipRect&) const = default;
+};
+struct DisplayClips {
+  std::optional<ClipRect> movie, track;
+  std::array<uint16_t, 2> track_size{};
+  bool Any() const { return movie.has_value() || track.has_value(); }
+  bool operator==(const DisplayClips&) const = default;
+};
+
 // QuickTime stores a,b,u,c,d,v,x,y,w. Affine entries are signed 16.16;
 // u/v/w are signed 2.30. Retain the original values for frozen replay.
 using DisplayMatrix = std::array<int32_t, 9>;
@@ -91,7 +103,7 @@ class MovieDisplay {
     return direction;
   }
   std::optional<DisplayMatrices> ReadMatrices(std::string_view bytes) {
-    const auto selected = SelectTrack(bytes);
+    const auto selected = SelectTrack(bytes, false);
     if (!selected) return std::nullopt;
     return selected->matrices;
   }
@@ -100,8 +112,10 @@ class MovieDisplay {
     DisplayMatrices matrices;
     bool has_alternates;
     std::optional<uint64_t> duration_ns;
+    DisplayClips clips;
   };
-  std::optional<SelectedTrack> SelectTrack(std::string_view bytes) {
+  std::optional<SelectedTrack> SelectTrack(std::string_view bytes,
+                                           bool read_clips = true) {
     nodes_ = 0;
     if (bytes.size() < 12 || bytes.substr(4, 4) != "ftyp") return std::nullopt;
     const auto movie = Find(bytes, "moov");
@@ -116,18 +130,34 @@ class MovieDisplay {
       const auto handler = Find(Find(box.data, "mdia"), "hdlr");
       Require(handler.size() >= 12);
       if (handler.substr(8, 4) != "vide") continue;
-      only_track = Find(box.data, "tkhd");
-      Require(only_track.size() >= 4);
+      only_track = box.data;
+      const auto track_header = Find(only_track, "tkhd");
+      Require(track_header.size() >= 4);
       ++count;
-      if ((static_cast<unsigned char>(only_track[3]) & 1) != 0) {
+      if ((static_cast<unsigned char>(track_header[3]) & 1) != 0) {
         Require(enabled.empty());
         enabled = only_track;
       }
     }
     // Preserve single-track playback for older files with no enabled flag.
-    const auto track = count == 1 ? only_track : enabled;
-    Require(!track.empty());
-    SelectedTrack result{{global, Matrix(track, 40, 52)}, count > 1, {}};
+    const auto selected = count == 1 ? only_track : enabled;
+    Require(!selected.empty());
+    const auto track = Find(selected, "tkhd");
+    SelectedTrack result{{global, Matrix(track, 40, 52)}, count > 1, {}, {}};
+    if (read_clips) {
+      result.clips = {Clip(movie), Clip(selected)};
+      if (result.clips.Any()) {
+        const size_t at = track[0] == 0 ? 76 : 88;
+        Require(track.size() >= at + 8);
+        for (size_t i = 0; i < result.clips.track_size.size(); ++i) {
+          const auto raw = Big(track.substr(at + i * 4, 4));
+          // The clipped renderer currently samples whole-pixel track grids.
+          // Rounding a fractional source rectangle can expose the wrong edge.
+          Require(raw && !(raw & 0xffff));
+          result.clips.track_size[i] = static_cast<uint16_t>(raw >> 16);
+        }
+      }
+    }
     if (result.has_alternates) {
       const auto scale = Big(header.substr(header[0] == 0 ? 12 : 20, 4));
       const auto duration =
@@ -175,7 +205,8 @@ class MovieDisplay {
     remaining->remove_prefix(size);
     return result;
   }
-  std::string_view Find(std::string_view bytes, std::string_view type) {
+  std::optional<std::string_view> Optional(std::string_view bytes,
+                                           std::string_view type) {
     std::optional<std::string_view> result;
     while (!bytes.empty()) {
       const auto box = Next(&bytes);
@@ -183,8 +214,26 @@ class MovieDisplay {
       Require(!result);
       result = box.data;
     }
+    return result;
+  }
+  std::string_view Find(std::string_view bytes, std::string_view type) {
+    const auto result = Optional(bytes, type);
     Require(result.has_value());
     return *result;
+  }
+  std::optional<ClipRect> Clip(std::string_view parent) {
+    const auto clip = Optional(parent, "clip");
+    if (!clip) return std::nullopt;
+    const auto region = Find(*clip, "crgn");
+    // A complex QuickDraw region shares this bounding box, but the box alone
+    // would expose pixels outside its shape.
+    Require(region.size() == 10 && Big(region.substr(0, 2)) == 10);
+    const auto coord = [&](size_t offset) {
+      return std::bit_cast<int16_t>(uint16_t(Big(region.substr(offset, 2))));
+    };
+    ClipRect rect{coord(2), coord(4), coord(6), coord(8)};
+    Require(rect.top <= rect.bottom && rect.left <= rect.right);
+    return rect;
   }
   static DisplayMatrix Matrix(std::string_view bytes, size_t v0, size_t v1) {
     Require(!bytes.empty() && (bytes[0] == 0 || bytes[0] == 1));
