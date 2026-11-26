@@ -3135,7 +3135,8 @@
         "stage": "cpu_verified",
         "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
         "real_business_accepted": false,
-        "issued": false
+        "issued": false,
+        "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json"
       }
     },
     {
@@ -3872,7 +3873,8 @@
         "stage": "cpu_verified",
         "cpu": "evidence/serve-chatkit-interrupted-retry-20261127/cpu.json",
         "real_business_accepted": false,
-        "issued": false
+        "issued": false,
+        "handoff_driver": "evidence/serve-chatkit-interrupted-retry-20261127/handoff-driver.json"
       }
     },
     {

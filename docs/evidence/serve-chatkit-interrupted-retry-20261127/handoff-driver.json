@@ -1,0 +1,55 @@
+{
+  "stage": "cpu_verified",
+  "profile_business_accepted": false,
+  "issued": false,
+  "source": {
+    "tools/serve_responses/chatkit_generation_profile_sdk.mjs": "a0c3df4cb9d91f7d5a1a51e252afbfac75e8ed2aca4fae6325b6d42a11de8fb9",
+    "tools/serve_responses/chatkit_interrupted_retry_profiles.py": "25833776e00d65615a3986e9f337d2bcdc59e6b549f767d37c0ae63f22175689",
+    "tools/serve_live/profile_acceptance.py": "caf5df0e853d657d6591fe1c6e3da407817c5228340cfe0ad881fcc2df9983ef",
+    "tools/serve_live/profile_qualification.py": "a74017af6b3d8056db4829fa6fccbe1681b80fca70dc333bdba56a2033f52830",
+    "tools/serve_responses/chatkit_actions_profiles.py": "9e8048f1bc18edda12828ded1c27570303e05fad9454ef90e72339fbdcb2f112",
+    "tools/serve_recovery/profile_live_reuse.py": "efac52966fb9129649429b4fbacf77a435d5ce926cc4dcfc0885c738fb22642b"
+  },
+  "native_cpu_sha256": "b93c94d7a128559e1e8c7f42158c783672176812f33e448b8ba8ac6857433692",
+  "runtime_identity_unchanged": true,
+  "controller_tests": [
+    "primary_must_cancel_before_item_publication_and_delete_source",
+    "replacement_rejects_a_different_interrupted_thread",
+    "restore_binds_the_original_journal_answer_and_browser_items",
+    "unpublished_item_recovers_from_same_snapshot",
+    "all_originals_remain_scoped_and_byte_identical",
+    "both_profiles_read_originals_and_generate_distinct_answers",
+    "discovery_preserves_issued_clipping_behavior",
+    "frozen_input_and_stream_have_observable_outcomes",
+    "handoff_registers_program_profile_predecessor",
+    "replay_cannot_reuse_old_id_or_another_profile_answer"
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1392,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "records": {
+    "primary": {
+      "accepted_v81_predecessor": "9d1040ded9d883e8e7ea34836bd3f6f45dfc4bb9ee541d7346c2678862c76910",
+      "v82_provisional": "46d8b7101a780c37332d231f9b20b1a6b6ee07a4d7911573db60de20f15256c7",
+      "v83_provisional": "8a1cdfe84180f22b0affdb9993e8de2ad4e4a5cec508fea20d99519ca1f62704",
+      "prior_reconstruction": true,
+      "negative_cases": 3
+    },
+    "light": {
+      "accepted_v81_predecessor": "a9730796f469417ed76b068f67b07ee28aa1290c1f412f746d249fbbd3c03637",
+      "v82_provisional": "ac7fe684b346e87f3c5dfb2f47946c65361d9f5c26eb51b7934883994fc2b4cf",
+      "v83_provisional": "b396c1fffb75e6ff181692f44eebd012e2c0b8025613e611225ac77e526ff370",
+      "prior_reconstruction": true,
+      "negative_cases": 3
+    }
+  },
+  "scope": "Primary cancels the first actual project document answer before standalone item publication, then deletes the file. Light retries the same browser item from a renewed grant and verifies the original journal hash and snapshot, model answer, two visible items, tenant isolation and independent Chat."
+}

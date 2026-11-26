@@ -1,7 +1,8 @@
 // Carry an interrupted project document review across a capacity or process change.
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {readFileSync} from 'node:fs';
+import {existsSync, readFileSync, readdirSync} from 'node:fs';
+import {join} from 'node:path';
 import {loadSdk} from '../serve_protocol/sdk.mjs';
 
 let input = '';
@@ -10,7 +11,8 @@ const plan = JSON.parse(input);
 const {OpenAI, version} = loadSdk(plan.sdk);
 const connect = apiKey => new OpenAI({apiKey, baseURL: plan.base, maxRetries: 0});
 const owner = connect(plan.key), peer = connect(plan.other);
-const release = JSON.parse(readFileSync(new URL(
+const retry = plan.interruptedRetry;
+const release = JSON.parse(readFileSync(retry?.release ?? new URL(
   '../../docs/evidence/serve-chatkit-browser-output-20261125/delivery.json', import.meta.url)));
 const revision = String(release.publication.publication_revision);
 const document = Buffer.from(JSON.stringify({
@@ -40,6 +42,27 @@ const rpc = (grant, type, params, status, signal) => send(grant, '/chatkit', {ty
 const text = (value, attachments = []) => ({content: [{type: 'input_text', text: value}], attachments, inference_options: {}});
 const list = async (grant, thread) => (await rpc(grant, 'items.list', {thread_id: thread, order: 'asc'})).json();
 
+function journal(thread, assistant) {
+  const records = readdirSync(retry.store).filter(name => name.includes('.response.resp_') && name.endsWith('.json'))
+    .map(name => readFileSync(join(retry.store, name)))
+    .map(bytes => ({bytes, record: JSON.parse(bytes).record}))
+    .filter(({record}) => record.data.chatkit_thread_id === thread &&
+      record.data.response.output.some(item => item.id === assistant));
+  assert.equal(records.length, 1);
+  const {bytes, record} = records[0];
+  const {response, history, own_input, input_snapshots} = record.data;
+  assert.deepEqual(history, own_input);
+  assert.equal(history.length, 1);
+  assert.equal(history[0].role, 'user');
+  assert.equal(input_snapshots.length, 1);
+  const binding = input_snapshots[0];
+  assert.equal(binding.item_id, history[0].id);
+  assert.equal(binding.path, '/content/0');
+  const itemFile = join(retry.store, record.owner + '.item.' + binding.item_id + '.json');
+  return {response: response.id, status: response.status, record_sha256: sha(bytes),
+    file: history[0].content[0].file_id, published: existsSync(itemFile), binding};
+}
+
 async function interrupt() {
   const workflow = (await owner.beta.agents.create({model: plan.model, reasoning: {effort: 'none'}})).id;
   const grant = await session(workflow);
@@ -48,6 +71,7 @@ async function interrupt() {
   const file = (await (await send(grant, '/chatkit/attachments', form)).json()).id;
   const stop = new AbortController();
   const r = await rpc(grant, 'threads.create', {input: text(
+    retry ? 'Start with the integer publication_revision from the attached record, then explain what that number identifies in one sentence.' :
     'Explain the attached project publication to a reviewer in thirty numbered sentences, one full sentence per line.', [file],
   )}, 200, AbortSignal.any([stop.signal, AbortSignal.timeout(45000)]));
   const reader = r.body.getReader(), decoder = new TextDecoder();
@@ -85,8 +109,20 @@ async function interrupt() {
   assert.deepEqual(saved.data.map(row => row.type), ['user_message', 'assistant_message']);
   assert.equal(saved.data[0].attachments[0].id, file);
   assert.equal(saved.data[1].content[0].text, partial.content[0].text);
-  return {workflow, thread, file, item, user: saved.data[0].id, received: prefix,
+  const source = {workflow, thread, file, item, user: saved.data[0].id, received: prefix,
     partial: partial.content[0].text, document_sha256: sha(document)};
+  if (retry) {
+    source.interrupted = journal(thread, item);
+    assert.equal(source.interrupted.status, 'cancelled');
+    assert.equal(source.interrupted.file, file);
+    assert.equal(source.interrupted.published, false);
+    const uploaded = Buffer.from(await (await owner.files.content(file)).arrayBuffer());
+    assert.equal(sha(uploaded), source.document_sha256);
+    await owner.files.delete(file);
+    await assert.rejects(owner.files.content(file), error => error.status === 404);
+    source.deleted = 404;
+  }
+  return source;
 }
 
 async function resume(source) {
@@ -94,17 +130,43 @@ async function resume(source) {
   const grant = await session(workflow), sibling = await session(workflow, 'other-reader');
   await rpc(sibling, 'items.list', {thread_id: thread}, 404);
   await assert.rejects(peer.beta.chatkit.threads.retrieve(thread), error => error.status === 404);
-  const bytes = Buffer.from(await (await owner.files.content(file)).arrayBuffer());
-  assert.equal(sha(bytes), sha(document));
+  let bytes;
+  if (retry) {
+    await assert.rejects(owner.files.content(file), error => error.status === 404);
+    assert.deepEqual(journal(thread, item), source.interrupted);
+  } else {
+    bytes = Buffer.from(await (await owner.files.content(file)).arrayBuffer());
+    assert.equal(sha(bytes), sha(document));
+  }
   const before = await list(grant, thread);
   assert.deepEqual(before.data.map(row => row.id), [user, item]);
   assert.equal(before.data[1].content[0].text, partial);
-  const response = await rpc(grant, 'threads.add_user_message', {thread_id: thread,
+  const response = retry
+    ? await rpc(grant, 'threads.retry_after_item', {thread_id: thread, item_id: user})
+    : await rpc(grant, 'threads.add_user_message', {thread_id: thread,
     input: text('What is publication_revision in the attached project publication? Reply only with that integer.')});
   const events = (await response.text()).split(/\r?\n/).filter(line => line.startsWith('data: '))
     .map(line => JSON.parse(line.slice(6)));
   assert.ok(!events.some(event => event.type === 'error'));
   const answer = events.find(event => event.type === 'thread.item.done' && event.item.type === 'assistant_message')?.item;
+  if (retry) {
+    const text = answer?.content[0].text.trim();
+    assert.equal(text?.match(/^([0-9]+)\b/)?.[1], revision, text);
+    const after = await list(grant, thread);
+    const management = await owner.beta.chatkit.threads.listItems(thread, {order: 'asc'});
+    const ids = [user, answer.id];
+    assert.deepEqual(after.data.map(row => row.id), ids);
+    assert.deepEqual(management.data.map(row => row.id), ids);
+    assert.deepEqual(after.data[0], before.data[0]);
+    assert.equal(management.data[1].content[0].text, text);
+    const original = journal(thread, item), replacement = journal(thread, answer.id);
+    assert.deepEqual(original, {...source.interrupted, published: true});
+    assert.deepEqual(replacement.binding, original.binding);
+    assert.equal(replacement.file, file);
+    assert.equal(replacement.status, 'completed');
+    assert.notEqual(replacement.response, original.response);
+    return {ids, text, peer: 404, sibling: 404, deleted: 404, original, replacement};
+  }
   assert.equal(answer?.content[0].text.trim(), revision);
   const after = await list(grant, thread);
   assert.deepEqual(after.data.slice(0, 2), before.data);
