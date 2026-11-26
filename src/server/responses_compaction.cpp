@@ -8,10 +8,10 @@
 
 #include "object_protocol.h"
 #include "q4t/server/chat_protocol_identity.h"
-#include "q4t/server/file_expansion.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/responses_item_shape.h"
+#include "q4t/server/responses_program.h"
 #include "q4t/server/schema_graph.h"
 
 namespace q4t::server {
@@ -86,23 +86,55 @@ bool Media(const Json& value) {
   if (!value.IsObject()) return false;
   const auto type = value.GetString("type");
   if (type == "input_image" || type == "input_audio" || type == "input_file" ||
-      type == "input_video" || type == "image_url" || type == "video_url")
+      type == "input_video" || type == "image_url" || type == "video_url" ||
+      type == "input_video_frames" || type == "video_frames")
     return true;
   return std::any_of(value.object.begin(), value.object.end(),
                      [](const auto& field) { return Media(field.second); });
 }
-// Inline file bytes stay in the authenticated window. The summary model
-// only needs the descriptor and adjacent text of an attachment we retain.
-void OmitInlineFileBytes(Json* value) {
+constexpr char kRetainedAttachment[] = "[original attachment retained]";
+
+void OmitDataUrl(Json* url) {
+  if (url->IsString() && url->str.starts_with("data:"))
+    *url = String(kRetainedAttachment);
+}
+
+// Only edit a copy for the text-only summary. Keep captions, remote
+// references, media metadata and all authenticated replay items intact.
+void OmitInlineMedia(Json* value) {
   if (value->IsArray()) {
-    for (auto& child : value->array) OmitInlineFileBytes(&child);
-  } else if (value->GetString("type") == "input_file" &&
-             value->Has("file_data")) {
-    Set(value, "file_data", String("[original attachment retained]"));
-  } else if (value->IsObject()) {
-    for (auto& [name, child] : value->object)
-      if (name == "content" || name == "output" || name == "results")
-        OmitInlineFileBytes(&child);
+    for (auto& child : value->array) OmitInlineMedia(&child);
+    return;
+  }
+  const auto type = value->GetString("type");
+  for (auto& [name, child] : value->object) {
+    if (name == "content" || name == "output" || name == "results") {
+      OmitInlineMedia(&child);
+    } else if (type == "program_output" && name == "result" &&
+               child.IsString()) {
+      Json parts;
+      if (DecodeResponsesProgramOutput(child.str, &parts) && parts.IsArray()) {
+        OmitInlineMedia(&parts);
+        child = std::move(parts);
+      }
+    } else if (type == "input_file" && name == "file_data") {
+      child = String(kRetainedAttachment);
+    } else if (type == "input_audio" && name == "input_audio" &&
+               child.Has("data")) {
+      Set(&child, "data", String(kRetainedAttachment));
+    } else if (((type == "input_image" || type == "image_url") &&
+                name == "image_url") ||
+               ((type == "input_video" || type == "video_url") &&
+                name == "video_url")) {
+      if (child.Has("url")) {
+        OmitDataUrl(&Field(child, "url"));
+      } else {
+        OmitDataUrl(&child);
+      }
+    } else if ((type == "video_frames" || type == "input_video_frames") &&
+               name == "video_frames") {
+      for (auto& frame : child.array) OmitDataUrl(&frame);
+    }
   }
 }
 Status ValidateHistory(const Json& history, ChatPlanError* error) {
@@ -183,13 +215,16 @@ Status PlanResponsesCompaction(const Json& history,
     for (size_t i = 0; i < items.size(); ++i)
       if (User(items[i])) tail = i;
   std::vector<bool> keep(items.size());
+  bool has_media_transcript = false;
   std::unordered_map<std::string, size_t> calls;
   std::unordered_map<std::string, size_t> returns;
   for (size_t i = 0; i < items.size(); ++i) {
     const auto& item = items[i];
-    keep[i] = i >= tail || Primary(item) || Media(item) ||
-              (mode == ResponsesCompactionMode::kStandalone && User(item));
     const auto type = item.GetString("type");
+    const bool media = Media(item);
+    has_media_transcript |= media || type == "program_output";
+    keep[i] = i >= tail || Primary(item) || media ||
+              (mode == ResponsesCompactionMode::kStandalone && User(item));
     const bool call = type == "function_call" || type == "custom_tool_call";
     const bool output =
         type == "function_call_output" || type == "custom_tool_call_output";
@@ -248,10 +283,10 @@ Status PlanResponsesCompaction(const Json& history,
     // new requests are not part of the historical transcript to summarize.
     const auto end = mode == ResponsesCompactionMode::kStandalone
                          ? summary_end : items.size();
-    if (end < items.size() || HasFileInputs(history)) {
+    if (end < items.size() || has_media_transcript) {
       auto transcript = Array();
       transcript.array.assign(items.begin(), items.begin() + end);
-      OmitInlineFileBytes(&transcript);
+      OmitInlineMedia(&transcript);
       source = OutputJson(transcript);
     }
     auto messages = Array(

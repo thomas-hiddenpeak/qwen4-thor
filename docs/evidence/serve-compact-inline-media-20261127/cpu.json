@@ -1,0 +1,70 @@
+{
+  "scope": "Text projection of retained visual inputs in standalone and automatic Responses compaction; native CPU contracts",
+  "baseline_source": "4e13592f754af926b89c0e57edca53ed5fe0f747",
+  "changed_source": "61b9096a50dd0568299a3c4bbb511e2c5218004fefef2ec495bf7f6152c5f62d",
+  "regressions": [
+    "compaction_inline_image_replays_original_pixels_with_a_text_summary",
+    "compaction_omits_inline_tool_image_without_changing_the_call_span",
+    "compaction_omits_encoded_program_pixels_but_keeps_plain_results"
+  ],
+  "previously_failed": 3,
+  "after": {
+    "total": 40,
+    "passed": 40
+  },
+  "controlled_payload": {
+    "description": "32 KiB synthetic Base64 field; used to measure prompt bytes only. Valid PNG separately sealed and reopened in the native test.",
+    "standalone_before": {
+      "data_url_bytes": 32790,
+      "summary_prompt_bytes": 33337,
+      "retained_window_bytes": 33241,
+      "payload_in_summary": 1
+    },
+    "standalone_after": {
+      "data_url_bytes": 32790,
+      "summary_prompt_bytes": 577,
+      "retained_window_bytes": 33241,
+      "payload_in_summary": 0
+    },
+    "automatic_after": {
+      "data_url_bytes": 32790,
+      "summary_prompt_bytes": 705,
+      "retained_window_bytes": 33241,
+      "payload_in_summary": 0
+    }
+  },
+  "cases": [
+    "real PNG and file ID preserved through state cipher replay in both modes",
+    "tool call and output preserved with caption and remote URL",
+    "typed Program results projected; plain Program output unchanged"
+  ],
+  "logs": {
+    "before.log": "4f199f9ef422506eda79edcb48e75f2be6f1354f6a6d56fb2ce94a1b9a32bbb9",
+    "after.log": "7010dea5bcd4de74e0d6d5e9d2ed3004267a10ea9d37ce01442cf11eb9108ebf",
+    "final.log": "be38779a71e356b1d745cc80f28aa3ffa8b94bb0b5c3355e60f98ec22bb61df8"
+  },
+  "fixture_correction": "Initial test fixtures omitted the required detail field. Both were corrected before the paired results above.",
+  "engine": {
+    "files": {
+      "q4t": "684f8e2c3e76a640107b5f3f8b3a67c09e4b8b0db3a8359a65b79a814018acd6",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "3d4e64d0c2060125f65518f296ccffb05310a623e252021cb1c553bb46a7aedd",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "device": "pending two real image continuations with foreign replay controls",
+  "model_starts": 0
+}

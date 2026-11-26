@@ -3224,6 +3224,14 @@
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json"
+      },
+      "compact_inline_images_20261127": {
+        "state": "cpu_verified",
+        "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
+        "remaining": [
+          "native HTTPS continuations and customer isolation",
+          "release"
+        ]
       }
     },
     {
@@ -6891,6 +6899,14 @@
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json"
+      },
+      "compact_inline_images_20261127": {
+        "state": "cpu_verified",
+        "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
+        "remaining": [
+          "native HTTPS continuations and customer isolation",
+          "release"
+        ]
       }
     },
     {
@@ -12339,6 +12355,14 @@
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json"
+      },
+      "compact_inline_images_20261127": {
+        "state": "cpu_verified",
+        "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
+        "remaining": [
+          "native HTTPS continuations and customer isolation",
+          "release"
+        ]
       }
     },
     {

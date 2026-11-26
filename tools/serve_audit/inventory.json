@@ -4808,7 +4808,7 @@
     "src/server/responses_agent_tree.cpp": "543eebf1088d6b680596a9db2455d77d9f07c097821336a4d1ea8325fe820fca",
     "src/server/responses_api.cpp": "7b1999e6dda9b9950e6e85540855d36d7c3df09e6a8c54951be2cc16228afe94",
     "src/server/responses_automation_execution.cpp": "393e823e629960008920b0107fed6d8250e47bb2c2aae61ca4077e8d7aacb07e",
-    "src/server/responses_compaction.cpp": "5cb15fd5a3992301046c95178a09ecf178d2701194664ece09c96c14fcaa1aaa",
+    "src/server/responses_compaction.cpp": "61b9096a50dd0568299a3c4bbb511e2c5218004fefef2ec495bf7f6152c5f62d",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
     "src/server/responses_execution.cpp": "77ec31bf2649847ae7304c12c68a590844b5236e45a929c8ebedc337d2ab71a4",
     "src/server/responses_execution_compaction.cpp": "b04ee5091ff3736456515014d7fb0b592e7a5849e312591dd010a5c4a1e6e947",
