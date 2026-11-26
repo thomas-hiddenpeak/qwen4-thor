@@ -1,0 +1,242 @@
+{
+  "stage": "native_storage_http_cpu",
+  "base": "6bdec9b198b14384f5eadc8b9a5d811e20dde537",
+  "protocol": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/subresources/messages/methods/list",
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "original": [
+    {
+      "case": "mixed-text",
+      "schema_errors": [
+        [
+          "data",
+          1,
+          "content_parts"
+        ]
+      ],
+      "content": "👋",
+      "id": "chatmsg_4ee10fbf49c998c1b67baba0458646555c826b7bd6df9ae05afc61daa870fcc7",
+      "parts": [
+        null,
+        "text",
+        null
+      ]
+    },
+    {
+      "case": "empty",
+      "schema_errors": [
+        [
+          "data",
+          1,
+          "content_parts"
+        ]
+      ],
+      "content": null,
+      "id": "chatmsg_188c0762221be9d81de590b0df84bcd7f0f7f826ae7745c0706e0f4b5b431df2",
+      "parts": [
+        null
+      ]
+    },
+    {
+      "case": "images",
+      "schema_errors": [
+        [
+          "data",
+          1,
+          "content_parts"
+        ]
+      ],
+      "content": "q",
+      "id": "chatmsg_d127090695ab695d3739a1423ef12d2bdba6247d316ae29a4e3dd5637f2ada14",
+      "parts": [
+        null,
+        "image_url",
+        "text"
+      ]
+    },
+    {
+      "case": "video",
+      "schema_errors": [
+        [
+          "data",
+          1,
+          "content_parts"
+        ]
+      ],
+      "content": "a",
+      "id": "chatmsg_45a1048c0c3cbe5011c3429a584bcc3b6e9cd9dc7520c19b6eeacc98d1db2890",
+      "parts": [
+        "text",
+        "video_frames",
+        null
+      ]
+    },
+    {
+      "case": "typed",
+      "schema_errors": [],
+      "content": "原始",
+      "id": "chatmsg_14338fb63b433143b8b36e8e435f9b5d9ca1b6d32c3d9894c9c6e1eed0f19831",
+      "parts": [
+        "text"
+      ]
+    },
+    {
+      "case": "refusal",
+      "schema_errors": [],
+      "content": null,
+      "id": "chatmsg_be944e800863733551c35669a59cf4d9b32c6b8e6128e4b11b050d4a4a3170c0",
+      "parts": []
+    }
+  ],
+  "reopened": [
+    {
+      "case": "mixed-text",
+      "schema_errors": [],
+      "content": "项目👋记录",
+      "id": "chatmsg_4ee10fbf49c998c1b67baba0458646555c826b7bd6df9ae05afc61daa870fcc7",
+      "parts": [
+        "text",
+        "text",
+        "text"
+      ]
+    },
+    {
+      "case": "empty",
+      "schema_errors": [],
+      "content": "",
+      "id": "chatmsg_188c0762221be9d81de590b0df84bcd7f0f7f826ae7745c0706e0f4b5b431df2",
+      "parts": [
+        "text"
+      ]
+    },
+    {
+      "case": "images",
+      "schema_errors": [],
+      "content": "q",
+      "id": "chatmsg_d127090695ab695d3739a1423ef12d2bdba6247d316ae29a4e3dd5637f2ada14",
+      "parts": [
+        "image_url",
+        "image_url",
+        "text"
+      ]
+    },
+    {
+      "case": "video",
+      "schema_errors": [],
+      "content": "ab",
+      "id": "chatmsg_45a1048c0c3cbe5011c3429a584bcc3b6e9cd9dc7520c19b6eeacc98d1db2890",
+      "parts": [
+        "text",
+        "image_url",
+        "image_url",
+        "text"
+      ]
+    },
+    {
+      "case": "typed",
+      "schema_errors": [],
+      "content": "原始",
+      "id": "chatmsg_14338fb63b433143b8b36e8e435f9b5d9ca1b6d32c3d9894c9c6e1eed0f19831",
+      "parts": [
+        "text"
+      ]
+    },
+    {
+      "case": "refusal",
+      "schema_errors": [],
+      "content": null,
+      "id": "chatmsg_be944e800863733551c35669a59cf4d9b32c6b8e6128e4b11b050d4a4a3170c0",
+      "parts": []
+    }
+  ],
+  "fresh": [
+    {
+      "case": "mixed-text",
+      "schema_errors": [],
+      "content": "项目👋记录",
+      "id": "chatmsg_c60e98237a626964a40ddd11c4c3dfe2d9ee855746bf19f932797706c05ac98a",
+      "parts": [
+        "text",
+        "text",
+        "text"
+      ]
+    },
+    {
+      "case": "empty",
+      "schema_errors": [],
+      "content": "",
+      "id": "chatmsg_0a8a5fd757b8ea9d2ec8d8f7bcae7fc9b3fd581a6e7d9ec22a66b7ab707090ca",
+      "parts": [
+        "text"
+      ]
+    },
+    {
+      "case": "images",
+      "schema_errors": [],
+      "content": "q",
+      "id": "chatmsg_7a9aa35d83ced18ea8fcaedda64c02f2ec5a423a563b8906dfe887a6e66f14e9",
+      "parts": [
+        "image_url",
+        "image_url",
+        "text"
+      ]
+    },
+    {
+      "case": "video",
+      "schema_errors": [],
+      "content": "ab",
+      "id": "chatmsg_95b3f802a872ecc8ce68630207cbb2667b5cd3aaee6b0e1898985b2b897fc1df",
+      "parts": [
+        "text",
+        "image_url",
+        "image_url",
+        "text"
+      ]
+    },
+    {
+      "case": "typed",
+      "schema_errors": [],
+      "content": "原始",
+      "id": "chatmsg_8af877f6e90a1640527f267d329e87a8ccd6eb6f591a8a279bdf10adf8288828",
+      "parts": [
+        "text"
+      ]
+    },
+    {
+      "case": "refusal",
+      "schema_errors": [],
+      "content": null,
+      "id": "chatmsg_9e88ba1eb9d82f7f24c1432fd0b50fba9b06a73f42e0e70d482be37e61376843",
+      "parts": []
+    }
+  ],
+  "native_cases": 5,
+  "schema_tests": 3,
+  "old_objects_and_reopened_copies_sha256": {
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_8f85da1eac464f268b4d99431441223a.json": "9389d8b48dc9fea76921131adbed687eff76180b0bd56d7437137f3d0478972e",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_a003a7efc8ff00f7693d466e923b48f2.json": "e399a0a3b6db9e379dc0394b69510b4535b62f67e416d3d54a40985a32f41599",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_668b9ac691600142ab83938b80188ddc.json": "b6438d94d12136eeb747ba9dad74d947260ae50010d8b720e513bb4975da83a0",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_7213f8851e208dd8008ab485fd6299a2.json": "a7ef5d4dad44b0f5bb37a00bc526c6d10ddef1746212da4078f0ad0daae9da8a",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_cb66363b83c33212ddbf7b0f2e2dc29e.json": "dd454829e3aee57c636ac03d52e80672e1a30ed597a208b638349539a23faf95",
+    "cf26ed8a5ece12b37d82cb47dbe73d40d78cd94906ba0353dd2145386a5a6cef.chat.chatcmpl_a999acbfedd2f46073a9d5fd92873174.json": "0d18fc90ae10e6d974f57475c9ba4340179a8934ec79b0e9eeb37e5ebabac9a1"
+  },
+  "candidate_source_sha256": "0cf50c6a5583c231d73514ac2558bcbed65e9022ae75e18712c5ad7b711c085f",
+  "checks": [
+    "official mixed role HTTP schema on 6 reopened and 6 fresh complete pages, including 12 descending cursor pages",
+    "local page and bundled GET schemas on the same 12 complete pages",
+    "other client 404, unauthenticated 401",
+    "old IDs and 6 encrypted or private object file digests unchanged across reopen",
+    "synthetic generation used only in this loopback fixture"
+  ],
+  "source_guard": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1391,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "device_qualified": false
+}

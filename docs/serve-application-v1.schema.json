@@ -69403,6 +69403,16 @@
                       "anyOf": [
                         {
                           "required": [
+                            "content"
+                          ],
+                          "properties": {
+                            "content": {
+                              "type": "null"
+                            }
+                          }
+                        },
+                        {
+                          "required": [
                             "tool_calls"
                           ],
                           "properties": {
@@ -70330,19 +70340,49 @@
               "items": {
                 "oneOf": [
                   {
-                    "$ref": "#/$defs/chat_input_textPart"
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/chat_input_textPart"
+                      }
+                    ],
+                    "required": [
+                      "type"
+                    ]
                   },
                   {
-                    "$ref": "#/$defs/chat_input_imagePart"
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/chat_input_imagePart"
+                      }
+                    ],
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "image_url": {
+                        "type": "object"
+                      }
+                    }
                   },
                   {
-                    "$ref": "#/$defs/chat_input_videoPart"
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/chat_input_filePart"
+                      }
+                    ],
+                    "required": [
+                      "type"
+                    ]
                   },
                   {
-                    "$ref": "#/$defs/chat_input_filePart"
-                  },
-                  {
-                    "$ref": "#/$defs/chat_input_audioPart"
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/chat_input_audioPart"
+                      }
+                    ],
+                    "required": [
+                      "type"
+                    ]
                   }
                 ]
               }
@@ -70350,12 +70390,39 @@
           ]
         },
         "original_content_parts": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 1,
-          "items": {
-            "$ref": "#/$defs/chat_input_refusalPart"
-          }
+          "oneOf": [
+            {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "$ref": "#/$defs/chat_input_refusalPart"
+              }
+            },
+            {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/chat_input_textPart"
+                  },
+                  {
+                    "$ref": "#/$defs/chat_input_imagePart"
+                  },
+                  {
+                    "$ref": "#/$defs/chat_input_filePart"
+                  },
+                  {
+                    "$ref": "#/$defs/chat_input_audioPart"
+                  },
+                  {
+                    "$ref": "#/$defs/chat_input_videoPart"
+                  }
+                ]
+              }
+            }
+          ]
         }
       },
       "required": [

@@ -315,6 +315,44 @@ Q4T_TEST(chat_storage_original_messages_preserve_parts_and_tool_history) {
   return true;
 }
 
+Q4T_TEST(chat_storage_projects_native_parts_without_losing_media_or_text) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  StoredChats chats(objects);
+  const auto parts = Parse(R"([
+    {"text":"甲"},
+    {"type":"image_url","image_url":"https://example.invalid/image"},
+    {"video_frames":["data:image/png;base64,AA==",{"url":"data:image/jpeg;base64,AA==","detail":"auto"}],
+     "video_timestamps":[0.25,1.75],"detail":"low",
+     "prompt_cache_breakpoint":{"mode":"explicit"}},
+    {"type":"text","text":"乙"}])");
+  auto input = Input();
+  auto messages = Parse(R"([{"role":"user"}])");
+  Set(&messages.array[0], "content", parts);
+  Set(&input, "messages", messages);
+  Q4T_CHECK(Ok(chats.Save(input, Output(), Access())));
+  const auto page = chats.Messages("chatcmpl_test", {}, Access());
+  Q4T_CHECK(Ok(page));
+  const auto& row = page.value.GetArray("data")->array.front();
+  Q4T_CHECK(row.GetString("content") == "甲乙");
+  Q4T_CHECK(OutputJson(*row.Find("original_content_parts")) ==
+            OutputJson(parts));
+  const auto* projected = row.GetArray("content_parts");
+  Q4T_CHECK(projected && projected->array.size() == 5);
+  const auto& items = projected->array;
+  Q4T_CHECK(items[0].GetString("type") == "text");
+  Q4T_CHECK(items[1].Find("image_url")->GetString("url") ==
+            "https://example.invalid/image");
+  Q4T_CHECK(items[2].Find("image_url")->GetString("url") ==
+            "data:image/png;base64,AA==");
+  Q4T_CHECK(!items[2].Has("prompt_cache_breakpoint"));
+  Q4T_CHECK(items[3].Find("image_url")->GetString("detail") == "auto");
+  Q4T_CHECK(items[3].Find("prompt_cache_breakpoint")->GetString("mode") ==
+            "explicit");
+  Q4T_CHECK(items[4].GetString("text") == "乙");
+  return true;
+}
+
 Q4T_TEST(chat_storage_reopens_original_refusals_and_pages_without_mutation) {
   Fixture fixture;
   const auto messages = Parse(R"([

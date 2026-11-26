@@ -869,6 +869,11 @@
         "profiles": "evidence/serve-tool-map-references-20261126/profiles.json",
         "revision": 536,
         "delivery": "evidence/serve-tool-map-references-20261126/delivery.json"
+      },
+      "stored_content_parts_20261126": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
+        "issued": false
       }
     },
     {
@@ -1399,6 +1404,11 @@
         "full_build": "evidence/serve-null-assistant-history-20261126/full-build.json",
         "business": "evidence/serve-null-assistant-history-20261126/business.json",
         "profiles": "evidence/serve-null-assistant-history-20261126/profiles.json"
+      },
+      "stored_content_parts_20261126": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
+        "issued": false
       }
     },
     {
@@ -3652,6 +3662,11 @@
         "profiles": "evidence/serve-agent-structured-format-20261126/profiles.json",
         "revision": 520,
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "stored_content_parts_20261126": {
+        "stage": "targeted_cpu_verified",
+        "receipt": "evidence/serve-stored-content-parts-20261126/cpu.json",
+        "issued": false
       }
     },
     {
