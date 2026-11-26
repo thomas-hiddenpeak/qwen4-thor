@@ -29,6 +29,10 @@ Node 7.47.0 经原生 HTTPS 开启会话事件订阅。发送第二个回合返�
 
 Python 验证使用原设备业务的对象副本。原生 HTTP 处理器重新读取四份响应，事件投影与 Node 当时收到的五个事件逐项核对 ID 和类型。使用相应版本的解释器运行 `python -I -B tools/serve_audit/agent_turn_quota_sdk.py`，加 `--strict` 可复核该 SDK 的严格模式。[六组验证结果](evidence/serve-responses-errors-20261126/agent-quota-python.json)
 
+### 工具响应的严格客户端
+
+三版严格 Python SDK 读取了五份真实工具响应。普通函数的 JSON、成功 MCP 的 JSON 和 SSE 均通过。原普通函数是未开启流的后台请求，重放按合同返回 400。2.8.1 在失败 MCP 的错误对象和程序化工具类型上仍无法解析。3.42.1、3.55.1 均通过相应 JSON 和 SSE。旧版错误字段保留全部内容转为 JSON 字符串后，独立 SDK 实验可读回原错误和 38 个事件，原生实现待补。[原始记录和类型定义](evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json)
+
 ### Assistants Runs 与工具回填
 
 实测任务让模型调用 `get_release`，从项目发布记录取出版本号 460，按原工具调用 ID 回填并取得最终答案。下表对应同一个真实任务。[原生 TLS 验收](evidence/serve-assistants-20261124/runs.json)

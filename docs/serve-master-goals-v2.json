@@ -3167,6 +3167,14 @@
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+      },
+      "tool_output_sdk_range_20261127": {
+        "state": "reproduced",
+        "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
+        "remaining": [
+          "native negotiated MCP error representation",
+          "compatibility of typed programmatic tools with earlier clients"
+        ]
       }
     },
     {
@@ -7845,6 +7853,14 @@
         "profiles": "evidence/serve-program-forks-20261126/profiles.json",
         "revision": 554,
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
+      },
+      "tool_output_sdk_range_20261127": {
+        "state": "reproduced",
+        "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
+        "remaining": [
+          "native negotiated MCP error representation",
+          "compatibility of typed programmatic tools with earlier clients"
+        ]
       }
     },
     {
@@ -9204,6 +9220,14 @@
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+      },
+      "tool_output_sdk_range_20261127": {
+        "state": "reproduced",
+        "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
+        "remaining": [
+          "native negotiated MCP error representation",
+          "compatibility of typed programmatic tools with earlier clients"
+        ]
       }
     },
     {
