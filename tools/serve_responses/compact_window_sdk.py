@@ -7,6 +7,8 @@ import sys
 
 import openai
 
+from tools.serve_responses.compact_client import CompactWindow
+
 
 def check_window(window, expected_user, question, original_error, legacy_error=False):
     if window.get("object") != "response.compaction":
@@ -72,7 +74,10 @@ def run(params):
         except openai.APIResponseValidationError:
             strict = "type_rejected"
 
-        replay = dict(model=model, input=window["output"], max_output_tokens=96,
+        typed_window = CompactWindow.model_validate(window, strict=True)
+        if typed_window.to_dict() != window:
+            raise ValueError("Typed compact resource changed original HTTP fields")
+        replay = dict(model=model, input=typed_window.to_dict()["output"], max_output_tokens=96,
                       temperature=0, reasoning={"effort": "none"}, store=False)
         try:
             peer.responses.create(**replay)
@@ -90,7 +95,7 @@ def run(params):
         text = resumed.parse().output_text.strip()
         return dict(sdk=openai.__version__, source=params["source"], original_ids=ids,
                     output_items=len(window["output"]), usage=window["usage"],
-                    raw_compact=True, strict_compact=strict, foreign_status=400,
+                    raw_compact=True, typed_window_round_trip=True, strict_compact=strict, foreign_status=400,
                     foreign_code="invalid_encrypted_content", answer=text,
                     exact_answer=(text == str(params["revision"])), files=hashes)
 

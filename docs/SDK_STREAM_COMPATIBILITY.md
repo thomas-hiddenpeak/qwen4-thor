@@ -10,6 +10,17 @@ Python 2.33.0 和 3.55.1 均可使用官方高层入口的 `responses.with_raw_r
 
 压缩窗口已按 Python SDK 版本返回 MCP 拒绝错误。2.33.0 收到可无损还原的 JSON 字符串，3.55.1 收到结构化对象。两种窗口均通过项目合同，同一客户原样重放可恢复摘要；另一客户和修改过的决定均被拒绝。旧版只在加密窗口之前还原该字符串。两个 SDK 目前剩下相同的用户消息严格类型限制。[压缩重放记录](evidence/serve-compact-window-identities-20261127/mcp-replay.json)
 
+需要强类型时，已有 OpenAI Python SDK 的应用可以导入项目提供的类型。将包含项目 `tools` 的目录加入客户端 Python 路径即可。下面是一次请求的完整调用。
+
+```python
+from tools.serve_responses.compact_client import CompactWindow
+
+window = client.post("/responses/compact", cast_to=CompactWindow, body=request)
+resumed = client.responses.create(model=model, input=window.to_dict()["output"])
+```
+
+在创建 `OpenAI` 客户端时启用 `_strict_response_validation=True`，或对高层 `with_raw_response.compact` 的返回值使用 `CompactWindow.model_validate(raw.http_response.json(), strict=True)`。2.33.0 和 3.55.1 都能把全部 7 项按 SDK 类型读取，序列化后和原始 JSON 完全相同。验证覆盖两条用户消息、工具清单、审批请求与决定、失败的工具调用和加密摘要。[双版本验证](evidence/serve-compact-window-identities-20261127/typed-client.json)
+
 ### 较早 Python SDK 读取程序化工具
 
 Python 2.8.1 的严格 `responses.retrieve` 不能解析较晚加入的 `program` 项和 `programmatic_tool_calling` 工具。其通用 `client.get(path, cast_to=dict[str, Any])` 可读取两种原生资源。订阅时使用 `stream=True`、`stream_cls=openai.Stream[dict[str, Any]]`、`options={"params": {"stream": "true"}, "headers": {"Accept": "text/event-stream"}}`，续读将 `starting_after` 加入 `params`。2.8.1 和 3.55.1 均完整读取两份真实记录的 144 和 6 个事件以及两个后缀，程序代码、工具定义和调用者字段逐项等于原件。3.55.1 的高层严格入口也通过。[程序化工具读取记录](evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json)

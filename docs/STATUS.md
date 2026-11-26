@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+双方 Python SDK 均可使用项目提供的 CompactWindow 类型严格读取完整压缩窗口。直接指定 cast_to 或对原始响应严格建模均逐字段保留 7 项，缺少用户消息 ID 或状态的反例均被拒绝。此类型只由 Python 客户端导入。 下一步验证真实 TLS 回填。[严格客户端](evidence/serve-compact-window-identities-20261127/typed-client.json)
+
 压缩窗口已按 Python SDK 版本返回 MCP 拒绝错误。2.33.0 收到可无损还原的 JSON 字符串，3.55.1 收到结构化对象。两种窗口均通过项目合同，同一客户原样重放可恢复摘要；另一客户和修改过的决定均被拒绝。旧版只在加密窗口之前还原该字符串。两个 SDK 目前剩下相同的用户消息严格类型限制。 下一步进行双版本 TLS 续答。[定向验证](evidence/serve-compact-window-identities-20261127/mcp-replay.json)
 
 Python 2.33.0 和 3.55.1 均可使用官方高层入口的 `responses.with_raw_response.compact(...).http_response.json()` 直接读取完整窗口。两版返回的 HTTP 字节均与各自的原生记录相同；显式 `.parse()` 仍有前述类型限制。7 项错误窗口反例被拒绝。 下一步从真实模型的摘要恢复发行版本号。[验证记录](evidence/serve-compact-window-identities-20261127/sdk-raw.json)
