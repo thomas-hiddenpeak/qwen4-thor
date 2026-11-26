@@ -13,6 +13,7 @@
 #include "../src/server/eval_sampling.h"
 #include "../src/server/eval_trajectory.h"
 #include "../src/server/object_protocol.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/server/http_connection.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/chat_file_inputs.h"
@@ -643,8 +644,18 @@ Q4T_TEST(evals_frozen_service_preserves_queued_model_job_and_accepts_cancel) {
   auto current = objects.Execute(get, access.deadline);
   Q4T_CHECK(EncodeSchemaJson(current.value) == EncodeSchemaJson(old.value) &&
             jobs.Health().owned == 0);
-  auto canceled = Request(objects, "POST", path + "/" + get.id + "/cancel");
+  const auto detail = path + "/" + get.id;
+  Q4T_CHECK(IsCancellationRequest("POST", detail));
+  Q4T_CHECK(!IsCancellationRequest("GET", detail));
+  Q4T_CHECK(Request(objects, "POST", detail, "{}", "client:peer").http_status == 404);
+  Q4T_CHECK(Request(objects, "POST", detail, R"({"status":"canceled"})").http_status == 400);
+  Q4T_CHECK(Request(objects, "POST", detail + "?bad=1").http_status == 400);
+  Q4T_CHECK(Request(objects, "GET", detail).value.GetString("status") == "queued");
+  auto canceled = Request(objects, "POST", detail, "{}");
   Q4T_CHECK(canceled.ok() && canceled.value.GetString("status") == "canceled");
+  auto repeated = Request(objects, "POST", detail + "/cancel");
+  Q4T_CHECK(repeated.ok() && repeated.value.GetString("id") == get.id &&
+            repeated.value.GetString("status") == "canceled");
   return true;
 }
 

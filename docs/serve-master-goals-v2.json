@@ -8442,6 +8442,12 @@
         "profiles": "evidence/serve-agent-structured-format-20261126/profiles.json",
         "revision": 520,
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
+      },
+      "sdk_route_matrix_20261126": {
+        "stage": "cpu_and_offline_sdk_verified",
+        "issued": false,
+        "methods": 231,
+        "receipt": "evidence/serve-sdk-routes-20261126/cpu.json"
       }
     },
     {

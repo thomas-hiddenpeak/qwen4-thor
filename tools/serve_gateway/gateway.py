@@ -30,7 +30,7 @@ EVAL_ROUTES = (
     ('/v1/evals', ('GET', 'POST')),
     ('/v1/evals/{eval_id}', ('GET', 'POST', 'DELETE')),
     ('/v1/evals/{eval_id}/runs', ('GET', 'POST')),
-    ('/v1/evals/{eval_id}/runs/{run_id}', ('GET', 'DELETE')),
+    ('/v1/evals/{eval_id}/runs/{run_id}', ('GET', 'POST', 'DELETE')),
     ('/v1/evals/{eval_id}/runs/{run_id}/cancel', ('POST',)),
     ('/v1/evals/{eval_id}/runs/{run_id}/report', ('GET',)),
     ('/v1/evals/{eval_id}/runs/{run_id}/output_items', ('GET',)),
@@ -172,7 +172,8 @@ APPLICATION_ROUTES = [
     ('GET', '/v1/chatkit/threads/{thread_id}', 'control'),
     ('DELETE', '/v1/chatkit/threads/{thread_id}', 'control'),
     ('GET', '/v1/chatkit/threads/{thread_id}/items', 'control'),
-    *((method, path, 'data' if method == 'POST' and not path.endswith('/cancel') else 'control')
+    *((method, path, 'data' if method == 'POST' and path in
+        ('/v1/evals', '/v1/evals/{eval_id}', '/v1/evals/{eval_id}/runs') else 'control')
       for path, methods in EVAL_ROUTES for method in methods),
     ('POST', '/v1/videos/characters', 'data'),
     ('GET', '/v1/videos/characters/{character_id}', 'control'),

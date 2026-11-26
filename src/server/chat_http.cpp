@@ -619,7 +619,7 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       if (method == "POST" && !VideoCharacterMethodAllowed(method, path) &&
           !IsChatKitUpload(method, path) && !IsRealtimeOffer(path) && !((IsRealtimeCredentialTarget(path) || path == "/v1/vaults" || path == "/v1/threads" || (method == "POST" && ParseAssistantRunRoute(path).kind == AssistantRunRouteKind::kCancel) ||
                                  IsAutomationAction(path) ||
-                                 ParseEvalRoute(path).kind == EvalRouteKind::kCancel ||
+                                 EvalOperation(method, path).kind == EvalRouteKind::kCancel ||
                                  ParseChatKitRoute(path).kind == ChatKitRouteKind::kCancel ||
                                  ParseWebhookRoute(path).kind == WebhookRouteKind::kRotate ||
                                  path == kEnvironmentTemplatesPath || IsResponseCancellation(method, path) ||
@@ -940,9 +940,9 @@ void ChatServer::Dispatch(int fd, const std::string& method,
       return;
     }
     std::string report_base;
-    const auto eval_route = ParseEvalRoute(path).kind;
-    if (eval_route == EvalRouteKind::kRuns || eval_route == EvalRouteKind::kRun ||
-        eval_route == EvalRouteKind::kCancel) {
+    const auto eval_route = EvalOperation(method, path);
+    if (eval_route.kind == EvalRouteKind::kRuns || eval_route.kind == EvalRouteKind::kRun ||
+        eval_route.kind == EvalRouteKind::kCancel) {
       const char* configured = std::getenv("Q4T_EVAL_PUBLIC_BASE");
       report_base = EvalReportBase(headers, client.Scoped(),
           "127.0.0.1:" + std::to_string(port_), configured ? configured : "");
@@ -1005,15 +1005,14 @@ void ChatServer::Dispatch(int fd, const std::string& method,
             ? HandleStoredChatRequest(*objects_, method, path, body, access)
             : HandleConversationRequest(*objects_, method, path, body, access);
     if (eval_dispatcher_ && reply.ok() &&
-        (eval_route == EvalRouteKind::kCancel ||
-         (method == "DELETE" && (eval_route == EvalRouteKind::kRun ||
-                                 eval_route == EvalRouteKind::kEval)))) {
-      const auto route = ParseEvalRoute(path);
-      eval_dispatcher_->CancelEmbedding(scope, route.eval, route.run);
+        (eval_route.kind == EvalRouteKind::kCancel ||
+         (method == "DELETE" && (eval_route.kind == EvalRouteKind::kRun ||
+                                 eval_route.kind == EvalRouteKind::kEval)))) {
+      eval_dispatcher_->CancelEmbedding(scope, eval_route.eval, eval_route.run);
     }
     if (create_eval_run && (reply.ok() || reply.commit_unknown))
       eval_dispatcher_->Wake();
-    if (reply.ok() && eval_route == EvalRouteKind::kReport)
+    if (reply.ok() && eval_route.kind == EvalRouteKind::kReport)
       SendSimple(fd, 200, "OK", reply.value.str, "text/html; charset=utf-8",
                  {access.deadline}, {}, {}, true);
     else if (reply.ok())

@@ -209,7 +209,7 @@ ObjectReply HandleEval(ObjectStore& objects, const StateAccess& access,
                        std::string_view method, std::string_view target,
                        const std::string& body, ResponsesJobs* jobs,
                        std::string_view report_base) {
-  const auto route = ParseEvalRoute(target);
+  const auto route = EvalOperation(method, target);
   if (route.kind == EvalRouteKind::kNone)
     return Error(404, "route_not_found", "Unknown eval route");
   const auto split = target.find('?');

@@ -11,6 +11,12 @@ rev522 的 `POST /v1/audio/speech` 由请求体的 `response_format` 选择编�
 
 q4t 在单台 Thor 上提供原生 LLM 推理和应用服务。总计划覆盖官方接口目录中的 157 条推理与应用路径，共 231 个必做 HTTP 方法。组织管理、云账单和微调训练由范围决定排除。逐方法对照区分接口声明和真实业务验收。[范围决定](evidence/serve-scope-decision-20261120/README.md) · [实际进展和发行身份](STATUS.md)
 
+### 客户端版本和 Eval Run 取消
+
+Python 3.42.1、3.55.1 与 Node 7.47.0 均可通过类型化方法发出冻结范围中 231 组 HTTP 动词和路径。Python 2.8.1 中有 107 项缺少对应的方法，另有 1 项使用历史路径。逐项表包括两个语言的调用名称。该表只检查 SDK 实际发出的请求；服务端支持状态与业务验收另见发行回执。[逐方法对照](evidence/serve-sdk-routes-20261126/methods.json)
+
+候选版本以相同的客户身份和父级 Eval 校验处理两条取消路径。Python 2.8.1 在运行资源本身发送 POST，当前 SDK 在该资源的 `/cancel` 子路径发送 POST。候选的实际 TLS 业务验收见阶段记录。[验证记录](evidence/serve-sdk-routes-20261126/cpu.json)
+
 | 开发接入 | 已验证的业务 | 客户端和部署条件 |
 |---|---|---|
 | Assistants SDK 轮询与分页（rev494） | 单客户只有一个生成名额时，可在运行中读取状态、消息和步骤。四类列表的非空游标取自对应对象 ID，空页返回空字符串。 | 容量切换、模型退出和独立回退包接管后，原客户端均能读取同一 Run 的历史。跨客户读取返回 404。[发行回执](evidence/serve-assistant-pagination-20261125/delivery.json) |

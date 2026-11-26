@@ -838,6 +838,7 @@ def add_openapi(paths, response, error):
         ('/v1/evals/{eval_id}/runs', 'get', None, 'eval_run_list', 'eval_run_query'),
         ('/v1/evals/{eval_id}/runs', 'post', 'eval_run_create', 'eval_run', None),
         ('/v1/evals/{eval_id}/runs/{run_id}', 'get', None, 'eval_run', None),
+        ('/v1/evals/{eval_id}/runs/{run_id}', 'post', None, 'eval_run', None),
         ('/v1/evals/{eval_id}/runs/{run_id}', 'delete', None, 'eval_run_deleted', None),
         ('/v1/evals/{eval_id}/runs/{run_id}/cancel', 'post', None, 'eval_run', None),
         ('/v1/evals/{eval_id}/runs/{run_id}/report', 'get', None, None, None),
