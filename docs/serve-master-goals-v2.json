@@ -6461,10 +6461,11 @@
         ]
       },
       "quickdraw_regions_20261126": {
-        "stage": "device_verified",
+        "stage": "profiles_verified",
         "receipt": "evidence/serve-video-regions-20261126/cpu.json",
         "http": "evidence/serve-video-regions-20261126/business.json",
-        "remaining_track_grid": "With identical 128x64 source frames and 96x48 declared track size, no clip renders 128x64 but a full clip renders 96x48. Fractional width is ignored without clipping and rejects with a clip. Correct both paths and verify identical pictures for a full-canvas clip."
+        "remaining_track_grid": "With identical 128x64 source frames and 96x48 declared track size, no clip renders 128x64 but a full clip renders 96x48. Fractional width is ignored without clipping and rejects with a clip. Correct both paths and verify identical pictures for a full-canvas clip.",
+        "profiles": "evidence/serve-video-regions-20261126/profiles.json"
       }
     },
     {

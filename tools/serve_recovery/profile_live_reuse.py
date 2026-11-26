@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 REGION_RECORD = 'q4t-profile-business-v72'
 REGION_FORMAT = 'q4t-quickdraw-region-source-v1'
 REGION_RECEIPT = 'quickdraw-region-handoff.json'
-REGION_REVIEWED = {}
+REGION_REVIEWED = {
+    'primary': '39a046137baf97478e5f9b26505ba965671eefc4e73416479e53055d9b91c61a',
+    'light': 'fcc7d3e93d1c3371e7916e9c27a6a22d41019c1865a3bffd3336ac91306c1b25',
+}
 
 VIDEO_CLIP_RECORD = 'q4t-profile-business-v71'
 VIDEO_CLIP_FORMAT = 'q4t-video-clip-source-v1'
@@ -567,6 +570,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'de3b5147ce049e4ca7e1e0ef139bfac29c9d880f5efd13dc4d8077c6ea73f3c0':
+        '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     '84d333f0df9e2218388af296381fa448a3af9ddd6dad13508d881f49323e685e':
         '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     'c2ebf8c338cc5f3993b165d8d8df26e9f6cf1c10c86f690c59f5327c78adb10f':
