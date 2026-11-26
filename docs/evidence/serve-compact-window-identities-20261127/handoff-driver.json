@@ -1,0 +1,42 @@
+{
+  "scope": "Loopback HTTP using the two actual SDK installations and archived bodies; responses served by a fixture",
+  "sdk": {
+    "release-old": "2.33.0",
+    "release-current": "3.55.1",
+    "video": "3.55.1"
+  },
+  "requests": 12,
+  "successful_continuations": 6,
+  "foreign_rejections": 6,
+  "source_objects": 24,
+  "negative_controls": [
+    "sdk",
+    "window_sha256",
+    "answer",
+    "foreign_code",
+    "http_status",
+    "exact_answer",
+    "previous response reused",
+    "video omitted",
+    "changed capture",
+    "signed window from another reader",
+    "missing reviewed predecessor"
+  ],
+  "model_starts": 0,
+  "closed_store_sha256": "f85971e16f99ee3e2b3fa8fde1939e4324ded0ebdcfa965135e64200ca7fbc28",
+  "business_sha256": "cc066368ac2f5638ea4c48115b5e1544738bbff09bed823292e2e5c50fe2bc27",
+  "driver_sha256": "6caadee3f38c6e9ac63cfb480520bfc759bd3c90b8efb1cd66d9916988d5998f",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "previous_failed_control": "First offline run incorrectly used the small metadata reader for a historical capacity profile. The corrected control uses the bounded profile record loader.",
+  "device_profiles": "pending"
+}
