@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+真实模型首次本地 shell 读档和跨轮续答通过，但固定的官方 schema 拒绝直接回显 local_shell 选择器；同一问题影响历史 GET 和 3 种 SSE 生命周期事件。已在统一 HTTP 输出层将该选择器映射为 required 的单项 allowed_tools，保留原请求与存储值。8 项 C++ 回归通过，下一步用首次原 ID 和新的标准 SDK 请求短验。[原始失败与修正](evidence/serve-local-shell-20261126/choice-compatibility.json)
+
 本地 shell 的接管驱动已接入主、轻配置。驱动校验原调用、回填输入页及后续响应的 HTTP 字节，并通过原响应 ID 开始新的续答。5 项有针对性的 CPU 用例通过，包含旧版 MCP 对象复制、历史摘要篡改和响应 ID 重用。实际跨配置恢复尚待验证。
 
 本地 shell 的设备验收会按模型调用响应和回填响应各自的原 ID 读取完整资源，供后续接管逐字节复核。

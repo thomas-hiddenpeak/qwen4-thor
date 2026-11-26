@@ -23,16 +23,37 @@ def exercise(params):
                 http_client=openai.DefaultHttpxClient(verify=params["certificate"])))
 
         owner, other = client(params["key"]), client(params["other"])
+        selector = {"type": "allowed_tools", "mode": "required", "tools": [{"type": "local_shell"}]}
+        reopened = None
+        if legacy := params.get("legacy"):
+            captures = {}
+            for label, response_id in (("call", legacy["response"]), ("completed", legacy["follow"])):
+                raw = owner.responses.with_raw_response.retrieve(response_id)
+                value = raw.http_response.json()
+                assert value["id"] == response_id
+                if label == "call":
+                    assert value["tool_choice"] == selector
+                    assert value == dict(legacy["original_call"], tool_choice=selector)
+                else:
+                    assert hashlib.sha256(raw.http_response.content).hexdigest() == legacy["captures"]["completed.json"]
+                captures[label] = hashlib.sha256(raw.http_response.content).hexdigest()
+                (work / ("legacy_" + label + ".json")).write_bytes(raw.http_response.content)
+            raw = owner.responses.input_items.with_raw_response.list(legacy["follow"], order="asc", limit=100)
+            captures["inputs"] = hashlib.sha256(raw.http_response.content).hexdigest()
+            assert captures["inputs"] == legacy["captures"]["inputs.json"]
+            (work / "legacy_inputs.json").write_bytes(raw.http_response.content)
+            reopened = dict(response=legacy["response"], follow=legacy["follow"], captures=captures)
         prompt = ("Request exactly one local_shell action. Set command to "
                   '["head","-n","1","docs/MODEL.md"] and env to {}. '
                   "After the tool result, report the identifier inside the parentheses.")
-        stream = owner.responses.create(**sdk, input=prompt, tool_choice={"type": "local_shell"},
+        stream = owner.responses.create(**sdk, input=prompt, tool_choice=selector,
                                         stream=True)
         with stream as events:
             frames = [event.model_dump(mode="json", exclude_unset=True) for event in events]
         (work / "events.json").write_text(json.dumps(frames, ensure_ascii=False))
         assert frames[-1]["type"] == "response.completed"
         response = frames[-1]["response"]
+        assert response["tool_choice"] == selector
         calls = [i for i in response["output"] if i["type"] == "local_shell_call"]
         assert len(calls) == 1 and calls[0]["status"] == "completed"
         call = calls[0]
@@ -96,7 +117,7 @@ def exercise(params):
         assert independent == "720041"
     return dict(sdk=openai.__version__, response=response["id"], follow=answer.id,
                 item=call["id"], call_id=call["call_id"], reads=1, peer=404, wrong_target=400,
-                answer=expected, independent_chat=independent, events=len(frames),
+                answer=expected, independent_chat=independent, events=len(frames), reopened=reopened,
                 document_sha256=hashlib.sha256(receipt.stdout).hexdigest(),
                 captures={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in work.iterdir()})
 

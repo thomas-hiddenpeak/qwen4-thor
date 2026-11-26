@@ -128,6 +128,17 @@ void ProjectValue(io::Json& value, bool wire) {
         Set(&part, "logprobs", Array());
   const auto object = value.GetString("object");
   if (object == "response" || object == "response.compaction") {
+    // The API expresses a required local shell using an allowed-tools list.
+    // Apply the projection on replay as well as newly generated responses.
+    const auto* choice = value.Find("tool_choice");
+    if (wire && object == "response" && choice &&
+        choice->GetString("type") == "local_shell") {
+      auto tools = Array();
+      tools.array.push_back(*choice);
+      Set(&value, "tool_choice",
+          Object({{"type", String("allowed_tools")},
+                  {"mode", String("required")}, {"tools", std::move(tools)}}));
+    }
     if (value.GetArray("output"))
       for (auto& item : Field(value, "output").array) ProjectValue(item, wire);
     if (wire && object == "response" && value.GetString("status") == "failed" &&

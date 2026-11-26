@@ -1,0 +1,54 @@
+{
+  "stage": "initial_failure_and_projected_contract",
+  "issued": false,
+  "original_device": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 48.234,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "source_lease": "1227dffeb52857bcf8543d66f1fdfc08fe0db73380c78cd7375e21511a25f4cc",
+  "input": {
+    "type": "local_shell"
+  },
+  "expected": {
+    "type": "allowed_tools",
+    "mode": "required",
+    "tools": [
+      {
+        "type": "local_shell"
+      }
+    ]
+  },
+  "old_response": "resp_9a89b2bd491314f9fd3b4434a8a2330f",
+  "old_follow": "resp_28df11428e87e32660c9a0bde8ac35f0",
+  "failure_field": "response.tool_choice",
+  "failed_events": [
+    "response.created",
+    "response.in_progress",
+    "response.completed"
+  ],
+  "captured_events": 97,
+  "original_sha256": {
+    "call": "099ee80119d6097ac6e33e3b69524ecdd2beecdb923ffece0e906d6de64d51cf",
+    "completed": "439909fc9f27293f47bcb575355f32bf6029fc185c2f0606abe2e0d3daf1fd61",
+    "inputs": "f25a43cc11c21574a92ede1dd9599297cdd5fb87c4418a6c409c926334d5336d",
+    "events": "135f8f6409c77116689b90f1f50f9cd643cdef8beefb0501abcd0375ac340c95"
+  },
+  "initial_schema_failure": "ab04acc3cf8ca9ef8c56f16fb149b16d54c26391423318adfa3339a976699e7a",
+  "build": {
+    "binary": "3d586a4f17b2384092f7a49a65f8ed6bc1adb562a9f339dd5b9ea289aef12121",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1102
+  },
+  "cpu": {
+    "selected": 8,
+    "passed": 8,
+    "log_sha256": "40acc27333fec74eac9447acf510548fecd62d1d1120ea420c2136e6fda2d5f3",
+    "audit_sha256": "811eb33aad2c8b73c17d84def557043438e3069921346c187f74ed761cda086d"
+  },
+  "awaiting": "native TLS with both prior stored resources and a new tool call"
+}

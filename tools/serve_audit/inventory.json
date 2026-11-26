@@ -4828,7 +4828,7 @@
     "src/server/responses_mcp_output.cpp": "bfa34595df96c00a98fc0322077796604cd86c6934adf2ddeeae525dbdbc76de",
     "src/server/responses_mcp_preparation.cpp": "ed2e2729951bdc924b5c3be1fea7402cbaf6e584f174b43eb7e0eb0a56d7a7af",
     "src/server/responses_mcp_state.cpp": "cae74a7b7ffa4c380f2a2b8d524edf8dca78bb80da06cd02eed345f1c0c70451",
-    "src/server/responses_output.cpp": "b032803a74e61053ffc14780d7167851933a19721f689eded5c1d6be3dff6c4f",
+    "src/server/responses_output.cpp": "d9759a3218aa433dc95669d3865aca2e3d58c68e89f2b74adc08020bc5bde93b",
     "src/server/responses_owner.cpp": "964393befc76b5690c83f36c8302024018ef59576d7611ff72474757fdbf3553",
     "src/server/responses_plan.cpp": "24e9ba8adbc4c00dfb238d212cd3bcb16e2aa51e59814144a17e415872416a3c",
     "src/server/responses_program.cpp": "c7c15a9c71fb31019275f7a9c87d78188cc0e7507ea098053906278e26e8bcbb",

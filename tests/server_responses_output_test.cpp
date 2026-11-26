@@ -1209,7 +1209,8 @@ Q4T_TEST(
 Q4T_TEST(responses_local_shell_stream_exposes_only_typed_actions) {
   Json options;
   Q4T_CHECK(q4t::io::ParseJson(
-      R"({"model":"test","tools":[{"type":"local_shell"}]})", &options));
+      R"({"model":"test","tools":[{"type":"local_shell"}],)"
+      R"("tool_choice":{"type":"local_shell"}})", &options));
   ResponsesOutput output;
   std::string start, added, fragment, terminal;
   Q4T_CHECK(output.Init(options, "resp_local", 42, false));
@@ -1226,6 +1227,21 @@ Q4T_TEST(responses_local_shell_stream_exposes_only_typed_actions) {
   Q4T_CHECK(wire.find("function_call_arguments") == wire.npos);
   std::vector<Json> events;
   Q4T_CHECK(Events(wire, &events));
+  Json expected;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"type":"allowed_tools","mode":"required",)"
+      R"("tools":[{"type":"local_shell"}]})", &expected));
+  for (const auto& event : events) {
+    if (const auto* resource = event.Find("response")) {
+      Q4T_CHECK(resource->Has("tool_choice") &&
+                OutputJson(*resource->Find("tool_choice")) == OutputJson(expected));
+    }
+  }
+  const auto original = output.Snapshot();
+  const auto visible = ResponsesWireValue(original);
+  Q4T_CHECK(original.Find("tool_choice")->GetString("type") == "local_shell" &&
+            OutputJson(*visible.Find("tool_choice")) == OutputJson(expected) &&
+            OutputJson(ResponsesWireValue(visible)) == OutputJson(visible));
   const auto& item = output.Snapshot().GetArray("output")->array[0];
   Q4T_CHECK(item.GetString("type") == "local_shell_call" &&
             item.GetString("status") == "completed" &&
