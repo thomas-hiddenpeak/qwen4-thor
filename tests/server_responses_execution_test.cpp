@@ -239,7 +239,7 @@ Q4T_TEST(responses_invalid_envelope_fails_before_prompt_state_lookup) {
        std::vector<std::pair<std::string, std::string>>{
            {R"("input":null)", "input"},
            {R"("input":{})", "input"},
-           {R"("user":null)", "user"},
+           {R"("user":42)", "user"},
            {R"("prompt_cache_options":null)", "prompt_cache_options"},
            {R"("reasoning":{"mode":null})", "reasoning.mode"},
            {R"("text":null)", "text"},

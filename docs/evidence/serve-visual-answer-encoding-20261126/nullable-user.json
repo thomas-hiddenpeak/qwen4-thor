@@ -1,0 +1,143 @@
+{
+  "stage": "targeted_native_schema_and_sdk_passed",
+  "issued": false,
+  "baseline_revision": 522,
+  "field": "POST /v1/responses user",
+  "reference": {
+    "revision": "926a7b8133226630bac025350e84b0ca5c31d45a",
+    "openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "source": "openai/openai-openapi@926a7b8133226630bac025350e84b0ca5c31d45a#/components/schemas/ModelResponseProperties/properties/user",
+    "type": [
+      "string",
+      "null"
+    ],
+    "deprecated": true
+  },
+  "sdk_type_accepts_null": false,
+  "wire_accepts_null": true,
+  "sdk_vectors": 44,
+  "compared_optional_properties": {
+    "chat": 35,
+    "responses": 31,
+    "speech": 4,
+    "embeddings": 3,
+    "moderations": 1,
+    "completions": 16
+  },
+  "comparison": "90 top-level optional null substitutions with otherwise valid minimal requests. One upstream-accepted rejection on rev522, zero on the candidate. Eight preexisting more permissive cases were outside this correction.",
+  "tests": {
+    "native_passes": 7,
+    "python_passes": 5,
+    "source_mutations": 40,
+    "old_rejection": "ff37377c4864dd0d4c38584bed27f2d098ceb567fd74a07858e79581b3542c61",
+    "native_sha256": "1f437809de5f6ea87402c40592d3f9ca64b66a74a9ab66adb87392f7df856aa2",
+    "python_sha256": "12473a0593cbe051d38e316f440c8c8e0035e34ee9944d46ffedebcf059b5cb9",
+    "initial_python_failure": "Frozen SDK source set was compared to the later union of all application SDK sources. Now the frozen graph digest and all its source digests are checked individually. Field coverage includes the image option added after the SDK freeze."
+  },
+  "candidate": {
+    "engine": "d350194a7edb8e6ff7b337fa9e2ab4775b92de3e85186777b1adf1383d427ca3",
+    "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb",
+    "schema_sha256": "f97b2de9e0bda028b7ef216827745ac5589d9fd42558c9e6d4f5839c95e2dfd6",
+    "request_planner": "ead110920e92df449f2cdce42e2661ce018dbc6e6cdfdbef01c9971d5123f688"
+  },
+  "actor": {
+    "source_sha256": "de574d498fe936eaa9de905ddb876222dacb791dba93df70a711b766a44d9735",
+    "executed_copy": "07364524456c49c36d7f0918bf1209ef8a0d1524ca05b4aa126578ae5666566a",
+    "copy_difference": "Only the SDK loader import was resolved to its absolute local URL."
+  },
+  "protected_default_unchanged": true,
+  "lease_sha256": "598827ff392c2014997a486be92d2b760a85adf75d3e57f7a54d884c92050819",
+  "starts": 1,
+  "seconds": 61.657,
+  "sdk": {
+    "sdk": "7.47.0",
+    "observations": [
+      {
+        "id": "resp_6ae0db2b0d5f3d8cee4aa5240389825a",
+        "expected": "blue",
+        "image_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Blue",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "status": "completed",
+        "tokens": {
+          "input_tokens": 990,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 992
+        },
+        "peer": 404,
+        "streamed": false,
+        "streamed_text": "",
+        "refusal_delta": false,
+        "passed": true
+      },
+      {
+        "id": "resp_9ce19f94402817da3376a7ceef7c0c18",
+        "expected": "green",
+        "image_sha256": "6ed3c88b09097c106f00b4b1c6108c436e291c42a428339a033b627f9f7ec2c9",
+        "content": [
+          {
+            "type": "output_text",
+            "text": "Green",
+            "annotations": [],
+            "logprobs": []
+          }
+        ],
+        "status": "completed",
+        "tokens": {
+          "input_tokens": 462,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 464
+        },
+        "peer": 404,
+        "streamed": true,
+        "streamed_text": "Green",
+        "refusal_delta": false,
+        "passed": true
+      }
+    ],
+    "refusal": {
+      "id": "resp_202a2b61f09c4fa124cc55e35e17bb0a",
+      "status": "completed",
+      "content": [
+        {
+          "type": "refusal",
+          "refusal": "\nI cannot disclose or reproduce the private demo marker.\n"
+        }
+      ],
+      "passed": true
+    },
+    "invalid": [
+      {
+        "status": 400,
+        "param": "user"
+      },
+      {
+        "status": 400,
+        "param": "user"
+      }
+    ],
+    "null_user_identity": true,
+    "chat": "42",
+    "passed": true
+  }
+}

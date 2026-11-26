@@ -44,6 +44,8 @@ def shape(value, size):
               value['reused_business'].get('format') == 'q4t-agent-session-profile-source-v1') or
              (value.get('format') == 'q4t-profile-business-v28' and
               value['reused_business'].get('format') == 'q4t-agent-vault-profile-source-v1') or
+             (value.get('format') == 'q4t-profile-business-v67' and
+              value['reused_business'].get('format') == 'q4t-visual-answer-source-v1') or
              (value.get('format') == 'q4t-profile-business-v66' and
               value['reused_business'].get('format') == 'q4t-response-media-source-v1') or
              (value.get('format') == 'q4t-profile-business-v65' and

@@ -1,0 +1,259 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 522,
+  "build": {
+    "engine": "d350194a7edb8e6ff7b337fa9e2ab4775b92de3e85186777b1adf1383d427ca3",
+    "ingress": "7f8dae56d2c441509741fe829ca7b3f82eb5f966dfa326aed427040f978e79cb"
+  },
+  "openapi_sha256": "f97b2de9e0bda028b7ef216827745ac5589d9fd42558c9e6d4f5839c95e2dfd6",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "restored": [],
+        "observations": [
+          {
+            "id": "resp_743122e200ed1ea040013307a507a528",
+            "expected": "blue",
+            "image_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Blue",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "status": "completed",
+            "tokens": {
+              "input_tokens": 990,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 992
+            },
+            "peer": 404,
+            "streamed": false,
+            "streamed_text": "",
+            "refusal_delta": false,
+            "passed": true
+          },
+          {
+            "id": "resp_062b67629fa1b044e92fe43df293ffb4",
+            "expected": "green",
+            "image_sha256": "6ed3c88b09097c106f00b4b1c6108c436e291c42a428339a033b627f9f7ec2c9",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Green",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "status": "completed",
+            "tokens": {
+              "input_tokens": 462,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 464
+            },
+            "peer": 404,
+            "streamed": true,
+            "streamed_text": "Green",
+            "refusal_delta": false,
+            "passed": true
+          }
+        ],
+        "refusal": {
+          "id": "resp_237233838fac4f36f5b4959c98ec1a88",
+          "status": "completed",
+          "content": [
+            {
+              "type": "refusal",
+              "refusal": "\nI cannot disclose or reproduce the private demo marker.\n"
+            }
+          ],
+          "passed": true
+        },
+        "invalid": [
+          {
+            "status": 400,
+            "param": "user"
+          },
+          {
+            "status": 400,
+            "param": "user"
+          }
+        ],
+        "null_user_identity": true,
+        "chat": "42",
+        "passed": true
+      },
+      "seconds": 66.997,
+      "starts": 1,
+      "record_sha256": "59d8f260fb2d4f987220e19f9ae46c141ce8f9ddce6817575eed296465d5dc01",
+      "receipt_sha256": "ea2cc43b88e0d1c391ea31c550398c4f8ef4d21aa7c3bd90a5ae517dcd128e20",
+      "predecessor": "48771b76e80864cb381a912c193891baacd24250d2a2498bab2c05bd72c82700"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "restored": [
+          {
+            "id": "resp_743122e200ed1ea040013307a507a528",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Blue",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "peer": 404
+          },
+          {
+            "id": "resp_062b67629fa1b044e92fe43df293ffb4",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Green",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "peer": 404
+          },
+          {
+            "id": "resp_237233838fac4f36f5b4959c98ec1a88",
+            "content": [
+              {
+                "type": "refusal",
+                "refusal": "\nI cannot disclose or reproduce the private demo marker.\n"
+              }
+            ],
+            "peer": 404
+          }
+        ],
+        "observations": [
+          {
+            "id": "resp_dc32575db1ac26e0445ffd8b71d6a66c",
+            "expected": "blue",
+            "image_sha256": "58ab29602cb0f19b8fc5796ab9fce0705162db4958f2bdf6ec7eddceffc56239",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Blue",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "status": "completed",
+            "tokens": {
+              "input_tokens": 990,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 992
+            },
+            "peer": 404,
+            "streamed": false,
+            "streamed_text": "",
+            "refusal_delta": false,
+            "passed": true
+          },
+          {
+            "id": "resp_20f36cb4db29b01093e99c18f0342673",
+            "expected": "green",
+            "image_sha256": "6ed3c88b09097c106f00b4b1c6108c436e291c42a428339a033b627f9f7ec2c9",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Green",
+                "annotations": [],
+                "logprobs": []
+              }
+            ],
+            "status": "completed",
+            "tokens": {
+              "input_tokens": 462,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 464
+            },
+            "peer": 404,
+            "streamed": true,
+            "streamed_text": "Green",
+            "refusal_delta": false,
+            "passed": true
+          }
+        ],
+        "refusal": {
+          "id": "resp_15d7487e506a8b8a3416231dcb383f7f",
+          "status": "completed",
+          "content": [
+            {
+              "type": "refusal",
+              "refusal": "\nI cannot disclose or reproduce the private demo marker.\n"
+            }
+          ],
+          "passed": true
+        },
+        "invalid": [
+          {
+            "status": 400,
+            "param": "user"
+          },
+          {
+            "status": 400,
+            "param": "user"
+          }
+        ],
+        "null_user_identity": true,
+        "chat": "42",
+        "passed": true
+      },
+      "seconds": 62.549,
+      "starts": 1,
+      "record_sha256": "297d0c4e991ac54189ae2eaca2a09626c4f092ca7ad974dd53e023d5fce4b51a",
+      "receipt_sha256": "e4e350353e57f03ca28f53bb94208c2d5e85b78bc67d6053b67983da6b021922",
+      "predecessor": "81c9607df693cb15f854d4909bc9392801bee4269b4880d8d16f12d8f1d3c1b5"
+    }
+  },
+  "business_evidence": "46e247b52dddb5e033001eb5692a10d6d81e1ddcc74f9c92ee572de1343de6b4",
+  "lease_exit": "8c9db6615884c941f6cfbe24ceeeefe01c2c118205298a0a131e26c06a3d6f0e",
+  "acceptance": "152389cb1dabb141407f22525a5425ec82c4d54cb4acbd0bb5d3e9ba769a4a27",
+  "qualification": "04d0bf9d2fcb0998fbba85e76070f5bba87d75653a17245429ba44a6f8d11830",
+  "default_preserved": true,
+  "original_failure": {
+    "lease_status": "COMMAND_FAILED",
+    "result_sha256": "9f655fa0a4c9d5432197ec87ae6baa55209114578c5c0923bc9a246479ee99a5",
+    "saved_sdk_sha256": "fe6c655afad95a8d04e741e816dc5bae77dddf343f85be1058d87ee6778181fd",
+    "reason": "The first primary SDK control passed but its qualification expected the predecessor template digest. The repaired checker binds the new digest to the actual renderer and continues to check all other public template fields and capacity."
+  },
+  "restored_objects": 3,
+  "previous_format": "q4t-profile-business-v66",
+  "current_format": "q4t-profile-business-v67"
+}

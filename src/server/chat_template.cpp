@@ -24,6 +24,18 @@
 namespace q4t::server {
 namespace {
 
+bool HasVisualParts(const io::Json& messages) {
+  for (const auto& message : messages.array) {
+    const auto* parts = message.GetArray("content");
+    if (!parts) continue;
+    for (const auto& part : parts->array) {
+      const auto type = part.GetString("type");
+      if (type == "image_url" || type == "video_url") return true;
+    }
+  }
+  return false;
+}
+
 // Python/Jinja str.strip uses Unicode whitespace, not the process locale.
 bool IsSpace(unsigned cp) {
   return (cp >= 9 && cp <= 13) || (cp >= 0x1c && cp <= 0x20) || cp == 0x85 ||
@@ -879,7 +891,17 @@ Status RenderChatPrompt(const io::Json& request,
   if (tools && !tools->IsNull() && !tools->IsArray()) {
     return Status::Fail("tools must be an array");
   }
-  if (tools && tools->IsArray() && !tools->array.empty()) {
+  const bool has_tools = tools && tools->IsArray() && !tools->array.empty();
+  const bool plain_text = !response_format || response_format->IsNull() ||
+                          response_format->GetString("type") == "text";
+  if (!has_tools && plain_text && request.GetBool("parse_response", true) &&
+      HasVisualParts(*messages)) {
+    instructions +=
+        "\n\nFor a visual observation, begin directly with the requested "
+        "answer. Write what you see as ordinary text without enclosing tags. "
+        "Use the requested language and length.";
+  }
+  if (has_tools) {
     *prompt = first_header;
     if (!instructions.empty()) *prompt += instructions + "\n\n";
     std::string definitions;

@@ -1,0 +1,58 @@
+{
+  "stage": "targeted_cpu_verified",
+  "issued": false,
+  "reference_commit": "6fb49e611f57bce51ddf28a12d38b9526f8986c4",
+  "original_image": {
+    "id": "resp_c9c86ee0a25ab8815deacd4a6f9b487a",
+    "status": "completed",
+    "usage": {
+      "input_tokens": 959,
+      "input_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "output_tokens": 25,
+      "output_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "total_tokens": 984
+    },
+    "parts": [
+      {
+        "type": "refusal",
+        "refusal": "\nThe image is a solid blue color.\n"
+      }
+    ]
+  },
+  "source_evidence_sha256": "e45879f37d9c41ab8cd14cc52d725624b497c859593ca68588433aba6c8edc74",
+  "candidate_template_sha256": "33a5288c73411f3fcd59164f5ec838bd83856d5fe0c52fba500c5694a826c876",
+  "sdk_actor_sha256": "b651265ddeebc6909080839e66a9d1410847636ecac886d67e6e5b57317962d1",
+  "tests": {
+    "baseline": {
+      "cases": [
+        "chat_plain_visual_answers_keep_observations_separate_from_refusals"
+      ],
+      "exit_code": 1
+    },
+    "candidate": {
+      "cases": [
+        "chat_plain_visual_answers_keep_observations_separate_from_refusals",
+        "chat_schema_prompt_preserves_contract_and_message_boundaries",
+        "chat_schema_prompt_preserves_tools_and_unconstrained_template",
+        "refusal_template_native_instruction_and_raw_cache_identity",
+        "refusal_parser_every_split_preserves_text_and_source_offsets",
+        "refusal_parser_marker_data_and_natural_language_are_not_signals",
+        "refusal_parser_incomplete_malformed_and_capacity_terminals",
+        "refusal_parser_requires_independent_matching_receipt"
+      ],
+      "exit_code": 0
+    }
+  },
+  "source_review_mutations": 40,
+  "test_logs": {
+    "baseline.log": "d338011f6b3539b44ec1cd2313504051de2d76c4c10963026f92cd7cae374e00",
+    "candidate.log": "ccb7b2aa649021af499ccad30c24a94ec85b209deef88961fdf2cfad853905b4"
+  },
+  "harness_fix": "The initial CPU linker driver looked for the template as a direct object. It is in the server archive. The corrected link explicitly overrode just this object and repeated the old/new check.",
+  "next": "Native TLS SDK on blue and green inputs, saved and streamed text parts, owner isolation, actual refusal and independent Chat."
+}
