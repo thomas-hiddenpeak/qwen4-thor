@@ -1,0 +1,75 @@
+{
+  "stage": "native_tls_business_verified",
+  "issued": false,
+  "previous_revision": 548,
+  "run": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 40.997,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "client": {
+    "sdk": "3.55.1",
+    "response": "resp_75cd12dec804db57f496576f9a9be436",
+    "follow": "resp_0d160b01df3452e1aa831f2b44555212",
+    "item": "apc_4faa7709466b11b8b6aa596ee30400f7",
+    "call_id": "call_resp_75cd12dec804db57f496576f9a9be436_0",
+    "writes": 1,
+    "operation": {
+      "diff": "+architecture=qwen4_exp",
+      "path": "architecture.txt",
+      "type": "create_file"
+    },
+    "content_sha256": "964d443ef42578e0c91f13fb53ac1cd0af3d920dae4221ff27191d6101345615",
+    "answer": "964d443ef425",
+    "captures": {
+      "events.json": "46b011599d3639de405cd9118360f3bf11c6c3d166d11a3fa409117787b9f0b7",
+      "follow.json": "e911f3c9e30b691f7242dff688fae449b43f28222d18c188918dcc1025fc2fe1",
+      "call.json": "6a170c50c1aae2c0012d6dafe68ef7e14db541b60a0d85ef16e590432bbe9d4d",
+      "completed.json": "e911f3c9e30b691f7242dff688fae449b43f28222d18c188918dcc1025fc2fe1",
+      "inputs.json": "bfc929804faf0d14fc989bdf6a8165717f65267067365b95366e9290dbd10f14",
+      "chat.json": "3fa88a01f356e04d20d38a64cc63307be580fa547d1aafa653a47294fb8939aa"
+    },
+    "events": 36,
+    "wrong_target": 400,
+    "peer": 404,
+    "independent_chat": "720041"
+  },
+  "schemas": {
+    "official": {
+      "document_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "resources": 5,
+      "events": 36
+    },
+    "/v1": {
+      "document_sha256": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+      "resources": 5,
+      "events": 36
+    }
+  },
+  "product": {
+    "binary": "c34f8cf73fab5e373861ecbc163b5b66a67aa5f12129742ff3f66d42934d036b",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1102
+  },
+  "driver": "28dc26934d7272f5c0a63ff8c9e2ac248adbbedc1916e4f1aa1ce9eb380a8594",
+  "lease_sha256": "fd259db430ec056845105b2b75d7b06b2c1a83afa1c701f883766c7a914ea140",
+  "cpu_sha256": "ff7a049148238dbd5589aa12acaba8c2e3340d674256435d3cb2c5b5071d90ce",
+  "owner": "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909",
+  "records": {
+    ".q4t-format": "476afe567926b5f212c1cda4e7034d439e54c4680cd25c105bbe71b5a647e72b",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.item.apc_4faa7709466b11b8b6aa596ee30400f7.json": "8492d50d0f65ea7cdba808c3ebc8ed018b3ba4d8ca1c670d20d7de4e12622289",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.item.item_627e798ca1beb2e5bdcf6af04dab1aee.json": "29168d5d7dd30081ce2a1ec82b95570d8d64cdd54051dff9184af7bf1e140993",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.item.item_a66685a1472a2c2145a3796c84373076.json": "70c07989ab28917ab8154d6c72a59077cdf3283bf2747f491065439309a38cfd",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.item.msg_4380f65799ca42353a8aa37e3c29c185.json": "b8cf86beaf3c5bbeb03502eba64c71daf484752225f029d79fca245f524bd1b4",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.item.msg_ea151ea9ec4cf48d64113ac145c9a642.json": "7062b2aa75a3a39f622c48b256bae2208d26e4b17c0d00f7f8c5daf29a536940",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.item.rs_769cb7b0a8015f276a39106c95971bf1.json": "958477b9fb00046bb42ba0e492f2a5dbf31b875b32d9649652fc872274412360",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.item.rs_d4e34d38404058d890817e15f67b1b08.json": "51f0e79794c7ddf359b5222524e1263be2a011a1cc3c25c56f101100f91778ce",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_0d160b01df3452e1aa831f2b44555212.json": "ed0b22bef9d5fd19f2d2d7a8b2f5467074edaa1eb22deea9a03924bf7322fb46",
+    "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_75cd12dec804db57f496576f9a9be436.json": "b3eba1bff76e95710e60c8e75db5ff900ffdde1d84819b8c9c265abad5c79b6a"
+  },
+  "source_bytes": 43636
+}

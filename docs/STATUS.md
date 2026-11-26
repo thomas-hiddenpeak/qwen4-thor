@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Thor 上的模型经原生 TLS 发出补丁。官方 SDK 客户端按补丁实际创建架构记录，模型在续答中返回文件哈希前 12 位。错误调用 ID 返回 400，其他客户端读取返回 404。5 份 HTTP 资源和 36 个流事件均通过官方与随包 schema。下一步验证发行配置接管。[设备记录](evidence/serve-client-patch-20261126/business.json)
+
 Responses 可流式返回完整的 apply_patch 操作，客户端回填成功或失败后可续答。程序工具经实际 QuickJS 子进程调用补丁，重开对象库后仍收到原失败原因。8 项 CPU 用例通过，覆盖截断、未完整的流、调用归属和无效操作。下一步用设备模型验证真实文件回执。[CPU 记录](evidence/serve-client-patch-20261126/direct.json)
 
 此前合法的 apply_patch 历史无法进入下一轮。现可回放原操作、失败原因及省略输出的成功回执，按调用 ID 和工具类型匹配；截断保留成对的请求与结果。程序子调用的结果也须匹配原父项与工具类型。5 项直接相关 CPU 用例通过。新建工具声明、模型输出与真实业务仍待完成。[历史回放证据](evidence/serve-client-patch-20261126/history.json)
