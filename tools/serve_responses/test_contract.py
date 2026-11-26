@@ -89,6 +89,23 @@ def wire_values(root):
 
 
 class ApplicationContract(unittest.TestCase):
+    def test_empty_updates_preserve_the_object_and_creation_contracts(self):
+        spec = app.standalone_openapi(api.openapi())
+        paths = spec['paths']
+        for path in ('/v1/agents/{agent_id}', '/v1/agents/sessions/{session_id}',
+                     '/v1/agents/environments/templates/{environment_template_id}',
+                     '/v1/webhook_endpoints/{webhook_endpoint_id}'):
+            with self.subTest(path=path):
+                body = paths[path]['post']['requestBody']
+                self.assertFalse(body['required'])
+                schema = body['content']['application/json']['schema']
+                validate = Draft202012Validator({'components': spec['components'], **schema})
+                self.assertTrue(validate.is_valid({}))
+                self.assertFalse(validate.is_valid(None))
+        for path in ('/v1/agents', '/v1/agents/sessions', '/v1/webhook_endpoints',
+                     '/v1/agents/sessions/{session_id}/events'):
+            self.assertTrue(paths[path]['post']['requestBody']['required'])
+
     def test_image_context_policy_stable_and_beta_requests(self):
         for name in ('response_create', 'response_compact',
                      'agent_history_response_create', 'agent_history_response_compact'):

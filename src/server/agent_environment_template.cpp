@@ -199,7 +199,7 @@ ObjectReply HandleEnvironmentTemplate(ObjectStore& objects,
   if (split != target.npos) return Invalid("Unexpected query", "query");
   Json changes = Object();
   if (method == "POST") {
-    if (!(collection && body.empty()) &&
+    if (!body.empty() &&
         !io::ParseJson(body, &changes, true, kApplicationJsonLimits))
       return Invalid("Expected a JSON template object", "body");
     if (collection && changes.IsNull()) changes = Object();

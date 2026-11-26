@@ -87,6 +87,11 @@ Q4T_TEST(webhook_endpoint_owner_projection_and_rotation) {
   auto list = f.Call(db, "GET", std::string(kEndpoints) + "?limit=1");
   Q4T_CHECK(list.ok() && list.value.GetArray("data")->array.size() == 1);
   Q4T_CHECK(OutputJson(list.value).find(first_secret) == std::string::npos);
+  const auto unchanged = f.Call(db, "POST", path);
+  Q4T_CHECK(unchanged.ok() && OutputJson(unchanged.value) == OutputJson(get.value));
+  Q4T_CHECK(f.Call(db, "POST", path, "null").http_status == 400);
+  Q4T_CHECK(HandleWebhook(db, Access("client:peer"), &f.policy, "POST", path, "")
+                .http_status == 404);
   const auto same = f.Call(db, "POST", path, R"({"name":"Builds"})");
   Q4T_CHECK(same.ok() && OutputJson(same.value) == OutputJson(get.value));
   auto rotated = f.Call(db, "POST", path + "/rotate_secret",
