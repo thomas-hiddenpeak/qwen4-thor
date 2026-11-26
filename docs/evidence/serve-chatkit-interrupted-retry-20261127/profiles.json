@@ -1,0 +1,139 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 556,
+  "build": {
+    "engine": "51a1650123af258af6591d9365884fc96c6d1937e91de0541a5a4c7e74055279",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "primary",
+        "source": {
+          "workflow": "agent_d653d97224e4f4ebe6685fb736f19ed2",
+          "thread": "cthr_c3868f60b4887c2c9adb5a278f6f3d6f",
+          "file": "file_e43d81b8d97686f2a7b5ae963a8a5bb2",
+          "item": "msg_8b1b1c79236b10e8be4694663fa3b03c",
+          "user": "item_18f98ec0011e2b8ed39a2caa2fdd9536",
+          "received": "5",
+          "partial": "5",
+          "document_sha256": "32e44dd1c648511780fbe5b77aea989fe24476df40d68886e865ab4abda84632",
+          "interrupted": {
+            "response": "resp_7a9aa6aa2c58e8cd639da7ec381f9d7b",
+            "status": "cancelled",
+            "record_sha256": "78174f63f7534b9977d160cad367b68cc53bcca135573b51b80845ae32e5398f",
+            "file": "file_e43d81b8d97686f2a7b5ae963a8a5bb2",
+            "published": false,
+            "binding": {
+              "item_id": "item_220154d45725c369914f156d055a344a",
+              "path": "/content/0",
+              "binding_sha256": "714797f005283058b3af52a7f1399ea967b32c55ae9bb249c8fedf19acebc24e",
+              "snapshot": {
+                "id": "input_snapshot_ddcedcc7e855bebf9cb15917375de2e5",
+                "sha256": "20a95a9306324992cca0dadba134b00678972d447b5829bbdda9ff05aaeba799"
+              }
+            }
+          },
+          "deleted": 404
+        },
+        "revision": "556",
+        "chat": "42"
+      },
+      "seconds": 40.001,
+      "starts": 1,
+      "record_sha256": "d383563ac564202a5290b5e7bc8d101b9dfa12faf6160d3ce26ac228ea79de49",
+      "receipt_sha256": "acc6e8043267ebe6753bd8afb7662779c37dd715446d5be657da6f4dce4d6bbc",
+      "predecessor": "c5aa3df34136466d52e8b2c9c4d59950cc74ba584ad152938fb761596db1de03"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "7.47.0",
+        "phase": "light",
+        "source": {
+          "workflow": "agent_d653d97224e4f4ebe6685fb736f19ed2",
+          "thread": "cthr_c3868f60b4887c2c9adb5a278f6f3d6f",
+          "file": "file_e43d81b8d97686f2a7b5ae963a8a5bb2",
+          "item": "msg_8b1b1c79236b10e8be4694663fa3b03c",
+          "user": "item_18f98ec0011e2b8ed39a2caa2fdd9536",
+          "received": "5",
+          "partial": "5",
+          "document_sha256": "32e44dd1c648511780fbe5b77aea989fe24476df40d68886e865ab4abda84632",
+          "interrupted": {
+            "response": "resp_7a9aa6aa2c58e8cd639da7ec381f9d7b",
+            "status": "cancelled",
+            "record_sha256": "78174f63f7534b9977d160cad367b68cc53bcca135573b51b80845ae32e5398f",
+            "file": "file_e43d81b8d97686f2a7b5ae963a8a5bb2",
+            "published": false,
+            "binding": {
+              "item_id": "item_220154d45725c369914f156d055a344a",
+              "path": "/content/0",
+              "binding_sha256": "714797f005283058b3af52a7f1399ea967b32c55ae9bb249c8fedf19acebc24e",
+              "snapshot": {
+                "id": "input_snapshot_ddcedcc7e855bebf9cb15917375de2e5",
+                "sha256": "20a95a9306324992cca0dadba134b00678972d447b5829bbdda9ff05aaeba799"
+              }
+            }
+          },
+          "deleted": 404
+        },
+        "recovered": {
+          "ids": [
+            "item_18f98ec0011e2b8ed39a2caa2fdd9536",
+            "msg_0a583cab3b244457972bd44c085ade8b"
+          ],
+          "text": "556; this number identifies the latest revision number for the publication shown in the attached record.",
+          "peer": 404,
+          "sibling": 404,
+          "deleted": 404,
+          "original": {
+            "response": "resp_7a9aa6aa2c58e8cd639da7ec381f9d7b",
+            "status": "cancelled",
+            "record_sha256": "78174f63f7534b9977d160cad367b68cc53bcca135573b51b80845ae32e5398f",
+            "file": "file_e43d81b8d97686f2a7b5ae963a8a5bb2",
+            "published": true,
+            "binding": {
+              "item_id": "item_220154d45725c369914f156d055a344a",
+              "path": "/content/0",
+              "binding_sha256": "714797f005283058b3af52a7f1399ea967b32c55ae9bb249c8fedf19acebc24e",
+              "snapshot": {
+                "id": "input_snapshot_ddcedcc7e855bebf9cb15917375de2e5",
+                "sha256": "20a95a9306324992cca0dadba134b00678972d447b5829bbdda9ff05aaeba799"
+              }
+            }
+          },
+          "replacement": {
+            "response": "resp_5be4d144e578817813f6ac4493364269",
+            "status": "completed",
+            "record_sha256": "419bacca5067b173acafabfb96dccb3f34dcaa90a7167c3351e1e99a7d0f0b59",
+            "file": "file_e43d81b8d97686f2a7b5ae963a8a5bb2",
+            "published": true,
+            "binding": {
+              "item_id": "item_220154d45725c369914f156d055a344a",
+              "path": "/content/0",
+              "binding_sha256": "714797f005283058b3af52a7f1399ea967b32c55ae9bb249c8fedf19acebc24e",
+              "snapshot": {
+                "id": "input_snapshot_ddcedcc7e855bebf9cb15917375de2e5",
+                "sha256": "20a95a9306324992cca0dadba134b00678972d447b5829bbdda9ff05aaeba799"
+              }
+            }
+          }
+        },
+        "revision": "556",
+        "chat": "42"
+      },
+      "seconds": 36.997,
+      "starts": 1,
+      "record_sha256": "bfd253d23bfaa0904d809b7e27c581b3476d3368c9839cdeb7cfe159fa7a7851",
+      "receipt_sha256": "68ac53e64a662bf6932e4fd7adf8c3271f6d8c224bac4659d4946bfcd6570f1d",
+      "predecessor": "b5ee96a9a4deb6a783661eaecf75cfdb3f4cca962408c73ced1fe94a66878786"
+    }
+  },
+  "business_evidence": "11890af031c1dffbd5fd4d0973bed014f61dc16ac2fd35d0dc9f7e0a98615359",
+  "lease_exit": "2049c25cbb96cd5f3e1966520dcb887a8b8bff135de1f0980b71f16c29b7a9d8",
+  "acceptance": "2290b024c2271c4d85716086b1504ee9eb1f425e60199a8b619181e809fdc9ec",
+  "qualification": "2f7aa51a238b68376980ccb685684c75fbeb9ceaa622438f6f3ff382c91437e6",
+  "default_preserved": true
+}
