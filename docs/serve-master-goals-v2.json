@@ -8527,11 +8527,12 @@
         "delivery": "evidence/serve-agent-structured-format-20261126/delivery.json"
       },
       "sdk_route_matrix_20261126": {
-        "stage": "native_tls_sdk_verified",
+        "stage": "managed_profiles_validated",
         "issued": false,
         "methods": 231,
         "receipt": "evidence/serve-sdk-routes-20261126/cpu.json",
-        "business": "evidence/serve-sdk-routes-20261126/business.json"
+        "business": "evidence/serve-sdk-routes-20261126/business.json",
+        "profiles": "evidence/serve-sdk-routes-20261126/profiles.json"
       },
       "visual_answer_encoding_20261126": {
         "stage": "issued_with_scoped_verification",
