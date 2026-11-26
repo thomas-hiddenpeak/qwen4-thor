@@ -10,6 +10,7 @@
 #include "q4t/server/chat_protocol_identity.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/responses_input.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/program_worker.h"
 #include "q4t/server/request_json.h"
@@ -108,8 +109,20 @@ Json Child(const Json& program, const Json& tool, const Json& call,
                                       {"call", call},
                                       {"positions",
                                        positions ? *positions : Array()}})}});
-  const bool custom = tool.GetString("type") == "custom";
   const auto call_id = CallId(program, index);
+  if (tool.GetString("type") == "apply_patch") {
+    Json operation;
+    if (!io::ParseJson(call.GetString("arguments"), &operation, true,
+                       kSchemaJsonLimits))
+      return {};
+    return Object({{"id", String("apc_" + Digest(call_id).substr(0, 56))},
+                   {"type", String("apply_patch_call")},
+                   {"call_id", String(call_id)},
+                   {"status", String("completed")},
+                   {"operation", std::move(operation)},
+                   {"caller", Caller(program)}});
+  }
+  const bool custom = tool.GetString("type") == "custom";
   auto result =
       Object({{"id", String((custom ? "ctc_" : "fc_") +
                             Digest(call_id).substr(0, 56))},
@@ -134,8 +147,14 @@ ObjectReply CallsContract(const ResponsesProgramState& program,
     if (!tool) return Invalid("Program called a tool outside its authority");
     const auto& definition = *tool->Find("definition");
     const auto param = "program.calls[" + std::to_string(i) + ']';
-    if (tool->GetString("type") == "function" ||
-        tool->GetString("type") == "mcp") {
+    if (tool->GetString("type") == "apply_patch") {
+      const auto item = Child(program.program, *tool, call, i);
+      ChatPlanError error;
+      if (!ValidateResponsesItemShape(item, ResponsesItemShape::kOutput, &error,
+                                      param))
+        return Invalid("Invalid program patch operation", param);
+    } else if (tool->GetString("type") == "function" ||
+               tool->GetString("type") == "mcp") {
       Json arguments;
       if (!io::ParseJson(call.GetString("arguments"), &arguments, true,
                          kSchemaJsonLimits) ||
@@ -214,9 +233,16 @@ ObjectReply CreateResponsesProgram(
   const auto add = [&](const Json& tool, const std::string& space) -> Status {
     auto checked = ValidateResponsesAllowedCallers(tool, &error, "tools");
     if (!checked) return checked;
-    if ((tool.GetString("type") == "function" ||
-         tool.GetString("type") == "custom") &&
-        ResponsesToolAllows(tool, "programmatic"))
+    if (tool.GetString("type") == "apply_patch" &&
+        ResponsesToolAllows(tool, "programmatic")) {
+      tools.array.push_back(Object({{"key", String(kApplyPatchToolName)},
+                                    {"type", String("apply_patch")},
+                                    {"name", String("apply_patch")},
+                                    {"namespace", String("")},
+                                    {"definition", tool}}));
+    } else if ((tool.GetString("type") == "function" ||
+                tool.GetString("type") == "custom") &&
+               ResponsesToolAllows(tool, "programmatic"))
       tools.array.push_back(Object(
           {{"key", String(ResponsesToolModelName(space, tool.GetString("name"),
                                                  tool.GetString("type")))},
@@ -472,10 +498,12 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
       state.terminal = item;
       continue;
     }
-    const bool invocation =
-        type == "function_call" || type == "custom_tool_call";
-    const bool output =
-        type == "function_call_output" || type == "custom_tool_call_output";
+    const bool invocation = type == "function_call" ||
+                            type == "custom_tool_call" ||
+                            type == "apply_patch_call";
+    const bool output = type == "function_call_output" ||
+                        type == "custom_tool_call_output" ||
+                        type == "apply_patch_call_output";
     if (!invocation && !output) {
       if (program_call) return Invalid("Invalid program caller item", path);
       continue;
@@ -495,17 +523,22 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
     if (!shape.ok()) return shape;
     if (invocation) {
       const auto index = state.calls.size();
-      const auto key = ResponsesToolModelName(
-          item.GetString("namespace"), item.GetString("name"),
-          type == "function_call" ? "function" : "custom");
+      const bool patch = type == "apply_patch_call";
+      const auto key =
+          patch ? kApplyPatchToolName
+                : ResponsesToolModelName(
+                      item.GetString("namespace"), item.GetString("name"),
+                      type == "function_call" ? "function" : "custom");
       const auto* tool = FindTool(state.tools, key);
       if (!tool || index >= kCalls ||
           item.GetString("status", "completed") != "completed")
         return Invalid("Unauthorized or incomplete program child", path);
       auto call = Object(
           {{"key", String(key)},
-           {"arguments", String(item.GetString(
-                             type == "function_call" ? "arguments" : "input"))},
+           {"arguments",
+            String(patch ? OutputJson(*item.Find("operation"))
+                         : item.GetString(type == "function_call" ? "arguments"
+                                                                  : "input"))},
            {"after_results",
             Number(state.worker_input.GetArray("results")->array.size())}});
       const auto causal = positions.find(state.program.GetString("call_id"));
@@ -535,14 +568,23 @@ ObjectReply OpenResponsesPrograms(StateCipher& cipher, const Json& history,
       const auto index = known->second.second;
       const auto& call = state.calls[index];
       const bool custom = call.GetString("type") == "custom_tool_call";
-      if (custom != (type == "custom_tool_call_output") ||
-          item.GetString("status", "completed") != "completed")
+      const bool patch = call.GetString("type") == "apply_patch_call";
+      if (type != call.GetString("type") + "_output" ||
+          (!patch && item.GetString("status", "completed") != "completed"))
         return Invalid("Program result type or status changed", path);
       for (const auto* field : {"name", "namespace"})
         if (Nonnull(item, field) &&
             item.GetString(field) != call.GetString(field))
           return Invalid("Program result identity changed", path);
       const auto* output_value = item.Find("output");
+      if (patch) {
+        auto outcome = Object({{"status", *item.Find("status")}});
+        if (output_value) Set(&outcome, "output", *output_value);
+        Field(state.worker_input, "results")
+            .array.push_back(Object(
+                {{"index", Number(index)}, {"value", std::move(outcome)}}));
+        continue;
+      }
       if (!output_value) return Invalid("Missing program result", path);
       const auto* tool = FindTool(
           state.tools,

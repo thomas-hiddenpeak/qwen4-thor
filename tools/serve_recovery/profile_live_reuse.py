@@ -23,6 +23,14 @@ ARTIFACT_RECORD = 'q4t-profile-business-v32'
 ARTIFACT_FORMAT = 'q4t-session-artifact-source-v1'
 MANAGED_TOOL_RECORD = 'q4t-profile-business-v33'
 MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
+PATCH_RECORD = 'q4t-profile-business-v79'
+PATCH_FORMAT = 'q4t-client-patch-source-v1'
+PATCH_RECEIPT = 'client-patch-handoff.json'
+PATCH_REVIEWED = {
+    'primary': '0c2594edafea9df9943d219a8b3ddf093f1298cebbc048c7e6b5966ea372eb2b',
+    'light': '7e9975255a9f3695feca9cc2256eb0c0b38190ea128bd3e040702adfb6734d2b',
+}
+
 LOCAL_SHELL_RECORD = 'q4t-profile-business-v78'
 LOCAL_SHELL_FORMAT = 'q4t-local-shell-source-v1'
 LOCAL_SHELL_RECEIPT = 'local-shell-handoff.json'
@@ -528,6 +536,7 @@ REUSE_FORMAT = {RECORD_FORMAT: FORMAT, BETA_RECORD_FORMAT: BETA_FORMAT,
                 VISUAL_ANSWER_RECORD: VISUAL_ANSWER_FORMAT, FRAME_RECORD: FRAME_FORMAT,
                 EVAL_CANCEL_RECORD: EVAL_CANCEL_FORMAT, RESPONSE_FAILURE_RECORD: RESPONSE_FAILURE_FORMAT,
                 VIDEO_CLIP_RECORD: VIDEO_CLIP_FORMAT, REGION_RECORD: REGION_FORMAT,
+                PATCH_RECORD: PATCH_FORMAT,
                 LOCAL_SHELL_RECORD: LOCAL_SHELL_FORMAT,
                 APPROVAL_IDS_RECORD: APPROVAL_IDS_FORMAT,
                 COMPACT_RECORD: COMPACT_FORMAT,
@@ -559,6 +568,7 @@ ACCEPTANCE_LABELS = {
     PREPARATION_RECORD: 'ACCEPT_HOSTED_PREPARATION_PRIMARY_LIGHT',
     RESPONSE_FAILURE_RECORD: 'ACCEPT_RESPONSE_FAILURE_PRIMARY_LIGHT',
     VIDEO_CLIP_RECORD: 'ACCEPT_VIDEO_CLIP_PRIMARY_LIGHT',
+    PATCH_RECORD: 'ACCEPT_CLIENT_PATCH_PRIMARY_LIGHT',
     LOCAL_SHELL_RECORD: 'ACCEPT_LOCAL_SHELL_PRIMARY_LIGHT',
     APPROVAL_IDS_RECORD: 'ACCEPT_MCP_APPROVAL_IDENTIFIERS_PRIMARY_LIGHT',
     COMPACT_RECORD: 'ACCEPT_CONVERSATION_COMPACTION_PRIMARY_LIGHT',
@@ -607,7 +617,7 @@ SEPARATE_HISTORY_RECORDS = (
     TRACK_RECORD, TYPED_HISTORY_RECORD, STORED_REFUSAL_RECORD, CHATKIT_RETRY_RECORD,
     CHATKIT_ACTIONS_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_WORKFLOW_RECORD,
     CHATKIT_IMAGE_RECORD, CHATKIT_WIDGET_RECORD, SESSION_CONTROL_RECORD, MEDIA_HANDOFF_RECORD,
-    VISUAL_ANSWER_RECORD, FRAME_RECORD, EVAL_CANCEL_RECORD, RESPONSE_FAILURE_RECORD, VIDEO_CLIP_RECORD, REGION_RECORD, TOOL_MAP_RECORD, LOCAL_SHELL_RECORD, APPROVAL_IDS_RECORD, COMPACT_RECORD, PARTS_RECORD, NULL_HISTORY_RECORD,
+    VISUAL_ANSWER_RECORD, FRAME_RECORD, EVAL_CANCEL_RECORD, RESPONSE_FAILURE_RECORD, VIDEO_CLIP_RECORD, REGION_RECORD, TOOL_MAP_RECORD, PATCH_RECORD, LOCAL_SHELL_RECORD, APPROVAL_IDS_RECORD, COMPACT_RECORD, PARTS_RECORD, NULL_HISTORY_RECORD,
 )
 BETA_REVIEWED = {
     'primary': 'e2178b021652317a2d67189b73982edc3a7a1b70c4c2716929a448a5d579f07a',
@@ -630,6 +640,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'e36b2d9270d2428765fed0768f669f3aa8bacc998230c865682f8a2d663387c3':
+        '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     '550175d67a5afaaf7410b829ceddbf67732303847434024f340e6519340ee32a':
         '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     'c4137354c407b45b33b7e6eb828a09302fe891ed07bb61ae40f61f163bf02724':
@@ -798,6 +810,17 @@ def composer_capability(capabilities):
     return dict(UPLOAD_CHATKIT, input_transcribe=dict(operation='input.transcribe', configured=enabled))
 
 
+def client_patch_capability(previous):
+    items = list(previous['output_items'])
+    ledger.require('apply_patch' not in previous and 'apply_patch_call' not in items
+                   and items.count('local_shell_call') == 1, 'invalid patch predecessor')
+    items.insert(items.index('local_shell_call') + 1, 'apply_patch_call')
+    return dict(previous, output_items=items, apply_patch={
+        'executor': 'client', 'automatic_execution': False,
+        'operations': ['create_file', 'update_file', 'delete_file'],
+        'result_item': 'apply_patch_call_output'})
+
+
 def local_shell_capability(previous):
     items = list(previous['output_items'])
     ledger.require('local_shell' not in previous and 'local_shell_call' not in items
@@ -831,6 +854,11 @@ def format_for(capabilities, evidence=None):
                        and CHARACTER_RECEIPT in (evidence or {})
                        and format_for(prior, evidence) == COMPOSER_RECORD,
                        'character qualification requires a verified reference and the issued dictation handoff')
+        if PATCH_RECEIPT in evidence:
+            previous = {k: v for k, v in evidence.items() if k != PATCH_RECEIPT}
+            ledger.require(format_for(capabilities, previous) == LOCAL_SHELL_RECORD,
+                           'patch handoff requires the issued shell predecessor')
+            return PATCH_RECORD
         if LOCAL_SHELL_RECEIPT in evidence:
             previous = {k: v for k, v in evidence.items() if k != LOCAL_SHELL_RECEIPT}
             ledger.require(format_for(capabilities, previous) == APPROVAL_IDS_RECORD,
@@ -1165,8 +1193,9 @@ def attach(value, prior):
     templates = value['format'] == ENVIRONMENT_RECORD
     workspace = value['format'] == WORKSPACE_RECORD
     revision = value['format'] in REUSE_FORMAT and value['format'] != RECORD_FORMAT
-    if value['format'] in (LOCAL_SHELL_RECORD, APPROVAL_IDS_RECORD, COMPACT_RECORD, PARTS_RECORD, NULL_HISTORY_RECORD, TOOL_MAP_RECORD, REGION_RECORD, VIDEO_CLIP_RECORD, RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (PATCH_RECORD, LOCAL_SHELL_RECORD, APPROVAL_IDS_RECORD, COMPACT_RECORD, PARTS_RECORD, NULL_HISTORY_RECORD, TOOL_MAP_RECORD, REGION_RECORD, VIDEO_CLIP_RECORD, RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         predecessors = {
+            PATCH_RECORD: (LOCAL_SHELL_RECORD, LOCAL_SHELL_REVIEWED, None, PATCH_RECEIPT),
             LOCAL_SHELL_RECORD: (APPROVAL_IDS_RECORD, APPROVAL_IDS_REVIEWED, None, LOCAL_SHELL_RECEIPT),
             APPROVAL_IDS_RECORD: (COMPACT_RECORD, COMPACT_REVIEWED, None, APPROVAL_IDS_RECEIPT),
             COMPACT_RECORD: (PARTS_RECORD, PARTS_REVIEWED, None, COMPACT_RECEIPT),
@@ -1211,6 +1240,11 @@ def attach(value, prior):
         }
         previous_format, reviewed, added, receipt = predecessors[value['format']]
         changed = {'protocol_source_sha256'}
+        if value['format'] == PATCH_RECORD:
+            changed.add('responses')
+            ledger.require(ledger.canonical(after['responses']) ==
+                           ledger.canonical(client_patch_capability(before['responses'])),
+                           'only the qualified patch contract may change')
         if value['format'] == LOCAL_SHELL_RECORD:
             changed.add('responses')
             ledger.require(ledger.canonical(after['responses']) ==
@@ -1451,6 +1485,7 @@ def previous_record(value):
     previous = codec.unpack(reuse['previous'])
     if separate_history:
         history_format, history_keys = {
+            PATCH_RECORD: (LOCAL_SHELL_FORMAT, ('format', 'previous', 'history')),
             LOCAL_SHELL_RECORD: (APPROVAL_IDS_FORMAT, ('format', 'previous', 'history')),
             APPROVAL_IDS_RECORD: (COMPACT_FORMAT, ('format', 'previous', 'history')),
             COMPACT_RECORD: (PARTS_FORMAT, ('format', 'previous', 'history')),
@@ -1516,8 +1551,9 @@ def previous_record(value):
 
 def validate(value):
     from tools.serve_recovery import profile_trace_reuse
-    if value['format'] in (LOCAL_SHELL_RECORD, APPROVAL_IDS_RECORD, COMPACT_RECORD, PARTS_RECORD, NULL_HISTORY_RECORD, TOOL_MAP_RECORD, REGION_RECORD, VIDEO_CLIP_RECORD, RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
+    if value['format'] in (PATCH_RECORD, LOCAL_SHELL_RECORD, APPROVAL_IDS_RECORD, COMPACT_RECORD, PARTS_RECORD, NULL_HISTORY_RECORD, TOOL_MAP_RECORD, REGION_RECORD, VIDEO_CLIP_RECORD, RESPONSE_FAILURE_RECORD, EVAL_CANCEL_RECORD, FRAME_RECORD, VISUAL_ANSWER_RECORD, MEDIA_HANDOFF_RECORD, SESSION_CONTROL_RECORD, CHATKIT_WIDGET_RECORD, CHATKIT_IMAGE_RECORD, CHATKIT_WORKFLOW_RECORD, CHATKIT_GENERATION_RECORD, CHATKIT_BROWSER_RECORD, CHATKIT_ACTIONS_RECORD, CHATKIT_RETRY_RECORD, STORED_REFUSAL_RECORD, TYPED_HISTORY_RECORD, TRACK_RECORD, CHARACTER_RECORD, COMPOSER_RECORD, PAGINATION_RECORD, UPLOAD_RECORD, FEEDBACK_RECORD, METEOR_RECORD, HISTORY_RECORD, SAFETY_RECORD, COSINE_RECORD, EVAL_RECORD, CHATKIT_RECORD, PREPARATION_RECORD, HOSTED_LIFECYCLE_RECORD, WEBHOOK_RECORD, AUTOMATION_RECORD):
         current, previous = {
+            PATCH_RECORD: (PATCH_REVIEWED, LOCAL_SHELL_REVIEWED),
             LOCAL_SHELL_RECORD: (LOCAL_SHELL_REVIEWED, APPROVAL_IDS_REVIEWED),
             APPROVAL_IDS_RECORD: (APPROVAL_IDS_REVIEWED, COMPACT_REVIEWED),
             COMPACT_RECORD: (COMPACT_REVIEWED, PARTS_REVIEWED),

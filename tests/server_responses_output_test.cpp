@@ -1255,3 +1255,74 @@ Q4T_TEST(responses_local_shell_stream_exposes_only_typed_actions) {
                 "status") == "incomplete");
   return true;
 }
+
+Q4T_TEST(responses_client_patch_emits_a_complete_typed_operation) {
+  Json options, chat;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"tools":[{"type":"apply_patch"}],"tool_choice":{"type":"apply_patch"}})",
+      &options));
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"messages":[{"role":"user","content":"Update draft"}]})", &chat));
+  Json tools, choice;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesTools(options, &tools, &choice, &error));
+  Json restricted, allowed, mapped_tools, mapped_choice;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"tools":[{"type":"apply_patch","allowed_callers":["programmatic"]}],"tool_choice":{"type":"apply_patch"}})",
+      &restricted));
+  Q4T_CHECK(!NormalizeResponsesTools(restricted, &mapped_tools, &mapped_choice,
+                                     &error));
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"tools":[{"type":"apply_patch"}],"tool_choice":{"type":"allowed_tools","mode":"required","tools":[{"type":"apply_patch"}]}})",
+      &allowed));
+  Q4T_CHECK(NormalizeResponsesTools(allowed, &mapped_tools, &mapped_choice,
+                                    &error));
+  chat.object.emplace_back("tools", tools);
+  chat.object.emplace_back("tool_choice", choice);
+  const std::string prefix =
+      "<tool_call><function=q4t_builtin_apply_patch>"
+      "<parameter=type>update_file</parameter>"
+      "<parameter=path>draft.md</parameter><parameter=diff>@@\n-old\n+new";
+  const std::string suffix = "</parameter></function></tool_call>";
+  ChatResponseParser parser;
+  parser.EmitToolAfterValidation(kApplyPatchToolName);
+  Q4T_CHECK(parser.Init(chat, "<think>\n\n</think>\n\n", "resp_patch", false));
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Append(prefix, &deltas) && deltas.empty());
+  auto interrupted = parser;
+  Q4T_CHECK(interrupted.FinishIncomplete(&deltas) && deltas.empty() &&
+            interrupted.CompletedToolCalls() == 0);
+  Q4T_CHECK(parser.Append(suffix, &deltas) && deltas.size() == 1 &&
+            parser.CompletedToolCalls() == 1);
+  auto completed = deltas[0];
+  Q4T_CHECK(completed.tool_start && completed.call.name == kApplyPatchToolName);
+  ResponsesOutput output;
+  std::string initial, added, terminal;
+  Q4T_CHECK(output.Init(options, "resp_patch", 42, false) &&
+            output.Start(&initial));
+  auto rejected = output;
+  auto invalid = completed;
+  invalid.call.arguments = R"({"type":"update_file","path":"draft.md"})";
+  Q4T_CHECK(!rejected.Append(invalid, "null", &added) && added.empty());
+  Q4T_CHECK(output.Append(completed, "null", &added));
+  auto failed = output;
+  Q4T_CHECK(failed.Fail("server_error", "model interrupted", &terminal));
+  Q4T_CHECK(failed.Snapshot().GetArray("output")->array[0].GetString(
+                "status") == "in_progress" &&
+            terminal.find("response.output_item.done") == terminal.npos);
+  auto incomplete = output;
+  Q4T_CHECK(incomplete.Finish(true, 0, {}, 43, &terminal) &&
+            terminal.find("response.output_item.done") == terminal.npos);
+  Q4T_CHECK(output.Finish(false, 1, {}, 43, &terminal));
+  std::vector<Json> events;
+  const auto wire = initial + added + terminal;
+  Q4T_CHECK(Events(wire, &events) &&
+            wire.find("function_call_arguments") == wire.npos);
+  const auto& item = output.Snapshot().GetArray("output")->array[0];
+  Q4T_CHECK(item.GetString("type") == "apply_patch_call" &&
+            item.GetString("status") == "completed" &&
+            item.GetString("call_id") == completed.call.id &&
+            item.Find("operation")->GetString("path") == "draft.md" &&
+            item.Find("operation")->GetString("diff") == "@@\n-old\n+new");
+  return true;
+}

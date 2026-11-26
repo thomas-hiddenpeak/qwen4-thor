@@ -102,13 +102,11 @@ Q4T_TEST(chat_capabilities_native_file_search_conditions_and_output_types) {
               "file_search_call.results");
     const auto* items = response->GetArray("output_items");
     constexpr const char* expected[] = {
-        "message",          "reasoning",
-        "function_call",    "custom_tool_call",
-        "local_shell_call", "compaction",
-        "file_search_call", "web_search_call",
-        "tool_search_call", "tool_search_output",
-        "program",          "program_output",
-        "mcp_list_tools",   "mcp_approval_request",
+        "message",          "reasoning",          "function_call",
+        "custom_tool_call", "local_shell_call",   "apply_patch_call",
+        "compaction",       "file_search_call",   "web_search_call",
+        "tool_search_call", "tool_search_output", "program",
+        "program_output",   "mcp_list_tools",     "mcp_approval_request",
         "mcp_call"};
     Q4T_CHECK(items && items->array.size() == std::size(expected));
     for (const auto* type : expected)

@@ -108,9 +108,11 @@ Status ResponsesOutput::AppendProgramItems(const io::Json& items,
   for (const auto& item : items.array) {
     const auto type = item.GetString("type");
     if (type != "program" && type != "program_output" &&
-        type != "function_call" && type != "custom_tool_call")
+        type != "function_call" && type != "custom_tool_call" &&
+        type != "apply_patch_call")
       return Status::Fail("Invalid program output item");
-    if ((type == "function_call" || type == "custom_tool_call") &&
+    if ((type == "function_call" || type == "custom_tool_call" ||
+         type == "apply_patch_call") &&
         (!item.Find("caller") ||
          item.Find("caller")->GetString("type") != "program" ||
          item.GetString("status") != "completed"))

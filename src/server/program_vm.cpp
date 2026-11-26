@@ -270,7 +270,8 @@ bool Valid(const Json& input) {
         tool.GetString("namespace").size() > 512 ||
         (tool.GetString("type") != "function" &&
          tool.GetString("type") != "custom" &&
-         tool.GetString("type") != "mcp") ||
+         tool.GetString("type") != "mcp" &&
+         tool.GetString("type") != "apply_patch") ||
         !keys.insert(tool.GetString("key")).second ||
         !identities
              .insert(OutputJson(Array({String(tool.GetString("namespace")),

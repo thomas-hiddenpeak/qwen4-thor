@@ -1,0 +1,38 @@
+{
+  "stage": "history_cpu_verified",
+  "issued": false,
+  "base": "ca83334963d1580c5c9d587a4f10fadc57b65ef8",
+  "sources": {
+    "src/server/responses_input.cpp": "0a1d28025c4e5e072b7d17951a5bebaedeb980e0c2941835bce970e258a60fea",
+    "src/server/responses_plan.cpp": "dd79cbbfa7803dcfd0bfa119e196c0881ccf1769375b1eec82924d85b510df37",
+    "include/q4t/server/responses_input.h": "a29edfee59bbf301546f7abdf6a671f79b6c9cba4bb65d030645a4e61b136752",
+    "tests/server_responses_input_test.cpp": "a45bf8b7b8ef8acca32901d11cd08c154b5bcc7f4990ff23759acfe3bd160828",
+    "tests/server_responses_context_test.cpp": "775d6f086259b5baa9f4a4cdec513b98acf191584acfc2e162c1c9863e5b2335"
+  },
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "validated_sdk_examples": 3,
+  "original_failure": {
+    "selected": 3,
+    "passed": 2,
+    "failed": 1,
+    "log_sha256": "7f291a1514d4fd1b6df57652b380a15881725d450132dd413842794639bc22c4"
+  },
+  "checks": {
+    "passed": 5,
+    "log_sha256": "d931e35856bd90789dfc7c7ffb39b5c2cef8f47f454b1c1fb7df0acdc9d6e5d7",
+    "checks": [
+      "responses_consecutive_synchronous_tool_rounds_keep_call_boundaries",
+      "responses_local_shell_history_binds_real_argv_and_result",
+      "responses_patch_history_preserves_the_operation_and_failure",
+      "responses_program_patch_results_require_original_family_and_parent",
+      "responses_context_removes_a_patch_call_with_its_failed_result"
+    ],
+    "audit_sha256": "811eb33aad2c8b73c17d84def557043438e3069921346c187f74ed761cda086d",
+    "mutation_checks": 40
+  },
+  "pending": [
+    "tool declaration and typed output producer",
+    "program-executed child dispatch and SDK business",
+    "managed recovery and release"
+  ]
+}

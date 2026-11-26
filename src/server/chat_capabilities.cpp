@@ -322,9 +322,12 @@ std::string ChatCapabilitiesJson(
          R"("continuation_ttl_seconds":2592000,"shared_output_budget":true,)"
          R"("shared_native_call_budget":true,"automatic_tool_replay":false,)"
          R"("model_restart_on_error":false},)"
+         R"("apply_patch":{"executor":"client","automatic_execution":false,)"
+         R"("operations":["create_file","update_file","delete_file"],)"
+         R"("result_item":"apply_patch_call_output"},)"
          R"("local_shell":{"executor":"client","automatic_execution":false,)"
          R"("result_item":"local_shell_call_output"},)"
-         R"("output_items":["message","reasoning","function_call","custom_tool_call","local_shell_call","compaction","file_search_call","web_search_call","tool_search_call","tool_search_output","program","program_output","mcp_list_tools","mcp_approval_request","mcp_call"],)"
+         R"("output_items":["message","reasoning","function_call","custom_tool_call","local_shell_call","apply_patch_call","compaction","file_search_call","web_search_call","tool_search_call","tool_search_output","program","program_output","mcp_list_tools","mcp_approval_request","mcp_call"],)"
          R"("web_search":{"profile":"q4t-native-web-search-v1",)"
          R"("implemented":true,"executor":"native_configured_sites",)"
          R"("actions":["search","open_page","find_in_page"],)"
@@ -637,7 +640,8 @@ std::string ChatCapabilitiesJson(
          R"(,"video_characters":{"endpoint":"/v1/videos/characters",)"
          R"("operations":["create","retrieve"],"scope":"authenticated_client",)"
          R"("source":"original_encoded_clip","max_name_characters":80,)"
-         R"("max_source_bytes":)" + std::to_string(FileVideoLimits{}.max_source_bytes) +
+         R"("max_source_bytes":)" +
+         std::to_string(FileVideoLimits{}.max_source_bytes) +
          R"(,"decoder_compiled":)" + (video_decoder ? "true" : "false") + "}" +
          R"(,"application_state":{"profile":"q4t-objects-v1",)"
          R"("live_recording":{"opt_in":"--live-recordings","session_flag":"store","default":false,)"

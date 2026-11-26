@@ -853,11 +853,12 @@ Status FitResponsesContext(const ResponsesEnvelope& envelope,
   for (size_t i = 0; i < items.size(); ++i) {
     const auto type = items[i].GetString("type");
     if (type == "function_call" || type == "custom_tool_call" ||
-        type == "local_shell_call") {
+        type == "local_shell_call" || type == "apply_patch_call") {
       calls.emplace(items[i].GetString("call_id"), i);
     } else if (type == "function_call_output" ||
                type == "custom_tool_call_output" ||
-               type == "local_shell_call_output") {
+               type == "local_shell_call_output" ||
+               type == "apply_patch_call_output") {
       const auto id =
           type == "local_shell_call_output"
               ? items[i].GetString("call_id", items[i].GetString("id"))

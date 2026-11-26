@@ -1,0 +1,48 @@
+{
+  "stage": "native_tool_cpu_verified",
+  "issued": false,
+  "history_sha256": "0148ba9f222330bc7a772fc74db75cb56b5e09af49e8731f6b52d583a063afbd",
+  "product": {
+    "binary": "c34f8cf73fab5e373861ecbc163b5b66a67aa5f12129742ff3f66d42934d036b",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1102
+  },
+  "checks": [
+    "responses_patch_history_preserves_the_operation_and_failure",
+    "responses_program_patch_results_require_original_family_and_parent",
+    "responses_context_removes_a_patch_call_with_its_failed_result",
+    "responses_client_patch_emits_a_complete_typed_operation",
+    "responses_program_patch_preserves_client_failure_after_reopen",
+    "responses_program_result_caller_and_identity_cannot_be_rebound",
+    "responses_program_authenticated_restart_and_real_results",
+    "responses_local_shell_stream_exposes_only_typed_actions"
+  ],
+  "log_sha256": "0222ec8ebd7837ef1eefe9af74d6373b98261042966fa71c9967deaa224d6ab3",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1392,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "sdk_driver_sha256": "28dc26934d7272f5c0a63ff8c9e2ac248adbbedc1916e4f1aa1ce9eb380a8594",
+  "original_fixture_failure": {
+    "failed": 4,
+    "reason": "The isolated harness lacked the project worker dispatch and an assistant generation prefix",
+    "log_sha256": "cb5b58e46c9220c72f226d65eb9fde9ca71cfb68512bd80659a0bf9760f43e9b"
+  },
+  "pending": [
+    "native TLS SDK patch and result",
+    "packaged profiles, recovery and release"
+  ],
+  "interruption_regression": {
+    "previous_log_sha256": "b39ab5f9fa06cb1167ee62349f2ec7f1a8c8b1429b004850c3ef13a383b58a95",
+    "before": "failed responses set an invalid incomplete status on open patch calls",
+    "after": "open patch remains in_progress, no completed event is emitted"
+  }
+}
