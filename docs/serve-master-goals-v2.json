@@ -909,12 +909,15 @@
         "delivery": "evidence/serve-local-shell-20261126/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_tls_verified",
+        "status": "issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "release qualification",
+        "remaining": null,
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
-        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json",
+        "revision": 562,
+        "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       }
     },
     {
@@ -3161,12 +3164,15 @@
         "delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_tls_verified",
+        "status": "issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "release qualification",
+        "remaining": null,
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
-        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json",
+        "revision": 562,
+        "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
         "state": "failed_mcp_real_tls_verified",
@@ -6818,14 +6824,14 @@
         "delivery": "evidence/serve-video-track-grid-20261127/delivery.json"
       },
       "quicktime_active_layers_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "original": "evidence/serve-video-layer-composition-20261127/baseline.json",
         "targets": [
           "independent enabled track selection",
           "composition in common movie coordinates and signed layer order",
           "shared timeline, bounded decoding, frozen snapshot and historical replay"
         ],
-        "issued": false,
+        "issued": true,
         "reader": "evidence/serve-video-layer-composition-20261127/reader.json",
         "composition": "evidence/serve-video-layer-composition-20261127/composition.json",
         "runtime_scans_charged": true,
@@ -6835,7 +6841,9 @@
         "first_attempt": "evidence/serve-video-layer-composition-20261127/first-business-attempt.json",
         "paired_control": "evidence/serve-video-layer-composition-20261127/paired-business-controls.json",
         "business": "evidence/serve-video-layer-composition-20261127/business.json",
-        "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json"
+        "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json",
+        "revision": 560,
+        "delivery": "evidence/serve-video-layer-composition-20261127/delivery.json"
       }
     },
     {
@@ -9214,20 +9222,25 @@
         "delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
       },
       "successful_stream_sdk_handoff_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "cpu": "evidence/serve-video-layer-composition-20261127/sdk-cursor.json",
         "live_profiles_pending": true,
         "legacy_strict_cache_retention_pending": true,
-        "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json"
+        "profiles": "evidence/serve-video-layer-composition-20261127/profiles.json",
+        "revision": 560,
+        "delivery": "evidence/serve-video-layer-composition-20261127/delivery.json"
       },
       "response_cache_retention_sdk_20261127": {
-        "status": "native_tls_verified",
+        "status": "issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/cpu.json",
-        "remaining": "release qualification",
+        "remaining": null,
         "async_disconnect": "docs/evidence/serve-response-cache-retention-20261127/async-cursor.json",
         "business": "docs/evidence/serve-response-cache-retention-20261127/business.json",
         "capacity_driver": "docs/evidence/serve-response-cache-retention-20261127/handoff-driver.json",
-        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
+        "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json",
+        "capacity": "docs/evidence/serve-response-cache-retention-20261127/profiles.json",
+        "revision": 562,
+        "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
         "state": "failed_mcp_real_tls_verified",
@@ -10487,8 +10500,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 558,
-        "receipt": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json",
+        "revision": 562,
+        "receipt": "evidence/serve-response-cache-retention-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12259,7 +12272,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev558_delivered_remaining_deliveries",
+      "state": "rev562_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13616,7 +13629,9 @@
       "current_client_shell_delivery": "evidence/serve-shell-history-20261126/delivery.json",
       "current_program_fork_delivery": "evidence/serve-program-forks-20261126/delivery.json",
       "current_track_grid_delivery": "evidence/serve-video-track-grid-20261127/delivery.json",
-      "current_chatkit_interrupted_retry_delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
+      "current_chatkit_interrupted_retry_delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json",
+      "current_video_layers_delivery": "evidence/serve-video-layer-composition-20261127/delivery.json",
+      "current_response_cache_retention_delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -13721,16 +13736,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "2ba1919e991576a1e8e4b794551e481c4e54b998",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupted-retry-delivery-soak-src",
+        "source_commit": "1881eebc2eaeb206cf96170e6e9aea49217a2c73",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupted-retry-client-primary-01/bundle",
-          "manifest_sha256": "83513d4823d48a8d6ee5ae8b9f3cb5a0aca78a127b0e8281db1f4d49fd2ce24e"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-client-primary-01/bundle",
+          "manifest_sha256": "e5567f955c00f3ddd69e83253bb871feb43727752205106fc28d1659672bb2f5"
         },
-        "revision": 558,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/interrupted-retry-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "310ad71d7c6f00e05f653268ffeeb0b4c3487aae326d3b39a01baab8b240fe37",
-        "handoff_sha256": "e3482b7ac6fd76882b97a467cd215749776babef718c417226f53dd6611fc0ad",
+        "revision": 562,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "9241fa878656233857e7484555ad01bb903c3908869e723eb4b7048f6f091f77",
+        "handoff_sha256": "d565bf2be5ee7e3e2c8fe6097a43bc30f3028f21edf469b5b38a45916ddf5644",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14141,9 +14156,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 558,
-        "receipt": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json",
-        "plan_sha256": "310ad71d7c6f00e05f653268ffeeb0b4c3487aae326d3b39a01baab8b240fe37",
+        "revision": 562,
+        "receipt": "evidence/serve-response-cache-retention-20261127/delivery.json",
+        "plan_sha256": "9241fa878656233857e7484555ad01bb903c3908869e723eb4b7048f6f091f77",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
