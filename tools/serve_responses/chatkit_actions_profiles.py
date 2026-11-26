@@ -9,6 +9,7 @@ from typing import Callable
 from tools.serve_chat_storage import parts_profiles
 from tools.serve_responses import approval_identifiers_profiles as approval_ids
 from tools.serve_responses import local_shell_profiles as local_shell
+from tools.serve_responses import client_patch_profiles as patch
 from tools.serve_responses import conversation_compaction_profiles as compact_profiles
 from tools.serve_preflight import null_history_profiles
 from tools.serve_recovery import profile_live_reuse as reuse, profile_record
@@ -168,6 +169,9 @@ class Handoff:
 
 
 def handoff(plan):
+    if patch.KEY in plan:
+        return Handoff(patch.KEY, patch.RELEASE, patch.ACTOR, reuse.PATCH_RECEIPT,
+                       reuse.LOCAL_SHELL_RECEIPT, reuse.LOCAL_SHELL_REVIEWED, patch.check)
     if local_shell.KEY in plan:
         return Handoff(local_shell.KEY, local_shell.RELEASE, local_shell.ACTOR,
                        reuse.LOCAL_SHELL_RECEIPT, reuse.APPROVAL_IDS_RECEIPT,
@@ -251,6 +255,8 @@ def verify(phase, plan, capabilities):
     prior = profile_record.read(prior_file)
     name, change = plan['name'], plan[spec.key]
     expected = dict(prior['capabilities'], protocol_source_sha256=change['protocol'])
+    if spec.key == patch.KEY:
+        expected['responses'] = reuse.client_patch_capability(expected['responses'])
     if spec.key == local_shell.KEY:
         expected['responses'] = reuse.local_shell_capability(expected['responses'])
     if spec.key == video_clip_profiles.REGION_KEY:
@@ -279,12 +285,14 @@ def business(stage, capabilities):
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
     if spec.key in (failure_profiles.KEY, video_clip_profiles.KEY, video_clip_profiles.REGION_KEY, tool_map_profiles.KEY, null_history_profiles.KEY,
-                    parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY, local_shell.KEY):
+                    parts_profiles.KEY, compact_profiles.KEY, approval_ids.KEY, local_shell.KEY, patch.KEY):
         settings = plan[spec.key]
         module = failure_profiles if spec.key == failure_profiles.KEY else video_clip_profiles
         wire = 'failure-wire' if spec.key == failure_profiles.KEY else 'video-clip-wire'
         if spec.key == tool_map_profiles.KEY:
             module, wire = tool_map_profiles, 'tool-map-wire'
+        elif spec.key == patch.KEY:
+            module, wire = patch, 'client-patch-wire'
         elif spec.key == local_shell.KEY:
             module, wire = local_shell, 'local-shell-wire'
         elif spec.key == approval_ids.KEY:

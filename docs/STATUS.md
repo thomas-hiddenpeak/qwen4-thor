@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主、轻配置的补丁接管驱动已接入。驱动校验直接调用和程序调用的四个原响应及两份输入页，再从原待回填程序续答。5 项 CPU 用例通过，包括键文件保留、对象 ID 碰撞拒绝和历史 HTTP 内容篡改。设备配置验证待执行。
+
 模型经官方 SDK 生成 JavaScript，程序请求删除客户端工作区内一个不存在的文件。实际系统调用返回 ENOENT；原程序收到 failed 与 ENOENT，模型读回相同结果。冒用程序 ID 返回 400，跨客户端返回 404。5 份 HTTP 资源通过双份 schema 校验，独立 Chat 正常。接下来复核主、轻配置接管原始记录。[设备记录](evidence/serve-client-patch-20261126/program.json)
 
 Thor 上的模型经原生 TLS 发出补丁。官方 SDK 客户端按补丁实际创建架构记录，模型在续答中返回文件哈希前 12 位。错误调用 ID 返回 400，其他客户端读取返回 404。5 份 HTTP 资源和 36 个流事件均通过官方与随包 schema。下一步验证发行配置接管。[设备记录](evidence/serve-client-patch-20261126/business.json)
