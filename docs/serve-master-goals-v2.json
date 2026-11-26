@@ -3109,7 +3109,9 @@
           "capacity and managed delivery",
           "hosted shell environments"
         ],
-        "business": "evidence/serve-shell-history-20261126/business.json"
+        "business": "evidence/serve-shell-history-20261126/business.json",
+        "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
+        "profile_stage": "failed_409_repaired_cpu"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -3830,7 +3832,9 @@
           "capacity and managed delivery",
           "hosted shell environments"
         ],
-        "business": "evidence/serve-shell-history-20261126/business.json"
+        "business": "evidence/serve-shell-history-20261126/business.json",
+        "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
+        "profile_stage": "failed_409_repaired_cpu"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -7703,7 +7707,9 @@
           "capacity and managed delivery",
           "hosted shell environments"
         ],
-        "business": "evidence/serve-shell-history-20261126/business.json"
+        "business": "evidence/serve-shell-history-20261126/business.json",
+        "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
+        "profile_stage": "failed_409_repaired_cpu"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",
@@ -9018,7 +9024,9 @@
           "capacity and managed delivery",
           "hosted shell environments"
         ],
-        "business": "evidence/serve-shell-history-20261126/business.json"
+        "business": "evidence/serve-shell-history-20261126/business.json",
+        "fork_repair": "evidence/serve-shell-history-20261126/fork-repair.json",
+        "profile_stage": "failed_409_repaired_cpu"
       },
       "shell_history_20261126": {
         "stage": "shell_history_cpu_verified",

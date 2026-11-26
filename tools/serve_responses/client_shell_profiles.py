@@ -20,13 +20,17 @@ def prepare(out, build, deployment, interpreter, source):
     proof = package.read(PROOF)
     sdk = subprocess.check_output([interpreter, "-IB", "-c", "import openai; print(openai.__version__)"],
                                   text=True, timeout=15).strip()
+    repair_path = PROOF.with_name("fork-repair.json")
+    repair = package.read(repair_path)
     package.require(proof["run"]["status"] == "PASS" and proof["client"]["sdk"] == sdk
                     and proof["client"]["reads"] == 1 and proof["client"]["program"]["exit_code"] == 1
-                    and proof["product"]["binary"] == package.sha(build / "q4t")
-                    and proof["product"]["ingress"] == package.sha(build / "q4t-ingress"),
-                    "shell histories and candidate identity differ")
+                    and repair["prior_business_sha256"] == package.sha(PROOF)
+                    and package.same_json(repair["original_product"], proof["product"])
+                    and repair["product"]["binary"] == package.sha(build / "q4t")
+                    and repair["product"]["ingress"] == package.sha(build / "q4t-ingress"),
+                    "original shell history or repaired candidate identity differs")
     lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.PATCH_REVIEWED,
-                                KEY, [PROOF, RELEASE, ACTOR, Path(__file__), Path(approvals.__file__)])
+                                KEY, [PROOF, repair_path, RELEASE, ACTOR, Path(__file__), Path(approvals.__file__)])
     store = out / "state/application-objects"
     approvals.seed(source, store, proof)
     for name in ("primary", "light"):

@@ -699,14 +699,15 @@ ObjectReply AdvanceResponsesProgram(const ResponsesProgramState& program,
       if (!encoded)
         return Error(502, "program_output_invalid", encoded.message());
     }
-    result.array.push_back(Object(
-        {{"id",
-          String("prog_out_" +
-                 Digest(program.program.GetString("call_id")).substr(0, 56))},
-         {"call_id", *program.program.Find("call_id")},
-         {"type", String("program_output")},
-         {"status", String(executed.value.GetString("status"))},
-         {"result", String(std::move(output))}}));
+    auto terminal = Object({{"type", String("program_output")},
+                            {"call_id", *program.program.Find("call_id")},
+                            {"status", *executed.value.Find("status")},
+                            {"result", String(std::move(output))}});
+    // Sibling responses can return different results to the same program.
+    // Content-address the immutable terminal item while retaining its parent.
+    Set(&terminal, "id",
+        String("prog_out_" + Digest(OutputJson(terminal)).substr(0, 56)));
+    result.array.push_back(std::move(terminal));
   }
   *emitted = std::move(result);
   return {};

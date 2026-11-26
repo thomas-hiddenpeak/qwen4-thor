@@ -1,0 +1,71 @@
+{
+  "stage": "program_terminal_fork_repaired_cpu",
+  "issued": false,
+  "prior_business_sha256": "4cccad1bd055f6bbe5289698cb8583e86bbc56959b5e543d2ccbf603e8cd1342",
+  "original_product": {
+    "binary": "5811a184942c9bbc3525a5e65dad83906acd080e3d9c96a3da4c66c0a02c5b06",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "protocol_sources": 1102,
+    "source_manifest": "bb05f3f920b400862dfaabf56ca63a0a2237eeb7a245e6675a9dd718053dcaed"
+  },
+  "product": {
+    "binary": "60df5e81c86184e9d5df8e6b7420fccdad327515baf57658ab8c192235534078",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "protocol_sources": 1102,
+    "source_manifest": "3e2662e873c369f8341aec5c64e3178576fc90c10c1473349d6f0e5f0778d813"
+  },
+  "original_http_failure": {
+    "status": 409,
+    "code": "item_identity_conflict",
+    "sdk": "openai.ConflictError: Error code: 409 - Existing item has different content",
+    "failed_run": "4bc7109f4d8fb1de08f525d770338294d416144e11d06d2073296f2992c6de26",
+    "lease": "ca56af711efffd9dad7e8661997464654faeef6460e1d2d5b6e19637e401c75c",
+    "matched_historical_pages": {
+      "direct_call": "a752e261c4718b471c30d6bcb46bbee665303eddfa6649c7fe2717e0fe538313",
+      "direct_completed": "876d357efa03e9395aab69187434413a6b51ee98c8ee3d886d6c944f80394a9d",
+      "program_completed": "bf67fc4b9619d7f6db06f3ffdb9a8b26e23da2166bd33c6043a27db066348700",
+      "program_inputs": "cf4da08e90711345517024f1e3b7bffe01133677f262215568a9df22c212fd76",
+      "program_call": "5b7043b2e12648a82a660986fc5cf37a67ff0ec8ffe00bcd1f294512f647daf7",
+      "direct_inputs": "560c20bc815d162c569d12bfe3ea334dd2814f14a78d2653d865f84e11e99a0b"
+    }
+  },
+  "regression": {
+    "before": [
+      "[PASS] chat_capabilities_native_file_search_conditions_and_output_types",
+      "[PASS] responses_shell_history_preserves_actions_and_each_command_outcome",
+      "[PASS] responses_local_shell_environment_selection_and_skill_metadata",
+      "[PASS] responses_local_shell_stream_exposes_only_typed_actions",
+      "[PASS] responses_client_patch_emits_a_complete_typed_operation",
+      "[PASS] responses_shell_stream_keeps_commands_and_completion_distinct",
+      "[PASS] responses_program_result_caller_and_identity_cannot_be_rebound",
+      "[PASS] responses_program_patch_preserves_client_failure_after_reopen",
+      "[PASS] responses_program_shell_reopens_with_canonical_commands_and_outcomes",
+      "  CHECK failed: second.array[0].GetString(\"call_id\") == first.array[0].GetString(\"call_id\") && second.array[0].GetString(\"id\") != first.array[0].GetString(\"id\") (line 470)",
+      "[FAIL] responses_program_forks_keep_independent_terminal_item_ids",
+      "10 tests, 9 passed, 1 failed, 0 skipped"
+    ],
+    "after": [
+      "[PASS] chat_capabilities_native_file_search_conditions_and_output_types",
+      "[PASS] responses_shell_history_preserves_actions_and_each_command_outcome",
+      "[PASS] responses_local_shell_environment_selection_and_skill_metadata",
+      "[PASS] responses_local_shell_stream_exposes_only_typed_actions",
+      "[PASS] responses_client_patch_emits_a_complete_typed_operation",
+      "[PASS] responses_shell_stream_keeps_commands_and_completion_distinct",
+      "[PASS] responses_program_result_caller_and_identity_cannot_be_rebound",
+      "[PASS] responses_program_patch_preserves_client_failure_after_reopen",
+      "[PASS] responses_program_shell_reopens_with_canonical_commands_and_outcomes",
+      "[PASS] responses_program_forks_keep_independent_terminal_item_ids",
+      "10 tests, 10 passed, 0 failed, 0 skipped"
+    ],
+    "contracts": [
+      "distinct terminal result IDs under one parent",
+      "same branch retry is byte-stable",
+      "original pre-upgrade terminal ID reopens",
+      "program caller identity preserved"
+    ]
+  },
+  "pending": [
+    "real prior-history fork on repaired binary",
+    "managed device recovery"
+  ]
+}

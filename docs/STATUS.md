@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主配置读回六份历史 HTTP 资源后，向同一程序交回变化的真实命令结果，保存续答时返回 409。CPU 复现确认，原实现只按父调用计算终态项 ID。现按父调用、终态和实际输出计算 ID，原有调用归属与不可变记录校验保留。十项 CPU 检查通过，下一步用原始对象库复验这一分支。[失败与回归证据](evidence/serve-shell-history-20261126/fork-repair.json)
+
 主、轻配置接管驱动已就绪。它从同一份已关闭对象库恢复四个响应与两份输入页，并在客户端私有文档副本加入两个匹配行，要求原程序重新返回退出码 0 和计数 2。五项 CPU 检查通过，覆盖误用原结果、输入页被替换和重复续答 ID。下一步在设备验证两个配置。[接管范围](evidence/serve-shell-history-20261126/profile-driver.json)
 
 一次模型启动经原生 TLS 和官方 Python SDK 完成两个标准 shell 场景。客户端读出项目文档，模型续答 qwen4_exp；程序取得真实 grep 退出码 1 与计数 0，返回 exit=1 count=0。错误调用和父 ID 均返回 400，跨客户查询 404，独立 Chat 返回 720041。九份 HTTP 资源与 35 个流事件分别通过两套 schema。下一步进行容量接管与故障恢复验收。[业务记录](evidence/serve-shell-history-20261126/business.json)

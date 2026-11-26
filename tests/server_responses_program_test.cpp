@@ -447,3 +447,33 @@ Q4T_TEST(responses_program_shell_reopens_with_canonical_commands_and_outcomes) {
   Q4T_CHECK(!Run(cipher, history, &completed).ok());
   return true;
 }
+
+Q4T_TEST(responses_program_forks_keep_independent_terminal_item_ids) {
+  Fixture f;
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  auto history =
+      Array({Create(cipher, "const r=await tools.read({n:1});text(r.value);")});
+  Json calls;
+  Q4T_CHECK(Ok(Run(cipher, history, &calls)) && calls.array.size() == 1);
+  history.array.push_back(calls.array.front());
+  history.array.push_back(
+      Result(calls.array.front(), String(R"({"value":1})")));
+  Json first, retry, second;
+  Q4T_CHECK(Ok(Run(cipher, history, &first)) && first.array.size() == 1 &&
+            first.array[0].GetString("result") == "1");
+  Q4T_CHECK(Ok(Run(cipher, history, &retry)) &&
+            OutputJson(first) == OutputJson(retry));
+  Set(&history.array.back(), "output", String(R"({"value":2})"));
+  Q4T_CHECK(Ok(Run(cipher, history, &second)) && second.array.size() == 1 &&
+            second.array[0].GetString("result") == "2");
+  Q4T_CHECK(second.array[0].GetString("call_id") ==
+                first.array[0].GetString("call_id") &&
+            second.array[0].GetString("id") != first.array[0].GetString("id"));
+  history.array.push_back(second.array.front());
+  // Previously issued terminal IDs remain readable after upgrade.
+  Set(&history.array.back(), "id",
+      String("prog_out_" +
+             Digest(history.array[0].GetString("call_id")).substr(0, 56)));
+  return Ok(Run(cipher, history, &retry)) && retry.array.empty();
+}
