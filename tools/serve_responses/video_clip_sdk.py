@@ -87,7 +87,21 @@ def main():
                                  max_retries=0, timeout=60, _strict_response_validation=True)
         owner, peer = sdk(plan['key']), sdk(plan['other'])
         source = Path(plan['fixture']).read_bytes()
-        if plan.get('track_grid', False):
+        layers = plan.get('active_layers')
+        if layers:
+            left, right = source, Path(layers['inline']).read_bytes()
+            assert [hashlib.sha256(raw).hexdigest() for raw in (left, right)] == layers['source_sha256']
+            # Give the two enabled video tracks the same ID; the demuxer must
+            # reject this original before any model generation.
+            invalid = bytearray(left)
+            first = invalid.index(b'tkhd') + 4
+            second = invalid.index(b'tkhd', first) + 4
+            assert invalid[first] == invalid[second] == 0
+            invalid[second + 12:second + 16] = invalid[first + 12:first + 16]
+            invalid = bytes(invalid)
+            left_colors = ('red', 'green', 'red', 'yellow')
+            right_colors = ('red', 'green', 'blue', 'yellow')
+        elif plan.get('track_grid', False):
             left, right, invalid = track_grid_samples(source)
             left_colors = right_colors = ('red', 'green', 'blue', 'yellow')
         elif plan.get('quickdraw_region', False):
@@ -107,6 +121,8 @@ def main():
         question = ('Inspect the video. Name the color at the center of each quadrant. '
                     'Return lowercase English color names for top_left, top_right, bottom_left '
                     'and bottom_right. Return only the requested object.')
+        if layers:
+            question = 'Use the first displayed frame at time zero. ' + question
         props = {k: {'type':'string','enum':['red','green','blue','yellow','black','white',
                                               'cyan','magenta']} for k in corner}
         schema = dict(type='object',properties=props,required=list(corner),additionalProperties=False)
@@ -123,6 +139,9 @@ def main():
             # The retained answer contains only one color. Later turns must
             # recover the remaining colors from the stored video input.
             uploaded[0]['content'][1]['text'] = 'Name the color at the center of the top-left quadrant.'
+            if layers:
+                uploaded[0]['content'][1]['text'] = ('Use the first displayed frame at time zero. '
+                                                     + uploaded[0]['content'][1]['text'])
             first_common = dict(common, text=dict(format=dict(type='json_schema',name='corner',
                 strict=True,schema=dict(type='object',properties={'top_left':props['top_left']},
                                         required=['top_left'],additionalProperties=False))))
@@ -166,7 +185,7 @@ def main():
                 summary['restored'] = streamed('restored', dict(previous_response_id=restored['response'],
                     input='For the earlier video: '+question), left_colors)
                 transfer['restored'] = restored
-        if plan.get('track_grid'):
+        if layers or plan.get('track_grid'):
             transfer['resources'] = {}
             for label, reply in summary.items():
                 raw = owner.responses.with_raw_response.retrieve(reply['response'])

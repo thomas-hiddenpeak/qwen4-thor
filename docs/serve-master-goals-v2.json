@@ -6770,7 +6770,8 @@
         "reader": "evidence/serve-video-layer-composition-20261127/reader.json",
         "composition": "evidence/serve-video-layer-composition-20261127/composition.json",
         "runtime_scans_charged": true,
-        "other_graphics_modes_pending": true
+        "other_graphics_modes_pending": true,
+        "business_controls": "evidence/serve-video-layer-composition-20261127/business-controls.json"
       }
     },
     {
