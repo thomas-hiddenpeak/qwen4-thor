@@ -26,7 +26,11 @@ def cancel_during_generation(owner, context, plan, destination):
             extra_body=command) as stream:
         for event in stream:
             sequence += 1
-            assert event.sequence_number == sequence and sequence < 1200 and terminal is None
+            with (destination/'live-sequence.jsonl').open('a') as trace:
+                trace.write(json.dumps(dict(position=sequence, observed=event.sequence_number,
+                                            event=event.type))+'\n')
+            assert event.sequence_number == sequence and sequence < 1200 and terminal is None, (
+                sequence, event.sequence_number, event.type)
             if event.type == 'response.output_text.delta' and not requested:
                 with httpx.Client(verify=context, trust_env=False, timeout=10) as control:
                     receipt = control.post(plan['base'] + '/requests/cancel', json=command,

@@ -1,0 +1,134 @@
+{
+  "engine": "17258aee63af8894f7bc78322bba0bd4e058a03053fbd90b22c6e929a647d6e7",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "source_manifest": "f917de4f2e84d1b78951028d89f27cac28e90084f7bef51d804367dd3c799b0d",
+  "cases": [
+    "responses_cancel_delivers_the_sequenced_frame_before_failure",
+    "responses_cancel_keeps_backpressure_and_shutdown_bounded",
+    "responses_output_http_failure_uses_native_terminal_once",
+    "responses_output_failure_has_no_success_or_tool_done",
+    "responses_output_failure_classification",
+    "native_responses_failed_incomplete_and_exception_keep_real_outcomes",
+    "native_responses_cancel_deadline_and_unfinished_never_complete",
+    "server_http_write_cancel_and_request_deadline",
+    "responses_legacy_failure_projects_get_and_resumed_event"
+  ],
+  "original_failures": [
+    {
+      "run": "responses-failure-sdk-business-01",
+      "outcome": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 37.159,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "result_sha256": "5d727295ac17fae4bf86694b62759df33e6a0e8983f15f9fcb18896bb2794014",
+      "strict_sdk_traceback_sha256": "d62643d9b42c298af3330bf174645be04f0b07fd910c07e468ac3341257e19de"
+    },
+    {
+      "run": "responses-failure-sdk-business-02",
+      "outcome": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 36.556,
+        "unchanged_default": true,
+        "phases": []
+      },
+      "result_sha256": "13bf53500cf86866cbd25e606524f2e20ac1b25d39d613029718481665bb1d42",
+      "strict_sdk_traceback_sha256": "2702e0a8ebc005e121cdbd0517113b64b4d16de2f2afbaf8104014bd585c3a23"
+    }
+  ],
+  "live_before": [
+    {
+      "position": 0,
+      "observed": 0,
+      "event": "response.created"
+    },
+    {
+      "position": 1,
+      "observed": 1,
+      "event": "response.in_progress"
+    },
+    {
+      "position": 2,
+      "observed": 2,
+      "event": "response.output_item.added"
+    },
+    {
+      "position": 3,
+      "observed": 3,
+      "event": "response.content_part.added"
+    },
+    {
+      "position": 4,
+      "observed": 4,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 5,
+      "observed": 5,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 6,
+      "observed": 6,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 7,
+      "observed": 7,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 8,
+      "observed": 9,
+      "event": "response.failed"
+    }
+  ],
+  "durable_before": [
+    {
+      "sequence": 0,
+      "type": "response.created"
+    },
+    {
+      "sequence": 1,
+      "type": "response.in_progress"
+    },
+    {
+      "sequence": 2,
+      "type": "response.output_item.added"
+    },
+    {
+      "sequence": 3,
+      "type": "response.content_part.added"
+    },
+    {
+      "sequence": 4,
+      "type": "response.output_text.delta"
+    },
+    {
+      "sequence": 5,
+      "type": "response.output_text.delta"
+    },
+    {
+      "sequence": 6,
+      "type": "response.output_text.delta"
+    },
+    {
+      "sequence": 7,
+      "type": "response.output_text.delta"
+    },
+    {
+      "sequence": 8,
+      "type": "response.output_text.delta"
+    },
+    {
+      "sequence": 9,
+      "type": "response.failed"
+    }
+  ],
+  "trace_sha256": "7f59e1d94d81acde6001ea2ae6d64e404e6acb87ee4ed6220df8c07d3af32058",
+  "original_stored_sha256": "fad103a327a476a9e959295ee91620da57e43c440159657052085675876b2af1",
+  "candidate_tls": "pending"
+}

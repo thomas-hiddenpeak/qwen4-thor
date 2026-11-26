@@ -577,6 +577,81 @@ Q4T_TEST(responses_output_incomplete_parser_preserves_chat_contract) {
   return true;
 }
 
+Q4T_TEST(responses_cancel_delivers_the_sequenced_frame_before_failure) {
+  using namespace q4t::server::detail;
+  using namespace std::chrono_literals;
+  using Clock = std::chrono::steady_clock;
+  for (bool deadline : {false, true}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    ScopeExit close_sockets([&] {
+      close(fd[0]);
+      close(fd[1]);
+    });
+    HttpResponseContext http(fd[0]);
+    ResponsesOutput output;
+    std::string first, delta;
+    Q4T_CHECK(output.Init(Options(), "resp_cancel", 42, false));
+    Q4T_CHECK(output.Start(&first) &&
+              output.Append(Text("partial"), "null", &delta));
+    Q4T_CHECK(BeginStreamingResponse(fd[0], http.State()) &&
+              WriteAll(fd[0], first));
+    RequestControl control("req_cpu", "key",
+                           Clock::now() + (deadline ? -1s : 10s));
+    if (!deadline) control.Cancel();
+    Q4T_CHECK(control.Cancelled());
+    Q4T_CHECK(WriteAll(fd[0], delta,
+                       {.control = &control, .finish_response_event = true}));
+    std::string terminal;
+    Q4T_CHECK(output.Fail(control.Reason(), "stopped", &terminal));
+    Q4T_CHECK(WriteAll(fd[0], terminal));
+    shutdown(fd[0], SHUT_WR);
+    std::string raw;
+    char received[4096];
+    ssize_t count;
+    while ((count = recv(fd[1], received, sizeof(received), 0)) > 0)
+      raw.append(received, count);
+    Q4T_CHECK(count == 0);
+    const auto begin = raw.find("\r\n\r\n");
+    std::vector<Json> events;
+    Q4T_CHECK(begin != raw.npos && Events(raw.substr(begin + 4), &events));
+    Q4T_CHECK(events.size() >= 2 &&
+              events.back().GetString("type") == "response.failed" &&
+              events[events.size() - 2].GetString("type") ==
+                  "response.output_text.delta");
+  }
+  return true;
+}
+
+Q4T_TEST(responses_cancel_keeps_backpressure_and_shutdown_bounded) {
+  using namespace q4t::server::detail;
+  using namespace std::chrono_literals;
+  using Clock = std::chrono::steady_clock;
+  for (bool shutdown : {false, true}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    ScopeExit close_sockets([&] {
+      close(fd[0]);
+      close(fd[1]);
+    });
+    HttpResponseContext http(fd[0]);
+    int limit = 2048;
+    Q4T_CHECK(setsockopt(fd[0], SOL_SOCKET, SO_SNDBUF, &limit, sizeof(limit)) ==
+              0);
+    RequestControl control("req_cpu", "key", Clock::now() + 10s);
+    control.Cancel(shutdown ? RequestControl::State::kShutdown
+                            : RequestControl::State::kExplicit);
+    const auto start = Clock::now();
+    Q4T_CHECK(!WriteAll(fd[0], std::string(1 << 20, 'x'),
+                        {.control = &control, .finish_response_event = true}));
+    Q4T_CHECK(Clock::now() - start < 2s);
+    Q4T_CHECK(!WriteAll(fd[0], "terminal"));
+    char byte;
+    Q4T_CHECK((recv(fd[1], &byte, 1, MSG_DONTWAIT) == 1) == !shutdown);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_output_http_failure_uses_native_terminal_once) {
   using namespace q4t::server::detail;
   for (bool direct : {false, true}) {

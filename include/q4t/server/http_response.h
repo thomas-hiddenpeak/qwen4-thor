@@ -68,6 +68,9 @@ struct WriteOptions {
   std::chrono::steady_clock::time_point deadline =
       std::chrono::steady_clock::now() + std::chrono::seconds(30);
   RequestControl* control = nullptr;
+  // A sequenced Responses event already belongs to the journal. On a soft
+  // cancellation finish its frame only while the peer can receive it.
+  bool finish_response_event = false;
 };
 
 // 128 random bits from the OS; never falls back to a process-local counter.

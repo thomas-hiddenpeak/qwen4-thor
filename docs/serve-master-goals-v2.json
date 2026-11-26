@@ -2946,8 +2946,10 @@
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
       },
       "responses_failure_20261126": {
-        "stage": "native_cpu_and_sdk_pass",
-        "evidence": "evidence/serve-responses-errors-20261126/cpu.json"
+        "stage": "live_gap_reproduced_cpu_fix_pass",
+        "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
+        "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
+        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json"
       }
     },
     {
@@ -8576,8 +8578,10 @@
         "matrix": "SDK_STREAM_COMPATIBILITY.md"
       },
       "responses_failure_20261126": {
-        "stage": "native_cpu_and_sdk_pass",
-        "evidence": "evidence/serve-responses-errors-20261126/cpu.json"
+        "stage": "live_gap_reproduced_cpu_fix_pass",
+        "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
+        "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
+        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json"
       }
     },
     {
