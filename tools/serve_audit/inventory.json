@@ -4803,7 +4803,7 @@
     "src/server/responses_agent_tree.cpp": "543eebf1088d6b680596a9db2455d77d9f07c097821336a4d1ea8325fe820fca",
     "src/server/responses_api.cpp": "7b1999e6dda9b9950e6e85540855d36d7c3df09e6a8c54951be2cc16228afe94",
     "src/server/responses_automation_execution.cpp": "393e823e629960008920b0107fed6d8250e47bb2c2aae61ca4077e8d7aacb07e",
-    "src/server/responses_compaction.cpp": "d0b16d9892e4ae7cb68b90b008a37577481b9c2dde05c398f2f0f3402ed9986d",
+    "src/server/responses_compaction.cpp": "2d97c867e1e70e9458abecf4d64f10e96d07f1f12afb1c235b959c18f5e980da",
     "src/server/responses_crypto.cpp": "5e90f0671daeecdacba5d42918c1f796421887012416f001b33c2c38a71e8030",
     "src/server/responses_execution.cpp": "981c852ceded7a432f4c32eab27b9bd7e6bb77cd8cb4aecf6b7672d96826bf4d",
     "src/server/responses_execution_compaction.cpp": "0637f83564834c1da3a9841bac9c8bac6129104c1a7502071543d7fc1e5914ea",

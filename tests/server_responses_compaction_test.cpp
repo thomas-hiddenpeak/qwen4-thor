@@ -123,7 +123,9 @@ Q4T_TEST(compaction_plan_preserves_instructions_and_current_turn) {
   Q4T_CHECK(OutputJson(plan.source) == OutputJson(history));
   const auto* messages = plan.request.GetArray("messages");
   Q4T_CHECK(messages && messages->array.size() == 2);
-  Q4T_CHECK(messages->array[1].GetString("content") == OutputJson(history));
+  const auto task = messages->array[1].GetString("content");
+  Q4T_CHECK(task == "Write a concise factual handoff from this conversation "
+                    "transcript.\n\n" + OutputJson(history));
   Q4T_CHECK(!plan.request.GetBool("enable_thinking", true) &&
             plan.request.GetInt("max_completion_tokens") == 256 &&
             !plan.request.Has("tools"));

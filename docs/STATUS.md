@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+压缩第二次 HTTPS 创建收到模型拒答 502。三种普通 Chat 对照均从同一合成内容提取到 61432，私有诊断构建另一次创建返回 200，两次创建的自动 ID 不同。现将摘要任务明确写入用户轮，并完整保留原 JSON，拒答检查及事务边界继续生效。8 项针对性 CPU 用例通过，待发行构建重新验收创建、追加和续聊。[诊断记录](evidence/serve-conversation-compaction-20261126/prompt.json)
+
 会话压缩首次 HTTPS 检查用时 31.0 秒，创建返回 502。当时的错误合并了推理、工具和拒答三种片段。已修正压缩器对推理片段的处理，只将最终文本交给状态密钥加密，工具及拒答仍报错。7 项 CPU 检查通过，实际密文解开后不含测试推理片段。原始 502 保留，下一步用同一业务请求短验。[失败与修正记录](evidence/serve-conversation-compaction-20261126/private-output.json)
 
 Conversations 创建和追加接口此前遇到合法末项 compaction_trigger 会返回 503。候选复用现有模型压缩执行与准入，在同一事务中保存新输入和密封摘要。6 项 CPU 检查通过，包含原历史续读、真实加密回放、压缩时并发更新返回 409、另一客户隔离和旧独立压缩回归。下一步用固定 Python SDK 经原生 TLS 验证两次模型压缩和续聊。[源码和 CPU 记录](evidence/serve-conversation-compaction-20261126/cpu.json)

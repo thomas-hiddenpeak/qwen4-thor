@@ -1,0 +1,87 @@
+{
+  "preceding_engine": "354fb7db78713611184636f4089fd455e7fc3db52207198d462e0acc1db07eb8",
+  "second_attempt": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 30.813,
+    "unchanged_default": true,
+    "phases": []
+  },
+  "refusal_error": "response_parse_failed: Compaction model refused to produce memory",
+  "sdk_stderr_sha256": "079d7fd790a2baa02202b49a858b72113ac8364a9e3c1dae571f54343aa95672",
+  "first_write": false,
+  "ab_control": {
+    "run": {
+      "status": "PASS",
+      "starts": 1,
+      "seconds": 34.618,
+      "unchanged_default": true,
+      "phases": [
+        "create"
+      ]
+    },
+    "responses": [
+      {
+        "case": "current",
+        "refusal": null,
+        "content": "**Project Register Entry**\n*   **Dispatch Code:** 61432",
+        "finish": "stop"
+      },
+      {
+        "case": "explicit",
+        "refusal": null,
+        "content": "The user requested to remember a project register entry. The assistant confirmed the registered dispatch code is 61432.",
+        "finish": "stop"
+      },
+      {
+        "case": "body",
+        "refusal": null,
+        "content": "The user requested that the assistant remember a project register entry. The assistant confirmed the registered dispatch code is 61432.",
+        "finish": "stop"
+      }
+    ],
+    "raw_sha256": {
+      "body.json": "6a65b9b4ab248b1e28852ef3b484d286aeca43502ab8edf1cb67ef81c0a93b38",
+      "current.json": "a0df6252700e7f450e0eb514c163842cf7bd899ca3ce2c85769ded8cceeec95d",
+      "explicit.json": "7a4b2dd939ed95b0c72ecb16d610827e68fce72d74f8cee6fecc8803a1359adb",
+      "transcript.json": "31a0e9b534f611d92c4ae01b7223dbb5757c89e836ae88014448dbaea824d20c"
+    }
+  },
+  "synthetic_private_diagnostic": {
+    "run": {
+      "status": "PASS",
+      "starts": 1,
+      "seconds": 31.224,
+      "unchanged_default": true,
+      "phases": [
+        "create"
+      ]
+    },
+    "http": 200,
+    "same_business_content": true,
+    "engine": "bbaf3b89cbb7788d43e7d7db8d361cf498037c999007d59a8c3d7d52430b5b77",
+    "different_generated_ids": true,
+    "shipped": false
+  },
+  "cause": "A framed model refusal was observed on attempt 02. The same synthetic content did not always produce a refusal; no deterministic root cause beyond the output classification is established.",
+  "product": {
+    "engine": "f7d8556195feffc4ef52887432a447faa8fa6b1da0e03bec12427f2b442d2263",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1101
+  },
+  "previous": "edc30c2665656206662206ee34c97c48a14245f1971deca21567d1a531e33f1d",
+  "scoped_tests": [
+    "compaction_plan_preserves_instructions_and_current_turn",
+    "compaction_execution_does_not_accept_nonreducing_memory",
+    "compaction_execution_cancellation_after_measurement_has_no_done",
+    "compaction_standalone_returns_preserved_users_and_replayable_state",
+    "compaction_standalone_noop_is_honest_zero_generation",
+    "conversation_compact_create_reopens_sealed_history",
+    "conversation_compact_append_detects_racing_change_and_preserves_ids",
+    "compaction_reasoning_deltas_are_never_written_into_sealed_memory"
+  ],
+  "test_log": "c4e9dba1660256b825e3a537b8ff17840c21e61f068cd686cb4db372eb746f78",
+  "guard": "5a76ffdf68a8b8ef1b88cb3d18b9b28c3dd5003fd2dbaf2ab7b585f8d8bd2b04",
+  "guard_mutations": 40,
+  "next": "Run original business actor against the production build. Synthetic private diagnostics are excluded from acceptance."
+}
