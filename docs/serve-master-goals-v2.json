@@ -2946,10 +2946,12 @@
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
       },
       "responses_failure_20261126": {
-        "stage": "live_gap_reproduced_cpu_fix_pass",
+        "stage": "beta_output_missing_scores_cpu_pass",
         "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
         "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
-        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json"
+        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json",
+        "issued": false,
+        "beta_output": "evidence/serve-responses-errors-20261126/beta-result.json"
       }
     },
     {
@@ -8578,10 +8580,12 @@
         "matrix": "SDK_STREAM_COMPATIBILITY.md"
       },
       "responses_failure_20261126": {
-        "stage": "live_gap_reproduced_cpu_fix_pass",
+        "stage": "beta_output_missing_scores_cpu_pass",
         "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
         "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
-        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json"
+        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json",
+        "issued": false,
+        "beta_output": "evidence/serve-responses-errors-20261126/beta-result.json"
       }
     },
     {

@@ -608,6 +608,14 @@ def schema(graph):
     from tools.serve_responses.transcriptions_contract import SDK_SOURCES as ASR_SOURCES
     agents = json.loads((ROOT/'src/server/contracts/openai_multi_agent_types_v1.json').read_text())
     definitions.update(graph_definitions(agents, 'agent_'))
+    # The HTTP BetaOutputTextContent requires an array, even without scores.
+    # Its input counterpart is a different graph node and has no such field.
+    result_fields = agents['nodes'][agents['roots']['output_result']]['fields']
+    result_array = next(f['type'] for f in result_fields if f['name'] == 'output')
+    text_node = agents['nodes'][result_array]['element']
+    content = definitions['agent_'+str(text_node)]
+    if 'logprobs' not in content['required']:
+        content['required'].append('logprobs')
     configuration = definitions['agent_'+str(agents['roots']['configuration'])]
     configuration['properties']['max_concurrent_subagents'] = dict(type='integer', minimum=0)
     # The SDK selects these extra history variants with an HTTP header.

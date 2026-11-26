@@ -419,6 +419,48 @@ Q4T_TEST(responses_output_failure_has_no_success_or_tool_done) {
   return true;
 }
 
+Q4T_TEST(responses_beta_agent_result_preserves_scores_and_projects_history) {
+  Json item;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"type":"multi_agent_call_output","id":"ag_1",
+    "action":"list_agents","agent":{"agent_name":"root"},"call_id":"call_1",
+    "output":[{"type":"output_text","text":"ok","annotations":[]}]})",
+                               &item));
+  ResponsesOutput output;
+  std::string wire, part;
+  Q4T_CHECK(output.Init(Options(), "resp_beta", 42, false) &&
+            output.Start(&wire));
+  Q4T_CHECK(output.AppendAgentItem(item, &part));
+  wire += part;
+  Q4T_CHECK(output.Fail("explicit_cancel", "stopped", &part));
+  wire += part;
+  std::vector<Json> events;
+  Q4T_CHECK(Events(wire, &events));
+  const auto projected = ResponsesWireValue(item);
+  const auto* scores =
+      projected.GetArray("output")->array[0].GetArray("logprobs");
+  Q4T_CHECK(scores && scores->array.empty() &&
+            OutputJson(ResponsesPublicValue(item)) == OutputJson(item));
+  int item_events = 0;
+  for (const auto& event : events) {
+    if (const auto* visible = event.Find("item")) {
+      Q4T_CHECK(OutputJson(*visible) == OutputJson(projected));
+      ++item_events;
+    }
+  }
+  Q4T_CHECK(item_events == 2);
+  const auto* last = events.back().Find("response");
+  Q4T_CHECK(last && OutputJson(*last) == output.Json() &&
+            OutputJson(last->GetArray("output")->array[0]) ==
+                OutputJson(projected));
+  Json recorded;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"type":"multi_agent_call_output","output":[{
+    "type":"output_text","text":"ok","logprobs":[{"token":"ok","logprob":-1,
+    "bytes":[111,107],"top_logprobs":[]}]}]})",
+                               &recorded));
+  Q4T_CHECK(OutputJson(ResponsesWireValue(recorded)) == OutputJson(recorded));
+  return true;
+}
+
 Q4T_TEST(responses_output_failure_classification) {
   for (const auto& [native, expected] :
        {std::pair{"client_tpm_exhausted", "rate_limit_exceeded"},

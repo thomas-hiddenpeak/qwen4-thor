@@ -100482,7 +100482,8 @@
             "required": [
               "annotations",
               "text",
-              "type"
+              "type",
+              "logprobs"
             ],
             "additionalProperties": false
           },

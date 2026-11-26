@@ -115,8 +115,7 @@ Json ViewEvent(Json event, const ResponsesReadPlan& plan) {
     Set(&event, "response", ViewResponse(Field(event, "response"), plan.view));
   if (event.Has("item"))
     Set(&event, "item",
-        ResponsesPublicValue(
-            ProjectStoredItem(Field(event, "item"), plan.view)));
+        ResponsesWireValue(ProjectStoredItem(Field(event, "item"), plan.view)));
   if (std::find(plan.view.include.begin(), plan.view.include.end(),
                 "message.output_text.logprobs") == plan.view.include.end()) {
     // The text delta/done event shape requires this array even when the
