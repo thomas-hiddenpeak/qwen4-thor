@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主配置 42.7 秒，轻配置 41.3 秒。两个配置均按原 ID 读回本地 shell 请求、结果和后续响应，HTTP 字节与首次业务一致。每次新续答均从历史中返回 qwen4_exp，跨客户 404，独立 Chat 返回 720041。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-local-shell-20261126/profiles.json)
+
 本机模型通过原生 TLS 和官方 SDK 发出 local_shell_call。客户端实际读取项目文档首行，使用旧 SDK 的单 ID 形式回填，模型答出 qwen4_exp；跨客户端查询返回 404，错误的调用 ID 返回 400。首次遗留的响应经原 ID 读回，只修正选择器；另一响应与输入页逐字节相同。下一步跨配置和进程故障复核。[设备记录](evidence/serve-local-shell-20261126/business.json)
 
 真实模型首次本地 shell 读档和跨轮续答通过，但固定的官方 schema 拒绝直接回显 local_shell 选择器；同一问题影响历史 GET 和 3 种 SSE 生命周期事件。已在统一 HTTP 输出层将该选择器映射为 required 的单项 allowed_tools，保留原请求与存储值。8 项 C++ 回归通过，下一步用首次原 ID 和新的标准 SDK 请求短验。[原始失败与修正](evidence/serve-local-shell-20261126/choice-compatibility.json)

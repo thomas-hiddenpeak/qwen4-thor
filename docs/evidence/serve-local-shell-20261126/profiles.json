@@ -1,0 +1,83 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 546,
+  "build": {
+    "engine": "3d586a4f17b2384092f7a49a65f8ed6bc1adb562a9f339dd5b9ea289aef12121",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "original": "resp_f72c60d90c19bb6b6090cf7ce7851ea7",
+        "follow": "resp_82d5d7070e2b945d13a14d8e6140b10d",
+        "saved": {
+          "id": "resp_677fc18a9a62616138423fa219172a94",
+          "response_sha256": "174fdc3a6740aed8551a3187a212cdd4a72c3ea22e04c3f6583d315dd219b943",
+          "inputs_sha256": "e4ac26618a4cbec4932a28dfcb3e1632aed427b449d11fb13ce92c5be309ffd1"
+        },
+        "restored": null,
+        "independent_chat": "720041",
+        "answer": "qwen4_exp",
+        "peer": 404,
+        "wire_sha256": {
+          "call": "8dca6e1d36dd06afa337e61ffc320500832fd6270d602ca6b109a7c5fd5a4ca8",
+          "completed": "4707799df7c05fab2c841f8e887fa11baedad4d39ff69cf80b56d73e4af68959",
+          "inputs": "77137ded2b0ce929dee55e48ffd5d3c35de578c719e719e0ae2048cd63096017",
+          "create": "174fdc3a6740aed8551a3187a212cdd4a72c3ea22e04c3f6583d315dd219b943",
+          "current_response": "174fdc3a6740aed8551a3187a212cdd4a72c3ea22e04c3f6583d315dd219b943",
+          "current_inputs": "e4ac26618a4cbec4932a28dfcb3e1632aed427b449d11fb13ce92c5be309ffd1",
+          "independent": "a92875a4d52d2f82e0063b80e2dea771f1ba795cb28c54d6f9435300c1226c69"
+        }
+      },
+      "seconds": 42.711,
+      "starts": 1,
+      "record_sha256": "c07ac86d9a8ee13907f8fa2543a20e431363dd97e85c1ee3426608ac5aa2c1d2",
+      "receipt_sha256": "029c8d9ca3b66dd75cd95ef736bd639b630e746e8c3b65bce5b25159fceb699f",
+      "predecessor": "b876117bd4ae572690faa04d5beaada2224388f74eba64d87ca73f2f555fe09b"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "original": "resp_f72c60d90c19bb6b6090cf7ce7851ea7",
+        "follow": "resp_82d5d7070e2b945d13a14d8e6140b10d",
+        "saved": {
+          "id": "resp_cfcc0c0c8fd73ee6b9464d61195b8ec3",
+          "response_sha256": "dc5228f683a6b34d01ced464cb31cb191ae169ee58222a42fa5657a45d09724d",
+          "inputs_sha256": "c99e2aa1cedff6e8f4cef526b53f503667986de1646197e30103843175829244"
+        },
+        "restored": {
+          "id": "resp_677fc18a9a62616138423fa219172a94",
+          "response_sha256": "174fdc3a6740aed8551a3187a212cdd4a72c3ea22e04c3f6583d315dd219b943",
+          "inputs_sha256": "e4ac26618a4cbec4932a28dfcb3e1632aed427b449d11fb13ce92c5be309ffd1"
+        },
+        "independent_chat": "720041",
+        "answer": "qwen4_exp",
+        "peer": 404,
+        "wire_sha256": {
+          "call": "8dca6e1d36dd06afa337e61ffc320500832fd6270d602ca6b109a7c5fd5a4ca8",
+          "completed": "4707799df7c05fab2c841f8e887fa11baedad4d39ff69cf80b56d73e4af68959",
+          "inputs": "77137ded2b0ce929dee55e48ffd5d3c35de578c719e719e0ae2048cd63096017",
+          "restored_response": "174fdc3a6740aed8551a3187a212cdd4a72c3ea22e04c3f6583d315dd219b943",
+          "restored_inputs": "e4ac26618a4cbec4932a28dfcb3e1632aed427b449d11fb13ce92c5be309ffd1",
+          "create": "dc5228f683a6b34d01ced464cb31cb191ae169ee58222a42fa5657a45d09724d",
+          "current_response": "dc5228f683a6b34d01ced464cb31cb191ae169ee58222a42fa5657a45d09724d",
+          "current_inputs": "c99e2aa1cedff6e8f4cef526b53f503667986de1646197e30103843175829244",
+          "independent": "3b140c6a954054ce9b336014517428825c0f9717901cbbf6b7f93668eff06c62"
+        }
+      },
+      "seconds": 41.294,
+      "starts": 1,
+      "record_sha256": "6d7e4ab4489bb12efbc3979b8799d9b7684c13631a4fdbe33bfb60b223427bde",
+      "receipt_sha256": "7882e73e4cc026cf74b918df679b5047713153872112140066a2f71fdd21ce89",
+      "predecessor": "7d9e387e7da63b792710a06bd0b43cc2c71e26f15e630bdad21014bb80bb3a11"
+    }
+  },
+  "business_evidence": "21eb89c90cd2456fcdd9c5598f735eee094bbdf302ae212518b670cb5ede2143",
+  "lease_exit": "23f0ac09ae6f015da18e7fefecab62578ea81e189a6154be7e451d11994e2af4",
+  "acceptance": "550175d67a5afaaf7410b829ceddbf67732303847434024f340e6519340ee32a",
+  "qualification": "69e3dafb8dbffdd61035b73bdce5bb2144d8ad6e0efa7dd48cf60e55e18df72e",
+  "default_preserved": true
+}

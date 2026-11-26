@@ -897,13 +897,14 @@
         "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
-        "business": "evidence/serve-local-shell-20261126/business.json"
+        "business": "evidence/serve-local-shell-20261126/business.json",
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       }
     },
     {
@@ -3073,13 +3074,14 @@
         "delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
-        "business": "evidence/serve-local-shell-20261126/business.json"
+        "business": "evidence/serve-local-shell-20261126/business.json",
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       }
     },
     {
@@ -3757,13 +3759,14 @@
         "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
-        "business": "evidence/serve-local-shell-20261126/business.json"
+        "business": "evidence/serve-local-shell-20261126/business.json",
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       }
     },
     {
@@ -7593,13 +7596,14 @@
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
-        "business": "evidence/serve-local-shell-20261126/business.json"
+        "business": "evidence/serve-local-shell-20261126/business.json",
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       }
     },
     {
@@ -8871,13 +8875,14 @@
         "delivery": "evidence/serve-mcp-approval-identifiers-20261126/delivery.json"
       },
       "local_shell_20261126": {
-        "stage": "native_tls_business_verified",
+        "stage": "profile_verified",
         "issued": false,
         "cpu": "evidence/serve-local-shell-20261126/cpu.json",
         "pending": [
           "managed profile and recovery delivery"
         ],
-        "business": "evidence/serve-local-shell-20261126/business.json"
+        "business": "evidence/serve-local-shell-20261126/business.json",
+        "profiles": "evidence/serve-local-shell-20261126/profiles.json"
       }
     },
     {
