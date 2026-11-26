@@ -144,6 +144,7 @@ class ResponsesOutput {
   io::Json response_;
   std::unordered_map<size_t, size_t> calls_;
   std::unordered_map<size_t, std::string> model_names_;
+  std::unordered_map<size_t, std::string> local_shell_arguments_;
   std::vector<ResponsesToolIdentity> tool_identities_;
   std::unordered_set<size_t> tool_search_results_;
   std::unordered_set<size_t> mcp_arguments_complete_;

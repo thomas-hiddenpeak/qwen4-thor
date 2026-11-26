@@ -258,6 +258,20 @@ ObjectReply CompareStoredItem(const Json& stored, const Json& incoming) {
         });
     }
   }
+  if (stored.GetString("type") == "local_shell_call_output" &&
+      incoming.GetString("type") == "local_shell_call_output") {
+    // An older SDK omits the optional target when reusing an owned item.
+    // Never replace an explicit binding with a different call.
+    const auto* provided = incoming.Find("call_id");
+    if (!provided && stored.GetString("call_id", stored.GetString("id")) ==
+                         stored.GetString("id")) {
+      std::erase_if(comparable.object,
+                    [](const auto& field) { return field.first == "call_id"; });
+    } else if (!stored.Has("call_id") && provided && provided->IsString() &&
+               provided->str == stored.GetString("id")) {
+      Set(&comparable, "call_id", *provided);
+    }
+  }
   // SDK read views omit search sources unless requested. An omitted source
   // list may recover the original owned context; supplied conflicting fields
   // still fail the ordinary exact identity check.
@@ -384,6 +398,22 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
     const auto id = item.GetString("id");
     if (!ValidId(id) || !ids.insert(id).second)
       return Error(400, "invalid_request", "Invalid or repeated input item ID");
+    if (explicit_item && item.GetString("type") == "local_shell_call_output") {
+      // SDKs can reuse an owned output without serializing its call_id.
+      // Recover its exact binding before storing it in another conversation.
+      auto existing = Get(ObjectKind::kConversationItem, id, access);
+      if (existing.ok()) {
+        auto original = Data(existing, "item");
+        if (!original.ok()) return original;
+        if (!item.Has("call_id"))
+          if (const auto* target = original.value.Find("call_id"))
+            Set(&item, "call_id", *target);
+        auto same = CompareStoredItem(original.value, item);
+        if (!same.ok()) return same;
+      } else if (existing.http_status != 404) {
+        return existing;
+      }
+    }
     if (web_content && item.GetString("type") == "web_search_call") {
       auto existing = Get(ObjectKind::kConversationItem, id, access);
       if (existing.ok()) {

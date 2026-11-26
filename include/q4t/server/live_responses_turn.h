@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "q4t/server/live_session.h"
+#include "q4t/server/local_shell_history.h"
 
 namespace q4t::server {
 class LiveResponsesTurn {
@@ -49,6 +50,7 @@ class LiveResponsesTurn {
   std::string response_id_, terminal_;
   std::map<size_t, io::Json> items_;
   std::map<std::string, Call> calls_;
+  LocalShellHistory local_shell_;
   std::optional<std::string> continuation_;
   size_t bytes_ = 0;
   bool failed_ = false, finished_ = false, consumed_ = false;

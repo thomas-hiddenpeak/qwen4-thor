@@ -9,6 +9,7 @@
 
 #include "q4t/server/chat_tool_history.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/local_shell_history.h"
 #include "q4t/server/file_input.h"
 #include "q4t/server/file_video.h"
 #include "q4t/server/output_schema.h"
@@ -55,7 +56,8 @@ Status TextField(const Json& value, const char* key, std::string_view path,
 Status ItemMetadata(const Json& item, std::string_view path,
                     ChatPlanError* error) {
   // These variants have their own status/nullable contract in the SDK graph.
-  if (item.GetString("type").starts_with("mcp_"))
+  const auto kind = item.GetString("type");
+  if (kind.starts_with("mcp_"))
     return ValidateResponsesItemShape(item, ResponsesItemShape::kInput, error,
                                       path);
   if (const auto* type = item.Find("type"); type && !type->IsString())
@@ -63,6 +65,9 @@ Status ItemMetadata(const Json& item, std::string_view path,
   if (const auto* id = item.Find("id");
       id && (!id->IsString() || id->str.empty() || id->str.size() > 256))
     return Invalid(error, std::string(path) + ".id", "invalid item ID");
+  if (kind == "local_shell_call" || kind == "local_shell_call_output")
+    return ValidateResponsesItemShape(item, ResponsesItemShape::kInput, error,
+                                      path);
   if (const auto* status = item.Find("status");
       status && (!status->IsString() ||
                  (status->str != "in_progress" && status->str != "completed" &&
@@ -310,7 +315,18 @@ Status MapNamespaceChoice(const Json& original,
                           std::string_view path = "tool_choice") {
   *mapped = original;
   const auto type = original.GetString("type");
-  if (type == "function" || type == "custom") {
+  if (type == "local_shell") {
+    auto status = InputFields(original, {"type"}, &error->param, path);
+    if (!status) return status;
+    const bool enabled = std::ranges::any_of(identities, [](const auto& tool) {
+      return tool.type == "local_shell";
+    });
+    if (!enabled)
+      return Invalid(error, std::string(path),
+                     "Local shell tool is not enabled");
+    *mapped = Object(
+        {{"type", String("function")}, {"name", String(kLocalShellToolName)}});
+  } else if (type == "function" || type == "custom") {
     Json selected;
     auto status = ToolSelection(original, &selected, path, identities, error);
     if (!status) return status;
@@ -366,6 +382,15 @@ Status PlanResponsesToolIdentities(
       return Status::Fail("expanded tools exceed the 128-callable budget");
     }
     const auto type = tool.GetString("type");
+    if (type == "local_shell") {
+      auto status = InputFields(tool, {"type"}, &error->param, path);
+      if (!status) return status;
+      if (!model_names.insert(kLocalShellToolName).second)
+        return Invalid(error, path, "Duplicate local shell tool");
+      identities->push_back(
+          {type, type, "", kLocalShellToolName, path, false, true, false});
+      return {};
+    }
     if (type != "function" && type != "custom") return {};
     const auto name = tool.GetString("name");
     if (!ValidInputName(name))
@@ -502,6 +527,7 @@ Status NormalizeResponsesInput(const io::Json& request,
   }
   size_t activation = 0;
   std::deque<std::string> server_searches;
+  LocalShellHistory local_shell;
 
   Json assistant =
       Object({{"role", String("assistant")}, {"content", String("")}});
@@ -1043,6 +1069,39 @@ Status NormalizeResponsesInput(const io::Json& request,
       expected.emplace(id, false);
       returned.insert(id);
       ++automatic_returns;
+    } else if (type == "local_shell_call" ||
+               type == "local_shell_call_output") {
+      if (item.GetString("status", "completed") != "completed")
+        return Invalid(error, path + ".status",
+                       "Expected a completed shell item");
+      if (type == "local_shell_call") {
+        if (results.size() > automatic_returns) {
+          status = flush();
+          if (!status) return status;
+        }
+        const auto id = item.GetString("call_id");
+        if (id.size() > 256 || !call_ids.insert(id).second ||
+            !local_shell.Register(item))
+          return Invalid(error, path + ".call_id",
+                         "Invalid local shell call ID");
+        if (assistant_path.empty()) assistant_path = path;
+        calls.array.push_back(Object(
+            {{"id", String(id)},
+             {"type", String("function")},
+             {"function", Object({{"name", String(kLocalShellToolName)},
+                                  {"arguments", String(OutputJson(*item.Find(
+                                                    "action")))}})}}));
+      } else {
+        const auto id = local_shell.Target(item);
+        if (id.empty() || !returned.insert(id).second)
+          return Invalid(error,
+                         path + (item.Has("call_id") ? ".call_id" : ".id"),
+                         "Orphan, ambiguous or duplicate local shell result");
+        results.emplace_back(Object({{"role", String("tool")},
+                                     {"tool_call_id", String(id)},
+                                     {"content", *item.Find("output")}}),
+                             path);
+      }
     } else if (type == "function_call" || type == "custom_tool_call") {
       if (results.size() > automatic_returns) {
         // A result followed by a new call starts another assistant step.
@@ -1268,6 +1327,34 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
         tools->array.push_back(PythonToolFunction());
         if (!ResponsesToolAllows(definition, "direct"))
           program_only.insert(kPythonToolName);
+        model_paths.push_back(at);
+        continue;
+      }
+      if (type == "local_shell") {
+        const auto text = Object({{"type", String("string")}});
+        auto properties =
+            Object({{"command", Object({{"type", String("array")},
+                                        {"minItems", Number(1)},
+                                        {"items", text}})},
+                    {"env", Object({{"type", String("object")},
+                                    {"additionalProperties", text}})},
+                    {"timeout_ms", Object({{"type", String("integer")}})},
+                    {"user", text},
+                    {"working_directory", text}});
+        auto parameters = Object({{"type", String("object")},
+                                  {"properties", std::move(properties)},
+                                  {"required", Array({String("command")})},
+                                  {"additionalProperties", Boolean(false)}});
+        auto function = Object(
+            {{"name", String(kLocalShellToolName)},
+             {"description",
+              String("Request a command in the client's local environment. "
+                     "Pass its argv as command and wait for the client's "
+                     "output.")},
+             {"parameters", std::move(parameters)},
+             {"strict", Boolean(false)}});
+        tools->array.push_back(Object(
+            {{"type", String("function")}, {"function", std::move(function)}}));
         model_paths.push_back(at);
         continue;
       }

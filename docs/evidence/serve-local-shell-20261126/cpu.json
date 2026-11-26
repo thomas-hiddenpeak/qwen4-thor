@@ -1,0 +1,81 @@
+{
+  "stage": "cpu_verified",
+  "issued": false,
+  "model_starts": 0,
+  "earlier_reproduction": "docs/evidence/serve-conversation-compaction-20261126/cpu.json#shell-output-standard",
+  "reference": "https://developers.openai.com/api/reference/resources/conversations/subresources/items/methods/create",
+  "source_checkout": "406d22aded835dd896adf15a08f68434adff4ce9",
+  "http": {
+    "status": "PASS",
+    "old_status": 400,
+    "reopened_original": true,
+    "stored_bytes_preserved": 4,
+    "sdk": {
+      "sdk": "3.55.1",
+      "first": "conv_c1eab8adb4b424024273b600fcce3599",
+      "reused": "conv_48f301bd0306b4223998ad13c458ec1c",
+      "peer": 404,
+      "conflict": 409,
+      "original": "call_original",
+      "model_target": "call_old_api",
+      "item": "output_new"
+    },
+    "node": {
+      "sdk": "7.47.0",
+      "item": "output_new",
+      "call_id": "call_old_api",
+      "legacy": "call_original",
+      "peer": 404
+    },
+    "node_driver": "929c15a3d02dc4f45abef276501a1275b9e9147c68e78dc4c9a4047af983ecb0",
+    "old_fixture": "5a162d9718b8627f76d702c879ebf2a1810173284e654cd7406a9f9935f1f8e8",
+    "candidate_fixture": "e584e0ba43220338299d7a73a047cb20238f2327f7645e961fdcae635bf0338c",
+    "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "shipped": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+    "sdk_driver": "dec581a63528ce54652b060a03b459611c35f54395bdde89a8b3d78a774bc059",
+    "wire_sha256": {
+      "both-page.wire": "ded87c554175c59546062a05bb17fdbc3b1e633d00d7d24cd135757e7f6cc77d",
+      "legacy-page.wire": "b2a72ee2e94471d959abd27ea42c5f77bde41dec80c7617ec383c7d3da6c8210",
+      "reused-page.wire": "40fe183349e5c85a8de08f8555edd6703a1051988ef3edc8a6be336f4bb325c0",
+      "both-item.wire": "722b3d9473dddb30edffe9c4dc212836dc75f44809903cab59eb3c8aaceea0e4",
+      "reused-item.wire": "bfc9317f506711ed85f049d0c949565cea0709ed4ba99f8e39e7ec9ae592e21f"
+    },
+    "model_starts": 0
+  },
+  "negative_original": {
+    "error": {
+      "message": "Unknown item field",
+      "type": "invalid_request_error",
+      "code": "invalid_request",
+      "param": "items[0].call_id"
+    }
+  },
+  "cpp": {
+    "selected": 8,
+    "passed": 8,
+    "item_vectors": 647,
+    "live_vectors": 808,
+    "differences": 0,
+    "log": "40acc27333fec74eac9447acf510548fecd62d1d1120ea420c2136e6fda2d5f3"
+  },
+  "audit": {
+    "negative_guards": 40,
+    "sha256": "811eb33aad2c8b73c17d84def557043438e3069921346c187f74ed761cda086d"
+  },
+  "sdk_oracle": {
+    "raw_source_sha256": "3b628c3b6ffd745ccbece4716215b35962f6ee22a34ed88e330f77eeafca3c75",
+    "initial_failure": "The declaration build used an older experimental graph; the independent SDK fingerprint check failed. The generator now consumes the freshly extracted, unaltered API graph.",
+    "failure_log": "261fa94600cd30d2096865d33ed509bf1f5559f7be8d02da4fd85cfa2085fec3",
+    "corrected_tests": 3,
+    "corrected_log": "98800759b13a22531fa06ec8930cf93cc9988685fc18b9f51f986a3477f8d7e8"
+  },
+  "build": {
+    "binary": "9363ecd8a0d7ccc6ac0fc44945c99d0932a046af15f589af2b57d46f252dc533",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1102
+  },
+  "awaiting": [
+    "real Native TLS model-issued local shell call and follow-up",
+    "managed profile and recovery delivery"
+  ]
+}

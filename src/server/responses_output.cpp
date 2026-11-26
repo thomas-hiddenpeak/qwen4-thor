@@ -7,6 +7,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_item_shape.h"
 #include "q4t/server/request_json.h"
 #include "responses_json.h"
 
@@ -341,16 +342,26 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
     if (identity && !identity->direct)
       return Status::Fail(
           "Program-only tool cannot be emitted by a direct caller");
-    item = Object(
-        {{"id", String(detail::NewRequestId(call->custom ? "ctc_" : "fc_"))},
-         {"type", String(call->custom ? "custom_tool_call" : "function_call")},
-         {"call_id", String(call->id)},
-         {"name", String(identity ? identity->name : call->name)},
-         {call->custom ? "input" : "arguments", String("")}});
-    if (identity && !identity->name_space.empty())
-      Set(&item, "namespace", String(identity->name_space));
-    if (identity && identity->async) Set(&item, "async", Boolean(true));
-    Set(&item, "caller", Object({{"type", String("direct")}}));
+    if (identity && identity->type == "local_shell") {
+      item = Object({{"id", String(detail::NewRequestId("lsh_"))},
+                     {"type", String("local_shell_call")},
+                     {"call_id", String(call->id)},
+                     {"action", Object({{"type", String("exec")},
+                                        {"command", Array()},
+                                        {"env", Object()}})}});
+    } else {
+      item = Object(
+          {{"id", String(detail::NewRequestId(call->custom ? "ctc_" : "fc_"))},
+           {"type",
+            String(call->custom ? "custom_tool_call" : "function_call")},
+           {"call_id", String(call->id)},
+           {"name", String(identity ? identity->name : call->name)},
+           {call->custom ? "input" : "arguments", String("")}});
+      if (identity && !identity->name_space.empty())
+        Set(&item, "namespace", String(identity->name_space));
+      if (identity && identity->async) Set(&item, "async", Boolean(true));
+      Set(&item, "caller", Object({{"type", String("direct")}}));
+    }
   } else {
     item =
         Object({{"id", String(detail::NewRequestId(message ? "msg_" : "rs_"))},
@@ -457,6 +468,12 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
   }
   auto& item = Items().array[index];
   if (tool) {
+    if (item.GetString("type") == "local_shell_call") {
+      // The protocol has no event for partial argv. A completed call exposes
+      // the parsed action only after the model has closed the tool payload.
+      local_shell_arguments_[index] += added;
+      return {};
+    }
     const bool custom = item.GetString("type") == "custom_tool_call";
     Field(item, custom ? "input" : "arguments").str += added;
     if (added.empty()) return {};
@@ -722,6 +739,25 @@ Status ResponsesOutput::Finish(bool incomplete, size_t completed_calls,
       if (!closed_items_.contains(index) && call >= completed_calls)
         return Status::Fail("cannot complete an unvalidated Responses tool");
     }
+  for (const auto& [index, arguments] : local_shell_arguments_) {
+    if (call_indices_[index] >= completed_calls) continue;
+    io::Json action;
+    if (!io::ParseJson(arguments, &action, true, kSchemaJsonLimits) ||
+        !action.IsObject())
+      return Status::Fail("Invalid generated local shell action");
+    if (!action.Has("type")) Set(&action, "type", String("exec"));
+    if (!action.Has("env")) Set(&action, "env", Object());
+    const auto* argv = action.GetArray("command");
+    if (!argv || argv->array.empty() || !argv->array.front().IsString() ||
+        argv->array.front().str.empty())
+      return Status::Fail("Generated local shell call requires an executable");
+    auto& item = Items().array[index];
+    Set(&item, "action", std::move(action));
+    ChatPlanError error;
+    auto valid = ValidateResponsesItemShape(item, ResponsesItemShape::kOutput,
+                                            &error, "item");
+    if (!valid) return valid;
+  }
   if (!incomplete)
     for (size_t i = 0; i < Items().array.size(); ++i)
       if ((Items().array[i].GetString("type") == "file_search_call" ||

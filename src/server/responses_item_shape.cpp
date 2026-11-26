@@ -544,6 +544,11 @@ Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
                          ? "conversation_item"
                          : "";
   auto status = Validate(Types(), item, root, error, path);
+  if (status && item.GetString("type") == "local_shell_call_output" &&
+      item.Has("call_id") && item.GetString("call_id").empty()) {
+    *error = {"invalid_request", FieldPath(path, "call_id"), 400};
+    return Status::Fail("Local shell call ID must be nonempty");
+  }
   if (status && item.GetString("type") == "mcp_approval_response" &&
       item.Has("request_id") &&
       item.GetString("request_id") != item.GetString("approval_request_id")) {

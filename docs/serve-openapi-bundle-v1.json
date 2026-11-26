@@ -34611,6 +34611,10 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/474"
+              },
+              "call_id": {
+                "type": "string",
+                "minLength": 1
               }
             },
             "required": [
@@ -36335,12 +36339,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/474"
+              },
+              "call_id": {
+                "type": "string",
+                "minLength": 1
               }
             },
             "required": [
               "id",
               "output",
-              "type"
+              "type",
+              "call_id"
             ],
             "additionalProperties": false
           },
@@ -37665,12 +37674,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/474"
+              },
+              "call_id": {
+                "type": "string",
+                "minLength": 1
               }
             },
             "required": [
               "id",
               "output",
-              "type"
+              "type",
+              "call_id"
             ],
             "additionalProperties": false
           },
@@ -44059,12 +44073,17 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/474"
+              },
+              "call_id": {
+                "type": "string",
+                "minLength": 1
               }
             },
             "required": [
               "id",
               "output",
-              "type"
+              "type",
+              "call_id"
             ],
             "additionalProperties": false
           },

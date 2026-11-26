@@ -893,6 +893,15 @@
         "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
         "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
         "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
+      },
+      "local_shell_20261126": {
+        "stage": "cpu_verified",
+        "issued": false,
+        "cpu": "evidence/serve-local-shell-20261126/cpu.json",
+        "pending": [
+          "real Native TLS model-issued local shell call and follow-up",
+          "managed profile and recovery delivery"
+        ]
       }
     },
     {
@@ -3060,6 +3069,15 @@
         "profiles": "evidence/serve-conversation-compaction-20261126/profiles.json",
         "revision": 544,
         "delivery": "evidence/serve-conversation-compaction-20261126/delivery.json"
+      },
+      "local_shell_20261126": {
+        "stage": "cpu_verified",
+        "issued": false,
+        "cpu": "evidence/serve-local-shell-20261126/cpu.json",
+        "pending": [
+          "real Native TLS model-issued local shell call and follow-up",
+          "managed profile and recovery delivery"
+        ]
       }
     },
     {
@@ -3733,6 +3751,15 @@
         "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
         "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
         "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
+      },
+      "local_shell_20261126": {
+        "stage": "cpu_verified",
+        "issued": false,
+        "cpu": "evidence/serve-local-shell-20261126/cpu.json",
+        "pending": [
+          "real Native TLS model-issued local shell call and follow-up",
+          "managed profile and recovery delivery"
+        ]
       }
     },
     {
@@ -7560,6 +7587,15 @@
         "receipt": "evidence/serve-chatkit-generation-stream-20261125/profiles.json",
         "revision": 512,
         "delivery": "evidence/serve-chatkit-generation-stream-20261125/delivery.json"
+      },
+      "local_shell_20261126": {
+        "stage": "cpu_verified",
+        "issued": false,
+        "cpu": "evidence/serve-local-shell-20261126/cpu.json",
+        "pending": [
+          "real Native TLS model-issued local shell call and follow-up",
+          "managed profile and recovery delivery"
+        ]
       }
     },
     {
@@ -8827,6 +8863,15 @@
         "sdk_oracles": "evidence/serve-mcp-approval-identifiers-20261126/sdk-oracles.json",
         "business": "evidence/serve-mcp-approval-identifiers-20261126/business.json",
         "profiles": "evidence/serve-mcp-approval-identifiers-20261126/profiles.json"
+      },
+      "local_shell_20261126": {
+        "stage": "cpu_verified",
+        "issued": false,
+        "cpu": "evidence/serve-local-shell-20261126/cpu.json",
+        "pending": [
+          "real Native TLS model-issued local shell call and follow-up",
+          "managed profile and recovery delivery"
+        ]
       }
     },
     {

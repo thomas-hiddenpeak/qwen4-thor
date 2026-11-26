@@ -41,9 +41,7 @@ std::string Expected(const Json& item) {
 }
 std::string Owner(const Json& item, bool result) {
   const auto type = item.GetString("type");
-  if (type == "mcp_approval_request" || type == "local_shell_call" ||
-      type == "local_shell_call_output")
-    return item.GetString("id");
+  if (type == "mcp_approval_request") return item.GetString("id");
   if (result && type == "mcp_approval_response")
     return item.GetString("approval_request_id");
   return item.GetString("call_id");
@@ -117,6 +115,9 @@ ObjectReply LiveResponsesTurn::Register(const Json& item, size_t index) {
       item.GetString("status", "completed") == "completed") {
     const auto id = Owner(item, false);
     if (!ValidApplicationId(id) || calls_.contains(id)) return Broken();
+    if (item.GetString("type") == "local_shell_call" &&
+        !local_shell_.Register(item))
+      return Broken();
     calls_.emplace(id, Call{expected, index, {}});
     if (continuation_) {
       auto error =
@@ -201,7 +202,9 @@ ObjectReply LiveResponsesTurn::Event(const Json& native, uint64_t offset_ms) {
        {"event", std::move(projected)}}));
 }
 ObjectReply LiveResponsesTurn::Result(const Json& item) {
-  const auto it = calls_.find(Owner(item, true));
+  const bool local = item.GetString("type") == "local_shell_call_output";
+  const auto target = local ? local_shell_.Target(item) : Owner(item, true);
+  const auto it = calls_.find(target);
   if (failed_ || consumed_ || it == calls_.end() ||
       !it->second.result.IsNull() ||
       it->second.expected != item.GetString("type"))
@@ -326,8 +329,16 @@ ObjectReply LiveResponsesTurn::AppendHistory(Json* input) const {
   for (const auto& [index, item] : items_) next.array.push_back(item);
   for (const auto& [index, item] : items_) {
     if (const auto it = calls_.find(Owner(item, false));
-        it != calls_.end() && it->second.index == index)
-      next.array.push_back(it->second.result);
+        it != calls_.end() && it->second.index == index) {
+      auto result = it->second.result;
+      // Older Live clients returned the call item's id. A Responses input
+      // list needs separate item IDs; the SDK uses the model's call_id here.
+      if (item.GetString("type") == "local_shell_call" &&
+          result.GetString("id") == item.GetString("id") &&
+          item.GetString("call_id") != item.GetString("id"))
+        Set(&result, "id", *item.Find("call_id"));
+      next.array.push_back(std::move(result));
+    }
   }
   if (!MeasureRealtimeStorage(next, kBytes, &existing)) return Full();
   *input = std::move(next);

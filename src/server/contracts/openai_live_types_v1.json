@@ -7647,6 +7647,11 @@
           "name": "type",
           "optional": false,
           "type": 671
+        },
+        {
+          "name": "call_id",
+          "optional": true,
+          "type": 4
         }
       ],
       "additional": null

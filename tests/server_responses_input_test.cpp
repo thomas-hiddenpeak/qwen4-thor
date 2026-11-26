@@ -603,3 +603,48 @@ Q4T_TEST(hosted_python_tool_choice_is_mapped_to_an_owned_builtin) {
       !NormalizeResponsesTools(invalid, &tools, &choice, &error, &effective));
   return true;
 }
+
+Q4T_TEST(responses_local_shell_history_binds_real_argv_and_result) {
+  auto request = Read(R"({"input":[{"type":"local_shell_call","id":"item_1",
+      "call_id":"call_7","status":"completed","action":{"type":"exec",
+      "command":["cat","docs/MODEL.md"],"env":{}}},
+      {"type":"local_shell_call_output","id":"result_2","call_id":"call_7",
+       "output":"model record","status":null}]})");
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  const auto& messages = plan.messages.array;
+  Q4T_CHECK(messages.size() == 2 &&
+            messages[0].GetArray("tool_calls")->array[0].GetString("id") ==
+                "call_7" &&
+            messages[1].GetString("tool_call_id") == "call_7" &&
+            messages[1].GetString("content") == "model record");
+  auto& out = request.object.front().second.array[1];
+  out =
+      Read(R"({"type":"local_shell_call_output","id":"call_7","output":"ok"})");
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  out = Read(R"({"type":"local_shell_call_output","id":"result_2",
+                  "call_id":"wrong","output":"ok"})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  out = Read(
+      R"({"type":"function_call_output","call_id":"call_7","output":"ok"})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
+  return true;
+}
+
+Q4T_TEST(responses_local_shell_selectors_require_the_declared_builtin) {
+  auto request = Read(R"({"tools":[{"type":"local_shell"}],
+                          "tool_choice":{"type":"local_shell"}})");
+  Json tools, choice;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error));
+  const auto name = tools.array[0].Find("function")->GetString("name");
+  Q4T_CHECK(name == "q4t_builtin_local_shell" &&
+            choice.Find("function")->GetString("name") == name);
+  request = Read(R"({"tools":[{"type":"local_shell"}],"tool_choice":{
+       "type":"allowed_tools","mode":"required","tools":[{"type":"local_shell"}]}})");
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error));
+  request = Read(R"({"tool_choice":{"type":"local_shell"}})");
+  Q4T_CHECK(!NormalizeResponsesTools(request, &tools, &choice, &error));
+  return true;
+}
