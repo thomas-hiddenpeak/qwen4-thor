@@ -39,12 +39,6 @@ ObjectReply ResolveInput(ObjectStore& objects, const Json& input,
     }
     return result;
   }
-  // Compaction is a model operation, not a record transformation. Its A07
-  // executor must supply the resulting compaction item before publication.
-  for (const auto& item : result.value.array)
-    if (item.GetString("type") == "compaction_trigger")
-      return Error(503, "compaction_executor_unavailable",
-                   "Context compaction executor is not available");
   return result;
 }
 }  // namespace
@@ -53,7 +47,8 @@ ObjectReply HandleConversationRequest(ObjectStore& objects,
                                       std::string_view method,
                                       std::string_view target,
                                       const std::string& body,
-                                      const StateAccess& access) {
+                                      const StateAccess& access,
+                                      ConversationCompaction* compact) {
   const auto separator = target.find('?');
   const auto path = target.substr(0, separator);
   if (!IsConversationTarget(path))
@@ -109,6 +104,11 @@ ObjectReply HandleConversationRequest(ObjectStore& objects,
     if (collection && request.IsNull()) request = Object();
   }
   ConversationState conversations(objects);
+  auto trigger = [](const ObjectReply& items) {
+    const auto& values = items.value.array;
+    return items.ok() && !values.empty() &&
+           values.back().GetString("type") == "compaction_trigger";
+  };
   if (collection) {
     auto fields = CheckFields(request, {"metadata", "items"});
     if (!fields.ok()) return fields;
@@ -120,6 +120,9 @@ ObjectReply HandleConversationRequest(ObjectStore& objects,
     auto resolved = ResolveInput(
         objects, !items || items->IsNull() ? Array() : *items, access);
     if (!resolved.ok()) return resolved;
+    if (trigger(resolved))
+      return conversations.PlanCompaction({}, normalized.value, *items,
+                                          resolved.value, view, access, compact);
     return conversations.Create(normalized.value, resolved.value, access);
   }
   if (item_collection) {
@@ -133,6 +136,9 @@ ObjectReply HandleConversationRequest(ObjectStore& objects,
     if (!existing.ok()) return existing;
     auto resolved = ResolveInput(objects, *items, access);
     if (!resolved.ok()) return resolved;
+    if (trigger(resolved))
+      return conversations.PlanCompaction(id, {}, *items, resolved.value,
+                                          view, access, compact);
     return conversations.Append(id, resolved.value, view, access);
   }
   if (!item_id.empty())

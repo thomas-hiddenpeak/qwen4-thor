@@ -14,6 +14,7 @@ ObjectReply HandleConversationRequest(ObjectStore& objects,
                                       std::string_view method,
                                       std::string_view target,
                                       const std::string& body,
-                                      const StateAccess& access);
+                                      const StateAccess& access,
+                                      ConversationCompaction* compact = nullptr);
 
 }  // namespace q4t::server

@@ -15,6 +15,6 @@
 
 实际视觉 HTTPS 已通过：绿色静态图、蓝色视频、原助手文本、两帧的时间与顺序均已核对。[模型结果与实际历史](evidence/serve-stored-content-parts-20261126/business.json)
 
-rev542 已完成独立回退和可恢复发行。[发行证据](evidence/serve-stored-content-parts-20261126/delivery.json)。待完成主线集成并核对本清单。原始视听素材的模型质量和独立语音听感记录继续随对应任务追踪。
+rev542 已完成独立回退和可恢复发行。[发行证据](evidence/serve-stored-content-parts-20261126/delivery.json)。PR #169 已并入主线，逐项核对完成。[A02 验收记录](evidence/serve-stored-content-parts-20261126/history-exit.json)。原始视听素材的模型质量和独立语音听感记录继续随对应任务追踪。
 
 Node SDK 7.47.0 在本机原生 HTTP 存储夹具上读回 6 份旧会话。逐条正向和反向翻页均保留全部字段，原始页摘要与 Python SDK 一致。不同所有者、无效 Key 和非法 limit 分别触发 404、401 和 400 的 SDK 错误类型。[逐会话记录](evidence/serve-stored-content-parts-20261126/node-pages.json)

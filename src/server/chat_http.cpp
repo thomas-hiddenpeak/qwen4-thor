@@ -953,6 +953,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
         return;
       }
     }
+    ConversationCompaction compact;
     auto reply =
         IsVectorStoreTarget(path)
             ? HandleVectorStoreRequest(
@@ -1003,7 +1004,16 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                                   PlanningConfig(fd), access)
         : IsStoredChatTarget(path)
             ? HandleStoredChatRequest(*objects_, method, path, body, access)
-            : HandleConversationRequest(*objects_, method, path, body, access);
+            : HandleConversationRequest(*objects_, method, path, body, access,
+                                        &compact);
+    if (reply.ok() && compact.input.IsArray()) {
+      auto request = object_detail::Object({
+          {"model", object_detail::String(model_name_)},
+          {"input", std::move(compact.input)}});
+      HandleChat(fd, OutputJson(request), GenerationApi::kCompact, {},
+                 nullptr, nullptr, nullptr, &compact);
+      return;
+    }
     if (eval_dispatcher_ && reply.ok() &&
         (eval_route.kind == EvalRouteKind::kCancel ||
          (method == "DELETE" && (eval_route.kind == EvalRouteKind::kRun ||

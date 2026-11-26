@@ -116,7 +116,8 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
                             std::shared_ptr<RequestControl> owner,
                             const io::Json* frozen_inputs,
                             const BatchResponseLink* batch_parent,
-                            NativeChatGeneration* native) {
+                            NativeChatGeneration* native,
+                            const ConversationCompaction* conversation) {
   ScopeExit seal_native([&] {
     if (native) native->Seal();
   });
@@ -216,7 +217,7 @@ void ChatServer::HandleChat(int fd, const std::string& body, GenerationApi api,
     }
     HandleChatImpl(fd, body, state, api == GenerationApi::kCompletion,
                    responses.get(), std::move(owner), nullptr, frozen_inputs,
-                   native);
+                   native, conversation);
   } catch (const std::bad_alloc&) {
     detail::SendExceptionResponse(fd, *state,
                                   detail::ExceptionKind::kHostMemory);
@@ -244,7 +245,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                 std::shared_ptr<RequestControl> background,
                                 InternalModelStep* internal,
                                 const io::Json* frozen_inputs,
-                                NativeChatGeneration* native) {
+                                NativeChatGeneration* native,
+                                const ConversationCompaction* conversation) {
   auto* http = detail::HttpResponseContext::Current(fd);
   if (http) http->Usage().Enable();
   ScopeExit observe_usage([&] {
@@ -1584,6 +1586,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       result = responses->Finish(response_incomplete, responses_completed_calls,
                                  total_usage, std::time(nullptr), &terminal,
                                  response_filtered);
+      if (result.ok() && conversation)
+        result = responses->CommitConversationCompaction(*conversation);
     }
     if (!result.ok()) {
       err_guard.ok = false;
@@ -1607,7 +1611,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       if (http) http->BeforeTerminal();
       *response_state = detail::ResponseState::kTerminal;
       if (!write_stream(terminal)) return false;
-    } else if (!SendSimple(fd, 200, "OK", responses->ResultJson(),
+    } else if (!SendSimple(fd, 200, "OK", conversation ? OutputJson(result.value)
+                                                       : responses->ResultJson(),
                            "application/json", {.control = control.get()})) {
       control->Cancel(RequestControl::State::kDisconnect);
       count_abort();
@@ -3587,7 +3592,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
         }
         std::string response_chunk;
         if (responses) {
-          if (compaction_step || moderation_step) {
+          if (compaction_step) {
+            response_status = CheckCompactionDelta(delta);
+          } else if (moderation_step) {
             response_status =
                 delta.kind == ResponseDelta::Kind::kContent
                     ? Status()

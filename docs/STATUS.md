@@ -7,6 +7,22 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+A02 聊天历史验收完成。已核对模板、模型输入、真实工具回填、多模态旧对象读回、独立回退和 PR #169 主线提交。[验收记录](evidence/serve-stored-content-parts-20261126/history-exit.json)
+
+rev544 已发行会话创建和追加的原生压缩触发器。受控模型故障和网关接管后，原会话整页及密封项按同一 ID 读回，SHA-256 一致。仅凭密文续答得到 28617，另一把 Key 获得 404。登记时模型启动为零，13 份受保护状态通过复核。[发行记录](evidence/serve-conversation-compaction-20261126/delivery.json)
+
+主配置用时 42.5 秒，轻量配置用时 47.3 秒。按原 ID 读回的会话整页和压缩对象摘要一致，只携带密文续答得到 28617。两种配置的独立 Chat 均返回 720041。下一步验证发布包和回退包。[配置记录](evidence/serve-conversation-compaction-20261126/profiles.json)
+
+已将密封会话接入主、轻配置验收。接管方按原会话 ID 和摘要 ID 校验完整字节，单独将密文与问题送入模型，检查状态密钥仍可用于续答。下一步在同一 GPU 租约执行两种容量的实际读回。
+
+Python SDK 3.55.1 经原生 TLS 完成会话创建压缩、追加压缩和续聊。两份密文可按原 ID 读取，非法中间触发器返回 400，整页不变；另一客户收到 404。模型只收到无答案的问题，从已压缩会话返回业务号 28617，独立 Chat 返回 720041。单次启动 42.4 秒，9 份客户端回包经官方与随包合同核对。下一步验证独立包接管同一会话。[设备记录](evidence/serve-conversation-compaction-20261126/business.json)
+
+压缩第二次 HTTPS 创建收到模型拒答 502。三种普通 Chat 对照均从同一合成内容提取到 61432，私有诊断构建另一次创建返回 200，两次创建的自动 ID 不同。现将摘要任务明确写入用户轮，并完整保留原 JSON，拒答检查及事务边界继续生效。8 项针对性 CPU 用例通过，待发行构建重新验收创建、追加和续聊。[诊断记录](evidence/serve-conversation-compaction-20261126/prompt.json)
+
+会话压缩首次 HTTPS 检查用时 31.0 秒，创建返回 502。当时的错误合并了推理、工具和拒答三种片段。已修正压缩器对推理片段的处理，只将最终文本交给状态密钥加密，工具及拒答仍报错。7 项 CPU 检查通过，实际密文解开后不含测试推理片段。原始 502 保留，下一步用同一业务请求短验。[失败与修正记录](evidence/serve-conversation-compaction-20261126/private-output.json)
+
+Conversations 创建和追加接口此前遇到合法末项 compaction_trigger 会返回 503。候选复用现有模型压缩执行与准入，在同一事务中保存新输入和密封摘要。6 项 CPU 检查通过，包含原历史续读、真实加密回放、压缩时并发更新返回 409、另一客户隔离和旧独立压缩回归。下一步用固定 Python SDK 经原生 TLS 验证两次模型压缩和续聊。[源码和 CPU 记录](evidence/serve-conversation-compaction-20261126/cpu.json)
+
 rev542 已发行多模态聊天历史读回。模型故障恢复及主网关故障切换到独立回退包后，原消息 ID、混排文本、图像顺序、视频时间和完整历史摘要一致；新请求识别出绿图，跨客户读取返回 404。发行时服务意图为 STOPPED，13 份受保护状态摘要一致。[发行记录](evidence/serve-stored-content-parts-20261126/delivery.json)
 
 主配置用时 38.9 秒，轻量配置用时 35.7 秒。轻量配置按原 ID 读回混排文本、静态图像和两帧视频，整页 SHA-256 与主配置一致。两次新视觉请求均答出 Green，独立文本请求均返回 720041，跨客户读取均返回 404。下一步验证独立包故障接管。[配置记录](evidence/serve-stored-content-parts-20261126/profiles.json)

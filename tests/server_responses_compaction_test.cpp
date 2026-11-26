@@ -1,3 +1,5 @@
+#include "q4t/server/chat_response_parser.h"
+#include "q4t/server/conversation_api.h"
 #include "q4t/server/responses_compaction.h"
 
 #include <unistd.h>
@@ -121,7 +123,9 @@ Q4T_TEST(compaction_plan_preserves_instructions_and_current_turn) {
   Q4T_CHECK(OutputJson(plan.source) == OutputJson(history));
   const auto* messages = plan.request.GetArray("messages");
   Q4T_CHECK(messages && messages->array.size() == 2);
-  Q4T_CHECK(messages->array[1].GetString("content") == OutputJson(history));
+  const auto task = messages->array[1].GetString("content");
+  Q4T_CHECK(task == "Write a concise factual handoff from this conversation "
+                    "transcript.\n\n" + OutputJson(history));
   Q4T_CHECK(!plan.request.GetBool("enable_thinking", true) &&
             plan.request.GetInt("max_completion_tokens") == 256 &&
             !plan.request.Has("tools"));
@@ -847,5 +851,139 @@ Q4T_TEST(compaction_window_capacity_never_returns_an_unreplayable_result) {
   Q4T_CHECK(!ResponsesCompactionWindow(retained, item, &window, &error));
   Q4T_CHECK(error.code == "compaction_output_limit" &&
             OutputJson(window) == "[42]");
+  return true;
+}
+
+namespace {
+ObjectReply ConversationPost(ObjectStore& objects, const std::string& path,
+                             const Json& items, ConversationCompaction* plan) {
+  auto body = Parse(R"({"items":[]})");
+  Field(&body, "items") = items;
+  return HandleConversationRequest(objects, "POST", path, OutputJson(body),
+                                   Access(), plan);
+}
+
+bool RunConversationCompact(ResponsesExecution* run,
+                            const ConversationCompaction& plan) {
+  auto request = Parse(R"({"model":"cpu-model"})");
+  Field(&request, "input") = plan.input;
+  std::string wire;
+  return Ok(run->Prepare(request, Config(), Access(), 10)) &&
+         Ok(run->SelectCompaction(600, Config())) &&
+         Ok(run->Begin(&wire)) && Ok(run->StartCompaction(&wire)) &&
+         Ok(run->CompleteCompaction("The project result is 42.", 12,
+                                    Config(), Measured(150), &wire)) &&
+         Ok(run->Finish(false, 0, {600, 0, 12, 12}, 11, &wire));
+}
+}  // namespace
+
+Q4T_TEST(conversation_compact_create_reopens_sealed_history) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  auto items = ExecutionInput();
+  items.array.push_back(Parse(R"({"type":"compaction_trigger"})"));
+  ConversationCompaction plan;
+  Q4T_CHECK(Ok(ConversationPost(objects, "/v1/conversations", items, &plan)));
+  Q4T_CHECK(plan.prefix_items == 0 && plan.new_items + 1 == items.array.size());
+  ResponsesExecution run(objects, nullptr, false, true);
+  Q4T_CHECK(!run.CommitConversationCompaction(plan).ok());
+  Q4T_CHECK(RunConversationCompact(&run, plan));
+  auto created = run.CommitConversationCompaction(plan);
+  Q4T_CHECK(Ok(created) && created.value.GetString("object") == "conversation");
+  const auto id = created.value.GetString("id");
+  ConversationState conversations(objects);
+  ItemViewOptions order;
+  order.descending = false;
+  auto page = conversations.ListItems(id, order, Access());
+  Q4T_CHECK(Ok(page));
+  const auto& data = page.value.GetArray("data")->array;
+  Q4T_CHECK(data.size() == items.array.size() &&
+            data.back().GetString("type") == "compaction" &&
+            !data.back().GetString("encrypted_content").empty());
+  Q4T_CHECK(conversations.ListItems(id, order, Access("another")).http_status == 404);
+  auto next = Parse(R"({"model":"cpu-model","input":"What is the result?"})");
+  Field(&next, "conversation") = Parse("\"" + id + "\"");
+  ResponsesExecution resumed(objects);
+  Q4T_CHECK(Ok(resumed.Prepare(next, Config(), Access(), 12)));
+  Q4T_CHECK(OutputJson(resumed.Generation().input.items)
+                .find("The project result is 42.") != std::string::npos);
+  return true;
+}
+
+Q4T_TEST(conversation_compact_append_detects_racing_change_and_preserves_ids) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ConversationState conversations(objects);
+  auto base = ConversationPost(objects, "/v1/conversations", ExecutionInput(),
+                               nullptr);
+  Q4T_CHECK(Ok(base));
+  const auto id = base.value.GetString("id");
+  const auto path = "/v1/conversations/" + id + "/items";
+  const auto addition = Parse(R"([
+    {"type":"message","role":"user","content":"Remember the result"},
+    {"type":"compaction_trigger"}])");
+  ConversationCompaction stale;
+  Q4T_CHECK(Ok(ConversationPost(objects, path, addition, &stale)));
+  Q4T_CHECK(stale.revision > 0 && stale.new_items == 1 &&
+            stale.input.array.front().GetString("type") == "item_reference");
+  ResponsesExecution first(objects, nullptr, false, true);
+  Q4T_CHECK(RunConversationCompact(&first, stale));
+  Q4T_CHECK(Ok(conversations.Update(id, Parse(R"({"owner":"new"})"), Access())));
+  const auto original = conversations.ListItems(id, {}, Access());
+  Q4T_CHECK(Ok(original));
+  Q4T_CHECK(first.CommitConversationCompaction(stale).http_status == 409);
+  Q4T_CHECK(OutputJson(conversations.ListItems(id, {}, Access()).value) ==
+            OutputJson(original.value));
+  ConversationCompaction fresh;
+  Q4T_CHECK(Ok(ConversationPost(objects, path, addition, &fresh)));
+  ResponsesExecution second(objects, nullptr, false, true);
+  Q4T_CHECK(RunConversationCompact(&second, fresh));
+  auto added = second.CommitConversationCompaction(fresh);
+  Q4T_CHECK(Ok(added) && added.value.GetArray("data")->array.size() == 2);
+  const auto& sealed = added.value.GetArray("data")->array.back();
+  Q4T_CHECK(sealed.GetString("type") == "compaction");
+  Q4T_CHECK(conversations.RetrieveItem(id, sealed.GetString("id"), {}, Access())
+                .value.GetString("encrypted_content") ==
+            sealed.GetString("encrypted_content"));
+  Q4T_CHECK(second.CommitConversationCompaction(fresh).http_status == 409);
+  auto wrong = fresh;
+  wrong.scope = "another";
+  Q4T_CHECK(!second.CommitConversationCompaction(wrong).ok());
+  return true;
+}
+
+Q4T_TEST(compaction_reasoning_deltas_are_never_written_into_sealed_memory) {
+  auto request = Parse(R"({"model":"cpu-model","messages":[],"enable_thinking":false})");
+  ChatResponseParser parser;
+  Q4T_CHECK(parser.Init(request, "<think>\n\n</think>\n\n", "response_fixture", true));
+  std::vector<ResponseDelta> deltas;
+  Q4T_CHECK(parser.Append("<think>unpublished planning</think>Retained result 42.",
+                          &deltas));
+  Q4T_CHECK(parser.Finish(false, &deltas));
+  bool reasoning = false, text = false;
+  for (const auto& delta : deltas) {
+    Q4T_CHECK(CheckCompactionDelta(delta));
+    reasoning |= delta.kind == ResponseDelta::Kind::kReasoning;
+    text |= delta.kind == ResponseDelta::Kind::kContent;
+  }
+  Q4T_CHECK(reasoning);
+  Q4T_CHECK(text);
+  Q4T_CHECK(parser.Content() == "Retained result 42.");
+  Fixture f;
+  ObjectStore objects(f.options);
+  StateCipher cipher(objects);
+  auto plan = Plan(History());
+  Json item, expanded;
+  Q4T_CHECK(Ok(SealResponsesCompaction(cipher, plan, parser.Content(), "cmp_42",
+                                       Config(), Access(), &item, &expanded)));
+  Q4T_CHECK(Ok(OpenResponsesCompaction(cipher, plan.source, item, Config(),
+                                       Access(), &expanded)));
+  Q4T_CHECK(OutputJson(expanded).find("Retained result 42.") != std::string::npos);
+  Q4T_CHECK(OutputJson(expanded).find("unpublished planning") == std::string::npos);
+  ResponseDelta invalid;
+  invalid.kind = ResponseDelta::Kind::kTool;
+  Q4T_CHECK(!CheckCompactionDelta(invalid));
+  invalid.kind = ResponseDelta::Kind::kRefusal;
+  Q4T_CHECK(!CheckCompactionDelta(invalid));
   return true;
 }

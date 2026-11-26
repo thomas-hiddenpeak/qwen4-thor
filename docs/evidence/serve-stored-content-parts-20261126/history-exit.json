@@ -1,0 +1,45 @@
+{
+  "preflight": 54,
+  "native": 10,
+  "previous_checklist": {
+    "evidence/serve-chat-annotations-business-20261117/README.md": "58a90aa27cd5d58290fc3b44b90c3c39bc4e19b38ea8524aa45a51245beec5a8",
+    "evidence/serve-chat-input-20261108/README.md": "8ac151753b167558791d065af4895bdc14ea7506a9bb7a0c0eb9c883441d0d22",
+    "evidence/serve-chat-style-business-20261116/README.md": "06b61905d372db542af7abd83bc560938b86b8bc1161a0a4203cc5b6eaf7d024",
+    "evidence/serve-custom-tools-20261108/README.md": "682ff965035090e3e4d2bc5108d95ebe2d81f8bdc8c915aaa1f37836a0862d2b",
+    "evidence/serve-file-integration-business-20261110/README.md": "2dd9382380b3cd673b9991e59fa9fdff429e7902f23848610b91868a7a3bd69b",
+    "evidence/serve-history-argument-types-20261125/business.json": "334739da3afcf7190d6b1b23a774fe8127e42cd0280b6270b47f419faf807541",
+    "evidence/serve-legacy-tools-20261108/README.md": "0a0f88c6db9251eec24598941d0afd68eb60c3d34e274e986cbf873e8e2221f6",
+    "evidence/serve-null-assistant-history-20261126/business.json": "03c5b36b5a85ca3d5e3f0cb399c01df7c9dd425d33e7c7880669d9d9ee9f44b1",
+    "evidence/serve-null-assistant-history-20261126/full-build.json": "53a3f1c30231778d0a4f8c83ca0b247c941ddf71067c7373ff0aec5c5f438d1c",
+    "evidence/serve-stored-content-parts-20261126/business.json": "4ba61dea4666e64dc776841163a747794b9b9ccf27ab0dfe91b029b3269844ad",
+    "evidence/serve-stored-content-parts-20261126/cpu.json": "faa0121d0969f2248cd32ebaafe61bd0cb3a1dbde504e481ca7221f7a7797f50",
+    "evidence/serve-stored-message-projection-20261125/business.json": "ba7803b7c13b7058693213f879568294cf54b36916789fa8ed2a216c1309a1ea",
+    "evidence/serve-tool-map-references-20261126/business.json": "e47e5124af7187899a13f8e7f3e67f2b3ac7596751654be35239c3e02921cb2f",
+    "evidence/serve-tts-delivery-20261118/README.md": "f827dcaf78dacea3ab5932633f4cb8c0adc18427ffb41f1910031dcd5003e9f8",
+    "evidence/serve-visual-frame-parts-20261126/business.json": "7273d8db9e8dc129fbbbfc22ee2d7301f65ec2054e4bdda64ca75094b9023f80"
+  },
+  "published_head": "d27af1b7aef15a7b63e37962a77807ba8e420cc9",
+  "main_merge": "100df4604fa9913f0bea7cd3392211f41ad14fb8",
+  "revision": 542,
+  "delivery_sha256": "671b095b7763e430ea1c3e93bb8b3217e3c9e981bf4e73b2cbb0ea4b9c99223d",
+  "js_sha256": "2e5cad35ee7795668d7165bc57fba6d3122323177d36ae8b2e1a03dc945b7a2f",
+  "python_versions": [
+    {
+      "version": "2.8.1",
+      "raw_and_default_pages": 6,
+      "strict_assistant_pages": 4
+    },
+    {
+      "version": "3.42.1",
+      "raw_and_default_pages": 6,
+      "strict_assistant_pages": 4
+    },
+    {
+      "version": "3.55.1",
+      "raw_and_default_pages": 6,
+      "strict_assistant_pages": 4
+    }
+  ],
+  "schema_pages": 12,
+  "mime_checks": 12
+}

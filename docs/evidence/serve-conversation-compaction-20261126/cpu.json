@@ -1,0 +1,110 @@
+{
+  "stage": "built_and_targeted_cpu",
+  "issued": false,
+  "base": "468efbdbd8a20e0221be65ae55a66cc936ad8336",
+  "original": {
+    "case": "input_item_29_valid",
+    "type": "compaction_trigger",
+    "request": {
+      "items": [
+        {
+          "type": "compaction_trigger"
+        }
+      ]
+    },
+    "official_request": [],
+    "status": 503,
+    "error": {
+      "error": {
+        "message": "Context compaction executor is not available",
+        "type": "service_unavailable_error",
+        "code": "compaction_executor_unavailable",
+        "param": null
+      }
+    }
+  },
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "official_scope": [
+    "https://developers.openai.com/api/reference/resources/conversations/methods/create",
+    "https://developers.openai.com/api/reference/resources/conversations/subresources/items/methods/create"
+  ],
+  "product": {
+    "engine": "b1e762beb40217211cc45fa4d82a52624d46ee14be6717713ac77be1a6c06293",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "source_pins": 1101
+  },
+  "cpu": {
+    "cases": [
+      "compaction_execution_does_not_accept_nonreducing_memory",
+      "compaction_execution_cancellation_after_measurement_has_no_done",
+      "compaction_standalone_returns_preserved_users_and_replayable_state",
+      "compaction_standalone_noop_is_honest_zero_generation",
+      "conversation_compact_create_reopens_sealed_history",
+      "conversation_compact_append_detects_racing_change_and_preserves_ids"
+    ],
+    "log_sha256": "c6d0a886b9a6ff28baebccf231ad6cdc4a41c4f5e99745fd55b26b89e4843a0d",
+    "native_test_program": "41b72d9a0dbf458f62917927f29106ea7512f9e82221073047ef341e4f34b96b",
+    "summary_source": "fixed test text with native cipher, storage, replay and real revision checks"
+  },
+  "source_sha256": {
+    "include/q4t/server/chat_server.h": "2366348460b90d137c79ebfb09bf77958c749a983502d10bab7081b5b438e75d",
+    "include/q4t/server/conversation_api.h": "c92d048091c1000ef06a6611dbb9168185901f61e9adb6966781596ce2a4eb6d",
+    "include/q4t/server/conversation_state.h": "2de776a53941c38b3222f939685bbd73702442072e945b11fd263fff322b9ae1",
+    "include/q4t/server/responses_execution.h": "347d49fe495ed9bc264bec90a9c14dcaa1f969ff49d8e4b3b140e04a5cb8ebd0",
+    "src/server/chat_generation.cpp": "29c3c0e795203333cddb18297b7424d23ab26d8f79b8c02efdc56d72b2c95a2a",
+    "src/server/chat_http.cpp": "9c6a244cd3bf72231673566d997c8b63978a8617e133bf5b04ca7ed60a9ae85e",
+    "src/server/conversation_api.cpp": "ec65f0359467c68ac58ef07e63142604966072bb1900d4ff1dd2b95a36d8b832",
+    "src/server/conversation_state.cpp": "4b0fa1d3110298650be9c5da768da8070111d4aee0dbc98c0aed02ae4795c479",
+    "src/server/responses_execution_compaction.cpp": "0637f83564834c1da3a9841bac9c8bac6129104c1a7502071543d7fc1e5914ea",
+    "tests/server_responses_compaction_test.cpp": "90181ff57a24e37f7ca306a84e614c3ea91b1ccc7cdd6d266bcc04a2427ed097"
+  },
+  "guard": {
+    "anchors": 1391,
+    "negative_controls": 40
+  },
+  "sdk_driver": "fb03595afcd95d65a72fa6e4a2c509a00c3a0a96fb20d772a7046a8f27d4381b",
+  "other_sdk_schema_gaps": {
+    "approval-standard": {
+      "request": {
+        "items": [
+          {
+            "type": "mcp_approval_response",
+            "approval_request_id": "ar1",
+            "request_id": "ar1",
+            "approve": false
+          }
+        ]
+      },
+      "status": 400,
+      "error": {
+        "error": {
+          "message": "Unknown item field",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "items[0].request_id"
+        }
+      }
+    },
+    "shell-output-standard": {
+      "request": {
+        "items": [
+          {
+            "type": "local_shell_call_output",
+            "id": "call_fixture",
+            "call_id": "call_fixture",
+            "output": "ok"
+          }
+        ]
+      },
+      "status": 400,
+      "error": {
+        "error": {
+          "message": "Unknown item field",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "items[0].call_id"
+        }
+      }
+    }
+  }
+}

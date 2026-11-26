@@ -8,6 +8,7 @@
 #include "object_protocol.h"
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/input_contract.h"
+#include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_item_shape.h"
 
 namespace q4t::server {
@@ -417,13 +418,93 @@ ObjectReply ConversationState::Erase(const std::string& id,
              : written;
 }
 
+ObjectReply ConversationState::PlanCompaction(
+    const std::string& id, const Json& metadata, const Json& raw,
+    const Json& resolved, const ItemViewOptions& view,
+    const StateAccess& access, ConversationCompaction* plan) {
+  if (!plan)
+    return Error(503, "compaction_executor_unavailable",
+                 "Context compaction executor is not available");
+  if (!raw.IsArray() || !resolved.IsArray() || raw.array.empty() ||
+      raw.array.size() != resolved.array.size() ||
+      resolved.array.back().GetString("type") != "compaction_trigger")
+    return Invalid("Missing final compaction trigger", "items");
+  ConversationCompaction work;
+  work.id = id;
+  work.scope = access.scope;
+  work.metadata = metadata;
+  work.view = view;
+  work.new_items = raw.array.size() - 1;
+  work.input = Array();
+  if (!id.empty()) {
+    auto base = Read(id, access);
+    if (!base.ok()) return base;
+    const auto& current = *base.value.Find("data")->GetArray("items");
+    if (current.array.size() + raw.array.size() > kMaxConversationItems)
+      return Error(413, "conversation_item_limit",
+                   "Conversation item limit exceeded");
+    std::unordered_set<std::string> new_ids;
+    for (const auto& item : resolved.array) new_ids.insert(item.GetString("id"));
+    for (const auto& item : current.array) {
+      const auto item_id = item.GetString("id");
+      if (new_ids.contains(item_id))
+        return Error(409, "item_already_in_conversation",
+                     "Item already belongs to this conversation");
+      work.input.array.push_back(Object({{"type", String("item_reference")},
+                                         {"id", String(item_id)}}));
+    }
+    work.prefix_items = current.array.size();
+    work.revision = base.value.GetInt("revision");
+  }
+  // Re-resolve the client's new inputs under the generation owner. In
+  // particular, keep references so their private file/tool bindings survive.
+  work.input.array.insert(work.input.array.end(), raw.array.begin(),
+                          raw.array.end() - 1);
+  *plan = std::move(work);
+  return {};
+}
+
+ObjectReply ConversationState::CommitCompaction(
+    const ConversationCompaction& plan, const Json& resolved_input,
+    const Json& sealed_item, const StateAccess& access) {
+  const auto id = sealed_item.GetString("id");
+  if (plan.scope != access.scope || !ValidScope(access) ||
+      !resolved_input.IsArray() || plan.prefix_items > resolved_input.array.size() ||
+      resolved_input.array.size() - plan.prefix_items != plan.new_items ||
+      sealed_item.GetString("type") != "compaction" || id.empty() ||
+      ResponsesCompactionId(sealed_item.GetString("encrypted_content")) != id)
+    return StateError();
+  if (std::chrono::steady_clock::now() >= access.deadline)
+    return Error(408, "request_deadline_exceeded", "Compaction expired");
+  if (access.cancelled && access.cancelled())
+    return Error(499, "request_cancelled", "Compaction cancelled");
+  auto items = Array();
+  items.array.insert(items.array.end(),
+                     resolved_input.array.begin() + plan.prefix_items,
+                     resolved_input.array.end());
+  items.array.push_back(sealed_item);
+  return plan.id.empty()
+             ? Create(plan.metadata, items, access)
+             : AppendAtRevision(plan.id, items, plan.view, access, plan.revision);
+}
+
 ObjectReply ConversationState::Append(const std::string& id, const Json& items,
                                       const ItemViewOptions& options,
                                       const StateAccess& access) {
+  return AppendAtRevision(id, items, options, access, -1);
+}
+
+ObjectReply ConversationState::AppendAtRevision(
+    const std::string& id, const Json& items, const ItemViewOptions& options,
+    const StateAccess& access, int64_t expected_revision) {
   auto valid = ValidateItems(items);
   if (!valid.ok()) return valid;
   auto existing = Read(id, access);
   if (!existing.ok()) return existing;
+  if (expected_revision >= 0 &&
+      existing.value.GetInt("revision") != expected_revision)
+    return Error(409, "conversation_revision_conflict",
+                 "Conversation changed during compaction");
   auto data = *existing.value.Find("data");
   auto& current = Field(data, "items").array;
   if (items.array.size() + current.size() > kMaxConversationItems)

@@ -1,0 +1,97 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 542,
+  "build": {
+    "engine": "f7d8556195feffc4ef52887432a447faa8fa6b1da0e03bec12427f2b442d2263",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61"
+  },
+  "openapi_sha256": "87291a5fb580c46c7208a6861f866be635cce7191e2ff0e39849e2a34bfa56e7",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "saved": {
+          "conversation": "conv_8ed9502663c36df3305c72d9caaa8d2c",
+          "items": [
+            "item_9a4cbb55b87bdb80687f3d8a2af43e11",
+            "item_b1c48cd6fd50f8cbb98c64c608aa674c",
+            "cmp_2e3e8be1a40d99df949ed07e9bd6e985"
+          ],
+          "seal": "cmp_2e3e8be1a40d99df949ed07e9bd6e985",
+          "page_sha256": "019af0d35a7bf4dad84c6968fc584c2a34071f42c16e5bbda2006828dca03fb4",
+          "seal_sha256": "96fbc0b0797a337fcf89678ea5be8254705534955573e09154c0c6a2415df0ee",
+          "peer": 404
+        },
+        "restored": null,
+        "recovered_answer": null,
+        "answer": "28617",
+        "independent_chat": "720041",
+        "wire_sha256": {
+          "create": "a8658c1c78258fff7f607ee8788e9819f9c37a342e5d82371b199271d3607ce3",
+          "current_page": "019af0d35a7bf4dad84c6968fc584c2a34071f42c16e5bbda2006828dca03fb4",
+          "current_seal": "96fbc0b0797a337fcf89678ea5be8254705534955573e09154c0c6a2415df0ee",
+          "current_answer": "fff9c97137636b92edf55132c7260361ca1a5fad5b565db0ca6dcc51e5c2ccf7",
+          "independent": "9af8bad3addfc570f3a554287c6b0f01995cdf6d7e8c0d5f040c24631fdb3b0f"
+        }
+      },
+      "seconds": 42.482,
+      "starts": 1,
+      "record_sha256": "01456f89abc4efe5ba8d3b500d6e62a86967f231e17312cb3a9dba7c33535af8",
+      "receipt_sha256": "8414d94633bcdeb48d426d23635b700365c5299f18e7f8c4e0f85205c09a22fa",
+      "predecessor": "61b4bdfc5885171b7138eed9e071d8a40d421959f7f038362852689ead3249a5"
+    },
+    "light": {
+      "sdk": {
+        "sdk": "3.55.1",
+        "saved": {
+          "conversation": "conv_ae35ec2a71d4ba8ba35c6b40927cfe74",
+          "items": [
+            "item_f7839453b468b3065fd603444e1c10bb",
+            "item_53d701d748a4c51a0fe0b1335ee95a92",
+            "cmp_606afb81d54995d7e1bc98b1dced0846"
+          ],
+          "seal": "cmp_606afb81d54995d7e1bc98b1dced0846",
+          "page_sha256": "b261492ceb0a0c186029f0a4d08b75e33804ea14878fcd20e81d8ce195fbfefd",
+          "seal_sha256": "79d7baebd21fdfe9800dd43ca62c531ad4569aa79bce30768bf90c6f2aae5d4f",
+          "peer": 404
+        },
+        "restored": {
+          "conversation": "conv_8ed9502663c36df3305c72d9caaa8d2c",
+          "items": [
+            "item_9a4cbb55b87bdb80687f3d8a2af43e11",
+            "item_b1c48cd6fd50f8cbb98c64c608aa674c",
+            "cmp_2e3e8be1a40d99df949ed07e9bd6e985"
+          ],
+          "seal": "cmp_2e3e8be1a40d99df949ed07e9bd6e985",
+          "page_sha256": "019af0d35a7bf4dad84c6968fc584c2a34071f42c16e5bbda2006828dca03fb4",
+          "seal_sha256": "96fbc0b0797a337fcf89678ea5be8254705534955573e09154c0c6a2415df0ee",
+          "peer": 404
+        },
+        "recovered_answer": "28617",
+        "answer": "28617",
+        "independent_chat": "720041",
+        "wire_sha256": {
+          "restored_page": "019af0d35a7bf4dad84c6968fc584c2a34071f42c16e5bbda2006828dca03fb4",
+          "restored_seal": "96fbc0b0797a337fcf89678ea5be8254705534955573e09154c0c6a2415df0ee",
+          "restored_answer": "602f185c830ea6fbefd39afcca7108d6e5b5b3938fc696ef053542b8bcb3ecf0",
+          "create": "9be1a970a5bfa14a27d579784197e2d334b3559bab8a28082be6d96f9854a271",
+          "current_page": "b261492ceb0a0c186029f0a4d08b75e33804ea14878fcd20e81d8ce195fbfefd",
+          "current_seal": "79d7baebd21fdfe9800dd43ca62c531ad4569aa79bce30768bf90c6f2aae5d4f",
+          "current_answer": "4168cf73fd6221238cd89be27016941e15254a6d7bd03256f30053a7f07b7088",
+          "independent": "d4c36d07faba7f2192cc35d709ccaa464a693debd87c4ebddc410b10a14aded9"
+        }
+      },
+      "seconds": 47.304,
+      "starts": 1,
+      "record_sha256": "bfa36caadd7e7b075d41d2addaacd06c816d82b94797ae35481b9a4857dc8b34",
+      "receipt_sha256": "0fbd3008c919356fe2424f7718db287e8b3ddc596689a54f4d8c41d03b5b674a",
+      "predecessor": "955eb53527942fde0b6aed319c1f86a80a7c658d846c5b9186fde097afec497e"
+    }
+  },
+  "business_evidence": "6da6416eb18d4cda4af215ceb3277c97c79c36dee03ea2fd87af5fc06d6c9ed2",
+  "lease_exit": "7eca37c5be8a31407976baa9195db37cb883de5a3ca7e50cb00842fdcd801e01",
+  "acceptance": "4ab076ee4cf44ced53cf28f244166e96fe9ca77f72d04b4ec20edc588b0d5ced",
+  "qualification": "644982faec8a113f31226e18561b98f3d3bb589ee3e3974d4c433feccb1e2c3b",
+  "default_preserved": true
+}
