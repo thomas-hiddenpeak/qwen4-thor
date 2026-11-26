@@ -720,3 +720,79 @@ Q4T_TEST(responses_program_patch_results_require_original_family_and_parent) {
   Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error));
   return true;
 }
+
+Q4T_TEST(responses_shell_history_preserves_actions_and_each_command_outcome) {
+  auto request = Read(R"({"input":[
+    {"type":"shell_call","id":null,"call_id":"shell","status":null,
+     "environment":{"type":"local"},"action":{"commands":["read a","read b"],
+     "timeout_ms":2000,"max_output_length":256}},
+    {"type":"shell_call_output","call_id":"shell","status":"incomplete",
+     "max_output_length":256,"output":[{"stdout":"a","stderr":"b",
+     "outcome":{"type":"exit","exit_code":7}},{"stdout":"partial","stderr":"",
+     "outcome":{"type":"timeout"}}]}]})");
+  ResponsesInputPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error));
+  const auto& inputs = request.GetArray("input")->array;
+  const auto& messages = plan.messages.array;
+  Q4T_CHECK(messages.size() == 2 && messages[1].GetString("role") == "tool" &&
+            messages[1].GetString("tool_call_id") == "shell");
+  const auto& fn =
+      *messages[0].GetArray("tool_calls")->array[0].Find("function");
+  const auto action = Read(fn.GetString("arguments"));
+  Q4T_CHECK(fn.GetString("name") == kShellToolName &&
+            action.Find("environment")->GetString("type") == "local" &&
+            action.GetInt("timeout_ms") == 2000 &&
+            action.GetInt("max_output_length") == 256 &&
+            OutputJson(*action.Find("commands")) ==
+                OutputJson(*inputs[0].Find("action")->Find("commands")));
+  const auto result = Read(messages[1].GetString("content"));
+  Q4T_CHECK(result.GetString("status") == "incomplete" &&
+            result.GetInt("max_output_length") == 256 &&
+            OutputJson(*result.Find("output")) ==
+                OutputJson(*inputs[1].Find("output")));
+  auto& output = request.object.front().second.array[1];
+  output = Read(R"({"type":"apply_patch_call_output","call_id":"shell",
+                    "status":"completed"})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error) &&
+            error.param == "input[1].call_id");
+  output = Read(R"({"type":"shell_call_output","call_id":"shell",
+                    "status":"in_progress","output":[]})");
+  Q4T_CHECK(!NormalizeResponsesInput(request, &plan, &error) &&
+            error.param == "input[1].status");
+  output =
+      Read(R"({"type":"shell_call_output","call_id":"shell","output":[]})");
+  Q4T_CHECK(NormalizeResponsesInput(request, &plan, &error) &&
+            Read(plan.messages.array.back().GetString("content"))
+                    .GetString("status") == "completed");
+  return true;
+}
+
+Q4T_TEST(responses_local_shell_environment_selection_and_skill_metadata) {
+  auto request =
+      Read(R"({"tools":[{"type":"shell","environment":{"type":"local",
+    "skills":[{"name":"release","description":"Check project metadata","path":"/client/skills/release"}]}}],
+    "tool_choice":{"type":"shell"}})");
+  ChatPlanError error;
+  Json tools, choice;
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error));
+  Q4T_CHECK(choice.Find("function")->GetString("name") == kShellToolName &&
+            tools.array[0]
+                    .Find("function")
+                    ->GetString("description")
+                    .find("/client/skills/release") != std::string::npos);
+  auto allowed =
+      Read(R"({"tools":[{"type":"shell","environment":{"type":"local"}}],
+    "tool_choice":{"type":"allowed_tools","mode":"required","tools":[{"type":"shell"}]}})");
+  Q4T_CHECK(NormalizeResponsesTools(allowed, &tools, &choice, &error));
+  for (
+      const auto* text :
+      {R"({"tools":[{"type":"shell","environment":{"type":"local","skills":[{"name":"a","path":"/x"}]}}]})",
+       R"({"tools":[{"type":"shell","environment":{"type":"local","unknown":true}}]})",
+       R"({"tools":[{"type":"shell","environment":{"type":"local"}},{"type":"shell","environment":{"type":"local"}}]})",
+       R"({"tools":[{"type":"shell","environment":{"type":"local"},"allowed_callers":["programmatic"]}],"tool_choice":{"type":"shell"}})",
+       R"({"tools":[],"tool_choice":{"type":"shell"}})"}) {
+    Q4T_CHECK(!NormalizeResponsesTools(Read(text), &tools, &choice, &error));
+  }
+  return true;
+}

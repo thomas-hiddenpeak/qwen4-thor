@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev552 已发行标准 shell 的客户端本地执行协议。原程序收到与历史不同的真实命令结果后，主、轻配置及两条托管恢复路径均答出 exit=0 count=2，旧响应和输入页逐字节可读。登记时服务为 STOPPED，13 份受保护状态一致。[发行记录](evidence/serve-shell-history-20261126/delivery.json)
+
+主配置 43.3 秒，轻配置 41.3 秒。两个配置都按原 ID 读回四个 shell 响应和两份输入页，HTTP 字节与首次业务一致。新文档命中两行，原程序接收真实回执，从 exit=1 count=0 变为 exit=0 count=2，轻配置还读回了主配置的新续答。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-shell-history-20261126/profiles.json)
+
+主配置读回六份历史 HTTP 资源后，向同一程序交回变化的真实命令结果，保存续答时返回 409。CPU 复现确认，原实现只按父调用计算终态项 ID。现按父调用、终态和实际输出计算 ID，原有调用归属与不可变记录校验保留。十项 CPU 检查通过，下一步用原始对象库复验这一分支。[失败与回归证据](evidence/serve-shell-history-20261126/fork-repair.json)
+
+主、轻配置接管驱动已就绪。它从同一份已关闭对象库恢复四个响应与两份输入页，并在客户端私有文档副本加入两个匹配行，要求原程序重新返回退出码 0 和计数 2。五项 CPU 检查通过，覆盖误用原结果、输入页被替换和重复续答 ID。下一步在设备验证两个配置。[接管范围](evidence/serve-shell-history-20261126/profile-driver.json)
+
+一次模型启动经原生 TLS 和官方 Python SDK 完成两个标准 shell 场景。客户端读出项目文档，模型续答 qwen4_exp；程序取得真实 grep 退出码 1 与计数 0，返回 exit=1 count=0。错误调用和父 ID 均返回 400，跨客户查询 404，独立 Chat 返回 720041。九份 HTTP 资源与 35 个流事件分别通过两套 schema。下一步进行容量接管与故障恢复验收。[业务记录](evidence/serve-shell-history-20261126/business.json)
+
+标准 shell 的本地环境已接通直接调用与程序调用。每条命令有独立序号与增量、完成事件；旧程序按原归属恢复后取得退出码、超时及输出。九项 CPU 用例通过，六个命令事件和两个工具项事件分别通过官方与随包 schema，两套声明均拒绝缺少命令序号的反例。下一步用官方 SDK 经原生 TLS 读取真实项目文档。[合同验证](evidence/serve-shell-history-20261126/client-protocol.json)
+
+标准 shell_call 及 shell_call_output 原先通过官方输入 schema 和客户状态解析后，在生成准备阶段返回 503。现可回放历史命令、环境、每条命令的 stdout、stderr、退出码或超时记录；截断会保留调用与结果的配对。6 项定向 CPU 检查通过。新请求的工具声明、真实生成、托管执行和发行为后续工作。[回归记录](evidence/serve-shell-history-20261126/history.json)
+
 本机四项 CPU 用例通过，逐项校验客户端补丁版本的 16 种输出，以及旧版 shell 归属恢复与其他内联输入的存储边界。后续由公开 CI 复查。
 
 PR #172 的公开 CI 在旧断言上失败，本机复现两项。现按 32 个 SDK 输入逐项检查对象存储访问，其中唯一需要读取归属记录的是旧版 shell 结果；能力清单逐一核对包含 local_shell_call 的 15 种输出。本机四项 CPU 检查全部通过，等待新提交的公开 CI。[复核记录](evidence/serve-local-shell-20261126/host-contracts.json)

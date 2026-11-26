@@ -1,0 +1,57 @@
+{
+  "stage": "local_client_shell_protocol_cpu_verified",
+  "issued": false,
+  "base": "f3995302de28b28be99342d9cfbee4b4079cb5bd",
+  "product": {
+    "binary": "5811a184942c9bbc3525a5e65dad83906acd080e3d9c96a3da4c66c0a02c5b06",
+    "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+    "protocol_sources": 1102,
+    "source_manifest": "bb05f3f920b400862dfaabf56ca63a0a2237eeb7a245e6675a9dd718053dcaed"
+  },
+  "sdk_driver_sha256": "236f8e01bc9d305f6855d470f8a3a497128b52710a7bce781ec541c56dc0dcc6",
+  "cpu": {
+    "tests": [
+      "chat_capabilities_native_file_search_conditions_and_output_types",
+      "responses_shell_history_preserves_actions_and_each_command_outcome",
+      "responses_local_shell_environment_selection_and_skill_metadata",
+      "responses_local_shell_stream_exposes_only_typed_actions",
+      "responses_client_patch_emits_a_complete_typed_operation",
+      "responses_shell_stream_keeps_commands_and_completion_distinct",
+      "responses_program_result_caller_and_identity_cannot_be_rebound",
+      "responses_program_patch_preserves_client_failure_after_reopen",
+      "responses_program_shell_reopens_with_canonical_commands_and_outcomes"
+    ],
+    "process": "real independent native object and program workers",
+    "log_sha256": "189c0c74b92b45a5bd6e0b72efaca639fea896470da5f2a403d25638b1960cfe",
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 247,
+      "native_routes": 409,
+      "reviewed_source_anchors": 1392,
+      "mutation_checks": 40,
+      "errors": []
+    }
+  },
+  "command_streams": {
+    "official": {
+      "sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+      "commands": 6,
+      "items": 2,
+      "negative": 3
+    },
+    "/v1": {
+      "sha256": "7b29a3fd9ecd52c6c4a7cfcc4377fd0580aad89be4756ba74738fa1500f7e0b5",
+      "commands": 6,
+      "items": 2,
+      "negative": 3
+    }
+  },
+  "pending": [
+    "real native TLS SDK business and ownership",
+    "two capacity profiles and managed delivery",
+    "hosted shell environments"
+  ]
+}

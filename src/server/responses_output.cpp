@@ -7,6 +7,7 @@
 #include "q4t/server/http_response.h"
 #include "q4t/server/input_contract.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_input.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/request_json.h"
 #include "responses_json.h"
@@ -322,13 +323,53 @@ Status ResponsesOutput::Cancel() {
     if (!closed_items_.contains(i)) {
       const auto type = Items().array[i].GetString("type");
       if (type == "file_search_call" || type == "mcp_call" ||
-          type == "code_interpreter_call" || type == "web_search_call")
+          type == "code_interpreter_call" || type == "web_search_call" ||
+          type == "shell_call")
         Set(&Items().array[i], "status", String("incomplete"));
       else if (type == "mcp_list_tools")
         Set(&Items().array[i], "error", String("MCP listing cancelled"));
     }
   terminal_ = true;
   return {};
+}
+
+Status ResponsesOutput::ChargeItem(const io::Json& item) {
+  const size_t bytes = OutputJson(item).size() + 8 * sizeof(io::Json);
+  if (item.GetString("type") != "shell_call") return Charge(bytes);
+  // Each command has three independently framed events, including optional
+  // delta padding. Bound fan-out even for an array of empty commands.
+  const auto count = item.Find("action")->GetArray("commands")->array.size();
+  constexpr size_t kCommandEventBytes = 1024;
+  if (bytes > limit_ || count > (limit_ - bytes) / kCommandEventBytes)
+    return Status::Fail("Shell command events exceed response capacity");
+  return Charge(bytes + count * kCommandEventBytes);
+}
+
+void ResponsesOutput::EmitItemAdded(size_t index, std::string* wire) {
+  const auto& item = Items().array[index];
+  auto added = item;
+  const bool shell = item.GetString("type") == "shell_call";
+  if (shell) {
+    Set(&added, "status", String("in_progress"));
+    Set(&Field(added, "action"), "commands", Array());
+  }
+  Event("response.output_item.added",
+        Object({{"output_index", Number(index)}, {"item", std::move(added)}}),
+        wire);
+  if (!shell) return;
+  const auto& commands = item.Find("action")->GetArray("commands")->array;
+  for (size_t i = 0; i < commands.size(); ++i) {
+    Event("response.shell_call_command.added",
+          Object({{"output_index", Number(index)},
+                  {"command_index", Number(i)},
+                  {"command", String("")}}),
+          wire);
+    Event("response.shell_call_command.delta",
+          Object({{"output_index", Number(index)},
+                  {"command_index", Number(i)},
+                  {"delta", commands[i]}}),
+          wire);
+  }
 }
 
 Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
@@ -353,7 +394,17 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
     if (identity && !identity->direct)
       return Status::Fail(
           "Program-only tool cannot be emitted by a direct caller");
-    if (identity && identity->type == "apply_patch") {
+    if (identity && identity->type == "shell") {
+      io::Json action;
+      auto parsed = ParseResponsesShellAction(call->arguments, &action);
+      if (!parsed) return parsed;
+      item = Object({{"id", String(detail::NewRequestId("sh_"))},
+                     {"type", String("shell_call")},
+                     {"call_id", String(call->id)},
+                     {"environment", Object({{"type", String("local")}})},
+                     {"caller", Object({{"type", String("direct")}})},
+                     {"action", std::move(action)}});
+    } else if (identity && identity->type == "apply_patch") {
       io::Json operation;
       if (!io::ParseJson(call->arguments, &operation, true, kSchemaJsonLimits))
         return Status::Fail("Invalid generated patch operation");
@@ -398,15 +449,12 @@ Status ResponsesOutput::AddItem(ResponseDelta::Kind kind,
       Set(&item, "summary", Array());
   }
   Set(&item, "status", String("in_progress"));
-  auto status = Charge(OutputJson(item).size() + sizeof(io::Json) * 8);
+  auto status = ChargeItem(item);
   if (!status) return status;
   *index = Items().array.size();
   Items().array.push_back(std::move(item));
   call_indices_.push_back(call ? call->index : kNoCall);
-  Event("response.output_item.added",
-        Object(
-            {{"output_index", Number(*index)}, {"item", Items().array.back()}}),
-        wire);
+  EmitItemAdded(*index, wire);
   if (kind != ResponseDelta::Kind::kTool) {
     auto part = Object({{"type", String(refusal   ? "refusal"
                                         : message ? "output_text"
@@ -493,9 +541,10 @@ Status ResponsesOutput::Append(const ResponseDelta& delta,
   }
   auto& item = Items().array[index];
   if (tool) {
-    if (item.GetString("type") == "apply_patch_call") {
+    if (item.GetString("type") == "apply_patch_call" ||
+        item.GetString("type") == "shell_call") {
       if (!delta.tool_start)
-        return Status::Fail("Unexpected fragment after validated patch");
+        return Status::Fail("Unexpected fragment after validated client call");
       return {};
     }
     if (item.GetString("type") == "local_shell_call") {
@@ -643,6 +692,14 @@ void ResponsesOutput::CloseItem(size_t index, bool incomplete,
     fields = Location(index, true);
     Set(&fields, "part", part);
     Event("response.content_part.done", std::move(fields), wire);
+  } else if (type == "shell_call" && !incomplete) {
+    const auto& commands = item.Find("action")->GetArray("commands")->array;
+    for (size_t i = 0; i < commands.size(); ++i)
+      Event("response.shell_call_command.done",
+            Object({{"output_index", Number(index)},
+                    {"command_index", Number(i)},
+                    {"command", commands[i]}}),
+            wire);
   } else if ((type == "function_call" || type == "custom_tool_call") &&
              !incomplete) {
     const bool custom = type == "custom_tool_call";

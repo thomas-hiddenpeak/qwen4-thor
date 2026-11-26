@@ -1,0 +1,18 @@
+{
+  "stage": "client_shell_profile_driver_ready",
+  "issued": false,
+  "previous_revision": 550,
+  "previous_manifest": "555596600f2b75cc67c4539458bc9c354803cd83354fef4e6fad02cf3945ee68",
+  "business_sha256": "4cccad1bd055f6bbe5289698cb8583e86bbc56959b5e543d2ccbf603e8cd1342",
+  "source_bytes": 145537,
+  "members": 22,
+  "cpu_log_sha256": "1f11b6e880045ee35de832b81b45d06257342e13b5c79bbf0034379d4ca220b9",
+  "audit_mutations": 40,
+  "required": {
+    "restored_responses": 4,
+    "restored_input_pages": 2,
+    "original_outcome": "exit=1 count=0",
+    "new_private_document_outcome": "exit=0 count=2",
+    "original_scope": 404
+  }
+}

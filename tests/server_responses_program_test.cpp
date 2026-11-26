@@ -1,4 +1,5 @@
 #include "q4t/server/responses_program.h"
+#include "q4t/server/responses_output.h"
 
 #include <cstdlib>
 #include <filesystem>
@@ -382,4 +383,97 @@ Q4T_TEST(responses_program_patch_preserves_client_failure_after_reopen) {
   Set(&Field(history.array[1], "operation"), "path", String("rebound.md"));
   Q4T_CHECK(!Run(cipher, history, &completed).ok());
   return true;
+}
+
+Q4T_TEST(responses_program_shell_reopens_with_canonical_commands_and_outcomes) {
+  Fixture f;
+  const auto tools = Parse(R"([{"type":"programmatic_tool_calling"},
+    {"type":"shell","environment":{"type":"local"},"allowed_callers":["programmatic"]}])");
+  Json history, calls, completed;
+  {
+    ObjectStore store(f.options);
+    StateCipher cipher(store);
+    auto invalid =
+        Array({Create(cipher, "await tools.shell({commands:[2]});", tools)});
+    Q4T_CHECK(!Run(cipher, invalid, &calls).ok() && calls.array.empty());
+    history = Array(
+        {Create(cipher,
+                "const r=await "
+                "tools.shell({max_output_length:80,commands:['pwd','date']});"
+                "text([r.status,r.output[0].stdout,r.output[1].outcome.type,r."
+                "max_output_length].join('|'));",
+                tools)});
+    Q4T_CHECK(Ok(Run(cipher, history, &calls)) && calls.array.size() == 1);
+  }
+  const auto child = calls.array.front();
+  Q4T_CHECK(child.GetString("type") == "shell_call" &&
+            child.Find("action")->GetArray("commands")->array.size() == 2 &&
+            child.Find("action")->Find("timeout_ms")->IsNull() &&
+            child.Find("environment")->GetString("type") == "local" &&
+            child.Find("caller")->GetString("caller_id") ==
+                history.array[0].GetString("call_id"));
+  ResponsesOutput published;
+  std::string wire;
+  Q4T_CHECK(published.Init(Object({{"tools", tools}}), "resp_program_shell", 42,
+                           false) &&
+            published.Start(&wire) &&
+            published.AppendProgramItems(calls, &wire));
+  Q4T_CHECK(wire.find("response.shell_call_command.done") != wire.npos &&
+            wire.find("response.function_call_arguments") == wire.npos &&
+            published.Snapshot()
+                    .GetArray("output")
+                    ->array.front()
+                    .Find("caller")
+                    ->GetString("caller_id") ==
+                history.array.front().GetString("call_id"));
+  history.array.push_back(child);
+  auto result = Parse(R"({"type":"shell_call_output","max_output_length":80,
+    "status":"incomplete","output":[{"stdout":"project","stderr":"",
+    "outcome":{"type":"exit","exit_code":0}},{"stdout":"","stderr":"",
+    "outcome":{"type":"timeout"}}]})");
+  Set(&result, "caller", *child.Find("caller"));
+  Set(&result, "call_id", *child.Find("call_id"));
+  history.array.push_back(result);
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  Q4T_CHECK(Ok(Run(cipher, history, &completed)) &&
+            completed.array.size() == 1 &&
+            completed.array[0].GetString("result") ==
+                "incomplete|project|timeout|80");
+  auto wrong = history;
+  Set(&Field(wrong.array.back(), "caller"), "caller_id", String("other"));
+  Q4T_CHECK(!Run(cipher, wrong, &completed).ok());
+  Set(&history.array.back(), "status", String("in_progress"));
+  Q4T_CHECK(!Run(cipher, history, &completed).ok());
+  return true;
+}
+
+Q4T_TEST(responses_program_forks_keep_independent_terminal_item_ids) {
+  Fixture f;
+  ObjectStore store(f.options);
+  StateCipher cipher(store);
+  auto history =
+      Array({Create(cipher, "const r=await tools.read({n:1});text(r.value);")});
+  Json calls;
+  Q4T_CHECK(Ok(Run(cipher, history, &calls)) && calls.array.size() == 1);
+  history.array.push_back(calls.array.front());
+  history.array.push_back(
+      Result(calls.array.front(), String(R"({"value":1})")));
+  Json first, retry, second;
+  Q4T_CHECK(Ok(Run(cipher, history, &first)) && first.array.size() == 1 &&
+            first.array[0].GetString("result") == "1");
+  Q4T_CHECK(Ok(Run(cipher, history, &retry)) &&
+            OutputJson(first) == OutputJson(retry));
+  Set(&history.array.back(), "output", String(R"({"value":2})"));
+  Q4T_CHECK(Ok(Run(cipher, history, &second)) && second.array.size() == 1 &&
+            second.array[0].GetString("result") == "2");
+  Q4T_CHECK(second.array[0].GetString("call_id") ==
+                first.array[0].GetString("call_id") &&
+            second.array[0].GetString("id") != first.array[0].GetString("id"));
+  history.array.push_back(second.array.front());
+  // Previously issued terminal IDs remain readable after upgrade.
+  Set(&history.array.back(), "id",
+      String("prog_out_" +
+             Digest(history.array[0].GetString("call_id")).substr(0, 56)));
+  return Ok(Run(cipher, history, &retry)) && retry.array.empty();
 }

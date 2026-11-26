@@ -20,11 +20,13 @@ io::Json NativeResponsesProgramDefinition(
   auto catalog = Array();
   const auto add = [&](const Json& tool, const std::string& name_space) {
     if (!ResponsesToolAllows(tool, "programmatic")) return;
-    if (tool.GetString("type") == "apply_patch") {
-      auto patch = ResponsesPatchFunction();
-      Set(&patch, "type", String("apply_patch"));
-      Set(&patch, "name", String("apply_patch"));
-      catalog.array.push_back(std::move(patch));
+    const auto type = tool.GetString("type");
+    if (type == "apply_patch" || type == "shell") {
+      auto entry = type == "shell" ? ResponsesShellFunction(tool)
+                                   : ResponsesPatchFunction();
+      Set(&entry, "type", String(type));
+      Set(&entry, "name", String(type));
+      catalog.array.push_back(std::move(entry));
       return;
     }
     if (tool.GetString("type") != "function" &&

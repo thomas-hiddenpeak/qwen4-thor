@@ -11,6 +11,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/responses_input.h"
 
 namespace q4t::server::detail {
 namespace {
@@ -111,6 +112,15 @@ JSValue Tool(JSContext* context, JSValueConst, int argc, JSValueConst* argv,
                        CopyString(context, encoded, &arguments, kMaxArgument);
     JS_FreeValue(context, encoded);
     if (!valid) return Fail(context, "program_argument_limit");
+    if (tool.GetString("type") == "shell") {
+      io::Json action;
+      // Compare valid calls in the same form as their durable resource.
+      // CallsContract reports malformed arguments before a child is published.
+      if (ParseResponsesShellAction(arguments, &action))
+        arguments = OutputJson(action);
+      if (arguments.size() > kMaxArgument)
+        return Fail(context, "program_argument_limit");
+    }
     const auto ordinal = run.calls.array.size();
     const auto& history = run.input->GetArray("calls")->array;
     if (ordinal < history.size() &&
@@ -271,7 +281,8 @@ bool Valid(const Json& input) {
         (tool.GetString("type") != "function" &&
          tool.GetString("type") != "custom" &&
          tool.GetString("type") != "mcp" &&
-         tool.GetString("type") != "apply_patch") ||
+         tool.GetString("type") != "apply_patch" &&
+         tool.GetString("type") != "shell") ||
         !keys.insert(tool.GetString("key")).second ||
         !identities
              .insert(OutputJson(Array({String(tool.GetString("namespace")),
