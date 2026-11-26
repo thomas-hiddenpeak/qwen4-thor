@@ -1,0 +1,40 @@
+{
+  "stage": "targeted_cpu_pass_gpu_pending",
+  "source_sha256": {
+    "tools/serve_startup_memory/memory_probe.cu": "dee0bfc922480ec66f120c36b63e497beb5b813a79e3278687426a3b2c8b0c8c",
+    "tools/serve_startup_memory/native_pool_stage.py": "1d3c1b7299d2c697d31b64d63daa8de4c73ce998016541ca11f10bf7b25c31fb",
+    "tools/serve_startup_memory/pool_accounting.py": "9b74993c5dfcafdec2744c360a89727eee1cb4436cb4191e66947561feb211a0",
+    "tools/serve_startup_memory/test_pool_accounting.py": "3782cd5c4011ab7c95920ecf6d0e8359d540a894a5e5d17b094d41f4af81a960"
+  },
+  "probe_binary_sha256": "85837625d316db09eb93b778a75fdc183275f10d185770ff4f383a19da9bfed3",
+  "build_flags": [
+    "-std=c++23",
+    "-ccbin",
+    "g++-14",
+    "-arch=sm_110a",
+    "-Xcompiler=-Wall,-Wextra,-Werror"
+  ],
+  "tests": [
+    "test_incomplete_gpu_work_and_invalid_pool_counters_are_detected",
+    "test_preserve_host_and_pool_deltas_as_independent_values",
+    "test_release_must_finish_and_all_phases_must_be_present",
+    "test_stale_sample_and_changed_pressure_are_detected",
+    "test_synchronized_release_can_leave_backing_in_pool"
+  ],
+  "native_cgroup_cleanup": {
+    "owned_domain_cleaned": true,
+    "payload_exited_before_baseline": true,
+    "gpu_calls": 0
+  },
+  "previous_scope": {
+    "sha256": "49ab258ff364efab1a678e8f4cf86bcaa74d7e36dadd42d042da397a2a9d99d1",
+    "cases": [
+      "anonymous",
+      "device",
+      "managed",
+      "pinned"
+    ]
+  },
+  "model_starts": 0,
+  "physical_ram_limit_proved": false
+}

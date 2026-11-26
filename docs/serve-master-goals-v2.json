@@ -9883,6 +9883,11 @@
         "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
         "revision": 522,
         "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
+      },
+      "async_pool_charge_20261126": {
+        "stage": "targeted_cpu_pass_gpu_pending",
+        "evidence": "evidence/serve-resource-charge-20261126/cpu.json",
+        "physical_ram_limit_proved": false
       }
     },
     {
