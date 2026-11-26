@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 VIDEO_CLIP_RECORD = 'q4t-profile-business-v71'
 VIDEO_CLIP_FORMAT = 'q4t-video-clip-source-v1'
 VIDEO_CLIP_RECEIPT = 'video-clip-handoff.json'
-VIDEO_CLIP_REVIEWED = {}
+VIDEO_CLIP_REVIEWED = {
+    'primary': '1b184591f50c1019c56a6f7f5ae455355c0a27dc405d71ddde0ecb6bb8014501',
+    'light': 'c84469191f3fbc11e6ad26f224e2f8da83d3c7a18c188b40e57869bd1b143504',
+}
 CLIP_CAPABILITY = dict(track_grid='whole-pixel', source='quicktime-movie-and-track',
                        exterior='black', frozen_conversion='q4t.cpu_video_png.v6')
 
@@ -558,6 +561,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    'c2ebf8c338cc5f3993b165d8d8df26e9f6cf1c10c86f690c59f5327c78adb10f':
+        '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     'd1e76f7b0fcebde0b097423e8344c54a551eb1fae054544968ceb8df429bde17':
         '65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61',
     '884368197f40b727d1ad3897703d3a7f0a344c11f79617f394d1f6f02bc0f09f':

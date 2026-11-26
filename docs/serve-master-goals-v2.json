@@ -6435,6 +6435,10 @@
           "primary/light qualification and separate package recovery",
           "fractional track grids, nonrectangular regions, simultaneous track composition"
         ]
+      },
+      "quicktime_clip_profiles_20261126": {
+        "stage": "profile_verified",
+        "receipt": "docs/evidence/serve-video-clipping-20261126/profiles.json"
       }
     },
     {
