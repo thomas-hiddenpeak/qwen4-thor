@@ -1326,3 +1326,72 @@ Q4T_TEST(responses_client_patch_emits_a_complete_typed_operation) {
             item.Find("operation")->GetString("diff") == "@@\n-old\n+new");
   return true;
 }
+
+Q4T_TEST(responses_shell_stream_keeps_commands_and_completion_distinct) {
+  Json options;
+  Q4T_CHECK(q4t::io::ParseJson(
+      R"({"tools":[{"type":"shell","environment":{"type":"local"}}],
+          "tool_choice":{"type":"shell"}})",
+      &options));
+  ResponsesOutput out;
+  std::string wire, part;
+  Q4T_CHECK(out.Init(options, "resp_shell", 42, false) && out.Start(&wire));
+  auto delta = Tool(0, R"({"commands":["pwd","date"],"timeout_ms":700})", true);
+  delta.call.name = kShellToolName;
+  ResponsesOutput small;
+  Q4T_CHECK(small.Init(options, "resp_limit", 42, false, 4096) &&
+            small.Start(&part));
+  auto many = delta;
+  many.call.arguments = R"({"commands":["","","","","","","",""]})";
+  Q4T_CHECK(!small.Append(many, "null", &part) && part.empty() &&
+            small.Snapshot().GetArray("output")->array.empty());
+  auto rejected = out;
+  auto invalid = delta;
+  invalid.call.arguments = R"({"commands":["pwd",2]})";
+  Q4T_CHECK(!rejected.Append(invalid, "null", &part) && part.empty());
+  Q4T_CHECK(out.Append(delta, "null", &part));
+  wire += part;
+  auto interrupted = out;
+  Q4T_CHECK(interrupted.Finish(true, 0, {}, 43, &part) &&
+            interrupted.Snapshot().GetArray("output")->array[0].GetString(
+                "status") == "incomplete" &&
+            part.find("shell_call_command.done") == part.npos);
+  auto fragmented = out;
+  Q4T_CHECK(!fragmented.Append(Tool(0, "{}", false), "null", &part) &&
+            part.empty());
+  Q4T_CHECK(out.Finish(false, 1, {}, 43, &part));
+  wire += part;
+  std::vector<Json> events;
+  Q4T_CHECK(Events(wire, &events) &&
+            wire.find("function_call_arguments") == wire.npos);
+  std::vector<std::string> observed;
+  const std::vector<std::string> commands = {"pwd", "date"};
+  for (const auto& event : events) {
+    const auto type = event.GetString("type");
+    if (type == "response.output_item.added") {
+      const auto* item = event.Find("item");
+      Q4T_CHECK(item && item->GetString("type") == "shell_call" &&
+                item->Find("action")->GetArray("commands")->array.empty());
+    }
+    if (!type.starts_with("response.shell_call_command.")) continue;
+    const size_t n = event.GetInt("command_index", -1);
+    Q4T_CHECK(n < commands.size() && event.GetInt("output_index", -1) == 0 &&
+              !event.Has("item_id"));
+    const bool added = type.ends_with(".added");
+    Q4T_CHECK(event.GetString(type.ends_with(".delta") ? "delta" : "command") ==
+              (added ? "" : commands[n]));
+    observed.push_back(type.substr(type.rfind('.') + 1) + std::to_string(n));
+  }
+  const std::vector<std::string> expected = {"added0", "delta0", "added1",
+                                             "delta1", "done0",  "done1"};
+  Q4T_CHECK(observed == expected);
+  const auto& item = out.Snapshot().GetArray("output")->array.front();
+  Q4T_CHECK(item.GetString("call_id") == delta.call.id &&
+            item.GetString("status") == "completed" &&
+            item.Find("environment")->GetString("type") == "local" &&
+            item.Find("caller")->GetString("type") == "direct" &&
+            item.Find("action")->GetArray("commands")->array.size() == 2 &&
+            item.Find("action")->GetInt("timeout_ms") == 700 &&
+            item.Find("action")->Find("max_output_length")->IsNull());
+  return Save("shell-commands", out, wire);
+}

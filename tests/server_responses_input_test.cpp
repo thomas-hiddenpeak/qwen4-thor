@@ -767,3 +767,32 @@ Q4T_TEST(responses_shell_history_preserves_actions_and_each_command_outcome) {
                     .GetString("status") == "completed");
   return true;
 }
+
+Q4T_TEST(responses_local_shell_environment_selection_and_skill_metadata) {
+  auto request =
+      Read(R"({"tools":[{"type":"shell","environment":{"type":"local",
+    "skills":[{"name":"release","description":"Check project metadata","path":"/client/skills/release"}]}}],
+    "tool_choice":{"type":"shell"}})");
+  ChatPlanError error;
+  Json tools, choice;
+  Q4T_CHECK(NormalizeResponsesTools(request, &tools, &choice, &error));
+  Q4T_CHECK(choice.Find("function")->GetString("name") == kShellToolName &&
+            tools.array[0]
+                    .Find("function")
+                    ->GetString("description")
+                    .find("/client/skills/release") != std::string::npos);
+  auto allowed =
+      Read(R"({"tools":[{"type":"shell","environment":{"type":"local"}}],
+    "tool_choice":{"type":"allowed_tools","mode":"required","tools":[{"type":"shell"}]}})");
+  Q4T_CHECK(NormalizeResponsesTools(allowed, &tools, &choice, &error));
+  for (
+      const auto* text :
+      {R"({"tools":[{"type":"shell","environment":{"type":"local","skills":[{"name":"a","path":"/x"}]}}]})",
+       R"({"tools":[{"type":"shell","environment":{"type":"local","unknown":true}}]})",
+       R"({"tools":[{"type":"shell","environment":{"type":"local"}},{"type":"shell","environment":{"type":"local"}}]})",
+       R"({"tools":[{"type":"shell","environment":{"type":"local"},"allowed_callers":["programmatic"]}],"tool_choice":{"type":"shell"}})",
+       R"({"tools":[],"tool_choice":{"type":"shell"}})"}) {
+    Q4T_CHECK(!NormalizeResponsesTools(Read(text), &tools, &choice, &error));
+  }
+  return true;
+}

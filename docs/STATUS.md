@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+标准 shell 的本地环境已接通直接调用与程序调用。每条命令有独立序号与增量、完成事件；旧程序按原归属恢复后取得退出码、超时及输出。九项 CPU 用例通过，六个命令事件和两个工具项事件分别通过官方与随包 schema，两套声明均拒绝缺少命令序号的反例。下一步用官方 SDK 经原生 TLS 读取真实项目文档。[合同验证](evidence/serve-shell-history-20261126/client-protocol.json)
+
 标准 shell_call 及 shell_call_output 原先通过官方输入 schema 和客户状态解析后，在生成准备阶段返回 503。现可回放历史命令、环境、每条命令的 stdout、stderr、退出码或超时记录；截断会保留调用与结果的配对。6 项定向 CPU 检查通过。新请求的工具声明、真实生成、托管执行和发行为后续工作。[回归记录](evidence/serve-shell-history-20261126/history.json)
 
 主配置 43.0 秒，轻配置 40.3 秒。两个配置都按原 ID 读回四个补丁响应和两份输入页，HTTP 字节与首次业务一致。原程序接收新的实际失败回执并返回 failed ENOENT，轻配置还读回了主配置的新续答。下一步验证模型和网关故障恢复。[配置记录](evidence/serve-client-patch-20261126/profiles.json)

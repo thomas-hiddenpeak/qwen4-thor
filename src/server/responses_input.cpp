@@ -323,7 +323,7 @@ Status MapNamespaceChoice(const Json& original,
                           std::string_view path = "tool_choice") {
   *mapped = original;
   const auto type = original.GetString("type");
-  if (type == "local_shell" || type == "apply_patch") {
+  if (type == "local_shell" || type == "apply_patch" || type == "shell") {
     auto status = InputFields(original, {"type"}, &error->param, path);
     if (!status) return status;
     const auto found = std::ranges::find_if(identities, [&](const auto& tool) {
@@ -356,6 +356,52 @@ Status MapNamespaceChoice(const Json& original,
   return {};
 }
 }  // namespace
+
+io::Json ResponsesShellFunction(const Json& tool) {
+  const auto text = Object({{"type", String("string")}});
+  const auto commands = Object({{"type", String("array")}, {"items", text}});
+  const auto limit =
+      Object({{"type", Array({String("integer"), String("null")})}});
+  const auto properties = Object({{"commands", commands},
+                                  {"timeout_ms", limit},
+                                  {"max_output_length", limit}});
+  auto description = std::string(
+      "Request commands in the client's local shell. "
+      "Return commands in order. The client runs them and supplies the "
+      "output.");
+  if (const auto* env = tool.Find("environment")) {
+    if (const auto* skills = env->GetArray("skills");
+        skills && !skills->array.empty())
+      description += " Available local skills: " + OutputJson(*skills);
+  }
+  return Object(
+      {{"name", String(kShellToolName)},
+       {"description", String(description)},
+       {"parameters", Object({{"type", String("object")},
+                              {"properties", properties},
+                              {"required", Array({String("commands")})},
+                              {"additionalProperties", Boolean(false)}})},
+       {"strict", Boolean(false)}});
+}
+
+Status ParseResponsesShellAction(const std::string& arguments, Json* action) {
+  Json parsed;
+  if (!io::ParseJson(arguments, &parsed, true, kSchemaJsonLimits) ||
+      !InputFields(parsed, {"commands", "timeout_ms", "max_output_length"}))
+    return Status::Fail("Invalid generated shell action");
+  const auto* commands = parsed.GetArray("commands");
+  if (!commands || !std::ranges::all_of(commands->array, &Json::IsString))
+    return Status::Fail("Shell action requires a list of command strings");
+  auto next = Object({{"commands", *commands}});
+  for (const auto* name : {"timeout_ms", "max_output_length"}) {
+    const auto* value = parsed.Find(name);
+    if (value && !value->IsNull() && !IsInputInteger(*value))
+      return Status::Fail("Invalid shell action limit");
+    Set(&next, name, value ? *value : Json());
+  }
+  *action = std::move(next);
+  return {};
+}
 
 io::Json ResponsesPatchFunction() {
   auto kinds = Array(
@@ -411,6 +457,43 @@ Status PlanResponsesToolIdentities(
       return Status::Fail("expanded tools exceed the 128-callable budget");
     }
     const auto type = tool.GetString("type");
+    if (type == "shell") {
+      auto status =
+          InputFields(tool, {"type", "environment", "allowed_callers"},
+                      &error->param, path);
+      if (status) status = ValidateResponsesAllowedCallers(tool, error, path);
+      if (!status) return status;
+      const auto* env = tool.Find("environment");
+      if (!env || env->IsNull() || env->GetString("type") == "container_auto" ||
+          env->GetString("type") == "container_reference")
+        return Unresolved(error, path + ".environment");
+      if (env->GetString("type") != "local")
+        return Invalid(error, path + ".environment.type",
+                       "Invalid shell environment");
+      status = InputFields(*env, {"type", "skills"}, &error->param,
+                           path + ".environment");
+      if (!status) return status;
+      if (const auto* skills = env->Find("skills")) {
+        const auto at = path + ".environment.skills";
+        if (!skills->IsArray() || skills->array.size() > 200)
+          return Invalid(error, at, "Expected up to 200 local skills");
+        for (size_t i = 0; i < skills->array.size(); ++i) {
+          const auto& skill = skills->array[i];
+          const auto key = at + "[" + std::to_string(i) + "]";
+          status = InputFields(skill, {"name", "description", "path"},
+                               &error->param, key);
+          for (const auto* field : {"name", "description", "path"})
+            if (status) status = TextField(skill, field, key, error);
+          if (!status) return status;
+        }
+      }
+      if (!space.empty() || !model_names.insert(kShellToolName).second)
+        return Invalid(error, path, "Invalid or duplicate shell tool");
+      identities->push_back({type, type, "", kShellToolName, path, false,
+                             ResponsesToolAllows(tool, "direct"),
+                             ResponsesToolAllows(tool, "programmatic")});
+      return {};
+    }
     if (type == "apply_patch") {
       auto status =
           InputFields(tool, {"type", "allowed_callers"}, &error->param, path);
@@ -808,10 +891,10 @@ Status NormalizeResponsesInput(const io::Json& request,
         return Invalid(error, path, "Invalid program child relationship");
       const bool invocation =
           type == "function_call" || type == "custom_tool_call" ||
-          type == "apply_patch_call";
+          type == "apply_patch_call" || type == "shell_call";
       const bool result =
           type == "function_call_output" || type == "custom_tool_call_output" ||
-          type == "apply_patch_call_output";
+          type == "apply_patch_call_output" || type == "shell_call_output";
       if (!invocation && !result)
         return Invalid(error, path, "Invalid program caller item");
       auto public_item = item;
@@ -822,6 +905,10 @@ Status NormalizeResponsesInput(const io::Json& request,
       status = ValidateResponsesItemShape(
           public_item, ResponsesItemShape::kInput, error, path);
       if (!status) return status;
+      if (type == "shell_call_output" &&
+          item.GetString("status") == "in_progress")
+        return Invalid(error, path + ".status",
+                       "Shell result is still in progress");
       if (invocation) {
         if (!call_ids.insert(id).second ||
             !program_children.emplace(id, ProgramChild{parent, type + "_output"})
@@ -1430,13 +1517,15 @@ Status NormalizeResponsesCallableTools(const io::Json& request, io::Json* tools,
         model_paths.push_back(at);
         continue;
       }
-      if (type == "apply_patch") {
-        auto body = ResponsesPatchFunction();
+      if (type == "apply_patch" || type == "shell") {
+        auto body = type == "shell" ? ResponsesShellFunction(definition)
+                                    : ResponsesPatchFunction();
         tools->array.push_back(Object(
             {{"type", String("function")}, {"function", std::move(body)}}));
         model_paths.push_back(at);
         if (!ResponsesToolAllows(definition, "direct"))
-          program_only.insert(kApplyPatchToolName);
+          program_only.insert(type == "shell" ? kShellToolName
+                                              : kApplyPatchToolName);
         continue;
       }
       if (type == "local_shell") {

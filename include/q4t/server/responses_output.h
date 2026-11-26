@@ -139,6 +139,8 @@ class ResponsesOutput {
   io::Json& Items();
   Status AddItem(ResponseDelta::Kind kind, const ResponseToolCall* call,
                  size_t* index, std::string* wire);
+  Status ChargeItem(const io::Json& item);
+  void EmitItemAdded(size_t index, std::string* wire);
   void CloseItem(size_t index, bool incomplete, std::string* wire);
   bool CloseInterruptedMcp(size_t index, std::string* wire);
   io::Json response_;

@@ -3108,6 +3108,16 @@
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
         ]
+      },
+      "client_shell_20261126": {
+        "stage": "local_client_shell_protocol_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
+        "pending": [
+          "real native TLS SDK business and ownership",
+          "two capacity profiles and managed delivery",
+          "hosted shell environments"
+        ]
       }
     },
     {
@@ -3816,6 +3826,16 @@
           "newly generated shell operations, selectors and SSE",
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
+        ]
+      },
+      "client_shell_20261126": {
+        "stage": "local_client_shell_protocol_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
+        "pending": [
+          "real native TLS SDK business and ownership",
+          "two capacity profiles and managed delivery",
+          "hosted shell environments"
         ]
       }
     },
@@ -7678,6 +7698,16 @@
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
         ]
+      },
+      "client_shell_20261126": {
+        "stage": "local_client_shell_protocol_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
+        "pending": [
+          "real native TLS SDK business and ownership",
+          "two capacity profiles and managed delivery",
+          "hosted shell environments"
+        ]
       }
     },
     {
@@ -8980,6 +9010,16 @@
           "newly generated shell operations, selectors and SSE",
           "programmatic tools, client and hosted shell environments",
           "real SDK business and delivery"
+        ]
+      },
+      "client_shell_20261126": {
+        "stage": "local_client_shell_protocol_cpu_verified",
+        "issued": false,
+        "receipt": "evidence/serve-shell-history-20261126/client-protocol.json",
+        "pending": [
+          "real native TLS SDK business and ownership",
+          "two capacity profiles and managed delivery",
+          "hosted shell environments"
         ]
       }
     },
