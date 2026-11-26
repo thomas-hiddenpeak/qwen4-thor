@@ -6749,7 +6749,7 @@
         ]
       },
       "quicktime_track_grid_20261127": {
-        "stage": "native_tls_verified",
+        "stage": "profile_verified",
         "receipt": "evidence/serve-video-track-grid-20261127/cpu.json",
         "pending": [
           "native TLS SDK generation and independent frozen segment validation",
@@ -6757,7 +6757,8 @@
           "multiple active video track compositing"
         ],
         "integrated_cpu": "evidence/serve-video-track-grid-20261127/integrated.json",
-        "business": "evidence/serve-video-track-grid-20261127/business.json"
+        "business": "evidence/serve-video-track-grid-20261127/business.json",
+        "profiles": "evidence/serve-video-track-grid-20261127/profiles.json"
       }
     },
     {
