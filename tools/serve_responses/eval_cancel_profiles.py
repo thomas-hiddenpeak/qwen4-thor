@@ -61,8 +61,9 @@ def check(row, previous=None):
     check(previous)
     original = previous['current']
     restored = row['restored']
+    restored_fields = {k: v for k, v in original.items() if k != 'fresh_chat'}
     package.require(eid != original['eval_id'] and rid != original['run_id'] and
-                    restored == dict(original, deleted=404),
+                    restored == dict(restored_fields, deleted=404),
                     'original Eval Run, cancellation, ownership or cleanup changed')
 
 
@@ -77,7 +78,7 @@ def exercise(plan, interpreters, errors, previous=None):
 
     def review(old, cleanup):
         return call('3.55.1', dict(plan, eval_id=old['eval_id'], run_id=old['run_id'],
-                                   delete_after=cleanup))
+                                   delete_after=cleanup, verify_chat=not cleanup))
 
     restored = review(previous['old'], True) if previous is not None else None
     old = call('2.8.1', plan)

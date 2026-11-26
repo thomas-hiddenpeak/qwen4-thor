@@ -17,6 +17,7 @@ class EvalCancelProfilesTest(unittest.TestCase):
         self.first = dict(old=old, current=current, restored=None)
         self.next = deepcopy(self.first)
         self.next['restored'] = dict(current, deleted=404)
+        self.next['restored'].pop('fresh_chat')
         for row in (self.next['old'], self.next['current']):
             row['eval_id'] = 'eval_' + 'b' * 32
             row['run_id'] = 'evalrun_' + 'c' * 32

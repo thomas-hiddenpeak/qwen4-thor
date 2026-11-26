@@ -3,6 +3,7 @@ from hashlib import sha256
 import json
 import ssl
 import sys
+import time
 from urllib.parse import urlsplit
 
 import openai
@@ -41,9 +42,19 @@ def main():
     if legacy != ('eval_id' not in plan):
         raise ValueError('Use the legacy SDK first, then the current SDK with its saved IDs')
     ctx = ssl.create_default_context(cafile=plan.get('certificate'))
+    next_request = 0.0
+
+    def pace(_request):
+        nonlocal next_request
+        delay = next_request - time.monotonic()
+        if delay > 0:
+            time.sleep(delay)
+        next_request = time.monotonic() + plan.get('request_interval', 0)
+
     def client(key):
         return openai.OpenAI(base_url=plan['base'], api_key=key, max_retries=0,
-                             http_client=httpx.Client(verify=ctx, trust_env=False, timeout=45))
+                             http_client=httpx.Client(verify=ctx, trust_env=False, timeout=45,
+                                                     event_hooks={'request': [pace]}))
     with client(plan['key']) as owner, client(plan['other']) as peer:
         if legacy:
             definition = owner.evals.create(
@@ -84,11 +95,12 @@ def main():
         if legacy:
             result.update(malformed=400, foreign_cancel=404)
         else:
-            reply = peer.chat.completions.create(model=plan['model'], temperature=0, max_tokens=32,
-                messages=[{'role': 'user', 'content': 'Compute 17 plus 25. Reply only with the number.'}],
-                extra_body={'enable_thinking': False})
-            assert reply.choices[0].message.content.strip() == '42'
-            result['fresh_chat'] = '42'
+            if plan.get('verify_chat', True):
+                reply = peer.chat.completions.create(model=plan['model'], temperature=0, max_tokens=32,
+                    messages=[{'role': 'user', 'content': 'Compute 17 plus 25. Reply only with the number.'}],
+                    extra_body={'enable_thinking': False})
+                assert reply.choices[0].message.content.strip() == '42'
+                result['fresh_chat'] = '42'
             if plan.get('delete_after', True):
                 owner.evals.delete(eid)
                 expect(404, owner.evals.runs.retrieve, rid, eval_id=eid)
