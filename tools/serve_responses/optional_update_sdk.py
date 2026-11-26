@@ -45,9 +45,12 @@ def main():
     agents = '/agents'
     sessions = agents + '/sessions'
     hooks = '/webhook_endpoints'
+    old_session = plan['historical_session']
+    assert old_session['id'].startswith('agent_session_')
+    session_path = sessions + '/' + old_session['id']
     paths = [create(agents, {'model': model, 'metadata': {'stage': 'input-contract'}}),
              create(template, {'name': 'Thor release query'}),
-             create(sessions, {'agent': {'model': model}, 'environment': {'type': 'none'}}),
+             session_path,
              create(hooks, {'name': 'Local contract fixture', 'url': plan['subscriber'],
                             'event_types': ['response.completed']})]
     def fields(resource):
@@ -58,6 +61,8 @@ def main():
         status, initial = request('GET', path)
         assert status == 200 and 'signing_secret' not in initial
         original = json.dumps(fields(initial), sort_keys=True, separators=(',', ':')).encode()
+        if path == session_path:
+            assert hashlib.sha256(original).hexdigest() == old_session['sha256']
         latest = initial
         for body, media_type in ((None, None), (b'', 'application/json'), (b'{}', 'application/json')):
             status, result = request('POST', path, body=body, media_type=media_type)
@@ -90,12 +95,14 @@ def main():
                 _strict_response_validation=True, http_client=httpx.Client(verify=context)) as client:
         saved = client.beta.agents.sessions.retrieve(paths[2].rsplit('/', 1)[1])
         assert saved.status == 'idle'
+        failed = client.beta.agents.sessions.turns.retrieve(old_session['failed_turn'], session_id=saved.id)
+        assert failed.status == 'failed' and failed.error.code == 'rate_limit_exceeded'
         result = client.chat.completions.create(model=model, temperature=0, max_tokens=32,
             reasoning_effort='none',
             messages=[{'role': 'user', 'content': 'Return only the integer product of 6 and 7.'}])
         answer = result.choices[0].message.content.strip()
         assert answer == '42', answer
-    print(json.dumps(dict(resources=rows, required_bodies=controls, independent_chat=answer)))
+    print(json.dumps(dict(resources=rows, required_bodies=controls, historical_failed_turn=failed.id, independent_chat=answer)))
 
 
 if __name__ == '__main__':
