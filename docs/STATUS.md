@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Thor 上两次 256 MiB 的 cudaMallocAsync 已由 GPU 全量写入。默认阈值下同步释放后池在用量与保留量均回到基线。阈值设为 256 MiB 时，同步释放后在用增量为零，池仍保留 256 MiB，主动 trim 后保留增量才回到零。两次持有分配期间，服务 cgroup 的四个 memory.current 样本仅比基线高 13.0～13.5 MiB。内存池在用量、保留量及 memcg 应分别读取。下一步仍需解决整机物理 DRAM 的硬边界。[设备回执](evidence/serve-resource-charge-20261126/device.json)
+
 探针进程现在通过 Unix 套接字接收同一个 GPU 锁文件描述符，永久降权后再核验该锁。实际经 sudo 传入无关描述符被拒绝，未启动探针，临时 cgroup 已清理。下一步在有效租约内核验两个池模式。[CPU 回执](evidence/serve-resource-charge-20261126/cpu.json)
 
 R08 已复核旧版对匿名、device、pinned 和 managed 各 256 MiB 的实测。新增探针对同样大小的 cudaMallocAsync 分配，分别在默认阈值与显式保留阈值下记录应用在用量、池保留量和原生服务 cgroup 计量。五项 CPU 正反例通过；实际在新建资源域运行失败子进程后，两个叶和根均已清理。下一步让两个探针独占设备短验。[CPU 回执](evidence/serve-resource-charge-20261126/cpu.json)

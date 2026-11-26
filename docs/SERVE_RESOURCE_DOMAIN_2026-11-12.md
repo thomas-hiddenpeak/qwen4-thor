@@ -222,3 +222,5 @@ mkdir -p build/pool
 /usr/local/cuda-13.3/bin/nvcc -std=c++23 -ccbin g++-14 -arch=sm_110a -Xcompiler=-Wall,-Wextra,-Werror tools/serve_startup_memory/memory_probe.cu -o build/pool/memory-probe
 python3 -B tools/evalscope/gpu_exclusive.py --compute-backend nvml --inherit-lease --output .q4t-work/async-pool/lease -- python3 -I -B tools/serve_startup_memory/native_pool_stage.py --binary build/pool/memory-probe --output .q4t-work/async-pool/observations
 ```
+
+Thor 上两次 256 MiB 的 cudaMallocAsync 已由 GPU 全量写入。默认阈值下同步释放后池在用量与保留量均回到基线。阈值设为 256 MiB 时，同步释放后在用增量为零，池仍保留 256 MiB，主动 trim 后保留增量才回到零。两次持有分配期间，服务 cgroup 的四个 memory.current 样本仅比基线高 13.0～13.5 MiB。内存池在用量、保留量及 memcg 应分别读取。下一步仍需解决整机物理 DRAM 的硬边界。使用单一租约、两个独立进程，模型启动 0 次，临时资源域已清理，默认服务状态和文件摘要保持一致。[设备回执](evidence/serve-resource-charge-20261126/device.json)
