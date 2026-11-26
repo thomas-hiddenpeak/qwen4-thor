@@ -7858,7 +7858,14 @@
           "$ref": "#/$defs/3"
         },
         "error": {
-          "$ref": "#/$defs/523"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/523"
+            },
+            {
+              "type": "string"
+            }
+          ]
         },
         "id": {
           "$ref": "#/$defs/3"
@@ -15195,7 +15202,14 @@
           "$ref": "#/$defs/3"
         },
         "error": {
-          "$ref": "#/$defs/523"
+          "anyOf": [
+            {
+              "$ref": "#/$defs/523"
+            },
+            {
+              "type": "string"
+            }
+          ]
         },
         "id": {
           "$ref": "#/$defs/3"

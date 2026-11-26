@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+旧版 Python SDK 2.8.1 严格模式已可读取实际被拒绝的 MCP 调用，并完整回放 38 个事件。错误正文中的代码和消息可逐字段还原。3.42.1、3.55.1 仍收到结构化错误，三个版本也都能读取成功调用的 54 个事件。原生新建事件与落盘记录保持对象形式。程序化工具的旧版客户端兼容和真实 TLS 发行验收仍待推进。[CPU 验证](evidence/serve-mcp-error-sdk-20261127/cpu.json)
+
 三版严格 Python SDK 读取了五份真实工具响应。普通函数的 JSON、成功 MCP 的 JSON 和 SSE 均通过。原普通函数是未开启流的后台请求，重放按合同返回 400。2.8.1 在失败 MCP 的错误对象和程序化工具类型上仍无法解析。3.42.1、3.55.1 均通过相应 JSON 和 SSE。旧版错误字段保留全部内容转为 JSON 字符串后，独立 SDK 实验可读回原错误和 38 个事件，原生实现待补。[工具兼容检查](evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json)
 
 缓存兼容容量驱动已完整走过两次独立启动的 CPU HTTP 服务。两侧使用真实的两个 SDK 和已保存的模型响应；新版客户端在第二个进程内读回第一侧新增的响应，正文与事件摘要一致。四个更改归属、事件或交接信息的反例均被拒绝。新回答由测试夹具固定返回 560，后续仍需设备模型回答。[CPU HTTP 回执](evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json)

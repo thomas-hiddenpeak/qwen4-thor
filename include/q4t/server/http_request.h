@@ -26,6 +26,13 @@ inline bool ValidHttpRequestId(std::string_view id) {
   return true;
 }
 
+enum class PythonResponsesView : unsigned char {
+  kCurrent,
+  kStringMcpError,
+  kStringMcpErrorAndHyphenatedCache,
+};
+PythonResponsesView ClassifyPythonResponsesVersion(std::string_view version);
+
 struct HttpRequestHeaders {
   std::string request_id;
   std::string host;
@@ -75,7 +82,7 @@ struct HttpRequestHeaders {
   HttpReceiveFailure failure = HttpReceiveFailure::kNone;
   int system_error = 0;
   // Validated presentation hint. Never used for identity or cache policy.
-  std::string legacy_cache_sdk_version;
+  std::string legacy_python_sdk_version;
 };
 
 // Reservation spans reading, parsing, queueing and response completion.

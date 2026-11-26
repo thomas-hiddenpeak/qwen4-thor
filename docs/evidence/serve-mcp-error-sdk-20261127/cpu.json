@@ -1,0 +1,710 @@
+{
+  "status": "PASS for failed MCP read and replay",
+  "scope": "PrivateDevices CPU-only native HTTP, original device records copied to isolated owner; native TLS business and production handoff pending",
+  "prior": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
+  "upstream_introduction": [
+    {
+      "tag": "v1.79.0",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v1.79.0/src/openai/types/responses/response_output_item.py",
+      "sha256": "247de6507c81f7df2e470a1c072f8f4d2e10ffb7ccdaedbf063ddd7d7658a917",
+      "string_error": false
+    },
+    {
+      "tag": "v1.80.0",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v1.80.0/src/openai/types/responses/response_output_item.py",
+      "sha256": "33f4f41ce8e1d0f3b0d11f769ccb0c1db96fe06e462586b2b3f17198e1ea68ab",
+      "string_error": true
+    }
+  ],
+  "upstream_change": [
+    {
+      "tag": "v2.8.1",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.8.1/src/openai/types/responses/response_output_item.py",
+      "sha256": "ee09661a878d644b1668e1e8f9bf0e4828f12e6cf28dacf0274b2d166554050e",
+      "error": "Optional[str] = None"
+    },
+    {
+      "tag": "v2.33.0",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.33.0/src/openai/types/responses/response_output_item.py",
+      "sha256": "140a7893e4a0b6133bda72a5c502af6771afcd070493bca25fddfcf00f3a3877",
+      "error": "Optional[str] = None"
+    },
+    {
+      "tag": "v2.54.0",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.54.0/src/openai/types/responses/response_output_item.py",
+      "sha256": "02a8b44279c27ed2a4c4595075b655d6a5e2ab053dacc1908f89781afa729cef",
+      "error": "Optional[str] = None"
+    },
+    {
+      "tag": "v3.0.0",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.0.0/src/openai/types/responses/response_output_item.py",
+      "sha256": "02a8b44279c27ed2a4c4595075b655d6a5e2ab053dacc1908f89781afa729cef",
+      "error": "Optional[str] = None"
+    },
+    {
+      "tag": "v3.1.0",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.1.0/src/openai/types/responses/response_output_item.py",
+      "sha256": "1be7f99afde5d76a53c77686af98940c5e0842f9d908e9d27224a2510439b546",
+      "error": "Optional[McpToolCallError] = None"
+    },
+    {
+      "tag": "v3.42.1",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.42.1/src/openai/types/responses/response_output_item.py",
+      "sha256": "814e4128695ae3c61d81d67bcc66d8e6dab30227fe99ccb10b1ec2b86575bc3c",
+      "error": "Optional[McpToolCallError] = None"
+    },
+    {
+      "tag": "v3.55.1",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.55.1/src/openai/types/responses/response_output_item.py",
+      "sha256": "c05d4897e7ce39492c9eaa97f9ff33e20d9fb6ea5b96426c25fc82f58216554e",
+      "error": "Optional[McpToolCallError] = None"
+    }
+  ],
+  "source_records": {
+    "ordinary_function": {
+      "source_kind": "closed object store",
+      "wire": "fatal-business-assistant-03/state/application-objects/f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_1c22a790797c749fd2c08c4df657a7b6.json",
+      "wire_sha256": "f082735f36b9714ff5937172648fe1a5aa436a6c25150392d67b50f2cb82d4a8",
+      "record_sha256": "f082735f36b9714ff5937172648fe1a5aa436a6c25150392d67b50f2cb82d4a8",
+      "output": [
+        [
+          "function_call",
+          "completed"
+        ]
+      ],
+      "id": "resp_1c22a790797c749fd2c08c4df657a7b6"
+    },
+    "program_function": {
+      "source_kind": "actual saved GET",
+      "wire": "program-fork-business-01/create/wire/repeat.json",
+      "wire_sha256": "931a97fa83b24d28f6912c9e66b6c236f457bbcfbaed38979b5d12257faabd24",
+      "record_sha256": "acccddf5feae185a6f1b642243afb8db645683fafd1e75ac90f0654ed96de93f",
+      "output": [
+        [
+          "function_call",
+          "completed"
+        ]
+      ],
+      "id": "resp_2725eeeada17f2496b7955cea4ab325a"
+    },
+    "program": {
+      "source_kind": "actual saved GET",
+      "wire": "program-fork-business-01/create/wire/initial.json",
+      "wire_sha256": "a9c4d44a181ec6d338ce2530b75ed33ec69a67b6a541b95f2e528214db2268c9",
+      "record_sha256": "64cefb22e7f3f65fb6d1b4b151886476bc5d0453d60e70017370b0ed9458c04a",
+      "output": [
+        [
+          "reasoning",
+          "completed"
+        ],
+        [
+          "message",
+          "completed"
+        ],
+        [
+          "program",
+          null
+        ],
+        [
+          "function_call",
+          "completed"
+        ]
+      ],
+      "id": "resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9"
+    },
+    "mcp_completed": {
+      "source_kind": "actual saved GET",
+      "wire": "approval-ids-fallback-business-01/restore/wire/approved_response.json",
+      "wire_sha256": "9f32929a3c3089ee23e1de8ec3d4e495c5d1ee0b4f352eb7cbae9ff443874f8b",
+      "record_sha256": "81196a3602360deea5d208d28b73c2ee24877b7cb93230284843a37b01f25ab1",
+      "output": [
+        [
+          "mcp_call",
+          "completed"
+        ],
+        [
+          "message",
+          "completed"
+        ]
+      ],
+      "id": "resp_fb29b55a96a7006c7ce3384683ea1ffc"
+    },
+    "mcp_failed": {
+      "source_kind": "actual saved GET",
+      "wire": "approval-ids-fallback-business-01/restore/wire/denied_response.json",
+      "wire_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+      "record_sha256": "1c7f0c6f5c2c9507091c4de29dcea3430c74ba4a49fca572aa84afb37f703095",
+      "output": [
+        [
+          "mcp_call",
+          "failed"
+        ],
+        [
+          "message",
+          "completed"
+        ]
+      ],
+      "id": "resp_b10b7c6a9b91952b64c30673b6e79d61"
+    }
+  },
+  "sdk_results": {
+    "2.8.1": {
+      "ordinary_function": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "712bc2d23df26a0e51916f4caaec3e58e3ba1f8259517515fea029bd5975f987",
+          "output": [
+            [
+              "function_call",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "EXPECTED_HTTP_400",
+          "error": "BadRequestError",
+          "http_status": 400,
+          "param": "stream",
+          "reason": null,
+          "first_validation_errors": [],
+          "validation_errors": 0,
+          "parsed_before_failure": 0
+        }
+      },
+      "program_function": {
+        "resource": {
+          "status": "FAIL",
+          "error": "APIResponseValidationError",
+          "http_status": 200,
+          "param": null,
+          "reason": "ValidationError",
+          "first_validation_errors": [
+            {
+              "location": [
+                "tools",
+                "0",
+                "FunctionTool",
+                "name"
+              ],
+              "type": "missing"
+            },
+            {
+              "location": [
+                "tools",
+                "0",
+                "FunctionTool",
+                "type"
+              ],
+              "type": "literal_error"
+            },
+            {
+              "location": [
+                "tools",
+                "0",
+                "FileSearchTool",
+                "type"
+              ],
+              "type": "literal_error"
+            }
+          ],
+          "validation_errors": 20,
+          "parsed_before_failure": null
+        },
+        "events": {
+          "status": "FAIL",
+          "error": "APIResponseValidationError",
+          "http_status": 200,
+          "param": null,
+          "reason": "ValidationError",
+          "first_validation_errors": [
+            {
+              "location": [
+                "ResponseAudioDeltaEvent",
+                "delta"
+              ],
+              "type": "missing"
+            },
+            {
+              "location": [
+                "ResponseAudioDeltaEvent",
+                "type"
+              ],
+              "type": "literal_error"
+            },
+            {
+              "location": [
+                "ResponseAudioDoneEvent",
+                "type"
+              ],
+              "type": "literal_error"
+            }
+          ],
+          "validation_errors": 299,
+          "parsed_before_failure": 0
+        }
+      },
+      "program": {
+        "resource": {
+          "status": "FAIL",
+          "error": "APIResponseValidationError",
+          "http_status": 200,
+          "param": null,
+          "reason": "ValidationError",
+          "first_validation_errors": [
+            {
+              "location": [
+                "output",
+                "2",
+                "ResponseOutputMessage",
+                "content"
+              ],
+              "type": "missing"
+            },
+            {
+              "location": [
+                "output",
+                "2",
+                "ResponseOutputMessage",
+                "role"
+              ],
+              "type": "missing"
+            },
+            {
+              "location": [
+                "output",
+                "2",
+                "ResponseOutputMessage",
+                "status"
+              ],
+              "type": "missing"
+            }
+          ],
+          "validation_errors": 84,
+          "parsed_before_failure": null
+        },
+        "events": {
+          "status": "FAIL",
+          "error": "APIResponseValidationError",
+          "http_status": 200,
+          "param": null,
+          "reason": "ValidationError",
+          "first_validation_errors": [
+            {
+              "location": [
+                "ResponseAudioDeltaEvent",
+                "delta"
+              ],
+              "type": "missing"
+            },
+            {
+              "location": [
+                "ResponseAudioDeltaEvent",
+                "type"
+              ],
+              "type": "literal_error"
+            },
+            {
+              "location": [
+                "ResponseAudioDoneEvent",
+                "type"
+              ],
+              "type": "literal_error"
+            }
+          ],
+          "validation_errors": 377,
+          "parsed_before_failure": 0
+        }
+      },
+      "mcp_completed": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "a787c9d8ee75ce5658c233b93462581a4792b3efd914d1d9e2fee4df938ea4f0",
+          "output": [
+            [
+              "mcp_call",
+              "completed"
+            ],
+            [
+              "message",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "PASS",
+          "count": 54,
+          "structured_errors": 0
+        }
+      },
+      "mcp_failed": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "b00ce114d2e0fd92fd327d6da500093109b0253ef92acf0d996049dcb4779d6c",
+          "output": [
+            [
+              "mcp_call",
+              "failed"
+            ],
+            [
+              "message",
+              "completed"
+            ]
+          ],
+          "structured_errors": 1
+        },
+        "events": {
+          "status": "PASS",
+          "count": 38,
+          "structured_errors": 2
+        }
+      }
+    },
+    "3.55.1": {
+      "ordinary_function": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "eb5aa17730436af42e4c8005fd2566653e23207a91bae2287dabe72dc9cf2fc7",
+          "output": [
+            [
+              "function_call",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "EXPECTED_HTTP_400",
+          "error": "BadRequestError",
+          "http_status": 400,
+          "param": "stream",
+          "reason": null,
+          "first_validation_errors": [],
+          "validation_errors": 0,
+          "parsed_before_failure": 0
+        }
+      },
+      "program_function": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "931a97fa83b24d28f6912c9e66b6c236f457bbcfbaed38979b5d12257faabd24",
+          "output": [
+            [
+              "function_call",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "PASS",
+          "count": 6,
+          "structured_errors": 0
+        }
+      },
+      "program": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "a9c4d44a181ec6d338ce2530b75ed33ec69a67b6a541b95f2e528214db2268c9",
+          "output": [
+            [
+              "reasoning",
+              "completed"
+            ],
+            [
+              "message",
+              "completed"
+            ],
+            [
+              "program",
+              null
+            ],
+            [
+              "function_call",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "PASS",
+          "count": 144,
+          "structured_errors": 0
+        }
+      },
+      "mcp_completed": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "9f32929a3c3089ee23e1de8ec3d4e495c5d1ee0b4f352eb7cbae9ff443874f8b",
+          "output": [
+            [
+              "mcp_call",
+              "completed"
+            ],
+            [
+              "message",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "PASS",
+          "count": 54,
+          "structured_errors": 0
+        }
+      },
+      "mcp_failed": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+          "output": [
+            [
+              "mcp_call",
+              "failed"
+            ],
+            [
+              "message",
+              "completed"
+            ]
+          ],
+          "structured_errors": 1
+        },
+        "events": {
+          "status": "PASS",
+          "count": 38,
+          "structured_errors": 2
+        }
+      }
+    },
+    "3.42.1": {
+      "ordinary_function": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "eb5aa17730436af42e4c8005fd2566653e23207a91bae2287dabe72dc9cf2fc7",
+          "output": [
+            [
+              "function_call",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "EXPECTED_HTTP_400",
+          "error": "BadRequestError",
+          "http_status": 400,
+          "param": "stream",
+          "reason": null,
+          "first_validation_errors": [],
+          "validation_errors": 0,
+          "parsed_before_failure": 0
+        }
+      },
+      "program_function": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "931a97fa83b24d28f6912c9e66b6c236f457bbcfbaed38979b5d12257faabd24",
+          "output": [
+            [
+              "function_call",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "PASS",
+          "count": 6,
+          "structured_errors": 0
+        }
+      },
+      "program": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "a9c4d44a181ec6d338ce2530b75ed33ec69a67b6a541b95f2e528214db2268c9",
+          "output": [
+            [
+              "reasoning",
+              "completed"
+            ],
+            [
+              "message",
+              "completed"
+            ],
+            [
+              "program",
+              null
+            ],
+            [
+              "function_call",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "PASS",
+          "count": 144,
+          "structured_errors": 0
+        }
+      },
+      "mcp_completed": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "9f32929a3c3089ee23e1de8ec3d4e495c5d1ee0b4f352eb7cbae9ff443874f8b",
+          "output": [
+            [
+              "mcp_call",
+              "completed"
+            ],
+            [
+              "message",
+              "completed"
+            ]
+          ],
+          "structured_errors": 0
+        },
+        "events": {
+          "status": "PASS",
+          "count": 54,
+          "structured_errors": 0
+        }
+      },
+      "mcp_failed": {
+        "resource": {
+          "status": "PASS",
+          "raw_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+          "output": [
+            [
+              "mcp_call",
+              "failed"
+            ],
+            [
+              "message",
+              "completed"
+            ]
+          ],
+          "structured_errors": 1
+        },
+        "events": {
+          "status": "PASS",
+          "count": 38,
+          "structured_errors": 2
+        }
+      }
+    }
+  },
+  "store_files_unchanged": 6,
+  "header_and_schema_controls": [
+    {
+      "version": "1.79.0",
+      "error_type": "object",
+      "cache_retention": "in_memory",
+      "get_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+      "events": 38,
+      "sse_sha256": "562e74d9f2fc3278f1083501c5c1e1b4cd2f5ffbf9182b5ef87591183cb539ec",
+      "vary": [
+        "x-stainless-lang",
+        "x-stainless-package-version"
+      ]
+    },
+    {
+      "version": "1.80.0",
+      "error_type": "string",
+      "cache_retention": "in_memory",
+      "get_sha256": "248cfc05954fe62e3ef271137ec7a95adc08f9b5b1a73d5df7c16c908e0c6434",
+      "events": 38,
+      "sse_sha256": "a6b4b3687153c8be2cf981383eb4317e5039310056a0e65be818ec7e69b0839a",
+      "vary": [
+        "x-stainless-lang",
+        "x-stainless-package-version"
+      ]
+    },
+    {
+      "version": "2.8.1",
+      "error_type": "string",
+      "cache_retention": "in-memory",
+      "get_sha256": "b00ce114d2e0fd92fd327d6da500093109b0253ef92acf0d996049dcb4779d6c",
+      "events": 38,
+      "sse_sha256": "bb9bd7dd46002d3e6e9574ec359859256c544e519f207a27fef1f136d1921dbd",
+      "vary": [
+        "x-stainless-lang",
+        "x-stainless-package-version"
+      ]
+    },
+    {
+      "version": "2.33.0",
+      "error_type": "string",
+      "cache_retention": "in_memory",
+      "get_sha256": "248cfc05954fe62e3ef271137ec7a95adc08f9b5b1a73d5df7c16c908e0c6434",
+      "events": 38,
+      "sse_sha256": "a6b4b3687153c8be2cf981383eb4317e5039310056a0e65be818ec7e69b0839a",
+      "vary": [
+        "x-stainless-lang",
+        "x-stainless-package-version"
+      ]
+    },
+    {
+      "version": "3.0.0",
+      "error_type": "string",
+      "cache_retention": "in_memory",
+      "get_sha256": "248cfc05954fe62e3ef271137ec7a95adc08f9b5b1a73d5df7c16c908e0c6434",
+      "events": 38,
+      "sse_sha256": "a6b4b3687153c8be2cf981383eb4317e5039310056a0e65be818ec7e69b0839a",
+      "vary": [
+        "x-stainless-lang",
+        "x-stainless-package-version"
+      ]
+    },
+    {
+      "version": "3.1.0",
+      "error_type": "object",
+      "cache_retention": "in_memory",
+      "get_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+      "events": 38,
+      "sse_sha256": "562e74d9f2fc3278f1083501c5c1e1b4cd2f5ffbf9182b5ef87591183cb539ec",
+      "vary": [
+        "x-stainless-lang",
+        "x-stainless-package-version"
+      ]
+    },
+    {
+      "version": "absent",
+      "error_type": "object",
+      "cache_retention": "in_memory",
+      "get_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+      "events": 38,
+      "sse_sha256": "562e74d9f2fc3278f1083501c5c1e1b4cd2f5ffbf9182b5ef87591183cb539ec",
+      "vary": [
+        "x-stainless-lang",
+        "x-stainless-package-version"
+      ]
+    }
+  ],
+  "model_starts": 0,
+  "host_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "native_tests": [
+    "[PASS] http_responses_presentation_matches_published_sdk_ranges",
+    "[PASS] responses_mcp_output_native_error_data_matches_failure_and_dispatch",
+    "2 tests, 2 passed, 0 failed, 0 skipped"
+  ],
+  "native_http_executable_sha256": "d82dce70505b1181eacb8d0769c164609737a5c130ff1c53693f7c08724a553e",
+  "typed_test_sha256": "c2d40364edabc8dbc2ff26f09902feb264ff4fa3d1b1f9e5673a6071256dea33",
+  "runtime_build": "Changed native units, including ingress, compiled with -Wall -Wextra -Werror; CPU fixture linked using unchanged parent libraries",
+  "pending": [
+    "native TLS real-model invocation, profile and managed release acceptance",
+    "earlier clients do not represent programmatic_tool_calling or program output types"
+  ]
+}

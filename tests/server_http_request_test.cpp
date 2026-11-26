@@ -70,7 +70,7 @@ Q4T_TEST(http_transcription_large_fixed_and_chunked_binary_bodies) {
   return true;
 }
 
-Q4T_TEST(http_responses_cache_spelling_matches_the_published_sdk_range) {
+Q4T_TEST(http_responses_presentation_matches_published_sdk_ranges) {
   const std::string lang = "X-Stainless-Lang: python\r\n";
   const std::string version = "X-Stainless-Package-Version: ";
   const std::string old = version + "2.8.1\r\n";
@@ -81,8 +81,12 @@ Q4T_TEST(http_responses_cache_spelling_matches_the_published_sdk_range) {
            {lang + version + "2.8.0\r\n", "2.8.0"},
            {old + lang, "2.8.1"},
            {lang + version + "2.32.0\r\n", "2.32.0"},
-           {lang + version + "2.7.2\r\n", ""},
-           {lang + version + "2.33.0\r\n", ""},
+           {lang + version + "1.79.0\r\n", ""},
+           {lang + version + "1.80.0\r\n", "1.80.0"},
+           {lang + version + "2.7.2\r\n", "2.7.2"},
+           {lang + version + "2.33.0\r\n", "2.33.0"},
+           {lang + version + "3.0.2\r\n", "3.0.2"},
+           {lang + version + "3.1.0\r\n", ""},
            {lang + version + "3.8.1\r\n", ""},
            {lang + version + "2.8.1rc1\r\n", ""},
            {lang + version + "2.08.1\r\n", ""},
@@ -93,7 +97,7 @@ Q4T_TEST(http_responses_cache_spelling_matches_the_published_sdk_range) {
            {lang + old + "Connection: x-stainless-lang\r\n", ""}}) {
     Q4T_CHECK(Read("GET /v1/responses/resp_example HTTP/1.1\r\nHost: test\r\n" +
                        headers + "\r\n", &body, &parsed));
-    Q4T_CHECK(parsed.legacy_cache_sdk_version == expected);
+    Q4T_CHECK(parsed.legacy_python_sdk_version == expected);
   }
   return true;
 }

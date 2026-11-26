@@ -96,6 +96,19 @@ def schema(graph):
     create = graph['nodes'][graph['roots']['response_create']]
     retention = next(f['type'] for f in create['fields'] if f['name'] == 'prompt_cache_retention')
     definitions[str(retention)]['anyOf'].append({'const': 'in-memory'})
+    # Only Responses reads negotiate the old MCP error representation. The
+    # input item graph also appears in request and prompt definitions.
+    output_items = graph['nodes'][graph['roots']['output_item']]['variants']
+    input_page = graph['nodes'][graph['roots']['input_items_list']]
+    page_data = next(f['type'] for f in input_page['fields'] if f['name'] == 'data')
+    page_items = graph['nodes'][graph['nodes'][page_data]['element']]['variants']
+    for items in (output_items, page_items):
+        calls = [i for i in items if any(
+            f['name'] == 'type' and graph['nodes'][f['type']].get('value') == 'mcp_call'
+            for f in graph['nodes'][i].get('fields', []))]
+        call, = calls
+        fields = definitions[str(call)]['properties']
+        fields['error'] = dict(anyOf=[fields['error'], dict(type='string')])
     # The frozen SDK names the approval target approval_request_id. The HTTP
     # resource requires request_id as well. Inputs may use the SDK spelling.
     for index, node in enumerate(graph['nodes']):

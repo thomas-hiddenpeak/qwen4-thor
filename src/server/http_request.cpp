@@ -24,12 +24,10 @@ namespace {
 using http::IsToken;
 using http::Trim;
 
-// Python SDK 2.8.0 introduced "in-memory". 2.33.0 changed the spelling.
-bool UsesLegacyCacheRetention(std::string_view version) {
-  if (!version.starts_with("2.")) return false;
-  version.remove_prefix(2);
-  const auto dot = version.find('.');
-  if (dot == version.npos) return false;
+}  // namespace
+
+PythonResponsesView ClassifyPythonResponsesVersion(std::string_view version) {
+  using View = PythonResponsesView;
   const auto number = [](std::string_view digits, unsigned* value) {
     if (digits.empty() || (digits.size() > 1 && digits.front() == '0'))
       return false;
@@ -37,12 +35,23 @@ bool UsesLegacyCacheRetention(std::string_view version) {
     const auto parsed = std::from_chars(digits.data(), end, *value);
     return parsed.ec == std::errc{} && parsed.ptr == end;
   };
-  unsigned minor = 0, patch = 0;
-  return number(version.substr(0, dot), &minor) && minor >= 8 && minor < 33 &&
-         number(version.substr(dot + 1), &patch);
+  const auto first = version.find('.');
+  if (first == version.npos) return View::kCurrent;
+  const auto second = version.find('.', first + 1);
+  if (second == version.npos) return View::kCurrent;
+  unsigned major = 0, minor = 0, patch = 0;
+  if (!number(version.substr(0, first), &major) ||
+      !number(version.substr(first + 1, second - first - 1), &minor) ||
+      !number(version.substr(second + 1), &patch))
+    return View::kCurrent;
+  if (major == 2 && minor >= 8 && minor < 33)
+    return View::kStringMcpErrorAndHyphenatedCache;
+  // MCP arrived in 1.80.0. Structured MCP errors arrived in 3.1.0.
+  if ((major == 1 && minor >= 80) || major == 2 ||
+      (major == 3 && minor == 0))
+    return View::kStringMcpError;
+  return View::kCurrent;
 }
-
-}  // namespace
 
 void DrainHttpClose(int fd) noexcept {
   if (fd < 0) return;
@@ -429,12 +438,13 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   }
   if (version == "HTTP/1.1" && !seen_host) return false;
   if (python_sdk.value_or(false) && sdk_version &&
-      UsesLegacyCacheRetention(*sdk_version) &&
+      ClassifyPythonResponsesVersion(*sdk_version) !=
+          PythonResponsesView::kCurrent &&
       std::find(connection.begin(), connection.end(), "x-stainless-lang") ==
           connection.end() &&
       std::find(connection.begin(), connection.end(),
                 "x-stainless-package-version") == connection.end())
-    headers->legacy_cache_sdk_version = *sdk_version;
+    headers->legacy_python_sdk_version = *sdk_version;
   if (seen_length && seen_transfer) return false;
   for (const auto& option : connection)
     if (http::Protected(option)) return false;

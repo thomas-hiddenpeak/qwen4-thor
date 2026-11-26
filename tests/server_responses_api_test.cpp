@@ -554,7 +554,8 @@ int ResponsesApiFixture(int argc, char** argv) {
         detail::SendSimple(fd, 200, "OK", "{}", "application/json");
         return 0;
       }
-      http.SetLegacyCacheRetention(!headers.legacy_cache_sdk_version.empty());
+      http.SetResponsesView(
+          ClassifyPythonResponsesVersion(headers.legacy_python_sdk_version));
       StateAccess access{headers.authorization == "Bearer cpu-a"
                              ? "client:cpu-a"
                              : "client:cpu-b",
@@ -587,7 +588,7 @@ int ResponsesApiFixture(int argc, char** argv) {
       }
       if (run.Envelope().stream) {
         if (detail::BeginStreamingResponse(fd, http.State()))
-          detail::WriteAll(fd, wire);
+          detail::WriteAll(fd, run.PublicWire(wire));
       } else {
         detail::SendSimple(fd, 200, "OK", run.Output().Json(),
                            "application/json");

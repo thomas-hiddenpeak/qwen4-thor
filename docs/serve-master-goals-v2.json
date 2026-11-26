@@ -3169,12 +3169,13 @@
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "reproduced",
+        "state": "failed_mcp_native_http_cpu_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native negotiated MCP error representation",
+          "native TLS and managed-profile qualification of the MCP error representation",
           "compatibility of typed programmatic tools with earlier clients"
-        ]
+        ],
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json"
       }
     },
     {
@@ -7855,12 +7856,13 @@
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "reproduced",
+        "state": "failed_mcp_native_http_cpu_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native negotiated MCP error representation",
+          "native TLS and managed-profile qualification of the MCP error representation",
           "compatibility of typed programmatic tools with earlier clients"
-        ]
+        ],
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json"
       }
     },
     {
@@ -9222,12 +9224,13 @@
         "cpu_capacity_http": "docs/evidence/serve-response-cache-retention-20261127/capacity-http-fixture.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "reproduced",
+        "state": "failed_mcp_native_http_cpu_verified",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native negotiated MCP error representation",
+          "native TLS and managed-profile qualification of the MCP error representation",
           "compatibility of typed programmatic tools with earlier clients"
-        ]
+        ],
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json"
       }
     },
     {
