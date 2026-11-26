@@ -1,0 +1,64 @@
+{
+  "sdk": "7.47.0",
+  "events": [
+    "response.created",
+    "response.in_progress",
+    "response.output_item.added",
+    "response.function_call_arguments.delta",
+    "response.failed"
+  ],
+  "sequence": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "resource": "resp_failure",
+  "error": {
+    "code": "server_error",
+    "message": "request cancelled",
+    "type": "explicit_cancel"
+  },
+  "status": "failed",
+  "unfinished": "incomplete",
+  "requests": [
+    [
+      "POST",
+      "/v1/responses"
+    ],
+    [
+      "POST",
+      "/v1/responses"
+    ],
+    [
+      "GET",
+      "/v1/responses/resp_failure"
+    ],
+    [
+      "GET",
+      "/v1/responses/resp_failure"
+    ],
+    [
+      "GET",
+      "/v1/responses/resp_failure"
+    ]
+  ],
+  "resumed": [
+    {
+      "cursor": 3,
+      "delivered": [
+        4
+      ],
+      "final_status": "failed"
+    },
+    {
+      "cursor": 4,
+      "delivered": [],
+      "final_status": "failed"
+    }
+  ],
+  "transport": "sealed native CPU capture replay",
+  "sse_sha256": "a4901c20d308896408b623bf070db56ae991e694a2bbe773a6771bf877a5d214",
+  "driver_sha256": "b4712bfac8fe542c36f05451b94c64494c7309ca7f69e15f1836b4b06dffa06f"
+}

@@ -259,7 +259,8 @@ class Stage(base.Stage):
         rows = self.plan['requests']
         crashed = partial
         failed = self.wait_response('interrupted-failed', crashed['id'], lambda v: v['status'] == 'failed')
-        require(failed['error']['code'] == 'background_execution_interrupted' and
+        require(failed['error']['code'] == 'server_error' and
+                failed['error']['type'] == 'background_execution_interrupted' and
                 foreground.text(failed).startswith(foreground.text(partial)), 'interrupted state lost or replayed')
         restored = self.completed('queued-resumed', resumed)
         require(restored['id'] == resumed['id'] and foreground.text(restored).strip() == '42', 'queued recovery')

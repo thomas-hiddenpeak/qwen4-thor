@@ -1,0 +1,25 @@
+{
+  "stage": "cpu_corrected_real_http_pending",
+  "affected_release": 530,
+  "affected_routes": [
+    "Agent session events",
+    "Agent session turn lookup consistency"
+  ],
+  "failed_public_runs": [
+    45748030978,
+    45748036761
+  ],
+  "original_source_sha256": "58829f3adc036c00e316fa20e47e3f2da1b6868396d617932df19c783c23f74d",
+  "candidate_source_sha256": "61020544c4bc51990e6e97bab973033bd1002fa070fa167a98de04396a77a7f1",
+  "case_file": "tests/server_prompt_registry_test.cpp",
+  "case_source_sha256": "2eb8d79a30e44e2fbc5858f71719cc3cfa181e088a105fd4017de20194e203bb",
+  "cases": [
+    "agent_session_turn_reports_the_original_failure_category",
+    "agent_session_keeps_rejected_model_output_out_of_the_next_turn"
+  ],
+  "original_sha256": "13cc96e930e5cc60d01ff49ef1afa0927d4c5e6d392ad33d936b6fb08d9272df",
+  "fixed_sha256": "7814517c55008c29a88d83853d379e49891ff1d68a372acb02df820a7d6596d1",
+  "original_failure": "Event category differed from the category returned by the turn resource.",
+  "categories_source": "12 failure inputs in the existing regression case",
+  "changed_scope": "Agent failed-event projection uses the native error from its committed response."
+}

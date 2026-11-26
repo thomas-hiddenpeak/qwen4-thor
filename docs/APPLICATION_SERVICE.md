@@ -1,5 +1,13 @@
 # 应用服务层与 OpenAI 兼容矩阵
 
+### QuickTime 矩形裁剪与历史续读
+
+rev532 已发行视频矩形裁剪和 Agent 失败事件的错误类别修复。自监护替换模型和主网关致命退出切至独立回退包后，原客户都能用原 ID 读到相同的回答，并从已删除源文件的冻结视频补答左下角颜色。两份封包的合同均通过 9 个原始 GET 正文及 21 个与原生持久化记录配对的严格 SDK 回答校验，其中 15 个回答核对了实际流事件序列。发行意图保持 STOPPED，13 份客户与恢复记录的哈希一致。后续继续处理非矩形区域、小数轨道尺寸和多轨合成。[发行记录](evidence/serve-video-clipping-20261126/delivery.json)
+
+### 失败后的 Responses 查询和续读
+
+失败响应使用标准 error.code；error.type 保留具体故障名。前台生成取消后可用原响应 ID 与 starting_after 读取失败终态，旧版 Beta 子 Agent 的无评分输出返回空 logprobs 数组。[rev530 记录](evidence/serve-responses-errors-20261126/delivery.json)
+
 ### 旧版 SDK 的 Evals 取消
 
 Python 2.8.1 在 Run 资源上发送 POST，新版客户端访问同一资源的 /cancel。两个入口共享所有者检查、状态和取消操作，恢复后可继续使用原 Eval 和 Run ID。[rev528 记录](evidence/serve-sdk-routes-20261126/delivery.json)

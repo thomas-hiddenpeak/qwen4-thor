@@ -1,0 +1,31 @@
+{
+  "status": "prepared_awaiting_authorized_maintenance_window",
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-delivery-soak-src/.q4t-work/cold532-01/plan.json",
+  "plan_sha256": "aaa7b131bc66d17472a64c0c971c2471ba046586b830ad3d5de0b6796d89e168",
+  "service_id": "295a6d2d-bfdb-4382-95f6-93754aa754bd",
+  "source": "30ad891b9866d97dae4a5d0889719fdfc20ebb0d",
+  "limits": {
+    "starts": 1,
+    "chats": 3,
+    "probes": 1,
+    "controls": 2000,
+    "seconds": 600
+  },
+  "publication": 532,
+  "registered_package": "703046bff3f2f7701a00027060849d41621e36837190d03b2334481afe3fc62b",
+  "protected": {
+    "/home/rm01/models/dev/qwen4-thor/build/q4t": "d36a124cf0ff9a0090bde240810d21cd2236bf8c8eb96e5f5b48350c5fdf7c28",
+    "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "02a33e73492bfcd9fc8993f16c8324c542bd0c2de7dabe18dac5c8970ed647e9",
+    "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "703046bff3f2f7701a00027060849d41621e36837190d03b2334481afe3fc62b",
+    "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "6d77bba3733b87cb1582095874a3e997846cf964a76ca9a48fec3fb134a717f8",
+    "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "model_actions": 0,
+  "host_filter_installed": false,
+  "host_units_modified": false,
+  "check_sha256": "3b0f545a23b4a6ed7b37bc6400d29c979d5257d55edf109e8c6a299e285fbc36",
+  "host_unit_baseline": {
+    "jtop.service": "MainPID=2731017\nId=jtop.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled",
+    "nvargus-daemon.service": "MainPID=2750\nId=nvargus-daemon.service\nPartOf=\nTriggers=\nTriggeredBy=\nActiveState=active\nSubState=running\nUnitFileState=enabled"
+  }
+}

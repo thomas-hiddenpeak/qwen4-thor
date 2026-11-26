@@ -142,6 +142,15 @@ ObjectReply Translate(const Json& session, const Json& link, const Json& record,
          {"agent_turn_started_at", Member(record, "agent_turn_started_at")},
          {"agent_turn_finished_at", Member(record, "agent_turn_finished_at")}});
     const auto state = response->GetString("status");
+    if (type == "response.failed") {
+      // The journal event carries the public Responses error category. Agent
+      // turns use the native cause from the same committed step, as in GET.
+      const auto* saved = record.Find("response");
+      if (state != "failed" || !saved || saved->GetString("id") != response_id ||
+          saved->GetString("status") != "failed")
+        return Invalid();
+      Set(&Field(phase, "response"), "error", Member(*saved, "error"));
+    }
     const bool terminal = state == "completed" || state == "incomplete" ||
                           state == "cancelled" || state == "failed";
     if (!terminal) Set(&phase, "agent_turn_finished_at", Number(0));

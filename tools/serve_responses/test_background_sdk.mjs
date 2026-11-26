@@ -185,7 +185,8 @@ test('actual CPU process crash resumes queued work and never replays started wor
   });
   await peer('crash', async (sdk, other, { root }) => {
     const interrupted = await status(sdk, started, ['failed']);
-    assert.equal(interrupted.error.code, 'background_execution_interrupted');
+    assert.equal(interrupted.error.code, 'server_error');
+    assert.equal(interrupted.error.type, 'background_execution_interrupted');
     assert.equal(interrupted.output_text, 'CPU background answer');
     assert.equal((await status(sdk, queued, ['completed'])).output_text, 'CPU background answer');
     assert.deepEqual(executions(root).sort(), [started, queued].sort());

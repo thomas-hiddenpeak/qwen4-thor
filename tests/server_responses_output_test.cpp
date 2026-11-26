@@ -403,10 +403,107 @@ Q4T_TEST(responses_output_failure_has_no_success_or_tool_done) {
   Q4T_CHECK(wire.find("response.completed") == wire.npos);
   Q4T_CHECK(output.Snapshot().GetString("status") == "failed");
   Q4T_CHECK(output.Snapshot().Find("usage")->IsNull());
+  Q4T_CHECK(output.Snapshot().Find("error")->GetString("code") ==
+            "explicit_cancel");
   Q4T_CHECK(!output.Finish(false, 1, {}, 43, &part));
   std::vector<Json> events;
   Q4T_CHECK(Events(wire, &events));
+  Json resource;
+  Q4T_CHECK(q4t::io::ParseJson(output.Json(), &resource));
+  const auto* error = resource.Find("error");
+  Q4T_CHECK(error && error->GetString("code") == "server_error");
+  Q4T_CHECK(error->GetString("type") == "explicit_cancel" &&
+            error->GetString("message") == "request cancelled");
+  Q4T_CHECK(OutputJson(*events.back().Find("response")) == output.Json());
   Q4T_CHECK(Save("failure", output, wire));
+  return true;
+}
+
+Q4T_TEST(responses_beta_agent_result_preserves_scores_and_projects_history) {
+  Json item;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"type":"multi_agent_call_output","id":"ag_1",
+    "action":"list_agents","agent":{"agent_name":"root"},"call_id":"call_1",
+    "output":[{"type":"output_text","text":"ok","annotations":[]}]})",
+                               &item));
+  ResponsesOutput output;
+  std::string wire, part;
+  Q4T_CHECK(output.Init(Options(), "resp_beta", 42, false) &&
+            output.Start(&wire));
+  Q4T_CHECK(output.AppendAgentItem(item, &part));
+  wire += part;
+  Q4T_CHECK(output.Fail("explicit_cancel", "stopped", &part));
+  wire += part;
+  std::vector<Json> events;
+  Q4T_CHECK(Events(wire, &events));
+  const auto projected = ResponsesWireValue(item);
+  const auto* scores =
+      projected.GetArray("output")->array[0].GetArray("logprobs");
+  Q4T_CHECK(scores && scores->array.empty() &&
+            OutputJson(ResponsesPublicValue(item)) == OutputJson(item));
+  int item_events = 0;
+  for (const auto& event : events) {
+    if (const auto* visible = event.Find("item")) {
+      Q4T_CHECK(OutputJson(*visible) == OutputJson(projected));
+      ++item_events;
+    }
+  }
+  Q4T_CHECK(item_events == 2);
+  const auto* last = events.back().Find("response");
+  Q4T_CHECK(last && OutputJson(*last) == output.Json() &&
+            OutputJson(last->GetArray("output")->array[0]) ==
+                OutputJson(projected));
+  Json recorded;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"type":"multi_agent_call_output","output":[{
+    "type":"output_text","text":"ok","logprobs":[{"token":"ok","logprob":-1,
+    "bytes":[111,107],"top_logprobs":[]}]}]})",
+                               &recorded));
+  Q4T_CHECK(OutputJson(ResponsesWireValue(recorded)) == OutputJson(recorded));
+  return true;
+}
+
+Q4T_TEST(responses_output_failure_classification) {
+  for (const auto& [native, expected] :
+       {std::pair{"client_tpm_exhausted", "rate_limit_exceeded"},
+        {"client_rpm_exhausted", "rate_limit_exceeded"},
+        {"client_prompt_limit_exceeded", "invalid_prompt"},
+        {"context_length_exceeded", "invalid_prompt"},
+        {"response_storage_exhausted", "server_error"},
+        {"image_file_not_found", "image_file_not_found"},
+        {"rate_limit_exceeded", "rate_limit_exceeded"},
+        {"vector_store_timeout", "vector_store_timeout"}}) {
+    ResponsesOutput output;
+    std::string wire;
+    Q4T_CHECK(output.Init(Options(), "resp_cause", 42, false));
+    Q4T_CHECK(output.Start(&wire) && output.Fail(native, "detail", &wire));
+    Json value;
+    Q4T_CHECK(q4t::io::ParseJson(output.Json(), &value));
+    const auto* error = value.Find("error");
+    Q4T_CHECK(error && error->GetString("code") == expected);
+    if (std::string_view(native) == expected)
+      Q4T_CHECK(!error->Has("type"));
+    else
+      Q4T_CHECK(error->GetString("type") == native);
+    Q4T_CHECK(OutputJson(ResponsesWireValue(value)) == output.Json());
+  }
+  for (const auto* input :
+       {R"({"type":"error","code":"object_commit_unknown"})",
+        R"({"object":"response","status":"cancelled","error":null})",
+        R"({"type":"mcp_call","error":{"code":"tool_error"}})"}) {
+    Json value;
+    Q4T_CHECK(q4t::io::ParseJson(input, &value));
+    Q4T_CHECK(OutputJson(ResponsesWireValue(value)) == OutputJson(value));
+  }
+  Json recorded;
+  Q4T_CHECK(q4t::io::ParseJson(R"({"object":"response","status":"failed",
+    "error":{"code":"runner_error","message":"detail","type":"original",
+             "param":"input"},"output":[{"type":"mcp_call","error":{"code":53}}]})",
+                               &recorded));
+  const auto projected = ResponsesWireValue(recorded);
+  Q4T_CHECK(projected.Find("error")->GetString("code") == "server_error" &&
+            projected.Find("error")->GetString("type") == "original" &&
+            projected.Find("error")->GetString("param") == "input" &&
+            OutputJson(*projected.Find("output")) ==
+                OutputJson(*recorded.Find("output")));
   return true;
 }
 
@@ -522,6 +619,81 @@ Q4T_TEST(responses_output_incomplete_parser_preserves_chat_contract) {
   return true;
 }
 
+Q4T_TEST(responses_cancel_delivers_the_sequenced_frame_before_failure) {
+  using namespace q4t::server::detail;
+  using namespace std::chrono_literals;
+  using Clock = std::chrono::steady_clock;
+  for (bool deadline : {false, true}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    ScopeExit close_sockets([&] {
+      close(fd[0]);
+      close(fd[1]);
+    });
+    HttpResponseContext http(fd[0]);
+    ResponsesOutput output;
+    std::string first, delta;
+    Q4T_CHECK(output.Init(Options(), "resp_cancel", 42, false));
+    Q4T_CHECK(output.Start(&first) &&
+              output.Append(Text("partial"), "null", &delta));
+    Q4T_CHECK(BeginStreamingResponse(fd[0], http.State()) &&
+              WriteAll(fd[0], first));
+    RequestControl control("req_cpu", "key",
+                           Clock::now() + (deadline ? -1s : 10s));
+    if (!deadline) control.Cancel();
+    Q4T_CHECK(control.Cancelled());
+    Q4T_CHECK(WriteAll(fd[0], delta,
+                       {.control = &control, .finish_response_event = true}));
+    std::string terminal;
+    Q4T_CHECK(output.Fail(control.Reason(), "stopped", &terminal));
+    Q4T_CHECK(WriteAll(fd[0], terminal));
+    shutdown(fd[0], SHUT_WR);
+    std::string raw;
+    char received[4096];
+    ssize_t count;
+    while ((count = recv(fd[1], received, sizeof(received), 0)) > 0)
+      raw.append(received, count);
+    Q4T_CHECK(count == 0);
+    const auto begin = raw.find("\r\n\r\n");
+    std::vector<Json> events;
+    Q4T_CHECK(begin != raw.npos && Events(raw.substr(begin + 4), &events));
+    Q4T_CHECK(events.size() >= 2 &&
+              events.back().GetString("type") == "response.failed" &&
+              events[events.size() - 2].GetString("type") ==
+                  "response.output_text.delta");
+  }
+  return true;
+}
+
+Q4T_TEST(responses_cancel_keeps_backpressure_and_shutdown_bounded) {
+  using namespace q4t::server::detail;
+  using namespace std::chrono_literals;
+  using Clock = std::chrono::steady_clock;
+  for (bool shutdown : {false, true}) {
+    int fd[2];
+    Q4T_CHECK(socketpair(AF_UNIX, SOCK_STREAM, 0, fd) == 0);
+    ScopeExit close_sockets([&] {
+      close(fd[0]);
+      close(fd[1]);
+    });
+    HttpResponseContext http(fd[0]);
+    int limit = 2048;
+    Q4T_CHECK(setsockopt(fd[0], SOL_SOCKET, SO_SNDBUF, &limit, sizeof(limit)) ==
+              0);
+    RequestControl control("req_cpu", "key", Clock::now() + 10s);
+    control.Cancel(shutdown ? RequestControl::State::kShutdown
+                            : RequestControl::State::kExplicit);
+    const auto start = Clock::now();
+    Q4T_CHECK(!WriteAll(fd[0], std::string(1 << 20, 'x'),
+                        {.control = &control, .finish_response_event = true}));
+    Q4T_CHECK(Clock::now() - start < 2s);
+    Q4T_CHECK(!WriteAll(fd[0], "terminal"));
+    char byte;
+    Q4T_CHECK((recv(fd[1], &byte, 1, MSG_DONTWAIT) == 1) == !shutdown);
+  }
+  return true;
+}
+
 Q4T_TEST(responses_output_http_failure_uses_native_terminal_once) {
   using namespace q4t::server::detail;
   for (bool direct : {false, true}) {
@@ -567,9 +739,9 @@ Q4T_TEST(responses_output_http_failure_uses_native_terminal_once) {
     Q4T_CHECK(Events(wire.substr(begin + 4), &events));
     Q4T_CHECK(events.size() == 3);
     Q4T_CHECK(events.back().GetString("type") == "response.failed");
-    Q4T_CHECK(
-        events.back().Find("response")->Find("error")->GetString("code") ==
-        "explicit_cancel");
+    const auto* error = events.back().Find("response")->Find("error");
+    Q4T_CHECK(error && error->GetString("code") == "server_error" &&
+              error->GetString("type") == "explicit_cancel");
   }
   return true;
 }

@@ -1,0 +1,153 @@
+{
+  "prior_evidence": [
+    "sequence.json",
+    "beta-result.json",
+    "node-job-recovery.json"
+  ],
+  "live_trace": [
+    {
+      "position": 0,
+      "observed": 0,
+      "event": "response.created"
+    },
+    {
+      "position": 1,
+      "observed": 1,
+      "event": "response.in_progress"
+    },
+    {
+      "position": 2,
+      "observed": 2,
+      "event": "response.output_item.added"
+    },
+    {
+      "position": 3,
+      "observed": 3,
+      "event": "response.content_part.added"
+    },
+    {
+      "position": 4,
+      "observed": 4,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 5,
+      "observed": 5,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 6,
+      "observed": 6,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 7,
+      "observed": 7,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 8,
+      "observed": 8,
+      "event": "response.output_text.delta"
+    },
+    {
+      "position": 9,
+      "observed": 9,
+      "event": "response.failed"
+    }
+  ],
+  "status": "native_tls_business_pass",
+  "release": "candidate",
+  "source": "48cf995134da9a46f212a3521b819a4a3a087a3d",
+  "cpu": "cpu.json",
+  "engine": "5f4c888656adb46e5523b61c63d3efa1a22b31e5f8fbb19edfd1869731af5a67",
+  "ingress": "65f6e9873b92fc68b2911a41ae6f6ab078975d9142e9c54a01da5e1b26632d61",
+  "duration_seconds": 37.324,
+  "model_starts": 1,
+  "production_defaults_unchanged": true,
+  "strict_python": {
+    "sdk": "3.55.1",
+    "id": "resp_46bc4fd049c03f9120b153a65243a71c",
+    "strict": true,
+    "get": 200,
+    "resumed": 200,
+    "cancel": 200,
+    "peer": 404,
+    "public_code": "server_error",
+    "cause": "background_execution_interrupted",
+    "sequence": 7,
+    "live": {
+      "id": "resp_fea542122aadee4a7d717205cd02daf5",
+      "control": 202,
+      "sequence": 9,
+      "get": 200,
+      "code": "server_error",
+      "cause": "explicit_cancel"
+    },
+    "captures": {
+      "cancel.json": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084",
+      "decoded-event.json": "9c05eb2854b615133eab10d73a8c48c2b8100ff1dee00f03a75306baaf200f5e",
+      "get.json": "12ae97e4cf7433671d5466700dbcd6b28967c31ec57846d91d36c6aa0e6b4084",
+      "live-decoded-terminal.json": "4a267c8031710a593c5a34acbc9c01ae02b652f10c694c4aa6e5a0eeff219e37",
+      "live-get.json": "238ae5a1d0dfd62d10e79a7aa3c3d7afd0a2a31c1422216f5a68dc727efd0ba3",
+      "live-sequence.jsonl": "0a904fffe417ab07d60139bac621ce8f72f9e302abb717f9b87377eeec993f3c"
+    },
+    "source_sha256": "4b6bd1c1bb5d18d4d76c6fe5167cf8470ec9f3ebdab18c317cd5d1debed450da",
+    "actor_sha256": "b4b44ded4be36a87847a78dc9127dd16aad143b745c2fef5854b29b114c62db1"
+  },
+  "official_node": {
+    "old_turn": "turn_2534a9920e21601d2eb0cd7a3d33460b",
+    "original_error": "response_parse_failed",
+    "failed_response": "resp_3918b1a8ed426181d5204f58e7cf12da",
+    "turn_error": "server_error",
+    "original_retained": true,
+    "initial_state": "idle",
+    "final_state": "idle",
+    "deltas": 2,
+    "answer": "42",
+    "peer": 404,
+    "independent_chat": "42",
+    "driver_sha256": "cff109025622198cf574f5b3f9c7f4ca63933c20955bc594a165c2eeb160c198"
+  },
+  "source_persistence": {
+    "original_files": {
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.response.resp_3918b1a8ed426181d5204f58e7cf12da.json": "e579fa44503156a548f7b58bc33425a1a98da326c7904212c91a07f1e04e3d71",
+      "f50a634daeb67351b564a597bc90c212383b0bf07dc8cb7366bf0a816093e909.agent_session.agent_session_5edc2bcfd0a679bb06ab4bf20f53e31f.json": "b314ec40354e75708890b7ef9742f4e70ed1bd9667a87f56250c908be3a28726"
+    },
+    "failed_record_identical": true,
+    "source_unchanged": true,
+    "next_turn": "turn_925aaced80c96b208783cbae20ce1114",
+    "next_response_sha256": "b34e9be369931f07f9b3fd02295487e39559096fad135c2bef67aed79454e0a9",
+    "retained_user_inputs": true,
+    "excluded_failed_output": true,
+    "request_and_effective_ttl": "12h"
+  },
+  "lease_sha256": "47cef4321dd2cd9405ff23c5f2751d8dae8bffbbd07855ad2effd1f016f4a9fe",
+  "schemas": {
+    "pinned_upstream": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "application": "c8e4461f19811e3b326a7a88b7650d41cddf443cc9980b3295b8973e18704b1b",
+    "bindings": {
+      "get.json": [
+        "BetaResponse",
+        "agent_response"
+      ],
+      "cancel.json": [
+        "BetaResponse",
+        "agent_response"
+      ],
+      "decoded-event.json": [
+        "BetaResponseFailedEvent",
+        "agent_response_event"
+      ],
+      "live-get.json": [
+        "Response",
+        "response"
+      ],
+      "live-decoded-terminal.json": [
+        "ResponseFailedEvent",
+        "response_event"
+      ]
+    }
+  },
+  "observation": "Three HTTP bodies and two independently decoded terminal events. Fresh cancellation occurred only after actual output_text.delta; recovered Beta failed job was seeded from the original unmodified record."
+}

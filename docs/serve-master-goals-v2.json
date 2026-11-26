@@ -2944,6 +2944,26 @@
         "receipt": "evidence/serve-visual-answer-encoding-20261126/profiles.json",
         "revision": 524,
         "delivery": "evidence/serve-visual-answer-encoding-20261126/delivery.json"
+      },
+      "responses_failure_20261126": {
+        "stage": "issued_with_scoped_recovery",
+        "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
+        "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
+        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json",
+        "issued": true,
+        "beta_output": "evidence/serve-responses-errors-20261126/beta-result.json",
+        "business": "evidence/serve-responses-errors-20261126/business.json",
+        "profiles": "evidence/serve-responses-errors-20261126/profiles.json",
+        "revision": 530,
+        "delivery": "evidence/serve-responses-errors-20261126/delivery.json"
+      },
+      "agent_failure_events_20261126": {
+        "stage": "issued",
+        "affected_release": 530,
+        "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json",
+        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
+        "publication_revision": 532,
+        "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
       }
     },
     {
@@ -6405,6 +6425,40 @@
         "receipt": "evidence/serve-visual-frame-parts-20261126/profiles.json",
         "revision": 526,
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
+      },
+      "quicktime_clip_cpu_20261126": {
+        "stage": "cpu_verified",
+        "receipt": "docs/evidence/serve-video-clipping-20261126/cpu.json",
+        "next": [
+          "HTTP model answer on owner upload, SSE, replay after file deletion and rejection on invalid clip",
+          "nonrectangular regions and fractional track grids",
+          "multi-layer compositing and alternate selection policy",
+          "primary/light and independent package delivery"
+        ]
+      },
+      "quicktime_clip_business_20261126": {
+        "stage": "device_verified",
+        "receipt": "docs/evidence/serve-video-clipping-20261126/business.json",
+        "next": [
+          "primary/light qualification and separate package recovery",
+          "fractional track grids, nonrectangular regions, simultaneous track composition"
+        ],
+        "corrected_device": "docs/evidence/serve-video-clipping-20261126/repaired-business.json",
+        "corrected_profiles": "docs/evidence/serve-video-clipping-20261126/repaired-profiles.json"
+      },
+      "quicktime_clip_profiles_20261126": {
+        "stage": "profile_verified",
+        "receipt": "docs/evidence/serve-video-clipping-20261126/profiles.json"
+      },
+      "quicktime_clip_delivery_20261126": {
+        "stage": "issued",
+        "revision": 532,
+        "evidence": "evidence/serve-video-clipping-20261126/delivery.json",
+        "unresolved": [
+          "nonrectangular QuickDraw region",
+          "fractional track grid",
+          "multiple enabled video tracks"
+        ]
       }
     },
     {
@@ -8560,6 +8614,39 @@
         "issued": false,
         "receipt": "evidence/serve-sdk-routes-20261126/profile-source.json",
         "real_records": 9
+      },
+      "assistant_run_streams_20261126": {
+        "stage": "official_sdk_replay_verified",
+        "original_native_sdk": "Node 7.47.0",
+        "python": [
+          "2.8.1",
+          "3.42.1",
+          "3.55.1"
+        ],
+        "events": 22,
+        "receipt": "evidence/serve-assistants-20261124/python-streams.json",
+        "matrix": "SDK_STREAM_COMPATIBILITY.md"
+      },
+      "responses_failure_20261126": {
+        "stage": "issued_with_scoped_recovery",
+        "evidence": "evidence/serve-responses-errors-20261126/cpu.json",
+        "sequence": "evidence/serve-responses-errors-20261126/sequence.json",
+        "node_cpu": "evidence/serve-responses-errors-20261126/node-job-recovery.json",
+        "issued": true,
+        "beta_output": "evidence/serve-responses-errors-20261126/beta-result.json",
+        "business": "evidence/serve-responses-errors-20261126/business.json",
+        "profiles": "evidence/serve-responses-errors-20261126/profiles.json",
+        "revision": 530,
+        "delivery": "evidence/serve-responses-errors-20261126/delivery.json",
+        "aggregate_clients": "evidence/serve-responses-errors-20261126/python-aggregate.json"
+      },
+      "agent_failure_events_20261126": {
+        "stage": "issued",
+        "affected_release": 530,
+        "receipt": "evidence/serve-responses-errors-20261126/agent-turn-events.json",
+        "device": "evidence/serve-responses-errors-20261126/agent-turn-http.json",
+        "publication_revision": 532,
+        "delivery": "evidence/serve-video-clipping-20261126/delivery.json"
       }
     },
     {
@@ -9807,8 +9894,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 528,
-        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev528-preflight.json",
+        "revision": 532,
+        "receipt": "evidence/serve-cold-driver-cpu-20261112/rev532-preflight.json",
         "model_starts": 0,
         "executed": false
       }
@@ -11544,7 +11631,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev528_delivered_remaining_deliveries",
+      "state": "rev532_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12886,7 +12973,9 @@
         "real_records": 9
       },
       "current_visual_frame_delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json",
-      "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json"
+      "current_sdk_route_delivery": "evidence/serve-sdk-routes-20261126/delivery.json",
+      "current_failure_delivery": "evidence/serve-responses-errors-20261126/delivery.json",
+      "current_movie_clip_delivery": "evidence/serve-video-clipping-20261126/delivery.json"
     },
     {
       "id": "Q03",
@@ -12991,16 +13080,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "aacaaef7a767311882870ea4be385e7c3c7c9d5a",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src",
+        "source_commit": "30ad891b9866d97dae4a5d0889719fdfc20ebb0d",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-client-primary-01/bundle",
-          "manifest_sha256": "5ecf9f0efcaf67f4ddd40508f5de3a11a42209eb03e692b3f61d34ed3f685722"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-client-primary-01/bundle",
+          "manifest_sha256": "703046bff3f2f7701a00027060849d41621e36837190d03b2334481afe3fc62b"
         },
-        "revision": 528,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-route-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "f07cf22364cdd5573869552f53ad13528f5bd929e959ea14e3f18b4af4d543eb",
-        "handoff_sha256": "700a740d37080768c955648936b10658a7936c66df949da391b466624d8e023e",
+        "revision": 532,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/repaired-clip-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "e6664d743df464cf2069e524c272d5cc67fee2d0db113702419c959055d4eac2",
+        "handoff_sha256": "682133da358440197ec378023abdfbec6ee5ba2a0c5779a23a8df457de1f95d1",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -13411,9 +13500,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 528,
-        "receipt": "evidence/serve-sdk-routes-20261126/delivery.json",
-        "plan_sha256": "f07cf22364cdd5573869552f53ad13528f5bd929e959ea14e3f18b4af4d543eb",
+        "revision": 532,
+        "receipt": "evidence/serve-video-clipping-20261126/delivery.json",
+        "plan_sha256": "e6664d743df464cf2069e524c272d5cc67fee2d0db113702419c959055d4eac2",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

@@ -7,6 +7,7 @@
 #include <utility>
 #include <vector>
 
+#include "file_video_clipping.h"
 #include "file_video_geometry.h"
 #include "file_video_integer.h"
 #include "file_video_orientation.h"
@@ -132,7 +133,8 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
                                    std::span<const uint8_t> source,
                                    size_t stride, const FileVideoLimits& limits,
                                    ProjectiveGeometry* geometry,
-                                   std::vector<uint8_t>* rgb) {
+                                   std::vector<uint8_t>* rgb,
+                                   const DisplayClips& clips = {}) {
   const uint64_t row_bytes = uint64_t(width) * 3;
   if (!rgb || !geometry || !width || !height || stride < row_bytes ||
       source.size() < row_bytes ||
@@ -156,6 +158,8 @@ inline Failure RenderProjectiveRgb(const DisplayMatrices& matrices,
       if (denominator.IsZero() || nx.IsNegative() || ny.IsNegative() ||
           nx >= denominator * DisplayInteger(width) ||
           ny >= denominator * DisplayInteger(height))
+        continue;
+      if (clips.Any() && !VisibleAt(clips, matrices.track, nx, ny, denominator))
         continue;
       const auto sample = [&](const DisplayInteger& n, uint32_t size) {
         const int64_t q =

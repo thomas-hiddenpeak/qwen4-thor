@@ -33,6 +33,10 @@ using ResponsesReasoningSeal =
 // use the base type; Responses input_items preserves the Item lifecycle.
 io::Json ResponsesPublicValue(io::Json value);
 
+// Serialize an HTTP resource or SSE event, including records from older
+// releases. The stored snapshot keeps the native recovery diagnostic.
+io::Json ResponsesWireValue(io::Json value);
+
 // Apply the connection's padding choice after projecting a public SSE event.
 void ApplyDeltaObfuscation(io::Json* event, bool enabled);
 

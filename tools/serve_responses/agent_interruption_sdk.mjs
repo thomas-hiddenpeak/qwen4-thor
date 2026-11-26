@@ -33,10 +33,21 @@ if (plan.mode === 'recover' || plan.mode === 'recover-drain') {
   await assert.rejects(other.retrieve(plan.id, { betas }), error => error.status === 404);
   assert.equal(restored.id, plan.id);
   assert.equal(restored.status, 'failed');
-  assert.equal(restored.error.code, draining ? 'service_draining' : 'background_execution_interrupted');
+  const cause = draining ? 'service_draining' : 'background_execution_interrupted';
+  if (plan.legacy_error_code === true) {
+    assert.equal(restored.error.code, cause);
+  } else {
+    assert.equal(restored.error.code, 'server_error');
+    assert.equal(restored.error.type, cause);
+  }
+  // Original store fixtures retain the historical SDK shape.
+  const items = plan.items?.map(item => {
+    if (plan.legacy_error_code || item.type !== 'multi_agent_call_output') return item;
+    return { ...item, output: item.output.map(part => ({ ...part, logprobs: part.logprobs ?? [] })) };
+  });
   let additional = [];
   if (draining) {
-    assert.deepEqual(restored.output.slice(0, plan.items.length), plan.items);
+    assert.deepEqual(restored.output.slice(0, items.length), items);
     additional = restored.output.slice(plan.items.length);
     assert.ok(additional.length <= 1);
     for (const item of additional) {
@@ -44,8 +55,8 @@ if (plan.mode === 'recover' || plan.mode === 'recover-drain') {
       assert.equal(item.action, 'wait_agent');
       assert.ok(item.call_id && !plan.items.some(old => old.call_id === item.call_id));
     }
-  } else if (plan.items) {
-    assert.deepEqual(restored.output, plan.items);
+  } else if (items) {
+    assert.deepEqual(restored.output, items);
   }
   const replay = [];
   if (Number.isInteger(plan.sequence)) {
@@ -57,7 +68,10 @@ if (plan.mode === 'recover' || plan.mode === 'recover-drain') {
         assert.equal(event.output_index, plan.items.length);
         assert.deepEqual(event.item, additional[0]);
       }
-      if (event.type === 'response.failed') assert.deepEqual(event.response.output, restored.output);
+      if (event.type === 'response.failed') {
+        assert.deepEqual(event.response.output, restored.output);
+        assert.deepEqual(event.response.error, restored.error);
+      }
       assert.ok(replay.length <= 64);
     }
     assert.equal(replay.at(-1), 'response.failed');

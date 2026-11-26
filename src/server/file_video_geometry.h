@@ -13,6 +13,20 @@ struct DisplayGeometry {
   bool operator==(const DisplayGeometry&) const = default;
 };
 
+// A QuickTime clip lives in the track's declared display space; sample the
+// decoded image onto that grid before applying either clip or matrix.
+inline Failure UseTrackGrid(uint32_t width, uint32_t height,
+                            const FileVideoLimits& limits,
+                            DisplayGeometry* geometry) {
+  if (!width || !height) return Failure::kInvalid;
+  if (width > limits.max_edge || height > limits.max_edge ||
+      uint64_t(width) * height > limits.max_frame_pixels)
+    return Failure::kCapacity;
+  geometry->square_width = width;
+  geometry->square_height = height;
+  return Failure::kNone;
+}
+
 // Preserve the coded resolution, expanding only the non-square display axis.
 // Caps fractions are positive signed 32-bit integers. Check before converting
 // or allocating; the product stays below 8192 * INT32_MAX.

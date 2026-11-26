@@ -1,0 +1,48 @@
+{
+  "sdk": "Node 7.47.0",
+  "transport": "Native loopback HTTP with CPU job deltas; a process crash closes only the fixture and recovery uses its persisted jobs.",
+  "server_library": "6a8ba3696ccd7cb28ecc13fe69a5b6be8a442607d35eda3e99e584ee83a0d675",
+  "driver": "tools/serve_responses/test_background_sdk.mjs",
+  "driver_sha256": "e8b464dc2e67fc75740180c9cf98571ebd9868a48c4ed2ce392c9f27cd62b319",
+  "native_fixture_sha256": "b00456aaf77a857fbe19b9e48d8bd08ea71119cb5f70fa6742615a37fc46ba52",
+  "results": {
+    "crash": {
+      "recorded_http": 12,
+      "trace_sha256": "a8eae9957e4b88df0ab22f642f4a423b204b7875c7f09c786980dbe3d082fbf4",
+      "final_resources": [
+        {
+          "status": "failed",
+          "error": {
+            "code": "server_error",
+            "message": "Previous execution process exited; started work is not replayed",
+            "type": "background_execution_interrupted"
+          }
+        },
+        {
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "cross_owner_status": 404
+    },
+    "cancel": {
+      "recorded_http": 16,
+      "trace_sha256": "44e500903878015a640f46de5ca7da858bed16e60967a570f1f80475dc4e14f8",
+      "final_resources": [
+        {
+          "status": "cancelled",
+          "error": null
+        },
+        {
+          "status": "cancelled",
+          "error": null
+        },
+        {
+          "status": "completed",
+          "error": null
+        }
+      ],
+      "cross_owner_status": 404
+    }
+  }
+}

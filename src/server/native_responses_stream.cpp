@@ -92,9 +92,12 @@ bool NativeResponsesStream::Accept(Json event) {
                                   event.GetString("message"));
   if (type == "response.failed") {
     const auto* cause = response->Find("error");
+    // Internally routed turns retain the original diagnostic carried by our
+    // own Responses producer, including streams written by older releases.
+    auto code = cause ? cause->GetString("type") : "";
+    if (code.empty() && cause) code = cause->GetString("code");
     error_ = object_detail::Error(
-        500,
-        cause ? cause->GetString("code", "response_failed") : "response_failed",
+        500, code.empty() ? "response_failed" : std::move(code),
         cause ? cause->GetString("message", "Response failed")
               : "Response failed");
   }

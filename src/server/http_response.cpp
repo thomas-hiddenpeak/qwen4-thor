@@ -267,6 +267,13 @@ HttpWriteFailure CancelWriteReason(const RequestControl& control) {
   return HttpWriteFailure::kRequestFailure;
 }
 
+bool MayFinishResponseEvent(const WriteOptions& options,
+                            HttpWriteFailure reason) {
+  return options.finish_response_event &&
+         (reason == HttpWriteFailure::kExplicitCancel ||
+          reason == HttpWriteFailure::kRequestDeadline);
+}
+
 bool WriteAllImpl(int fd, const char* data, size_t len,
                   const WriteOptions& options, ResponseState* header_state,
                   HttpWriteObservation* observation = nullptr) {
@@ -289,10 +296,19 @@ bool WriteAllImpl(int fd, const char* data, size_t len,
           ? HttpWriteFailure::kRequestDeadline
           : HttpWriteFailure::kWriteDeadline;
   size_t off = 0;
+  auto flush_deadline = Clock::time_point::max();
   while (off < len) {
-    if (options.control && options.control->Cancelled())
-      return fail(CancelWriteReason(*options.control));
-    if (Clock::now() >= deadline) return fail(timeout_reason);
+    auto stop = HttpWriteFailure::kNone;
+    if (options.control && options.control->Cancelled()) {
+      stop = CancelWriteReason(*options.control);
+      if (!MayFinishResponseEvent(options, stop)) return fail(stop);
+      if (flush_deadline == Clock::time_point::max())
+        flush_deadline = std::min(
+            options.deadline, Clock::now() + std::chrono::milliseconds(250));
+    }
+    if (Clock::now() >=
+        (stop == HttpWriteFailure::kNone ? deadline : flush_deadline))
+      return fail(stop == HttpWriteFailure::kNone ? timeout_reason : stop);
     // A disconnected client must fail this request, not terminate the server.
     // Per-call nonblocking leaves the request reader's fd mode unchanged.
     size_t remaining_bytes = len - off;
@@ -307,6 +323,7 @@ bool WriteAllImpl(int fd, const char* data, size_t len,
     if (n <= 0) {
       if (n < 0 && errno == EINTR) continue;
       if (n < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        if (stop != HttpWriteFailure::kNone) return fail(stop);
         ServeFaultPoint("write.backpressure");
         const auto remaining =
             std::chrono::duration_cast<std::chrono::milliseconds>(deadline -
@@ -544,7 +561,9 @@ bool HttpResponseContext::Write(const char* data, size_t size,
           (state_ != ResponseState::kStreaming &&
            state_ != ResponseState::kTerminal) ||
           std::chrono::steady_clock::now() >= options.deadline ||
-          (options.control && options.control->Cancelled())) {
+          (options.control && options.control->Cancelled() &&
+           !MayFinishResponseEvent(options,
+                                   CancelWriteReason(*options.control)))) {
         responses_capture_->Reject();
         return false;
       }

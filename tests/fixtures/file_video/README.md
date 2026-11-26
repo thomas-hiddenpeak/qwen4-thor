@@ -44,3 +44,7 @@ Reproduce it with FFmpeg stream copy from the fixture directory.
 ffmpeg -nostdin -v error -i h264.mp4 -i rotate-90.mp4 -map 0:v:0 -map 1:v:0 \
   -c copy -disposition:v:0 default -disposition:v:1 0 -fflags +bitexact alternate-tracks.mp4
 ```
+
+## QuickTime 矩形裁剪
+
+`rect-clips.mov` 使用 `geometry.mp4` 的原始 H.264 码流。在轨道和影片各放入一个短 QuickDraw 矩形，测试可以独立改变两组坐标。运行 `python3 generate_rect_clips.py --output /tmp/rect-clips.mov` 可用 FFmpeg 流复制重建此夹具。
