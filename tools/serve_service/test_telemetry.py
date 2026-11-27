@@ -206,6 +206,30 @@ class MonitorTests(unittest.TestCase):
         self.assertEqual(result['gpu_monitor']['visibility'], 'UNKNOWN')
         self.assertFalse(result['cleanup_confirmed'])
 
+    def test_missing_or_legacy_empty_guard_receipt_keeps_worker_cleanup_evidence(self):
+        manifest = dict(repository=str(ROOT), python=dict(path=sys.executable),
+                        settings=pkg.settings(18999, 0))
+        for variant in ('missing', 'empty'):
+            out = self.root / variant
+            def stopped_without_evidence(command, lease, lock, **options):
+                lease.mkdir()
+                if variant == 'empty':
+                    (lease / 'exit.json').touch()
+                pkg.save(out / 'status.json', dict(state='STOPPED', cleanup_confirmed=True))
+                pkg.save(out / 'stop.request.json', dict(reason='explicit_stop'))
+                return 75
+            with self.subTest(variant=variant), \
+                    mock.patch.object(pkg, 'verify', return_value=manifest), \
+                    mock.patch.object(service.guard, 'common_lock', return_value=self.root/'lock'), \
+                    mock.patch.object(service.guard, 'run_guard', side_effect=stopped_without_evidence):
+                rc = service.run(self.root, 'digest', out)
+                terminal = pkg.read(out/'terminal.json')
+                self.assertEqual((rc, terminal['state']), (75, 'FAILED'))
+                self.assertFalse(terminal['cleanup_confirmed'])
+                self.assertFalse(terminal['guard']['receipt_available'])
+                self.assertTrue(terminal['worker']['cleanup_confirmed'])
+                self.assertFalse(terminal['automatic_reactivation'])
+
     def test_real_controller_wires_explicit_policy_and_stops_with_gap_receipt(self):
         out = self.root/'controller'
         manifest = dict(repository=str(ROOT), python=dict(path=sys.executable),

@@ -77,14 +77,24 @@ def run(package, digest, output):
         rc = guard.run_guard(command, output/'lease', lock_path,
                              log_max_bytes=4*1024**2, inherit_lease=True,
                              **options)
-        result = pkg.read(output/'lease/exit.json')
+        try:
+            result = pkg.read(output/'lease/exit.json')
+        except (OSError, UnicodeError, json.JSONDecodeError) as error:
+            # A failed or older interrupted writer may leave no usable receipt.
+            # Keep the actual worker and host cleanup observations in terminal.json.
+            result = dict(status='ENV_ABORT', receipt_available=False,
+                          reason='GPU lease receipt unavailable', error=str(error))
+            rc = 75
         worker = (pkg.read(output/'status.json')
                   if (output/'status.json').exists() else None)
         manual = (output/'stop.request.json').exists()
         # The generic guard calls an operator interruption ENV_ABORT. Preserve
         # that receipt; the service terminal additionally describes intent.
         clean = (worker is not None and worker.get('cleanup_confirmed') is True
-                 and 'cleanup_error' not in result and
+                 and result.get('receipt_available', True) and
+                 'lease_close_error' not in result and
+                 'event_close_error' not in result and
+                 'cleanup_error' not in result and
                  'monitor_cleanup_error' not in result)
         resource_cleanup = None
         if 'host_resources' in manifest:

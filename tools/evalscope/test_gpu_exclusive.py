@@ -1,6 +1,8 @@
 """CPU-only lease, fail-closed monitoring, and ownership contracts."""
 import fcntl
 import errno
+import contextlib
+import io
 import json
 import signal
 import os
@@ -475,6 +477,106 @@ class ExclusiveTests(unittest.TestCase):
         self.assertEqual(result, 75)
         self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
         self.assertIn('cleanup failed', self.outcome()['cleanup_error'])
+
+    def test_receipt_is_invisible_until_synced_and_lease_remains_exclusive(self):
+        pending = self.out / '.exit.json.pending'
+        final = self.out / 'exit.json'
+        real_sync = os.fsync
+        def before_publish(fd):
+            self.assertFalse(final.exists())
+            self.assertEqual(os.fstat(fd).st_ino, pending.stat().st_ino)
+            self.assertEqual(json.loads(pending.read_bytes())['status'], 'COMPLETED')
+            with self.lock.open('r+') as observer, self.assertRaises(BlockingIOError):
+                fcntl.flock(observer, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            real_sync(fd)
+        with patch.object(guard, 'inspect', return_value={'conflicts': []}), \
+                patch.object(os, 'fsync', side_effect=before_publish) as sync:
+            rc = guard.run_guard([sys.executable, '-c', 'pass'], self.out, self.lock,
+                                 interval=.01, grace=1)
+        self.assertEqual(rc, 0)
+        sync.assert_called_once()
+        self.assertEqual(self.outcome()['status'], 'COMPLETED')
+        self.assertFalse(pending.exists())
+
+    def test_storage_failure_after_write_never_publishes_a_partial_receipt(self):
+        final = self.out / 'exit.json'
+        with patch.object(guard, 'inspect', return_value={'conflicts': []}), \
+                patch.object(os, 'fsync', side_effect=OSError(errno.ENOSPC, 'full')), \
+                patch('sys.stderr', new_callable=io.StringIO) as errors:
+            code = guard.run_guard([sys.executable, '-c', 'pass'], self.out, self.lock,
+                                   interval=.01, grace=1)
+        self.assertEqual(code, 75)
+        self.assertIn('Unable to publish GPU lease receipt', errors.getvalue())
+        self.assertFalse(final.exists())
+        self.assertFalse((self.out / '.exit.json.pending').exists())
+        with self.lock.open('r+') as observer:
+            fcntl.flock(observer, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_kernel_short_write_preserves_previous_terminal_bytes(self):
+        pending = self.root / '.exit.json.pending'
+        final = self.root / 'exit.json'
+        previous = b'{"status":"COMMAND_FAILED"}\n'
+        final.write_bytes(previous)
+        guard.reserve_exit_receipt(pending)
+        script = """
+import errno, resource, signal, sys
+from pathlib import Path
+import gpu_exclusive as guard
+signal.signal(signal.SIGXFSZ, signal.SIG_IGN)
+resource.setrlimit(resource.RLIMIT_FSIZE, (4096, 4096))
+try:
+    guard.publish_exit_receipt(Path(sys.argv[1]), {'reason':'x' * 131072})
+except OSError as error:
+    assert error.errno == errno.EFBIG
+else:
+    raise AssertionError('kernel write limit must fail')
+"""
+        subprocess.run([sys.executable, '-B', '-c', script, str(pending)],
+                       cwd=Path(guard.__file__).parent, check=True, timeout=10)
+        staged = pending.read_bytes()
+        self.assertTrue(staged.startswith(b'{\n  "reason": "'))
+        self.assertEqual(staged[4095:4096], b'x')
+        self.assertIn(staged[4096:4097], (b'\0', b''))
+        self.assertEqual(final.read_bytes(), previous)
+
+    def test_unavailable_preallocation_and_large_busy_snapshot(self):
+        holder = 'x' * (guard.EXIT_RESERVE_BYTES * 2)
+        for number in (errno.ENOSPC, errno.EOPNOTSUPP):
+            with self.subTest(number=number), self.lock.open('w+') as held:
+                self.out = self.root / str(number)
+                held.write(holder)
+                held.flush()
+                fcntl.flock(held, fcntl.LOCK_EX)
+                with patch.object(os, 'posix_fallocate', side_effect=OSError(number, 'reserve')), \
+                        patch.object(guard, 'inspect') as scan:
+                    result = guard.run_guard(['never-started'], self.out, self.lock)
+                self.assertEqual(result, 75)
+                scan.assert_not_called()
+                self.assertEqual(self.outcome()['holder_snapshot'], holder)
+                self.assertEqual(self.outcome()['status'], 'LEASE_BUSY')
+
+    def test_final_event_write_failure_records_abort_after_child_cleanup(self):
+        with patch.object(guard, 'inspect', return_value={'conflicts': []}):
+            real_log = guard.open_log
+
+            @contextlib.contextmanager
+            def fail_last(*args):
+                with real_log(*args) as stream:
+                    original_write = stream.write
+                    def write(line):
+                        if json.loads(line)['event'] == 'lease_released':
+                            raise OSError(errno.ENOSPC, 'event volume full')
+                        return original_write(line)
+                    with patch.object(stream, 'write', side_effect=write):
+                        yield stream
+
+            with patch.object(guard, 'open_log', fail_last):
+                code = guard.run_guard([sys.executable, '-c', 'pass'], self.out,
+                                       self.lock, interval=.01, grace=1)
+        self.assertEqual(code, 75)
+        self.assertEqual(self.outcome()['status'], 'ENV_ABORT')
+        self.assertEqual(self.outcome()['child_returncode'], 0)
+        self.assertIn('event volume full', self.outcome()['lease_close_error'])
 
     def test_command_failure_is_not_environment_failure(self):
         with patch.object(guard, 'inspect', return_value={'conflicts': []}):

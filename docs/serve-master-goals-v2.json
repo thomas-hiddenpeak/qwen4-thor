@@ -14051,7 +14051,15 @@
         "revision": 574,
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
-      "current_recording_delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
+      "current_recording_delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json",
+      "lease_terminal_storage_20261127": {
+        "stage": "targeted_cpu_verified",
+        "evidence": "evidence/serve-lease-terminal-20261127/cpu.json",
+        "physical_test_filesystem_bytes": 1048576,
+        "strict_receipt": "COMPLETED",
+        "managed_receipt": "COMPLETED_WITH_MONITOR_GAPS",
+        "hardware_model_starts": 0
+      }
     },
     {
       "id": "Q03",
