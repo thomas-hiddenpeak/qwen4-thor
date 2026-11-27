@@ -1,0 +1,41 @@
+{
+  "stage": "real_cli_verified",
+  "reserve_bytes": 12884901888,
+  "scope": "The native operator soak check and run paths and the existing capture sampler share the same disk threshold.",
+  "sources": {
+    "tools/serve_soak/evidence.py": "539023f8386e27daadea71bd0b4eacd1a883d202c1db5e10f9b10994a4f58eec",
+    "tools/serve_soak/native_stage.py": "3bbab72617d95bd7338efc21cc15f666226cfad6b267adea1eeaae3d88c922ca"
+  },
+  "tests": 33,
+  "short_and_day_at_threshold": true,
+  "short_and_day_one_byte_below_rejected": true,
+  "low_space_guard_starts": 0,
+  "low_space_capture_starts": 0,
+  "low_space_execution_files": 0,
+  "red_sha256": "b43673d8c3a66f5807282d10af3222ab98866b295c720e2b3e7aa64bfe739509",
+  "green_sha256": "8d70510a3a071ee020b5be3726363f365178a1ac285419d3a7db9e9135e242c1",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1396,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "actual": {
+    "package_sha256": "12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb",
+    "plan_sha256": "2ef14c20e692647cfb1b82a42274832a0879f21d994a7159da620e51c12ee1da",
+    "temporary_filesystem_bytes": 67108864,
+    "free_when_rejected": 66920448,
+    "private_files_unchanged": 28,
+    "check_error_sha256": "d1d9a54340e984cb401558f01c94c9992ced171fb173a9e58030babcd20b51ba",
+    "run_error_sha256": "86e5a8f43845ddd0e7ae2392d9cc6d0b83f69ea4e6bcf1815988d4d221c81f21",
+    "restored_check": true,
+    "restored_free_bytes": 14851866624,
+    "namespace_released": true,
+    "model_actions": 0
+  }
+}

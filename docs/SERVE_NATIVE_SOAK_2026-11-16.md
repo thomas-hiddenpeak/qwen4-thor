@@ -45,3 +45,28 @@ short。只在具体失败后修复并补受影响项。day不由agent执行。
 导致FAILED，原件和清理保留。复用运营入口并通过直接CPU后，只补
 1启动/16Chat/0探测/600秒；累计2启动/22Chat/1200秒。新独立short
 保留完整连续60秒/3周期，day未执行。此补验仅解决已定位驱动缺陷。
+
+准备计划后，`check` 和 `run` 均会核对计划输出目录所在文件系统的可用空间。
+低于 12 GiB 时会显示路径与可用字节数，在创建采集器和申请 GPU 租约前退出。
+清出空间后可对同一未执行的计划重新运行 `check`。运行期间采集器继续检查同一门槛。
+
+## 音频交接
+
+在含有已验收原生 TTS 和 ASR 的发行包上，可在准备短验或日稳计划时使用
+`--audio`。驱动将发行时核验的短句合成为 MP3，用同一服务转录刚收到的
+全部音频，核对原句，并保存原始请求体与两份响应供报告复算。验证使用原生
+回环入口和原客户配额。原有纯文本计划可继续按原命令运行。
+
+```bash
+python3 -I -B tools/serve_soak/native_stage.py prepare \
+  --package build/service --output .q4t-work/audio-day --profile day --audio
+python3 -I -B tools/serve_soak/native_stage.py check \
+  --plan .q4t-work/audio-day/plan.json
+```
+
+日稳在第 1 轮预热，再于每个整小时所在轮次执行，全天共 25 次音频闭环。
+第 1 小时应有 304 次业务请求，全天 7,250 次，另有一次模型自检。用户可在
+设备窗口使用 `native_stage.py run --plan .q4t-work/audio-day/plan.json`
+启动，报告核验语音回包、ASR 实际收到的字节、识别文本及核心请求计数。
+短验使用独立输出目录和 `--profile short --audio`，在三轮中的首尾各执行
+一次音频闭环。[校验记录](evidence/serve-native-soak-audio-20261127/cpu.json)

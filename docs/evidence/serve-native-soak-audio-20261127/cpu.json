@@ -1,0 +1,49 @@
+{
+  "scope": "opt-in native speech synthesis to transcription in short/day soak",
+  "stage": "cpu_verified",
+  "reference_revision": 580,
+  "package_sha256": "008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1",
+  "registered_profile_sha256": "c1def8b895002cdbc2ab311ba5bad941492006395afe18724fb6ec96c32a0cb6",
+  "speech_model": "qwen3-tts-12hz-1.7b-customvoice",
+  "asr_model": "qwen3-asr-0.6b",
+  "reviewed_clip_bytes": 58368,
+  "reviewed_clip_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+  "cpu_tests": 19,
+  "checks": [
+    "fixed short and 24-hour budgets and first-hour checkpoint",
+    "legacy plan remains text-only",
+    "loopback multipart parser compared the complete speech body and rejected altered inputs",
+    "failed transcription preserved both raw responses"
+  ],
+  "short": {
+    "starts": 1,
+    "cycles": 3,
+    "audio_cycles": [
+      1,
+      3
+    ],
+    "requests_including_self_check": 20
+  },
+  "day": {
+    "starts": 1,
+    "cycles": 1440,
+    "audio_roundtrips": 25,
+    "requests_including_self_check": 7251,
+    "first_hour_business_requests": 304,
+    "executed_hours": 0,
+    "owner": "user"
+  },
+  "actual_short_run": false,
+  "cpu_log_sha256": "bb55e664133fe49c731e95d82b296578917bd98f0b23ec7410915337e35acfb8",
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1395,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}
