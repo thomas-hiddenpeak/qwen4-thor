@@ -1,0 +1,92 @@
+{
+  "stage": "pending_browser_primary_light",
+  "issued": false,
+  "engine": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "roles": {
+    "primary": {
+      "sha256": "3780b4370b2b8f07fb51ff250e2594e9c65a046769902502af16bb60da792cf5",
+      "browser": {
+        "sdk": "7.47.0",
+        "thread": "cthr_6510207703772f7d1a7baad7aab86620",
+        "workflow": "agent_4a04b89450bc2d5a79f945c4b742e5d1",
+        "call": "call_resp_5afd93ef134b523a34ff24efe25f3334_0",
+        "original_item": "fc_8d51c3908fd8e237b8bcc29ce223ec1c",
+        "original_user": "item_f3da553a108e821689a8b81553b7e935",
+        "original_sha256": "8c18c4d9093875bbd7bed1526a2f2010fb9579185140bb48b14eb7504889f8fa",
+        "requests": 4,
+        "phase": "primary"
+      },
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      },
+      "seconds": 41.53676897101104,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 34
+      },
+      "mtp": true,
+      "conversation": "created",
+      "chat": "42"
+    },
+    "light": {
+      "sha256": "20e124dab45dc4f5ad93303765ea9b6f390a1192ba60109f002b573593fad7e8",
+      "browser": {
+        "sdk": "7.47.0",
+        "thread": "cthr_6510207703772f7d1a7baad7aab86620",
+        "workflow": "agent_4a04b89450bc2d5a79f945c4b742e5d1",
+        "call": "call_resp_5afd93ef134b523a34ff24efe25f3334_0",
+        "original_item": "fc_8d51c3908fd8e237b8bcc29ce223ec1c",
+        "original_user": "item_f3da553a108e821689a8b81553b7e935",
+        "original_sha256": "8c18c4d9093875bbd7bed1526a2f2010fb9579185140bb48b14eb7504889f8fa",
+        "requests": 10,
+        "phase": "light",
+        "history": [
+          "item_f3da553a108e821689a8b81553b7e935",
+          "fc_8d51c3908fd8e237b8bcc29ce223ec1c",
+          "item_9bea44235038cf0ea792d9011b92e9aa",
+          "msg_2217b2269576399d92cd29eb9ee4a1f1"
+        ],
+        "answer": "42",
+        "late_output": 409,
+        "foreign_session": 404,
+        "foreign_project": 404,
+        "unchanged_pending_call": true
+      },
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      },
+      "seconds": 35.59890042291954,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 66
+      },
+      "mtp": false,
+      "conversation": "recovered",
+      "chat": "42"
+    }
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 72,
+    "cleanup_complete": true
+  },
+  "registry_acceptance_sha256": "eafc15e98df2a0b7cccb95319295df782b61c8651ed3a31eb8f76720bc78c119",
+  "lease_sha256": "a136cc0bafbfa8eb932fd01ace4012fadb426b34a7af340b8930e2db33da6b0e",
+  "lifecycle_sha256": "2a50afb51ae06ba192f5a6436647c8134240a1386baf0f057aaecaeda3b7e5b9",
+  "previous_profiles_reconstruct_exactly": true,
+  "cpu_log_sha256": "dc835bf252b02db4ad36cad229e399e92937e43777db166bee05f6cf422af70e",
+  "inventory_log_sha256": "bd34a6e0ea4070b11e1a6a4332d285e2f36dc0325661832926e96d65cb698cc8"
+}
