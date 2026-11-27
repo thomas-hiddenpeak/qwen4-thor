@@ -79,9 +79,10 @@ def definitions():
         obj(dict(files=dict(type='array', minItems=1, maxItems=2000, items=attach),
                  attributes={}, chunking_strategy={}), ['files'])])
     def page(item):
+        cursor = dict(anyOf=[identity, dict(type='string', const='')])
         return obj(dict(object=dict(const='list'), data=dict(type='array',
-            maxItems=100, items=ref(item)), first_id=nullable(identity),
-            last_id=nullable(identity), has_more=dict(type='boolean')),
+            maxItems=100, items=ref(item)), first_id=cursor, last_id=cursor,
+            has_more=dict(type='boolean')),
             ['object', 'data', 'first_id', 'last_id', 'has_more'])
     def deleted(name):
         return obj(dict(id=identity, object=dict(const=name+'.deleted'),

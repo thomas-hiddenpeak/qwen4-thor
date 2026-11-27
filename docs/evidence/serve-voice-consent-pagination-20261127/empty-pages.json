@@ -1,0 +1,138 @@
+{
+  "scope": "Empty native Batch and Vector Store list boundaries and published application schemas",
+  "methods": [
+    "/batches",
+    "/vector_stores",
+    "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+    "/vector_stores/{vector_store_id}/files"
+  ],
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "compared_explicit_list_schemas": 41,
+  "discrepant_cursor_fields_before": [
+    [
+      "/batches",
+      "first_id"
+    ],
+    [
+      "/batches",
+      "last_id"
+    ],
+    [
+      "/vector_stores",
+      "first_id"
+    ],
+    [
+      "/vector_stores",
+      "last_id"
+    ],
+    [
+      "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "first_id"
+    ],
+    [
+      "/vector_stores/{vector_store_id}/file_batches/{batch_id}/files",
+      "last_id"
+    ],
+    [
+      "/vector_stores/{vector_store_id}/files",
+      "first_id"
+    ],
+    [
+      "/vector_stores/{vector_store_id}/files",
+      "last_id"
+    ]
+  ],
+  "discrepant_cursor_fields_after": [],
+  "changed_application_definitions": [
+    "batch_list",
+    "vector_file_list",
+    "vector_store_list"
+  ],
+  "missing_cursors_allowed_only_for_batches": true,
+  "actual_empty_boundary": "",
+  "empty_page_has_more": false,
+  "null_and_nonstring_rejected": true,
+  "targeted_cpp_cases": 4,
+  "cpp_before": {
+    "failures": 4,
+    "log_sha256": "8057c023389e5d1c3866867b53c8b9f8d921ce8f2e98858a428740d28ba0475a"
+  },
+  "cpp_after": {
+    "passed": 4,
+    "log_sha256": "d126d0829af608ec0b34e668b26aa6092973ff1ad13a6c89c31838f5fcfe8bd3"
+  },
+  "sdk_before": [
+    {
+      "sdk": "7.47.0",
+      "mode": "batches",
+      "verified": [
+        "batches.list"
+      ],
+      "calls": 1,
+      "transport": "native TLS",
+      "empty_cursors": [
+        null,
+        null
+      ]
+    },
+    {
+      "sdk": "7.47.0",
+      "mode": "vectors",
+      "verified": [
+        "vectorStores.list",
+        "vectorStores.list/private",
+        "vectorStores.files.list",
+        "vectorStores.fileBatches.listFiles"
+      ],
+      "calls": 11,
+      "transport": "native TLS",
+      "empty_cursors": [
+        null,
+        null
+      ]
+    }
+  ],
+  "sdk_after": [
+    {
+      "sdk": "7.47.0",
+      "mode": "batches",
+      "verified": [
+        "batches.list"
+      ],
+      "calls": 1,
+      "transport": "native TLS",
+      "empty_cursors": [
+        "",
+        ""
+      ]
+    },
+    {
+      "sdk": "7.47.0",
+      "mode": "vectors",
+      "verified": [
+        "vectorStores.list",
+        "vectorStores.list/private",
+        "vectorStores.files.list",
+        "vectorStores.fileBatches.listFiles"
+      ],
+      "calls": 11,
+      "transport": "native TLS",
+      "empty_cursors": [
+        "",
+        ""
+      ]
+    }
+  ],
+  "nonempty_first_last_match_ids": true,
+  "foreign_file_lookup": 404,
+  "source_and_schema_sha256": {
+    "src/server/batch_state.cpp": "00b48713bab250cd7b3bc4851c0288da2bdde18345d01b0f872de33e6013281f",
+    "src/server/vector_stores.cpp": "0e4e312d40fa405cca07b20acd821663f32c4790f700e3602fdc6311d7e8ac23",
+    "src/server/vector_file_page.cpp": "1003826c08450e6b355542f8324b73489bee28f6e69430e562fb4c2e9a89e6f8",
+    "docs/serve-application-v1.schema.json": "e442f92c0ffc2eef4f32105c642618f6ee5a5d878275dabf8053dcfd384214ea",
+    "docs/serve-openapi-bundle-v1.json": "1cae9575ca0d6eb1bba8e49f553f5cfedab2221efab4028ef7e6958ab49ba350",
+    "docs/serve-input-semantics-v1.json": "7e4335d336c68788071f673796d5c68aedf7ea6420246a6c46985990d4a31c50"
+  },
+  "model_starts": 0,
+  "transport": "Production C++ route handlers, persistent object store and native TLS ingress. The CPU fixture supplies owner supervision. No model inference in these operations."
+}

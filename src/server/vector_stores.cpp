@@ -205,9 +205,14 @@ ObjectReply VectorStores::List(const BinaryAccess& access, ObjectRequest page) {
   page.file_metadata_only = false;
   auto reply = objects_.Execute(page, access.deadline, access.cancelled);
   if (!reply.ok()) return reply;
-  for (auto& row : Field(reply.value, "data").array) {
+  auto& rows = Field(reply.value, "data").array;
+  for (auto& row : rows) {
     if (!ValidateStore(row)) return Corrupt();
     row = PublicStore(*row.Find("data"));
+  }
+  if (rows.empty()) {
+    Set(&reply.value, "first_id", String(""));
+    Set(&reply.value, "last_id", String(""));
   }
   return reply;
 }

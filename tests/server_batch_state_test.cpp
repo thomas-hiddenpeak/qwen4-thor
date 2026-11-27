@@ -227,6 +227,12 @@ Q4T_TEST(batch_state_public_list_cursor_and_owner_isolation) {
       Access(), Object({{"limit", Number(2)}, {"after", String(id)}}));
   Q4T_CHECK(Ok(second) && !second.value.GetBool("has_more") &&
             second.value.GetArray("data")->array.size() == 1);
+  const auto empty = batches.List(
+      Access(), Object({{"after", String(second.value.GetString("last_id"))}}));
+  Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+            !empty.value.GetBool("has_more") &&
+            empty.value.GetString("first_id", "missing").empty() &&
+            empty.value.GetString("last_id", "missing").empty());
   Q4T_CHECK(batches.Retrieve(Access("client:other"), id).http_status == 404 &&
             batches.Cancel(Access("client:other"), id).http_status == 404 &&
             batches.List(Access("client:other"), Object())
