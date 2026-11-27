@@ -1,0 +1,92 @@
+{
+  "source": "49c02a162862b724d96a4dbee857458a55deaa59",
+  "scope": "Combined isolated packages. Model responses reuse unchanged engine and ingress evidence. These filesystem workloads used no GPU.",
+  "sdk_business_evidence_sha256": "d0deee47f61f98f3f1fd7fc3b74b14c7950a51a3b9117220d1fa9d3793745bc8",
+  "previous_revision": 574,
+  "roles": {
+    "primary": {
+      "bundle": {
+        "source": "49c02a162862b724d96a4dbee857458a55deaa59",
+        "bundle": "bb72e08137b00e0c62689bf3b946176507579773ce5fbab94b80d179a046afa1",
+        "engine_manifest": "37cb3c9c17dedd44e76d9dcf54ff67bfa195dcb144f292a1cd34affcf99b3814",
+        "selected_predecessor": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6",
+        "package_role": "primary",
+        "revision_published": 574,
+        "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+        "lock_preserved": true,
+        "registry_file": "a1aa4f5aad95a85520a89b9d51b091ba9350ad0817e4ba6e5130836c62dbaf17",
+        "model_starts": 0,
+        "activated": false
+      },
+      "installed": {
+        "engine_sha256": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+        "manifest_sha256": "37cb3c9c17dedd44e76d9dcf54ff67bfa195dcb144f292a1cd34affcf99b3814",
+        "copied_verifier": "f09a1f0833d970316661f4e98255128130965c001f6c856d84b5681fcf95d2b2",
+        "public_schemas": 6,
+        "stable_and_agent_defaults": 18,
+        "completion_family_null_defaults": 6
+      },
+      "packaged_lease": {
+        "status": "COMPLETED",
+        "child_result": 0,
+        "receipt_bytes": 842,
+        "fs_capacity": 1048576,
+        "free_blocks": 0,
+        "reserved_bytes": 65536,
+        "write_errno": 28,
+        "final_name_absent": true,
+        "uid": 2002
+      },
+      "lease_receipt_sha256": "80f87b9181ca37b52165d478706d5976f0415af7703cdd19f9e680c75964d0ac",
+      "kernel_fixture_sha256": "9f59fb89fe797302870d749afe3e98a336ff99c3a33f91c79a431bdbf4ebf04c"
+    },
+    "fallback": {
+      "bundle": {
+        "source": "49c02a162862b724d96a4dbee857458a55deaa59",
+        "bundle": "bab24673bbbcfbd4834a3ee060ed20c0b91893d9d1021353608324f5aa241dd1",
+        "engine_manifest": "3f1b4dacd5f95cfd90765c3fc4c4b949c8e091c9c4f22c8c942fc3b76dc87171",
+        "selected_predecessor": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6",
+        "package_role": "fallback",
+        "revision_published": 574,
+        "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+        "lock_preserved": true,
+        "registry_file": "a1aa4f5aad95a85520a89b9d51b091ba9350ad0817e4ba6e5130836c62dbaf17",
+        "model_starts": 0,
+        "activated": false
+      },
+      "installed": {
+        "engine_sha256": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+        "manifest_sha256": "3f1b4dacd5f95cfd90765c3fc4c4b949c8e091c9c4f22c8c942fc3b76dc87171",
+        "copied_verifier": "f09a1f0833d970316661f4e98255128130965c001f6c856d84b5681fcf95d2b2",
+        "public_schemas": 6,
+        "stable_and_agent_defaults": 18,
+        "completion_family_null_defaults": 6
+      },
+      "packaged_lease": {
+        "status": "COMPLETED_WITH_MONITOR_GAPS",
+        "child_result": 0,
+        "receipt_bytes": 3631,
+        "worker_pid_stable": true,
+        "completed_sum": 499500,
+        "fs_capacity": 1048576,
+        "free_blocks": 0,
+        "reserved_bytes": 65536,
+        "write_errno": 28,
+        "final_name_absent": true,
+        "uid": 2002
+      },
+      "lease_receipt_sha256": "aca880a6b60504ab86165830dc23fe11099a952137b15371df1414399110e9c4",
+      "kernel_fixture_sha256": "287478cdf217b4559b3ee8775605cdedc269f8e9125fec65ded08df3bc45872d"
+    }
+  },
+  "retained_initial_fixture_failure": {
+    "sha256": "c19cfb750c6111abaad36f4d4500ae9068b4b2bceba2b5ced75cf9d0c582f94d",
+    "reason": "CPU child changed cwd to its package; follow-up pinned the fixture work volume explicitly."
+  },
+  "model_starts": 0,
+  "published": false,
+  "predecessor_main": "e9728b824a0d9deb8364e425df6dd858d02fdb18",
+  "source_tree_tests": 44,
+  "source_inventory_mutations": 40,
+  "issued_device_modified": false
+}
