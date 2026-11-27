@@ -325,6 +325,12 @@ class PrivacyAndRetention(Files):
         self.assertEqual(first['events'][2]['reason'],'unknown')
         self.assertEqual(first['omitted_lines'],2)
 
+    def test_compaction_failure_codes_survive_log_projection(self):
+        codes = ('compaction_refused', 'compaction_incomplete', 'compaction_not_reduced')
+        lines = [f'[q4t][http] status=502 error={code}' for code in codes]
+        projected = privacy.project('\n'.join(lines))['events']
+        self.assertEqual([row['error'] for row in projected], list(codes))
+
     def test_tail_truncation_event_limit_and_link_refusal(self):
         path=self.root/'log'
         path.write_text('x'*privacy.MAX_LOG+'\n'+('[q4t][http] status=200\n'*520)+'[q4t][http] status=PRIVATE')

@@ -479,7 +479,8 @@ ObjectReply ResponsesExecution::PlanGeneration(const ChatPlanConfig& config,
   const bool encrypted_state = envelope_.encrypted_reasoning || encrypted_input;
   if (encrypted_state) {
     auto opened = OpenResponsesReasoning(cipher_, history, config, access_,
-                                         &generation_history_);
+                                         &generation_history_,
+                                         &envelope_.has_compaction_memory);
     if (!opened.ok()) return opened;
   } else {
     generation_history_ = std::move(history);

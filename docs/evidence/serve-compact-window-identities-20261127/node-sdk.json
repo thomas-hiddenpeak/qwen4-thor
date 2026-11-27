@@ -1,0 +1,21 @@
+{
+  "sdk": "7.47.0",
+  "typescript": "5.9.3",
+  "scope": "Loopback HTTP using native compact results and a recorded response",
+  "checks": [
+    {
+      "items": 7,
+      "source_sha256": "fd23a729d83dc2c7019e0ef94479ded0a74843ac9deefe8dae0e69f83d58082a",
+      "default_raw_equal": true,
+      "typed_continuation_input_equal": true
+    },
+    {
+      "items": 3,
+      "source_sha256": "f5e35309a85b812eaad9010131c55b2f0a2e5843fd3f9b422bd0c665e80a6ae0",
+      "default_raw_equal": true,
+      "typed_continuation_input_equal": true
+    }
+  ],
+  "builtin_typecheck": "TS2769: output-only array not assignable to input",
+  "typed_typecheck": "TypeScript strict, no casts or ignore directives, PASS"
+}

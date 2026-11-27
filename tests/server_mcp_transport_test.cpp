@@ -2632,6 +2632,35 @@ Q4T_TEST(responses_mcp_execution_approval_resume_and_retry_never_repeat_call) {
   Q4T_CHECK(ExecutionOk(resumed.RunMcpApprovals({})) && server.calls == 1 &&
             !resumed.PendingMcpResume());
   Q4T_CHECK(ContinueExecution(&resumed, config) && FinishExecution(&resumed));
+  // Submit the complete returned window with no declaration. A completed
+  // decision in its authenticated prefix cannot authorize another dispatch.
+  ResponsesExecution compact(objects, nullptr, false, true);
+  auto summary = Object({{"model", String(config.model)},
+                         {"previous_response_id", String(resumed.Id())},
+                         {"input", String("Continue the completed lookup.")}});
+  Q4T_CHECK(ExecutionOk(compact.Prepare(summary, config, ExecutionAccess(), 45)));
+  Q4T_CHECK(ExecutionOk(compact.SelectCompaction(600, config)) &&
+            ExecutionOk(compact.Begin(&wire)) &&
+            ExecutionOk(compact.StartCompaction(&wire)));
+  const auto measure = [](const auto&, size_t* count, auto*) {
+    *count = 120;
+    return q4t::Status{};
+  };
+  Q4T_CHECK(ExecutionOk(compact.CompleteCompaction(
+      "The project document was read.", 8, config, measure, &wire)));
+  Q4T_CHECK(ExecutionOk(compact.Finish(false, 0, {600, 0, 8, 0}, 46, &wire)));
+  Json window;
+  Q4T_CHECK(Parse(compact.ResultJson(), &window));
+  const auto* items = window.GetArray("output");
+  Q4T_CHECK(items && std::any_of(items->array.begin(), items->array.end(),
+                                 [](const auto& item) {
+                                   return item.GetString("type") ==
+                                          "mcp_approval_response";
+                                 }));
+  ResponsesExecution replay(objects);
+  Q4T_CHECK(ExecutionOk(replay.Prepare(Object({{"input", *items}}), config,
+                                       ExecutionAccess(), 47)));
+  Q4T_CHECK(!replay.PendingMcpResume() && server.calls == 1);
   ResponsesExecution retry(objects);
   Q4T_CHECK(ExecutionOk(
       retry.Prepare(ApprovalResponse(request, approval, true, resumed.Id()),

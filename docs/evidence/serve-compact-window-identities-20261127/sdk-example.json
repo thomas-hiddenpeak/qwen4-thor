@@ -1,0 +1,20 @@
+{
+  "example_sha256": "4f98a4c91894da797f98c9cfa80a0fb906b78586ebee398b850b8c49c09976bb",
+  "sdk_versions": [
+    "2.33.0",
+    "3.55.1"
+  ],
+  "strict": true,
+  "transport": "loopback HTTP fixture replaying archived compaction and continuation bodies",
+  "requests_per_reader": [
+    "POST /v1/responses/compact",
+    "POST /v1/responses"
+  ],
+  "assertions": [
+    "same client credentials on both requests",
+    "all retained items identical and in order",
+    "new user question last",
+    "official typed continuation returns 560"
+  ],
+  "model_starts": 0
+}

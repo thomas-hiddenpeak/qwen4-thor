@@ -1,0 +1,47 @@
+{
+  "scope": "Standalone original archived video window followed by new model answer through native TLS",
+  "client": {
+    "sdk": "3.55.1",
+    "video": {
+      "answer": "Blue",
+      "exact_answer": true,
+      "original_item": "item_c7bbdc6f5aa1b35f88a29fa8efdc73e8",
+      "file_preserved": true,
+      "usage": {
+        "input_tokens": 651,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 220,
+        "output_tokens_details": {
+          "reasoning_tokens": 220
+        },
+        "total_tokens": 871
+      }
+    },
+    "files": {
+      "video_compact": "1e3732da397c782cdd2dc7ec639a60b4b2d2f5c8d79fc2ea7b871523279edaec",
+      "video_resumed": "7b581043a9d9c275439aa1e122ca8de814865361baf9d2a4c56d460269ff1e4e"
+    }
+  },
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 44.742,
+    "unchanged_default": true,
+    "original_store_unchanged": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "model_requests": 2,
+  "input_record_sha256": "0dc45b1f0c9ef26dc49623ca9f4ef627ec04aa88858be263e5813368a9a5cf57",
+  "source_message_id": "item_c7bbdc6f5aa1b35f88a29fa8efdc73e8",
+  "unchanged_descriptor": true,
+  "official_schema_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "source_binary_sha256": "9f96cd17339590ebaead55d553bcccaea8664f4d4ca6b0bd6dc15260f20252a3",
+  "lease_sha256": "726510dad9b07dd0ae1c7df344557dab5e46580068c19b303b7186f2b4796935",
+  "plan_sha256": "8fe7c13f6d582bfece36fb99c095332aca1f7e1baff5e7daccc74745d3d1ec58",
+  "prior_revision": 562
+}

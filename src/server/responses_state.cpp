@@ -17,6 +17,7 @@
 #include "q4t/server/input_snapshot_bindings.h"
 #include "q4t/server/batch_state.h"
 #include "q4t/server/http_response.h"
+#include "q4t/server/request_json.h"
 #include "q4t/server/responses_compaction.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/server/responses_owner.h"
@@ -322,6 +323,24 @@ ObjectReply ResponsesState::ResolveItems(const Json& input,
     return Error(400, "invalid_request", "input requires text or items");
   if (items.array.size() > maximum)
     return Error(400, "input_limit_exceeded", "Input item limit exceeded");
+  // Older Python readers get a JSON string for the error in a failed MCP
+  // call. Restore that representation only in the prefix of a sealed window.
+  // The input shape and authenticated origin are still checked normally.
+  bool before_seal = false;
+  for (auto it = items.array.rbegin(); it != items.array.rend(); ++it) {
+    if (it->GetString("type") == "compaction" &&
+        !it->GetString("encrypted_content").empty()) {
+      before_seal = true;
+    } else if (before_seal && it->GetString("type") == "mcp_call" &&
+               it->GetString("status") == "failed") {
+      const auto* error = it->Find("error");
+      Json parsed;
+      if (error && error->IsString() &&
+          io::ParseJson(error->str, &parsed, true, kSchemaJsonLimits) &&
+          parsed.IsObject())
+        Set(&*it, "error", std::move(parsed));
+    }
+  }
   for (size_t i = 0; i < items.array.size(); ++i) {
     auto valid = Shape(items.array[i], ResponsesItemShape::kInput,
                        "input[" + std::to_string(i) + ']', multi_agent);

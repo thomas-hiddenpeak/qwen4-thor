@@ -1,4 +1,5 @@
 """Qualify a widget and pending form across primary and light profiles."""
+from functools import partial
 from dataclasses import dataclass
 import json
 import os
@@ -12,6 +13,7 @@ from tools.serve_responses import local_shell_profiles as local_shell
 from tools.serve_responses import client_patch_profiles as patch
 from tools.serve_responses import client_shell_profiles as shell
 from tools.serve_responses import chatkit_interrupted_retry_profiles as interrupted
+from tools.serve_responses import compact_window_profiles as windows
 from tools.serve_responses import mcp_error_profiles as mcp_error
 from tools.serve_responses import cache_retention_profiles as cache_retention
 from tools.serve_responses import video_layer_profiles as layers
@@ -176,6 +178,13 @@ class Handoff:
 
 
 def handoff(plan):
+    if windows.MEDIA.key in plan:
+        return Handoff(windows.MEDIA.key, windows.RELEASE, windows.ACTOR,
+                       reuse.COMPACT_MEDIA_RECEIPT, reuse.MCP_ERROR_RECEIPT,
+                       reuse.MCP_ERROR_REVIEWED, partial(windows.check, suite=windows.MEDIA))
+    if windows.KEY in plan:
+        return Handoff(windows.KEY, windows.RELEASE, windows.ACTOR, reuse.COMPACT_WINDOW_RECEIPT,
+                       reuse.MCP_ERROR_RECEIPT, reuse.MCP_ERROR_REVIEWED, windows.check)
     if mcp_error.KEY in plan:
         return Handoff(mcp_error.KEY, mcp_error.RELEASE, mcp_error.ACTOR, reuse.MCP_ERROR_RECEIPT,
                        reuse.CACHE_RETENTION_RECEIPT, reuse.CACHE_RETENTION_REVIEWED, mcp_error.check)
@@ -308,6 +317,9 @@ def verify(phase, plan, capabilities):
     previous = package.read(phase.parent / 'primary' / spec.receipt) if name == 'light' else None
     row = package.read(phase / spec.receipt)
     spec.check(row, previous)
+    if spec.key in windows.SUITES:
+        suite = windows.SUITES[spec.key]
+        windows.verify_captures(phase/suite.capture_directory, row, suite=suite)
     if spec.key == mcp_error.KEY:
         mcp_error.verify_captures(phase/'mcp-error-wire', row)
     if spec.key == cache_retention.KEY:
@@ -324,15 +336,20 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
-    if spec.key in (mcp_error.KEY, cache_retention.KEY):
-        module, directory = ((mcp_error, 'mcp-error-wire') if spec.key == mcp_error.KEY
-                             else (cache_retention, 'cache-retention-wire'))
+    sdk_handoffs = {mcp_error.KEY: (mcp_error, 'mcp-error-wire'),
+                    cache_retention.KEY: (cache_retention, 'cache-retention-wire'),
+                    **{key: (windows, suite.capture_directory)
+                       for key, suite in windows.SUITES.items()}}
+    if spec.key in sdk_handoffs:
+        module, directory = sdk_handoffs[spec.key]
+        settings = plan[spec.key] if spec.key in windows.SUITES else plan[spec.key]['interpreters']
+        options = {'suite': windows.SUITES[spec.key]} if spec.key in windows.SUITES else {}
         params['certificate'] = plan['tls']['certificate']
         previous = (package.read(stage.out.parent/'primary'/spec.receipt)
                     if plan['name'] == 'light' else None)
         with (stage.out/'responses-sdk.stderr').open('xb') as errors:
-            row = module.exercise(params, plan[spec.key]['interpreters'], errors,
-                                  stage.out/directory, previous)
+            row = module.exercise(params, settings, errors,
+                                  stage.out/directory, previous, **options)
         package.save(stage.out/spec.receipt, row)
         verify(stage.out, plan, capabilities)
         return

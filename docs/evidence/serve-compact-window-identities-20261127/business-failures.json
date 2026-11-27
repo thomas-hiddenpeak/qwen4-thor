@@ -1,0 +1,52 @@
+{
+  "scope": "Standalone compaction request on the original copied denial and a synthetic report repeating the full release manifest, over native TLS. Both model runs exited normally after the rejected request.",
+  "cases": {
+    "01": {
+      "result": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 52.515,
+        "unchanged_default": true,
+        "original_store_unchanged": true,
+        "phases": []
+      },
+      "binary_sha256": "9f96cd17339590ebaead55d553bcccaea8664f4d4ca6b0bd6dc15260f20252a3",
+      "prior_revision": 562,
+      "source_sha256": "72c33b261548665a38469e4021285cb9a0fe7238dc28705dd802110f330a0903",
+      "summary_token_limit": 384,
+      "http_status": 502,
+      "code": "compaction_incomplete",
+      "message": "Compaction memory exhausted its output budget",
+      "used_lease_sha256": "6115d7348c5eb119df47d4c719273b0989b416929b6c074396705a66a9609112",
+      "model_log_sha256": "82e9874cdf0668160d58e750400fc29820b55634b699752c1e0287af9f1bcaa7",
+      "sdk_stderr_sha256": "107cc989b9fdc642cf3419f75939db499c068c5c4d48a1fd05dad1228ef51494",
+      "issued_window": false
+    },
+    "02": {
+      "result": {
+        "status": "FAIL",
+        "starts": 1,
+        "seconds": 32.194,
+        "unchanged_default": true,
+        "original_store_unchanged": true,
+        "phases": []
+      },
+      "binary_sha256": "9f96cd17339590ebaead55d553bcccaea8664f4d4ca6b0bd6dc15260f20252a3",
+      "prior_revision": 562,
+      "source_sha256": "72c33b261548665a38469e4021285cb9a0fe7238dc28705dd802110f330a0903",
+      "summary_token_limit": 1024,
+      "http_status": 502,
+      "code": "response_parse_failed",
+      "message": "Compaction model refused to produce memory",
+      "used_lease_sha256": "4f357c73c0e22299e63ed871155b45c745339f180ee52667dfbffac548b58b70",
+      "model_log_sha256": "0442ae17b75489bc2cb52af466d27b362b80b88b8fd985c9cc1de770724e198d",
+      "sdk_stderr_sha256": "40ecb3d6922ee41c4d76b7274fa554bcdc267a2c4d9821e8dbad402de372e8e7",
+      "issued_window": false
+    }
+  },
+  "unreached": [
+    "successful summary and continuation",
+    "independent video compaction"
+  ],
+  "client": "2.33.0"
+}

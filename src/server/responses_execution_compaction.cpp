@@ -39,8 +39,10 @@ ObjectReply ResponsesExecution::SelectCompaction(size_t input_tokens,
       standalone_compaction_ ? budget : std::min(512, std::max(1, budget / 2));
   ResponsesCompactionPlan candidate;
   ChatPlanError error;
+  // Keep the public attachment descriptor and its stable item ID in the
+  // sealed history. The prepared frame and text parts belong to generation.
   auto status = PlanResponsesCompaction(
-      generation_history_,
+      files_ ? file_history_ : generation_history_,
       standalone_compaction_ ? ResponsesCompactionMode::kStandalone
                              : ResponsesCompactionMode::kAutomatic,
       memory_budget, config, &candidate, &error);
@@ -108,6 +110,7 @@ ObjectReply ResponsesExecution::CompleteCompaction(
                               config, access_, &item, &expanded);
   if (!reply.ok()) return reply;
   auto continuation = envelope_;
+  continuation.has_compaction_memory |= !memory.empty();
   // Independent compact ends here; a regular response must reserve at least
   // one token for its primary answer, never refill the original output limit.
   const auto remaining =
@@ -117,6 +120,12 @@ ObjectReply ResponsesExecution::CompleteCompaction(
                  "No output budget remains for continuation");
   Set(&continuation.options, "max_output_tokens",
       Number(standalone_compaction_ ? 1 : remaining));
+  if (files_) {
+    Json rendered;
+    auto reply = files_->Render(expanded, &rendered);
+    if (!reply.ok()) return reply;
+    expanded = std::move(rendered);
+  }
   ResponsesGenerationPlan generation;
   ChatPlanError error;
   auto status = PrepareResponsesGeneration(continuation, expanded, config,
@@ -138,6 +147,7 @@ ObjectReply ResponsesExecution::CompleteCompaction(
   status = RecordOutput(output_.CompleteCompaction(item, wire), wire);
   if (!status)
     return Error(503, "response_storage_exhausted", status.message());
+  envelope_.has_compaction_memory = continuation.has_compaction_memory;
   generation_ = std::move(generation);
   generation_history_ = std::move(expanded);
   compaction_window_ = std::move(window);
@@ -173,6 +183,6 @@ std::string ResponsesExecution::ResultJson() const {
                           {"usage", *snapshot.Find("usage")}});
   if (const auto* image = snapshot.Find("image"))
     Set(&resource, "image", *image);
-  return OutputJson(ResponsesPublicValue(std::move(resource)));
+  return OutputJson(ResponsesWireValue(std::move(resource)));
 }
 }  // namespace q4t::server

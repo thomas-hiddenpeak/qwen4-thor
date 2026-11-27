@@ -126,7 +126,8 @@ bool RejectedTurnOutput(const Json& response) {
   if (!error || response.GetString("status") != "failed") return false;
   const auto code = error->GetString("code");
   return code == "response_parse_failed" || code == "structured_output_invalid" ||
-         code == "structured_output_incomplete";
+         code == "structured_output_incomplete" || code == "compaction_refused" ||
+         code == "compaction_incomplete" || code == "compaction_not_reduced";
 }
 
 // A session may replace functions between model calls. Rebind only the

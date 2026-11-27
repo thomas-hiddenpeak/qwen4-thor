@@ -123,17 +123,25 @@ ObjectReply ResponsesExecution::PrepareMcp(const ChatPlanConfig& config,
     if (!authenticated.ok()) return authenticated;
     item = std::move(authenticated.value);
   }
-  if (!continuation) mcp_resume_ = Array();
-  std::set<std::string> approvals;
-  const auto approvals_input = continuation ? Array() : plan_.own_input;
-  for (const auto& item : approvals_input.array) {
-    if (item.GetString("type") != "mcp_approval_response") continue;
-    if (!approvals.insert(item.GetString("approval_request_id")).second)
-      return Error(400, "invalid_request", "Duplicate MCP approval response");
-    if (mcp_resume_.array.size() >= kMaxNativeToolCalls)
-      return Error(503, "mcp_execution_capacity",
-                   "Approval work exceeds budget");
-    mcp_resume_.array.push_back(item);
+  if (!continuation) {
+    mcp_resume_ = Array();
+    const auto& own = plan_.own_input.array;
+    // Prepare has opened and authenticated every compacted prefix. Its
+    // decisions are history. Only later input can request approval work.
+    const auto seal = std::find_if(own.rbegin(), own.rend(), [](const auto& item) {
+      return item.GetString("type") == "compaction" &&
+             Nonnull(item, "encrypted_content");
+    });
+    std::set<std::string> approvals;
+    for (auto it = seal.base(); it != own.end(); ++it) {
+      if (it->GetString("type") != "mcp_approval_response") continue;
+      if (!approvals.insert(it->GetString("approval_request_id")).second)
+        return Error(400, "invalid_request", "Duplicate MCP approval response");
+      if (mcp_resume_.array.size() >= kMaxNativeToolCalls)
+        return Error(503, "mcp_execution_capacity",
+                     "Approval work exceeds budget");
+      mcp_resume_.array.push_back(*it);
+    }
   }
   // A queued preparation reuses its exact owned listing. Never perform an
   // unrecorded network refresh because a worker or host restarted.

@@ -1,0 +1,41 @@
+{
+  "scope": "Official SDKs with a typed HTTP resource including retained messages; CPU transport replays native compact captures",
+  "versions": {
+    "2.33.0": {
+      "version": "2.33.0",
+      "wire_sha256": "b9ec7cb2ef835c812b4b8ae5375647b2d4803da545efc9090b5859aa3ae53a8d",
+      "raw_strict_model": true,
+      "direct_typed_post": true,
+      "wire_fields_equal": true,
+      "types": [
+        "RetainedMessage",
+        "McpListTools",
+        "McpApprovalRequest",
+        "McpApprovalResponse",
+        "McpCall",
+        "RetainedMessage",
+        "ResponseCompactionItem"
+      ],
+      "missing_id_rejected": true,
+      "missing_status_rejected": true
+    },
+    "3.55.1": {
+      "version": "3.55.1",
+      "wire_sha256": "4836c8c74bd5026c123120cd7ee1b6976f738f552c0c39549cbf095f03ed6632",
+      "raw_strict_model": true,
+      "direct_typed_post": true,
+      "wire_fields_equal": true,
+      "types": [
+        "RetainedMessage",
+        "McpListTools",
+        "McpApprovalRequest",
+        "McpApprovalResponse",
+        "McpCall",
+        "RetainedMessage",
+        "ResponseCompactionItem"
+      ],
+      "missing_id_rejected": true,
+      "missing_status_rejected": true
+    }
+  }
+}

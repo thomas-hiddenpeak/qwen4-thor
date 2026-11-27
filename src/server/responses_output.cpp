@@ -177,8 +177,9 @@ void ProjectMcpErrorStrings(io::Json& value) {
     return;
   }
   const auto object = value.GetString("object");
-  if (object == "response" || object == "list") {
-    const auto key = object == "response" ? "output" : "data";
+  if (object == "response" || object == "response.compaction" ||
+      object == "list") {
+    const auto key = object == "list" ? "data" : "output";
     if (value.GetArray(key))
       for (auto& item : Field(value, key).array) ProjectMcpErrorStrings(item);
   } else if (value.GetString("type").starts_with("response.")) {

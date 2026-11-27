@@ -4,6 +4,7 @@
 #include <unordered_set>
 
 #include "q4t/io/base64.h"
+#include "q4t/server/application_routes.h"
 #include "q4t/server/decision_plan.h"
 #include "q4t/server/decision_types_data.h"
 #include "q4t/server/input_contract.h"
@@ -537,6 +538,22 @@ Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
       return ValidateMultiAgentShape(item, input ? MultiAgentShape::kInputResult
                                                  : MultiAgentShape::kOutputResult,
                                      error, path);
+  }
+  // A compact window can be submitted verbatim. Its retained user, system
+  // and developer messages have both a resource identity and input content.
+  if (shape == ResponsesItemShape::kInput && item.Has("id") &&
+      item.GetString("type") == "message" &&
+      item.GetString("role") != "assistant") {
+    if (!ValidApplicationId(item.GetString("id"))) {
+      *error = {"invalid_request", FieldPath(path, "id"), 400};
+      return Status::Fail("Invalid input message ID");
+    }
+    auto status = Validate(Types(), item, "conversation_item", error, path);
+    if (!status) return status;
+    auto input = item;
+    std::erase_if(input.object,
+                  [](const auto& field) { return field.first == "id"; });
+    return Validate(Types(), input, "input_item", error, path);
   }
   const char* root = shape == ResponsesItemShape::kInput    ? "input_item"
                      : shape == ResponsesItemShape::kOutput ? "output_item"

@@ -102,6 +102,9 @@
         },
         {
           "$ref": "#/$defs/552"
+        },
+        {
+          "$ref": "#/$defs/retained_input_message"
         }
       ]
     },
@@ -8849,7 +8852,7 @@
           "$ref": "#/$defs/668"
         },
         "input": {
-          "$ref": "#/$defs/679"
+          "$ref": "#/$defs/response_create_replay_input"
         },
         "instructions": {
           "$ref": "#/$defs/20"
@@ -15526,7 +15529,7 @@
       "type": "object",
       "properties": {
         "input": {
-          "$ref": "#/$defs/1151"
+          "$ref": "#/$defs/response_compact_replay_input"
         },
         "instructions": {
           "$ref": "#/$defs/20"
@@ -15972,7 +15975,29 @@
           "type": "array",
           "maxItems": 4096,
           "items": {
-            "$ref": "#/$defs/input_item"
+            "allOf": [
+              {
+                "$ref": "#/$defs/compact_window_item"
+              },
+              {
+                "if": {
+                  "properties": {
+                    "type": {
+                      "const": "message"
+                    }
+                  }
+                },
+                "then": {
+                  "required": [
+                    "id",
+                    "status"
+                  ]
+                }
+              }
+            ],
+            "required": [
+              "type"
+            ]
           }
         },
         "usage": {
@@ -16001,7 +16026,7 @@
           "$ref": "#/$defs/666"
         },
         "input": {
-          "$ref": "#/$defs/1151"
+          "$ref": "#/$defs/input_tokens_request_replay_input"
         },
         "instructions": {
           "$ref": "#/$defs/20"
@@ -68063,6 +68088,169 @@
         }
       ]
     },
+    "retained_input_message": {
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "content": {
+              "$ref": "#/$defs/4"
+            },
+            "role": {
+              "$ref": "#/$defs/42"
+            },
+            "status": {
+              "$ref": "#/$defs/43"
+            },
+            "type": {
+              "$ref": "#/$defs/39"
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          },
+          "required": [
+            "type",
+            "id",
+            "role",
+            "content",
+            "status"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "$ref": "#/$defs/conversation_item"
+        }
+      ]
+    },
+    "compact_legacy_mcp_call": {
+      "type": "object",
+      "properties": {
+        "approval_request_id": {
+          "$ref": "#/$defs/20"
+        },
+        "arguments": {
+          "$ref": "#/$defs/3"
+        },
+        "error": {
+          "type": "string",
+          "minLength": 2,
+          "contentMediaType": "application/json",
+          "contentSchema": {
+            "$ref": "#/$defs/523"
+          }
+        },
+        "id": {
+          "$ref": "#/$defs/3"
+        },
+        "name": {
+          "$ref": "#/$defs/3"
+        },
+        "output": {
+          "$ref": "#/$defs/20"
+        },
+        "server_label": {
+          "$ref": "#/$defs/3"
+        },
+        "status": {
+          "const": "failed"
+        },
+        "type": {
+          "$ref": "#/$defs/532"
+        }
+      },
+      "required": [
+        "arguments",
+        "id",
+        "name",
+        "server_label",
+        "type",
+        "status",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "compact_window_item": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/input_item"
+        },
+        {
+          "$ref": "#/$defs/compact_legacy_mcp_call"
+        }
+      ]
+    },
+    "compact_replay_input": {
+      "type": "array",
+      "maxItems": 4096,
+      "items": {
+        "$ref": "#/$defs/compact_window_item"
+      },
+      "contains": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "compaction"
+          },
+          "encrypted_content": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "type",
+          "encrypted_content"
+        ]
+      }
+    },
+    "response_create_replay_input": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/3"
+        },
+        {
+          "$ref": "#/$defs/680"
+        },
+        {
+          "$ref": "#/$defs/compact_replay_input"
+        }
+      ]
+    },
+    "response_compact_replay_input": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/3"
+        },
+        {
+          "$ref": "#/$defs/908"
+        },
+        {
+          "$ref": "#/$defs/compact_replay_input"
+        }
+      ]
+    },
+    "input_tokens_request_replay_input": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/21"
+        },
+        {
+          "$ref": "#/$defs/3"
+        },
+        {
+          "$ref": "#/$defs/908"
+        },
+        {
+          "$ref": "#/$defs/compact_replay_input"
+        }
+      ]
+    },
     "image_options": {
       "type": "object",
       "properties": {
@@ -70573,7 +70761,7 @@
               "$ref": "#/$defs/20"
             },
             "input": {
-              "$ref": "#/$defs/679"
+              "$ref": "#/$defs/response_create_replay_input"
             },
             "reasoning": {
               "$ref": "#/$defs/818",
@@ -70870,7 +71058,7 @@
                   "$ref": "#/$defs/20"
                 },
                 "input": {
-                  "$ref": "#/$defs/679"
+                  "$ref": "#/$defs/response_create_replay_input"
                 },
                 "reasoning": {
                   "$ref": "#/$defs/818",
@@ -72001,6 +72189,42 @@
                   }
                 ]
               }
+            },
+            {
+              "type": "array",
+              "maxItems": 4096,
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/compact_window_item"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_call"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_result"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_output_message"
+                  }
+                ]
+              },
+              "contains": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "compaction"
+                  },
+                  "encrypted_content": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "encrypted_content"
+                ]
+              }
             }
           ]
         },
@@ -72326,6 +72550,42 @@
                   }
                 ]
               }
+            },
+            {
+              "type": "array",
+              "maxItems": 4096,
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/compact_window_item"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_call"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_result"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_output_message"
+                  }
+                ]
+              },
+              "contains": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "compaction"
+                  },
+                  "encrypted_content": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "encrypted_content"
+                ]
+              }
             }
           ]
         },
@@ -72389,6 +72649,42 @@
                   {
                     "$ref": "#/$defs/agent_output_message"
                   }
+                ]
+              }
+            },
+            {
+              "type": "array",
+              "maxItems": 4096,
+              "items": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/compact_window_item"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_call"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_input_result"
+                  },
+                  {
+                    "$ref": "#/$defs/agent_output_message"
+                  }
+                ]
+              },
+              "contains": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "compaction"
+                  },
+                  "encrypted_content": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "encrypted_content"
                 ]
               }
             }

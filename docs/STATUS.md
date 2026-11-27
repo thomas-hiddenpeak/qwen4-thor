@@ -7,6 +7,60 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev566 已发行独立压缩窗口的消息 ID、摘要位置和历史工具决定回填修复。官方 Python SDK 2.33.0 和 3.55.1 可用原始窗口续答。两档容量、模型进程恢复与网关接管后，私有工具窗口均回答 560，三个视频窗口均回答 Blue，两张图像分别回答 Blue 和 Red，新回复 ID 互异，跨客户回填均被拒绝。新签发视频和图像窗口均已实测。24 小时计划已预检，留给用户执行。[发行记录](evidence/serve-compact-inline-media-20261127/delivery.json)
+
+主、轻两种真实配置分别重新启动模型并打开密封历史。两版 SDK 在每种配置下均答出版本号 560，三个视频窗口均答 Blue，两张图像分别答 Blue 和 Red。14 份回答的 ID 均不同，14 次跨客户提交均被拒绝。主配置用时 49.249 秒，轻配置用时 46.544 秒，各启动模型一次。下一步验证托管故障接管和可回退发行。 [主轻验收](evidence/serve-compact-inline-media-20261127/profiles.json)
+
+两版官方 SDK 在本机回环服务上提交 7 类真实保存的窗口。模拟两种配置共 28 个请求，14 个合法续答、14 个跨客户拒绝均符合预期；另核对原有两份配置回执。15 项反例覆盖误报完成、颜色错配和配置信息混用。下一步用同一候选实测主、轻配置。 [验证记录](evidence/serve-compact-inline-media-20261127/handoff-driver.json)
+
+同一候选完成 10 次真实模型请求。新签发的显式与自动分配 ID 的视频窗口均答 Blue，原失败窗口也答 Blue，工具历史答 560，两张新签发 PNG 各答出自己的颜色；4 次跨客户回填被拒绝。10 份成功响应通过本地与上游模式。一次启动用时 69.136 秒。42 项 CPU 用例通过。下一步是这份二进制的主轻配置与托管恢复。 [业务回执](evidence/serve-compact-inline-media-20261127/combined-business.json)
+
+真实模型分别从两张不同的内联 PNG 新签发压缩窗口并续答，结果为 Blue 和 Red；两次跨客户回填均被拒绝。原始像素 URI 与保留项 ID 的摘要逐一核对，四份响应通过本地模式验证。一次模型启动，用时 39.172 秒。下一步接续主轻配置及可回退发行。 [业务回执](evidence/serve-compact-inline-media-20261127/business.json)
+
+用真实 SDK 3.55.1 校验红、蓝两图的验收驱动。独立 PNG 解码逐像素检查主色，两份 HTTP 请求的指令和历史正文完全一致。篡改图像、允许跨客户读取及返回第三种颜色均会使验收失败。模型实机结果待 GPU 排期。 [夹具回执](evidence/serve-compact-inline-media-20261127/sdk-fixture.json)
+
+修复 Responses 压缩把保留图像的 Base64 放入文本摘要提示的问题。原有独立压缩对 32 KiB 合成字段产生 33,337 字节提示，修复后为 577 字节；回填窗口长度均为 33,241 字节。实际 PNG 经原生密钥封装、重新打开后逐字节相同。3 项回归在原实现失败，修复后同组 40 项全部通过。后续使用红、蓝两张不同图像做真实 TLS 续答和跨客户检查。 [验收证据](evidence/serve-compact-inline-media-20261127/cpu.json)
+
+原生续答现在仅在服务端已签发或解封非空摘要时增加固定背景说明。原故障窗口与旧版视频均答 Blue，工具窗口答 560，三次跨客户请求均被拒绝。38 项 CPU 用例通过。该次新签发在摘要生成阶段返回 502 compaction_refused，整组实机验收失败，默认仍为 rev564。下一步定位媒体摘要请求。 [分项验收](evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json)
+
+同一签名窗口在显式缓存、默认缓存及展开的助手历史下都复述相同的 421 个字符。两种背景呈现分别保留原视频并返回 Blue；另加追问仍复述。验收工具现要求回复和消息均正常完成，两版官方 SDK 各 7 组回放均能区分正确答案与截断、错误状态。下一步验证仅对真实压缩记忆启用的原生提示。 [对照回执](evidence/serve-compact-window-identities-20261127/video-memory-diagnostic.json)
+
+已修正 R07 的设备状态。早期预检记录的相机和 jtop 占用已于 11 月 26 日清理。11 月 27 日复查两项均处于 inactive/disabled，风扇控制正常。NVML 不可用冷启动实测仍按用户决定暂缓。 [维护回执](evidence/serve-local-shell-20261126/delivery.json)
+
+新签发的视频压缩窗口保留了原视频与问题。续答返回 incomplete，在 96 个输出 token 内逐字复述了摘要前 421 个字符。原生离线渲染确认视频帧相同，用户问题在摘要之后。主、轻配置对已签发窗口的通过记录仍有效；新窗口续答待修复。 [实机记录](evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json)
+
+主、轻两种真实配置分别重新启动模型并打开密封历史。两版 SDK 在每种配置下均答出版本号 560，视频续答为 Blue。6 份回答都由新请求生成，6 次跨客户提交均被拒绝。主配置用时 43.749 秒，轻配置用时 38.74 秒，各启动模型一次。下一步验证托管故障接管和可回退发行。 [主轻验收](evidence/serve-compact-window-identities-20261127/profiles.json)
+
+README 增加官方 Python SDK 压缩并继续对话的可运行示例。客户端可以直接读取压缩窗口 JSON，原样保留输入消息、媒体和既有工具决定；另给出严格字段校验入口。2.33.0 与 3.55.1 均以真实 SDK 重放既有 HTTP 正文，验证完整窗口、新问题位置及续答内容。接续主轻配置实机验收。 [示例验证](evidence/serve-compact-window-identities-20261127/sdk-example.json)
+
+新增跨进程压缩窗口验收驱动。两版真实 Python SDK 通过回环 HTTP 重放此前签发的工具和视频窗口，主、轻两组夹具共完成 6 次续答和 6 次跨客户拒绝；另以 11 个反例检查输入替换、响应复用、读者版本及前代发行记录。源库 24 个文件逐一校验。夹具复用已捕获的模型正文，接下来由主、轻配置实机生成新回答。 [驱动回执](evidence/serve-compact-window-identities-20261127/handoff-driver.json)
+
+两版官方 Python SDK（2.33.0、3.55.1）分别回填此前触发 HTTP 400 的同一份工具拒绝历史，均通过原生 TLS 得到版本号 560，历史工具调用没有重复。2.33.0 另行签发新窗口并续答 560；3.55.1 回填此前签发的视频窗口答出 Blue。4 次跨客户回填均被拒绝。一次模型启动，5 次成功生成，耗时 59.144 秒。当前候选的新视频压缩、主轻配置恢复及发行待验。 [业务回执](evidence/serve-compact-window-identities-20261127/business.json)
+
+修复压缩窗口中已处理的 MCP 审批被重新排入执行队列的问题。真实模型已签发的窗口此前在续答时返回 400；相同窗口的两种 SDK 表示现在均恢复出同一份含版本 560 的摘要，历史拒绝不会触发工具调度。另以真实回环 MCP 工具验证已批准调用只执行一次。窗口之后新提交的审批仍需工具声明，跨客户和篡改前缀仍被拒绝。前轮两次摘要拒答单独保留。 正在通过 TLS 续答。[故障回放](evidence/serve-compact-window-identities-20261127/sealed-approval.json)
+
+修复压缩摘要在回填时排到最新问题之后的错误。实际工具拒绝历史的 CPU 对照显示，原来的问题和摘要位于下标 5、6，修复后为 6、5；六个原始保留项的 ID 相同。独立摘要仅处理需要替换的历史前缀。完整拒答、输出额度耗尽和格式错误分别处理，模型未生成有效摘要时 Agent 仍可提交下一回合。37 个压缩检查、两个 Agent 检查及诊断投影检查通过。 正在复验原始发行清单与视频。[定向回执](evidence/serve-compact-window-identities-20261127/chronology.json)
+
+实际归档视频通过独立原生 TLS 验收。官方 Python SDK 3.55.1 读回带原附件 ID 和内容的加密压缩窗口，原样回填后模型答出末帧为蓝色。两份 HTTP 正文均通过官方与本地模式校验。一次模型启动、两次生成，用时 44.742 秒。 含工具拒绝的原始摘要请求仍待解决。[实机视频记录](evidence/serve-compact-window-identities-20261127/video-business.json)
+
+包含实际工具拒绝历史和重复发行清单的独立压缩在原生 TLS 下两次返回 502。384 token 时摘要耗尽预算；同一模型和输入在 1024 token 时产生显式拒答。两次各启动一代模型，源客户记录和设备默认包均未改变。原请求没有签发压缩窗口，视频项也尚未触达。 下一步独立检查真实视频和项目发行记录。[两次原始结果](evidence/serve-compact-window-identities-20261127/business-failures.json)
+
+已新增可重复的原生执行回归，覆盖文件解析、独立压缩、窗口返回和原样续答。同一用例在修复前因返回的文件被换成文本而失败，候选通过。[回归记录](evidence/serve-compact-window-identities-20261127/files.json)
+
+Node SDK 7.47.0 的高层 compact 可完整读取真实 MCP 与视频压缩窗口。其返回声明使用输出项数组，TypeScript 5.9.3 严格编译时无法直接传回 create。按可回填输入声明窗口后，无需类型断言即可编译，实际 HTTP 续答请求的每个输入字段都与原窗口一致。 设备短验使用 Python 严格资源类型。[Node 复核](evidence/serve-compact-window-identities-20261127/node-sdk.json)
+
+又复核了三条已删除源文件的真实记录。文本上传、带 QuickDraw 区域的视频和带编辑列表的视频均按原消息 ID 从所属客户的快照准备，独立压缩与回填后逐项得到相同的文本或视频帧。原始持久记录摘要一致。 下一步核对 TLS 上的真实模型回答。[快照复核](evidence/serve-compact-window-identities-20261127/file-snapshots.json)
+
+修复附件压缩时误用模型内部输入的问题。原实现将文本附件换成提取的文本，对真实视频附件则在帧类型校验处返回 400。候选在公开窗口与加密状态里保留原始文件项，模型续答继续使用已准备的文本或视频帧。两份文件原样回填后，内部输入和压缩前一致，摘要提示不含内联文件编码。6 项定向检查通过。 下一步由真实模型回答归档视频末帧的颜色。[原生验证](evidence/serve-compact-window-identities-20261127/files.json)
+
+双方 Python SDK 均可使用项目提供的 CompactWindow 类型严格读取完整压缩窗口。直接指定 cast_to 或对原始响应严格建模均逐字段保留 7 项，缺少用户消息 ID 或状态的反例均被拒绝。此类型只由 Python 客户端导入。 下一步验证真实 TLS 回填。[严格客户端](evidence/serve-compact-window-identities-20261127/typed-client.json)
+
+压缩窗口已按 Python SDK 版本返回 MCP 拒绝错误。2.33.0 收到可无损还原的 JSON 字符串，3.55.1 收到结构化对象。两种窗口均通过项目合同，同一客户原样重放可恢复摘要；另一客户和修改过的决定均被拒绝。旧版只在加密窗口之前还原该字符串。两个 SDK 目前剩下相同的用户消息严格类型限制。 下一步进行双版本 TLS 续答。[定向验证](evidence/serve-compact-window-identities-20261127/mcp-replay.json)
+
+Python 2.33.0 和 3.55.1 均可使用官方高层入口的 `responses.with_raw_response.compact(...).http_response.json()` 直接读取完整窗口。两版返回的 HTTP 字节均与各自的原生记录相同；显式 `.parse()` 仍有前述类型限制。7 项错误窗口反例被拒绝。 下一步从真实模型的摘要恢复发行版本号。[验证记录](evidence/serve-compact-window-identities-20261127/sdk-raw.json)
+
+独立压缩现在保留用户、系统和开发者消息的原始 ID。使用真实 MCP 拒绝记录和固定摘要做 CPU 验证，7 项窗口通过官方 HTTP 与本地合同，同一客户原样回填可准备续答，换客户无法解封。9 项定向检查通过。Python 2.33.0、3.55.1 的高层严格接口仍拒绝用户消息，通用 POST 可完整读回。待验是真实模型压缩后续答。[定向验证](evidence/serve-compact-window-identities-20261127/cpu.json)
+
 rev564 已发行 Responses MCP 拒绝结果的客户端兼容修复。批准调用只读取一次项目文档，拒绝调用保留完整错误。主、轻配置以及模型恢复和网关接管后，2.8.1 与 3.55.1 均能取回各自相同的实收正文、事件和游标后缀。两次托管故障后的独立 Chat 均返回 42，登记时模型启动零次，13 项客户和恢复状态摘要一致。[发行记录](evidence/serve-mcp-error-sdk-20261127/delivery.json)
 
 主、轻两个配置分别启动一次模型。两版严格 SDK 在两个配置上读取相同的批准和拒绝，完整 GET 字节、事件及游标后缀与首次真实业务一致；两个容量记录可还原已发行前驱。下一步验收托管故障与回退包。[容量验收](evidence/serve-mcp-error-sdk-20261127/profiles.json)
@@ -1207,13 +1261,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev564**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。发行回执保存了主、轻配置、受监护故障、回退包及长稳计划的证据。[rev564 发行回执](evidence/serve-mcp-error-sdk-20261127/delivery.json)
+本机登记的发行版本为 **rev566**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。发行回执保存了主、轻配置、受监护故障、回退包及长稳计划的证据。[rev566 发行回执](evidence/serve-compact-inline-media-20261127/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b` |
-| 回退服务包清单 | `77fb1395803208d28608a52e15b48183fa4d9b946ce5cc94fd1fac117187f876` |
-| 默认引擎 | `1178ccbd8ea9737932d8d6ebd083e6641c358cec47b92ef91f467fb6be8efb8d` |
+| 主服务包清单 | `245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2` |
+| 回退服务包清单 | `684d0bab8f1632c0d3e124bbef33137b6dfe3ed28241d12fc83dc37e2853746a` |
+| 默认引擎 | `2a4e49ddecc441ffe9f261069436ee50e4251a54d40d52f3ec74dd6dedb0d6c6` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

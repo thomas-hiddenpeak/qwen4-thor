@@ -1,0 +1,82 @@
+{
+  "official_revision": "926a7b8133226630bac025350e84b0ca5c31d45a",
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "clients": {
+    "2.33.0": {
+      "old_http": "rejected",
+      "previous_local": "accepted",
+      "new_http": "accepted",
+      "new_local": "accepted",
+      "retained_message_indexes": [
+        0,
+        5
+      ],
+      "items": 7,
+      "wire_sha256": "c5cc6d4af4f010f0362766fcf2b63b7be8872078accd2260aa0ca2875e69d235",
+      "old_wire_sha256": "a92cf6a38174a71725e2f9aa25ae1797769e1695048c2c49a66daf4635a0cf7c",
+      "invalid_examples": 12,
+      "native_replay": {
+        "owner": "prepared",
+        "foreign_status": 400,
+        "foreign_code": "invalid_encrypted_content"
+      },
+      "strict_responses_compact": "type_rejected",
+      "strict_failure_slots": [
+        "0",
+        "4",
+        "5"
+      ],
+      "generic_post": "all seven items identical"
+    },
+    "3.55.1": {
+      "old_http": "rejected",
+      "previous_local": "accepted",
+      "new_http": "accepted",
+      "new_local": "accepted",
+      "retained_message_indexes": [
+        0,
+        5
+      ],
+      "items": 7,
+      "wire_sha256": "b96df3a58d1516075c54d278a7bcf4375ed4a26fa4c74502e4f37d3cbeb6f658",
+      "old_wire_sha256": "499152f7737895aa88cfdc8519ee33bd9a83fcd302a164c436b8ef0e151b9e49",
+      "invalid_examples": 12,
+      "native_replay": {
+        "owner": "prepared",
+        "foreign_status": 400,
+        "foreign_code": "invalid_encrypted_content"
+      },
+      "strict_responses_compact": "type_rejected",
+      "strict_failure_slots": [
+        "0",
+        "5"
+      ],
+      "generic_post": "all seven items identical"
+    }
+  },
+  "scope": "Native CPU compaction and replay on private copies of the original TLS MCP denial, fixed compaction summary; no model generation",
+  "source": "../serve-mcp-error-sdk-20261127/business.json",
+  "controls": [
+    "[PASS] compaction_cipher_accepts_optional_id_and_semantic_message_forms",
+    "[PASS] compaction_cipher_rejects_tamper_scope_model_id_and_prefix",
+    "[PASS] compaction_bounds_duplicate_ids_and_output_budget",
+    "[PASS] compaction_optional_id_enters_actual_response_generation_plan",
+    "[PASS] compaction_returned_window_is_replayable_without_losing_message_data",
+    "[PASS] compaction_standalone_returns_preserved_users_and_replayable_state",
+    "[PASS] compaction_standalone_noop_is_honest_zero_generation",
+    "[PASS] conversation_compact_create_reopens_sealed_history",
+    "[PASS] conversation_compact_append_detects_racing_change_and_preserves_ids",
+    "9 tests, 9 passed, 0 failed, 0 skipped"
+  ],
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

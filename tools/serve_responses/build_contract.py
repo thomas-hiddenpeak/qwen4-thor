@@ -525,11 +525,48 @@ def schema(graph):
     def root(name):
         return definitions[str(graph['roots'][name])]
 
-    # The SDK declares OutputItem[] here but its own comment and the official
-    # compact guide require preserved user messages and a replayable input
-    # window. Adapt only the compact result, never ordinary response outputs.
+    # ItemField uses resource-shaped messages in compact responses. The same
+    # window is also valid input, including the original non-assistant IDs.
+    input_items = root('input_item')['anyOf']
+    variants = [definitions[item['$ref'].rsplit('/', 1)[1]] for item in input_items]
+    input_message, = [variant for variant in variants
+                      if set(variant.get('properties', {})) == {'role', 'type', 'status', 'content'}]
+    message = copy.deepcopy(input_message)
+    message['properties']['id'] = dict(type='string', minLength=1, maxLength=128,
+                                       pattern='^[A-Za-z0-9_-]+$')
+    message['required'] = ['type', 'id', 'role', 'content', 'status']
+    definitions['retained_input_message'] = dict(allOf=[message, ref('conversation_item')])
+    input_items.append(ref('retained_input_message'))
+    # Older readers receive failed MCP errors as serialized objects. Accept
+    # this form on replay only in a window containing sealed compaction state.
+    input_call, = [variant for variant in variants
+                   if 'error' in variant.get('properties', {})
+                   and 'server_label' in variant['properties']
+                   and 'arguments' in variant['properties']]
+    legacy_call = copy.deepcopy(input_call)
+    legacy_call['properties'].update(status=dict(const='failed'), error=dict(
+        type='string', minLength=2, contentMediaType='application/json',
+        contentSchema=legacy_call['properties']['error']))
+    legacy_call['required'] += ['status', 'error']
+    definitions['compact_legacy_mcp_call'] = legacy_call
+    definitions['compact_window_item'] = dict(anyOf=[ref('input_item'), ref('compact_legacy_mcp_call')])
+    definitions['compact_replay_input'] = dict(
+        type='array', maxItems=4096, items=ref('compact_window_item'),
+        contains=dict(type='object', properties=dict(type=dict(const='compaction'),
+                      encrypted_content=dict(type='string', minLength=1)),
+                      required=['type', 'encrypted_content']))
+    for name in ('response_create', 'response_compact', 'input_tokens_request'):
+        properties = root(name)['properties']
+        original = definitions[properties['input']['$ref'].rsplit('/', 1)[1]]
+        definitions[name + '_replay_input'] = dict(
+            anyOf=[*original['anyOf'], ref('compact_replay_input')])
+        properties['input'] = ref(name + '_replay_input')
     root('compacted_response')['properties']['output'] = dict(
-        type='array', maxItems=4096, items=ref('input_item'))
+        type='array', maxItems=4096, items={
+            'allOf': [ref('compact_window_item'), {
+                'if': {'properties': {'type': {'const': 'message'}}},
+                'then': {'required': ['id', 'status']}}],
+            'required': ['type']})
 
     # The pinned SDK describes include_obfuscation on streaming deltas but
     # omits that optional property from most delta interfaces. Preserve the
