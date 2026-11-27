@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+批处理及向量列表的声明回归已进入常规应用合同测试，覆盖空字符串、字段缺省和非法类型。 [游标验收](evidence/serve-voice-consent-pagination-20261127/empty-pages.json)
+
 批处理、向量库、库文件和文件批次成员四个列表已修复空页游标。原生 TLS 下，官方 SDK 实测四个方法原先返回 null，修复后返回空字符串并结束分页，非空页仍返回真实首尾 ID。四项原生回归均先失败后通过。与固定上游对照，41 个可比较列表的游标类型和必填性均一致。下一步核对候选发行包。 [验证记录](evidence/serve-voice-consent-pagination-20261127/empty-pages.json)
 
 语音授权列表的两份 OpenAPI 声明已补入可选、可为空的首尾游标。真实 HTTP 留档的两个游标与首尾记录一致，11 项定向测试通过。对照固定上游的 41 个可直接比较的列表响应，均已声明对应游标。下一步核对发行包内的声明。 [验证记录](evidence/serve-voice-consent-pagination-20261127/contract.json)

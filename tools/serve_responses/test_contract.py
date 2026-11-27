@@ -89,6 +89,18 @@ def wire_values(root):
 
 
 class ApplicationContract(unittest.TestCase):
+    def test_empty_batch_and_vector_list_cursor_contracts(self):
+        page = dict(object='list', data=[], has_more=False)
+        for name in ('batch_list', 'vector_store_list', 'vector_file_list'):
+            with self.subTest(name=name):
+                self.assertFalse(errors(dict(page, first_id='', last_id=''), name))
+                self.assertEqual(bool(errors(page, name)), name != 'batch_list')
+                for field in ('first_id', 'last_id'):
+                    for invalid in (None, 42, False):
+                        cursors = dict(first_id='', last_id='')
+                        cursors[field] = invalid
+                        self.assertTrue(errors(dict(page, **cursors), name))
+
     def test_empty_updates_preserve_the_object_and_creation_contracts(self):
         spec = app.standalone_openapi(api.openapi())
         paths = spec['paths']

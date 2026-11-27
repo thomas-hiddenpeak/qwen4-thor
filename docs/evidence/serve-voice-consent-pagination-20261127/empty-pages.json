@@ -134,5 +134,6 @@
     "docs/serve-input-semantics-v1.json": "7e4335d336c68788071f673796d5c68aedf7ea6420246a6c46985990d4a31c50"
   },
   "model_starts": 0,
-  "transport": "Production C++ route handlers, persistent object store and native TLS ingress. The CPU fixture supplies owner supervision. No model inference in these operations."
+  "transport": "Production C++ route handlers, persistent object store and native TLS ingress. The CPU fixture supplies owner supervision. No model inference in these operations.",
+  "persistent_schema_regression": "tools.serve_responses.test_contract.ApplicationContract.test_empty_batch_and_vector_list_cursor_contracts"
 }
