@@ -31,3 +31,5 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 本次冻结的官方规范明确列出 13 个「方法、状态码、响应头」组合。已声明的方法覆盖其中 10 个。其余三个属于图像变体接口的 429 图片配额响应头，随该后端待交付。语音响应仅在实际分块传输时携带 Transfer-Encoding。向量库的普通冲突可省略 Retry-After。[逐项核对](evidence/serve-sdk-method-matrix-20261127/response-headers.json)
 
 在对应的 Python SDK 环境执行 `python -m tools.serve_audit.recording_download_retry`，或执行 `node tools/serve_audit/recording_download_retry.mjs /path/to/openai`，可离线复核该版本的等待时间、请求次数、请求 ID 和音频摘要。
+
+主、轻配置均已通过六版客户端的真实 TLS 下载。每个客户端取回同一份 2,620,472 字节的录音，两个配置均按客户身份隔离。[设备回执](evidence/serve-sdk-method-matrix-20261127/recording-device.json)

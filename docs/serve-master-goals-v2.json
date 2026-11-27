@@ -4287,10 +4287,11 @@
         "existing_evidence_reviewed": true
       },
       "native_recording_retry_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "both_device_capacities_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
-        "pending_image_rate_headers": 3
+        "pending_image_rate_headers": 3,
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
       }
     },
     {
@@ -6990,10 +6991,11 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "both_device_capacities_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
-        "pending_image_rate_headers": 3
+        "pending_image_rate_headers": 3,
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
       }
     },
     {
@@ -9496,10 +9498,11 @@
         "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "both_device_capacities_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
-        "pending_image_rate_headers": 3
+        "pending_image_rate_headers": 3,
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
       }
     },
     {
@@ -13998,10 +14001,11 @@
       },
       "current_ingress_retry_delivery": "evidence/serve-inference-http-errors-20261127/delivery.json",
       "native_recording_retry_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "both_device_capacities_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
-        "pending_image_rate_headers": 3
+        "pending_image_rate_headers": 3,
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
       }
     },
     {
