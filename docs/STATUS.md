@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主、轻容量分别使用已登记配置启动新引擎。两端的错误请求都在原模型日志中留下对应请求 ID，随后 Chat 答出 42，停止后端口已释放。两份新容量记录均逐字段还原至 rev590。下一步封包并核对托管恢复。 [容量回执](evidence/serve-diagnostic-pipe-20261128/profiles.json)
+
 实机 TLS 短验先确认模型的错误日志已抵达读端。将外部日志管道填满，内核可见转发线程阻塞在 pipe_write，此时模型仍返回 400 并答出 42。恢复读取后收到了对应请求的日志；关闭读端后，同一代模型再次返回 400 并答出 42。readiness 与正常停止均通过，下一步纳入可回退发行。 [HTTP 回执](evidence/serve-diagnostic-pipe-20261128/device.json)
 
 在可用描述符耗尽时，旧候选释放了标准错误的描述符 2，随后打开的临时业务文件收到了 47 字节诊断内容。修复后用只读和读写标准输入分别复验，两个业务文件均为 0 字节；停读后恢复日志和正常关闭的回归通过。下一步沿用已排队的同进程 HTTP 短验。 [针对性回执](evidence/serve-diagnostic-pipe-20261128/descriptor-exhaustion.json)

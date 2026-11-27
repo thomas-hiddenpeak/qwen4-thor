@@ -10442,7 +10442,7 @@
         "issued": false
       },
       "diagnostic_pipe_20261128": {
-        "stage": "candidate_stalled_and_closed_diagnostic_http_verified",
+        "stage": "diagnostic_output_primary_light",
         "issued": false,
         "evidence": "evidence/serve-diagnostic-pipe-20261128/cpu.json",
         "closed_stderr": "same_generation_returned_chat",
@@ -10450,7 +10450,8 @@
         "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
         "original_stall": "pipe_write",
         "descriptor_exhaustion": "evidence/serve-diagnostic-pipe-20261128/descriptor-exhaustion.json",
-        "device": "evidence/serve-diagnostic-pipe-20261128/device.json"
+        "device": "evidence/serve-diagnostic-pipe-20261128/device.json",
+        "capacity": "evidence/serve-diagnostic-pipe-20261128/profiles.json"
       }
     },
     {
