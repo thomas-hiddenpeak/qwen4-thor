@@ -4421,6 +4421,12 @@
         "registered_fallback_probes": 1,
         "completed_upload_replay": true,
         "pending_upload_resumed": true
+      },
+      "concurrent_upload_completion_20261128": {
+        "stage": "candidate_cpu_verified",
+        "device_short_run_pending": true,
+        "issued": false,
+        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json"
       }
     },
     {
@@ -9731,6 +9737,12 @@
         "registered_fallback_probes": 1,
         "completed_upload_replay": true,
         "pending_upload_resumed": true
+      },
+      "concurrent_upload_completion_20261128": {
+        "stage": "candidate_cpu_verified",
+        "device_short_run_pending": true,
+        "issued": false,
+        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json"
       }
     },
     {

@@ -304,6 +304,39 @@ Q4T_TEST(uploads_ordered_parts_md5_atomic_file_and_receipt_reconciliation) {
   return true;
 }
 
+Q4T_TEST(uploads_concurrent_identical_completions_return_one_durable_file) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  Uploads uploads(objects);
+  const std::string content(128 * 1024, 'a');
+  const auto id = Create(uploads, Body(2 * content.size()));
+  const auto part = Add(objects, id, content);
+  const auto body = CompleteBody({part, part});
+  std::array<ObjectReply, 4> replies;
+  std::barrier ready(replies.size());
+  std::vector<std::jthread> callers;
+  for (auto& reply : replies) {
+    callers.emplace_back([&, slot = &reply] {
+      ready.arrive_and_wait();
+      *slot = uploads.Complete(Access(), id, body);
+    });
+  }
+  callers.clear();
+  for (const auto& reply : replies) {
+    Q4T_CHECK(Ok(reply) &&
+              OutputJson(reply.value) == OutputJson(replies.front().value));
+  }
+  const auto file = replies.front().value.Find("file")->GetString("id");
+  Q4T_CHECK(Content(objects, file) == content + content);
+  const auto listed = Files(objects).List(Access(), Object());
+  Q4T_CHECK(Ok(listed) && listed.value.GetArray("data")->array.size() == 1);
+  Q4T_CHECK(uploads.Complete(Access(), id, CompleteBody({part})).code ==
+            "upload_already_completed");
+  Q4T_CHECK(uploads.Complete(Access("client:other"), id, body).http_status ==
+            404);
+  return true;
+}
+
 Q4T_TEST(uploads_subset_repeated_parts_preserve_exact_order_and_binary_bytes) {
   Fixture fixture;
   ObjectStore objects(fixture.options);
