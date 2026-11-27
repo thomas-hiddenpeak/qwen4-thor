@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #197 的主机检查在依赖安装阶段遇到运行器预装 Microsoft 软件源返回 403。检查所需包均来自 Ubuntu，现为这个 APT 步骤显式指定官方归档和 Ubuntu 签名密钥环。本机解析出的 99 个索引目标均属于官方归档，覆盖 noble、更新及安全套件。等待新的远端检查。 [失败记录与来源核对](evidence/serve-soak-observation-report-20261128/host-dependencies.json)
+
 rev588 的 24 小时音频长稳入口已固定到含 NVML 逐轮校验的版本并通过本机预检。新版入口读同一已登记主包，仍保留首小时检查点、25 次音频往返及 7,250 个业务请求。主包和回退包原始短验的 CPU 回放均通过，独立副本缺一条监控回复时，完整报告均拒绝通过。29 项主机合同检查通过。长稳实跑由用户安排。 [操作入口与计划摘要](evidence/serve-soak-observation-report-20261128/handoff.json)
 
 原生长稳验收现逐轮核对 GPU 租约事件与 NVML 子进程的原始回包，并将模型 PID 与就绪记录中的进程启动时间关联。已离线复核 rev588 主包和回退包的原始封存数据，分别对应 234 和 233 轮监控采样，各有 61 次在模型就绪期间观测到该进程。在副本中删去一条采样，两份报告均拒绝通过。10 项针对性 CPU 检查通过。 下一步为已发行包准备新版日稳入口。 [封存数据复核](evidence/serve-soak-observation-report-20261128/archive.json)

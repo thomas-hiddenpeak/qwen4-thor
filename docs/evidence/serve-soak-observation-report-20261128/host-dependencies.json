@@ -1,0 +1,23 @@
+{
+  "failed_run": 46063698998,
+  "failed_job": 140723808468,
+  "step": "Ensure host dependencies",
+  "exit_code": 100,
+  "before_compile": true,
+  "reason": "The Microsoft Ubuntu 24.04 repository returned HTTP 403 while apt was updating the hosted runner image. No project package requires that repository.",
+  "source_selection": "job-local deb822 source, Ubuntu archive, Ubuntu archive keyring, distribution and security updates",
+  "shell_syntax": "PASS",
+  "apt_print_uris": {
+    "targets": 99,
+    "hosts": [
+      "archive.ubuntu.com"
+    ],
+    "suites": [
+      "noble",
+      "noble-updates",
+      "noble-security"
+    ]
+  },
+  "local_apt_install": false,
+  "new_model_actions": 0
+}
