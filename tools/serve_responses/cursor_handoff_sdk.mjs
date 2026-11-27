@@ -13,9 +13,16 @@ assert.equal(url.protocol, 'https:');
 assert.equal(url.hostname, '127.0.0.1');
 const {OpenAI, version} = loadSdk(sdk);
 let requests = 0;
+let uploadProbes = 0;
 const limit = previous ? 10 : 15;
 function countedFetch(...args) {
-  assert.ok(++requests <= limit, 'cursor client exceeded its request budget');
+  const target = new URL(args[0] instanceof Request ? args[0].url : args[0]);
+  if (target.href === 'data:,') {
+    assert.ok(!previous && ++uploadProbes === 1, 'unexpected SDK upload probe');
+  } else {
+    assert.equal(target.origin, url.origin);
+    assert.ok(++requests <= limit, 'cursor client exceeded its request budget');
+  }
   return fetch(...args);
 }
 const client = apiKey => new OpenAI({baseURL:base, apiKey, maxRetries:0, timeout:20000,
@@ -63,4 +70,5 @@ await page('filtered_members', vector.fileBatches.listFiles(batch, {...options, 
 await assert.rejects(peer.vectorStores.files.list(store), error => error.status === 404);
 await assert.rejects(peer.vectorStores.fileBatches.listFiles(batch, options), error => error.status === 404);
 assert.equal(requests, limit);
-process.stdout.write(JSON.stringify({sdk:version, store, file, batch, pages, requests, foreign_404:2}));
+assert.equal(uploadProbes, previous ? 0 : 1);
+process.stdout.write(JSON.stringify({sdk:version, store, file, batch, pages, requests, upload_probes:uploadProbes, foreign_404:2}));

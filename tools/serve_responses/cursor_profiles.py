@@ -32,7 +32,8 @@ def prepare(out, build, deployment):
 def check(row, name, previous=None):
     package.require(name in ('primary', 'light') and (previous is None) == (name == 'primary')
                     and row['sdk'] == '7.47.0' and row['foreign_404'] == 2
-                    and row['requests'] == (15 if name == 'primary' else 10),
+                    and row['requests'] == (15 if name == 'primary' else 10)
+                    and row['upload_probes'] == (1 if name == 'primary' else 0),
                     'missing cursor SDK or owner isolation observation')
     for key, prefix in [('store', 'vs'), ('file', 'file'), ('batch', 'vsfb')]:
         package.require(re.fullmatch(prefix + '_[a-f0-9]{32}', row[key]),
