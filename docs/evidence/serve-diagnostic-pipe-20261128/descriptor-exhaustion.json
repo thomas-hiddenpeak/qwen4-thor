@@ -1,0 +1,44 @@
+{
+  "stage": "native_setup_failure_verified",
+  "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
+  "compiled_sources_sha256": "c4a3b4283dd84fc2e8fb7511a131ee39569bd4eaec3e95dd55d633d4cc145ffe",
+  "source_sha256": "d355b53db372c1dc971a4835363320fcf88eb3584852eecb1179a1c8bf932034",
+  "prior_candidate": {
+    "head": "3184c2155c16cbf68df6805308336a465aeb2811",
+    "engine": "74d8c09fe61f86a19ef03a509ffad5a3a6186aafcca7904859c8aba09c99bd49",
+    "source": "ccb2b3b30a64ad924c6ccb681e9f78d42ba5bd419f93130a653a07bcf0684bb7"
+  },
+  "fixture": "file opened by the application after diagnostic setup at RLIMIT_NOFILE=3",
+  "previous_application_file_bytes": 47,
+  "previous_application_file_sha256": "55b846426ae5db4cf7cf2bcd13bd33f2b521c6bb3cee4f29c0d5607815c8b6e3",
+  "current_application_file_bytes": {
+    "read-only": 0,
+    "read-write": 0
+  },
+  "current_stalled_sink": {
+    "model_starts": 0,
+    "fixture": "1ed69a2683ca61814a986e606de8da6002f149cf4653339df08eee2f5983a07d",
+    "implementation": "d355b53db372c1dc971a4835363320fcf88eb3584852eecb1179a1c8bf932034",
+    "regular_diagnostic": true,
+    "closed_reader": true,
+    "full_pipe": true,
+    "full_unix_socket": true,
+    "parent_blocking_flags_preserved": true,
+    "burst_writes": 8192,
+    "bytes_per_burst_write": 4096,
+    "writes_shed": 8131,
+    "burst_seconds": 0.001658,
+    "bytes_drained": 249856,
+    "marker_after_resuming_reader": true,
+    "continued_after_reader_exit": true,
+    "worker_count": 1,
+    "exit_code": 0
+  },
+  "targeted_tests": 3,
+  "source_anchors": 1399,
+  "mutation_checks": 40,
+  "build_warnings": 0,
+  "model_starts": 0,
+  "issued": false,
+  "real_candidate_cli_and_tls": "pending"
+}

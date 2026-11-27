@@ -10447,8 +10447,9 @@
         "evidence": "evidence/serve-diagnostic-pipe-20261128/cpu.json",
         "closed_stderr": "runtime_business_pending",
         "stalled_source": "evidence/serve-diagnostic-pipe-20261128/backpressure-cpu.json",
-        "engine": "74d8c09fe61f86a19ef03a509ffad5a3a6186aafcca7904859c8aba09c99bd49",
-        "original_stall": "pipe_write"
+        "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
+        "original_stall": "pipe_write",
+        "descriptor_exhaustion": "evidence/serve-diagnostic-pipe-20261128/descriptor-exhaustion.json"
       }
     },
     {

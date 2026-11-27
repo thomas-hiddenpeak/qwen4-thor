@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import select
 import shutil
+import socket
 import subprocess
 import tempfile
 import time
@@ -76,6 +77,20 @@ class DiagnosticSinkTest(unittest.TestCase):
             self.assertEqual(self.reply(process), b'wrote')
             process.stdin.write(b'done\n')
             self.assertEqual(process.wait(timeout=3), 0)
+
+    def test_descriptor_exhaustion_keeps_stderr_out_of_application_files(self):
+        reader, writer = socket.socketpair()
+        with reader, writer:
+            for name, stdin in (('readonly', subprocess.DEVNULL),
+                                ('readwrite', reader.fileno())):
+                with self.subTest(stdin=name):
+                    destination = self.probe.parent / name
+                    child = subprocess.run(
+                        [self.probe, '--limited-fds', destination], stdin=stdin,
+                        stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                        check=True, timeout=3)
+                    self.assertGreater(int(child.stdout), 2)
+                    self.assertEqual(destination.read_bytes(), b'')
 
     def test_failed_sink_preserves_progress_and_exit(self):
         with open('/dev/full', 'wb', buffering=0) as sink:

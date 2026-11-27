@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+在可用描述符耗尽时，旧候选释放了标准错误的描述符 2，随后打开的临时业务文件收到了 47 字节诊断内容。修复后用只读和读写标准输入分别复验，两个业务文件均为 0 字节；停读后恢复日志和正常关闭的回归通过。下一步沿用已排队的同进程 HTTP 短验。 [针对性回执](evidence/serve-diagnostic-pipe-20261128/descriptor-exhaustion.json)
+
 旧候选在 64 KiB 的 stderr 管道写满后卡在内核 pipe_write，读端开始排空才返回。新候选通过有界队列和一个转发线程写入原日志目的地。CPU 实测中，读端停读期间业务线程仍能推进，读端恢复后收到新日志；读端退出或目的地返回 ENOSPC 时仍能正常退出。下一步用真实 TLS 请求验证同一模型进程。 [CPU 回执](evidence/serve-diagnostic-pipe-20261128/backpressure-cpu.json)
 
 已发行程序和上一候选在 stderr 管道读端退出后记录参数错误时均被 SIGPIPE 终止。修复限于 serve 入口；候选在日志读端正常或退出时都返回相同的参数错误码 2。构建无警告，编译协议清单只有 src/main.cpp 发生变化。下一步用真实模型验证运行中关闭读端后的错误响应和正常 Chat。 [CPU 对照](evidence/serve-diagnostic-pipe-20261128/cpu.json)

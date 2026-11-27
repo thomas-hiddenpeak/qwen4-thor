@@ -8,6 +8,7 @@
 #include <cerrno>
 #include <csignal>
 #include <exception>
+#include <initializer_list>
 #include <thread>
 #include <utility>
 
@@ -63,10 +64,26 @@ bool StartForwarding() {
 
 void DiscardDiagnostics() {
   OwnedFd null(open("/dev/null", O_WRONLY | O_CLOEXEC));
+  if (null.Get() < 0) {
+    const int open_error = errno;
+    // A read-only descriptor also makes writes fail immediately. Keep fd 2
+    // occupied so a later application open cannot accidentally receive logs.
+    for (int fd : {STDIN_FILENO, STDOUT_FILENO}) {
+      const int flags = fcntl(fd, F_GETFL);
+      if (flags >= 0 && (flags & O_ACCMODE) == O_RDONLY &&
+          dup2(fd, STDERR_FILENO) == STDERR_FILENO)
+        return;
+    }
+    if (open_error != EMFILE) return;
+    // No spare slots or read-only standard descriptor. Use stderr's own
+    // slot for /dev/null before any application workers are started.
+    close(STDERR_FILENO);
+    null.Reset(open("/dev/null", O_WRONLY | O_CLOEXEC));
+  }
   if (null.Get() == STDERR_FILENO) {
     null.Release();
-  } else if (null.Get() < 0 || dup2(null.Get(), STDERR_FILENO) < 0) {
-    close(STDERR_FILENO);
+  } else if (null.Get() >= 0) {
+    dup2(null.Get(), STDERR_FILENO);
   }
 }
 }  // namespace
