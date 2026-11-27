@@ -3722,9 +3722,13 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
                        turn.messages.array[2].GetString("content") != "recall")))
         throw std::runtime_error("Child did not recover its own transcript");
       Json child_request = Parse("{}");
-      run.ConfigureAgentModelStep(turn, true, &child_request);
-      const auto* cache = child_request.Find("prompt_cache_options");
-      if (!cache || cache->GetString("ttl") != "12h" ||
+      const auto* cache = run.ConfigureAgentModelStep(turn, true, &child_request);
+      ChatRequestPlan child_plan;
+      ChatPlanError child_error;
+      if (!PlanChatRequest(child_request, config, &child_plan, &child_error) ||
+          child_request.Has("prompt_cache_options") || !cache ||
+          cache->api != PromptCacheApi::kResponses || !cache->requested ||
+          cache->ttl_seconds != 43200 ||
           child_request.GetArray("tools")->array.size() != 2 ||
           child_request.GetArray("messages")->array.front().GetString("role") != "system" ||
           child_request.GetArray("messages")->array.front().GetString("content").find(turn.name) == std::string::npos)

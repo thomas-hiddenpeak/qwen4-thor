@@ -171,8 +171,9 @@ class ResponsesExecution {
       const ResponsesAgentTree::Turn&, bool allow_tools, io::Json*, bool*)>;
   ObjectReply RunAgents(size_t completed_calls, const AgentModelStep& step,
                         const std::function<bool(const std::string&)>& publish);
-  void ConfigureAgentModelStep(const ResponsesAgentTree::Turn& turn, bool allow_tools,
-                               io::Json* request) const;
+  const PromptCacheOptions* ConfigureAgentModelStep(
+      const ResponsesAgentTree::Turn& turn, bool allow_tools,
+      io::Json* request) const;
   ObjectReply RunSessionAutomations(
       size_t completed_calls, const ChatPlanConfig& config,
       bool dispatcher_available, const std::function<void()>& wake,
@@ -322,6 +323,7 @@ class ResponsesExecution {
       const std::function<bool(const std::string&)>& publish);
   Status BindActiveTools(const io::Json& active, ChatPlanError* error,
                          const io::Json* history = nullptr);
+  const PromptCacheOptions* AgentStepCache() const;
   ObjectReply RestoreAgentSession();
   ObjectReply AuthorizeAgentMcp(ResponsesMcpDefinition* definition,
                                 bool dispatch = true);

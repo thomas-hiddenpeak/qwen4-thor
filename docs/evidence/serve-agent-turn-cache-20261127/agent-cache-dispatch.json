@@ -1,0 +1,68 @@
+{
+  "stage": "fixed_and_targeted_cpu_verified",
+  "scope": "An Agent child receives its already validated Responses policy on the internal model call. Public Chat still accepts a 30m request TTL.",
+  "previous": {
+    "expired_fixture_tls": {
+      "model_starts": 1,
+      "seconds": 37.638,
+      "cleanup": {
+        "model_reaped": true,
+        "model_exit": 0,
+        "listeners_rebound": 3
+      },
+      "default_unchanged": true,
+      "result_sha256": "bfebdeed3decaa284fa82407fe6e92319b6377c154a79777f82604a1280736d8",
+      "lease_sha256": "90bf2e44d8928d13ab95c7293e0fcd0fd503514c5c83b0cd433001bdc70747fb"
+    },
+    "child_rejected_responses_ttl": {
+      "model_starts": 1,
+      "seconds": 60.962,
+      "cleanup": {
+        "model_reaped": true,
+        "model_exit": 0,
+        "listeners_rebound": 3
+      },
+      "default_unchanged": true,
+      "result_sha256": "09e61e2514165471f3af8c4904430abf2ced1fa5d074c73276dd2ca0a6441228",
+      "lease_sha256": "87e24306a6fad189c8dc8c6dfe04577dc041c43dab93ee27d3a713e4f60a8459",
+      "error": {
+        "code": "invalid_request",
+        "message": "Chat request TTL must be 30m"
+      },
+      "response_sha256": "b0a9639a2a56a38e985a877ff0ee7d0c2b2cc3f2f5779b18e0f3a319a947b45b",
+      "dispatch_ttl": "12h"
+    }
+  },
+  "fixture_tls_ab": {
+    "variants": {
+      "old": {
+        "certificate_valid": false,
+        "tls_handshake": false,
+        "error": "RuntimeError"
+      },
+      "fresh": {
+        "certificate_valid": true,
+        "tls_handshake": true,
+        "error": null
+      }
+    },
+    "model_starts": 0
+  },
+  "candidate": {
+    "binary": "a074df1089b38fc3118a9fbec4fa543858314fcf4ad287c5a5b091515faf46e7",
+    "sources": 1104,
+    "manifest": "6d88cf1f723e350257da1d058f9f8c556d08bf43e8c198e00911c2e173e9f2c5",
+    "warnings": 0
+  },
+  "cpu": {
+    "cases": [
+      "agent_session_subagent_owned_history_survives_another_turn",
+      "chat_cache_options_defaults_and_api_specific_controls"
+    ],
+    "engine": "a074df1089b38fc3118a9fbec4fa543858314fcf4ad287c5a5b091515faf46e7",
+    "worker_preflights": 3
+  },
+  "case_log": "914210794926732e5a3d39b1fd60a73d3494794a6c143db9721b35c46ea4741f",
+  "inventory_mutations": 40,
+  "issued": false
+}

@@ -270,13 +270,18 @@ class AgentDispatch {
 };
 }  // namespace
 
-void ResponsesExecution::ConfigureAgentModelStep(
+const PromptCacheOptions* ResponsesExecution::AgentStepCache() const {
+  const auto* options = envelope_.request.Find("prompt_cache_options");
+  return !agent_session_id_.empty() && options && options->IsObject()
+             ? &envelope_.cache
+             : nullptr;
+}
+
+const PromptCacheOptions* ResponsesExecution::ConfigureAgentModelStep(
     const ResponsesAgentTree::Turn& turn, bool allow_tools,
     Json* request) const {
   auto messages = turn.messages;
   if (!agent_session_id_.empty()) {
-    if (const auto* options = envelope_.request.Find("prompt_cache_options"))
-      Set(request, "prompt_cache_options", *options);
     auto instructions = Object(
         {{"role", String("system")},
          {"content",
@@ -290,6 +295,7 @@ void ResponsesExecution::ConfigureAgentModelStep(
     Set(request, "tools",
         agent_session_id_.empty() ? ResponsesAgentTree::ModelTools()
                                   : agents_->ChildTools(turn.name));
+  return AgentStepCache();
 }
 
 ObjectReply ResponsesExecution::RunAgentLifecycle(
@@ -406,11 +412,11 @@ ObjectReply ResponsesExecution::RunAgents(
     Set(&plan_.agent_claim_times, found->second,
         Object({{"at", Number(std::time(nullptr))},
                 {"sequence", Number(events_.array.size())}}));
-    if (const auto* options = envelope_.request.Find("prompt_cache_options")) {
+    if (const auto* cache = AgentStepCache()) {
       if (!plan_.agent_claim_cache_ttls.IsObject())
         plan_.agent_claim_cache_ttls = Object();
       Set(&plan_.agent_claim_cache_ttls, found->second,
-          String(options->GetString("ttl", "30m")));
+          String(cache->ttl_seconds == 43200 ? "12h" : "30m"));
     }
     agent_queued_items_.erase(found);
     plan_.agent_tree = agents_->SaveSession();
