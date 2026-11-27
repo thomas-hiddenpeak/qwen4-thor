@@ -3,7 +3,7 @@
     "revision": 588,
     "version_revision": 223,
     "primary_manifest": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
-    "engine_manifest": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+    "engine_manifest": "70a8cba0634c9291810b4043445f6b7cd96896b978bc98ff5d53dbf63bc234c4",
     "binary": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
     "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
     "issuance_receipt": "../serve-native-soak-retention-20261128/delivery.json",
