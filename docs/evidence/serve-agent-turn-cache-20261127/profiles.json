@@ -1,0 +1,255 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 576,
+  "build": {
+    "engine": "a074df1089b38fc3118a9fbec4fa543858314fcf4ad287c5a5b091515faf46e7",
+    "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a"
+  },
+  "profiles": {
+    "primary": {
+      "handoff": {
+        "sdk": "7.47.0",
+        "phase": "primary",
+        "session": "agent_session_f9c3bac234b71a4c27b062b7a005f2a5",
+        "child": "subagent_0aa68469b85013a0f35a0ea49883cfac",
+        "revision": 576,
+        "rows": [
+          {
+            "root": "turn_d9b406d3bd2d2a1db176a867545eeb5b",
+            "child": "turn_1ab721e0ff8abf555e7b19b9aa4aa0a3",
+            "ttl": "12h",
+            "answer": "576",
+            "root_sha256": "1e32df07ec187159882d50b76d506617ec92e42898598674989f4b66c9945e30",
+            "child_sha256": "4b6cba6a4166dd9f6154e4de532a256bedf6596480bd2a06331caeb5af659aa3",
+            "items_sha256": "68396a099fa7f42ed68cb98b351df0dca266a7d8c4a5757d6322e3a22b75b8eb"
+          },
+          {
+            "root": "turn_7d8a62a4c67736dd722c37bde5514354",
+            "child": "turn_92a74e11adadaea9a45428f192b8b94e",
+            "ttl": "30m",
+            "answer": "577",
+            "root_sha256": "01d69df953cb0ddd1a0a56a0496506ecc5349d0d0e0c7b7bb6f6be6b4809d655",
+            "child_sha256": "0cc1c123eba696e4f4fb9a27d377109f0da41311f0cf9a6934c70a6d38dfea26",
+            "items_sha256": "66b155ecbf71d7d693e6c2f1662e27a218f60619ed54fcffe7dcfdf5216c618e"
+          }
+        ],
+        "cross_client_404": 4,
+        "next_ttl": "12h"
+      },
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": true,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "observation": {
+        "profile": "primary",
+        "protocol": "bd3fea64b66ba5a6952a4b259f8c34f96f805481d1b9078c577ee49bc4608a5b",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": true,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": true,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "created",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      },
+      "model_result": {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 70
+        },
+        "seconds": 37.26112336339429,
+        "binary_sha256": "a074df1089b38fc3118a9fbec4fa543858314fcf4ad287c5a5b091515faf46e7"
+      },
+      "cleanup": {
+        "remaining": [],
+        "model_exit": 0,
+        "ports_released": true,
+        "lease_continuously_held": true,
+        "observed_owned_pids": 2
+      },
+      "handoff_sha256": "9a2abea977d654da941a93286fe5ae06e0f9aabf71c0b44189bf27e2afaaeef3",
+      "profile_sha256": "1298d1297790336b247722629ae0059a0b7698e70ccad04105f4ed325bcda672"
+    },
+    "light": {
+      "handoff": {
+        "sdk": "7.47.0",
+        "phase": "light",
+        "session": "agent_session_f9c3bac234b71a4c27b062b7a005f2a5",
+        "child": "subagent_0aa68469b85013a0f35a0ea49883cfac",
+        "revision": 576,
+        "rows": [
+          {
+            "root": "turn_d9b406d3bd2d2a1db176a867545eeb5b",
+            "child": "turn_1ab721e0ff8abf555e7b19b9aa4aa0a3",
+            "ttl": "12h",
+            "answer": "576",
+            "root_sha256": "1e32df07ec187159882d50b76d506617ec92e42898598674989f4b66c9945e30",
+            "child_sha256": "4b6cba6a4166dd9f6154e4de532a256bedf6596480bd2a06331caeb5af659aa3",
+            "items_sha256": "68396a099fa7f42ed68cb98b351df0dca266a7d8c4a5757d6322e3a22b75b8eb"
+          },
+          {
+            "root": "turn_7d8a62a4c67736dd722c37bde5514354",
+            "child": "turn_92a74e11adadaea9a45428f192b8b94e",
+            "ttl": "30m",
+            "answer": "577",
+            "root_sha256": "01d69df953cb0ddd1a0a56a0496506ecc5349d0d0e0c7b7bb6f6be6b4809d655",
+            "child_sha256": "0cc1c123eba696e4f4fb9a27d377109f0da41311f0cf9a6934c70a6d38dfea26",
+            "items_sha256": "66b155ecbf71d7d693e6c2f1662e27a218f60619ed54fcffe7dcfdf5216c618e"
+          }
+        ],
+        "cross_client_404": 4,
+        "continuation": {
+          "root": "turn_97c712ad2121d289414951c3f199cca9",
+          "child": "turn_2c8400b5893fdbe155cd1dc94c68afa1",
+          "ttl": "12h",
+          "answer": "578",
+          "items_sha256": "cc337b6972671750ec63feffd46b661fb749b79792788e02ecc0a9061df2619c",
+          "completed_sse": 2
+        }
+      },
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": false,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "observation": {
+        "profile": "light",
+        "protocol": "bd3fea64b66ba5a6952a4b259f8c34f96f805481d1b9078c577ee49bc4608a5b",
+        "capacity": {
+          "name": "native-managed-capacity-v2",
+          "host": "127.0.0.1",
+          "max_seq": 1,
+          "max_len": 8192,
+          "max_prefill": 2048,
+          "max_tokens": 256,
+          "mtp_k": 3,
+          "max_inflight_requests": 8,
+          "max_queued_requests": 3,
+          "min_available_memory_mib": 2048,
+          "memory_recovery_margin_mib": 512,
+          "startup_memory_headroom_mib": 2048,
+          "mtp_enabled": false,
+          "request_deadline_ms": 1200000,
+          "allow_media": true
+        },
+        "mtp_enabled": false,
+        "returned_chat": "42",
+        "media_created": 201,
+        "session_closed": true,
+        "recordings_enabled": true,
+        "conversation": "recovered",
+        "worker_files": {
+          "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+          "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+          "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+        }
+      },
+      "model_result": {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 69
+        },
+        "seconds": 47.92746526096016,
+        "binary_sha256": "a074df1089b38fc3118a9fbec4fa543858314fcf4ad287c5a5b091515faf46e7"
+      },
+      "cleanup": {
+        "remaining": [],
+        "model_exit": 0,
+        "ports_released": true,
+        "lease_continuously_held": true,
+        "observed_owned_pids": 2
+      },
+      "handoff_sha256": "1a65b1fc4b1f05482766f5bc72cf674c1d43bbba72623cfd702cee839bcca104",
+      "profile_sha256": "8c6c08fcac482f0e80795535cc7ea759ed4a12c17c67a6af0cef346ad8b87a7f"
+    }
+  },
+  "registry_sha256": "9a399a1a1348ac50f91da8429574d8cd1f76ca7bb48aae0c7fa9a9ec0e7bf4d5",
+  "accepted_sha256": "12521beb342b49dfe1e2be6b1ed1e0e19397fe598548b72a6d4886a050cd477e",
+  "lifecycle": "861f84a1dd8def20f891459f48da794b0413c897e5fdaebdd267ee72a943fba0",
+  "lease": "f3e0ab937e9ddb7ab0880c88c467da6471bb71f745c7c04343a1e3640f0a641c",
+  "counterexamples": {
+    "primary_wrong_historical_ttl": true,
+    "light_wrong_historical_ttl": true,
+    "light_changed_items_sha256": true,
+    "light_changed_child": true
+  },
+  "source_snapshot_sha256": "9078f2228b30186df715f1bf6fb5f08a26d96e90535a6335d8b20078216d23ea",
+  "openapi_sha256": "1e507226c0fc746b94dfe475c4e5bb142f50dc2a15678f8d884f2a266f7a5019",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 81,
+    "cleanup_complete": true
+  },
+  "cpu_validation": {
+    "handoff_cases": 2,
+    "migration_cases": 50,
+    "passed": [
+      "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658",
+      "f09a40c0aae5dadfdc41d6c24212ad147a430e623788a21399b68665b4c4c1e5"
+    ],
+    "retained_setup_failures": [
+      "bd7e48171d3a5dad2b577b92c216ce213e29fb489879d5dc5c48326f6d26ab88",
+      "7e5ec668472a4866ce432797659842dce472086cf4f133a330aa39fa82424c2a",
+      "e21587cb875ff9b4bc670c1be16016dd7f2629f209c479094916724c6778dcd4"
+    ],
+    "scope": "The sparse checkout initially omitted historical input files. Restored the tracked fixtures and repeated the affected CPU suite; no model restart for fixture setup."
+  }
+}
