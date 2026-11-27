@@ -4285,6 +4285,12 @@
           "Per-backend SDK, recovery and release composition"
         ],
         "existing_evidence_reviewed": true
+      },
+      "native_recording_retry_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
+        "declared_header_combinations": 10,
+        "pending_image_rate_headers": 3
       }
     },
     {
@@ -6982,6 +6988,12 @@
         "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json",
         "revision": 566,
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
+      },
+      "native_recording_retry_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
+        "declared_header_combinations": 10,
+        "pending_image_rate_headers": 3
       }
     },
     {
@@ -9482,6 +9494,12 @@
         "matrix": "SDK_METHOD_COMPATIBILITY.md",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/cpu.json",
         "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
+      },
+      "native_recording_retry_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
+        "declared_header_combinations": 10,
+        "pending_image_rate_headers": 3
       }
     },
     {
@@ -13978,7 +13996,13 @@
         "receipt": "evidence/serve-sdk-method-matrix-20261127/cpu.json",
         "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
       },
-      "current_ingress_retry_delivery": "evidence/serve-inference-http-errors-20261127/delivery.json"
+      "current_ingress_retry_delivery": "evidence/serve-inference-http-errors-20261127/delivery.json",
+      "native_recording_retry_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
+        "declared_header_combinations": 10,
+        "pending_image_rate_headers": 3
+      }
     },
     {
       "id": "Q03",

@@ -1,0 +1,118 @@
+{
+  "transport": "native socketpair captures replayed in-process through each stock SDK",
+  "packets": [
+    {
+      "status": 404,
+      "headers": {
+        "Content-Type": "application/json",
+        "Content-Length": "110",
+        "X-Request-Id": "req-d9d31470758c24ae0174bd6519c32889",
+        "Connection": "close"
+      },
+      "body": "eyJlcnJvciI6eyJtZXNzYWdlIjoiT2JqZWN0IG5vdCBmb3VuZCIsInR5cGUiOiJpbnZhbGlkX3JlcXVlc3RfZXJyb3IiLCJjb2RlIjoib2JqZWN0X25vdF9mb3VuZCIsInBhcmFtIjpudWxsfX0=",
+      "sha256": "696c743744c4085745d8db6456536d88bc945b4722789c94d12ca5df83585bdb"
+    },
+    {
+      "status": 503,
+      "headers": {
+        "Content-Type": "application/json",
+        "Content-Length": "137",
+        "X-Request-Id": "req-f98ab5b6af695bc05565a97e79a889eb",
+        "Retry-After": "1",
+        "Connection": "close"
+      },
+      "body": "eyJlcnJvciI6eyJtZXNzYWdlIjoiUmVjb3JkaW5nIGRvd25sb2FkIGNhcGFjaXR5IGV4aGF1c3RlZCIsInR5cGUiOiJzZXJ2aWNlX3VuYXZhaWxhYmxlX2Vycm9yIiwiY29kZSI6ImNhcGFjaXR5X2V4aGF1c3RlZCIsInBhcmFtIjpudWxsfX0=",
+      "sha256": "2bb1d23d41005864593ea03f330187b8e3206aa65d825ee14952961436d15909"
+    },
+    {
+      "status": 200,
+      "headers": {
+        "Content-Type": "audio/wav",
+        "Content-Length": "60",
+        "Cache-Control": "no-store",
+        "X-Request-Id": "req-c0dc0f6e95aa4e38e4a58b3584366a24",
+        "Connection": "close"
+      },
+      "body": "UklGRjQAAABXQVZFZm10IBAAAAABAAIAwF0AAAB3AQAEABAAZGF0YRAAAAAVAAAAFgD//wAA/v8AAAAA",
+      "sha256": "ce553fd691e2572e54d95d2ceabdbdacd147d62295dc150c088cf49752aa1ae5"
+    },
+    {
+      "status": 404,
+      "headers": {
+        "Content-Type": "application/json",
+        "Content-Length": "110",
+        "X-Request-Id": "req-04b00a796f1c6d3442481ba75473c254",
+        "Connection": "close"
+      },
+      "body": "eyJlcnJvciI6eyJtZXNzYWdlIjoiT2JqZWN0IG5vdCBmb3VuZCIsInR5cGUiOiJpbnZhbGlkX3JlcXVlc3RfZXJyb3IiLCJjb2RlIjoib2JqZWN0X25vdF9mb3VuZCIsInBhcmFtIjpudWxsfX0=",
+      "sha256": "e55c041a7ccd825e25dd731fcfab3b88ccf5b78441192324467d2d959ad6b083"
+    },
+    {
+      "status": 503,
+      "headers": {
+        "Content-Type": "application/json",
+        "Content-Length": "153",
+        "X-Request-Id": "req-6272c30ea6721b24ccd948405f6904ef",
+        "Connection": "close"
+      },
+      "body": "eyJlcnJvciI6eyJtZXNzYWdlIjoiU3RvcmVkIGJpbmFyeSBjb250ZW50IGlzIGluY29tcGxldGUgb3IgaW5jb25zaXN0ZW50IiwidHlwZSI6InNlcnZpY2VfdW5hdmFpbGFibGVfZXJyb3IiLCJjb2RlIjoiYmluYXJ5X3N0YXRlX2ludmFsaWQiLCJwYXJhbSI6bnVsbH19",
+      "sha256": "907364caaad29826d9f8d01538a24cc150c26d6608971f047188851363d4539e"
+    }
+  ],
+  "clients": [
+    {
+      "sdk": "2.8.1",
+      "language": "python",
+      "mode": "generic",
+      "attempts": 2,
+      "wait_seconds": 1.001,
+      "sha256": "eb801c17d22ca5984377aaed8412a1c130a18bf9f4a2344681ac4255cfb368e5",
+      "trace": "req-c0dc0f6e95aa4e38e4a58b3584366a24"
+    },
+    {
+      "sdk": "2.33.0",
+      "language": "python",
+      "mode": "generic",
+      "attempts": 2,
+      "wait_seconds": 1.001,
+      "sha256": "eb801c17d22ca5984377aaed8412a1c130a18bf9f4a2344681ac4255cfb368e5",
+      "trace": "req-c0dc0f6e95aa4e38e4a58b3584366a24"
+    },
+    {
+      "sdk": "3.42.1",
+      "language": "python",
+      "mode": "resource",
+      "attempts": 2,
+      "wait_seconds": 1.001,
+      "sha256": "eb801c17d22ca5984377aaed8412a1c130a18bf9f4a2344681ac4255cfb368e5",
+      "trace": "req-c0dc0f6e95aa4e38e4a58b3584366a24"
+    },
+    {
+      "sdk": "3.55.1",
+      "language": "python",
+      "mode": "resource",
+      "attempts": 2,
+      "wait_seconds": 1.001,
+      "sha256": "eb801c17d22ca5984377aaed8412a1c130a18bf9f4a2344681ac4255cfb368e5",
+      "trace": "req-c0dc0f6e95aa4e38e4a58b3584366a24"
+    },
+    {
+      "sdk": "6.34.0",
+      "language": "node",
+      "mode": "generic",
+      "attempts": 2,
+      "wait_seconds": 1.006,
+      "sha256": "eb801c17d22ca5984377aaed8412a1c130a18bf9f4a2344681ac4255cfb368e5",
+      "trace": "req-c0dc0f6e95aa4e38e4a58b3584366a24"
+    },
+    {
+      "sdk": "7.47.0",
+      "language": "node",
+      "mode": "resource",
+      "attempts": 2,
+      "wait_seconds": 1.007,
+      "sha256": "eb801c17d22ca5984377aaed8412a1c130a18bf9f4a2344681ac4255cfb368e5",
+      "trace": "req-c0dc0f6e95aa4e38e4a58b3584366a24"
+    }
+  ]
+}

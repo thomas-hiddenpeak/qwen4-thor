@@ -23,3 +23,11 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 - **重试。** 准入前的配额或恢复错误，以及已经转交写请求后丢失应答的错误，各有原生和可选 nginx 入口的独立 SDK 记录。 [重试证据](evidence/serve-inference-http-errors-20261127/sdk-retries.json)
 
 复核版本时，Python 使用已安装目标 SDK 的解释器运行 `-m tools.serve_audit.sdk_method_matrix <challenges.json>`。Node 使用 `node tools/serve_audit/sdk_method_matrix.mjs <openai 包目录> <challenges.json>`。将每个输出按 `python-版本.json` 或 `node-版本.json` 放入同一目录，再运行 `python3 -m tools.serve_audit.render_sdk_matrix <challenges.json> <客户端输出目录> <矩阵输出目录>`。
+
+## Live 录音下载及标准响应头
+
+临时 503 给出至少一秒的等待时间。Python 3.42.1、3.55.1 和 Node 7.47.0 可通过 Live 资源方法下载；矩阵中的三个较早版本使用公开的通用 GET。六版均通过原生报文回放取得同一 WAV。[客户端记录](evidence/serve-sdk-method-matrix-20261127/recording-download-retries.json)
+
+本次冻结的官方规范明确列出 13 个「方法、状态码、响应头」组合。已声明的方法覆盖其中 10 个。其余三个属于图像变体接口的 429 图片配额响应头，随该后端待交付。语音响应仅在实际分块传输时携带 Transfer-Encoding。向量库的普通冲突可省略 Retry-After。[逐项核对](evidence/serve-sdk-method-matrix-20261127/response-headers.json)
+
+在对应的 Python SDK 环境执行 `python -m tools.serve_audit.recording_download_retry`，或执行 `node tools/serve_audit/recording_download_retry.mjs /path/to/openai`，可离线复核该版本的等待时间、请求次数、请求 ID 和音频摘要。
