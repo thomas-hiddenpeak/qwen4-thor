@@ -174,5 +174,10 @@
     "Older SDKs expect mcp_call.error as a string; newer SDKs expect an object. The optional compact reader preserves the original wire representation.",
     "Initial synthetic regression fixture omitted cache_write_tokens required by 3.42.1 and 3.55.1. Added the field present in all seven actual windows."
   ],
-  "distribution_scope": "The qualifying fixture used the normal package.prepare and packaged service.py verify-clients under system Python without openai. The production package carrying these readers has not been issued."
+  "distribution_scope": "The qualifying fixture used the normal package.prepare and packaged service.py verify-clients under system Python without openai. The production package carrying these readers has not been issued.",
+  "renewed_inventory_review": {
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  }
 }
