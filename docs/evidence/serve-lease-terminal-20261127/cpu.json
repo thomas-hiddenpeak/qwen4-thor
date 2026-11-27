@@ -1,0 +1,80 @@
+{
+  "stage": "targeted_cpu_verified",
+  "base": "1d4b81d78768ae3cd3dec84df54934979c22ce78",
+  "previous_interruption": {
+    "terminal_bytes": 0,
+    "terminal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cause_uniquely_identified": false
+  },
+  "tests": {
+    "lease": {
+      "passed": 37,
+      "log_sha256": "339292cbc01b0fed1b8142f7c27abf18eafe9a60572082679448e67df142fd1a"
+    },
+    "managed_telemetry_and_auxiliary": {
+      "passed": 37,
+      "log_sha256": "7893409f4935e523d4377db9bb08228b8fa2248de4fe6433753add0c6fd3b455"
+    }
+  },
+  "isolated_volume": {
+    "strict": {
+      "status": "COMPLETED",
+      "child_result": 0,
+      "receipt_bytes": 736,
+      "fs_capacity": 1048576,
+      "free_blocks": 0,
+      "reserved_bytes": 65536,
+      "write_errno": 28,
+      "final_name_absent": true,
+      "unprivileged_workload": true,
+      "query": "CPU fixture",
+      "actual_gpu_queries": 0,
+      "receipt_sha256": "f090bdca9e79b97808c9e9903a762783547fc3740e6b5aa17c20703c9174aca2"
+    },
+    "managed": {
+      "status": "COMPLETED_WITH_MONITOR_GAPS",
+      "child_result": 0,
+      "receipt_bytes": 3519,
+      "worker_pid_stable": true,
+      "completed_sum": 499500,
+      "fs_capacity": 1048576,
+      "free_blocks": 0,
+      "reserved_bytes": 65536,
+      "write_errno": 28,
+      "final_name_absent": true,
+      "unprivileged_workload": true,
+      "query": "CPU fixture",
+      "actual_gpu_queries": 0,
+      "receipt_sha256": "d271708e195f033358400fae44956f02736535302f0f8fc5dfb9f5a043998187",
+      "snapshot_failures": 1,
+      "query_worker_reaped": true,
+      "fatal": false
+    }
+  },
+  "model_starts": 0,
+  "verification_failures": {
+    "sparse_checkout_setup": [
+      "tools/release",
+      "third_party/licenses"
+    ],
+    "concurrent_process_probes": [
+      "test_real_detached_child_cleanup_preserves_unrelated_process",
+      "test_real_owned_zombie_not_misclassified_as_foreign"
+    ],
+    "resolution": "Restored tracked fixture paths. Rechecked both host process probes after the independent managed model exited."
+  },
+  "coverage": [
+    "a synced complete JSON is the first visible terminal under the lease",
+    "kernel partial write preserves existing terminal bytes",
+    "post-write ENOSPC returns 75 with no published partial receipt",
+    "busy holder metadata beyond 64 KiB remains complete with reserve unavailable",
+    "a final event write failure records ENV_ABORT after child cleanup",
+    "missing and legacy zero-byte receipts retain worker evidence and report unverified cleanup"
+  ],
+  "source_sha256": {
+    "tools/evalscope/gpu_exclusive.py": "dc86ff0bd47663c52166217d4a0bb346a8b5d836d7741be5acd0c7bf77bbe95e",
+    "tools/evalscope/test_gpu_exclusive.py": "dbbf15112b835336fa5701bbf7bb38048fd9d00ac51cc119fa6e2311fbbf575d",
+    "tools/serve_service/service.py": "ca2ed936ee2d427bbaa7a8c0262422e5b5f8f560b03046821e45e1c718d67db9",
+    "tools/serve_service/test_telemetry.py": "b69ae5ceb29670255c83979c216732d875b510501b1cf71a7e2164b43efa7b7a"
+  }
+}

@@ -16,6 +16,7 @@ from pathlib import Path
 import signal
 import stat
 import subprocess
+import sys
 import time
 
 import nvml_process_query
@@ -277,6 +278,49 @@ def borrowed_lock(fd, lock_path):
     return os.fdopen(os.dup(fd), 'r+')
 
 
+# Reserve ordinary receipt space before starting a workload. A larger receipt
+# (for example a long command or a busy holder snapshot) is still written whole.
+EXIT_RESERVE_BYTES = 64 * 1024
+
+
+def reserve_exit_receipt(pending):
+    try:
+        with pending.open('xb') as stream:
+            os.posix_fallocate(stream.fileno(), 0, EXIT_RESERVE_BYTES)
+    except OSError:
+        # Reservation is an optimization. A restricted filesystem may still
+        # accept the actual, usually smaller, write when the run ends.
+        pass
+
+
+def remove_pending_receipt(pending):
+    try:
+        pending.unlink(missing_ok=True)
+    except OSError as error:
+        print(f'Unable to remove unfinished GPU lease receipt {pending}: {error}',
+              file=sys.stderr)
+
+
+def write_lock_state(lock, value):
+    lock.seek(0)
+    lock.truncate()
+    # Keep buffered output separate from the FD which holds exclusion. If a
+    # flush fails here, closing that FD must not retry a stale buffered write.
+    with open(lock.fileno(), 'w', closefd=False) as writer:
+        writer.write(json.dumps(value) + '\n')
+
+
+def publish_exit_receipt(pending, status):
+    data = (json.dumps(status, indent=2) + '\n').encode()
+    fd = os.open(pending, os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW, 0o666)
+    with os.fdopen(fd, 'wb') as stream:
+        stream.write(data)
+        stream.flush()
+        stream.truncate(len(data))
+        os.fsync(fd)
+    pending.replace(pending.with_name('exit.json'))
+
+
 def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
               compute_backend=DEFAULT_COMPUTE_BACKEND, log_max_bytes=None,
               inherit_lease=False, managed_monitor=None, inherited_fds=()):
@@ -317,15 +361,20 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
     owned_history = {}
     acquired = False
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    event_log = (contextlib.nullcontext(managed_monitor.event_log(
-                    out / 'events.jsonl', log_max_bytes))
-                 if managed_monitor is not None else
-                 open_log(out / 'events.jsonl', 'w', log_max_bytes))
-    with contextlib.ExitStack() as stack, event_log as events:
+    pending = out / '.exit.json.pending'
+    with contextlib.ExitStack() as stack:
+        stack.callback(remove_pending_receipt, pending)
+        event_log = contextlib.ExitStack()
+
         def record(event, **values):
             events.write(json.dumps(dict(stamp(), event=event, **values)) + '\n')
             events.flush()
         try:
+            reserve_exit_receipt(pending)
+            events = event_log.enter_context(
+                contextlib.nullcontext(managed_monitor.event_log(
+                    out / 'events.jsonl', log_max_bytes)) if managed_monitor is not None
+                else open_log(out / 'events.jsonl', 'w', log_max_bytes))
             lock = stack.enter_context(
                 lock_path.open('a+') if lease_fd is None else
                 borrowed_lock(lease_fd, lock_path))
@@ -348,10 +397,7 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                 return 75
             acquired = True
             lease = dict(stamp(), command=command, output=str(out), state='held')
-            lock.seek(0)
-            lock.truncate()
-            lock.write(json.dumps(lease) + '\n')
-            lock.flush()
+            write_lock_state(lock, lease)
             record('lease_acquired')
             require_pidfd_support()
             record('cleanup_capabilities', pidfd=True)
@@ -413,25 +459,34 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
                     status['status'] = 'ENV_ABORT'
                     status['monitor_cleanup_error'] = repr(error)
                     cleanup_failed = True
-            status['finished'] = stamp()
-            if managed_monitor is None:
-                (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
-            if acquired:
-                lock.seek(0)
-                lock.truncate()
-                state = 'external_cleanup_pending' if lease_fd is not None else 'released'
-                lock.write(json.dumps(dict(stamp(), state=state,
-                                           output=str(out))) + '\n')
-                lock.flush()
-                record('lease_guard_finished' if lease_fd is not None else
-                       'lease_released', status=status['status'])
+            try:
+                if acquired:
+                    state = 'external_cleanup_pending' if lease_fd is not None else 'released'
+                    write_lock_state(lock, dict(stamp(), state=state, output=str(out)))
+                    record('lease_guard_finished' if lease_fd is not None else
+                           'lease_released', status=status['status'])
+            except OSError as error:
+                status['status'] = 'ENV_ABORT'
+                status['lease_close_error'] = repr(error)
+                cleanup_failed = True
+            try:
+                event_log.close()
+            except OSError as error:
+                status['status'] = 'ENV_ABORT'
+                status['event_close_error'] = repr(error)
+                cleanup_failed = True
             if managed_monitor is not None:
-                # Close/last-event I/O can introduce the first history gap.
-                # Freeze the receipt after those attempts, still under flock.
+                # Closing the event log can introduce the first observation gap.
                 status['compute_monitor'] = managed_monitor.snapshot()
                 if status['status'] == 'COMPLETED' and managed_monitor.had_gaps:
                     status['status'] = 'COMPLETED_WITH_MONITOR_GAPS'
-                (out / 'exit.json').write_text(json.dumps(status, indent=2) + '\n')
+            status['finished'] = stamp()
+            try:
+                publish_exit_receipt(pending, status)
+            except OSError as error:
+                print(f'Unable to publish GPU lease receipt in {out}: {error}',
+                      file=sys.stderr)
+                cleanup_failed = True
             if cleanup_failed:
                 return 75
 
@@ -463,9 +518,6 @@ def main():
     result = run_guard(command, out, common_lock(), lease_fd=args.lease_fd,
                        compute_backend=args.compute_backend,
                        inherit_lease=args.inherit_lease, inherited_fds=args.inherit_fd)
-    # A cleanup failure in finally must override an otherwise successful return.
-    if json.loads((out / 'exit.json').read_text())['status'] == 'ENV_ABORT':
-        result = 75
     raise SystemExit(result)
 
 
