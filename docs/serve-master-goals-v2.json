@@ -11119,10 +11119,11 @@
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       },
       "native_soak_log_retention_20261128": {
-        "stage": "cpu_verified",
+        "stage": "packages_and_operator_preflight_verified",
         "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
         "model_starts": 0,
-        "day_executed": false
+        "day_executed": false,
+        "packages": "evidence/serve-native-soak-retention-20261128/packages.json"
       }
     },
     {
@@ -14844,10 +14845,11 @@
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       },
       "native_soak_log_retention_20261128": {
-        "stage": "cpu_verified",
+        "stage": "packages_and_operator_preflight_verified",
         "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
         "model_starts": 0,
-        "day_executed": false
+        "day_executed": false,
+        "packages": "evidence/serve-native-soak-retention-20261128/packages.json"
       }
     }
   ],

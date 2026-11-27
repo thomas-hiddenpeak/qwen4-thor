@@ -289,7 +289,11 @@ jobs:
         run: python3 -B -m unittest tools.serve_recovery.test_cold_package
       - name: Check native soak handoff contracts and owned cleanup
         timeout-minutes: 1
-        run: python3 -B -m unittest tools.serve_soak.test_native_soak
+        run: >-
+          env PYTHONPATH=tools/evalscope python3 -B -m unittest
+          tools.serve_soak.test_native_soak
+          test_gpu_exclusive.ExclusiveTests.test_cli_retention_is_opt_in_and_preserves_the_child_arguments
+          test_gpu_exclusive.ExclusiveTests.test_invalid_log_limit_does_not_consume_the_output_directory
       - name: Check JavaScript schema input contracts
         run: node --test tools/examples/js/test_schema_client.mjs
       - name: Realtime interrupted evidence journal

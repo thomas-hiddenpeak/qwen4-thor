@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+轮转修复已写入主包与回退包。两份包与各自前驱相比，内外清单均只有 GPU guard 的源码摘要变化。两档原生短验的正常 prepare 和 check 入口均已通过，模型启动为零。真实短验将在前一笔停止态发行完成后执行。 [封包和短验预检](evidence/serve-native-soak-retention-20261128/packages.json)
+
 原生长稳现向严格 GPU guard 传入每文件 4 MiB 的轮转上限。原短验的两份监控日志在租约和归档目录各占一份。用其真实字节加速回放，两条日志各轮转两次，完整归档与输入逐字节一致。74 项 CPU 检查通过；新包短验待执行。 [轮转证据](evidence/serve-native-soak-retention-20261128/cpu.json)
 
 主包和回退包各从自己的 OpenAPI 构造 9 个请求，完成项目鉴权、创建与吊销 ChatKit 会话及真实聊天。两份包的模型都答出 42，三种应拒绝的请求均返回 401。修正验收脚本后共启动两个模型，均干净退出。 [真实客户端记录](evidence/serve-openapi-ingress-auth-20261128/managed.json)
