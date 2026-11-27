@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已修正 R07 的设备状态。早期预检记录的相机和 jtop 占用已于 11 月 26 日清理。11 月 27 日复查两项均处于 inactive/disabled，风扇控制正常。NVML 不可用冷启动实测仍按用户决定暂缓。 [维护回执](evidence/serve-local-shell-20261126/delivery.json)
+
 新签发的视频压缩窗口保留了原视频与问题。续答返回 incomplete，在 96 个输出 token 内逐字复述了摘要前 421 个字符。原生离线渲染确认视频帧相同，用户问题在摘要之后。主、轻配置对已签发窗口的通过记录仍有效；新窗口续答待修复。 [实机记录](evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json)
 
 主、轻两种真实配置分别重新启动模型并打开密封历史。两版 SDK 在每种配置下均答出版本号 560，视频续答为 Blue。6 份回答都由新请求生成，6 次跨客户提交均被拒绝。主配置用时 43.749 秒，轻配置用时 38.74 秒，各启动模型一次。下一步验证托管故障接管和可回退发行。 [主轻验收](evidence/serve-compact-window-identities-20261127/profiles.json)
