@@ -937,6 +937,7 @@ int Run(const Config& config) {
   server::HttpBodyBudget tunnel_budget(17U << 20);
   server::HttpBodyBudget budget(server::kAggregateChatBodyBytes);
   server::HttpBodyBudget cancel_budget(server::kCancelBodyBudgetBytes);
+  const std::string unavailable = UnavailableResponse();
   std::array<Slot, 32> slots;
   while (!stopped.load(std::memory_order_relaxed)) {
     if (credentials) credentials->Step(reload_credentials.exchange(false));
@@ -959,11 +960,8 @@ int Run(const Config& config) {
     auto slot = std::find_if(slots.begin(), slots.end(),
                              [](const auto& item) { return item.done.load(); });
     if (slot == slots.end()) {
-      constexpr std::string_view busy =
-          "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
-          "Retry-After: 1\r\nContent-Length: 0\r\n\r\n";
       if (!config.tls)
-        ::send(accepted.Get(), busy.data(), busy.size(),
+        ::send(accepted.Get(), unavailable.data(), unavailable.size(),
                MSG_NOSIGNAL | MSG_DONTWAIT);
       continue;
     }
@@ -996,10 +994,7 @@ int Run(const Config& config) {
           }
         } catch (...) {
           if (!started && !config.tls) {
-            constexpr std::string_view failure =
-                "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
-                "Retry-After: 1\r\nContent-Length: 0\r\n\r\n";
-            ::send(slot->fd, failure.data(), failure.size(),
+            ::send(slot->fd, unavailable.data(), unavailable.size(),
                    MSG_NOSIGNAL | MSG_DONTWAIT);
           }
         }

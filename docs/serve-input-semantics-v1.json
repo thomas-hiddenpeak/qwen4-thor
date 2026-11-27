@@ -759,7 +759,7 @@
     "src/server/text_stop.cpp": "bcfff59a107286c5ca3328c6f523f576f57df75d0e608c3c60afc537ec100978",
     "src/server/thinking_budget.cpp": "05410d285b3cd6bbdb1d5e19282655f89b5d17a3205a35529e99ec2ec1f60962",
     "src/server/token_logprobs.cpp": "9f9dfa9d1bf9e29b1e971461ba0cd000a7f6eea8cc5d25799f3bfb1e91581f32",
-    "src/service/ingress_main.cpp": "5712708b3dfdcde379e1a6aae3fe527e48331d4777c119a1b60856b1e2eab66e",
+    "src/service/ingress_main.cpp": "05636e070ab4db041f3f0982a579defab8f860af363547cf01ce172b215b102a",
     "src/text/tokenizer.cpp": "15159b888fa4d593c1bdce4e402c3c1f88bb0acacfa089a92c25057b1d5dc541",
     "src/vision/media_plan.cpp": "08358a12f3fffa7837e629058ab7a16718d28f1dcfb7ffdb596ca0ec33303283",
     "src/vision/processor.cpp": "77ab978cb844941681b834d1fd242d8d5348d19c9422f656bb0596341572d58f",

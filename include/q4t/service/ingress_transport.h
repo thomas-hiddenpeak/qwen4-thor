@@ -14,6 +14,21 @@ namespace q4t::service::ingress {
 extern std::atomic<bool> stopped;
 using Clock = std::chrono::steady_clock;
 
+// Prebuild this bounded reply before accepting clients. It also works before
+// a plaintext request has a trace ID or a fully initialized connection.
+inline std::string UnavailableResponse() {
+  constexpr std::string_view unavailable_body =
+      R"({"error":{"message":"Service entrypoint unavailable",)"
+      R"("type":"service_error","code":"gateway_unavailable",)"
+      R"("param":null}})";
+  return
+      "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
+      "Content-Type: application/json\r\nCache-Control: no-store\r\n"
+      "Retry-After: 1\r\nContent-Length: " +
+      std::to_string(unavailable_body.size()) + "\r\n\r\n" +
+      std::string(unavailable_body);
+}
+
 struct Decision {
   int port = 0;
   std::string token;

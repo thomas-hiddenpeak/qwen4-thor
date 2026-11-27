@@ -1,0 +1,311 @@
+{
+  "stage": "cpu_native_and_optional_gateway_verified_package_pending",
+  "source_base": "5237a9f95ff94d90a051bcc36bd2e717fcf815cd",
+  "official_spec_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "portable_openapi_sha256": "25e563746962e20f0be1ad36678323fa8e731e2b9bf3dc05f853bd32034b1508",
+  "fixtures": "Loopback production entrypoints with local CPU backend and guardian peers. A single configured admission lane serves a held stream for 429. The peer reports recovering for 503.",
+  "cpu_model_starts": 0,
+  "inference_status_entries_added": 18,
+  "existing_replies": {
+    "identical_2xx": 241,
+    "default": 242,
+    "404": 2,
+    "403": 1
+  },
+  "previous_default_rejected_observed_errors": 36,
+  "wire_payloads": {
+    "native_503": {
+      "headers": {
+        "content-type": "application/json",
+        "retry-after": "1",
+        "cache-control": "no-store"
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "service_error",
+          "param": null,
+          "code": "service_recovering"
+        }
+      }
+    },
+    "native_429": {
+      "headers": {
+        "content-type": "application/json",
+        "retry-after": "1",
+        "cache-control": "no-store"
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_rate_limit"
+        }
+      }
+    },
+    "optional_503": {
+      "headers": {
+        "content-type": "application/json",
+        "retry-after": "1",
+        "cache-control": "no-store"
+      },
+      "body": {
+        "error": {
+          "message": "Service temporarily unavailable",
+          "type": "service_error",
+          "param": null,
+          "code": "service_recovering"
+        }
+      }
+    },
+    "optional_429": {
+      "headers": {
+        "content-type": "application/json",
+        "retry-after": "1",
+        "cache-control": "no-store"
+      },
+      "body": {
+        "error": {
+          "message": "Gateway rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_rate_limit"
+        }
+      }
+    }
+  },
+  "captures": {
+    "native": {
+      "executable_sha256": "62f396f14e2c4149dec30d27ff16f1b7c296f47870f8594ad907fa5232d9c783",
+      "capture_sha256": "ad6af1738b448e0c8c1ca819a55c46fa3ac9554d9583afd5c19d3257f6e78a5e",
+      "http": [
+        [
+          "/v1/audio/speech",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/audio/transcriptions",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/audio/translations",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/chat/completions",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/completions",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/embeddings",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/moderations",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/responses",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/responses/compact",
+          503,
+          "native_503"
+        ],
+        [
+          "/v1/audio/speech",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/audio/transcriptions",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/audio/translations",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/chat/completions",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/completions",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/embeddings",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/moderations",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/responses",
+          429,
+          "native_429"
+        ],
+        [
+          "/v1/responses/compact",
+          429,
+          "native_429"
+        ]
+      ]
+    },
+    "optional_nginx_recovering": {
+      "executable_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "capture_sha256": "9c93d5e7af0698fa6a915b578b65dca7acc4f29dd07c9147271de18c1d490300",
+      "http": [
+        [
+          "/v1/audio/speech",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/audio/transcriptions",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/audio/translations",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/chat/completions",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/completions",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/embeddings",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/moderations",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/responses",
+          503,
+          "optional_503"
+        ],
+        [
+          "/v1/responses/compact",
+          503,
+          "optional_503"
+        ]
+      ]
+    },
+    "optional_nginx_quota": {
+      "executable_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "capture_sha256": "93e1b39ef9dabd3d271dab3883b8ad7b13df57ed239095c30540be4d6ab99cb8",
+      "http": [
+        [
+          "/v1/audio/speech",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/audio/transcriptions",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/audio/translations",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/chat/completions",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/completions",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/embeddings",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/moderations",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/responses",
+          429,
+          "optional_429"
+        ],
+        [
+          "/v1/responses/compact",
+          429,
+          "optional_429"
+        ]
+      ]
+    }
+  },
+  "plaintext_before_http": {
+    "check": "Compiled production serializer; no forced connection or worker exhaustion.",
+    "status": 503,
+    "content_length": 119,
+    "sha256": "b237acecbd7d4ef8dd91b5dbfee82e2ecc69b3e890f767c193f5df560b6528b1",
+    "body": {
+      "error": {
+        "message": "Service entrypoint unavailable",
+        "type": "service_error",
+        "code": "gateway_unavailable",
+        "param": null
+      }
+    }
+  },
+  "portable_test_package": {
+    "actual_file_matches_build": true,
+    "source_removed_before_verify": true,
+    "altered_embedded_schema_rejected": true
+  },
+  "host_build": "q4t-ingress, -Wall -Wextra -Werror",
+  "schema_and_stream_tests": 6,
+  "portable_application_test": 1,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

@@ -841,6 +841,30 @@ def openapi():
     add_openapi(paths, response, error)
     from tools.serve_protocol.voice_contract import add_voice_routes
     add_voice_routes(paths, response, error)
+    public_error = external("serve-transport-v1.schema.json", "#/$defs/http_error")
+    for path, operations in paths.items():
+        if path.startswith("/v1/"):
+            for operation in operations.values():
+                for status, reply in operation["responses"].items():
+                    if status != "default" and not status.startswith(("4", "5")):
+                        continue
+                    media = reply.get("content", {}).get("application/json", {})
+                    if media.get("schema") == error:
+                        media["schema"] = public_error
+    inference_routes = (
+        "audio/speech", "audio/transcriptions", "audio/translations",
+        "chat/completions", "completions", "embeddings", "moderations",
+        "responses", "responses/compact",
+    )
+    for name in inference_routes:
+        responses = paths["/v1/" + name]["post"]["responses"]
+        for status, description in (("429", "Inference request rate limited"),
+                                    ("503", "Inference service temporarily unavailable")):
+            entry = dict(responses["default"], description=description)
+            entry["headers"] = dict(entry["headers"], **{
+                "Retry-After": dict(description="Retry delay in seconds when available.",
+                                    schema=dict(type="integer", minimum=1))})
+            responses[status] = entry
     return dict(openapi="3.1.0", info=dict(title="Q4T serving contract",
         version="q4t-serve-v1", description="Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."),
         servers=[dict(url="http://127.0.0.1:8080", description="Example only; use effective configured address")],

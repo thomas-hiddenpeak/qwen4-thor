@@ -952,6 +952,12 @@
         "receipt": "evidence/serve-stream-media-20261127/routes.json",
         "success_media": 12,
         "stage": "source_cpu_verified_pending_package"
+      },
+      "http_inference_errors_20261127": {
+        "stage": "cpu_native_and_optional_gateway_verified_package_pending",
+        "receipt": "evidence/serve-inference-http-errors-20261127/cpu.json",
+        "named_responses": 18,
+        "wire_errors": 36
       }
     },
     {
@@ -9436,6 +9442,12 @@
         "receipt": "evidence/serve-stream-media-20261127/routes.json",
         "success_media": 12,
         "stage": "source_cpu_verified_pending_package"
+      },
+      "http_inference_errors_20261127": {
+        "stage": "cpu_native_and_optional_gateway_verified_package_pending",
+        "receipt": "evidence/serve-inference-http-errors-20261127/cpu.json",
+        "named_responses": 18,
+        "wire_errors": 36
       }
     },
     {
@@ -13874,7 +13886,13 @@
         "success_media": 12,
         "stage": "source_cpu_verified_pending_package"
       },
-      "current_program_sdk_delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
+      "current_program_sdk_delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json",
+      "http_inference_errors_20261127": {
+        "stage": "cpu_native_and_optional_gateway_verified_package_pending",
+        "receipt": "evidence/serve-inference-http-errors-20261127/cpu.json",
+        "named_responses": 18,
+        "wire_errors": 36
+      }
     },
     {
       "id": "Q03",
