@@ -26,8 +26,9 @@ using http::Trim;
 
 }  // namespace
 
-PythonResponsesView ClassifyPythonResponsesVersion(std::string_view version) {
-  using View = PythonResponsesView;
+ResponsesSdkView ClassifyResponsesVersion(ResponsesSdkLanguage language,
+                                          std::string_view version) {
+  using View = ResponsesSdkView;
   const auto number = [](std::string_view digits, unsigned* value) {
     if (digits.empty() || (digits.size() > 1 && digits.front() == '0'))
       return false;
@@ -44,6 +45,18 @@ PythonResponsesView ClassifyPythonResponsesVersion(std::string_view version) {
       !number(version.substr(first + 1, second - first - 1), &minor) ||
       !number(version.substr(second + 1), &patch))
     return View::kCurrent;
+  if (language == ResponsesSdkLanguage::kJavaScript) {
+    // Match openai-node's published MCP error, cache and SSE event types.
+    if ((major == 4 && minor >= 101) || major == 5)
+      return View::kStringMcpError;
+    if (major == 6 && minor >= 9 && minor < 35)
+      return View::kStringMcpErrorAndHyphenatedCache;
+    if (major == 6 || (major == 7 && minor < 5))
+      return View::kStringMcpErrorAndNamedArguments;
+    if (major == 7 && minor < 11) return View::kNamedArguments;
+    return View::kCurrent;
+  }
+  if (language != ResponsesSdkLanguage::kPython) return View::kCurrent;
   if (major == 2 && minor >= 8 && minor < 33)
     return View::kStringMcpErrorAndHyphenatedCache;
   // MCP arrived in 1.80.0. Structured MCP errors arrived in 3.1.0.
@@ -216,7 +229,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
   bool seen_length = false, seen_host = false;
   bool seen_id = false, seen_type = false;
   bool seen_authorization = false;
-  std::optional<bool> python_sdk;
+  std::optional<std::string_view> sdk_language;
   std::optional<std::string_view> sdk_version;
   bool seen_client = false, seen_gateway = false;
   bool seen_origin = false, seen_cors_method = false, seen_cors_headers = false;
@@ -407,7 +420,7 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
       }
       headers->agent_event_key = value;
     } else if (name == "x-stainless-lang") {
-      python_sdk = !python_sdk.has_value() && value == "python";
+      sdk_language = sdk_language ? std::string_view{} : value;
     } else if (name == "x-stainless-package-version") {
       sdk_version = sdk_version ? std::string_view{} : value;
     } else if (name == "openai-beta") {
@@ -439,14 +452,19 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     pos = end + 2;
   }
   if (version == "HTTP/1.1" && !seen_host) return false;
-  if (python_sdk.value_or(false) && sdk_version &&
-      ClassifyPythonResponsesVersion(*sdk_version) !=
-          PythonResponsesView::kCurrent &&
-      std::find(connection.begin(), connection.end(), "x-stainless-lang") ==
-          connection.end() &&
-      std::find(connection.begin(), connection.end(),
-                "x-stainless-package-version") == connection.end())
-    headers->legacy_python_sdk_version = *sdk_version;
+  if (sdk_language && sdk_version &&
+      std::ranges::find(connection, "x-stainless-lang") == connection.end() &&
+      std::ranges::find(connection, "x-stainless-package-version") ==
+          connection.end()) {
+    auto language = ResponsesSdkLanguage::kOther;
+    if (*sdk_language == "python") language = ResponsesSdkLanguage::kPython;
+    if (*sdk_language == "js") language = ResponsesSdkLanguage::kJavaScript;
+    if (ClassifyResponsesVersion(language, *sdk_version) !=
+        ResponsesSdkView::kCurrent) {
+      headers->sdk_language = language;
+      headers->legacy_sdk_version = *sdk_version;
+    }
+  }
   if (seen_length && seen_transfer) return false;
   for (const auto& option : connection)
     if (http::Protected(option)) return false;

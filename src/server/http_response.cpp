@@ -472,23 +472,23 @@ void HttpResponseContext::RecordWriteFailure(HttpWriteObservation value,
 bool HttpResponseContext::LegacyCacheRetention() {
   return current_response &&
          current_response->responses_view_ ==
-             PythonResponsesView::kStringMcpErrorAndHyphenatedCache;
+             ResponsesSdkView::kStringMcpErrorAndHyphenatedCache;
 }
 
 bool HttpResponseContext::LegacyMcpError() {
   if (!current_response) return false;
   const auto view = current_response->responses_view_;
-  return view == PythonResponsesView::kStringMcpError ||
-         view == PythonResponsesView::kStringMcpErrorAndNamedArguments ||
-         view == PythonResponsesView::kStringMcpErrorAndHyphenatedCache;
+  return view == ResponsesSdkView::kStringMcpError ||
+         view == ResponsesSdkView::kStringMcpErrorAndNamedArguments ||
+         view == ResponsesSdkView::kStringMcpErrorAndHyphenatedCache;
 }
 
 bool HttpResponseContext::LegacyFunctionArgumentName() {
   if (!current_response) return false;
   const auto view = current_response->responses_view_;
-  return view == PythonResponsesView::kNamedArguments ||
-         view == PythonResponsesView::kStringMcpErrorAndNamedArguments ||
-         view == PythonResponsesView::kStringMcpErrorAndHyphenatedCache;
+  return view == ResponsesSdkView::kNamedArguments ||
+         view == ResponsesSdkView::kStringMcpErrorAndNamedArguments ||
+         view == ResponsesSdkView::kStringMcpErrorAndHyphenatedCache;
 }
 
 HttpResponseContext* HttpResponseContext::Current(int fd) {

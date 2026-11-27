@@ -180,6 +180,9 @@ class Stack:
                 if self.path.startswith('/v1/tunnels/'):
                     row.update(tunnel_instance=self.headers.get('X-Tunnel-Client-Instance-Id'),
                                tunnel_shard_token=self.headers.get('X-Tunnel-Shard-Token'))
+                for field in ('X-Stainless-Lang', 'X-Stainless-Package-Version'):
+                    if field in self.headers:
+                        row[field] = self.headers[field]
                 stack.application_requests.append(row)
                 if row['token'] != stack.token:
                     self.response(403, dict(error=dict(code='invalid_gateway_credentials')))

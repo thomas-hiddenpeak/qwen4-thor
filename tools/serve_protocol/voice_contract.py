@@ -10,6 +10,7 @@ def speech_voice_schema():
 
 
 def add_voice_routes(paths, response, error):
+    from tools.serve_protocol.event_schema import event_stream
     text = {'type': 'string'}
     ident = dict(type='string', pattern='^[A-Za-z0-9_-]{1,128}$')
     binary = dict(type='string', format='binary')
@@ -53,7 +54,16 @@ def add_voice_routes(paths, response, error):
     speech_types = ('audio/mpeg','audio/ogg','audio/opus','audio/aac','audio/flac',
                     'audio/wav','audio/pcm','application/octet-stream')
     body = {mime:dict(schema=binary) for mime in speech_types}
-    body.update(content('text/event-stream',text))
+    count = dict(type='integer', minimum=0)
+    usage = obj(dict(input_tokens=count, output_tokens=count, total_tokens=count),
+                ['input_tokens', 'output_tokens', 'total_tokens'])
+    delta = obj(dict(type=dict(const='speech.audio.delta'),
+                     audio=dict(type='string', minLength=1, contentEncoding='base64')),
+                ['type', 'audio'])
+    done = obj(dict(type=dict(const='speech.audio.done'), usage=usage),
+               ['type', 'usage'])
+    failure = {'$ref': 'serve-application-v1.schema.json#/$defs/transcription_error'}
+    body['text/event-stream'] = event_stream(dict(oneOf=[delta, done, failure]))
     operation('post','/v1/audio/speech',{'200':dict(description='Audio or server-sent speech events',
               content=body)},body=content('application/json',speech))
 

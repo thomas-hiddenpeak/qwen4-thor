@@ -1,0 +1,226 @@
+{
+  "stock_node": [
+    {
+      "version": "5.23.2",
+      "named": false,
+      "errorType": "string | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "4dcd7b72ea53ec2d4221948f1a420f0b242cba5babc0c92c6d2b10e58d0640a9",
+      "source": "https://registry.npmjs.org/openai/-/openai-5.23.2.tgz",
+      "registry_integrity": "sha512-MQBzmTulj+MM5O8SKEk/gL8a7s5mktS9zUtAkU257WjvobGc9nKcBuVwjyEEcb9SI8a8Y2G/mzn3vm9n1Jlleg=="
+    },
+    {
+      "version": "6.0.0",
+      "named": true,
+      "errorType": "string | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "9e16d6983e0a6f055fa61ffd1439706e57c56aadc8c30661634e91594808a913",
+      "source": "https://registry.npmjs.org/openai/-/openai-6.0.0.tgz",
+      "registry_integrity": "sha512-J7LEmTn3WLZnbyEmMYcMPyT5A0fGzhPwSvVUcNRKy6j2hJIbqSFrJERnUHYNkcoCCalRumypnj9AVoe5bVHd3Q=="
+    },
+    {
+      "version": "6.34.0",
+      "named": true,
+      "errorType": "string | null",
+      "cache": "in-memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "6c178ebb79616dea74baa4a5d0fbd6e4381a5841e7c79e41c5eaf3f52e6641e6",
+      "source": "https://registry.npmjs.org/openai/-/openai-6.34.0.tgz",
+      "registry_integrity": "sha512-yEr2jdGf4tVFYG6ohmr3pF6VJuveP0EA/sS8TBx+4Eq5NT10alu5zg2dmxMXMgqpihRDQlFGpRt2XwsGj+Fyxw=="
+    },
+    {
+      "version": "6.35.0",
+      "named": true,
+      "errorType": "string | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "fe1d5e324573cde4aeabcec7eb94f7926533a6e8c004bef35a61338821d6f8ed",
+      "source": "https://registry.npmjs.org/openai/-/openai-6.35.0.tgz",
+      "registry_integrity": "sha512-L/skwIGnt5xQZHb0UfTu9uAUKbis3ehKypOuJKi20QvG7UStV6C8IC3myGYHcdiF4kms/bAvOJ9UqqNWqi8x/Q=="
+    },
+    {
+      "version": "6.8.1",
+      "named": true,
+      "errorType": "string | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "676198ff423fe46191e70bf1e39fa40512ce693a3863d411296f102543f740f2",
+      "source": "https://registry.npmjs.org/openai/-/openai-6.8.1.tgz",
+      "registry_integrity": "sha512-ACifslrVgf+maMz9vqwMP4+v9qvx5Yzssydizks8n+YUJ6YwUoxj51sKRQ8HYMfR6wgKLSIlaI108ZwCk+8yig=="
+    },
+    {
+      "version": "6.9.0",
+      "named": true,
+      "errorType": "string | null",
+      "cache": "in-memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "73ee06c4e44038c251baa5b6f0f56917a01f554a99787e46c0ef2e8358f9d056",
+      "source": "https://registry.npmjs.org/openai/-/openai-6.9.0.tgz",
+      "registry_integrity": "sha512-n2sJRYmM+xfJ0l3OfH8eNnIyv3nQY7L08gZQu3dw6wSdfPtKAk92L83M2NIP5SS8Cl/bsBBG3yKzEOjkx0O+7A=="
+    },
+    {
+      "version": "7.10.0",
+      "named": true,
+      "errorType": "ResponsesAPI.McpToolCallError | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "8c46a58d4911502e8a6e774e1dee6e58c366d8edf680f2c1157dd3a1456d55b9",
+      "source": "https://registry.npmjs.org/openai/-/openai-7.10.0.tgz",
+      "registry_integrity": "sha512-sn9t2Kls7O52PwuF9BUTYNu4Gk/r0lXJyrgaNht4TNRlZFb3dJIGO0RciSgjARGCBRtWjySubAQFJttlzUvGQQ=="
+    },
+    {
+      "version": "7.12.1",
+      "named": false,
+      "errorType": "ResponsesAPI.McpToolCallError | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "e59e4b3cf1d7627e36e22612dc7a3847c1312285fca380186f3d45707986b8e5",
+      "source": "https://registry.npmjs.org/openai/-/openai-7.12.1.tgz",
+      "registry_integrity": "sha512-D0d8NevCWPe+cxE5kw/ZaBRh1Od4FfhRmD6FlNeLN1j96Xll5MYEJTbaFF9/F3eQHJANjrSuq2nWBCpVT+TmnQ=="
+    },
+    {
+      "version": "7.4.0",
+      "named": true,
+      "errorType": "string | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "9abc2ca76315dce650bdaca9d0942035c5addaa6e3fd0cc2528731046964dddd",
+      "source": "https://registry.npmjs.org/openai/-/openai-7.4.0.tgz",
+      "registry_integrity": "sha512-+C9Muit5x8j9R8ej8ZzVgKcrVDtqFqTy9gxFdov0EItLgU68zrJtF9ZeT0cyqJQW9S3PCJkdFgADtRGquRBtew=="
+    },
+    {
+      "version": "7.5.0",
+      "named": true,
+      "errorType": "ResponsesAPI.McpToolCallError | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "a5d21e9e72ae056de463d64a64aee9404ad1c2c3aa70be487840a1bf52337ce9",
+      "source": "https://registry.npmjs.org/openai/-/openai-7.5.0.tgz",
+      "registry_integrity": "sha512-ZbDBz8FSB8Mv8fFYIUvzTFMdV5vl93/octp1MdtK2lfYepSpfv/ewmeugpKz/cwGtFSx+YuUM4NwpZ2P55YiPA=="
+    },
+    {
+      "version": "7.47.0",
+      "named": false,
+      "errorType": "ResponsesAPI.McpToolCallError | null",
+      "cache": "in_memory",
+      "requests": 9,
+      "frames": 188,
+      "resumed": 44,
+      "foreign": 3,
+      "types_sha256": "36e7fa75452efa336eaae2e8664a5f872073a8ce8522b62879de5bf3e53a56f8",
+      "source": "https://registry.npmjs.org/openai/-/openai-7.47.0.tgz"
+    }
+  ],
+  "fixture_sha256": "ec48f14dddb7dfab6490a03fab4b41a18fd60a6bc2d0404ad1928b5fa9cda6c0",
+  "sources": {
+    "e47417761d6867ac006d1671754f6c00a96d1f214534a92a7be2b57ee6bfe094.response.resp_2725eeeada17f2496b7955cea4ab325a.json": "ef056115d7e002d62a3b1d0a6aadc4575cb34308e2fe73a2a1fb4f606e730afa",
+    "e47417761d6867ac006d1671754f6c00a96d1f214534a92a7be2b57ee6bfe094.response.resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9.json": "bee7ee83553a2b3494aea5bee6f4d831167cbdee2ae80ea713c3323e8ceb0bbe",
+    "e47417761d6867ac006d1671754f6c00a96d1f214534a92a7be2b57ee6bfe094.response.resp_b10b7c6a9b91952b64c30673b6e79d61.json": "4e6a01bb9eb8b8dc801fbcd7cef25d9273993068ee4f0476bb5d6e55fde807b4"
+  },
+  "store_unchanged": true,
+  "scope": "OpenAI Node SDK readback of two issued function responses and one real denied MCP result via native CPU HTTP; authenticated native ingress with a loopback peer",
+  "model_starts": 0,
+  "parent_commit": "0928901e4a5e9fa7eb9c4d7129b1d670b9cc07b8",
+  "before_fixture_sha256": "44bf37a8c3a0db6af8422844497d659a7b83a8dc042c7653e2ae0c681834545c",
+  "before_failures": {
+    "6.0.0": [
+      {
+        "id": "resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9",
+        "expected_name": "record",
+        "name_missing": true,
+        "frames": 144
+      },
+      {
+        "id": "resp_2725eeeada17f2496b7955cea4ab325a",
+        "expected_name": "record",
+        "name_missing": true,
+        "frames": 6
+      }
+    ],
+    "7.10.0": [
+      {
+        "id": "resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9",
+        "expected_name": "record",
+        "name_missing": true,
+        "frames": 144
+      },
+      {
+        "id": "resp_2725eeeada17f2496b7955cea4ab325a",
+        "expected_name": "record",
+        "name_missing": true,
+        "frames": 6
+      }
+    ]
+  },
+  "totals": {
+    "requests": 99,
+    "foreign": 33,
+    "frames": 2068,
+    "resumed": 484
+  },
+  "live_parallel_functions": "Native live/replay two distinct tool calls and exact output indices",
+  "ingress": {
+    "binary_sha256": "ba94ee8bba687b339a7743f71fa69d7c4dad8d26c6a0d6d5d2e4ee4f41df84d4",
+    "route_and_version_cases": 6,
+    "transport": "HTTP/1.1 loopback"
+  },
+  "native_tests": [
+    "[PASS] http_responses_presentation_matches_published_sdk_ranges",
+    "[PASS] http_javascript_responses_version_selects_declared_wire_types",
+    "[PASS] responses_mcp_output_tool_and_listing_errors_close_exactly_once",
+    "[PASS] responses_legacy_arguments_event_uses_the_exact_function_item",
+    "[PASS] responses_parallel_function_names_match_live_and_retained_events"
+  ],
+  "source_records": {
+    "functions": "program-fork-business-01; HTTP-fixture owner mapping",
+    "mcp": "mcp-error-sdk-business-01; HTTP-fixture owner mapping"
+  },
+  "earlier_test_attempts": [
+    "Per-connection random stream obfuscation differed on text deltas. Both reads now explicitly request include_obfuscation=false before exact comparison.",
+    "Combined matrix reached the fixture limit of 100 HTTP requests. Re-ran in two independent fixture processes; original device records and server limit retained."
+  ],
+  "candidate_release": "pending real TLS tool round trip and issue",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

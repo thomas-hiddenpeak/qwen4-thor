@@ -23,6 +23,28 @@ class NativeTests(fixture.NginxTests):
     def setUp(self):
         self.stack = fixture.Stack(self.output, native_ingress=INGRESS)
 
+    def test_responses_sdk_version_reaches_only_compatible_routes(self):
+        self.ready()
+        for path, language, version, expected in [
+            ('/v1/responses/resp_sdk', 'js', '7.10.0', True),
+            ('/v1/responses/compact', 'js', '6.34.0', True),
+            ('/v1/responses/resp_sdk', 'python', '2.8.1', True),
+            ('/v1/responses/resp_sdk', 'js', '7.12.1', False),
+            ('/v1/responses/resp_sdk', 'js', '7.010.0', False),
+            ('/v1/conversations', 'js', '7.10.0', False),
+        ]:
+            with self.subTest(path=path, language=language, version=version):
+                fields = {'X-Stainless-Lang': language,
+                          'X-Stainless-Package-Version': version}
+                method = 'GET' if 'resp_sdk' in path else 'POST'
+                status, _, _ = self.stack.request(
+                    path=path, extra=fields, method=method)
+                self.assertEqual(status, 200)
+                row = self.stack.application_requests[-1]
+                self.assertEqual(row['path'], path)
+                self.assertEqual({k: row[k] for k in fields if k in row},
+                                 fields if expected else {})
+
     def replace_stack(self, **policy):
         self.stack.close()
         self.stack = fixture.Stack(self.output, native_ingress=INGRESS,

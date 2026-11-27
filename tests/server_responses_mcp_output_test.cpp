@@ -163,7 +163,7 @@ Q4T_TEST(responses_mcp_output_approval_is_complete_without_fabricated_call) {
 
 Q4T_TEST(responses_mcp_output_native_error_data_matches_failure_and_dispatch) {
   detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
-  context.SetResponsesView(PythonResponsesView::kStringMcpError);
+  context.SetResponsesView(ResponsesSdkView::kStringMcpError);
   ResponsesOutput output;
   std::string wire, part;
   size_t call;
@@ -230,7 +230,7 @@ Q4T_TEST(responses_mcp_output_native_error_data_matches_failure_and_dispatch) {
   Q4T_CHECK(changed == 2);
   Q4T_CHECK(Value(output.Json()).GetArray("output")->array.at(call)
                 .GetString("error") == error);
-  context.SetResponsesView(PythonResponsesView::kCurrent);
+  context.SetResponsesView(ResponsesSdkView::kCurrent);
   Q4T_CHECK(execution.PublicWire(wire) == wire);
   Q4T_CHECK(Value(output.Json()).GetArray("output")->array.at(call)
                 .Find("error")->IsObject());
@@ -371,14 +371,16 @@ Q4T_TEST(responses_legacy_arguments_event_uses_the_exact_function_item) {
            {"1.109.1", false}, {"2.0.0", true}, {"2.8.1", true},
            {"2.33.0", true}, {"3.0.0", true}, {"3.8.0", true},
            {"3.9.0", false}, {"3.55.1", false}}) {
-    context.SetResponsesView(ClassifyPythonResponsesVersion(version));
+    context.SetResponsesView(ClassifyResponsesVersion(
+        ResponsesSdkLanguage::kPython, version));
     auto event = original;
     Q4T_CHECK(ProjectFunctionArgumentName(&event, response));
     Q4T_CHECK(event.Has("name") == named);
     if (named) Q4T_CHECK(event.GetString("name") == "second");
     Q4T_CHECK(event.GetString("item_id") == "fc_b");
   }
-  context.SetResponsesView(ClassifyPythonResponsesVersion("3.8.0"));
+  context.SetResponsesView(ClassifyResponsesVersion(
+      ResponsesSdkLanguage::kPython, "3.8.0"));
   for (const auto index : {-1, 0, 2}) {
     auto wrong = original;
     Set(&wrong, "output_index", Number(index));

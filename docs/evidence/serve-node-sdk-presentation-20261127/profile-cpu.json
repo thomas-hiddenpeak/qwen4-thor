@@ -1,0 +1,55 @@
+{
+  "scope": "CPU SDK exercise. Native GETs; both continuation POSTs served from earlier GPU-issued branches.",
+  "model_starts": 0,
+  "device_generation_requests": 0,
+  "requests": 26,
+  "denied": 8,
+  "continuations": {
+    "6.34.0": {
+      "source_sha256": "51d345612a99583c2c174c6a2854f22ad3adf8fe4f3cc7640b340ba1d60ebb09",
+      "response": "resp_5fef9d8fc124b66042021da0ddaa9e32"
+    },
+    "7.47.0": {
+      "source_sha256": "25d62552d4850456184230cb0f02fde29d73133dce2c1fa948707d3e7a92b44d",
+      "response": "resp_2fa81843078124a1ccb5fa0d5c391ff3"
+    }
+  },
+  "origin": "resp_f45df1118cbadcc527c1e4eb19911a3c",
+  "rejects": [
+    "foreign read unexpectedly succeeded",
+    "both capacities report the same fresh branch",
+    "retained suffix changed after recovery",
+    "missing tool continuation"
+  ],
+  "actor": "5e5859410439551d4de05ec508267e61396006c2539cfd7ff4b3f6a5abf957e1",
+  "source_store_unchanged": true,
+  "previous_profiles": {
+    "scope": "CPU structure round trip only; no capacity accepted",
+    "profiles": {
+      "primary": {
+        "old_sha256": "f28848bd6c06fe5aed1cda3f4b55f775e51f231c8f4cd6191872da76891e1cc8",
+        "lossless": true,
+        "missing_predecessor_rejected": true
+      },
+      "light": {
+        "old_sha256": "c0ca345b2002585807d53138337787349e43ed96bc7062277bf00a59c7bd7cf4",
+        "lossless": true,
+        "missing_predecessor_rejected": true
+      }
+    }
+  },
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "python_profile_regressions": 2,
+  "device_capacity_accepted": false,
+  "loopback_transport": "isolated native HTTP on loopback verified; real capacity TLS still pending"
+}

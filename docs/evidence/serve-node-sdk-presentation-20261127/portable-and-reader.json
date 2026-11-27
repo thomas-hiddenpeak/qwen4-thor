@@ -1,0 +1,149 @@
+{
+  "status": "CPU_VERIFIED",
+  "portable_engine_fixture": {
+    "engine_manifest": "0d49933417f80a2c7755f4a363e9b8573dd6fe857b097e029f0f04a5d184b301",
+    "openapi": "f31e52e6717d3f55e065c60759bcd4076512457d13194bce42cc6549dcef14ba",
+    "routes": {
+      "POST /v1/completions": 37,
+      "POST /v1/chat/completions": 13,
+      "POST /v1/audio/transcriptions": 46,
+      "POST /v1/threads/runs": 9,
+      "POST /v1/threads/{thread_id}/runs": 9,
+      "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs": 13,
+      "POST /v1/chatkit": 25,
+      "POST /v1/agents/sessions": 5,
+      "GET /v1/agents/sessions/{session_id}/events": 5,
+      "POST /v1/responses": 8,
+      "GET /v1/responses/{response_id}": 3,
+      "POST /v1/audio/speech": 17
+    },
+    "route_total": 12,
+    "payload_checks": 190,
+    "exchanges": [
+      "answer",
+      "current",
+      "foreign",
+      "live",
+      "retained"
+    ],
+    "exchange_file": "2f3a28060ba7df09e13032f85f5de075c441ff54e1418d9a696ce2a5a206dc6e",
+    "scope": "portable CPU engine packaging fixture; device-issued response replay",
+    "actual_service_package": false,
+    "gpu_starts": 0,
+    "original_inputs_removed": true,
+    "tampered_declaration_rejected": true
+  },
+  "retained_business_resource": {
+    "scope": "CPU native API, retained device-issued tool resources, no model generation",
+    "clients": {
+      "6.34.0": {
+        "sdk": "6.34.0",
+        "foreign_reads": [
+          404,
+          404
+        ],
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 200,
+            "peer": false
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_ba6b0c693fdff233dda5b29024a68512",
+            "status": 200,
+            "peer": false
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 404,
+            "peer": true
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_ba6b0c693fdff233dda5b29024a68512",
+            "status": 404,
+            "peer": true
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 200,
+            "peer": false
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 200,
+            "peer": false
+          }
+        ],
+        "named": true
+      },
+      "7.47.0": {
+        "sdk": "7.47.0",
+        "foreign_reads": [
+          404,
+          404
+        ],
+        "requests": [
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 200,
+            "peer": false
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_ba6b0c693fdff233dda5b29024a68512",
+            "status": 200,
+            "peer": false
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 404,
+            "peer": true
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_ba6b0c693fdff233dda5b29024a68512",
+            "status": 404,
+            "peer": true
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 200,
+            "peer": false
+          },
+          {
+            "method": "GET",
+            "path": "/v1/responses/resp_f45df1118cbadcc527c1e4eb19911a3c",
+            "status": 200,
+            "peer": false
+          }
+        ],
+        "named": false
+      }
+    },
+    "origin": {
+      "kind": "CPU replay; POST replies are retained device-issued resources",
+      "records": {
+        "resp_f45df1118cbadcc527c1e4eb19911a3c": "92979edd00463813e109be5d5ab851c848948b7acce1d956685f11abfb30b19b",
+        "resp_ba6b0c693fdff233dda5b29024a68512": "8dac231ce3b971be4f248b140d71b2a513cb8cdebae755c76e530b1facc88349"
+      },
+      "generation_requests": 0,
+      "store_unchanged": true
+    },
+    "store_unchanged": true,
+    "frames": 8,
+    "posts": 0,
+    "cross_version_view_equal_after_documented_fields": true
+  },
+  "reader_sha256": "5e5859410439551d4de05ec508267e61396006c2539cfd7ff4b3f6a5abf957e1",
+  "model_starts": 0,
+  "production_packages": "pending"
+}

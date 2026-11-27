@@ -1,0 +1,275 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 568,
+  "build": {
+    "engine": "1e19aca99f8493c20065ee90e37509a72c729ce12005b7412be3434a5c35f403",
+    "ingress": "fed4f8761b8766ce50e1e1c146d181b4e6d30043e2d7e7febf9d8c3834fef914"
+  },
+  "openapi_sha256": "f31e52e6717d3f55e065c60759bcd4076512457d13194bce42cc6549dcef14ba",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "phase": "primary",
+        "clients": {
+          "6.34.0": {
+            "sdk": "6.34.0",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "requests": [
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "POST",
+                "path": "/v1/responses",
+                "status": 200,
+                "peer": false
+              }
+            ],
+            "named": true,
+            "wire": {
+              "hashes": {
+                "call": "85cd0812786a84493698bf82a23e3b49d6347ac8250554e4869fca2c20b6c3c4",
+                "answer": "2fc7f87afcd1e98111ab1cff72af0694ece78c6494d8bd06ef96076fa9118298",
+                "events": "02d0bfb4813c0d765464a5888fe81ab98e6781e477286e319b3b31544e481ce9",
+                "resumed": "6978ee6e46c61e0146f0aed0d6b182d11d74d292c3dd5fc5664485eaef48b087",
+                "continuation": "5665c2c491e16079f07324f5445b159e6c640c41e4b706c9a3573a8e9478d8a6"
+              },
+              "continued": "resp_cec376c2964afba6bb414c376545f4f1"
+            }
+          },
+          "7.47.0": {
+            "sdk": "7.47.0",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "requests": [
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              }
+            ],
+            "named": false,
+            "wire": {
+              "hashes": {
+                "call": "5145a76ed421b65e4dd93d62b9f6dc96b8b44ca01f776963652b1bac16b22db3",
+                "answer": "c36915939bd4a86212ab2849e66de08e26c4592fb0c1881193c2d591c286c0f9",
+                "events": "eba8ad48f027d87eb736028ca0c5b95f734d7d4e70b888d5c6a28e76b3a4ab65",
+                "resumed": "50d1dddb90519a3e12e6cc7554aba2fd082e03e055497b50fd812b6a33a5f5d3"
+              },
+              "continued": null
+            }
+          }
+        }
+      },
+      "seconds": 40.039,
+      "starts": 1,
+      "record_sha256": "a2705073e91a2ba9c217f67369c14145a301c1e21e5a68f04df73691fe695d6e",
+      "receipt_sha256": "fe555a5c0b99ca723212dded53fa0c8d253f41f4cc4dd2d9141109b5229d1f34",
+      "predecessor": "f28848bd6c06fe5aed1cda3f4b55f775e51f231c8f4cd6191872da76891e1cc8"
+    },
+    "light": {
+      "sdk": {
+        "phase": "light",
+        "clients": {
+          "6.34.0": {
+            "sdk": "6.34.0",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "requests": [
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              }
+            ],
+            "named": true,
+            "wire": {
+              "hashes": {
+                "call": "85cd0812786a84493698bf82a23e3b49d6347ac8250554e4869fca2c20b6c3c4",
+                "answer": "2fc7f87afcd1e98111ab1cff72af0694ece78c6494d8bd06ef96076fa9118298",
+                "events": "02d0bfb4813c0d765464a5888fe81ab98e6781e477286e319b3b31544e481ce9",
+                "resumed": "6978ee6e46c61e0146f0aed0d6b182d11d74d292c3dd5fc5664485eaef48b087"
+              },
+              "continued": null
+            }
+          },
+          "7.47.0": {
+            "sdk": "7.47.0",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "requests": [
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_7e97897d465d0e862dbdccfada079508",
+                "status": 404,
+                "peer": true
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "GET",
+                "path": "/v1/responses/resp_6dcff5b6979dac03e9fb4d79e8cdc3e6",
+                "status": 200,
+                "peer": false
+              },
+              {
+                "method": "POST",
+                "path": "/v1/responses",
+                "status": 200,
+                "peer": false
+              }
+            ],
+            "named": false,
+            "wire": {
+              "hashes": {
+                "call": "5145a76ed421b65e4dd93d62b9f6dc96b8b44ca01f776963652b1bac16b22db3",
+                "answer": "c36915939bd4a86212ab2849e66de08e26c4592fb0c1881193c2d591c286c0f9",
+                "events": "eba8ad48f027d87eb736028ca0c5b95f734d7d4e70b888d5c6a28e76b3a4ab65",
+                "resumed": "50d1dddb90519a3e12e6cc7554aba2fd082e03e055497b50fd812b6a33a5f5d3",
+                "continuation": "757901c23a76c98993cc5dc96aea99693bb61220ed3c9b56ceb2317dc5e049c1"
+              },
+              "continued": "resp_46bc7983dada75c7d0b27fe32e378edc"
+            }
+          }
+        }
+      },
+      "seconds": 35.148,
+      "starts": 1,
+      "record_sha256": "82f4f873f3f90db5d7853e4bfb8c1c3eaf9e987a28bb7ff98c01b4eecb68592d",
+      "receipt_sha256": "8acebddf96f028dcf24ef7dcc9b59f46da37f67214ec390f296b9f0159e1d066",
+      "predecessor": "c0ca345b2002585807d53138337787349e43ed96bc7062277bf00a59c7bd7cf4"
+    }
+  },
+  "business_evidence": "73902fc963c3d5c866af0e7440d7d3b0f7f5fbb8a1b4716ddf817fcab592be0f",
+  "lease_exit": "284f14134512fe9cc074194a0ab4df89deeaac1474facf1c5a24191687961804",
+  "acceptance": "fc04e8ac86d0cc216f5b4f0a829cfbf718bf17ba48de8a76023fb2b97b8ae69a",
+  "qualification": "e02fecd417e24d09c770f0fb84145f8b89fffb6339bedf1568675a7125f149e7",
+  "default_preserved": true
+}

@@ -554,8 +554,7 @@ int ResponsesApiFixture(int argc, char** argv) {
         detail::SendSimple(fd, 200, "OK", "{}", "application/json");
         return 0;
       }
-      http.SetResponsesView(
-          ClassifyPythonResponsesVersion(headers.legacy_python_sdk_version));
+      http.SetResponsesView(headers.ResponsesView());
       StateAccess access{headers.authorization == "Bearer cpu-a"
                              ? "client:cpu-a"
                              : "client:cpu-b",
@@ -605,7 +604,8 @@ Q4T_TEST(responses_parallel_function_names_match_live_and_retained_events) {
   Fixture fixture;
   ObjectStore objects(fixture.options);
   detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
-  context.SetResponsesView(ClassifyPythonResponsesVersion("2.8.1"));
+  context.SetResponsesView(ClassifyResponsesVersion(
+      ResponsesSdkLanguage::kPython, "2.8.1"));
   ResponsesExecution run(objects);
   std::string wire, part;
   ChatPlanConfig config;
@@ -647,7 +647,8 @@ Q4T_TEST(responses_parallel_function_names_match_live_and_retained_events) {
   const auto path = "/v1/responses/" + run.Output().Snapshot().GetString("id") +
                     "?stream=true&include_obfuscation=false";
   Q4T_CHECK(Ok(Read(objects, "GET", path, &replay)) && replay.wire == live);
-  context.SetResponsesView(ClassifyPythonResponsesVersion("3.55.1"));
+  context.SetResponsesView(ClassifyResponsesVersion(
+      ResponsesSdkLanguage::kPython, "3.55.1"));
   Q4T_CHECK(run.PublicWire(wire) == wire && wire != live);
   Q4T_CHECK(Ok(Read(objects, "GET", path, &replay)));
   // The current reader also receives the current cache-retention spelling.

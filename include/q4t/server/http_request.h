@@ -26,14 +26,17 @@ inline bool ValidHttpRequestId(std::string_view id) {
   return true;
 }
 
-enum class PythonResponsesView : unsigned char {
+enum class ResponsesSdkLanguage : unsigned char { kOther, kPython, kJavaScript };
+
+enum class ResponsesSdkView : unsigned char {
   kCurrent,
   kStringMcpError,
   kStringMcpErrorAndNamedArguments,
   kStringMcpErrorAndHyphenatedCache,
   kNamedArguments,
 };
-PythonResponsesView ClassifyPythonResponsesVersion(std::string_view version);
+ResponsesSdkView ClassifyResponsesVersion(ResponsesSdkLanguage language,
+                                          std::string_view version);
 
 struct HttpRequestHeaders {
   std::string request_id;
@@ -46,6 +49,7 @@ struct HttpRequestHeaders {
   bool agents_beta = false;
   bool chatkit_beta = false;
   bool realtime_beta = false;
+  ResponsesSdkLanguage sdk_language = ResponsesSdkLanguage::kOther;
   std::string agent_event_key;
   std::string client_id;
   std::string gateway_token;
@@ -84,7 +88,10 @@ struct HttpRequestHeaders {
   HttpReceiveFailure failure = HttpReceiveFailure::kNone;
   int system_error = 0;
   // Validated presentation hint. Never used for identity or cache policy.
-  std::string legacy_python_sdk_version;
+  std::string legacy_sdk_version;
+  ResponsesSdkView ResponsesView() const {
+    return ClassifyResponsesVersion(sdk_language, legacy_sdk_version);
+  }
 };
 
 // Reservation spans reading, parsing, queueing and response completion.
