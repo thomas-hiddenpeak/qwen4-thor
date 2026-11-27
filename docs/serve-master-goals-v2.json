@@ -972,7 +972,8 @@
       },
       "inference_body_defaults_20261127": {
         "state": "source_cpu_verified_pending_issuance",
-        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json"
       }
     },
     {
@@ -3302,7 +3303,8 @@
       },
       "inference_body_defaults_20261127": {
         "state": "source_cpu_verified_pending_issuance",
-        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json"
       }
     },
     {
@@ -9535,7 +9537,8 @@
       },
       "inference_body_defaults_20261127": {
         "state": "source_cpu_verified_pending_issuance",
-        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json"
       }
     },
     {
@@ -14049,7 +14052,8 @@
       },
       "inference_body_defaults_20261127": {
         "state": "source_cpu_verified_pending_issuance",
-        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json"
       }
     },
     {

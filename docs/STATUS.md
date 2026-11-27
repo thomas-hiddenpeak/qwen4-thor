@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+新包在封装时逐项比对六份独立 schema 及 OpenAPI 内嵌副本，覆盖类型化默认值和改写后的引用。设备已发行 rev574；用其主、回退包试验，原包均通过，跨版本混用两种方向均被拒绝。新校验和默认值仍待下一次发行。[封包验证](evidence/serve-request-defaults-20261127/seal.json)
+
 Responses 创建请求的九项默认值已写入稳定版和代理历史版 schema。Chat、视觉和 Completion 同步声明 `stop=null` 和 `logit_bias=null`。对照冻结 OpenAPI，8 项 Python 检查与 3 项原生 CPU 解析检查通过；保存的 Prompt 继续保留调用方的覆盖权。此项已验源码，发行包待同步。[对照回执](evidence/serve-request-defaults-20261127/cpu.json)
 
 托管恢复已核对录音权限。默认主包切换到已登记回退包、回退包从模型退出恢复后，Python 2.8.1 和 Node 7.47.0 都读回同一份 23 项事件列表，录音所有者与其他客户均收到 404。单独启用录音的实例在模型恢复前后共四次读回同一份 2,620,472 字节 WAV，另一客户两次收到 404。三组新 Chat 都返回 42。 当前设备仍为 rev572，候选等待发行。 [托管回执](evidence/serve-sdk-method-matrix-20261127/recording-managed.json)

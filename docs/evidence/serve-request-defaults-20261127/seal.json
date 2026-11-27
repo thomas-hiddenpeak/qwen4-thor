@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "revision": 574,
+  "desired": "STOPPED",
+  "source_branch_parent": "39b0d5d1118aba3553b153e859349b99e88b6f6d",
+  "active_package_sha256": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6",
+  "preserved_issued": {
+    "primary": {
+      "bundle": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6",
+      "engine_manifest": "35cd8bbb7ce4a058f2c3639475c058a66dae5d6a411bf4459a0ff4aa255ce42a",
+      "openapi": "24c70fc7b30a9eee29dcc278d9e3df6c6e79d487ed4893081ab9ab80fe12f852",
+      "matched_components": 6
+    },
+    "fallback": {
+      "bundle": "0d25a64aa16e7c7ba50625346416004bf7e34cce1600d3851cfde85e3e168f38",
+      "engine_manifest": "68cf5d9ad70156ead64edb8576cd97fe27ab5d1bc4efdeece96096cb020f4131",
+      "openapi": "24c70fc7b30a9eee29dcc278d9e3df6c6e79d487ed4893081ab9ab80fe12f852",
+      "matched_components": 6
+    }
+  },
+  "inputs": {
+    "stale_bundle": {
+      "individual_digests": "PASS",
+      "seal": "REJECTED",
+      "reason": "OpenAPI component differs from standalone schema: serve-completion-request-v1.schema.json"
+    },
+    "stale_standalone": {
+      "individual_digests": "PASS",
+      "seal": "REJECTED",
+      "reason": "OpenAPI component differs from standalone schema: serve-completion-request-v1.schema.json"
+    },
+    "candidate": {
+      "individual_digests": "PASS",
+      "seal": "PASS",
+      "components": 6,
+      "openapi": "7e5f083de681b6dd3fb80ed923efde6545606bc4f604b203325c662d3553aa99"
+    }
+  },
+  "tests": {
+    "declaration_suite": 25,
+    "before_fix_mutations_accepted": [
+      "typed_default",
+      "missing_component",
+      "wrong_reference"
+    ],
+    "legacy_package_suite": 11
+  },
+  "components": {
+    "config": "serve-config-v1.schema.json",
+    "preflight": "serve-preflight-v1.schema.json",
+    "response": "serve-transport-v1.schema.json",
+    "completion_request": "serve-completion-request-v1.schema.json",
+    "completion_response": "serve-completion-transport-v1.schema.json",
+    "application": "serve-application-v1.schema.json"
+  },
+  "validation": "Checked the real retained engine manifests and issued schema bytes on Thor. Candidate comparison used private copies of those declarations; it is not a candidate deployment.",
+  "model_starts": 0,
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "release_preparation_source_sha256": "f09a1f0833d970316661f4e98255128130965c001f6c856d84b5681fcf95d2b2",
+  "previous_issuance_source": "0675b292127b12a6c9987bc1a631f88d8912fdde"
+}
