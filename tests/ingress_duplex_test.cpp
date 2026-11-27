@@ -64,9 +64,23 @@ DuplexLimits Short() { return {1000ms, 500ms, 2000ms, 8ULL << 30}; }
 Q4T_TEST(http_early_error_sent_before_half_close) {
   Pair pair;
   const auto reply = UnavailableResponse();
-  ServeConnection(pair.b.Get(), false, nullptr, reply,
+  ServeConnection(pair.b.Get(), false, nullptr,
                   [](Connection&, bool&) { throw std::runtime_error("peer"); });
   Q4T_CHECK(Take(pair.a.Get(), reply.size() + 1) == reply);
+  return true;
+}
+
+Q4T_TEST(http_exception_after_forward_does_not_invite_another_write) {
+  Pair pair;
+  ServeConnection(pair.b.Get(), false, nullptr,
+                  [](Connection& client, bool&) {
+                    client.unsafe_request_forwarded = true;
+                    throw std::runtime_error("peer");
+                  });
+  const auto reply = Take(pair.a.Get(), 1024);
+  Q4T_CHECK(reply.starts_with("HTTP/1.1 503 "));
+  Q4T_CHECK(reply.find("X-Should-Retry: false\r\n") != reply.npos);
+  Q4T_CHECK(reply.find("Retry-After:") == reply.npos);
   return true;
 }
 
@@ -74,7 +88,7 @@ Q4T_TEST(http_started_stream_preserves_its_only_response) {
   Pair pair;
   constexpr std::string_view stream =
       "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n\r\ndata: x\n\n";
-  ServeConnection(pair.b.Get(), false, nullptr, UnavailableResponse(),
+  ServeConnection(pair.b.Get(), false, nullptr,
                   [&](Connection& client, bool& started) {
                     client.Send(stream, Clock::now() + 1s, &started);
                     throw std::runtime_error("peer");
@@ -86,7 +100,7 @@ Q4T_TEST(http_started_stream_preserves_its_only_response) {
 Q4T_TEST(http_failed_tls_setup_sends_no_plaintext_response) {
   Pair pair;
   bool dispatched = false;
-  ServeConnection(pair.b.Get(), true, nullptr, UnavailableResponse(),
+  ServeConnection(pair.b.Get(), true, nullptr,
                   [&](Connection&, bool&) { dispatched = true; });
   Q4T_CHECK(!dispatched && Take(pair.a.Get(), 1).empty());
   return true;
@@ -256,7 +270,7 @@ int main(int argc, char** argv) {
     OwnedFd client(std::stoi(argv[4])), upstream(std::stoi(argv[5]));
     if (mode == "--http-error-peer") {
       bool dispatched = false;
-      ServeConnection(client.Get(), true, tls, UnavailableResponse(),
+      ServeConnection(client.Get(), true, tls,
                       [&](Connection&, bool&) {
                         dispatched = true;
                         throw std::runtime_error("test handler");

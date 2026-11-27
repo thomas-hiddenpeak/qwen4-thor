@@ -367,6 +367,16 @@ def route_map():
     return '\n'.join(rows)
 
 
+def retry_maps():
+    # nginx reports upstream bytes for the main request independently of the
+    # authorization subrequest. A locally generated error can follow dispatch.
+    return '''  map "$request_method:$upstream_bytes_sent" $q4t_no_retry {
+    default "";
+    "~^(POST|PUT|PATCH|DELETE):[1-9]" false;
+  }
+  map $q4t_no_retry $q4t_retry_after { default 1; false ""; }'''
+
+
 def websocket_maps():
     # Only the two authenticated upgrade routes can carry WebSocket headers.
     # Validate the client's upgrade tokens before creating an upstream tunnel.
@@ -782,11 +792,13 @@ def render(value, directory, backend_policy=None):
         errors[403] = 'gateway_source_denied'
     for status, code in errors.items():
         auth = 'add_header WWW-Authenticate \'Bearer realm="q4t"\' always;' if status == 401 else ''
-        retry = 'add_header Retry-After 1 always;' if status == 429 else ''
+        retry = 'add_header Retry-After $q4t_retry_after always;' if status == 429 else ''
         locations.append(f'''    error_page {status} = @error_{status};
     location @error_{status} {{
       internal;
       default_type application/json;
+      add_header X-Request-Id $request_id always;
+      add_header X-Should-Retry $q4t_no_retry always;
       add_header X-Q4T-Gateway-Request-Id $request_id always;
       add_header Cache-Control no-store always;
       {auth} {retry}
@@ -840,6 +852,7 @@ http {{
   limit_conn_zone $q4t_all_control zone=all_control:1m;
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
+{retry_maps()}
 {websocket_maps()}
 {responses_beta_maps()}
 {tunnel_maps()}

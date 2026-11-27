@@ -844,13 +844,17 @@ def openapi():
     public_error = external("serve-transport-v1.schema.json", "#/$defs/http_error")
     for path, operations in paths.items():
         if path.startswith("/v1/"):
-            for operation in operations.values():
+            for method, operation in operations.items():
                 for status, reply in operation["responses"].items():
                     if status != "default" and not status.startswith(("4", "5")):
                         continue
                     media = reply.get("content", {}).get("application/json", {})
                     if media.get("schema") == error:
                         media["schema"] = public_error
+                        if method not in ("get", "head", "options"):
+                            reply["headers"] = dict(reply.get("headers", {}), **{
+                                "X-Should-Retry": dict(schema=dict(type="string", enum=["false"]),
+                                    description="Automatic retries are suppressed when the upstream may have executed this request.")})
     inference_routes = (
         "audio/speech", "audio/transcriptions", "audio/translations",
         "chat/completions", "completions", "embeddings", "moderations",

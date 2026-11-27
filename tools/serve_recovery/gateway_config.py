@@ -123,10 +123,12 @@ def render(value, runtime, auth_port, secret):
     for status, code in errors.items():
         auth = ('add_header WWW-Authenticate \'Bearer realm="q4t"\' always;'
                 if status == 401 else '')
-        retry = 'add_header Retry-After 1 always;' if status == 429 else ''
+        retry = 'add_header Retry-After $q4t_retry_after always;' if status == 429 else ''
         locations.append(f'''    error_page {status} = @error_{status};
     location @error_{status} {{
       internal;
+      add_header X-Request-Id $request_id always;
+      add_header X-Should-Retry $q4t_no_retry always;
       add_header Cache-Control no-store always;
       {auth} {retry}
       return {status} '{{"error":{{"message":"Gateway rejected request","type":"gateway_error","param":null,"code":"{code}"}}}}';
@@ -183,6 +185,7 @@ http {{
   limit_conn_zone $q4t_all_control zone=all_control:1m;
   limit_req_zone $q4t_data zone=data_rate:1m rate={p['per_client_rps']}r/s;
   limit_req_zone $q4t_control zone=control_rate:1m rate=10r/s;
+{g.retry_maps()}
 {g.websocket_maps()}
 {g.responses_beta_maps()}
 {g.tunnel_maps()}
@@ -197,8 +200,10 @@ http {{
     error_page 500 502 503 504 = @recovering;
     location @recovering {{
       internal;
+      add_header X-Request-Id $request_id always;
+      add_header X-Should-Retry $q4t_no_retry always;
       add_header Cache-Control no-store always;
-      add_header Retry-After 1 always;
+      add_header Retry-After $q4t_retry_after always;
       return 503 '{{"error":{{"message":"Service temporarily unavailable","type":"service_error","param":null,"code":"$q4t_error"}}}}';
     }}
     location = /_q4t_authorize {{

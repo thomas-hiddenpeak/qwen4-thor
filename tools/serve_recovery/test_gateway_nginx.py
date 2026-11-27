@@ -816,6 +816,8 @@ class NginxTests(unittest.TestCase):
         status, headers, body = self.stack.request(dict(prompt='blocked'))
         self.assertEqual(status, 503)
         self.assertEqual(body['error']['code'], 'service_recovering')
+        self.assertRegex(headers['X-Request-Id'], r'^[A-Za-z0-9_.:-]{1,128}$')
+        self.assertNotIn('X-Should-Retry', headers)
         self.assertEqual(headers.get('Retry-After'), '1')
         self.assertEqual(self.stack.request(dict(prompt='bad key'), key='a'*40)[0], 401)
         self.assertEqual(self.stack.request(path='/metrics')[0], 404)
@@ -838,6 +840,8 @@ class NginxTests(unittest.TestCase):
         self.ready()
         result = self.stack.request(dict(drop=True, tools=[dict(name='read_project')]))
         self.assertEqual(result[0], 503)
+        self.assertEqual(result[1].get('X-Should-Retry'), 'false')
+        self.assertNotIn('Retry-After', result[1])
         self.assertEqual(len(self.stack.requests), 1)
         self.assertEqual(len(self.stack.forwarded), 1)
 

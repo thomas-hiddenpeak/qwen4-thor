@@ -958,6 +958,12 @@
         "receipt": "evidence/serve-inference-http-errors-20261127/cpu.json",
         "named_responses": 18,
         "wire_errors": 36
+      },
+      "sdk_retry_boundary_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "cases": 24,
+        "http_attempts": 56,
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
       }
     },
     {
@@ -9448,6 +9454,12 @@
         "receipt": "evidence/serve-inference-http-errors-20261127/cpu.json",
         "named_responses": 18,
         "wire_errors": 36
+      },
+      "sdk_retry_boundary_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "cases": 24,
+        "http_attempts": 56,
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
       }
     },
     {
@@ -10003,6 +10015,12 @@
           "merge": "d15498f168366d6fd799a0acc791fb398f466763",
           "evidence": "evidence/serve-pr43-merged-20261117/README.md"
         }
+      },
+      "sdk_retry_boundary_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "cases": 24,
+        "http_attempts": 56,
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
       }
     },
     {
@@ -13892,6 +13910,12 @@
         "receipt": "evidence/serve-inference-http-errors-20261127/cpu.json",
         "named_responses": 18,
         "wire_errors": 36
+      },
+      "sdk_retry_boundary_20261127": {
+        "stage": "cpu_verified_device_pending",
+        "cases": 24,
+        "http_attempts": 56,
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
       }
     },
     {

@@ -22,6 +22,11 @@ class HttpErrors(unittest.TestCase):
                                           ('503', 'service_error', 'service_unavailable_error')]:
                 with self.subTest(route=route, status=code):
                     response = responses[code]
+                    replay = response['headers']['X-Should-Retry']
+                    self.assertFalse(replay.get('required', False))
+                    replay_hint = self.validator.evolve(schema=replay['schema'])
+                    self.assertTrue(replay_hint.is_valid('false'))
+                    self.assertFalse(replay_hint.is_valid('true'))
                     header = response['headers']['Retry-After']
                     self.assertFalse(header.get('required', False))
                     delay = self.validator.evolve(schema=header['schema'])

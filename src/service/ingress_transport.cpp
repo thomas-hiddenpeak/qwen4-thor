@@ -216,13 +216,14 @@ bool Readable(int fd) {
 }
 
 bool WriteUpload(int fd, std::string_view data, Clock::time_point deadline,
-                 Connection& client) {
+                 Connection& client, bool* forwarded) {
   while (!data.empty() && Wait(fd, POLLIN | POLLOUT, deadline, &client)) {
     if (Readable(fd)) return false;
     const ssize_t count =
         ::send(fd, data.data(), data.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
     if (count < 0 && (errno == EAGAIN || errno == EINTR)) continue;
     if (count <= 0) return false;
+    if (forwarded) *forwarded = true;
     data.remove_prefix(static_cast<size_t>(count));
   }
   return data.empty();
@@ -316,10 +317,13 @@ std::string RequestId() {
 bool Reply(Connection& client, int status, std::string_view body,
            std::string_view request_id, bool* started) {
   if (*started) return false;
-  const std::string extra =
-      status == 401
-          ? "WWW-Authenticate: Bearer realm=\"q4t\"\r\n"
-          : (status == 429 || status == 503 ? "Retry-After: 1\r\n" : "");
+  std::string extra;
+  if (status == 401) extra = "WWW-Authenticate: Bearer realm=\"q4t\"\r\n";
+  if (status >= 400 && client.unsafe_request_forwarded) {
+    extra += "X-Should-Retry: false\r\n";
+  } else if (status == 429 || status == 503) {
+    extra += "Retry-After: 1\r\n";
+  }
   const std::string response =
       "HTTP/1.1 " + std::to_string(status) +
       " Response\r\nContent-Type: application/json\r\nContent-Length: " +

@@ -16,17 +16,22 @@ using Clock = std::chrono::steady_clock;
 
 // Prebuild this bounded reply before accepting clients. It also works before
 // a plaintext request has a trace ID or a fully initialized connection.
-inline std::string UnavailableResponse() {
+inline const std::string& UnavailableResponse(bool suppress_retry = false) {
   constexpr std::string_view unavailable_body =
       R"({"error":{"message":"Service entrypoint unavailable",)"
       R"("type":"service_error","code":"gateway_unavailable",)"
       R"("param":null}})";
-  return
+  constexpr std::string_view header =
       "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
-      "Content-Type: application/json\r\nCache-Control: no-store\r\n"
-      "Retry-After: 1\r\nContent-Length: " +
-      std::to_string(unavailable_body.size()) + "\r\n\r\n" +
-      std::string(unavailable_body);
+      "Content-Type: application/json\r\nCache-Control: no-store\r\n";
+  static const std::string payload =
+      "Content-Length: " + std::to_string(unavailable_body.size()) +
+      "\r\n\r\n" + std::string(unavailable_body);
+  static const std::string retryable =
+      std::string(header) + "Retry-After: 1\r\n" + payload;
+  static const std::string ambiguous =
+      std::string(header) + "X-Should-Retry: false\r\n" + payload;
+  return suppress_retry ? ambiguous : retryable;
 }
 
 struct Decision {
@@ -54,6 +59,9 @@ class Connection {
   bool Cancelled();
   short PollEvents() const;
   std::string extra_headers;
+  // Reset for each HTTP request. Once bytes of a write request have reached
+  // the upstream socket, a missing response cannot prove it never executed.
+  bool unsafe_request_forwarded = false;
   bool keep_alive = false;
   bool http11 = true;
 
@@ -67,7 +75,7 @@ class Connection {
 // connection whose response has not started may receive a new response.
 void ServeConnection(int fd, bool require_tls,
                      const std::shared_ptr<TlsContext>& context,
-                     std::string_view unavailable, auto&& handle) {
+                     auto&& handle) {
   Connection client(fd);
   bool http_ready = !require_tls;
   bool started = false;
@@ -76,7 +84,8 @@ void ServeConnection(int fd, bool require_tls,
     if (http_ready) handle(client, started);
   } catch (...) {
     if (http_ready && !started)
-      client.Send(unavailable, Clock::now() + std::chrono::milliseconds(100));
+      client.Send(UnavailableResponse(client.unsafe_request_forwarded),
+                  Clock::now() + std::chrono::milliseconds(100));
   }
 }
 
@@ -88,7 +97,7 @@ OwnedFd Connect(int port, Connection& client,
 // client input or a full upstream socket. No request replay or body buffering.
 bool Readable(int fd);
 bool WriteUpload(int fd, std::string_view data, Clock::time_point deadline,
-                 Connection& client);
+                 Connection& client, bool* forwarded = nullptr);
 bool Write(int fd, std::string_view data, Clock::time_point deadline,
            Connection* client = nullptr, bool* started = nullptr);
 void Error(Connection& client, int status, std::string_view code,

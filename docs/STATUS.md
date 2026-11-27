@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+准入前出现 429 或 503 时，客户端仍可按 Retry-After 重试；写请求已经转交而应答中断时，原生及可选 nginx 入口现在返回 X-Should-Retry: false。旧入口在该情形下把同一次 SDK 调用投递了两次。Python 2.8.1、3.55.1 与 Node 6.34.0、7.47.0 经两个入口共发出 56 个 HTTP 请求，24 个场景均只有一次后端提交。另验独立 TLS nginx 的错误追踪 ID 和 GET、POST 的区别。 [重试回执](evidence/serve-inference-http-errors-20261127/sdk-retries.json)
+
 公开推理 HTTP 合同补上 9 个 POST 方法的 429、503 和可选 Retry-After。原生入口及可选 nginx 各在 CPU 对端上返回 18 个真实拒绝响应，封包内声明通过全部 36 例。实际套接字验证了明文与已握手 TLS 的提前 503、已开始的流以及握手失败四种边界。原有 241 个成功声明逐项一致。设备发行仍待新入口验证。 [请求与报文证据](evidence/serve-inference-http-errors-20261127/cpu.json)
 
 主配置开启 MTP，轻配置关闭 MTP；均从同一对象库恢复已签发的工具调用和答复。Node SDK 6.34.0 和 7.47.0 各自读到完整事件、相同的断点后缀和对应的函数名表示；两边均按原调用回填实际发行号 568，产生独立的成功续答。每套配置各启动一次模型，耗时分别为 40.039 和 35.148 秒。下一步验证封包、托管恢复与回退。 [容量配置验收](evidence/serve-node-sdk-presentation-20261127/profiles.json)
