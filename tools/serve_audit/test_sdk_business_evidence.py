@@ -1,6 +1,8 @@
 """Prevent cross-method or cross-version promotion of incomplete wire evidence."""
 import csv
 import io
+import json
+from pathlib import Path
 import unittest
 
 from .sdk_business_evidence import Catalog, CLIENTS, index, render
@@ -50,6 +52,12 @@ class BusinessEvidenceTest(unittest.TestCase):
         for rows, statuses in bad:
             with self.subTest(rows=rows, statuses=statuses), self.assertRaises(ValueError):
                 index(self.catalog, [('trial', (590, rows, statuses))])
+
+    def test_published_matrix_matches_reconstruction(self):
+        directory = Path(__file__).resolve().parents[2] / 'docs/evidence/serve-sdk-business-index-20261128'
+        table, manifest = render()
+        self.assertEqual((directory/'business.csv').read_bytes(), table.encode())
+        self.assertEqual(json.loads((directory/'sources.json').read_bytes()), manifest)
 
     def test_original_historical_wire_receipts(self):
         table, summary = render()
