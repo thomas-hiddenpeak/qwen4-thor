@@ -68,6 +68,29 @@ def receive(conn, expected):
 
 
 class Stage(profiles.Stage):
+    def reader_health(self):
+        status, raw = self.http('/v1/config', timeout=3)
+        require(status == 200, 'could not observe native reader health')
+        config = json.loads(raw)
+        return {name: config[f'native_{name}_health'] for name in ('embedding', 'vad')}
+
+    def observe_contention(self, pid, start_ticks, identity):
+        # The POST can be in flight during WebRTC negotiation before VAD starts.
+        # Check the original embedding reader again after sampling the server.
+        for _ in range(60):
+            health = self.reader_health()
+            require(held_weight(pid, identity) and journal.process_start(pid) == start_ticks,
+                    'embedding weight reader finished before VAD loading was observed')
+            if health['vad']['state'] == 'loading':
+                require(health['embedding']['state'] == 'loading'
+                        and health['vad']['load_attempts'] == 1,
+                        'native backend state differs during the overlapping read')
+                return health
+            require(health['vad']['state'] == 'configured',
+                    f'unexpected VAD state before overlapping load: {health["vad"]}')
+            time.sleep(.025)
+        raise TimeoutError('VAD did not start while the embedding reader held its weight')
+
     def business(self):
         plan = self.plan
         cmd = plan['command']
@@ -89,6 +112,9 @@ class Stage(profiles.Stage):
                     {'Authorization': 'Bearer '+self.keys[client], 'Content-Type': 'application/json'})
             session = dict(model='qwen3.8-flash-next', client=dict(data_channel=dict(
                 allowed_client_events=['session.close'])))
+            initial = self.reader_health()
+            require(all(h['state'] == 'configured' and h['load_attempts'] == 0
+                        for h in initial.values()), 'both asset readers must start cold')
             post(embed, '/v1/embeddings', dict(model=embeddings.MODEL,
                  input='project reference', dimensions=32, encoding_format='float'), 'alpha')
             reader, identity = wait_reader(self.model, weights)
@@ -100,6 +126,7 @@ class Stage(profiles.Stage):
             require(held_weight(reader, identity), 'embedding weight read ended before concurrent POST')
             require(journal.process_start(reader) == reader_start,
                     'embedding worker identity changed during the concurrent POST')
+            loading = self.observe_contention(reader, reader_start, identity)
             reply = receive(live, 201)
             ident = reply['session']['id']
             rtc.accept_answer(peer, reply['transport']['sdp'])
@@ -110,6 +137,11 @@ class Stage(profiles.Stage):
             channel.send_string(json.dumps(dict(type='session.close', event_id='done')))
             rtc.wait_for(lambda: observed('session.closed'), 'session close', 15)
             vector = embeddings.vectors(receive(embed, 200), 1, 32)
+        ready = self.reader_health()
+        require(all(h['state'] == 'ready' and h['load_failures'] == 0
+                    for h in ready.values()) and ready['vad']['load_attempts'] == 1
+                and ready['vad']['host_weight_bytes'] > 0 and ready['embedding']['device_bytes'] > 0,
+                'native readers did not both finish their first cold load')
         self.budget('chats')
         code, chat = self.api('POST', '/v1/chat/completions', body=dict(model=session['model'],
             temperature=0, enable_thinking=False, max_completion_tokens=16,
@@ -119,6 +151,7 @@ class Stage(profiles.Stage):
         save(self.out/'asset-admission.json', dict(model_pid=self.model.pid,
              embedding_worker_pid=reader, reader_start_ticks=reader_start,
              reader_held_weight_after_post=True,
+             backend_health=dict(before=initial, overlapping=loading, after=ready),
              send_monotonic_ns=[start,sent], embedding_dimensions=len(vector[0]),
              live_status=201, live_session=ident, closed=True, independent_chat='42',
              business_https_posts=dict(embeddings=1, live_sessions=1, chat=1)))

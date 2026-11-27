@@ -7085,6 +7085,7 @@
       "model_asset_admission_20261127": {
         "stage": "cpu_verified",
         "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
+        "observer": "evidence/serve-asset-admission-20261127/observer.json",
         "issued": false
       }
     },
@@ -11044,6 +11045,7 @@
       "model_asset_admission_20261127": {
         "stage": "cpu_verified",
         "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
+        "observer": "evidence/serve-asset-admission-20261127/observer.json",
         "issued": false
       }
     },
