@@ -1,0 +1,1829 @@
+{
+  "stage": "issued",
+  "previous_revision": 564,
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 566,
+    "version_revision": 212,
+    "profile_revision": 101,
+    "previous_profile_revision": 100,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2",
+    "fallback": "684d0bab8f1632c0d3e124bbef33137b6dfe3ed28241d12fc83dc37e2853746a",
+    "engine": "2a4e49ddecc441ffe9f261069436ee50e4251a54d40d52f3ec74dd6dedb0d6c6",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "package_source": "91a19f2b006530057159e562afebaac5c4a066f3",
+  "previous_primary": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b",
+  "recovery": {
+    "primary": {
+      "seconds": 368.631,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": {
+          "release-old": [
+            "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "560"
+          ],
+          "release-current": [
+            "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "560"
+          ],
+          "failed-video": [
+            "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "Blue"
+          ],
+          "fixed-review": [
+            "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "Blue"
+          ],
+          "fresh-video": [
+            "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "Blue"
+          ],
+          "blue-image": [
+            "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "Blue"
+          ],
+          "red-image": [
+            "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "Red"
+          ]
+        },
+        "original": {
+          "release-old": [
+            "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "560"
+          ],
+          "release-current": [
+            "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "560"
+          ],
+          "failed-video": [
+            "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "Blue"
+          ],
+          "fixed-review": [
+            "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "Blue"
+          ],
+          "fresh-video": [
+            "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "Blue"
+          ],
+          "blue-image": [
+            "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "Blue"
+          ],
+          "red-image": [
+            "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "Red"
+          ]
+        },
+        "foreign": {
+          "release-old": "invalid_encrypted_content",
+          "release-current": "invalid_encrypted_content",
+          "failed-video": "invalid_encrypted_content",
+          "fixed-review": "invalid_encrypted_content",
+          "fresh-video": "invalid_encrypted_content",
+          "blue-image": "invalid_encrypted_content",
+          "red-image": "invalid_encrypted_content"
+        },
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "phase": "primary",
+        "cases": {
+          "release-old": {
+            "sdk": "2.33.0",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "93e1a2c1b8ca8a7067d63dd810651609fd0670d5f7d974e572f6112cb6652208",
+            "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "response_id": "resp_99393740ea295998f060f3ec76bd3959"
+          },
+          "release-current": {
+            "sdk": "3.55.1",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "96bc5badcf6f96c7c4384c2275e0328e7ef8812dc855b84655b36b3e899542f4",
+            "window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "response_id": "resp_cd9110067d34bbeb66829cb11c23dfaa"
+          },
+          "failed-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1186,
+              "input_tokens_details": {
+                "cache_write_tokens": 1179,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1188
+            },
+            "http_status": 200,
+            "response_sha256": "5b31ff864450c067e9d453aedb0a745c1436ced278cf5f826fec49d353983e9d",
+            "window_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "response_id": "resp_7ad1a96e2f34a89ad0de1d4cf18c5f48"
+          },
+          "fixed-review": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1039,
+              "input_tokens_details": {
+                "cache_write_tokens": 1032,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1041
+            },
+            "http_status": 200,
+            "response_sha256": "e631355e271455668f23470868231b51e563e933396418feff8defabbef560b1",
+            "window_sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "response_id": "resp_3d2fefe3ccb3b66ded152ba60d25fae1"
+          },
+          "fresh-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1045,
+              "input_tokens_details": {
+                "cache_write_tokens": 1038,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1047
+            },
+            "http_status": 200,
+            "response_sha256": "25a826af56fceef3631732bfee4468f91a7a026c2b8fbcfc3c75943f505bfda6",
+            "window_sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "response_id": "resp_e6860e8701ed43fb72e4e8b88d329930"
+          },
+          "blue-image": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "acf792045f5def5d54947e00ba8c4afffc8f32306ecd35d7bab885de7bee7f66",
+            "window_sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "response_id": "resp_346c9a369352ae884ab1c4810d60c964"
+          },
+          "red-image": {
+            "sdk": "3.55.1",
+            "answer": "Red",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "ab1409068b3f7a8d73c08a7c92443343148329082bbc73e887597641bdfaa768",
+            "window_sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "response_id": "resp_41152fef83fc97729eed86e855a6d5e5"
+          }
+        },
+        "captures": {
+          "failed-video/response.json": "5b31ff864450c067e9d453aedb0a745c1436ced278cf5f826fec49d353983e9d",
+          "red-image/response.json": "ab1409068b3f7a8d73c08a7c92443343148329082bbc73e887597641bdfaa768",
+          "fixed-review/response.json": "e631355e271455668f23470868231b51e563e933396418feff8defabbef560b1",
+          "blue-image/response.json": "acf792045f5def5d54947e00ba8c4afffc8f32306ecd35d7bab885de7bee7f66",
+          "release-old/response.json": "93e1a2c1b8ca8a7067d63dd810651609fd0670d5f7d974e572f6112cb6652208",
+          "fresh-video/response.json": "25a826af56fceef3631732bfee4468f91a7a026c2b8fbcfc3c75943f505bfda6",
+          "release-current/response.json": "96bc5badcf6f96c7c4384c2275e0328e7ef8812dc855b84655b36b3e899542f4"
+        },
+        "sdk_sha256": "f605957a4f1c95d6a52b0aeadf869c3abe584ac5bcae9ed88431a31cb24bea6a"
+      },
+      "recovered": {
+        "phase": "light",
+        "cases": {
+          "release-old": {
+            "sdk": "2.33.0",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "fcd9c2a9bfc45ff22d257c89f7961a1b591903c91729a000d97d8c9f2a002d9f",
+            "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "response_id": "resp_f8c9cb0b75fadff09ca1aa39cc645d91"
+          },
+          "release-current": {
+            "sdk": "3.55.1",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "08971b2ee2911b54e985680f5d27af0896341025cb44e082f65440f35e77b71f",
+            "window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "response_id": "resp_e7f76c5dba7cfceb5843b2a604deaa5f"
+          },
+          "failed-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1186,
+              "input_tokens_details": {
+                "cache_write_tokens": 1179,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1188
+            },
+            "http_status": 200,
+            "response_sha256": "d753a76b98bbdfed06227646589b86c4a8c9471f5b3ce93db5d6589286dd7bf4",
+            "window_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "response_id": "resp_3cd957323c7b9787db0fe0ea4c4846cb"
+          },
+          "fixed-review": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1039,
+              "input_tokens_details": {
+                "cache_write_tokens": 1032,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1041
+            },
+            "http_status": 200,
+            "response_sha256": "b7451b3543f401f82a53c3cfa7ef1375aedc6404625b97da40419d366d276358",
+            "window_sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "response_id": "resp_08bc31d02d7d6b21e7d4e99e260a2b76"
+          },
+          "fresh-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1045,
+              "input_tokens_details": {
+                "cache_write_tokens": 1038,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1047
+            },
+            "http_status": 200,
+            "response_sha256": "3da87adf26236d13b325f90534795953726c1f60e50ef67d3b4f0f1b8e53c737",
+            "window_sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "response_id": "resp_35b83ab52528c095ffcada7c69f10492"
+          },
+          "blue-image": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "f148c9618b086448e50612f698738a897f8594fd2c4a6ff05b9b5ac656d9b125",
+            "window_sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "response_id": "resp_d82dc6452b093c8ade9f0cbb3d8c466f"
+          },
+          "red-image": {
+            "sdk": "3.55.1",
+            "answer": "Red",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "a11a4b7dae136d0583ba7aa155a0112ee9b10ad4748dc425d23855cdf93c01e3",
+            "window_sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "response_id": "resp_f4b8442770542ca94c473bdc65a97b3c"
+          }
+        },
+        "captures": {
+          "failed-video/response.json": "d753a76b98bbdfed06227646589b86c4a8c9471f5b3ce93db5d6589286dd7bf4",
+          "red-image/response.json": "a11a4b7dae136d0583ba7aa155a0112ee9b10ad4748dc425d23855cdf93c01e3",
+          "fixed-review/response.json": "b7451b3543f401f82a53c3cfa7ef1375aedc6404625b97da40419d366d276358",
+          "blue-image/response.json": "f148c9618b086448e50612f698738a897f8594fd2c4a6ff05b9b5ac656d9b125",
+          "release-old/response.json": "fcd9c2a9bfc45ff22d257c89f7961a1b591903c91729a000d97d8c9f2a002d9f",
+          "fresh-video/response.json": "3da87adf26236d13b325f90534795953726c1f60e50ef67d3b4f0f1b8e53c737",
+          "release-current/response.json": "08971b2ee2911b54e985680f5d27af0896341025cb44e082f65440f35e77b71f"
+        },
+        "sdk_sha256": "f605957a4f1c95d6a52b0aeadf869c3abe584ac5bcae9ed88431a31cb24bea6a"
+      },
+      "fresh_chat": "42"
+    },
+    "fallback": {
+      "seconds": 223.282,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": {
+          "release-old": [
+            "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "560"
+          ],
+          "release-current": [
+            "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "560"
+          ],
+          "failed-video": [
+            "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "Blue"
+          ],
+          "fixed-review": [
+            "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "Blue"
+          ],
+          "fresh-video": [
+            "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "Blue"
+          ],
+          "blue-image": [
+            "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "Blue"
+          ],
+          "red-image": [
+            "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "Red"
+          ]
+        },
+        "original": {
+          "release-old": [
+            "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "560"
+          ],
+          "release-current": [
+            "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "560"
+          ],
+          "failed-video": [
+            "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "Blue"
+          ],
+          "fixed-review": [
+            "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "Blue"
+          ],
+          "fresh-video": [
+            "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "Blue"
+          ],
+          "blue-image": [
+            "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "Blue"
+          ],
+          "red-image": [
+            "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "Red"
+          ]
+        },
+        "foreign": {
+          "release-old": "invalid_encrypted_content",
+          "release-current": "invalid_encrypted_content",
+          "failed-video": "invalid_encrypted_content",
+          "fixed-review": "invalid_encrypted_content",
+          "fresh-video": "invalid_encrypted_content",
+          "blue-image": "invalid_encrypted_content",
+          "red-image": "invalid_encrypted_content"
+        },
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "phase": "primary",
+        "cases": {
+          "release-old": {
+            "sdk": "2.33.0",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "61a42e7da7475968b648639597deae34f8f523a7a87980e9c9fa9289e5b5a838",
+            "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "response_id": "resp_41f12fa6cdd637f0b4d9086f75437ecf"
+          },
+          "release-current": {
+            "sdk": "3.55.1",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "c7725e6cf2bf5abb50ebecd65e948c1e5fd3f2f24b0f27353572c7bb7e1e5e3f",
+            "window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "response_id": "resp_932c65ce3be258e6816795621616addf"
+          },
+          "failed-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1186,
+              "input_tokens_details": {
+                "cache_write_tokens": 1179,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1188
+            },
+            "http_status": 200,
+            "response_sha256": "6bc10835b402fc543d5fad5a8f505cd85b9d8ecedb5a2aa8abe85e4ac8d0c1bb",
+            "window_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "response_id": "resp_97c593c3beefa8d983e5caeb8c3e2c6c"
+          },
+          "fixed-review": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1039,
+              "input_tokens_details": {
+                "cache_write_tokens": 1032,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1041
+            },
+            "http_status": 200,
+            "response_sha256": "2c2fb48307e3ea4c647a7274358fdc45ab489ad181b2e99a80178acb674666fa",
+            "window_sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "response_id": "resp_44b50527a4888124a3596487c7d0d78f"
+          },
+          "fresh-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1045,
+              "input_tokens_details": {
+                "cache_write_tokens": 1038,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1047
+            },
+            "http_status": 200,
+            "response_sha256": "c099af57b442f134162ee60f80409d508019509b459b811d30d1f0157c70506e",
+            "window_sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "response_id": "resp_d721c0bc4219133734e1cf872daec9bc"
+          },
+          "blue-image": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "482efc11e454653f06217ddff3b21be7e531687162ff01b61889c2c77827479f",
+            "window_sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "response_id": "resp_35595a118c23b55e5d42218dcf9110d7"
+          },
+          "red-image": {
+            "sdk": "3.55.1",
+            "answer": "Red",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "56c75598f70b56dc084cef1229e9cff6b5e430552da2d7a54aa31c568b4595dd",
+            "window_sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "response_id": "resp_f59cc447a9c7e9b56c422167aa2ebfbe"
+          }
+        },
+        "captures": {
+          "failed-video/response.json": "6bc10835b402fc543d5fad5a8f505cd85b9d8ecedb5a2aa8abe85e4ac8d0c1bb",
+          "red-image/response.json": "56c75598f70b56dc084cef1229e9cff6b5e430552da2d7a54aa31c568b4595dd",
+          "fixed-review/response.json": "2c2fb48307e3ea4c647a7274358fdc45ab489ad181b2e99a80178acb674666fa",
+          "blue-image/response.json": "482efc11e454653f06217ddff3b21be7e531687162ff01b61889c2c77827479f",
+          "release-old/response.json": "61a42e7da7475968b648639597deae34f8f523a7a87980e9c9fa9289e5b5a838",
+          "fresh-video/response.json": "c099af57b442f134162ee60f80409d508019509b459b811d30d1f0157c70506e",
+          "release-current/response.json": "c7725e6cf2bf5abb50ebecd65e948c1e5fd3f2f24b0f27353572c7bb7e1e5e3f"
+        },
+        "sdk_sha256": "f605957a4f1c95d6a52b0aeadf869c3abe584ac5bcae9ed88431a31cb24bea6a"
+      },
+      "recovered": {
+        "phase": "light",
+        "cases": {
+          "release-old": {
+            "sdk": "2.33.0",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cached_tokens": 0,
+                "cache_write_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "8c4fae6c2bd664addefd19ae9cd7b6d4d54df0ac3c1e52e47226e527fa4d0328",
+            "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "response_id": "resp_37d15bc87205fb5488066206de4dac91"
+          },
+          "release-current": {
+            "sdk": "3.55.1",
+            "answer": "560",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1127,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 1120
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1131
+            },
+            "http_status": 200,
+            "response_sha256": "1c463b3f95d8e10913d1b8840cd88df06eece823bc4306fdd47735adc695d565",
+            "window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "response_id": "resp_439dd37eabfcf693058e39203d78b05e"
+          },
+          "failed-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1186,
+              "input_tokens_details": {
+                "cache_write_tokens": 1179,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1188
+            },
+            "http_status": 200,
+            "response_sha256": "f96c8975f1422a7afc9bce709386bcf5d40c17751faa13a605ee8855acbfc9b7",
+            "window_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "response_id": "resp_363b5d342898b4b59ee43253e08ad836"
+          },
+          "fixed-review": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1039,
+              "input_tokens_details": {
+                "cache_write_tokens": 1032,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1041
+            },
+            "http_status": 200,
+            "response_sha256": "5e12bdb39bda6b6683817a729155cd1cc9bb8e5c1e64b35c120dac05d5ea2248",
+            "window_sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "response_id": "resp_8ae52b3616da8d474384bb1c843a641b"
+          },
+          "fresh-video": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 1045,
+              "input_tokens_details": {
+                "cache_write_tokens": 1038,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 1047
+            },
+            "http_status": 200,
+            "response_sha256": "db57e2cd8d5400d4f682c4b867f2d2cc071a8be327747c19718c3390a3664f72",
+            "window_sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "response_id": "resp_75175743dccf484aea78aa6259d00b5c"
+          },
+          "blue-image": {
+            "sdk": "3.55.1",
+            "answer": "Blue",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "c23b3454b23c230841de27235663a5e2097c733ed44abe07d401f847ffad65de",
+            "window_sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "response_id": "resp_b6c22e2da2cfa307c62515c9e67ffeea"
+          },
+          "red-image": {
+            "sdk": "3.55.1",
+            "answer": "Red",
+            "exact_answer": true,
+            "foreign_code": "invalid_encrypted_content",
+            "usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            },
+            "http_status": 200,
+            "response_sha256": "c77342cf52a25ca92ebe85d2f1a1765cfd2ab90ddabf5eafacb9f6e62b355100",
+            "window_sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "response_id": "resp_2b966bcdfd1f42103aadfc69d7efd422"
+          }
+        },
+        "captures": {
+          "failed-video/response.json": "f96c8975f1422a7afc9bce709386bcf5d40c17751faa13a605ee8855acbfc9b7",
+          "red-image/response.json": "c77342cf52a25ca92ebe85d2f1a1765cfd2ab90ddabf5eafacb9f6e62b355100",
+          "fixed-review/response.json": "5e12bdb39bda6b6683817a729155cd1cc9bb8e5c1e64b35c120dac05d5ea2248",
+          "blue-image/response.json": "c23b3454b23c230841de27235663a5e2097c733ed44abe07d401f847ffad65de",
+          "release-old/response.json": "8c4fae6c2bd664addefd19ae9cd7b6d4d54df0ac3c1e52e47226e527fa4d0328",
+          "fresh-video/response.json": "db57e2cd8d5400d4f682c4b867f2d2cc071a8be327747c19718c3390a3664f72",
+          "release-current/response.json": "1c463b3f95d8e10913d1b8840cd88df06eece823bc4306fdd47735adc695d565"
+        },
+        "sdk_sha256": "f605957a4f1c95d6a52b0aeadf869c3abe584ac5bcae9ed88431a31cb24bea6a"
+      },
+      "fresh_chat": "42"
+    }
+  },
+  "packaged_protocol": {
+    "status": "PASS",
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "packages": {
+      "fallback": {
+        "manifest": "684d0bab8f1632c0d3e124bbef33137b6dfe3ed28241d12fc83dc37e2853746a",
+        "signed_windows": [
+          {
+            "sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "object_id": "resp_0b384196a05e496f39d0f3a56547e639",
+            "kind": "window",
+            "strict_upstream": false,
+            "normalized_legacy_fields": [
+              "mcp_call.error"
+            ]
+          },
+          {
+            "sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "object_id": "resp_0b384196a05e496f39d0f3a56547e639",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "object_id": "resp_d7c35e129b22d4ad187fabdcbe6ee7b4",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "object_id": "resp_51a8f2a0cf06b0cda5d852838f3fc2ac",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "object_id": "resp_69c0c937a5a58aa5232ea150be5a39ed",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "object_id": "resp_e7680a753ffa9819f78b4bac47cf9605",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "object_id": "resp_0d59cd93e442da9f5648af21b28e3925",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          }
+        ],
+        "source_responses": {
+          "release-old": {
+            "sha256": "ff993e3e8d420e9a7adc3cf3901d51a5d15a7d17e713fd549345a921989c0a58",
+            "object_id": "resp_70f959e50a7102a161cbfd8a9f64d4d1",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "release-current": {
+            "sha256": "ff993e3e8d420e9a7adc3cf3901d51a5d15a7d17e713fd549345a921989c0a58",
+            "object_id": "resp_70f959e50a7102a161cbfd8a9f64d4d1",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "failed-video": {
+            "sha256": "6000ed00bc2d56d48784b1bba44079ac075cfb2a415ff63bb18cf644d34fd4bb",
+            "object_id": "resp_522d2fa9b62ecaa3a4024a8ba5931a0c",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "fixed-review": {
+            "sha256": "99a7e33f8f4c53aa49e11e1b055675f00ce5b9532d5a7a8a2856663546596830",
+            "object_id": "resp_4389e6c1ca3b07684d5cae7d62eb97fc",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "fresh-video": {
+            "sha256": "bdf8928bd32c58568e532e5e594b831ed61a12008f9514dcd2a232a08cfda808",
+            "object_id": "resp_8d6e87b347e0031a0cfe626fa1278007",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "blue-image": {
+            "sha256": "f860c65ee09194be3651c6ec7aade2fc0050dc980d42ffa3d37e20547c0213ad",
+            "object_id": "resp_c849c2290d2c1c11dca3fe1d3936de66",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "red-image": {
+            "sha256": "eaca25e9c69f5a9c38c69dc53cdc82f7e135fed7ab3bc4f0bb73772b77c90d12",
+            "object_id": "resp_ddd608a8156075168d49d2e41498b3fe",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          }
+        },
+        "fresh_video": {
+          "sha256": "bdf8928bd32c58568e532e5e594b831ed61a12008f9514dcd2a232a08cfda808",
+          "object_id": "resp_8d6e87b347e0031a0cfe626fa1278007",
+          "kind": "response",
+          "strict_upstream": true,
+          "normalized_legacy_fields": []
+        },
+        "issued_spec_sha256": "04516e227a91ed1e058f6107d86d7a8762f9a6af72c011780adc57f541f03d4b",
+        "observations": [
+          {
+            "stage": "compact-media-profiles-01",
+            "phase": "primary",
+            "protocol": {
+              "release-old": {
+                "sha256": "2026edba7724324eaa46b7333b4c3b8d151e25d21beb5c92eaf2b9568aac841a",
+                "object_id": "resp_4a924ec2c4df1074f0a73efcec74d460",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "df502cc3ceac41a9c7cbbeb916e3fd6b261caab35a84833f88ee08a33db0a755",
+                "object_id": "resp_83ade9d13e4f5bf3db1def57a121d525",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "58ef8d155aa0d59b2568fd85cc3aee5e687f6c3cf745e42b5f0243b6d3acd1e1",
+                "object_id": "resp_877e40f7ae8144bca7c37e4b09a4c009",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "4ba08be3fe93058583957e159a5713abd393807027c127b5a39f5f66d70ad7a9",
+                "object_id": "resp_bc9b557e6f24d9158f1b724960af9a61",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "2860e4c80c65ccb9201c8066a06cd02de3e21a969cb8d0f7ccfae02f18d18211",
+                "object_id": "resp_ebe0c061e9fa04e9378642ea352f43b3",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "4b3083d0abcc52870635764d8453d7a6506e91d586b0f49bb2229983bd030839",
+                "object_id": "resp_7bffabd68068aeceb4f8e5bf2bb4d586",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "032b0a5afe72e48dbe018ae9f6f3989ff0b9bb01fe0f89457e3cf8507a2012df",
+                "object_id": "resp_501bfaddc7d93db6b51aafac6fe827d8",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "compact-media-profiles-01",
+            "phase": "light",
+            "protocol": {
+              "release-old": {
+                "sha256": "32761d36e14b32e057500ff810e7448ec354e2e4b46c1e8f50723287205012ba",
+                "object_id": "resp_4eb83d267a08a46ae4ae1a484515b21e",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "3b170142779cbda1597a208259c63bb935f2c5baf6c947073c7adb43e02e243c",
+                "object_id": "resp_69281fb878da3e8e84529ef99171e3d0",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "8765c5664386aff7399b95d36e42e4ec381310aea7fda1deba6094eaa5691a78",
+                "object_id": "resp_edb0a2eaac4039291a8638e33c5dc75c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "ed3645bf9b56014ca97d9e3ec8a1572183394b00e1b43b3101d1210d58c6387a",
+                "object_id": "resp_f3f40e2911ee9669ba6cbf40aa5e0c4c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "39c6c36403290eaf0c4a8013d72ea6e67ce444f413716ec3ec3fd62cad82f2b9",
+                "object_id": "resp_064538fcfaa032bf84db1e682cb9d601",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "bc73eb06a81e7c1d90f4f120d604063d8fa69fb8bb44a286773b2e45bfd2565e",
+                "object_id": "resp_4da0f304835e948480e6c727834cffd0",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "bb2a971ebba63467f02da812d6bde40ec952824672fd805572989e296f82a7a8",
+                "object_id": "resp_e163600e1d7302d963647a323b96dbbc",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "compact-media-fallback-business-01",
+            "phase": "prepare",
+            "protocol": {
+              "release-old": {
+                "sha256": "61a42e7da7475968b648639597deae34f8f523a7a87980e9c9fa9289e5b5a838",
+                "object_id": "resp_41f12fa6cdd637f0b4d9086f75437ecf",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "c7725e6cf2bf5abb50ebecd65e948c1e5fd3f2f24b0f27353572c7bb7e1e5e3f",
+                "object_id": "resp_932c65ce3be258e6816795621616addf",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "6bc10835b402fc543d5fad5a8f505cd85b9d8ecedb5a2aa8abe85e4ac8d0c1bb",
+                "object_id": "resp_97c593c3beefa8d983e5caeb8c3e2c6c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "2c2fb48307e3ea4c647a7274358fdc45ab489ad181b2e99a80178acb674666fa",
+                "object_id": "resp_44b50527a4888124a3596487c7d0d78f",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "c099af57b442f134162ee60f80409d508019509b459b811d30d1f0157c70506e",
+                "object_id": "resp_d721c0bc4219133734e1cf872daec9bc",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "482efc11e454653f06217ddff3b21be7e531687162ff01b61889c2c77827479f",
+                "object_id": "resp_35595a118c23b55e5d42218dcf9110d7",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "56c75598f70b56dc084cef1229e9cff6b5e430552da2d7a54aa31c568b4595dd",
+                "object_id": "resp_f59cc447a9c7e9b56c422167aa2ebfbe",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "compact-media-fallback-business-01",
+            "phase": "restore",
+            "protocol": {
+              "release-old": {
+                "sha256": "8c4fae6c2bd664addefd19ae9cd7b6d4d54df0ac3c1e52e47226e527fa4d0328",
+                "object_id": "resp_37d15bc87205fb5488066206de4dac91",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "1c463b3f95d8e10913d1b8840cd88df06eece823bc4306fdd47735adc695d565",
+                "object_id": "resp_439dd37eabfcf693058e39203d78b05e",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "f96c8975f1422a7afc9bce709386bcf5d40c17751faa13a605ee8855acbfc9b7",
+                "object_id": "resp_363b5d342898b4b59ee43253e08ad836",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "5e12bdb39bda6b6683817a729155cd1cc9bb8e5c1e64b35c120dac05d5ea2248",
+                "object_id": "resp_8ae52b3616da8d474384bb1c843a641b",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "db57e2cd8d5400d4f682c4b867f2d2cc071a8be327747c19718c3390a3664f72",
+                "object_id": "resp_75175743dccf484aea78aa6259d00b5c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "c23b3454b23c230841de27235663a5e2097c733ed44abe07d401f847ffad65de",
+                "object_id": "resp_b6c22e2da2cfa307c62515c9e67ffeea",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "c77342cf52a25ca92ebe85d2f1a1765cfd2ab90ddabf5eafacb9f6e62b355100",
+                "object_id": "resp_2b966bcdfd1f42103aadfc69d7efd422",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-compact-media-01",
+            "phase": "prepare",
+            "protocol": {
+              "release-old": {
+                "sha256": "93e1a2c1b8ca8a7067d63dd810651609fd0670d5f7d974e572f6112cb6652208",
+                "object_id": "resp_99393740ea295998f060f3ec76bd3959",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "96bc5badcf6f96c7c4384c2275e0328e7ef8812dc855b84655b36b3e899542f4",
+                "object_id": "resp_cd9110067d34bbeb66829cb11c23dfaa",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "5b31ff864450c067e9d453aedb0a745c1436ced278cf5f826fec49d353983e9d",
+                "object_id": "resp_7ad1a96e2f34a89ad0de1d4cf18c5f48",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "e631355e271455668f23470868231b51e563e933396418feff8defabbef560b1",
+                "object_id": "resp_3d2fefe3ccb3b66ded152ba60d25fae1",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "25a826af56fceef3631732bfee4468f91a7a026c2b8fbcfc3c75943f505bfda6",
+                "object_id": "resp_e6860e8701ed43fb72e4e8b88d329930",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "acf792045f5def5d54947e00ba8c4afffc8f32306ecd35d7bab885de7bee7f66",
+                "object_id": "resp_346c9a369352ae884ab1c4810d60c964",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "ab1409068b3f7a8d73c08a7c92443343148329082bbc73e887597641bdfaa768",
+                "object_id": "resp_41152fef83fc97729eed86e855a6d5e5",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-compact-media-01",
+            "phase": "restore",
+            "protocol": {
+              "release-old": {
+                "sha256": "fcd9c2a9bfc45ff22d257c89f7961a1b591903c91729a000d97d8c9f2a002d9f",
+                "object_id": "resp_f8c9cb0b75fadff09ca1aa39cc645d91",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "08971b2ee2911b54e985680f5d27af0896341025cb44e082f65440f35e77b71f",
+                "object_id": "resp_e7f76c5dba7cfceb5843b2a604deaa5f",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "d753a76b98bbdfed06227646589b86c4a8c9471f5b3ce93db5d6589286dd7bf4",
+                "object_id": "resp_3cd957323c7b9787db0fe0ea4c4846cb",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "b7451b3543f401f82a53c3cfa7ef1375aedc6404625b97da40419d366d276358",
+                "object_id": "resp_08bc31d02d7d6b21e7d4e99e260a2b76",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "3da87adf26236d13b325f90534795953726c1f60e50ef67d3b4f0f1b8e53c737",
+                "object_id": "resp_35b83ab52528c095ffcada7c69f10492",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "f148c9618b086448e50612f698738a897f8594fd2c4a6ff05b9b5ac656d9b125",
+                "object_id": "resp_d82dc6452b093c8ade9f0cbb3d8c466f",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "a11a4b7dae136d0583ba7aa155a0112ee9b10ad4748dc425d23855cdf93c01e3",
+                "object_id": "resp_f4b8442770542ca94c473bdc65a97b3c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          }
+        ]
+      },
+      "primary": {
+        "manifest": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2",
+        "signed_windows": [
+          {
+            "sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+            "object_id": "resp_0b384196a05e496f39d0f3a56547e639",
+            "kind": "window",
+            "strict_upstream": false,
+            "normalized_legacy_fields": [
+              "mcp_call.error"
+            ]
+          },
+          {
+            "sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+            "object_id": "resp_0b384196a05e496f39d0f3a56547e639",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+            "object_id": "resp_d7c35e129b22d4ad187fabdcbe6ee7b4",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+            "object_id": "resp_51a8f2a0cf06b0cda5d852838f3fc2ac",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+            "object_id": "resp_69c0c937a5a58aa5232ea150be5a39ed",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+            "object_id": "resp_e7680a753ffa9819f78b4bac47cf9605",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          {
+            "sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+            "object_id": "resp_0d59cd93e442da9f5648af21b28e3925",
+            "kind": "window",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          }
+        ],
+        "source_responses": {
+          "release-old": {
+            "sha256": "ff993e3e8d420e9a7adc3cf3901d51a5d15a7d17e713fd549345a921989c0a58",
+            "object_id": "resp_70f959e50a7102a161cbfd8a9f64d4d1",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "release-current": {
+            "sha256": "ff993e3e8d420e9a7adc3cf3901d51a5d15a7d17e713fd549345a921989c0a58",
+            "object_id": "resp_70f959e50a7102a161cbfd8a9f64d4d1",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "failed-video": {
+            "sha256": "6000ed00bc2d56d48784b1bba44079ac075cfb2a415ff63bb18cf644d34fd4bb",
+            "object_id": "resp_522d2fa9b62ecaa3a4024a8ba5931a0c",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "fixed-review": {
+            "sha256": "99a7e33f8f4c53aa49e11e1b055675f00ce5b9532d5a7a8a2856663546596830",
+            "object_id": "resp_4389e6c1ca3b07684d5cae7d62eb97fc",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "fresh-video": {
+            "sha256": "bdf8928bd32c58568e532e5e594b831ed61a12008f9514dcd2a232a08cfda808",
+            "object_id": "resp_8d6e87b347e0031a0cfe626fa1278007",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "blue-image": {
+            "sha256": "f860c65ee09194be3651c6ec7aade2fc0050dc980d42ffa3d37e20547c0213ad",
+            "object_id": "resp_c849c2290d2c1c11dca3fe1d3936de66",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          },
+          "red-image": {
+            "sha256": "eaca25e9c69f5a9c38c69dc53cdc82f7e135fed7ab3bc4f0bb73772b77c90d12",
+            "object_id": "resp_ddd608a8156075168d49d2e41498b3fe",
+            "kind": "response",
+            "strict_upstream": true,
+            "normalized_legacy_fields": []
+          }
+        },
+        "fresh_video": {
+          "sha256": "bdf8928bd32c58568e532e5e594b831ed61a12008f9514dcd2a232a08cfda808",
+          "object_id": "resp_8d6e87b347e0031a0cfe626fa1278007",
+          "kind": "response",
+          "strict_upstream": true,
+          "normalized_legacy_fields": []
+        },
+        "issued_spec_sha256": "04516e227a91ed1e058f6107d86d7a8762f9a6af72c011780adc57f541f03d4b",
+        "observations": [
+          {
+            "stage": "compact-media-profiles-01",
+            "phase": "primary",
+            "protocol": {
+              "release-old": {
+                "sha256": "2026edba7724324eaa46b7333b4c3b8d151e25d21beb5c92eaf2b9568aac841a",
+                "object_id": "resp_4a924ec2c4df1074f0a73efcec74d460",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "df502cc3ceac41a9c7cbbeb916e3fd6b261caab35a84833f88ee08a33db0a755",
+                "object_id": "resp_83ade9d13e4f5bf3db1def57a121d525",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "58ef8d155aa0d59b2568fd85cc3aee5e687f6c3cf745e42b5f0243b6d3acd1e1",
+                "object_id": "resp_877e40f7ae8144bca7c37e4b09a4c009",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "4ba08be3fe93058583957e159a5713abd393807027c127b5a39f5f66d70ad7a9",
+                "object_id": "resp_bc9b557e6f24d9158f1b724960af9a61",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "2860e4c80c65ccb9201c8066a06cd02de3e21a969cb8d0f7ccfae02f18d18211",
+                "object_id": "resp_ebe0c061e9fa04e9378642ea352f43b3",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "4b3083d0abcc52870635764d8453d7a6506e91d586b0f49bb2229983bd030839",
+                "object_id": "resp_7bffabd68068aeceb4f8e5bf2bb4d586",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "032b0a5afe72e48dbe018ae9f6f3989ff0b9bb01fe0f89457e3cf8507a2012df",
+                "object_id": "resp_501bfaddc7d93db6b51aafac6fe827d8",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "compact-media-profiles-01",
+            "phase": "light",
+            "protocol": {
+              "release-old": {
+                "sha256": "32761d36e14b32e057500ff810e7448ec354e2e4b46c1e8f50723287205012ba",
+                "object_id": "resp_4eb83d267a08a46ae4ae1a484515b21e",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "3b170142779cbda1597a208259c63bb935f2c5baf6c947073c7adb43e02e243c",
+                "object_id": "resp_69281fb878da3e8e84529ef99171e3d0",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "8765c5664386aff7399b95d36e42e4ec381310aea7fda1deba6094eaa5691a78",
+                "object_id": "resp_edb0a2eaac4039291a8638e33c5dc75c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "ed3645bf9b56014ca97d9e3ec8a1572183394b00e1b43b3101d1210d58c6387a",
+                "object_id": "resp_f3f40e2911ee9669ba6cbf40aa5e0c4c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "39c6c36403290eaf0c4a8013d72ea6e67ce444f413716ec3ec3fd62cad82f2b9",
+                "object_id": "resp_064538fcfaa032bf84db1e682cb9d601",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "bc73eb06a81e7c1d90f4f120d604063d8fa69fb8bb44a286773b2e45bfd2565e",
+                "object_id": "resp_4da0f304835e948480e6c727834cffd0",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "bb2a971ebba63467f02da812d6bde40ec952824672fd805572989e296f82a7a8",
+                "object_id": "resp_e163600e1d7302d963647a323b96dbbc",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "compact-media-fallback-business-01",
+            "phase": "prepare",
+            "protocol": {
+              "release-old": {
+                "sha256": "61a42e7da7475968b648639597deae34f8f523a7a87980e9c9fa9289e5b5a838",
+                "object_id": "resp_41f12fa6cdd637f0b4d9086f75437ecf",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "c7725e6cf2bf5abb50ebecd65e948c1e5fd3f2f24b0f27353572c7bb7e1e5e3f",
+                "object_id": "resp_932c65ce3be258e6816795621616addf",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "6bc10835b402fc543d5fad5a8f505cd85b9d8ecedb5a2aa8abe85e4ac8d0c1bb",
+                "object_id": "resp_97c593c3beefa8d983e5caeb8c3e2c6c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "2c2fb48307e3ea4c647a7274358fdc45ab489ad181b2e99a80178acb674666fa",
+                "object_id": "resp_44b50527a4888124a3596487c7d0d78f",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "c099af57b442f134162ee60f80409d508019509b459b811d30d1f0157c70506e",
+                "object_id": "resp_d721c0bc4219133734e1cf872daec9bc",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "482efc11e454653f06217ddff3b21be7e531687162ff01b61889c2c77827479f",
+                "object_id": "resp_35595a118c23b55e5d42218dcf9110d7",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "56c75598f70b56dc084cef1229e9cff6b5e430552da2d7a54aa31c568b4595dd",
+                "object_id": "resp_f59cc447a9c7e9b56c422167aa2ebfbe",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "compact-media-fallback-business-01",
+            "phase": "restore",
+            "protocol": {
+              "release-old": {
+                "sha256": "8c4fae6c2bd664addefd19ae9cd7b6d4d54df0ac3c1e52e47226e527fa4d0328",
+                "object_id": "resp_37d15bc87205fb5488066206de4dac91",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "1c463b3f95d8e10913d1b8840cd88df06eece823bc4306fdd47735adc695d565",
+                "object_id": "resp_439dd37eabfcf693058e39203d78b05e",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "f96c8975f1422a7afc9bce709386bcf5d40c17751faa13a605ee8855acbfc9b7",
+                "object_id": "resp_363b5d342898b4b59ee43253e08ad836",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "5e12bdb39bda6b6683817a729155cd1cc9bb8e5c1e64b35c120dac05d5ea2248",
+                "object_id": "resp_8ae52b3616da8d474384bb1c843a641b",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "db57e2cd8d5400d4f682c4b867f2d2cc071a8be327747c19718c3390a3664f72",
+                "object_id": "resp_75175743dccf484aea78aa6259d00b5c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "c23b3454b23c230841de27235663a5e2097c733ed44abe07d401f847ffad65de",
+                "object_id": "resp_b6c22e2da2cfa307c62515c9e67ffeea",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "c77342cf52a25ca92ebe85d2f1a1765cfd2ab90ddabf5eafacb9f6e62b355100",
+                "object_id": "resp_2b966bcdfd1f42103aadfc69d7efd422",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-compact-media-01",
+            "phase": "prepare",
+            "protocol": {
+              "release-old": {
+                "sha256": "93e1a2c1b8ca8a7067d63dd810651609fd0670d5f7d974e572f6112cb6652208",
+                "object_id": "resp_99393740ea295998f060f3ec76bd3959",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "96bc5badcf6f96c7c4384c2275e0328e7ef8812dc855b84655b36b3e899542f4",
+                "object_id": "resp_cd9110067d34bbeb66829cb11c23dfaa",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "5b31ff864450c067e9d453aedb0a745c1436ced278cf5f826fec49d353983e9d",
+                "object_id": "resp_7ad1a96e2f34a89ad0de1d4cf18c5f48",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "e631355e271455668f23470868231b51e563e933396418feff8defabbef560b1",
+                "object_id": "resp_3d2fefe3ccb3b66ded152ba60d25fae1",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "25a826af56fceef3631732bfee4468f91a7a026c2b8fbcfc3c75943f505bfda6",
+                "object_id": "resp_e6860e8701ed43fb72e4e8b88d329930",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "acf792045f5def5d54947e00ba8c4afffc8f32306ecd35d7bab885de7bee7f66",
+                "object_id": "resp_346c9a369352ae884ab1c4810d60c964",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "ab1409068b3f7a8d73c08a7c92443343148329082bbc73e887597641bdfaa768",
+                "object_id": "resp_41152fef83fc97729eed86e855a6d5e5",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-compact-media-01",
+            "phase": "restore",
+            "protocol": {
+              "release-old": {
+                "sha256": "fcd9c2a9bfc45ff22d257c89f7961a1b591903c91729a000d97d8c9f2a002d9f",
+                "object_id": "resp_f8c9cb0b75fadff09ca1aa39cc645d91",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "release-current": {
+                "sha256": "08971b2ee2911b54e985680f5d27af0896341025cb44e082f65440f35e77b71f",
+                "object_id": "resp_e7f76c5dba7cfceb5843b2a604deaa5f",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "failed-video": {
+                "sha256": "d753a76b98bbdfed06227646589b86c4a8c9471f5b3ce93db5d6589286dd7bf4",
+                "object_id": "resp_3cd957323c7b9787db0fe0ea4c4846cb",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fixed-review": {
+                "sha256": "b7451b3543f401f82a53c3cfa7ef1375aedc6404625b97da40419d366d276358",
+                "object_id": "resp_08bc31d02d7d6b21e7d4e99e260a2b76",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "fresh-video": {
+                "sha256": "3da87adf26236d13b325f90534795953726c1f60e50ef67d3b4f0f1b8e53c737",
+                "object_id": "resp_35b83ab52528c095ffcada7c69f10492",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "blue-image": {
+                "sha256": "f148c9618b086448e50612f698738a897f8594fd2c4a6ff05b9b5ac656d9b125",
+                "object_id": "resp_d82dc6452b093c8ade9f0cbb3d8c466f",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              },
+              "red-image": {
+                "sha256": "a11a4b7dae136d0583ba7aa155a0112ee9b10ad4748dc425d23855cdf93c01e3",
+                "object_id": "resp_f4b8442770542ca94c473bdc65a97b3c",
+                "kind": "response",
+                "strict_upstream": true,
+                "normalized_legacy_fields": []
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "day": {
+    "source_commit": "91a19f2b006530057159e562afebaac5c4a066f3",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-client-primary-01/bundle",
+      "manifest_sha256": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2"
+    },
+    "revision": 566,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "a8097b4f90e7c6c33c3a063295a6c27b2e9d4817750bc126b9ecee217e34e71f",
+    "handoff_sha256": "10d3d9f892fab8daece512ea96761187d676108027bd4b057eadb44e94a4e84a",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold": {
+    "status": "PREPARED",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-delivery-soak-src/.q4t-work/cold566-01/plan.json",
+    "plan_sha256": "ee62ae6b318aed4bea499db0b7f7dd2fbad5b945f175962afc4ed8759a6b3cdc",
+    "service_id": "3248a113-0d42-4279-8aea-43d1dced228d",
+    "source": "91a19f2b006530057159e562afebaac5c4a066f3",
+    "limits": {
+      "starts": 1,
+      "chats": 3,
+      "probes": 1,
+      "controls": 2000,
+      "seconds": 600
+    },
+    "publication": 566,
+    "registered_package": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2",
+    "protected": {
+      "/home/rm01/models/dev/qwen4-thor/build/q4t": "2a4e49ddecc441ffe9f261069436ee50e4251a54d40d52f3ec74dd6dedb0d6c6",
+      "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "16f84242a5393ee8050949d11d096a5991f2eb2816677a9adf7a2ecfd8e26a4b",
+      "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2",
+      "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "561599ce870656d3cf917f3dfeb478d360b9bce27bfb8962d5c371e976f244aa",
+      "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    },
+    "model_actions": 0,
+    "host_filter_installed": false,
+    "host_units_modified": false
+  },
+  "declared_methods": 219,
+  "required_methods": 231,
+  "query_defaults": 71,
+  "protected_hashes": 13,
+  "fresh_video": {
+    "lease": "COMPLETED",
+    "command": 0,
+    "business": {
+      "status": "PASS",
+      "starts": 1,
+      "seconds": 69.136,
+      "unchanged_default": true,
+      "original_store_unchanged": true,
+      "phases": [
+        "create"
+      ]
+    }
+  },
+  "evidence": {
+    "sdk-fixture.json": "8f903cea93a59b79973cb81e4324a3fc53412532e74356048f87de200b2b299c",
+    "source-store.json": "6ad25d5d8c62a02f9d801e6d3e0e1cc18bdabc2b449e765708a99ff2c7de31dd",
+    "combined-business.json": "e141f762ab03a132f729af179de85193241ebd5ce1b8905116eddad7a35dcda4",
+    "business.json": "6fd9d639d496e63187fa24cd01fa0f5e111412876fadccfcb2cd24c3cd62777a",
+    "profiles.json": "f8f52fb04576f5a768cb45e4b50f01ff3f4ad1e0ddbcc4d132bce0e58d46e599",
+    "handoff-driver.json": "020102ac5af52a2c6740485fb62f1c49718b319c73b99a69451b9836c8ee4095",
+    "cpu.json": "0acb3e80a47b0a2c6daa488aede37a50567e83dff34f9e9155e9ed37a23cfc83"
+  },
+  "stock_sdk_scope": "Raw-response window roundtrip for retained input items; stock high-level compact output union remains output-only."
+}
