@@ -991,8 +991,9 @@
         "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "openapi_ingress_auth_20261128": {
-        "stage": "contract_and_native_ingress_verified",
+        "stage": "candidate_packages_verified",
         "receipt": "evidence/serve-openapi-ingress-auth-20261128/contract.json",
+        "packages": "evidence/serve-openapi-ingress-auth-20261128/packages.json",
         "device_issued": false
       }
     },
@@ -9678,8 +9679,9 @@
         "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json"
       },
       "openapi_ingress_auth_20261128": {
-        "stage": "contract_and_native_ingress_verified",
+        "stage": "candidate_packages_verified",
         "receipt": "evidence/serve-openapi-ingress-auth-20261128/contract.json",
+        "packages": "evidence/serve-openapi-ingress-auth-20261128/packages.json",
         "device_issued": false
       }
     },

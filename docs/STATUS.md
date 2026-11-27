@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主包与回退包已封入相同的 OpenAPI 合同。逐包校验确认两份原生程序、1,309 项运行时源文件和 178 项外层文件与 rev584 对应配置相同。首次托管短验中，验收脚本跳过了 Swagger 的 JSON 序列化，创建 Agent 返回 400；改用标准执行入口后，8 项入口请求通过了 CPU 复验。 [封包核验](evidence/serve-openapi-ingress-auth-20261128/packages.json)
+
 两份合同通过官方 OpenAPI 3.1 元模式，通用客户端按修订后的合同发出全部 8 个预期请求。401 继续声明已转发写请求的重试提示，预览票据保留原格式约束。18 项合同与打包检查通过，下一步核对两个实际封包。 [验证记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)
 
 OpenAPI 已为 244 个原生入口操作声明凭据和 401 挑战，另两项本地运维操作单列。通用 Swagger 客户端按打包版合同生成了 8 个请求，在真实入口通过了项目 Key、浏览器会话、上传和预览的正反例。两个完整文档通过 OpenAPI 3.1 官方元模式校验，补齐了三个 Assistants SSE 声明。下一步装入主、回退发行包。 [合同与入口记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)

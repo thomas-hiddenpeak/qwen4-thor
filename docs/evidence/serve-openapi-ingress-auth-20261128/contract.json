@@ -144,11 +144,26 @@
   "native_cases": 6,
   "native_process": "packaged q4t-ingress with an isolated HTTP backend",
   "native_cases_log_sha256": "671e0fc403d7396c98fbaabadfb757ac1c9ac377c9376ea6bdd870ba42a5dd57",
-  "consumer_script_sha256": "3bb44e27588cc0835b2a2b11875b20ff4c3f7147352152d4fcc8d8602f3ae67f",
+  "consumer_script_sha256": "679083e6238b2f769724343a40e8b643c5828edebb692ca06838a6d542472ec8",
   "consumer_lock_sha256": "0e3fd6ca4bbe5fcb75f9d0f4a32faf79bb3c0fe3265de96bfc958721978578a5",
   "portable_package_verifier": true,
   "model_starts": 0,
   "static_contract_tests": 18,
   "preview_ticket_shape_retained": true,
-  "conditional_retry_header_retained": true
+  "conditional_retry_header_retained": true,
+  "initial_consumer_script_sha256": "3bb44e27588cc0835b2a2b11875b20ff4c3f7147352152d4fcc8d8602f3ae67f",
+  "json_wire_transport": "Swagger.execute serializes structured request bodies; wire JSON checked before fetch",
+  "first_managed_attempt": {
+    "requests": [
+      401,
+      200,
+      400
+    ],
+    "stage": "project agent creation",
+    "cause": "The initial test driver sent a JavaScript object to fetch without the JSON serialization performed by Swagger.execute.",
+    "model_starts": 1,
+    "lease_status": "COMMAND_FAILED",
+    "native_service_stopped_cleanly": true,
+    "default_unchanged": true
+  }
 }
