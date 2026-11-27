@@ -4287,7 +4287,7 @@
         "existing_evidence_reviewed": true
       },
       "native_recording_retry_20261127": {
-        "stage": "both_device_capacities_verified_package_pending",
+        "stage": "profile_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -4296,7 +4296,8 @@
           "valid": 2,
           "rejected": 18,
           "state": "lifecycle_pending"
-        }
+        },
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
       }
     },
     {
@@ -6996,7 +6997,7 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "both_device_capacities_verified_package_pending",
+        "stage": "profile_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -7005,7 +7006,8 @@
           "valid": 2,
           "rejected": 18,
           "state": "lifecycle_pending"
-        }
+        },
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
       }
     },
     {
@@ -9508,7 +9510,7 @@
         "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "both_device_capacities_verified_package_pending",
+        "stage": "profile_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -9517,7 +9519,8 @@
           "valid": 2,
           "rejected": 18,
           "state": "lifecycle_pending"
-        }
+        },
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
       }
     },
     {
@@ -14016,7 +14019,7 @@
       },
       "current_ingress_retry_delivery": "evidence/serve-inference-http-errors-20261127/delivery.json",
       "native_recording_retry_20261127": {
-        "stage": "both_device_capacities_verified_package_pending",
+        "stage": "profile_verified_package_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -14025,7 +14028,8 @@
           "valid": 2,
           "rejected": 18,
           "state": "lifecycle_pending"
-        }
+        },
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
       }
     },
     {
