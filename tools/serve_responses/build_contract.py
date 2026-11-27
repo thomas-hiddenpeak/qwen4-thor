@@ -796,6 +796,7 @@ def schema(graph):
 
 
 def add_openapi(paths, response, error):
+    from tools.serve_protocol.event_schema import event_stream as event_media
     """Add actual application routes, preserving each HTTP method/body/query."""
     from tools.serve_responses.mcp_tunnel_contract import add_openapi as add_tunnels
     add_tunnels(paths, response, error)
@@ -1051,12 +1052,12 @@ def add_openapi(paths, response, error):
         else:
             success = response(external(result))
         if body in ('assistant_run_create','assistant_thread_run_create','assistant_run_submit'):
-            success['content']['text/event-stream'] = dict(schema=dict(type='string'),
-                description='Assistants v2 named SSE resource and delta events, followed by done.',
-                **{'x-q4t-event-schema': external('assistant_run_event')})
+            success['content']['text/event-stream'] = event_media(
+                external('assistant_run_event'),
+                description='Assistants v2 named SSE resource and delta events, followed by done.')
         if event_stream or body == 'agent_session_create':
-            success.setdefault('content', {})['text/event-stream'] = dict(
-                schema=dict(type='string'), **{'x-q4t-event-schema': external('agent_session_event')})
+            success.setdefault('content', {})['text/event-stream'] = event_media(
+                external('agent_session_event'))
         if accepted:
             parameters.append(dict(name='Idempotency-Key', **{'in': 'header'}, required=False,
                 schema=dict(type='string', minLength=1, maxLength=255, pattern=r'^[!-+\--~]+$')))
@@ -1116,16 +1117,15 @@ def add_openapi(paths, response, error):
         if result == 'response':
             success['content']['application/json']['schema'] = external('agent_response')
         if result == 'response' and not path.endswith('/cancel'):
-            success['content']['text/event-stream'] = dict(schema=dict(type='string'),
-                **{'x-q4t-event-schema': external('agent_response_event'),
+            success['content']['text/event-stream'] = event_media(
+                external('agent_response_event'), **{
                    'x-q4t-stream-contract': 'Native sequenced Responses events. No Chat DONE. Persisted original replay with starting_after; background requires original stream=true. Disconnect does not cancel a background job. Cancelled resource retains partial items and ends original events without a fabricated completed/cancelled event.'})
         if path.endswith('/cancel'):
             operation['description'] = 'Idempotent native background cancellation, empty body, 200 real resource. Independent bounded cancellation admission.'
         if path == '/v1/chatkit':
             operation['description'] = 'Self-hosted browser endpoint. Requires a session client secret. Message submissions stream ChatKit events, history operations return JSON.'
             event = external('chatkit_browser_output_event')
-            success['content']['text/event-stream'] = dict(schema=dict(type='string'),
-                **{'x-q4t-event-schema': event})
+            success['content']['text/event-stream'] = event_media(event)
             operation['x-q4t-result-by-request-type'] = {
                 name: external(result) for name, result in CHATKIT_BROWSER_JSON.items()}
             operation['x-q4t-event-by-request-type'] = dict.fromkeys(CHATKIT_BROWSER_SSE, event)

@@ -1,0 +1,212 @@
+{
+  "stage": "source_verified_package_pending",
+  "old_bundle_sha256": "ebf7f89f7c44572161b6b7842aece001026a523b297aa46e61e942aed5b7571c",
+  "new_bundle_sha256": "f31e52e6717d3f55e065c60759bcd4076512457d13194bce42cc6549dcef14ba",
+  "official_reference_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "existing_official_sdk_sources": true,
+  "previous_package_review": {
+    "packages": {
+      "primary": {
+        "manifest": "fa0073b6eedfd3781a15a7265478510b8ecece4952247818bcd2272007dd6146",
+        "schemas": {
+          "openapi": "ebf7f89f7c44572161b6b7842aece001026a523b297aa46e61e942aed5b7571c",
+          "application": "aa5e859f9e0ad5e584b52b1e0d186d6afbb4d3b39562e623193092e36c75224b"
+        },
+        "envelopes": 16,
+        "preceding_standard_event_type": "string"
+      },
+      "fallback": {
+        "manifest": "3db59f528a22d7ce08f6bbac2d3348f4986c783d232efa15cb5a9b7b8a3f55d5",
+        "schemas": {
+          "openapi": "ebf7f89f7c44572161b6b7842aece001026a523b297aa46e61e942aed5b7571c",
+          "application": "aa5e859f9e0ad5e584b52b1e0d186d6afbb4d3b39562e623193092e36c75224b"
+        },
+        "envelopes": 16,
+        "preceding_standard_event_type": "string"
+      }
+    },
+    "candidate_bundle": "f31e52e6717d3f55e065c60759bcd4076512457d13194bce42cc6549dcef14ba",
+    "official_openapi": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "raw_exchange_sha256": "2f3a28060ba7df09e13032f85f5de075c441ff54e1418d9a696ce2a5a206dc6e",
+    "complete_frames": 8,
+    "resumed_frames": 3,
+    "checks": [
+      "live",
+      "retained",
+      "current",
+      "foreign",
+      "answer"
+    ]
+  },
+  "scope": "All success status codes and methods whose content declares text/event-stream. Checks use decoded payloads, with the SSE event name for Assistants.",
+  "routes": {
+    "POST /v1/completions": {
+      "status": 200,
+      "source": "docs/evidence/serve-completions-20261108/business-01/batch-sse.wire",
+      "sha256": "d4ee26bf3dc5ba7db96f96c1257bd1a01fac8659c7f66aa43e68e7a78aea1fcf",
+      "events": 37,
+      "types": {
+        "text_completion": 37
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/chat/completions": {
+      "status": 200,
+      "source": "docs/evidence/serve-outer-resource-business-20261112/fallback-tool-result-sse.wire",
+      "sha256": "1d32c6a1e6723d11cf4bff8863f31add69ce6ecaa48a602a0482352e125473c4",
+      "events": 13,
+      "types": {
+        "chat.completion.chunk": 13
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/audio/transcriptions": {
+      "status": 200,
+      "source": ".q4t-work/serve-audio-native-20261117/service-http-05/js-en-stream.wire",
+      "sha256": "b3ad2c97bc42d7b81b557c10e383bc55bb9a3ccdfdbd0d3e20e856afe5ebff0f",
+      "events": 46,
+      "types": {
+        "transcript.text.delta": 45,
+        "transcript.text.done": 1
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/threads/runs": {
+      "status": 200,
+      "source": ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/run-events.json",
+      "sha256": "85f811dbdfd7c6c0f3d3fdaa64f3712a905d41ed278ecc6e784a95b5fc720714",
+      "events": 9,
+      "types": {
+        "thread.run.created": 1,
+        "thread.run.queued": 1,
+        "thread.run.in_progress": 1,
+        "thread.run.step.created": 1,
+        "thread.run.step.in_progress": 1,
+        "thread.run.step.delta": 3,
+        "thread.run.requires_action": 1
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/threads/{thread_id}/runs": {
+      "status": 200,
+      "source": ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/run-events.json",
+      "sha256": "85f811dbdfd7c6c0f3d3fdaa64f3712a905d41ed278ecc6e784a95b5fc720714",
+      "events": 9,
+      "types": {
+        "thread.run.created": 1,
+        "thread.run.queued": 1,
+        "thread.run.in_progress": 1,
+        "thread.run.step.created": 1,
+        "thread.run.step.in_progress": 1,
+        "thread.run.step.delta": 3,
+        "thread.run.requires_action": 1
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/threads/{thread_id}/runs/{run_id}/submit_tool_outputs": {
+      "status": 200,
+      "source": ".q4t-work/serve-responses-agents-20261123/runs-business-02/create/run-events.json",
+      "sha256": "85f811dbdfd7c6c0f3d3fdaa64f3712a905d41ed278ecc6e784a95b5fc720714",
+      "events": 13,
+      "types": {
+        "thread.run.queued": 1,
+        "thread.run.step.completed": 2,
+        "thread.run.in_progress": 1,
+        "thread.run.step.created": 1,
+        "thread.run.step.in_progress": 1,
+        "thread.message.created": 1,
+        "thread.message.in_progress": 1,
+        "thread.message.delta": 3,
+        "thread.message.completed": 1,
+        "thread.run.completed": 1
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/chatkit": {
+      "status": 200,
+      "source": ".q4t-work/serve-responses-agents-20261123/chatkit-interrupted-retry-src/.q4t-work/interrupted-retry-profiles-01/light/interrupted-retry-wire/events.json",
+      "sha256": "0cbbaba37963da9347af95b8f817fdfd0d712ee798c23ffbbd1ded5bcf09a077",
+      "events": 25,
+      "types": {
+        "stream_options": 1,
+        "thread.item.added": 1,
+        "thread.item.updated": 22,
+        "thread.item.done": 1
+      },
+      "declared_in_reference": false
+    },
+    "POST /v1/agents/sessions": {
+      "status": 201,
+      "source": ".q4t-work/serve-responses-agents-20261123/quickdraw-region-src/build/agent-sdk-replay/run-01/quota-events.json",
+      "sha256": "341cf20c02a029784b7eaf78dd1fc9f9d7d64c2bbfa1296fce82e85f3cb41510",
+      "events": 5,
+      "types": {
+        "agent.session.turn.created": 1,
+        "agent.session.in_progress": 1,
+        "agent.session.turn.in_progress": 1,
+        "agent.session.turn.failed": 1,
+        "agent.session.idle": 1
+      },
+      "declared_in_reference": true
+    },
+    "GET /v1/agents/sessions/{session_id}/events": {
+      "status": 200,
+      "source": ".q4t-work/serve-responses-agents-20261123/quickdraw-region-src/build/agent-sdk-replay/run-01/quota-events.json",
+      "sha256": "341cf20c02a029784b7eaf78dd1fc9f9d7d64c2bbfa1296fce82e85f3cb41510",
+      "events": 5,
+      "types": {
+        "agent.session.turn.created": 1,
+        "agent.session.in_progress": 1,
+        "agent.session.turn.in_progress": 1,
+        "agent.session.turn.failed": 1,
+        "agent.session.idle": 1
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/responses": {
+      "status": 200,
+      "source": ".q4t-work/serve-responses-agents-20261123/node-sdk-reader-src/build/node-readers/actor-replay-01/wire/live.json",
+      "sha256": "c5ab709f3ae126ab5eecc0f91f4922085294796cfe86f547ed979b03ee6a800e",
+      "events": 8,
+      "types": {
+        "response.created": 1,
+        "response.in_progress": 1,
+        "response.output_item.added": 1,
+        "response.function_call_arguments.delta": 2,
+        "response.function_call_arguments.done": 1,
+        "response.output_item.done": 1,
+        "response.completed": 1
+      },
+      "declared_in_reference": true
+    },
+    "GET /v1/responses/{response_id}": {
+      "status": 200,
+      "source": ".q4t-work/serve-responses-agents-20261123/node-sdk-reader-src/build/node-readers/actor-replay-01/wire/current.json",
+      "sha256": "66447dd985bafd1bf3410cb813d07a6fa1544a731e770c6d629686ef305a90c1",
+      "events": 3,
+      "types": {
+        "response.function_call_arguments.done": 1,
+        "response.output_item.done": 1,
+        "response.completed": 1
+      },
+      "declared_in_reference": true
+    },
+    "POST /v1/audio/speech": {
+      "status": 200,
+      "source": ".q4t-work/serve-native-tts-20261118/http-03/case-6.wire",
+      "sha256": "3a9b6a54da6e5f79965d24015d07830c0c0353e592e15e7a80743c3b0ab4ef9a",
+      "events": 17,
+      "types": {
+        "speech.audio.delta": 16,
+        "speech.audio.done": 1
+      },
+      "declared_in_reference": true
+    }
+  },
+  "route_count": 12,
+  "payload_validations": 190,
+  "unique_frame_sets_note": "The two session methods share one issued event set, as do the two Assistants create operations. The Responses samples are a native CPU readback of a device-issued function call.",
+  "old_failed_standard_validation": "The prior packages expose type:string for every streaming success media. An actual response.created object fails that binding; the prior q4t extension verifies the frame.",
+  "stage_tests": "12 unit tests for typed media, ChatKit, and Node HTTP/cursor integrity; 1 existing inventory/bundle test. Both generated OpenAPI files differ only in the 12 stream representations. Generator --check passed after renewing five request source digests.",
+  "model_starts": 0
+}

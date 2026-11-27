@@ -119,6 +119,7 @@ def source_sha(sdk):
 
 
 def add_openapi(paths, response, error):
+    from tools.serve_protocol.event_schema import event_stream
     external = lambda name: {'$ref':'serve-application-v1.schema.json#/$defs/'+name}
     success = response(dict(anyOf=[external('transcription_response'),
                                    external('transcription_verbose_response'),
@@ -127,8 +128,7 @@ def add_openapi(paths, response, error):
         'text/plain':dict(schema=dict(type='string')),
         'text/vtt':dict(schema=dict(type='string')),
         'application/x-subrip':dict(schema=dict(type='string')),
-        'text/event-stream':dict(schema=dict(type='string'), **{
-            'x-q4t-event-schema':external('transcription_event'),
+        'text/event-stream':event_stream(external('transcription_event'), **{
             'x-q4t-stream-contract':'transcript.text.delta, diarized segment events, then transcript.text.done; '
                 'actual token usage, no Chat DONE sentinel; typed error terminates failure'})})
     paths['/v1/audio/transcriptions'] = dict(post=dict(

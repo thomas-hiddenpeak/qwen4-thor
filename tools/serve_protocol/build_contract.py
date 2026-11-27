@@ -763,6 +763,7 @@ def semantics():
 
 
 def openapi():
+    from tools.serve_protocol.event_schema import event_stream
     external = lambda file, fragment="": {"$ref": file + fragment}
     response = lambda schema, description="JSON response": dict(description=description,
         headers={"X-Request-Id": dict(schema=dict(type="string",
@@ -812,13 +813,14 @@ def openapi():
         if body:
             operation["requestBody"] = dict(required=True, content={"application/json": dict(schema=body)})
         if path.endswith("/completions"):
-            success["content"]["text/event-stream"] = dict(schema=dict(type="string"),
-                **{"x-q4t-event-schema": external("serve-transport-v1.schema.json", "#/$defs/chunk"),
-                   "x-q4t-stream-contract": "role/content/tool deltas; exactly one finish; optional usage; DONE then EOF. After HTTP200, error envelope plus DONE when writable, otherwise truncated. No tool dispatch before complete validated terminal."})
             if path == "/v1/completions":
-                success["content"]["text/event-stream"].update({
-                    "x-q4t-event-schema": external("serve-completion-transport-v1.schema.json", "#/$defs/chunk"),
-                    "x-q4t-stream-contract": "Indexed text/probability deltas; per-choice finish; optional aggregate usage; DONE then EOF. Error terminal never publishes successful aggregate usage."})
+                schema = external("serve-completion-transport-v1.schema.json", "#/$defs/chunk")
+                contract = "Indexed text/probability deltas; per-choice finish; optional aggregate usage; DONE then EOF. Error terminal never publishes successful aggregate usage."
+            else:
+                schema = external("serve-transport-v1.schema.json", "#/$defs/chunk")
+                contract = "role/content/tool deltas; exactly one finish; optional usage; DONE then EOF. After HTTP200, error envelope plus DONE when writable, otherwise truncated. No tool dispatch before complete validated terminal."
+            success["content"]["text/event-stream"] = event_stream(
+                schema, error=error, **{"x-q4t-stream-contract": contract})
         if path == "/v1/models/{model}":
             operation["operationId"] = "v1_models_" + method
             operation["parameters"].append(dict(name="model", **{"in": "path"}, required=True,

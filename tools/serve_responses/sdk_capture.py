@@ -15,7 +15,8 @@ def require(value, message):
         raise RuntimeError(message)
 
 
-def wire_events(wire):
+def wire_events(wire, *, after=-1):
+    require(type(after) is int and after >= -1, 'invalid SSE cursor')
     require(type(wire) is str and 0 < len(wire.encode()) <= MAX_WIRE_BYTES,
             'SDK wire size differs')
     events = []
@@ -34,10 +35,11 @@ def wire_events(wire):
         require(type(value) is dict and value.get('type') == names[0],
                 'SSE event type differs')
         events.append(value)
-    require(events and events[0]['type'] == 'response.created' and
+    require(events and (after >= 0 or events[0]['type'] == 'response.created') and
             events[-1]['type'] == 'response.completed' and
             all(type(e.get('sequence_number')) is int for e in events) and
-            [e.get('sequence_number') for e in events] == list(range(len(events))) and
+            [e['sequence_number'] for e in events] ==
+            list(range(after + 1, after + 1 + len(events))) and
             sum(e['type'] == 'response.completed' for e in events) == 1,
             'native SSE did not complete once')
     return events
