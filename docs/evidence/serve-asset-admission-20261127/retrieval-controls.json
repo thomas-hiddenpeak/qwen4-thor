@@ -25,5 +25,11 @@
   "new_retrieval_controls": 3,
   "log_sha256": "26f6db29cb87a79af3583d660f64bb15b4282a6fa7eb86a54b174d8f657dd0aa",
   "device_verified": false,
-  "issued": false
+  "issued": false,
+  "release_binding": {
+    "tests": 10,
+    "log_sha256": "1902acbf968a13912a1ce2c0db01c100981ccd988b871a47fd09dd921796a561",
+    "basis": "previous deployment manifest observed in the strict overlap run and reviewed primary/light qualifications",
+    "stale_deployment_rejected": true
+  }
 }

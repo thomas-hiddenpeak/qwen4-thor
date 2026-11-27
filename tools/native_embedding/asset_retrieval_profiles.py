@@ -10,7 +10,6 @@ from tools.serve_service import package
 ROOT = lifecycle.ROOT
 CORPUS = ROOT/'docs/evidence/serve-native-embedding-business-20261111'
 PROOF = ROOT/'docs/evidence/serve-asset-admission-20261127/device.json'
-RELEASE = ROOT/'docs/evidence/serve-voice-consent-pagination-20261127/delivery.json'
 KEY = 'asset_reader_retrieval'
 RECEIPT = 'asset-retrieval.json'
 # Two original passages (optional nginx, native observation) and their queries.
@@ -47,14 +46,14 @@ def prepare(out, build, deployment):
     package.require(proof['stage'] == 'native_reader_contention_on_primary'
                     and proof['engine'] == package.sha(build/'q4t')
                     and proof['environment']['status'] == 'PASS'
-                    and proof['service_manifest'] == package.read(RELEASE)['publication']['primary'],
+                    and proof['service_manifest'] == package.sha(deployment/'build/service/manifest.json'),
                     'candidate or release differs from the device test')
-    files = [Path(__file__), PROOF, RELEASE, CORPUS/'default.request.json',
+    files = [Path(__file__), PROOF, CORPUS/'default.request.json',
              CORPUS/'default.wire', CORPUS/'acceptance-final.json']
     package.require(package.read(files[-1])['status'] == 'ACCEPT_NATIVE_RETRIEVAL_BUSINESS',
                     'expected accepted native retrieval corpus')
-    lifecycle.prepare_candidate(out, build, deployment, RELEASE,
-                                reuse.CURSOR_PAGE_REVIEWED, KEY, files)
+    lifecycle.prepare_from_manifest(out, build, deployment, proof['service_manifest'],
+                                    reuse.CURSOR_PAGE_REVIEWED, KEY, files)
 
 
 def business(stage):
