@@ -358,3 +358,36 @@ Q4T_TEST(responses_mcp_output_tool_and_listing_errors_close_exactly_once) {
   Q4T_CHECK(done == 2 && wire.find("response.mcp_call.completed") == wire.npos);
   return true;
 }
+
+Q4T_TEST(responses_legacy_arguments_event_uses_the_exact_function_item) {
+  detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
+  const auto response = Value(R"({"output":[
+    {"type":"function_call","id":"fc_a","name":"first"},
+    {"type":"function_call","id":"fc_b","name":"second"}]})");
+  const auto original = Value(R"({"type":"response.function_call_arguments.done",
+    "output_index":1,"item_id":"fc_b","sequence_number":11,"arguments":"{}"})");
+  for (const auto& [version, named] :
+       std::vector<std::pair<std::string, bool>>{
+           {"1.109.1", false}, {"2.0.0", true}, {"2.8.1", true},
+           {"2.33.0", true}, {"3.0.0", true}, {"3.8.0", true},
+           {"3.9.0", false}, {"3.55.1", false}}) {
+    context.SetResponsesView(ClassifyPythonResponsesVersion(version));
+    auto event = original;
+    Q4T_CHECK(ProjectFunctionArgumentName(&event, response));
+    Q4T_CHECK(event.Has("name") == named);
+    if (named) Q4T_CHECK(event.GetString("name") == "second");
+    Q4T_CHECK(event.GetString("item_id") == "fc_b");
+  }
+  context.SetResponsesView(ClassifyPythonResponsesVersion("3.8.0"));
+  for (const auto index : {-1, 0, 2}) {
+    auto wrong = original;
+    Set(&wrong, "output_index", Number(index));
+    Q4T_CHECK(!ProjectFunctionArgumentName(&wrong, response));
+    Q4T_CHECK(!wrong.Has("name"));
+  }
+  auto other = original;
+  Set(&other, "type", String("response.custom_tool_call_input.done"));
+  Q4T_CHECK(ProjectFunctionArgumentName(&other, response));
+  Q4T_CHECK(!other.Has("name"));
+  return true;
+}

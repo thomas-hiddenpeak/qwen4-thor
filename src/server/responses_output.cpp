@@ -188,6 +188,25 @@ void ProjectMcpErrorStrings(io::Json& value) {
   }
 }
 
+bool ProjectFunctionArgumentName(io::Json* event, const io::Json& response) {
+  if (event->GetString("type") != "response.function_call_arguments.done" ||
+      !detail::HttpResponseContext::LegacyFunctionArgumentName())
+    return true;
+  const auto* index = event->Find("output_index");
+  const auto* items = response.GetArray("output");
+  if (!index || !IsInputInteger(*index) || index->AsInt() < 0 || !items ||
+      static_cast<size_t>(index->AsInt()) >= items->array.size())
+    return false;
+  const auto& item = items->array[static_cast<size_t>(index->AsInt())];
+  if (item.GetString("type") != "function_call" ||
+      item.GetString("id").empty() ||
+      item.GetString("id") != event->GetString("item_id") ||
+      item.GetString("name").empty())
+    return false;
+  Set(event, "name", *item.Find("name"));
+  return true;
+}
+
 io::Json ResponsesWireValue(io::Json value) {
   ProjectValue(value, true);
   if (detail::HttpResponseContext::LegacyMcpError())

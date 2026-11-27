@@ -42040,6 +42040,9 @@
               },
               "type": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/1006"
+              },
+              "name": {
+                "type": "string"
               }
             },
             "required": [

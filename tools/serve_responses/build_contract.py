@@ -576,6 +576,8 @@ def schema(graph):
             node = types['nodes'][index]
             tag = next((types['nodes'][field['type']].get('value')
                         for field in node.get('fields', []) if field['name'] == 'type'), None)
+            if event_root == 'response_event' and tag == 'response.function_call_arguments.done':
+                definitions[str(index)]['properties']['name'] = dict(type='string')
             if isinstance(tag, str) and tag.endswith('.delta'):
                 definitions[prefix+str(index)]['properties']['obfuscation'] = dict(type='string')
 

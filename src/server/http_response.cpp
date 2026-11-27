@@ -476,9 +476,19 @@ bool HttpResponseContext::LegacyCacheRetention() {
 }
 
 bool HttpResponseContext::LegacyMcpError() {
-  return current_response &&
-         current_response->responses_view_.value_or(
-             PythonResponsesView::kCurrent) != PythonResponsesView::kCurrent;
+  if (!current_response) return false;
+  const auto view = current_response->responses_view_;
+  return view == PythonResponsesView::kStringMcpError ||
+         view == PythonResponsesView::kStringMcpErrorAndNamedArguments ||
+         view == PythonResponsesView::kStringMcpErrorAndHyphenatedCache;
+}
+
+bool HttpResponseContext::LegacyFunctionArgumentName() {
+  if (!current_response) return false;
+  const auto view = current_response->responses_view_;
+  return view == PythonResponsesView::kNamedArguments ||
+         view == PythonResponsesView::kStringMcpErrorAndNamedArguments ||
+         view == PythonResponsesView::kStringMcpErrorAndHyphenatedCache;
 }
 
 HttpResponseContext* HttpResponseContext::Current(int fd) {

@@ -41,7 +41,10 @@ Json ResponsesExecution::PublicResponse() const {
 std::string ResponsesExecution::PublicWire(std::string_view wire) const {
   const bool legacy_mcp = detail::HttpResponseContext::LegacyMcpError() &&
                           wire.find("\"mcp_call\"") != wire.npos;
-  if (!legacy_mcp && (Includes(envelope_, "file_search_call.results") ||
+  const bool named_arguments =
+      detail::HttpResponseContext::LegacyFunctionArgumentName() &&
+      wire.find("event: response.function_call_arguments.done\r\n") != wire.npos;
+  if (!legacy_mcp && !named_arguments && (Includes(envelope_, "file_search_call.results") ||
        wire.find("\"file_search_call\"") == wire.npos) &&
       (Includes(envelope_, "web_search_call.action.sources") ||
        wire.find("\"web_search_call\"") == wire.npos))
@@ -62,6 +65,9 @@ std::string ResponsesExecution::PublicWire(std::string_view wire) const {
     if (event.Has("item")) HideResult(&Field(event, "item"), envelope_);
     if (event.Has("response")) HideResponse(&Field(event, "response"), envelope_);
     if (legacy_mcp) ProjectMcpErrorStrings(event);
+    if (named_arguments &&
+        !ProjectFunctionArgumentName(&event, output_.Snapshot()))
+      throw std::logic_error("Function event has no matching output item");
     result +=
         std::string(wire.substr(0, line + 8)) + OutputJson(event) + "\r\n\r\n";
     wire.remove_prefix(end + 4);
