@@ -998,6 +998,16 @@
         "managed": "evidence/serve-openapi-ingress-auth-20261128/managed.json",
         "revision": 586,
         "delivery": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
+      },
+      "stored_chat_sdk_handoff_20261128": {
+        "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
+        "wire": "evidence/serve-stored-chat-sdk-20261128/requests.json",
+        "release": 590,
+        "observed_methods": 6,
+        "sdk_versions": 6,
+        "success_pairs": 36,
+        "starts": 1,
+        "requests": 60
       }
     },
     {
@@ -9769,11 +9779,21 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 149,
+        "source_requests": 209,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 90,
-        "methods_with_success": 26,
-        "scope": "Original trace-linked client exchanges for Conversations, Uploads and vector batch polling on releases 588 and 590."
+        "method_sdk_pairs_with_success": 126,
+        "methods_with_success": 32,
+        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590."
+      },
+      "stored_chat_sdk_handoff_20261128": {
+        "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
+        "wire": "evidence/serve-stored-chat-sdk-20261128/requests.json",
+        "release": 590,
+        "observed_methods": 6,
+        "sdk_versions": 6,
+        "success_pairs": 36,
+        "starts": 1,
+        "requests": 60
       }
     },
     {
@@ -12947,6 +12967,16 @@
         "release": 590,
         "model_starts": 1,
         "stage": "issued_engine_and_native_embedding_verified"
+      },
+      "stored_chat_sdk_handoff_20261128": {
+        "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
+        "wire": "evidence/serve-stored-chat-sdk-20261128/requests.json",
+        "release": 590,
+        "observed_methods": 6,
+        "sdk_versions": 6,
+        "success_pairs": 36,
+        "starts": 1,
+        "requests": 60
       }
     },
     {
@@ -15018,11 +15048,11 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 149,
+        "source_requests": 209,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 90,
-        "methods_with_success": 26,
-        "scope": "Original trace-linked client exchanges for Conversations, Uploads and vector batch polling on releases 588 and 590."
+        "method_sdk_pairs_with_success": 126,
+        "methods_with_success": 32,
+        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590."
       }
     }
   ],

@@ -65,12 +65,12 @@ POST,/batches,,,,,,
 GET,/batches,,,,,,
 GET,/batches/{batch_id},,,,,,
 POST,/batches/{batch_id}/cancel,,,,,,
-GET,/chat/completions,,,,,,
-POST,/chat/completions,,,,,,
-GET,/chat/completions/{completion_id},,,,,,
-POST,/chat/completions/{completion_id},,,,,,
-DELETE,/chat/completions/{completion_id},,,,,,
-GET,/chat/completions/{completion_id}/messages,,,,,,
+GET,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
+POST,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
+GET,/chat/completions/{completion_id},chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2
+POST,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
+DELETE,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
+GET,/chat/completions/{completion_id}/messages,chats/200=2,chats/200=2,chats/200=2,chats/200=2,chats/200=2,chats/200=2
 POST,/chatkit/sessions,,,,,,
 POST,/chatkit/sessions/{session_id}/cancel,,,,,,
 GET,/chatkit/threads,,,,,,

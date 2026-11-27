@@ -15,14 +15,15 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 `legacy_cancel` 仅涉及 `evals.runs.cancel`。旧客户端将 POST 发往 `/evals/{eval_id}/runs/{run_id}`，新客户端在路径末尾加上 `/cancel`。q4t 已在真实 Eval Run 上验证旧路径、当前路径及另一客户的 404。 [取消业务回执](evidence/serve-sdk-routes-20261126/business.json)
 
+## 按方法查真实业务回包
+
+[业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)按同一组 231 个公开方法和六版 SDK 列出历史实机回包。例如 `vectors/200=1` 表示这个 SDK 在向量库业务中调用该方法一次并收到 200。空白表示此次纳入的四组回执没有该组合的记录。400、404、409 单独计数；每组的发行号、原始请求和校验摘要见[来源清单](evidence/serve-sdk-business-index-20261128/sources.json)。
+
+四组业务共 209 个已认证请求，208 个可对应到具体方法，覆盖 32 个有成功回包的方法和 126 个有成功回包的方法与版本组合。旧上传记录中的一条 `POST /v1/responses` 缺少原始查询串，保留在来源清单的 `unassigned`。新上传验证器保留查询串，可区分普通与 beta 路径。复核命令为 `python3 -B -m tools.serve_audit.sdk_business_evidence build/sdk-business`。
+
 ## 验证范围
 
-### 按方法查真实业务回包
-
-[业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)按同一组 231 个公开方法和六版 SDK 列出历史实机回包。例如 `vectors/200=1` 表示这个 SDK 在向量库业务中调用该方法一次并收到 200。空白表示此次纳入的三组回执没有该组合的记录。400、404、409 单独计数；每组的发行号、原始请求和校验摘要见[来源清单](evidence/serve-sdk-business-index-20261128/sources.json)。
-
-三组业务共 149 个已认证请求，148 个可对应到具体方法，覆盖 26 个有成功回包的方法和 90 个有成功回包的方法与版本组合。旧上传记录中的一条 `POST /v1/responses` 缺少原始查询串，保留在来源清单的 `unassigned`。新上传验证器保留查询串，可区分普通与 beta 路径。复核命令为 `python3 -B -m tools.serve_audit.sdk_business_evidence build/sdk-business`。
-
+- **已存 Chat。** 四版 Python 和两版 Node 各将一份真实发行记录存为 Chat，由另一版 SDK 读取同一 ID、更新并按元数据筛选、分页读回原始消息和删除。六个方法在六个版本上都有成功回包。六次跨客户读取和六次删除后读取都返回 404。[实机回执](evidence/serve-stored-chat-sdk-20261128/business.json) · [请求与回包](evidence/serve-stored-chat-sdk-20261128/requests.json)
 - rev590 的原生 TLS、嵌入模型和文本模型已通过官方 SDK 批量上传与自动轮询验收。Python 2.8.1 和 Node 7.47.0 各上传两份真实发行记录，另一个版本的客户端通过游标逐页读回原文件、核对内容和过滤检索。Responses 的 file_search 命中 rev588 的原 File ID，模型回答中包含该发行号。两次跨客户访问均返回 404。共 50 个真实请求、一次模型启动。 [实机业务回执](evidence/serve-vector-batch-sdk-20261128/business.json)
 
 - **Uploads 和 Files 接管。** 六版客户端共同操作同一批资源，覆盖四种 Uploads 和五种 Files 方法。主包接受乱序传输、按指定顺序完成；回退包沿用原分片和 File ID，核对下载、归属和删除，再由 Responses 读取实际文件。每版具体经手的方法、HTTP 状态及请求 ID 都在[逐次记录](evidence/serve-upload-sdk-recovery-20261128/requests.json)。

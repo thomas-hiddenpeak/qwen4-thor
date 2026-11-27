@@ -2,12 +2,14 @@
 from collections import Counter, defaultdict
 import csv
 import io
+import hashlib
 import json
 from pathlib import Path
 import re
 from urllib.parse import parse_qsl
 
 from .render_sdk_matrix import CATALOG, VERSIONS, sha
+from .stored_chat_receipt import verify as verify_stored_chat
 
 EVIDENCE = CATALOG.parents[1]
 CLIENTS = tuple(f'{language}-{version}' for language, version in VERSIONS)
@@ -98,11 +100,42 @@ def vectors(proof, pairs):
     return proof['publication'], packets, proof['statuses']
 
 
+def stored_chats(proof, pairs):
+    result = proof['result']
+    require(result['status'] == 'PASS' and result['starts'] == 1 and result['ports_free']
+            and result['unchanged_default'] and result['model_exit'] == 0, 'stored Chat run incomplete')
+    require(len(pairs) == len(CLIENTS) and proof['sdk_versions'] == list(CLIENTS),
+            'incomplete stored Chat SDK set')
+    packets = []
+    seen_ids = set()
+    for i, pair in enumerate(pairs):
+        writer, reader = pair['writer'], pair['reader']
+        require(writer['sdk'] == CLIENTS[i] and reader['sdk'] == CLIENTS[(i+1) % len(CLIENTS)],
+                'stored Chat reader or writer differs')
+        receipt = EVIDENCE / pair['source']
+        origin = proof['source_publications'][pair['source']]
+        require(sha(receipt) == origin['delivery_sha256'], 'project publication receipt changed')
+        published = read(receipt)['publication']
+        raw = (json.dumps(published, indent=2) + '\n').encode()
+        require(published['publication_revision'] == origin['publication'] and
+                hashlib.sha256(raw).hexdigest() == origin['original_sha256'],
+                'input does not reproduce the original publication bytes')
+        verify_stored_chat(writer, reader, pair['request'], pair['metadata'], raw)
+        ident = writer['created']['id']
+        require(ident not in seen_ids, 'stored Chat ID reused between jobs')
+        seen_ids.add(ident)
+        for actor in (writer, reader):
+            packets.extend((actor['sdk'], wire) for wire in actor['requests'])
+    require(len(packets) == result['requests'] == proof['requests'], 'stored Chat request count differs')
+    return proof['publication'], packets, proof['statuses']
+
+
 # Only suites with original, authenticated wire records and a matching device receipt.
 SUITES = (
     ('conversations', 'serve-conversation-sdk-business-20261128', 'requests_sha256', conversations),
     ('uploads', 'serve-upload-sdk-recovery-20261128', 'trace_sha256', uploads),
     ('vectors', 'serve-vector-batch-sdk-20261128', 'request_evidence_sha256', vectors),
+    ('chats', 'serve-stored-chat-sdk-20261128', 'request_evidence_sha256', stored_chats),
 )
 
 
