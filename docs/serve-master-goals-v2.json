@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-27",
+  "updated": "2026-11-28",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -3337,12 +3337,14 @@
         "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
-        "stage": "managed_verified",
+        "stage": "issued",
         "reference_and_native": "evidence/serve-chatkit-pending-user-message-20261127/native.json",
-        "issued": false,
+        "issued": true,
         "device": "evidence/serve-chatkit-pending-user-message-20261127/device.json",
         "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json",
-        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json"
+        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json",
+        "revision": 584,
+        "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       }
     },
     {
@@ -4119,12 +4121,14 @@
         "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
-        "stage": "managed_verified",
+        "stage": "issued",
         "reference_and_native": "evidence/serve-chatkit-pending-user-message-20261127/native.json",
-        "issued": false,
+        "issued": true,
         "device": "evidence/serve-chatkit-pending-user-message-20261127/device.json",
         "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json",
-        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json"
+        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json",
+        "revision": 584,
+        "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       }
     },
     {
@@ -9665,12 +9669,14 @@
         "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
-        "stage": "managed_verified",
+        "stage": "issued",
         "reference_and_native": "evidence/serve-chatkit-pending-user-message-20261127/native.json",
-        "issued": false,
+        "issued": true,
         "device": "evidence/serve-chatkit-pending-user-message-20261127/device.json",
         "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json",
-        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json"
+        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json",
+        "revision": 584,
+        "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       }
     },
     {
@@ -10938,8 +10944,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 582,
-        "receipt": "evidence/serve-asset-admission-20261127/delivery.json",
+        "revision": 584,
+        "receipt": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -11093,7 +11099,10 @@
       "native_soak_disk_reserve_20261128": {
         "stage": "real_cli_verified",
         "evidence": "evidence/serve-native-soak-audio-20261127/disk-reserve.json",
-        "issued": false
+        "issued": true,
+        "operator_source": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
+        "revision": 584,
+        "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       }
     },
     {
@@ -12794,7 +12803,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev582_delivered_remaining_deliveries",
+      "state": "rev584_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -14248,7 +14257,8 @@
       "current_defaults_delivery": "evidence/serve-request-defaults-20261127/delivery.json",
       "current_agent_cache_delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json",
       "current_cursor_pagination_delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json",
-      "current_model_asset_admission_delivery": "evidence/serve-asset-admission-20261127/delivery.json"
+      "current_model_asset_admission_delivery": "evidence/serve-asset-admission-20261127/delivery.json",
+      "current_chatkit_pending_tool_delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -14353,19 +14363,26 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "990573497446b1df63d2aae7e8c07d07630de9af",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/asset-retrieval-soak-src",
+        "audio_pairs": 25,
+        "first_hour_business": 304,
+        "business_requests": 7250,
+        "source_commit": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/asset-retrieval-client-primary-01/bundle",
-          "manifest_sha256": "12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-client-primary-01/bundle",
+          "manifest_sha256": "b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a"
         },
-        "revision": 582,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/asset-retrieval-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "b78e09ca0dea8a17526c27f642368883d97b88a07a57d17293a4169b22c06f57",
-        "handoff_sha256": "8de14a01134f03365606e828bdb4cb4036c112f67edc7fedb9adf7a504e19d0f",
+        "revision": 584,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "df0f6e480e5e0b170047a9e1fc77ef99035137b6cb1efe0bbb787dc54a214aab",
+        "handoff_sha256": "2145afdf8e4791a00fc7055ca49076ceef82c03f03a4b10af08cc79c4bf702ee",
         "checked": true,
-        "source_files": 700,
-        "hours_executed": 0
+        "source_files": 702,
+        "hours_executed": 0,
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-soak-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "8a1d5dbf5c4d67e585f82fd8acbfcedb75bb3a88d4f1033cff8f37b946b6a3b4",
+        "checked_at": "2026-11-27T17:43:03.931093+00:00",
+        "minimum_evidence_free_bytes": 12884901888
       },
       "video_affine_detail_20261117": {
         "state": "delivered_main_pending",
@@ -14773,9 +14790,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 582,
-        "receipt": "evidence/serve-asset-admission-20261127/delivery.json",
-        "plan_sha256": "b78e09ca0dea8a17526c27f642368883d97b88a07a57d17293a4169b22c06f57",
+        "revision": 584,
+        "receipt": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json",
+        "plan_sha256": "df0f6e480e5e0b170047a9e1fc77ef99035137b6cb1efe0bbb787dc54a214aab",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
@@ -14801,7 +14818,10 @@
       "native_soak_disk_reserve_20261128": {
         "stage": "real_cli_verified",
         "evidence": "evidence/serve-native-soak-audio-20261127/disk-reserve.json",
-        "issued": false
+        "issued": true,
+        "operator_source": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
+        "revision": 584,
+        "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       }
     }
   ],
