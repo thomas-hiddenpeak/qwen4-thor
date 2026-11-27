@@ -764,6 +764,53 @@ def semantics():
         sources_sha256={p: hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in paths})
 
 
+def ingress_authentication(paths, unauthorized):
+    """Describe credential admission at the managed listener."""
+    def bearer(description):
+        return dict(type="http", scheme="bearer", description=description)
+
+    schemes = dict(
+        ProjectKey=bearer("API key for the configured project client."),
+        ChatKitSession=bearer("Client secret issued by the ChatKit session."),
+        AttachmentUpload=bearer("Bearer ticket supplied in this attachment's upload descriptor."),
+        PreviewTicket=dict(type="apiKey", **{"in": "query"}, name="ticket",
+                           description="Use the signed preview URL supplied with the attachment."),
+        RealtimeSession=bearer("Ephemeral client secret issued for this Realtime session and transport. "
+                               "Sideband access by call ID requires a project key."),
+        WebSocketProtocol=dict(type="apiKey", **{"in": "header"}, name="Sec-WebSocket-Protocol",
+            description="Offer openai-insecure-api-key.<credential> alongside the selected WebSocket "
+                        "protocol. Supply a project key or a Realtime secret on an eligible session upgrade."))
+    upload = "/v1/chatkit/attachments/{session_id}/{file_id}"
+    browser = {("post", "/v1/chatkit"): "ChatKitSession",
+               ("post", "/v1/chatkit/attachments"): "ChatKitSession",
+               ("put", upload): "AttachmentUpload",
+               ("get", upload + "/preview"): "PreviewTicket"}
+    realtime = {("get", "/v1/realtime"), ("get", "/v1/realtime/translations"),
+                ("post", "/v1/realtime/calls"), ("post", "/v1/realtime/translations/calls")}
+    websocket = {"/v1/realtime", "/v1/realtime/translations", "/v1/live/sessions",
+                 "/v1/live/sessions/{session_id}/fork", "/v1/live/sessions/{session_id}/attach"}
+    for path, methods in paths.items():
+        for method, operation in methods.items():
+            if path in ("/v1/config", "/metrics"):
+                operation["security"] = []
+                operation["servers"] = [dict(url="http://127.0.0.1:8080",
+                    description="Trusted local runner. Select the configured local operations listener.")]
+                continue
+            target = method, path
+            upgrade = method == "get" and path in websocket
+            if target in browser:
+                operation["security"] = [{browser[target]: []}]
+            elif target in realtime or upgrade:
+                alternatives = [{"ProjectKey": []}]
+                if target in realtime:
+                    alternatives.append({"RealtimeSession": []})
+                if upgrade:
+                    alternatives.append({"WebSocketProtocol": []})
+                operation["security"] = alternatives
+            operation["responses"]["401"] = {"$ref": "#/components/responses/Unauthorized"}
+    return dict(securitySchemes=schemes, responses=dict(Unauthorized=unauthorized))
+
+
 def openapi():
     from tools.serve_protocol.event_schema import event_stream
     external = lambda file, fragment="": {"$ref": file + fragment}
@@ -857,9 +904,8 @@ def openapi():
                             reply["headers"] = dict(reply.get("headers", {}), **{
                                 "X-Should-Retry": dict(schema=dict(type="string", enum=["false"]),
                                     description="Automatic retries are suppressed when the upstream may have executed this request.")})
-    events = paths["/v1/webhook_event_types"]["get"]["responses"]
-    events["401"] = dict(events["default"], description="Bearer authentication required",
-        headers={**events["default"]["headers"],
+    unauthorized = response(public_error, "Native ingress rejected the credentials")
+    unauthorized["headers"].update({
             "WWW-Authenticate": dict(required=True, schema=dict(type="string"),
             description="Bearer authentication challenge for this service.",
             example='Bearer realm="q4t"')})
@@ -879,8 +925,10 @@ def openapi():
             responses[status] = entry
     return dict(openapi="3.1.0", info=dict(title="Q4T serving contract",
         version="q4t-serve-v1", description="Static supported surface, not full OpenAI API compatibility. See required native semantics and version-bound acceptance matrix."),
-        servers=[dict(url="http://127.0.0.1:8080", description="Example only; use effective configured address")],
-        paths=paths, **{"x-q4t": dict(semantic_contract="serve-input-semantics-v1.json",
+        servers=[dict(url="http://127.0.0.1:8080", description="Example only. Set the managed ingress origin "
+                      "to the deployed address and scheme. TLS deployments can additionally require a client certificate.")],
+        paths=paths, security=[{"ProjectKey": []}], components=ingress_authentication(paths, unauthorized),
+        **{"x-q4t": dict(semantic_contract="serve-input-semantics-v1.json",
             query_parameters="route-specific closed fields; unlisted fields return400",
             get_request_body="unsupported;400",
             wrong_method="405 with Allow", post_content_type="application/json; optional charset=utf-8",
@@ -908,7 +956,9 @@ def openapi():
                     fair_queue="prepared-slot client round robin, per-client bounded queue share",
                     preflight_charged=False, automatic_retry=False),
                 defaults="omitted/null output budget is min(server default, client output limit)",
-                local_admin="exact GET health/liveness/readiness/config/metrics remain trusted same-host routes; gateway denies them",
+                local_admin="The native ingress authenticates GET /healthz, /livez and /readyz. "
+                    "GET /metrics and /v1/config use the trusted local operations listener. "
+                    "Direct loopback inference without a client policy uses the local anonymous identity.",
                 no_guarantee=["per-client physical RAM", "GPU-time or preparation fairness", "distributed quotas", "automatic in-flight key revocation"]),
             deployment="controlled local/internal service; public deployment not accepted",
             streaming_response_schema_scope="envelopes; sequencing and tool semantics require client validation")})

@@ -23,6 +23,12 @@ class StreamMediaTest(unittest.TestCase):
     def validator(self, route, method='post', status='200'):
         return self.root.evolve(schema=self.streams[method, route, status]['schema'])
 
+    def test_sse_declarations_are_openapi_media_type_objects(self):
+        for route, media in self.streams.items():
+            with self.subTest(route=route):
+                fields = {key for key in media if not key.startswith('x-')}
+                self.assertLessEqual(fields, {'schema', 'example', 'examples', 'encoding'})
+
     def test_success_media_use_the_event_payload_schema(self):
         # Include the streaming 201 from session creation.
         self.assertIn(('post', '/v1/agents/sessions', '201'), self.streams)

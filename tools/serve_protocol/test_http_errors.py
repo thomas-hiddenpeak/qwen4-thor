@@ -13,6 +13,56 @@ class HttpErrors(unittest.TestCase):
         cls.document = json.loads(path.read_bytes())
         cls.validator = Draft202012Validator(cls.document)
 
+    def test_published_native_authentication(self):
+        docs = Path(__file__).resolve().parents[2] / 'docs'
+        for filename in ('serve-openapi-v1.json', 'serve-openapi-bundle-v1.json'):
+            document = json.loads((docs / filename).read_bytes())
+            schemes = document['components']['securitySchemes']
+            self.assertEqual(document['security'], [{'ProjectKey': []}])
+            used = set()
+            for path, methods in document['paths'].items():
+                for method, operation in methods.items():
+                    with self.subTest(filename=filename, path=path, method=method):
+                        alternatives = operation.get('security', document['security'])
+                        if path in ('/metrics', '/v1/config'):
+                            self.assertEqual(alternatives, [])
+                            self.assertTrue(operation['servers'])
+                            self.assertNotIn('401', operation['responses'])
+                            continue
+                        self.assertTrue(alternatives)
+                        for alternative in alternatives:
+                            self.assertEqual(len(alternative), 1)
+                            name, scopes = next(iter(alternative.items()))
+                            self.assertIn(name, schemes)
+                            self.assertEqual(scopes, [])
+                            used.add(name)
+                        self.assertEqual(operation['responses']['401'],
+                                         {'$ref': '#/components/responses/Unauthorized'})
+            self.assertEqual(used, set(schemes))
+            self.assertEqual(schemes['ProjectKey']['scheme'], 'bearer')
+            self.assertEqual(schemes['PreviewTicket']['in'], 'query')
+            self.assertEqual(schemes['PreviewTicket']['name'], 'ticket')
+            self.assertEqual(schemes['WebSocketProtocol']['name'], 'Sec-WebSocket-Protocol')
+            paths = document['paths']
+            attachment = '/v1/chatkit/attachments/{session_id}/{file_id}'
+            for path, method, expected in (
+                ('/livez', 'get', ['ProjectKey']),
+                ('/v1/chatkit/sessions', 'post', ['ProjectKey']),
+                ('/v1/chatkit', 'post', ['ChatKitSession']),
+                ('/v1/chatkit/attachments', 'post', ['ChatKitSession']),
+                (attachment, 'put', ['AttachmentUpload']),
+                (attachment + '/preview', 'get', ['PreviewTicket']),
+                ('/v1/realtime/client_secrets', 'post', ['ProjectKey']),
+                ('/v1/realtime/calls', 'post', ['ProjectKey', 'RealtimeSession']),
+                ('/v1/realtime/translations/calls', 'post', ['ProjectKey', 'RealtimeSession']),
+                ('/v1/realtime', 'get', ['ProjectKey', 'RealtimeSession', 'WebSocketProtocol']),
+                ('/v1/realtime/translations', 'get', ['ProjectKey', 'RealtimeSession', 'WebSocketProtocol']),
+                ('/v1/live/sessions/{session_id}/attach', 'get', ['ProjectKey', 'WebSocketProtocol']),
+                ('/v1/live/sessions', 'post', ['ProjectKey']),
+            ):
+                requirements = paths[path][method].get('security', document['security'])
+                self.assertEqual(requirements, [{name: []} for name in expected])
+
     def test_media_and_vector_header_contracts(self):
         paths = self.document['paths']
         store = '/v1/vector_stores/{vector_store_id}'
@@ -43,13 +93,15 @@ class HttpErrors(unittest.TestCase):
 
     def test_event_type_catalog_bearer_challenge(self):
         responses = self.document['paths']['/v1/webhook_event_types']['get']['responses']
-        self.assertEqual(responses['401']['headers']['X-Request-Id'],
+        self.assertEqual(responses['401'], {'$ref': '#/components/responses/Unauthorized'})
+        unauthorized = self.document['components']['responses']['Unauthorized']
+        self.assertEqual(unauthorized['headers']['X-Request-Id'],
                          responses['default']['headers']['X-Request-Id'])
-        challenge = responses['401']['headers']['WWW-Authenticate']
+        challenge = unauthorized['headers']['WWW-Authenticate']
         self.assertTrue(challenge['required'])
         self.validator.evolve(schema=challenge['schema']).validate('Bearer realm="q4t"')
         self.assertNotIn('WWW-Authenticate', responses['200'].get('headers', {}))
-        error = responses['401']['content']['application/json']['schema']
+        error = unauthorized['content']['application/json']['schema']
         for kind in ('authentication_error', 'gateway_error'):
             self.validator.evolve(schema=error).validate({'error': {
                 'message': 'Authentication required', 'code': 'invalid_api_key',
