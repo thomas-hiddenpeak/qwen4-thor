@@ -76,7 +76,7 @@ def observations(directory, accepted):
             'approval_identifiers_handoff', 'local_shell_handoff', 'client_patch_handoff', 'client_shell_handoff', 'program_fork_handoff',
             'video_track_grid_handoff', 'chatkit_interrupted_retry_handoff', 'video_layer_handoff', 'cache_retention_handoff',
             'mcp_error_sdk_handoff', 'compact_window_handoff', 'compact_media_handoff',
-            'program_sdk_reader_handoff'}.intersection(plan):
+            'program_sdk_reader_handoff', 'node_sdk_reader_handoff'}.intersection(plan):
             from tools.serve_responses import chatkit_actions_profiles
             profiles[name]['evidence_sha256'].update(chatkit_actions_profiles.verify(phase, plan, declared))
             continue

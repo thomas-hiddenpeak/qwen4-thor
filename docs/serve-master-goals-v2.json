@@ -9417,7 +9417,8 @@
       },
       "node_responses_sdk_20261127": {
         "evidence": "evidence/serve-node-sdk-presentation-20261127/cpu.json",
-        "status": "cpu_verified_real_tls_and_delivery_pending"
+        "status": "cpu_verified_real_tls_and_delivery_pending",
+        "profile_cpu": "evidence/serve-node-sdk-presentation-20261127/profile-cpu.json"
       },
       "standard_stream_media_20261127": {
         "receipt": "evidence/serve-stream-media-20261127/routes.json",
@@ -13847,7 +13848,8 @@
       "current_compact_media_delivery": "evidence/serve-compact-inline-media-20261127/delivery.json",
       "node_responses_sdk_20261127": {
         "evidence": "evidence/serve-node-sdk-presentation-20261127/cpu.json",
-        "status": "cpu_verified_real_tls_and_delivery_pending"
+        "status": "cpu_verified_real_tls_and_delivery_pending",
+        "profile_cpu": "evidence/serve-node-sdk-presentation-20261127/profile-cpu.json"
       },
       "standard_stream_media_20261127": {
         "receipt": "evidence/serve-stream-media-20261127/routes.json",

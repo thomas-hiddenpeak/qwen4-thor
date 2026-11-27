@@ -30,7 +30,7 @@ def answer_text(body):
                    for part in item['content'] if part['type'] == 'output_text').strip()
 
 
-def inspect_capture(folder, version, origin, revision, continued):
+def inspect_capture(folder, version, origin, revision, continued, *, modern=VERSIONS[1]):
     body = package.read(folder/'call.json')
     answer = package.read(folder/'answer.json')
     events = package.read(folder/'events.json')
@@ -50,7 +50,7 @@ def inspect_capture(folder, version, origin, revision, continued):
                     and marker['arguments'] == calls[0]['arguments']
                     and marker['sequence_number'] == origin['cursor'] + 1,
                     'captured argument marker belongs to a different function or cursor')
-    if version == VERSIONS[1]:
+    if version == modern:
         marker.pop('name')
     journal = [event for event in events if event['type'] == 'response.function_call_arguments.done']
     require = package.require
@@ -85,10 +85,10 @@ def verify_captures(directory, row):
         package.require(actual == row['clients'][version]['wire'], 'SDK receipts differ from disk')
 
 
-def check(row, previous=None):
+def check(row, previous=None, *, versions=VERSIONS):
     package.require(row['phase'] == ('primary' if previous is None else 'light')
-                    and set(row['clients']) == set(VERSIONS), 'unexpected SDK set or capacity')
-    for version in VERSIONS:
+                    and set(row['clients']) == set(versions), 'unexpected SDK set or capacity')
+    for version in versions:
         data = row['clients'][version]
         package.require(data['sdk'] == version and data['foreign_reads'] == [404, 404],
                         'incorrect SDK or scope for the retained tool call')
@@ -98,8 +98,8 @@ def check(row, previous=None):
             package.require(all(old[key] == now[key] for key in ('call','answer','events','resumed')),
                             'stored response bytes changed after profile replacement')
     if previous is not None:
-        primary_id = previous['clients'][VERSIONS[0]]['wire']['continued']
-        light_id = row['clients'][VERSIONS[1]]['wire']['continued']
+        primary_id = previous['clients'][versions[0]]['wire']['continued']
+        light_id = row['clients'][versions[1]]['wire']['continued']
         package.require(primary_id and light_id and primary_id != light_id,
                         'two profile continuations reused an identity')
 

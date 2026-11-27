@@ -14,6 +14,7 @@ from tools.serve_responses import client_patch_profiles as patch
 from tools.serve_responses import client_shell_profiles as shell
 from tools.serve_responses import chatkit_interrupted_retry_profiles as interrupted
 from tools.serve_responses import compact_window_profiles as windows
+from tools.serve_responses import node_sdk_profiles as node_sdk
 from tools.serve_responses import program_sdk_profiles as program_sdk
 from tools.serve_responses import mcp_error_profiles as mcp_error
 from tools.serve_responses import cache_retention_profiles as cache_retention
@@ -179,6 +180,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if node_sdk.KEY in plan:
+        return Handoff(node_sdk.KEY, node_sdk.RELEASE, node_sdk.ACTOR,
+                       reuse.NODE_SDK_RECEIPT, reuse.PROGRAM_SDK_RECEIPT,
+                       reuse.PROGRAM_SDK_REVIEWED, node_sdk.check)
     if program_sdk.KEY in plan:
         return Handoff(program_sdk.KEY, program_sdk.RELEASE, program_sdk.ACTOR,
                        reuse.PROGRAM_SDK_RECEIPT, reuse.COMPACT_MEDIA_RECEIPT,
@@ -322,6 +327,8 @@ def verify(phase, plan, capabilities):
     previous = package.read(phase.parent / 'primary' / spec.receipt) if name == 'light' else None
     row = package.read(phase / spec.receipt)
     spec.check(row, previous)
+    if spec.key == node_sdk.KEY:
+        node_sdk.verify_captures(phase/'node-sdk-wire', row)
     if spec.key == program_sdk.KEY:
         program_sdk.verify_captures(phase/'program-sdk-wire', row)
     if spec.key in windows.SUITES:
@@ -343,14 +350,19 @@ def business(stage, capabilities):
     params = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1",
                   key=stage.keys['alpha'], other=stage.keys['beta'], phase=plan['name'],
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
-    sdk_handoffs = {program_sdk.KEY: (program_sdk, 'program-sdk-wire'),
+    sdk_handoffs = {node_sdk.KEY: (node_sdk, 'node-sdk-wire'),
+                    program_sdk.KEY: (program_sdk, 'program-sdk-wire'),
                     mcp_error.KEY: (mcp_error, 'mcp-error-wire'),
                     cache_retention.KEY: (cache_retention, 'cache-retention-wire'),
                     **{key: (windows, suite.capture_directory)
                        for key, suite in windows.SUITES.items()}}
     if spec.key in sdk_handoffs:
         module, directory = sdk_handoffs[spec.key]
-        settings = plan[spec.key] if spec.key in windows.SUITES else plan[spec.key]['interpreters']
+        settings = plan[spec.key]
+        if spec.key == node_sdk.KEY:
+            settings = settings['sdk_directories']
+        elif spec.key not in windows.SUITES:
+            settings = settings['interpreters']
         options = {'suite': windows.SUITES[spec.key]} if spec.key in windows.SUITES else {}
         params['certificate'] = plan['tls']['certificate']
         previous = (package.read(stage.out.parent/'primary'/spec.receipt)
