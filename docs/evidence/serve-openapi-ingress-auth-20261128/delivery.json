@@ -54,7 +54,14 @@
     "plan_sha256": "df13910d838585295b4a7a937738fc1bf4016eefb92b58ae1794360dbc07dae6",
     "source_commit": "6d89538eb9a78730c5cc6ac5891e7af94e1160a2",
     "audio_pairs": 25,
-    "source_files": 702
+    "source_files": 702,
+    "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/openapi-auth-soak-src/.q4t-work/day-01/audio-day.sh",
+    "operator_sha256": "abdffc5d19c227a77506e0cecc737cdb1e4d9352ca3ad5633bafed9ae0123c9c",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/openapi-auth-soak-src/.q4t-work/day-01/plan.json",
+    "business_requests": 7250,
+    "first_hour_business": 304,
+    "checked_at": "2026-11-27T18:53:01.527171+00:00",
+    "minimum_evidence_free_bytes": 12884901888
   },
   "cold_preflight": {
     "prepared": true,
@@ -66,5 +73,31 @@
   "role_decisions": {
     "primary": "d77c81f0a3c1c53627d4ec1386e285f11007871ec5853ff1818f7d5436c57723",
     "fallback": "8b084e8b0002895cc3fb1ee8eee7269d4e847d3fdd809925a8a7100331720a61"
+  },
+  "required_methods": 231,
+  "declared_methods": 219,
+  "method_coverage": {
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "openapi_sha256": {
+      "primary": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+      "fallback": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326"
+    },
+    "remaining_declarations": [
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "GET /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "GET /videos/{video_id}",
+      "DELETE /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /videos/{video_id}/remix"
+    ]
   }
 }
