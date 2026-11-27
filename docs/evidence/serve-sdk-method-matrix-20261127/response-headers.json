@@ -1,0 +1,215 @@
+{
+  "stage": "cpu_verified_device_pending",
+  "source_base": "a86a9502402314f2ca8640883811272c51f572f6",
+  "engine": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+  "protocol_sources": 1104,
+  "frozen_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "candidate_openapi_sha256": "24c70fc7b30a9eee29dcc278d9e3df6c6e79d487ed4893081ab9ab80fe12f852",
+  "changed_responses": [
+    {
+      "method": "DELETE",
+      "path": "/v1/vector_stores/{vector_store_id}",
+      "status": "409"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/{vector_store_id}/files",
+      "status": "409"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/{vector_store_id}/files/{file_id}",
+      "status": "409"
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/vector_stores/{vector_store_id}/files/{file_id}",
+      "status": "409"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/{vector_store_id}/file_batches",
+      "status": "409"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "status": "409"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/audio/speech",
+      "status": "200"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/live/sessions/{session_id}/content",
+      "status": "503"
+    }
+  ],
+  "covered_named_headers": [
+    {
+      "method": "POST",
+      "path": "/audio/speech",
+      "status": "200",
+      "header": "Transfer-Encoding"
+    },
+    {
+      "method": "POST",
+      "path": "/realtime/calls",
+      "status": "201",
+      "header": "Location"
+    },
+    {
+      "method": "DELETE",
+      "path": "/vector_stores/{vector_store_id}",
+      "status": "409",
+      "header": "Retry-After"
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/file_batches",
+      "status": "409",
+      "header": "Retry-After"
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel",
+      "status": "409",
+      "header": "Retry-After"
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/files",
+      "status": "409",
+      "header": "Retry-After"
+    },
+    {
+      "method": "DELETE",
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "status": "409",
+      "header": "Retry-After"
+    },
+    {
+      "method": "POST",
+      "path": "/vector_stores/{vector_store_id}/files/{file_id}",
+      "status": "409",
+      "header": "Retry-After"
+    },
+    {
+      "method": "GET",
+      "path": "/live/sessions/{session_id}/content",
+      "status": "503",
+      "header": "Retry-After"
+    },
+    {
+      "method": "GET",
+      "path": "/webhook_event_types",
+      "status": "401",
+      "header": "WWW-Authenticate"
+    }
+  ],
+  "pending_backend_headers": [
+    {
+      "method": "POST",
+      "path": "/images/variations",
+      "status": "429",
+      "header": "X-RateLimit-Limit-Images"
+    },
+    {
+      "method": "POST",
+      "path": "/images/variations",
+      "status": "429",
+      "header": "X-RateLimit-Remaining-Images"
+    },
+    {
+      "method": "POST",
+      "path": "/images/variations",
+      "status": "429",
+      "header": "X-RateLimit-Reset-Images"
+    }
+  ],
+  "native_checks": [
+    "live_recording_store_publishes_atomically_and_scopes_download_after_restart",
+    "http_binary_stream_writes_negotiated_speech_types",
+    "http_binary_stream_close_and_reuse_require_success_chunk",
+    "http_session_http10_stream_closes_but_length_can_reuse",
+    "server_http_error_classification",
+    "vector_stores_expiry_releases_dependencies_without_resurrection",
+    "vector_stores_concurrent_attach_preserves_counts_and_independent_jobs",
+    "live_recording_download_hints_during_object_controller_backoff"
+  ],
+  "protocol_tests": 14,
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "sdk_wire": "recording-download-retries.json",
+  "sdk_wire_sha256": "86f0644305bedd6c7eb5f1a571cad50cc132a4209dff6511319853faa9601751",
+  "socket_capture_cpp_sha256": "ecd8eeaab4d8af66ef63b3b63a44e281f568b076a5d9f058edffd7e75c6d3b1a",
+  "receipts": {
+    "schema-before.log": "8272230c2f1eb3605409273d351aeb8f2a49514601678bedd6832c2719b1144c",
+    "native-tests.log": "e74a6ac616ad42046da7a97de55dcc0ffda0be502ff0d96fd949a4a72720e57d",
+    "extra-tests.log": "99f427a90bf2cbfa62b6ba09d4ddb60c533f30d7fdcc7a8c024a391cbf69e22a",
+    "schema-tests.log": "bc0a2b2dc38dcc405c3847bcfedbbd140fc4a472cb59997df3f09246a28e48a1",
+    "inventory-02.log": "bd34a6e0ea4070b11e1a6a4332d285e2f36dc0325661832926e96d65cb698cc8",
+    "engine-result.json": "c867dd93b152734c5b93ec8043dd4712730d34b018133542c08e0cc2c6c43ec6"
+  },
+  "validation_notes": [
+    "Captured real HTTP/1.1 socketpair responses from the recording download and a local object worker using a synthetic two-channel recording.",
+    "The six stock SDKs consumed the captured responses using in-process transports. No model or network service was launched for these tests.",
+    "The initial standalone native test compilation omitted the project test-worker definition. The native test build was corrected; the production engine remained a normal Release build.",
+    "The first SDK replay selected the httpx transport for two installations using httpx2. The completed evidence used each installed SDK transport."
+  ],
+  "shipped_replay_checks": [
+    {
+      "sdk": "2.8.1",
+      "language": "python",
+      "mode": "generic",
+      "attempts": 2,
+      "wait_seconds": 1.001
+    },
+    {
+      "sdk": "2.33.0",
+      "language": "python",
+      "mode": "generic",
+      "attempts": 2,
+      "wait_seconds": 1.001
+    },
+    {
+      "sdk": "3.42.1",
+      "language": "python",
+      "mode": "resource",
+      "attempts": 2,
+      "wait_seconds": 1.001
+    },
+    {
+      "sdk": "3.55.1",
+      "language": "python",
+      "mode": "resource",
+      "attempts": 2,
+      "wait_seconds": 1.001
+    },
+    {
+      "sdk": "6.34.0",
+      "language": "node",
+      "mode": "generic",
+      "attempts": 2,
+      "wait_seconds": 1.005
+    },
+    {
+      "sdk": "7.47.0",
+      "language": "node",
+      "mode": "resource",
+      "attempts": 2,
+      "wait_seconds": 1.007
+    }
+  ]
+}

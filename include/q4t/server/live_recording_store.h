@@ -60,5 +60,5 @@ class LiveRecordingCapture {
 ObjectReply ReadLiveForkState(ObjectStore& objects, const BinaryAccess& access,
                               const std::string& source);
 void SendLiveRecording(int fd, ObjectStore& objects, const BinaryAccess& access,
-                       const std::string& id);
+                       const std::string& id, HttpBodyBudget& budget);
 }  // namespace q4t::server

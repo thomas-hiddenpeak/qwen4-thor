@@ -776,12 +776,6 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                 "client_authentication_failed");
       return;
     }
-    HttpBodyLease working(body_budget_);
-    if (!working.Acquire(kLiveRecordingHostBytes)) {
-      SendError(fd, 503, "Recording download capacity exhausted", {},
-                "capacity_exhausted");
-      return;
-    }
     const auto client = context->Client();
     BinaryAccess access{"client:" + std::string(client.Id()),
                         std::chrono::steady_clock::now() +
@@ -791,7 +785,7 @@ void ChatServer::Dispatch(int fd, const std::string& method,
                                  !clients_.OwnsIdentity(client) ||
                                  detail::ClientConnectionFailed(fd);
                         }};
-    SendLiveRecording(fd, *objects_, access, std::string(id));
+    SendLiveRecording(fd, *objects_, access, std::string(id), body_budget_);
     return;
   }
   if (IsRealtimeTraceTarget(path)) {

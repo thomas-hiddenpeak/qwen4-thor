@@ -65,6 +65,8 @@ def add_voice_routes(paths, response, error):
     failure = {'$ref': 'serve-application-v1.schema.json#/$defs/transcription_error'}
     body['text/event-stream'] = event_stream(dict(oneOf=[delta, done, failure]))
     operation('post','/v1/audio/speech',{'200':dict(description='Audio or server-sent speech events',
+              headers={'Transfer-Encoding': dict(schema=dict(type='string', const='chunked'),
+                  description='Present for chunk-framed HTTP/1.1 audio or event streams.')},
               content=body)},body=content('application/json',speech))
 
     name = dict(type='string',minLength=1,maxLength=256)
@@ -204,7 +206,10 @@ def add_voice_routes(paths, response, error):
     operation('get','/v1/live/sessions/{session_id}/attach',upgrade,
               parameters=[param('graceful_close','query',dict(type='boolean'))],
               description='Authenticated sideband for a running media session. Replays three seconds of events and audio before live delivery.')
-    operation('get','/v1/live/sessions/{session_id}/content',{'200':dict(
+    unavailable = response(error, 'Recording export temporarily unavailable')
+    unavailable['headers']['Retry-After'] = dict(schema=dict(type='integer', minimum=1),
+        description='Minimum delay in seconds for a temporary export admission or recovery failure.')
+    operation('get','/v1/live/sessions/{session_id}/content',{'503': unavailable, '200':dict(
         description='Completed owner-scoped stereo PCM WAV, input left and output right',
         headers={'Content-Length':dict(schema=dict(type='integer',minimum=44))},
         content=content('audio/wav',binary))})

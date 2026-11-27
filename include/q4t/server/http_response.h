@@ -72,6 +72,8 @@ struct WriteOptions {
   // A sequenced Responses event already belongs to the journal. On a soft
   // cancellation finish its frame only while the peer can receive it.
   bool finish_response_event = false;
+  // Minimum delay advertised on a temporary 503 before response headers.
+  std::chrono::seconds retry_after{0};
 };
 
 // 128 random bits from the OS; never falls back to a process-local counter.
