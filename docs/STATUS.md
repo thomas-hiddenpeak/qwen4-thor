@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Node SDK 6.34.0 通过候选原生 TLS 实际发起 get_project_release，使用调用 ID 回填当前设备发行号 568，模型答复 568。7.47.0 断点读回同一项和终态；两端确认各自的函数名表示及缓存拼写，跨客户读取返回 404。共 1 次模型启动、2 次生成请求，耗时 31.76 秒。四版 Python SDK 回读亦通过。下一步完成服务包与发行验证。 [业务回执](evidence/serve-node-sdk-presentation-20261127/business.json)
+
 修复 12 处 SSE 的 OpenAPI 标准响应类型，覆盖 11 个 HTTP 200 和 Agents 会话创建的 HTTP 201。Chat 与 Completions 同时声明流内错误，Speech 声明音频、用量终态与错误。逐处使用现有事件核对，共 190 次帧校验，已有 q4t 扩展继续可读。对 Node 请求额外保存原始 HTTP，核对工具回填、断点及跨客户端错误；此处使用已签发查询的 CPU 回放。完整声明生成检查通过。下一步在待发行服务包核对同一份声明，并完成 Node 的真实 TLS 验收。 [逐路由证据](evidence/serve-stream-media-20261127/routes.json)
 
 修复 Node 客户端的 Responses 表示协商。原先 6.0.0 和 7.10.0 读取两条真实调用时均缺少函数名。现按 SDK 声明选择函数结束事件、MCP 错误类型及缓存值拼写，原生接入只向 Responses 转发有效版本。11 个官方 Node SDK 完成 99 次读取及 33 次跨客户拒绝，完整流与断点分别核对 2068 和 484 帧；两套 C++ 针对性用例和原生接入 6 个路由组合通过。下一步用候选原生 TLS 做真实工具回填，随后核对发行。 [CPU 记录](evidence/serve-node-sdk-presentation-20261127/cpu.json)
