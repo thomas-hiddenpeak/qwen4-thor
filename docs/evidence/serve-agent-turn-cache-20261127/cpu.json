@@ -1,0 +1,53 @@
+{
+  "stage": "source_and_targeted_cpu_verified",
+  "candidate_engine": "449e3cb09ee79625d4233025cd5907e564d4a3bfdb0b33e40a8379f92747641a",
+  "source_anchor_count": 1104,
+  "source_anchors_sha256": "5a25b4179e46ac88d285608770e3089189ce640b4ced371c74b19d12cdd082e5",
+  "upstream_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "contract": "TurnResource.prompt_cache_options is the selection at turn start. Null represents no recorded selection.",
+  "root": {
+    "case": "agent_session_deferred_function_discovery_survives_turn_reconfiguration",
+    "passed": true,
+    "checks": [
+      "frozen session TTL on a waiting tool turn",
+      "inherited TTL or null after session reconfiguration and tool continuation",
+      "freshly reread original turn"
+    ],
+    "receipt_sha256": "7069f2a598b9d181695f1b274e3af83ece0b091d99a92d7520f11c674b8cd2e6"
+  },
+  "child": {
+    "case": "agent_session_subagent_owned_history_survives_another_turn",
+    "passed": true,
+    "checks": [
+      "actual delegated request carries explicit TTL",
+      "cache selection in transaction recording the start",
+      "by-ID/list/SSE after store reopen",
+      "queued event and historical claims without a recorded TTL return null",
+      "unknown TTL and unclaimed item rejected",
+      "tenant isolation retained"
+    ],
+    "receipt_sha256": "42782d3b51a80194e9799d30f51c1863d1c0334c116ea7ffa75c8e0ef8c89715"
+  },
+  "schema_checks": 1,
+  "wire_generators": 2,
+  "inventory_mutations": 40,
+  "planning_fixture_failures": {
+    "first": {
+      "first_cpu_status": "FAIL_fixture_worker_dispatch",
+      "workers_signalled": 1103,
+      "remaining_after_cleanup": 0,
+      "removed_empty_fixture_dirs": 25050,
+      "preserved_nonempty_fixture_dirs": 0,
+      "publication_revision": 574,
+      "service_state": "STOPPED",
+      "publication_plan_created": false,
+      "strict_exit": "ENV_ABORT",
+      "nvml_outcome": "CLEANUP_FAILED",
+      "inference_processes_restarted": 0
+    },
+    "subsequent": "Root case needed production --tool-result-worker dispatch in addition to the object-worker entry. Only this affected case was repeated.",
+    "interrupted_cpu": "ebf43b798abcea43a23fb79061fd8ea173d8976f03d491d3dcda179b0b71945d"
+  },
+  "gpu_acceptance": false,
+  "issued": false
+}

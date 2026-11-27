@@ -3662,6 +3662,11 @@
       "kind": "object",
       "fields": [
         {
+          "name": "prompt_cache_options",
+          "optional": true,
+          "type": 499
+        },
+        {
           "name": "agent_id",
           "optional": false,
           "type": 13

@@ -2,6 +2,7 @@
 
 #include "agent_artifact_internal.h"
 #include "agent_session_internal.h"
+#include "agent_subagent_internal.h"
 #include "chatkit_retry.h"
 #include "chatkit_thread_state.h"
 #include "agent_workspace_copy.h"
@@ -136,6 +137,8 @@ Json SavedResponse(ResponseStatePlan& plan, const Json& response,
     if (plan.agent_tree.IsArray()) Set(&result, "agent_tree", plan.agent_tree);
     if (plan.agent_claim_times.IsObject())
       Set(&result, "agent_claim_times", plan.agent_claim_times);
+    if (plan.agent_claim_cache_ttls.IsObject())
+      Set(&result, "agent_claim_cache_ttls", plan.agent_claim_cache_ttls);
     if (plan.agent_item_times.IsObject())
       Set(&result, "agent_item_times", plan.agent_item_times);
     Set(&result, "agent_turn_started_at", Number(plan.agent_turn_started_at));
@@ -729,6 +732,11 @@ ObjectReply ResponsesState::LoadPlan(const std::string& id,
           return StateError("Invalid stored subagent clock");
       }
       *target = *times;
+    }
+    if (const auto* ttls = data->Find("agent_claim_cache_ttls")) {
+      if (!agent_detail::ValidSubagentCacheTtls(*ttls, &plan->agent_claim_times))
+        return StateError("Invalid subagent cache lifetimes");
+      plan->agent_claim_cache_ttls = *ttls;
     }
     plan->agent_turn_started_at = data->GetInt("agent_turn_started_at");
     plan->agent_turn_finished_at = data->GetInt("agent_turn_finished_at");

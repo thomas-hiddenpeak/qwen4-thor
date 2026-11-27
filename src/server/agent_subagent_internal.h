@@ -17,6 +17,7 @@ struct SubagentStepEvents {
   std::map<size_t, std::vector<io::Json>> claims;
   std::vector<io::Json> terminal;
 };
+bool ValidSubagentCacheTtls(const io::Json& ttls, const io::Json* claims);
 ObjectReply IndexSubagentEvents(const io::Json& session, const io::Json& record,
                                 SubagentStepEvents* events);
 // Canonical native function pairs produced by the managed lifecycle runner.

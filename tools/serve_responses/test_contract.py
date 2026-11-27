@@ -269,6 +269,11 @@ class ApplicationContract(unittest.TestCase):
         self.assertEqual(request['properties']['ttl']['default'], '30m')
         self.assertNotIn('ttl', request.get('required', []))
         self.assertIn('ttl', public['required'])
+        turn = resolve(SCHEMA['$defs']['agent_session_turn'])
+        field = resolve(turn['properties']['prompt_cache_options'])['anyOf']
+        self.assertEqual(cache_record(turn['properties']), public)
+        self.assertTrue(any(resolve(v).get('type') == 'null' for v in field))
+        self.assertNotIn('prompt_cache_options', turn['required'])
 
 
     def test_chatkit_and_eval_page_sizes_match_the_native_query_parser(self):

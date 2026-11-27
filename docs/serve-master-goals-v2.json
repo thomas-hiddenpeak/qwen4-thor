@@ -3309,6 +3309,12 @@
         "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json",
         "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
         "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json"
+      },
+      "agent_turn_cache_projection_20261127": {
+        "stage": "source_and_targeted_cpu_verified",
+        "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
+        "device_business_pending": true,
+        "issued": false
       }
     },
     {
@@ -4061,6 +4067,12 @@
         "profiles": "evidence/serve-chatkit-interrupted-retry-20261127/profiles.json",
         "revision": 558,
         "delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
+      },
+      "agent_turn_cache_projection_20261127": {
+        "stage": "source_and_targeted_cpu_verified",
+        "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
+        "device_business_pending": true,
+        "issued": false
       }
     },
     {
@@ -9553,6 +9565,12 @@
         "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json",
         "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
         "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json"
+      },
+      "agent_turn_cache_projection_20261127": {
+        "stage": "source_and_targeted_cpu_verified",
+        "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
+        "device_business_pending": true,
+        "issued": false
       }
     },
     {
@@ -12642,6 +12660,12 @@
         "state": "combined_package_cpu_and_native_sdk_business_verified_pending_device",
         "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
         "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json"
+      },
+      "agent_turn_cache_projection_20261127": {
+        "stage": "source_and_targeted_cpu_verified",
+        "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
+        "device_business_pending": true,
+        "issued": false
       }
     },
     {

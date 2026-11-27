@@ -59886,6 +59886,9 @@
     "agent_session_304": {
       "type": "object",
       "properties": {
+        "prompt_cache_options": {
+          "$ref": "#/$defs/agent_session_499"
+        },
         "agent_id": {
           "$ref": "#/$defs/agent_session_13"
         },

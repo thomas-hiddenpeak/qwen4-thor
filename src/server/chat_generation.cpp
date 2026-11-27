@@ -1924,7 +1924,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                            : moderation_step ? kMaxModerationStepTokens
                            : responses ? ChatOutputLimit(req, planning_config)
                                        : request_output_limit;
-    const bool cacheable_step = !internal_step || (internal && internal->decision);
+    const bool cacheable_step =
+        !internal_step ||
+        (internal && (internal->decision ||
+                      (internal->agent_message && cache_options.requested)));
     std::string prefix_scope = cacheable_step ? request_prefix_scope : "";
     SessionLease summary_session;
     auto& session = internal_step ? summary_session : request_session;

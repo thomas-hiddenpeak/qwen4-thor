@@ -91220,6 +91220,9 @@
           "agent_session_304": {
             "type": "object",
             "properties": {
+              "prompt_cache_options": {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_499"
+              },
               "agent_id": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/agent_session_13"
               },

@@ -248,18 +248,21 @@ Json TurnEvent(const Json& turn) {
 }
 
 void StartRecorded(Member* child, const Json& session, const Call& call,
-                   int64_t at, const Json* claim, size_t index,
+                   int64_t at, const Json* claim, const Json* ttl, size_t index,
                    SubagentStepEvents* events) {
   const auto started = !claim              ? 0
                        : claim->IsObject() ? claim->GetInt("at")
                                            : claim->AsInt();
   Start(child, session, *call.source, call.args.GetString("task"), at, started);
   child->output_count = 0;
+  auto& turn = child->turns.array.back();
+  Set(&turn, "prompt_cache_options",
+      started && ttl ? Object({{"ttl", *ttl}}) : Json{});
   if (!events) return;
-  const auto& turn = child->turns.array.back();
   auto queued = turn;
   Set(&queued, "status", String("queued"));
   Set(&queued, "started_at", {});
+  Set(&queued, "prompt_cache_options", {});
   events->item_done[index].push_back(TurnEvent(queued));
   if (claim && claim->IsObject())
     events->claims[claim->GetInt("sequence")].push_back(TurnEvent(turn));
@@ -274,6 +277,8 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
     return Invalid();
   const auto* times = record.Find("agent_item_times");
   const auto* claims = record.Find("agent_claim_times");
+  const auto* ttls = record.Find("agent_claim_cache_ttls");
+  if (ttls && !ValidSubagentCacheTtls(*ttls, claims)) return Invalid();
   for (size_t index = 0; index < output->array.size(); ++index) {
     const auto& item = output->array[index];
     const auto type = item.GetString("type");
@@ -322,7 +327,9 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
       actor->items.array.push_back(std::move(operation));
     }
     if (call.result.Has("error")) continue;
-    const auto* claim = claims ? claims->Find(item.GetString("id")) : nullptr;
+    const auto item_id = item.GetString("id");
+    const auto* claim = claims ? claims->Find(item_id) : nullptr;
+    const auto* ttl = ttls ? ttls->Find(item_id) : nullptr;
     if (action == "spawn_agent") {
       const auto name = call.args.GetString("name"),
                  task = call.args.GetString("task");
@@ -341,7 +348,7 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
         events->item_done[index].push_back(
             Object({{"type", String("agent.session.subagent.created")},
                     {"subagent", child.resource}}));
-      StartRecorded(&child, session, call, at, claim, index, events);
+      StartRecorded(&child, session, call, at, claim, ttl, index, events);
       family->entries.push_back(std::move(child));
     } else if (action == "followup_task") {
       const auto path = call.args.GetString("target");
@@ -357,7 +364,7 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
         child->resource = Object({{"id", String(id)}});
       }
       if (!child) return Invalid();
-      StartRecorded(child, session, call, at, claim, index, events);
+      StartRecorded(child, session, call, at, claim, ttl, index, events);
     } else if (action == "interrupt_agent" || action == "close_subagent" ||
                action == "resume_subagent") {
       const auto target = call.args.GetString("target");
@@ -427,6 +434,17 @@ ObjectReply ProjectFamily(const Json& session, const Json& record,
   return {};
 }
 }  // namespace
+
+bool ValidSubagentCacheTtls(const Json& ttls, const Json* claims) {
+  if (!ttls.IsObject() || !claims || !claims->IsObject() ||
+      ttls.object.size() > ResponsesOutput::kMaxItems)
+    return false;
+  return std::ranges::all_of(ttls.object, [&](const auto& field) {
+    const auto& [id, ttl] = field;
+    return claims->Has(id) && ttl.IsString() &&
+           (ttl.str == "30m" || ttl.str == "12h");
+  });
+}
 
 ObjectReply IndexSubagentEvents(const Json& session, const Json& record,
                                 SubagentStepEvents* events) {

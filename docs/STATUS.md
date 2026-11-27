@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Agent 根轮次与子代理轮次现在返回启动时选定的提示缓存寿命。工具回填后仍可按原 ID 读回旧 TTL；子代理把显式 TTL 交给原生模型请求，并在领取任务时记录。旧记录没有选值、或子任务尚未开始时返回 null。两项针对性原生 CPU 用例、公开 schema、两项生成检查和 40 项审计变异已通过。真实 SDK 与设备发行待验。 [CPU 回执](evidence/serve-agent-turn-cache-20261127/cpu.json)
+
 rev574 已合入主线。新的主、回退候选包已同时包含请求默认值、合同封包检查和租约监督器修复。两个包用自己的模块在独立 1 MiB tmpfs 写满后都发布了终态；托管回退包记录监控缺口，原工作进程正常结束。两套组合包已完成离线验证，设备发行仍为 rev574。[组合包回执](evidence/serve-request-defaults-20261127/combined-package.json)
 
 六版官方 SDK 已通过原生 TLS 上传或读取 rev574 的真实发行记录，并在省略九项默认值时各自返回 574、读回保存的回答。显式流式且关闭保存也返回 574，完成后读取为 404。隔离主包完成 7 次生成，另有 12 次跨客户读取均为 404；包含租约修复的新发行仍待核验。[业务回执](evidence/serve-request-defaults-20261127/sdk-business.json)

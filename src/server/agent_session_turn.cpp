@@ -446,6 +446,7 @@ ObjectReply ProjectStep(const Json& session, const Json& link,
        {"session_id", String(id)},
        {"agent_id", Copy(*agent, "id")},
        {"subagent_id", {}},
+       {"prompt_cache_options", Copy(session, "prompt_cache_options")},
        {"object", String("agent.session.turn")},
        {"status", String(abandoned ? "cancelled" : waiting  ? "waiting"
                          : failed ? "failed"
