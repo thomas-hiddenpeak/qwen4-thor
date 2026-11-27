@@ -4299,7 +4299,7 @@
         "existing_evidence_reviewed": true
       },
       "native_recording_retry_20261127": {
-        "stage": "managed_verified_publication_pending",
+        "stage": "issued",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -4310,7 +4310,9 @@
           "state": "lifecycle_pending"
         },
         "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
-        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       }
     },
     {
@@ -7010,7 +7012,7 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "managed_verified_publication_pending",
+        "stage": "issued",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -7021,7 +7023,9 @@
           "state": "lifecycle_pending"
         },
         "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
-        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       }
     },
     {
@@ -9515,16 +9519,18 @@
         "delivery": "evidence/serve-inference-http-errors-20261127/delivery.json"
       },
       "sdk_method_challenge_20261127": {
-        "stage": "device_verified_package_pending",
+        "stage": "issued",
         "methods": 231,
         "sdk_versions": 6,
         "actual_targets": 232,
         "matrix": "SDK_METHOD_COMPATIBILITY.md",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/cpu.json",
-        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
+        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "managed_verified_publication_pending",
+        "stage": "issued",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -9535,7 +9541,9 @@
           "state": "lifecycle_pending"
         },
         "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
-        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "inference_body_defaults_20261127": {
         "state": "isolated_business_verified_pending_combined_release",
@@ -9829,13 +9837,15 @@
         "complete": false
       },
       "sdk_method_challenge_20261127": {
-        "stage": "device_verified_package_pending",
+        "stage": "issued",
         "methods": 231,
         "sdk_versions": 6,
         "actual_targets": 232,
         "matrix": "SDK_METHOD_COMPATIBILITY.md",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/cpu.json",
-        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
+        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       }
     },
     {
@@ -10807,8 +10817,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 572,
-        "receipt": "evidence/serve-inference-http-errors-20261127/delivery.json",
+        "revision": 574,
+        "receipt": "evidence/serve-sdk-method-matrix-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12615,13 +12625,15 @@
         "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       },
       "sdk_method_challenge_20261127": {
-        "stage": "device_verified_package_pending",
+        "stage": "issued",
         "methods": 231,
         "sdk_versions": 6,
         "actual_targets": 232,
         "matrix": "SDK_METHOD_COMPATIBILITY.md",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/cpu.json",
-        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
+        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "inference_body_defaults_20261127": {
         "state": "isolated_business_verified_pending_combined_release",
@@ -12631,7 +12643,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev572_delivered_remaining_deliveries",
+      "state": "rev574_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -14034,17 +14046,19 @@
         "delivery": "evidence/serve-inference-http-errors-20261127/delivery.json"
       },
       "sdk_method_challenge_20261127": {
-        "stage": "device_verified_package_pending",
+        "stage": "issued",
         "methods": 231,
         "sdk_versions": 6,
         "actual_targets": 232,
         "matrix": "SDK_METHOD_COMPATIBILITY.md",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/cpu.json",
-        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
+        "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "current_ingress_retry_delivery": "evidence/serve-inference-http-errors-20261127/delivery.json",
       "native_recording_retry_20261127": {
-        "stage": "managed_verified_publication_pending",
+        "stage": "issued",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -14055,7 +14069,18 @@
           "state": "lifecycle_pending"
         },
         "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
-        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json",
+        "revision": 574,
+        "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
+      },
+      "current_recording_delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json",
+      "lease_terminal_storage_20261127": {
+        "stage": "targeted_cpu_verified",
+        "evidence": "evidence/serve-lease-terminal-20261127/cpu.json",
+        "physical_test_filesystem_bytes": 1048576,
+        "strict_receipt": "COMPLETED",
+        "managed_receipt": "COMPLETED_WITH_MONITOR_GAPS",
+        "hardware_model_starts": 0
       },
       "inference_body_defaults_20261127": {
         "state": "isolated_business_verified_pending_combined_release",
@@ -14167,16 +14192,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "24b0d6571587317503d8dca4286efffb5024ebed",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/ingress-retry-delivery-soak-src",
+        "source_commit": "9b5c20d313125eac75d179e796658e3c9fe03e2a",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/recording-download-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/retry-ingress-client-primary-01/bundle",
-          "manifest_sha256": "ebcef0710e6d94e6a22c02b2d3ce71341fa8fb5cf59bcf6b5095a118a094ff20"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-recording-client-primary-01/bundle",
+          "manifest_sha256": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6"
         },
-        "revision": 572,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/ingress-retry-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "382cbe76bb51d16cc9a86565986a33866391affdbcea3716f2424ef6dc246ee2",
-        "handoff_sha256": "c57702fae77767c81500c77678afa774d1772b4be127f6e728ca6e1d2d5e0baf",
+        "revision": 574,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/recording-download-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "703e5a20a878e1879c8ba9e3070c5cf52d5bf56fa81bb03bf8c6399c0f40c421",
+        "handoff_sha256": "3a5486de3146097b308f181eeaa5fe8b12e98058dda5578cce9c9e2802f91c6f",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14587,9 +14612,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 572,
-        "receipt": "evidence/serve-inference-http-errors-20261127/delivery.json",
-        "plan_sha256": "382cbe76bb51d16cc9a86565986a33866391affdbcea3716f2424ef6dc246ee2",
+        "revision": 574,
+        "receipt": "evidence/serve-sdk-method-matrix-20261127/delivery.json",
+        "plan_sha256": "703e5a20a878e1879c8ba9e3070c5cf52d5bf56fa81bb03bf8c6399c0f40c421",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

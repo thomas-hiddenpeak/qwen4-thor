@@ -5223,7 +5223,7 @@
     "tools/serve_service/resource_stage.py": "4aa07182ad087722b0cdc6a250be0d6d48caa681cb9231c9bdf6a6d341aa8064",
     "tools/serve_service/resource_worker.py": "dc448b8e295df6282af4027c1e061c06b11a6f0b927027a32ad3f326cd620eec",
     "tools/serve_service/resources.py": "2b72ea6775ef6067eacb4ce6351a58e4a2bac1145e3869165a142a75f81245b2",
-    "tools/serve_service/service.py": "7403a962b7d849575744edc5a4db3d289c5d17571f8bc924a90ad7f3621c3db6",
+    "tools/serve_service/service.py": "ca2ed936ee2d427bbaa7a8c0262422e5b5f8f560b03046821e45e1c718d67db9",
     "tools/serve_service/supervisor.py": "fa42997a88616ddd46e5a9ee81f23e25fc55d05a03a43a488179567c9beda116",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
