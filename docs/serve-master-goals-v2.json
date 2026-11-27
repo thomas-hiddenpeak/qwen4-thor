@@ -980,12 +980,13 @@
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "device_verified",
+        "stage": "profile_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
         "issued": false,
-        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
       }
     },
     {
@@ -4097,12 +4098,13 @@
         "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "device_verified",
+        "stage": "profile_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
         "issued": false,
-        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
       }
     },
     {
@@ -4359,12 +4361,13 @@
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "device_verified",
+        "stage": "profile_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
         "issued": false,
-        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
       }
     },
     {
@@ -9618,12 +9621,13 @@
         "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "device_verified",
+        "stage": "profile_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
         "issued": false,
-        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
       }
     },
     {

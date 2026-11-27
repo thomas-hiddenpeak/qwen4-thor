@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主、轻两档模型已通过原生 HTTPS 读回相同的向量库、上传文件和文件批次，检索结果包含上传的原文。主配置的 16 个、轻配置的 11 个业务请求以及有界状态轮询验证了批处理、向量库、库文件、批次文件和语音授权分页，两档各拒绝两次跨客户访问。独立 Chat 两次均答 42。两份容量记录可逐字还原前版，后续封包验证包内合同。 [容量记录](evidence/serve-voice-consent-pagination-20261127/profiles.json)
+
 主配置分页请求已覆盖，但上一轮 WebRTC 创建返回 VAD 权重工作进程不可用，关停后的向量文件状态为 failed。验收现在等待文件批次明确完成，并检查真实检索返回原文件 ID 和原文；增加有界轮询和失败时的运行配置留档。此前分页通过的记录保留。 [失败现场与验收边界](evidence/serve-voice-consent-pagination-20261127/ingestion-boundary.json)
 
 官方 Node SDK 第一次构造上传表单会主动读取一次本地 data URL。原先记录的 12 次 SDK fetch 中，11 次经过原生 HTTPS，1 次是 SDK 本地探测。按实际请求地址修正了主、轻容量验收计数，同时保留主配置 15 次、轻配置 10 次业务请求的上限。 [计数复核](evidence/serve-voice-consent-pagination-20261127/sdk-request-count.json)
