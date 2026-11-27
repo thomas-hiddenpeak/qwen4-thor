@@ -76,5 +76,22 @@
     "tools/evalscope/test_gpu_exclusive.py": "dbbf15112b835336fa5701bbf7bb38048fd9d00ac51cc119fa6e2311fbbf575d",
     "tools/serve_service/service.py": "ca2ed936ee2d427bbaa7a8c0262422e5b5f8f560b03046821e45e1c718d67db9",
     "tools/serve_service/test_telemetry.py": "b69ae5ceb29670255c83979c216732d875b510501b1cf71a7e2164b43efa7b7a"
+  },
+  "source_inventory_followup": {
+    "first_ci_run": 45957879544,
+    "defect": "Service source fingerprint referenced the pre-change supervisor.",
+    "reviewed_source": "tools/serve_service/service.py",
+    "sha256": "ca2ed936ee2d427bbaa7a8c0262422e5b5f8f560b03046821e45e1c718d67db9",
+    "result": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 247,
+      "native_routes": 409,
+      "reviewed_source_anchors": 1394,
+      "mutation_checks": 40,
+      "errors": []
+    }
   }
 }
