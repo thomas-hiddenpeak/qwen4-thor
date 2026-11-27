@@ -943,7 +943,8 @@
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
-        "business": "evidence/serve-program-sdk-reader-20261127/business.json"
+        "business": "evidence/serve-program-sdk-reader-20261127/business.json",
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
       }
     },
     {
@@ -3266,7 +3267,8 @@
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
-        "business": "evidence/serve-program-sdk-reader-20261127/business.json"
+        "business": "evidence/serve-program-sdk-reader-20261127/business.json",
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
       }
     },
     {
@@ -7996,7 +7998,8 @@
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
-        "business": "evidence/serve-program-sdk-reader-20261127/business.json"
+        "business": "evidence/serve-program-sdk-reader-20261127/business.json",
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
       }
     },
     {
@@ -9400,7 +9403,8 @@
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
-        "business": "evidence/serve-program-sdk-reader-20261127/business.json"
+        "business": "evidence/serve-program-sdk-reader-20261127/business.json",
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
       },
       "packaged_response_readers_20261127": {
         "stage": "cpu_fixture_verified_pending_issued_package",
@@ -12454,7 +12458,8 @@
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
-        "business": "evidence/serve-program-sdk-reader-20261127/business.json"
+        "business": "evidence/serve-program-sdk-reader-20261127/business.json",
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
       }
     },
     {

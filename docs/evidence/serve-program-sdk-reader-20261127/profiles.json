@@ -1,0 +1,107 @@
+{
+  "stage": "profile_verified",
+  "issued": false,
+  "previous_revision": 566,
+  "build": {
+    "engine": "b94562102bf4eb1b5d19528dd4ba00dd1e0a7f35820e055023ed80caba9a2e16",
+    "ingress": "235632a05b9fe2e222239ce436b183b55e0ca0e82711a0c88b827f4ff50e73bf"
+  },
+  "openapi_sha256": "ebf7f89f7c44572161b6b7842aece001026a523b297aa46e61e942aed5b7571c",
+  "profiles": {
+    "primary": {
+      "sdk": {
+        "phase": "primary",
+        "clients": {
+          "2.8.1": {
+            "sdk": "2.8.1",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "wire": {
+              "hashes": {
+                "call": "3f138d8405617e8e8ca5890616203686895b3a445e6167b91253f11f26e4cff9",
+                "answer": "ebdb3e28f59b1e42261a5b136d65f11b0921c03af6f3892ae3358d667dad55ec",
+                "events": "571aa9e1d91711171ef5b4514174151ac6eabf427e7e72fa30feed9a9aa1edd9",
+                "resumed": "40f501c8bd0d6d96629d50e2c3f2f773ddd4fd477aa7ae774f65d63cf50b4115",
+                "continuation": "51d345612a99583c2c174c6a2854f22ad3adf8fe4f3cc7640b340ba1d60ebb09"
+              },
+              "continued": "resp_5fef9d8fc124b66042021da0ddaa9e32"
+            }
+          },
+          "3.55.1": {
+            "sdk": "3.55.1",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "wire": {
+              "hashes": {
+                "call": "2883e8adc15480e1ad6b9b7dac2daf328d0d511a83f60809e4275d79fc4d4202",
+                "answer": "856286859c381adef63d49f90f2b34b72c394781a007bd4197c8eb259c1f9b3e",
+                "events": "2f5cfc7578cb811649d5ab88604860936b15c61d16331c5b272ec179b857e7a0",
+                "resumed": "baaddf5fc5f354bbcd2d6c479fb3881d9a8b3ee7b510494a38bc159f794fb112"
+              },
+              "continued": null
+            }
+          }
+        }
+      },
+      "seconds": 39.326,
+      "starts": 1,
+      "record_sha256": "f28848bd6c06fe5aed1cda3f4b55f775e51f231c8f4cd6191872da76891e1cc8",
+      "receipt_sha256": "8dafcf4efe55c5c80d582ffe84977da485d2bf49515887429969a4770443235b",
+      "predecessor": "d6cf6b10cf20fd9af51ebd45ff001a906ad9165a47528ca197bfd27c9d75b00a"
+    },
+    "light": {
+      "sdk": {
+        "phase": "light",
+        "clients": {
+          "2.8.1": {
+            "sdk": "2.8.1",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "wire": {
+              "hashes": {
+                "call": "3f138d8405617e8e8ca5890616203686895b3a445e6167b91253f11f26e4cff9",
+                "answer": "ebdb3e28f59b1e42261a5b136d65f11b0921c03af6f3892ae3358d667dad55ec",
+                "events": "571aa9e1d91711171ef5b4514174151ac6eabf427e7e72fa30feed9a9aa1edd9",
+                "resumed": "40f501c8bd0d6d96629d50e2c3f2f773ddd4fd477aa7ae774f65d63cf50b4115"
+              },
+              "continued": null
+            }
+          },
+          "3.55.1": {
+            "sdk": "3.55.1",
+            "foreign_reads": [
+              404,
+              404
+            ],
+            "wire": {
+              "hashes": {
+                "call": "2883e8adc15480e1ad6b9b7dac2daf328d0d511a83f60809e4275d79fc4d4202",
+                "answer": "856286859c381adef63d49f90f2b34b72c394781a007bd4197c8eb259c1f9b3e",
+                "events": "2f5cfc7578cb811649d5ab88604860936b15c61d16331c5b272ec179b857e7a0",
+                "resumed": "baaddf5fc5f354bbcd2d6c479fb3881d9a8b3ee7b510494a38bc159f794fb112",
+                "continuation": "25d62552d4850456184230cb0f02fde29d73133dce2c1fa948707d3e7a92b44d"
+              },
+              "continued": "resp_2fa81843078124a1ccb5fa0d5c391ff3"
+            }
+          }
+        }
+      },
+      "seconds": 36.182,
+      "starts": 1,
+      "record_sha256": "c0ca345b2002585807d53138337787349e43ed96bc7062277bf00a59c7bd7cf4",
+      "receipt_sha256": "9cde5cfae0ea7b631ab9b88ba57e6e577794cae67767b53204df99928009ac49",
+      "predecessor": "4bb3af7504572a94678dd33869f18ad3d88116f9c4f8614b1dbf27ed629fbc91"
+    }
+  },
+  "business_evidence": "9878010ae39cf5ff12a2a0eb689ee9f160cee6335a2d9a4e3a2fe0453ff69f79",
+  "lease_exit": "6d55d7098b6837ab5407452da2ebece0c0692a127d2ebd1ac76f3128bc358cb5",
+  "acceptance": "1264fa0869b5c7e63831f49550618208a7c0558b7c2f4102ab89907276231a54",
+  "qualification": "ec187b1bd4114e540209fe5ee430dc6251f8084a61718c53a7f1807c2a335f3d",
+  "default_preserved": true
+}
