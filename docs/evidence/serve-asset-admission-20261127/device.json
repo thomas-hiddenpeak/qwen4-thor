@@ -1,0 +1,137 @@
+{
+  "stage": "native_reader_contention_on_primary",
+  "issued": false,
+  "tested_source": "bf4234689f6424909e0ad6c73d198852792f5c40",
+  "prior_revision": 580,
+  "engine": "312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b",
+  "service_manifest": "008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1",
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "sdk_posts": 0,
+    "chats": 1,
+    "controls": 39
+  },
+  "actual": {
+    "model_pid": 1734306,
+    "embedding_worker_pid": 1735123,
+    "reader_start_ticks": 398072219,
+    "reader_held_weight_after_post": true,
+    "backend_health": {
+      "before": {
+        "embedding": {
+          "state": "configured",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-embedding-0.6b",
+          "device_bytes": 0,
+          "load_attempts": 0,
+          "load_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000
+        },
+        "vad": {
+          "state": "configured",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "silero-vad-16k",
+          "device_bytes": 0,
+          "load_attempts": 0,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "host_weight_bytes": 0,
+          "asset_cleanup_pending": false
+        }
+      },
+      "overlapping": {
+        "embedding": {
+          "state": "loading",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-embedding-0.6b",
+          "device_bytes": 0,
+          "load_attempts": 2,
+          "load_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000
+        },
+        "vad": {
+          "state": "loading",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "silero-vad-16k",
+          "device_bytes": 0,
+          "load_attempts": 1,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "host_weight_bytes": 0,
+          "asset_cleanup_pending": false
+        }
+      },
+      "after": {
+        "embedding": {
+          "state": "ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "qwen3-embedding-0.6b",
+          "device_bytes": 1191553024,
+          "load_attempts": 2,
+          "load_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000
+        },
+        "vad": {
+          "state": "ready",
+          "reason": "none",
+          "core_readiness_dependency": false,
+          "model": "silero-vad-16k",
+          "device_bytes": 0,
+          "load_attempts": 1,
+          "load_failures": 0,
+          "compute_failures": 0,
+          "recovery": "request_driven",
+          "retry_delay_ms": 5000,
+          "host_weight_bytes": 1238532,
+          "asset_cleanup_pending": false
+        }
+      }
+    },
+    "send_monotonic_ns": [
+      3980722237903090,
+      3980722238107775
+    ],
+    "embedding_dimensions": 32,
+    "live_status": 201,
+    "live_session": "live_cc7dcaeb27da1ec2bd6634e9c92b8319",
+    "closed": true,
+    "independent_chat": "42",
+    "business_https_posts": {
+      "embeddings": 1,
+      "live_sessions": 1,
+      "chat": 1
+    }
+  },
+  "seconds": 37.35192561196163,
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 37,
+    "cleanup_complete": true
+  },
+  "model_exit": 0,
+  "ports_released": true,
+  "remaining": [],
+  "raw_sha256": {
+    "primary/plan.json": "1c0d3f85286ff45ef21308f637e771d61ef5404f6077d0dc0f8d83192d67e978",
+    "primary/result.json": "efa179a2340d1868427355caa53320f0172bfed42dcecf4ef78f4cf9deb11d49",
+    "primary/asset-admission.json": "042f6a1cdd96f4583fe4008a0bcbd67608c32456781449eeb87e54ae0d9606e5",
+    "primary/cleanup.json": "4bd2d06bc1fc36992764fb534a2b89cea783d7fbc065c64bf58a434fa9d68512",
+    "lease/exit.json": "329926cbeae493e150dacaf1cfa97aea6b944452c9dfe45bf5dae4e702ec38eb",
+    "lease/nvml-queries.jsonl": "c2fe83dfa9dc55d036adff49b3150422b9072ef552d9896b46498770b58421b1"
+  }
+}

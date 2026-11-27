@@ -7083,10 +7083,11 @@
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "model_asset_admission_20261127": {
-        "stage": "cpu_verified",
+        "stage": "device_verified",
         "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
         "observer": "evidence/serve-asset-admission-20261127/observer.json",
-        "issued": false
+        "issued": false,
+        "device": "evidence/serve-asset-admission-20261127/device.json"
       }
     },
     {
@@ -11043,10 +11044,11 @@
         "delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json"
       },
       "model_asset_admission_20261127": {
-        "stage": "cpu_verified",
+        "stage": "device_verified",
         "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
         "observer": "evidence/serve-asset-admission-20261127/observer.json",
-        "issued": false
+        "issued": false,
+        "device": "evidence/serve-asset-admission-20261127/device.json"
       }
     },
     {
