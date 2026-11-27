@@ -9369,6 +9369,10 @@
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false
+      },
+      "packaged_response_readers_20261127": {
+        "stage": "cpu_fixture_verified_pending_issued_package",
+        "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json"
       }
     },
     {
@@ -13775,7 +13779,11 @@
       "current_chatkit_interrupted_retry_delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json",
       "current_video_layers_delivery": "evidence/serve-video-layer-composition-20261127/delivery.json",
       "current_response_cache_retention_delivery": "evidence/serve-response-cache-retention-20261127/delivery.json",
-      "current_mcp_error_sdk_delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
+      "current_mcp_error_sdk_delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json",
+      "packaged_response_readers_20261127": {
+        "stage": "cpu_fixture_verified_pending_issued_package",
+        "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json"
+      }
     },
     {
       "id": "Q03",

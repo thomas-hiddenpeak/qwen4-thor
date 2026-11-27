@@ -1,0 +1,178 @@
+{
+  "scope": "CPU engine-package fixture; four installed official SDKs reading seven real archived native /responses/compact bodies over loopback HTTP; no current inference",
+  "packaged_modules": {
+    "tools/serve_responses/compact_client.py": "67896abd2957b936e6d6015a8423ffc67bc01941ad79cc2818bd5c7321ec98e5",
+    "tools/serve_responses/program_client.py": "3da145fb4f713870e2a8017d8424fd11398125680d50887f24d90102f380004f"
+  },
+  "engine_fixture_manifest": "52c5c1ce0813726348a928d7bfb388650d4f8adf55be41ee0feb72a3193955f2",
+  "independent_packaged_cli": true,
+  "engine_builder_optional_sdk_installed": false,
+  "previous_real_engine_manifest_verified_without_readers": "dc67fe088d95671316386bc47b4e8cf5c96e8361d969b678c91382f554e43f03",
+  "saved_native_response_sha256": {
+    "release-old": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+    "release-current": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+    "failed-video": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+    "fixed-review": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+    "fresh-video": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+    "blue-image": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+    "red-image": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce"
+  },
+  "sdk_cases": {
+    "2.8.1": {
+      "version": "2.8.1",
+      "sdk_compaction_class": false,
+      "cases": {
+        "release-old": {
+          "output_items": 7,
+          "error_type": "str"
+        },
+        "release-current": {
+          "output_items": 7,
+          "error_type": "ExecutionError"
+        },
+        "failed-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fixed-review": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fresh-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "blue-image": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "red-image": {
+          "output_items": 3,
+          "error_type": null
+        }
+      }
+    },
+    "2.33.0": {
+      "version": "2.33.0",
+      "sdk_compaction_class": true,
+      "cases": {
+        "release-old": {
+          "output_items": 7,
+          "error_type": "str"
+        },
+        "release-current": {
+          "output_items": 7,
+          "error_type": "ExecutionError"
+        },
+        "failed-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fixed-review": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fresh-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "blue-image": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "red-image": {
+          "output_items": 3,
+          "error_type": null
+        }
+      }
+    },
+    "3.42.1": {
+      "version": "3.42.1",
+      "sdk_compaction_class": true,
+      "cases": {
+        "release-old": {
+          "output_items": 7,
+          "error_type": "str"
+        },
+        "release-current": {
+          "output_items": 7,
+          "error_type": "McpToolExecutionError"
+        },
+        "failed-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fixed-review": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fresh-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "blue-image": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "red-image": {
+          "output_items": 3,
+          "error_type": null
+        }
+      }
+    },
+    "3.55.1": {
+      "version": "3.55.1",
+      "sdk_compaction_class": true,
+      "cases": {
+        "release-old": {
+          "output_items": 7,
+          "error_type": "str"
+        },
+        "release-current": {
+          "output_items": 7,
+          "error_type": "McpToolExecutionError"
+        },
+        "failed-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fixed-review": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "fresh-video": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "blue-image": {
+          "output_items": 3,
+          "error_type": null
+        },
+        "red-image": {
+          "output_items": 3,
+          "error_type": null
+        }
+      }
+    }
+  },
+  "http_requests": 28,
+  "targeted_regressions": {
+    "package_tests": 3,
+    "client_tests_per_version": 4
+  },
+  "model_starts": 0,
+  "source_sha256": {
+    "tools/serve_service/package.py": "fa5586741b98c77898629c48e5e7bbd48c0c00f5b54dea736496abfa45d94a80",
+    "tools/serve_service/service.py": "7403a962b7d849575744edc5a4db3d289c5d17571f8bc924a90ad7f3621c3db6",
+    "tools/serve_service/test_service.py": "bfa88a9e3a520dde829c3d032488f269383a980537c18141cecd89f631d0617e",
+    "tools/serve_responses/test_compact_client.py": "31ad2b0e278264dc7e8f83cb814b764511c4a0e1bb7049e6188f7e5b67970eb7",
+    "tools/serve_responses/test_program_client.py": "b4f041aa7e2b19cf2524385ac394c8866053ec6dadfead8ca1afa4bea07d83ea"
+  },
+  "runtime_file_independence": "Missing or changed client file rejected by explicit packaged client verifier; same unchanged engine manifest still verifies when a reader is absent.",
+  "sdk_contract_observations": [
+    "2.8.1 has no stock CompactedResponse class.",
+    "Older SDKs expect mcp_call.error as a string; newer SDKs expect an object. The optional compact reader preserves the original wire representation.",
+    "Initial synthetic regression fixture omitted cache_write_tokens required by 3.42.1 and 3.55.1. Added the field present in all seven actual windows."
+  ],
+  "distribution_scope": "The qualifying fixture used the normal package.prepare and packaged service.py verify-clients under system Python without openai. The production package carrying these readers has not been issued."
+}

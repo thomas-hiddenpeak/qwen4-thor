@@ -579,6 +579,44 @@ class PackageTests(unittest.TestCase):
         self.assertIn('127.0.0.1', args)
         self.assertFalse(manifest['managed_service_accepted'])
 
+    def test_response_readers_ship_independently_of_the_engine(self):
+        binary, release, model = self.fixture()
+        metadata = pkg.read(release)
+        metadata['chat_protocol']['responses'] = {
+            feature: {'enabled': True} for feature in pkg.RESPONSE_READERS}
+        pkg.save(release, metadata)
+        receipt = pkg.prepare(binary, release, model, self.root/'package')
+        target = Path(receipt['package'])
+        digest = receipt['manifest_sha256']
+        files = pkg.verify_response_readers(target, digest)
+        self.assertEqual(files, {name: pkg.sha(ROOT/name)
+                                 for name in pkg.RESPONSE_READERS.values()})
+        with mock.patch.object(pkg, 'ROOT', target/'source'):
+            repacked = pkg.prepare(binary, release, model, self.root/'copy', repository=ROOT)
+        self.assertEqual(pkg.verify_response_readers(repacked['package'],
+                                                    repacked['manifest_sha256']), files)
+        with self.assertRaisesRegex(RuntimeError, 'manifest changed'):
+            pkg.verify_response_readers(target, '0'*64)
+        reader = target/'clients'/pkg.RESPONSE_READERS['compaction']
+        reader.chmod(0o600)
+        reader.write_text('changed')
+        with self.assertRaisesRegex(RuntimeError, 'client reader changed'):
+            pkg.verify_response_readers(target, digest)
+        reader.unlink()
+        with self.assertRaises(FileNotFoundError):
+            pkg.verify_response_readers(target, digest)
+        self.assertEqual(pkg.verify(target, digest)['files']['q4t'], pkg.sha(binary))
+
+    def test_old_package_without_responses_needs_no_client_files(self):
+        binary, release, model = self.fixture()
+        receipt = pkg.prepare(binary, release, model, self.root/'package')
+        target = Path(receipt['package'])
+        digest = receipt['manifest_sha256']
+        self.assertNotIn('response_sdk_readers', pkg.verify(target, digest))
+        self.assertFalse((target/'clients').exists())
+        with self.assertRaisesRegex(RuntimeError, 'lacks the declared'):
+            pkg.verify_response_readers(target, digest)
+
     def test_package_or_model_changes_are_rejected(self):
         binary, release, model = self.fixture()
         receipt = pkg.prepare(binary, release, model, self.root/'package')

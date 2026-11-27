@@ -239,11 +239,12 @@ def main():
     p.add_argument('--host-memory-high-mib', type=int)
     p.add_argument('--host-memory-max-mib', type=int)
     p.add_argument('--host-tasks-max', type=int)
-    for action in ('run', 'unit'):
+    for action in ('run', 'unit', 'verify-clients'):
         p = sub.add_parser(action)
         p.add_argument('--package', type=Path, required=True)
         p.add_argument('--manifest-sha256', required=True)
-        p.add_argument('--output', type=Path, required=True)
+        if action != 'verify-clients':
+            p.add_argument('--output', type=Path, required=True)
     for action in ('stop', 'status', 'inspect', 'resume-monitor', '_worker'):
         p = sub.add_parser(action)
         p.add_argument('--run', type=Path, required=True)
@@ -299,6 +300,8 @@ def main():
         control = verify_worker(args.run)
         return supervisor.run(control['package'], control['manifest_sha256'],
                               args.run)
+    elif args.action == 'verify-clients':
+        result = pkg.verify_response_readers(args.package, args.manifest_sha256)
     elif args.action == 'unit':
         print(unit_text(args.package, args.manifest_sha256, args.output), end='')
         return 0
