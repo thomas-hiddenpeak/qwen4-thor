@@ -17,6 +17,8 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 ## 验证范围
 
+- **Uploads 和 Files 接管。** 六版客户端共同操作同一批资源，覆盖四种 Uploads 和五种 Files 方法。主包接受乱序传输、按指定顺序完成；回退包沿用原分片和 File ID，核对下载、归属和删除，再由 Responses 读取实际文件。每版具体经手的方法、HTTP 状态及请求 ID 都在[逐次记录](evidence/serve-upload-sdk-recovery-20261128/requests.json)。
+
 - **Conversations 的八个方法。** 表中六个版本都通过原生 TLS 完成了会话和条目的创建、读取、更新或删除，SDK 自行生成第二页游标并读到了另一个条目。每版还检查了其他客户的密钥、已删条目和已删会话的 404。Python 3.55.1 与 Node 7.47.0 另经 Responses 读取自己的两条会话记录，答出设备实际的版本登记号 223。主包 rev588 的引擎和入口使用私有对象目录与本机测试准入控制器。 [74 个请求](evidence/serve-conversation-sdk-business-20261128/requests.json) · [包身份与验收范围](evidence/serve-conversation-sdk-business-20261128/business.json)
 - **路由与错误。** 使用候选发行包的原生入口，在隔离的本机环境实际采集了 232 个缺少凭据的 HTTP 响应，覆盖 231 个方法及旧取消路径。随后让六个未修改的 SDK 按各自方式产生请求，逐个匹配已采集的目标，并解析返回的 `401`。1,386 次 SDK 调用均读回了 `AuthenticationError`、错误字段、请求 ID 和 Bearer 认证挑战。采集时后端收到的请求为零。成功业务、鉴权通过以后的路由和请求体验证各有独立验收。 [采集回包](evidence/serve-sdk-method-matrix-20261127/challenges.json) · [版本统计及摘要](evidence/serve-sdk-method-matrix-20261127/matrix.json)
 - **Webhook 事件目录。** 候选引擎真实直连返回带 Bearer 认证挑战与请求 ID 的 401；同一实例经原生 TLS 提供事件目录，六个官方 SDK 均读回相同的 23 个事件类型。已对收到的错误与目录分别核对官方和项目 OpenAPI。启动一次，生成请求零条。 [设备回执](evidence/serve-sdk-method-matrix-20261127/foreground.json)
