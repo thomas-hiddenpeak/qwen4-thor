@@ -1,0 +1,25 @@
+{
+  "stage": "scope extended to include searchable uploaded content",
+  "original_capacity": {
+    "role": "primary",
+    "status": "FAIL",
+    "result_sha256": "1b86cc2ad9526350fd37cb10c8c2d047d228be1062cff0b45503a2ca054d643e",
+    "live_error": "vad_worker_unavailable",
+    "cursor_pages_validated": true,
+    "member_state_after_shutdown": "failed",
+    "member_sha256": "1eb9dfb95ab0f81735ab0cb20b060d3b766a6dfdbdf5c77810bb1c6d9958addb",
+    "batch_sha256": "e9966c7f766ad5d397bc2fc00815bc3fed43c14bdfcf3e70fab35c18d18607b5"
+  },
+  "causal_limit": "The asset workers share one reserved slot. Historical receipts alone do not determine whether the ingestion failed before shutdown.",
+  "new_checks": {
+    "terminal_batch": "completed",
+    "completed_files": 1,
+    "search_result_id": "original uploaded file",
+    "passage": "q4t pagination qualification",
+    "primary_http_business": 16,
+    "primary_max_status_reads": 25,
+    "light_http_business": 11,
+    "light_max_status_reads": 1
+  },
+  "cpu_checks": 2
+}

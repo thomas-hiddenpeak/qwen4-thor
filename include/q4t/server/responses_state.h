@@ -42,6 +42,9 @@ struct ResponseStatePlan {
   // the actual dispatch time even when queried after a process replacement.
   io::Json agent_item_times;
   io::Json agent_claim_times;
+  // Keyed by the dispatch item, alongside its original claim timestamp.
+  // Older claims have no recorded child cache selection.
+  io::Json agent_claim_cache_ttls;
   io::Json agent_tree;
   int64_t agent_turn_started_at = 0;
   int64_t agent_turn_finished_at = 0;

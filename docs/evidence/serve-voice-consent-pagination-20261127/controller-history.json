@@ -1,0 +1,47 @@
+{
+  "scope": "Managed controller bootstrap and pre-grant package qualification",
+  "predecessor": "342f0a59575ee3a99409ddea9b7229a4a433c1baa735ef4087aafb05ab9bf451",
+  "managed_failure": {
+    "generations": {
+      "controller": 4,
+      "gateway": 1,
+      "model": 0
+    },
+    "desired": "STOPPED",
+    "result": "FAIL",
+    "watchdog_ms": 15000,
+    "result_sha256": "5c00545afccbd593731ec1c1d352837bcbe97ad01259a8b793d7d68b73a8b55c"
+  },
+  "cpu": {
+    "manifest": "342f0a59575ee3a99409ddea9b7229a4a433c1baa735ef4087aafb05ab9bf451",
+    "watchdog_seconds": 15,
+    "real_package_verification": [
+      {
+        "phase": "controller_bootstrap",
+        "seconds": 15.446,
+        "history_validations": 142
+      },
+      {
+        "phase": "model_grant_one",
+        "seconds": 0.593,
+        "history_validations": 0
+      },
+      {
+        "phase": "model_grant_two",
+        "seconds": 0.579,
+        "history_validations": 0
+      }
+    ],
+    "altered_evidence": "recovery file identity changed",
+    "original_preserved": true,
+    "controller": "48692aca2b489d5e30332379684b248ba82855e38fb684f83f176614f7c46642"
+  },
+  "regression": {
+    "before": "identical history traversed twice in one controller generation",
+    "after": "each generation authenticates history once, complete package verification still runs before each model authorization",
+    "tests": 15,
+    "sources": 1394,
+    "mutations": 40
+  },
+  "managed_acceptance": "pending"
+}

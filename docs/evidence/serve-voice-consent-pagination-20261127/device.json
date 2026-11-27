@@ -1,0 +1,65 @@
+{
+  "scope": "Actual model and native TLS page contracts",
+  "source": "762ee7a5d8f099c8989716156447385ac4e52e57",
+  "build": "b708317235f4d102d4b52be6898229b0934046a2",
+  "engine": "4e4793560074b3bd6799058c059ab023e72b1bb93a0289a3a7e52b711082e16a",
+  "protocol_identity": "ce76ec2a1c8f7661e9fab11562ba43127718b4e869da8da88bdbfee384d2d06d",
+  "compiled_source_anchors": 1104,
+  "sdk": [
+    {
+      "sdk": "7.47.0",
+      "mode": "batches",
+      "verified": [
+        "batches.list"
+      ],
+      "calls": 1,
+      "transport": "native TLS",
+      "empty_cursors": [
+        "",
+        ""
+      ]
+    },
+    {
+      "sdk": "7.47.0",
+      "mode": "vectors",
+      "verified": [
+        "vectorStores.list",
+        "vectorStores.list/private",
+        "vectorStores.files.list",
+        "vectorStores.fileBatches.listFiles"
+      ],
+      "calls": 11,
+      "transport": "native TLS",
+      "empty_cursors": [
+        "",
+        ""
+      ]
+    }
+  ],
+  "voice_consent_empty": {
+    "first_id": null,
+    "last_id": null
+  },
+  "independent_chat": "42",
+  "starts": 1,
+  "seconds": 34.474,
+  "listeners_freed": 3,
+  "model_exit": 0,
+  "prior_revision": 578,
+  "prior_unchanged": true,
+  "lease_sha256": "e22f3ee5be7220ea9900fb9f85952e63b7f36cbea2012f4f7bb1876538874b31",
+  "resource_hashes": {
+    "sdk-run.json": "00dc35a0ff590bcf2224d5d9d49870d43c2f81263b6e4d3b683af97589035ee0",
+    "consents.json": "81a90e78d977134613596712eda02fe251daa86c02176e5a63344e1c78aec3c8",
+    "chat-result.json": "d90747d2a5dfdd61eb8e632c7b9174b35e71deed58065e38465c56e1be8e62f4",
+    "configuration.json": "f7bfd9060f0ba4706a3753fc327eab0b14d54b7a7f4e69956c493df5de7941bd",
+    "capabilities.json": "54bbfbf9c7379db2ca43f25a6f1357831a7b3a7643f140f4eda4524483d7b865"
+  },
+  "original_missing_embedding_fixture": {
+    "status": "FAIL",
+    "starts": 1,
+    "receipt_sha256": "3afc012ecffa73eea129af49297eac0c96bd11bbea11b7f80229b6423c14d6fa",
+    "error": "vector_ingestion_unavailable"
+  },
+  "embedding_weight_sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd"
+}

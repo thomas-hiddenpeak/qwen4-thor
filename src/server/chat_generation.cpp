@@ -566,6 +566,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
     validation_config.preparing_file_inputs = !internal;
     s = PlanChatRequest(original_request, validation_config, &request_plan,
                         &planning_error);
+    if (s && internal && internal->agent_cache)
+      request_plan.cache = *internal->agent_cache;
     const auto* messages = original_request.GetArray("messages");
     const auto* web_options = original_request.Find("web_search_options");
     const bool search_web = web_options && !web_options->IsNull();
@@ -1924,7 +1926,9 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                            : moderation_step ? kMaxModerationStepTokens
                            : responses ? ChatOutputLimit(req, planning_config)
                                        : request_output_limit;
-    const bool cacheable_step = !internal_step || (internal && internal->decision);
+    const bool cacheable_step =
+        !internal_step ||
+        (internal && (internal->decision || internal->agent_cache));
     std::string prefix_scope = cacheable_step ? request_prefix_scope : "";
     SessionLease summary_session;
     auto& session = internal_step ? summary_session : request_session;
@@ -3137,9 +3141,10 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
       lease->key = snapshot_key;
       shared_writes.push_back(std::move(lease));
       const SessionCacheLifetime lifetime =
-          api_cache ? PromptCacheLifetime(cache_options, point->ttl_seconds,
-                                          responses != nullptr)
-                    : SessionCacheLifetime{};
+          api_cache
+              ? PromptCacheLifetime(cache_options, point->ttl_seconds,
+                                    cache_options.api == PromptCacheApi::kResponses)
+              : SessionCacheLifetime{};
       Status saved;
       if (target_cache) {
         saved = save_target(&prefix_cache_, snapshot_key, "shared", lifetime);
@@ -5042,7 +5047,8 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
             auto child_request = Object({{"model", String(planning_config.model)},
                                {"max_completion_tokens", Number(remaining)},
                                {"enable_thinking", Boolean(false)}});
-            responses->ConfigureAgentModelStep(turn, allow_tools, &child_request);
+            const auto* agent_cache = responses->ConfigureAgentModelStep(
+                turn, allow_tools, &child_request);
             for (const auto* field : {"temperature", "top_p", "seed"})
               if (const auto* value = req.Find(field)) Set(&child_request, field, *value);
             const uint64_t prior_input = prepared_input + responses_usage.input_tokens +
@@ -5063,6 +5069,7 @@ void ChatServer::HandleChatImpl(int fd, const std::string& body,
                                    [] { return ObjectReply{}; }, {}, false, {}, {}, 0, 0};
             work.structured_owner = &structured_lease;
             work.agent_message = message;
+            work.agent_cache = agent_cache;
             if (planning_config.client_limits) {
               const uint64_t limit = planning_config.client_limits->max_prompt_tokens;
               work.remaining_input = limit - std::min(limit, prior_input);

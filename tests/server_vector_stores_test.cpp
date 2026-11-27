@@ -136,7 +136,11 @@ Q4T_TEST(vector_stores_create_contract_scope_and_atomic_source_validation) {
         Object({{"anchor", String("last_active_at")}, {"days", Number(365)}})},
        {"file_ids", Array({String(file), String(other)})}});
   Q4T_CHECK(stores.Create(Access(), body).http_status == 404);
-  Q4T_CHECK(stores.List(Access(), {}).value.GetArray("data")->array.empty());
+  const auto empty = stores.List(Access(), {});
+  Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+            !empty.value.GetBool("has_more") &&
+            empty.value.GetString("first_id", "missing").empty() &&
+            empty.value.GetString("last_id", "missing").empty());
   Set(&body, "file_ids", Array({String(file)}));
   const auto created = stores.Create(Access(), body);
   Q4T_CHECK(Ok(created));
@@ -230,6 +234,12 @@ Q4T_TEST(vector_stores_file_pagination_attributes_and_terminal_counts) {
   Q4T_CHECK(Ok(stores.Claim(Access(), id, a, "executor", 60, &claim)));
   Q4T_CHECK(
       Ok(stores.Fail(Access(), claim, "invalid_file", "Fixture rejection")));
+  const auto empty =
+      stores.ListFiles(Access(), id, Object({{"filter", String("completed")}}));
+  Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+            !empty.value.GetBool("has_more") &&
+            empty.value.GetString("first_id", "missing").empty() &&
+            empty.value.GetString("last_id", "missing").empty());
   auto failed =
       stores.ListFiles(Access(), id, Object({{"filter", String("failed")}}));
   Q4T_CHECK(Ok(failed) && failed.value.GetArray("data")->array.size() == 1 &&

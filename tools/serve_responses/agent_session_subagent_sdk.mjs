@@ -20,13 +20,17 @@ const api = sessions(plan.key), peer = sessions(plan.other);
 const missing = e => e.status === 404;
 await assert.rejects(api.create({ environment: { type: 'openai_hosted' },
   agent: { model: 'qwen3.8-flash-next' }, stream: true }), e => e.status === 400 && e.param === 'input');
-const task = 'Delegate this exact task to reader: Read the release record {"publication_revision":' +
-  plan.revision + '}. Report only its publication_revision number. Wait for reader, then answer with the number.';
+const cacheTest = plan.releaseRecord !== undefined;
+const release = plan.releaseRecord ?? {publication_revision: plan.revision};
+assert.equal(release.publication_revision, plan.revision);
+const task = 'Delegate this exact task to reader: Read the release record ' +
+  JSON.stringify(release) + '. Report only its publication_revision number. Wait for reader, then answer with the number.';
 const initial = await api.create({
   agent: { model: 'qwen3.8-flash-next', multi_agent: { enabled: true, max_concurrent_subagents: 1 },
     instructions: 'Use the multi-agent functions for the explicit action requested. First delegate the release lookup to one child named reader using spawn_agent and wait_agent on root/reader. When asked to close or resume, call the corresponding close_subagent or resume_subagent function on root/reader and confirm. When asked to recall and calculate, use followup_task on the same reader and wait for its answer. Never spawn another child.',
     reasoning: { effort: 'none' } },
   environment: { type: 'none' }, stream: true, input: task,
+  ...(cacheTest ? {prompt_cache_options: {ttl: '12h'}} : {}),
 });
 const collect = async stream => {
   const events = [];
@@ -85,7 +89,8 @@ assert.ok(parent.some(x => x.type === 'wait_for_subagents_call' && x.recipient_a
 assert.ok(answer(parent).match(/\d+/g)?.includes(String(plan.revision)));
 await assert.rejects(peer.subagents.turns.items.list(one.id, binding), missing);
 const transitions = [];
-for (const [action, state] of [['close', 'closed'], ['resume', 'active']]) {
+const lifecycleActions = cacheTest ? [] : [['close', 'closed'], ['resume', 'active']];
+for (const [action, state] of lifecycleActions) {
   const turn = await runTurn('Please ' + action + ' the existing subagent root/reader now using its ' +
     action + '_subagent function. Confirm when done.');
   const changed = await api.subagents.retrieve(child.id, owned);
@@ -105,6 +110,11 @@ for (const [action, state] of [['close', 'closed'], ['resume', 'active']]) {
   assert.deepEqual((await childTurns.items.list(one.id, { ...binding, order: 'asc' })).data, items);
   await assert.rejects(peer.subagents.retrieve(child.id, owned), missing);
   transitions.push({state, item: ops[0].item.id, opened_at: changed.opened_at, closed_at: changed.closed_at});
+}
+if (cacheTest) {
+  assert.deepEqual(one.prompt_cache_options, {ttl: '12h'});
+  const updated = await api.update(id, {prompt_cache_options: {ttl: '30m'}});
+  assert.deepEqual(updated.prompt_cache_options, {ttl: '30m'});
 }
 const secondEvents = await runTurn('Give the existing reader a follow-up task: recall the publication revision you read, add one, and reply with the resulting integer. Wait and give its answer.');
 const nextPage = await childTurns.list(child.id, { ...owned, order: 'asc', after: one.id, limit: 1 });
@@ -131,6 +141,27 @@ const lifecycle = (events, turn, expected) => {
 assert.deepEqual(firstEvents.filter(e => e.type === 'agent.session.subagent.created').map(e => e.subagent), [child]);
 assert.equal(secondEvents.filter(e => e.type === 'agent.session.subagent.created').length, 0);
 const childEvents = [lifecycle(firstEvents, one, firstAnswer), lifecycle(secondEvents, two, secondAnswer)];
+let cacheSelections;
+if (cacheTest) {
+  const roots = (await api.turns.list(id, {order: 'asc'})).data;
+  assert.equal(roots.length, 2);
+  cacheSelections = [];
+  for (const [n, childTurn] of [one, two].entries()) {
+    const selected = {ttl: n === 0 ? '12h' : '30m'};
+    const root = await api.turns.retrieve(roots[n].id, owned);
+    const delegated = await childTurns.retrieve(childTurn.id, binding);
+    for (const value of [roots[n], root, childTurn, delegated]) {
+      assert.deepEqual(value.prompt_cache_options, selected);
+    }
+    const lifecycleEvents = [firstEvents, secondEvents][n]
+      .filter(event => event.turn?.id === childTurn.id);
+    for (const {turn} of lifecycleEvents) {
+      assert.deepEqual(turn.prompt_cache_options, turn.status === 'queued' ? null : selected);
+    }
+    cacheSelections.push({root: root.id, child: childTurn.id, ttl: selected.ttl});
+  }
+}
 process.stdout.write(JSON.stringify({session: id, child: child.id, turns: [one.id,two.id],
   firstAnswer, secondAnswer, revision: plan.revision, parentAnswer: answer(parent),
+  ...(cacheTest ? {cacheSelections} : {}),
   transitions, childEvents, invalidEmptyHostedStream: 400, sdk: version, foreign: 404, queryMethods: 6})+'\n');

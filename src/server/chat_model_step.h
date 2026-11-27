@@ -30,6 +30,8 @@ struct InternalModelStep {
   // validated child calls or a refusal, to the same request's dispatcher.
   io::Json* agent_message = nullptr;
   uint64_t remaining_input = UINT64_MAX;
+  // Borrowed from the parent Responses execution for a delegated model call.
+  const PromptCacheOptions* agent_cache = nullptr;
 };
 using InternalModelExecutor = std::function<void(
     detail::ResponseState*, std::shared_ptr<RequestControl>)>;

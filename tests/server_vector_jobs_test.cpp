@@ -523,6 +523,12 @@ Q4T_TEST(vector_batches_options_pagination_and_atomic_membership) {
   Q4T_CHECK(seed.id.starts_with("vsfb_") &&
             created.value.GetString("object") == "vector_store.files_batch");
   Q4T_CHECK(created.value.Find("file_counts")->GetInt("in_progress") == 2);
+  const auto empty = stores.ListBatchFiles(
+      Access(), seed.store, seed.id, Object({{"filter", String("completed")}}));
+  Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+            !empty.value.GetBool("has_more") &&
+            empty.value.GetString("first_id", "missing").empty() &&
+            empty.value.GetString("last_id", "missing").empty());
   auto first = stores.ListBatchFiles(
       Access(), seed.store, seed.id,
       Object({{"limit", Number(1)}, {"order", String("asc")}}));

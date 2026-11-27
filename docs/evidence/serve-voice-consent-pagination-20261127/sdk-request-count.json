@@ -1,0 +1,24 @@
+{
+  "sdk": "7.47.0",
+  "scoped_foreground_fetch_calls": 12,
+  "foreground_sdk_https_requests": 11,
+  "local_data_url_probes": 1,
+  "additional_foreground_checks": {
+    "authenticated_https": 3,
+    "loopback_operations_http": 1
+  },
+  "expected_profile_https": {
+    "primary": 15,
+    "light": 10
+  },
+  "expected_profile_local_upload_probes": {
+    "primary": 1,
+    "light": 0
+  },
+  "verified_sdk_uploads_implementation": "4b977aa7ae16d0d297a8590d436b31281c1d5baabd352e45c2493d8b5ea797a7",
+  "trace_sha256": {
+    "batches": "bec78435a024f436679e2a64e18662273df1cf480998798c694d993d12e29a53",
+    "vectors": "686c8b960109fd4ccbe9ce8bd8898b459b2c53d274ea83d4dcb804ac67582a95"
+  },
+  "original_profile_failure": "19d1dc95a6e6c1f9859bff844bd7bd99137b09386712825996f5cf8b94396bfe"
+}

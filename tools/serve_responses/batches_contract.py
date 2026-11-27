@@ -45,9 +45,9 @@ def definitions():
         'completion_window', 'created_at', 'status'])
     query = obj(dict(after=identity, limit=dict(type='integer', minimum=1, maximum=100, default=20)))
     listing = obj(dict(object=dict(const='list'), data=dict(type='array', maxItems=100,
-        items=ref('batch_resource')), first_id=nullable(dict(type='string')),
-        last_id=nullable(dict(type='string')), has_more=dict(type='boolean')),
-        ['object', 'data', 'first_id', 'last_id', 'has_more'])
+        items=ref('batch_resource')), first_id=dict(type='string'),
+        last_id=dict(type='string'), has_more=dict(type='boolean')),
+        ['object', 'data', 'has_more'])
     return dict(batch_create=create, batch_resource=resource, batch_query=query,
                 batch_list=listing, batch_cancel=obj({}))
 

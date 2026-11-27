@@ -59886,6 +59886,9 @@
     "agent_session_304": {
       "type": "object",
       "properties": {
+        "prompt_cache_options": {
+          "$ref": "#/$defs/agent_session_499"
+        },
         "agent_id": {
           "$ref": "#/$defs/agent_session_13"
         },
@@ -65124,24 +65127,10 @@
           }
         },
         "first_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "last_id": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string"
         },
         "has_more": {
           "type": "boolean"
@@ -65150,8 +65139,6 @@
       "required": [
         "object",
         "data",
-        "first_id",
-        "last_id",
         "has_more"
       ],
       "additionalProperties": false
@@ -65857,7 +65844,8 @@
               "pattern": "^[A-Za-z0-9_-]+$"
             },
             {
-              "type": "null"
+              "type": "string",
+              "const": ""
             }
           ]
         },
@@ -65870,7 +65858,8 @@
               "pattern": "^[A-Za-z0-9_-]+$"
             },
             {
-              "type": "null"
+              "type": "string",
+              "const": ""
             }
           ]
         },
@@ -66255,7 +66244,8 @@
               "pattern": "^[A-Za-z0-9_-]+$"
             },
             {
-              "type": "null"
+              "type": "string",
+              "const": ""
             }
           ]
         },
@@ -66268,7 +66258,8 @@
               "pattern": "^[A-Za-z0-9_-]+$"
             },
             {
-              "type": "null"
+              "type": "string",
+              "const": ""
             }
           ]
         },

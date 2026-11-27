@@ -204,6 +204,31 @@ class JobTests(unittest.TestCase):
 
 
 class ControllerTests(unittest.TestCase):
+    def test_controller_reuses_only_verified_history_until_its_exit(self):
+        from tools.serve_recovery import profile_evidence, profile_live_reuse
+
+        history = {'profile': 'primary', 'history': ['issued']}
+        def initialize(config, channel):
+            profile_evidence._validate_live_record(history)
+            actor = mock.Mock()
+            actor.run.side_effect = lambda: profile_evidence._validate_live_record(history)
+            return actor
+
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(mock.patch.object(sys, 'argv', ['controller', '--config', 'unused']))
+            stack.enter_context(mock.patch.object(controller.os, 'umask'))
+            stack.enter_context(mock.patch.object(controller.signal, 'signal'))
+            stack.enter_context(mock.patch.object(controller.ingress, 'read_file',
+                return_value=b'{"profiles":{"service_id":"instance"}}'))
+            channel = stack.enter_context(mock.patch.object(controller.control, 'ControllerChannel'))
+            stack.enter_context(mock.patch.object(controller, 'Controller', side_effect=initialize))
+            verify = stack.enter_context(mock.patch.object(profile_live_reuse, 'validate'))
+            controller.main()
+            self.assertEqual(verify.call_count, 1)
+            controller.main()
+            self.assertEqual(verify.call_count, 2)
+            self.assertEqual(channel.return_value.close.call_count, 2)
+
     def test_application_directory_survives_run_controller_and_model_generations(self):
         engine = controller.engine
         base = dict(settings=engine.settings(8080, 0, application_state=dict(

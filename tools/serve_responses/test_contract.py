@@ -89,6 +89,18 @@ def wire_values(root):
 
 
 class ApplicationContract(unittest.TestCase):
+    def test_empty_batch_and_vector_list_cursor_contracts(self):
+        page = dict(object='list', data=[], has_more=False)
+        for name in ('batch_list', 'vector_store_list', 'vector_file_list'):
+            with self.subTest(name=name):
+                self.assertFalse(errors(dict(page, first_id='', last_id=''), name))
+                self.assertEqual(bool(errors(page, name)), name != 'batch_list')
+                for field in ('first_id', 'last_id'):
+                    for invalid in (None, 42, False):
+                        cursors = dict(first_id='', last_id='')
+                        cursors[field] = invalid
+                        self.assertTrue(errors(dict(page, **cursors), name))
+
     def test_empty_updates_preserve_the_object_and_creation_contracts(self):
         spec = app.standalone_openapi(api.openapi())
         paths = spec['paths']
@@ -269,6 +281,11 @@ class ApplicationContract(unittest.TestCase):
         self.assertEqual(request['properties']['ttl']['default'], '30m')
         self.assertNotIn('ttl', request.get('required', []))
         self.assertIn('ttl', public['required'])
+        turn = resolve(SCHEMA['$defs']['agent_session_turn'])
+        field = resolve(turn['properties']['prompt_cache_options'])['anyOf']
+        self.assertEqual(cache_record(turn['properties']), public)
+        self.assertTrue(any(resolve(v).get('type') == 'null' for v in field))
+        self.assertNotIn('prompt_cache_options', turn['required'])
 
 
     def test_chatkit_and_eval_page_sizes_match_the_native_query_parser(self):
