@@ -1,4 +1,5 @@
 """Qualify a widget and pending form across primary and light profiles."""
+from functools import partial
 from dataclasses import dataclass
 import json
 import os
@@ -177,6 +178,10 @@ class Handoff:
 
 
 def handoff(plan):
+    if windows.MEDIA.key in plan:
+        return Handoff(windows.MEDIA.key, windows.RELEASE, windows.ACTOR,
+                       reuse.COMPACT_MEDIA_RECEIPT, reuse.MCP_ERROR_RECEIPT,
+                       reuse.MCP_ERROR_REVIEWED, partial(windows.check, suite=windows.MEDIA))
     if windows.KEY in plan:
         return Handoff(windows.KEY, windows.RELEASE, windows.ACTOR, reuse.COMPACT_WINDOW_RECEIPT,
                        reuse.MCP_ERROR_RECEIPT, reuse.MCP_ERROR_REVIEWED, windows.check)
@@ -312,8 +317,9 @@ def verify(phase, plan, capabilities):
     previous = package.read(phase.parent / 'primary' / spec.receipt) if name == 'light' else None
     row = package.read(phase / spec.receipt)
     spec.check(row, previous)
-    if spec.key == windows.KEY:
-        windows.verify_captures(phase/'compact-window-wire', row)
+    if spec.key in windows.SUITES:
+        suite = windows.SUITES[spec.key]
+        windows.verify_captures(phase/suite.capture_directory, row, suite=suite)
     if spec.key == mcp_error.KEY:
         mcp_error.verify_captures(phase/'mcp-error-wire', row)
     if spec.key == cache_retention.KEY:
@@ -332,16 +338,18 @@ def business(stage, capabilities):
                   sdk=plan['sdk_directory'], model='qwen3.8-flash-next')
     sdk_handoffs = {mcp_error.KEY: (mcp_error, 'mcp-error-wire'),
                     cache_retention.KEY: (cache_retention, 'cache-retention-wire'),
-                    windows.KEY: (windows, 'compact-window-wire')}
+                    **{key: (windows, suite.capture_directory)
+                       for key, suite in windows.SUITES.items()}}
     if spec.key in sdk_handoffs:
         module, directory = sdk_handoffs[spec.key]
-        settings = plan[spec.key] if spec.key == windows.KEY else plan[spec.key]['interpreters']
+        settings = plan[spec.key] if spec.key in windows.SUITES else plan[spec.key]['interpreters']
+        options = {'suite': windows.SUITES[spec.key]} if spec.key in windows.SUITES else {}
         params['certificate'] = plan['tls']['certificate']
         previous = (package.read(stage.out.parent/'primary'/spec.receipt)
                     if plan['name'] == 'light' else None)
         with (stage.out/'responses-sdk.stderr').open('xb') as errors:
             row = module.exercise(params, settings, errors,
-                                  stage.out/directory, previous)
+                                  stage.out/directory, previous, **options)
         package.save(stage.out/spec.receipt, row)
         verify(stage.out, plan, capabilities)
         return
