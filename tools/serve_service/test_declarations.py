@@ -91,7 +91,10 @@ class Declarations(unittest.TestCase):
         pkg.save(root/'capabilities.json', caps)
         declaration['files']['capabilities.json'] = pkg.sha(root/'capabilities.json')
         declaration['profile'] = pkg.APPLICATION_DECLARATION_PROFILE
-        for name, source in [('completion_request', 'serve-completion-request-v1.schema.json'),
+        for name, source in [('config', 'serve-config-v1.schema.json'),
+                             ('preflight', 'serve-preflight-v1.schema.json'),
+                             ('response', 'serve-transport-v1.schema.json'),
+                             ('completion_request', 'serve-completion-request-v1.schema.json'),
                              ('completion_response', 'serve-completion-transport-v1.schema.json'),
                              ('application', 'serve-application-v1.schema.json'),
                              ('openapi', 'serve-openapi-bundle-v1.json')]:
@@ -116,6 +119,33 @@ class Declarations(unittest.TestCase):
         self.assertEqual(pkg.read(package/'application.json')['x-q4t']['sdk_version'], '7.47.0')
         self.assertIn('/v1/responses/{response_id}/cancel',
                       pkg.read_openapi(package/'openapi.json')['paths'])
+
+    def test_release_rejects_independently_rehashed_schema_drift(self):
+        binary, release, model = self.application_declaration_fixture()
+        metadata = pkg.read(release)
+        root = Path(metadata['release_declarations']['directory'])
+        path = root/'schemas/openapi.json'
+        original = pkg.read_openapi(path)
+        completion = 'serve-completion-request-v1.schema.json'
+        for change in ('typed_default', 'missing_component', 'wrong_reference'):
+            with self.subTest(change=change):
+                document = copy.deepcopy(original)
+                schemas = document['components']['schemas']
+                if change == 'typed_default':
+                    # JSON true and the number 1 must remain distinct.
+                    schemas[completion]['properties']['n']['anyOf'][0]['default'] = True
+                elif change == 'missing_component':
+                    del schemas[completion]
+                else:
+                    definitions = schemas['serve-application-v1.schema.json']['$defs']
+                    definitions['response_create']['$ref'] = '#/components/schemas/'+completion
+                pkg.save(path, document)
+                digest = pkg.sha(path)
+                metadata['release_declarations']['files']['schemas/openapi.json'] = digest
+                metadata['chat_protocol']['openapi_schema_sha256'] = digest
+                pkg.save(release, metadata)
+                with self.assertRaisesRegex(RuntimeError, 'OpenAPI component'):
+                    pkg.prepare(binary, release, model, self.root/change)
 
     def test_openapi_bound_and_strict_json(self):
         from tools.serve_ops.contracts import InvalidObservation

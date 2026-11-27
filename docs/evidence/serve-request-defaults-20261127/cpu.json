@@ -1,0 +1,103 @@
+{
+  "status": "PASS",
+  "scope": "Targeted generated request-body contracts and native CPU planner; not a device publication.",
+  "parent": "f8f8f9f9c25553586dabdf3d895bfe7edab9dc8e",
+  "upstream_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "openapi_version": "3.1.0",
+  "info_version": "2.3.0",
+  "official_response_defaults": {
+    "store": true,
+    "background": false,
+    "stream": false,
+    "parallel_tool_calls": true,
+    "temperature": 1,
+    "top_p": 1,
+    "conversation": null,
+    "service_tier": "auto",
+    "truncation": "disabled"
+  },
+  "official_chat_and_completion_defaults": {
+    "stop": null,
+    "logit_bias": null
+  },
+  "schemas": {
+    "serve-application-v1.schema.json": {
+      "base_sha256": "aa5e859f9e0ad5e584b52b1e0d186d6afbb4d3b39562e623193092e36c75224b",
+      "sha256": "34906d986da7d5b8d86c82f7ec7ca983c945248910fde709370248f1b2a67c02",
+      "added_annotations": 18,
+      "previous_generator_definitions": 1
+    },
+    "serve-chat-request-v1.schema.json": {
+      "base_sha256": "7a67b62d7283a668cb662b8910b23ebfc52f1bbaa3e26fe442d9ddd3f7b9a5bb",
+      "sha256": "f0237ad7f02972a485cff5e5c1cc3f1d1ec73d095a65ad595bc737a4d346012e",
+      "added_annotations": 2,
+      "previous_generator_definitions": 0
+    },
+    "serve-vision-request-v1.schema.json": {
+      "base_sha256": "2e5ba3f604b1621b30bb1b3b337634923bf9c743d5e8b93b952b032111f406f5",
+      "sha256": "4b39accdbf1ad345a403a62ea25da95f4fda444e90730257cea9681a84feae13",
+      "added_annotations": 2,
+      "previous_generator_definitions": 0
+    },
+    "serve-completion-request-v1.schema.json": {
+      "base_sha256": "1bd8923ee0bb6bb33e2dc8ee7a8dee0aa8d0fba2a26731d4c377b1aca7b3c3d6",
+      "sha256": "7d77f63555a29185a8a1e797d2b1a5dd442ad16f9adb1e4f26b95cd39c47e7ed",
+      "added_annotations": 2,
+      "previous_generator_definitions": 0
+    },
+    "serve-openapi-bundle-v1.json": {
+      "base_sha256": "24c70fc7b30a9eee29dcc278d9e3df6c6e79d487ed4893081ab9ab80fe12f852",
+      "sha256": "7e5f083de681b6dd3fb80ed923efde6545606bc4f604b203325c662d3553aa99",
+      "added_annotations": 24,
+      "previous_generator_definitions": 1
+    }
+  },
+  "prior_generator_drift": "The frozen parent already generates the unreferenced application definition chat_http_error. Its separate standalone transport error is unchanged.",
+  "native_identity": {
+    "source_count": 1104,
+    "manifest_sha256": "ad4c22a45f5b9baba985dc8427e4df514d94ee11867a9d8be0ea5478ed2007eb",
+    "engine_sha256": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a"
+  },
+  "gpu_model_starts": 0,
+  "checked_on": "Jetson AGX Thor, 2026-11-27",
+  "cpu_tests": {
+    "python": {
+      "passed": 8,
+      "suites": [
+        "tools.serve_responses.test_request_fields_contract",
+        "tools.serve_protocol.test_stop_combinations"
+      ]
+    },
+    "native": {
+      "passed": 3,
+      "cases": [
+        "responses_plan_sdk_field_nullability_and_tier_oracle",
+        "responses_plan_published_create_defaults",
+        "responses_plan_lifecycle_fields_survive_and_conflicts_fail"
+      ]
+    }
+  },
+  "reproducible_generation": {
+    "tools.serve_protocol.build_contract --check": "PASS",
+    "tools.serve_responses.build_contract --check": "PASS"
+  },
+  "surface_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "regression_history": {
+    "parent": "The new default assertions failed before the fix (missing default annotations).",
+    "saved_prompt": "Separate saved prompt request definitions retain their original optional fields. A preliminary assertion looked up fields on the outer resource; the final assertion checks the nested request."
+  },
+  "coverage_limits": [
+    "The upstream comparison covers only the listed request defaults.",
+    "No new GPU or device issuance was part of this schema check."
+  ]
+}

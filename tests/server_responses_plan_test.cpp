@@ -68,6 +68,36 @@ Q4T_TEST(responses_plan_sdk_field_nullability_and_tier_oracle) {
   return true;
 }
 
+Q4T_TEST(responses_plan_published_create_defaults) {
+  ChatPlanError error;
+  ResponsesEnvelope omitted, explicit_defaults, overrides;
+  Q4T_CHECK(Envelope(R"({"input":"hi"})", &omitted, &error));
+  Q4T_CHECK(Envelope(R"({"input":"hi","store":true,"stream":false,
+      "background":false,"parallel_tool_calls":true,"temperature":1,"top_p":1,
+      "conversation":null,"service_tier":"auto","truncation":"disabled"})",
+                     &explicit_defaults, &error));
+  for (const auto* result : {&omitted, &explicit_defaults}) {
+    Q4T_CHECK(result->store && !result->stream && !result->background);
+    Q4T_CHECK(result->conversation_id.empty() && !result->truncate);
+    Q4T_CHECK(result->options.GetBool("parallel_tool_calls"));
+    Q4T_CHECK(result->options.GetNumber("temperature") == 1.0);
+    Q4T_CHECK(result->options.GetNumber("top_p") == 1.0);
+    Q4T_CHECK(result->options.GetString("truncation") == "disabled");
+    Q4T_CHECK(result->options.GetString("service_tier") == "default");
+  }
+  Q4T_CHECK(Envelope(R"({"input":"hi","store":false,"stream":true,
+      "parallel_tool_calls":false,"temperature":0,"top_p":0.25,
+      "conversation":"conv_a","service_tier":"priority","truncation":"auto"})",
+                     &overrides, &error));
+  Q4T_CHECK(!overrides.store && overrides.stream);
+  Q4T_CHECK(overrides.conversation_id == "conv_a" && overrides.truncate);
+  Q4T_CHECK(!overrides.options.GetBool("parallel_tool_calls", true));
+  Q4T_CHECK(overrides.options.GetNumber("temperature", -1) == 0.0);
+  Q4T_CHECK(overrides.options.GetNumber("top_p") == 0.25);
+  Q4T_CHECK(overrides.options.GetString("service_tier") == "priority");
+  return true;
+}
+
 Q4T_TEST(responses_nullable_user_preserves_the_envelope_and_generation) {
   ResponsesEnvelope omitted, supplied;
   ChatPlanError error;

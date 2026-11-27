@@ -679,6 +679,13 @@ def schema(graph):
     definitions.update(chat_definitions())
     from tools.serve_responses.prompt_contract import definitions as prompt_definitions
     definitions.update(prompt_definitions(request['properties']))
+    # Defaults belong to create requests. The same referenced types are also
+    # used for returned responses and for operations with different defaults.
+    for key, default in dict(store=True, background=False, stream=False,
+                             parallel_tool_calls=True, temperature=1, top_p=1,
+                             conversation=None, service_tier='auto',
+                             truncation='disabled').items():
+        request['properties'][key] = dict(request['properties'][key], default=default)
     from tools.serve_responses.files_contract import SDK_FILES_SHA256
     from tools.serve_responses.uploads_contract import SOURCES as UPLOAD_SOURCES
     from tools.serve_responses.batches_contract import SDK_BATCHES_SHA256

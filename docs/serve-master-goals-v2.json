@@ -969,6 +969,15 @@
         "business": "evidence/serve-inference-http-errors-20261127/foreground.json",
         "revision": 572,
         "delivery": "evidence/serve-inference-http-errors-20261127/delivery.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "issued",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json",
+        "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
+        "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json",
+        "revision": 576,
+        "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       }
     },
     {
@@ -3295,6 +3304,15 @@
         "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
         "revision": 568,
         "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "issued",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json",
+        "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
+        "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json",
+        "revision": 576,
+        "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       }
     },
     {
@@ -9532,6 +9550,15 @@
         "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json",
         "revision": 574,
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "issued",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json",
+        "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
+        "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json",
+        "revision": 576,
+        "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       }
     },
     {
@@ -10799,8 +10826,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 574,
-        "receipt": "evidence/serve-sdk-method-matrix-20261127/delivery.json",
+        "revision": 576,
+        "receipt": "evidence/serve-request-defaults-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12616,12 +12643,19 @@
         "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json",
         "revision": 574,
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "issued",
+        "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
+        "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json",
+        "revision": 576,
+        "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev574_delivered_remaining_deliveries",
+      "state": "rev576_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -14053,13 +14087,26 @@
       },
       "current_recording_delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json",
       "lease_terminal_storage_20261127": {
-        "stage": "targeted_cpu_verified",
+        "stage": "issued_cpu_fault_and_managed_runtime_verified",
         "evidence": "evidence/serve-lease-terminal-20261127/cpu.json",
         "physical_test_filesystem_bytes": 1048576,
         "strict_receipt": "COMPLETED",
         "managed_receipt": "COMPLETED_WITH_MONITOR_GAPS",
-        "hardware_model_starts": 0
-      }
+        "hardware_model_starts": 0,
+        "combined_package_evidence": "docs/evidence/serve-request-defaults-20261127/combined-package.json",
+        "revision": 576,
+        "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "issued",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json",
+        "seal_evidence": "docs/evidence/serve-request-defaults-20261127/seal.json",
+        "file_backed_sdk_evidence": "docs/evidence/serve-request-defaults-20261127/sdk-business.json",
+        "combined_package": "docs/evidence/serve-request-defaults-20261127/combined-package.json",
+        "revision": 576,
+        "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
+      },
+      "current_defaults_delivery": "evidence/serve-request-defaults-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -14164,16 +14211,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "9b5c20d313125eac75d179e796658e3c9fe03e2a",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/recording-download-delivery-soak-src",
+        "source_commit": "49c02a162862b724d96a4dbee857458a55deaa59",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/defaults-response-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/sdk-recording-client-primary-01/bundle",
-          "manifest_sha256": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/request-body-defaults-src/build/request-defaults/combined-candidates/primary/bundle",
+          "manifest_sha256": "bb72e08137b00e0c62689bf3b946176507579773ce5fbab94b80d179a046afa1"
         },
-        "revision": 574,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/recording-download-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "703e5a20a878e1879c8ba9e3070c5cf52d5bf56fa81bb03bf8c6399c0f40c421",
-        "handoff_sha256": "3a5486de3146097b308f181eeaa5fe8b12e98058dda5578cce9c9e2802f91c6f",
+        "revision": 576,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/defaults-response-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "8869d6fe51962dc09e7b87c6f4e19c9b2e94196e59030d28fcf26109b93c99bd",
+        "handoff_sha256": "6fd029f8ddb7f479df886a5a93b64be331c9b14309f54fdb98027d9a9577175f",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14584,9 +14631,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 574,
-        "receipt": "evidence/serve-sdk-method-matrix-20261127/delivery.json",
-        "plan_sha256": "703e5a20a878e1879c8ba9e3070c5cf52d5bf56fa81bb03bf8c6399c0f40c421",
+        "revision": 576,
+        "receipt": "evidence/serve-request-defaults-20261127/delivery.json",
+        "plan_sha256": "8869d6fe51962dc09e7b87c6f4e19c9b2e94196e59030d28fcf26109b93c99bd",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

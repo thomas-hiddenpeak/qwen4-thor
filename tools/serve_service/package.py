@@ -481,7 +481,48 @@ def declaration_files(profile):
             *('schemas/'+name+'.json' for name in declaration_schemas(profile)))
 
 
-def verify_declarations(metadata, directory=None, *, required=False):
+# These declarations travel twice in the application profile: standalone and
+# embedded in OpenAPI with document-local JSON references.
+BUNDLED_SCHEMAS = {
+    'config': 'serve-config-v1.schema.json',
+    'preflight': 'serve-preflight-v1.schema.json',
+    'response': 'serve-transport-v1.schema.json',
+    'completion_request': 'serve-completion-request-v1.schema.json',
+    'completion_response': 'serve-completion-transport-v1.schema.json',
+    'application': 'serve-application-v1.schema.json',
+}
+
+
+def check_openapi_components(openapi, standalone):
+    components = openapi.get('components')
+    schemas = components.get('schemas') if isinstance(components, dict) else None
+    require(isinstance(schemas, dict), 'missing OpenAPI components.schemas')
+
+    def embedded(value, owner):
+        if isinstance(value, list):
+            return [embedded(item, owner) for item in value]
+        if not isinstance(value, dict):
+            return value
+        result = {}
+        for key, child in value.items():
+            if isinstance(child, str) and key in ('$id', '$schema'):
+                continue
+            if key == '$ref' and isinstance(child, str):
+                document, _, fragment = child.partition('#')
+                target = document or owner
+                require(target in schemas and (not fragment or fragment.startswith('/')),
+                        'unresolved OpenAPI component reference: '+child)
+                result[key] = '#/components/schemas/'+target+fragment
+            else:
+                result[key] = embedded(child, owner)
+        return result
+
+    for key, name in BUNDLED_SCHEMAS.items():
+        require(name in schemas and same_json(embedded(standalone[key], name), schemas[name]),
+                'OpenAPI component differs from standalone schema: '+name)
+
+
+def verify_declarations(metadata, directory=None, *, required=False, check_bundle=False):
     """Check frozen observations, not mutable docs or a live server.
 
     Old sealed packages/rollback pairs may lack the profile. New preparation
@@ -544,14 +585,20 @@ def verify_declarations(metadata, directory=None, *, required=False):
             'declaration observation versions differ')
     require(same_json(metadata.get('observed_configuration'), config),
             'declaration configuration differs')
+    cross_check = check_bundle and declaration['profile'] == APPLICATION_DECLARATION_PROFILE
+    published = {}
     for name in schemas:
         relative = 'schemas/'+name+'.json'
         require(protocol.get(name+'_schema') == str(original/relative) and
                 protocol.get(name+'_schema_sha256') == files[relative],
                 'declaration schema differs: '+name)
         reader = read_openapi if name == 'openapi' else read
-        require(type(reader(root/relative)) is dict,
-                'declaration schema must be an object')
+        document = reader(root/relative)
+        require(type(document) is dict, 'declaration schema must be an object')
+        if cross_check and (name in BUNDLED_SCHEMAS or name == 'openapi'):
+            published[name] = document
+    if cross_check:
+        check_openapi_components(published['openapi'], published)
     return root
 
 
@@ -863,7 +910,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
     protocol = metadata['chat_protocol']['protocol_sha256']
     require(isinstance(protocol, str) and len(protocol) == 64 and
             all(c in '0123456789abcdef' for c in protocol), 'invalid protocol')
-    declarations = verify_declarations(metadata, required=True)
+    declarations = verify_declarations(metadata, required=True, check_bundle=True)
     live = live_transport_binding(binary, live_webrtc_address, sip_trunks_file)
     check_media_declaration(metadata, config['profile'])
     if 'native_embedding' in config:

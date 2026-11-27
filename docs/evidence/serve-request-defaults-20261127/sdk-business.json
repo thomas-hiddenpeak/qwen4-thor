@@ -1,0 +1,333 @@
+{
+  "scope": "Real project-release file and stored and transient Responses over native TLS; six installed stock SDK versions. Candidate package was isolated.",
+  "source": "926302c50c5a772ff0ac7df5c29ea4abfbd0492e",
+  "engine_sha256": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+  "native_ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "candidate_bundle": "b9cb2c0b63143b218902fbc0bb375724c842a46030d123acf019986cb0253436",
+  "installed_rehearsal": {
+    "stage": "isolated_native_bundle_rehearsal",
+    "base_revision": 574,
+    "roles": {
+      "primary": {
+        "bundle": "b9cb2c0b63143b218902fbc0bb375724c842a46030d123acf019986cb0253436",
+        "engine_manifest": "51626597734eb4bf075476caeaa698833fd24bc8bc4c027b219977c34ce15099",
+        "package_source": "926302c50c5a772ff0ac7df5c29ea4abfbd0492e",
+        "registry": "a1aa4f5aad95a85520a89b9d51b091ba9350ad0817e4ba6e5130836c62dbaf17",
+        "installed": {
+          "engine_sha256": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+          "manifest_sha256": "51626597734eb4bf075476caeaa698833fd24bc8bc4c027b219977c34ce15099",
+          "copied_verifier": "f09a1f0833d970316661f4e98255128130965c001f6c856d84b5681fcf95d2b2",
+          "public_schemas": 6,
+          "stable_and_agent_defaults": 18,
+          "completion_family_null_defaults": 6
+        }
+      },
+      "fallback": {
+        "bundle": "f9957f9435b0e7078d0f4ddc18721473994bf54ff8dbb34c2a9265effcaa916d",
+        "engine_manifest": "f4828b27223d4f952559a174af7e60425debc5d780a9612a5349026e41c603f4",
+        "package_source": "926302c50c5a772ff0ac7df5c29ea4abfbd0492e",
+        "registry": "a1aa4f5aad95a85520a89b9d51b091ba9350ad0817e4ba6e5130836c62dbaf17",
+        "installed": {
+          "engine_sha256": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+          "manifest_sha256": "f4828b27223d4f952559a174af7e60425debc5d780a9612a5349026e41c603f4",
+          "copied_verifier": "f09a1f0833d970316661f4e98255128130965c001f6c856d84b5681fcf95d2b2",
+          "public_schemas": 6,
+          "stable_and_agent_defaults": 18,
+          "completion_family_null_defaults": 6
+        }
+      }
+    },
+    "device_activation": false,
+    "model_starts": 0
+  },
+  "previous_publication": 574,
+  "release_record": {
+    "status": "PASS",
+    "publication_revision": 574,
+    "version_revision": 216,
+    "profile_revision": 104,
+    "previous_profile_revision": 103,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6",
+    "fallback": "0d25a64aa16e7c7ba50625346416004bf7e34cce1600d3851cfde85e3e168f38",
+    "engine": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "release_record_sha256": "60b69de9c8cc121c96b09d19690d598f2704e83d859a776c2475f087ad8bb482",
+  "file_bytes": 493,
+  "input": {
+    "model": "qwen3.8-flash-next",
+    "max_output_tokens": 80,
+    "reasoning": {
+      "effort": "none"
+    },
+    "content": [
+      {
+        "type": "input_file",
+        "file_id": "<owned upload>"
+      },
+      {
+        "type": "input_text",
+        "text": "Read the attached q4t release record. Return only the integer value of its publication_revision field."
+      }
+    ]
+  },
+  "sdk_rows": {
+    "python-2.8.1": {
+      "lease": 1,
+      "request_id": "req-5e7784543fcadc3d090a65aaaa7c4725",
+      "file_id": "file_68a679abcd0c94bd8143c0599e4eb7dc",
+      "response_id": "resp_6e3825f809a01e0991135e467d8234f6",
+      "answer": "574",
+      "default_fields": {
+        "store": true,
+        "background": false,
+        "parallel_tool_calls": true,
+        "temperature": 1,
+        "top_p": 1,
+        "truncation": "disabled",
+        "service_tier": "default"
+      },
+      "posted_fields": [
+        "input",
+        "max_output_tokens",
+        "model",
+        "reasoning"
+      ],
+      "owner_retrieved": true,
+      "foreign_file_status": 404,
+      "foreign_response_status": 404,
+      "stored_object_sha256": "800380a83ad52191852b5bc5fd59d898fbd3b31e130d8a4b744f06053fcdface",
+      "sdk_receipt_sha256": "5005fb63d8dc7da59af5cb35c30b51393b8bda0b79e0387fb5e3bf23cf3f18c6"
+    },
+    "python-2.33.0": {
+      "lease": 1,
+      "request_id": "req-6648c9f9589fc3d52c0d03b889b35688",
+      "file_id": "file_68a679abcd0c94bd8143c0599e4eb7dc",
+      "response_id": "resp_60a5c6a315d92c344349a2f637fb39d2",
+      "answer": "574",
+      "default_fields": {
+        "store": true,
+        "background": false,
+        "parallel_tool_calls": true,
+        "temperature": 1,
+        "top_p": 1,
+        "truncation": "disabled",
+        "service_tier": "default"
+      },
+      "posted_fields": [
+        "input",
+        "max_output_tokens",
+        "model",
+        "reasoning"
+      ],
+      "owner_retrieved": true,
+      "foreign_file_status": 404,
+      "foreign_response_status": 404,
+      "stored_object_sha256": "d006d5bf0ccdc87ed2f688527ede7cddc26262dbfce65ca94739c5501289311c",
+      "sdk_receipt_sha256": "fca4cfb4aeda9876571d137d76bb803d597392e3039d8023651b257ebe838a3a"
+    },
+    "node-6.34.0": {
+      "lease": 1,
+      "request_id": "req-4ef020dd9bb73a8ab85d7a09cd397ef5",
+      "file_id": "file_68a679abcd0c94bd8143c0599e4eb7dc",
+      "response_id": "resp_ef05f8915156fd6d6076d9ab25df2712",
+      "answer": "574",
+      "default_fields": {
+        "store": true,
+        "background": false,
+        "parallel_tool_calls": true,
+        "temperature": 1,
+        "top_p": 1,
+        "truncation": "disabled",
+        "service_tier": "default"
+      },
+      "posted_fields": [
+        "input",
+        "max_output_tokens",
+        "model",
+        "reasoning"
+      ],
+      "owner_retrieved": true,
+      "foreign_file_status": 404,
+      "foreign_response_status": 404,
+      "stored_object_sha256": "35eea55c8c30b48df980669906014b085a25405219c8e126b45aa199b133a706",
+      "sdk_receipt_sha256": "fa7001d693f9ade996bf32efc2c620f7fd6fe504780397a7ad0c933752ff0a85"
+    },
+    "node-7.47.0": {
+      "lease": 1,
+      "request_id": "req-dea2af8e717d75fd4408cdd6c91923b1",
+      "file_id": "file_68a679abcd0c94bd8143c0599e4eb7dc",
+      "response_id": "resp_f4c16c89ddc9056bef543eda26354eb2",
+      "answer": "574",
+      "default_fields": {
+        "store": true,
+        "background": false,
+        "parallel_tool_calls": true,
+        "temperature": 1,
+        "top_p": 1,
+        "truncation": "disabled",
+        "service_tier": "default"
+      },
+      "posted_fields": [
+        "input",
+        "max_output_tokens",
+        "model",
+        "reasoning"
+      ],
+      "owner_retrieved": true,
+      "foreign_file_status": 404,
+      "foreign_response_status": 404,
+      "stored_object_sha256": "006a2a8d9cbe753bbf22a4dd49dad743cb0949470f4f367c6686acac3b7e276b",
+      "sdk_receipt_sha256": "7ab57cec19ac2dd8f9b48137ec0d1a212e9478476252ce40bc55321e7af75320"
+    },
+    "python-3.42.1": {
+      "lease": 2,
+      "request_id": "req-4c2719eefe4e034d8c41fd3d373d2c95",
+      "file_id": "file_b743ddca697412a18e0675916d8256a9",
+      "response_id": "resp_40fe2202a4bec659f208651d2cb8acb3",
+      "answer": "574",
+      "default_fields": {
+        "store": true,
+        "background": false,
+        "parallel_tool_calls": true,
+        "temperature": 1,
+        "top_p": 1,
+        "truncation": "disabled",
+        "service_tier": "default"
+      },
+      "posted_fields": [
+        "input",
+        "max_output_tokens",
+        "model",
+        "reasoning"
+      ],
+      "owner_retrieved": true,
+      "foreign_file_status": 404,
+      "foreign_response_status": 404,
+      "stored_object_sha256": "f34fb2127ad52c9184883058e8f7d07f3dca0921897f6f9dad3e75baf759dada",
+      "sdk_receipt_sha256": "071067dfbcd4e66d8180762e4afb6e8c6f152d4509e212b7222623b6bccfd523"
+    },
+    "python-3.55.1": {
+      "lease": 2,
+      "request_id": "req-e961eb7d99104ae32a2b9d0e1eeaac71",
+      "file_id": "file_b743ddca697412a18e0675916d8256a9",
+      "response_id": "resp_daff700be72ddadcc3b652d83614e799",
+      "answer": "574",
+      "default_fields": {
+        "store": true,
+        "background": false,
+        "parallel_tool_calls": true,
+        "temperature": 1,
+        "top_p": 1,
+        "truncation": "disabled",
+        "service_tier": "default"
+      },
+      "posted_fields": [
+        "input",
+        "max_output_tokens",
+        "model",
+        "reasoning"
+      ],
+      "owner_retrieved": true,
+      "foreign_file_status": 404,
+      "foreign_response_status": 404,
+      "stored_object_sha256": "fe672661c07dee6142f0bfc17436d806f1894427dbf8892b45461a427a53a836",
+      "sdk_receipt_sha256": "e360adaa0fd0a3f3b5c37f9ce68161abdf62d873961a21db0dc54ab1b23d1b71"
+    }
+  },
+  "explicit_stream": {
+    "sdk": "python-3.55.1",
+    "request_overrides": {
+      "stream": true,
+      "store": false,
+      "parallel_tool_calls": false,
+      "temperature": 0,
+      "top_p": 0.75,
+      "truncation": "auto"
+    },
+    "id": "resp_969dc28e047d0304414e42fc9e5c3721",
+    "answer": "574",
+    "post_read": 404,
+    "terminal": "completed"
+  },
+  "coverage": {
+    "typed_json_omitting_nine_request_defaults": 6,
+    "stored_owner_readbacks": 6,
+    "byte_exact_file_downloads": 6,
+    "foreign_resource_404": 12,
+    "file_deletions": 2,
+    "stored_after_delete_404": 2,
+    "transient_after_complete_404": 1,
+    "correct_answers": 7,
+    "generations": 7,
+    "model_starts": 2,
+    "business_seconds": 76.18,
+    "lease_seconds": 79.9,
+    "active_service_modified": false
+  },
+  "history": {
+    "failed_attempt": 1,
+    "cause": "Two Python 3.x interpreters lacked the direct httpx import in the fixture. Neither sent a request.",
+    "resolution": "Use the SDK-provided DefaultHttpxClient; verified transport versions on CPU and replayed recorded native response bytes before the two-client follow-up.",
+    "transports": [
+      {
+        "version": "2.8.1",
+        "transport": "httpx"
+      },
+      {
+        "version": "2.33.0",
+        "transport": "httpx"
+      },
+      {
+        "version": "3.42.1",
+        "transport": "httpx2"
+      },
+      {
+        "version": "3.55.1",
+        "transport": "httpx2"
+      }
+    ],
+    "first_validation_errors": {
+      "python-3.42.1": "4793e5ba9ef2e89aa41d5a714b74987e41e79f4f2b50e9e557f800f9f0f93788",
+      "python-3.55.1": "4793e5ba9ef2e89aa41d5a714b74987e41e79f4f2b50e9e557f800f9f0f93788"
+    }
+  },
+  "leases": [
+    {
+      "attempt": 1,
+      "lease_seconds": 41.58,
+      "terminal": "COMMAND_FAILED",
+      "model_exit": 0,
+      "driver_status": "FAIL",
+      "starts": 1,
+      "seconds": 39.08,
+      "lease_sha256": "34152b33e1e44968bd4742030df1cc15308a0ca37589f4bed547f5674a59c333",
+      "business_sha256": "2f45a5fc20cfe52157f71fa734d178041844eb32609d327d61712c13dd535ee9",
+      "plan_sha256": "4dd6c952ddbf7251d5a6a2df3ee231fb872f96a4ad42d814d7cc505ffb4b9685"
+    },
+    {
+      "attempt": 2,
+      "lease_seconds": 38.32,
+      "terminal": "COMPLETED",
+      "model_exit": 0,
+      "driver_status": "PASS",
+      "starts": 1,
+      "seconds": 37.1,
+      "lease_sha256": "5d8112616c4caa998e6cb660ac98b1fdf53b820daea5b00ebc90b85291adf4d8",
+      "business_sha256": "cd6c402935821cf15b1d5e55a86ff1e4895618774f0dbf3959f065941f09e531",
+      "plan_sha256": "64321787a6a7d0abbc921ef4ad4a997f55c3ad5a8591de41f5a0c9bf3518869e"
+    }
+  ],
+  "fixture_sha256": {
+    "client-initial.py": "a4f459ee46c37cc40d4f8e70ea331ea81566546ef1dfd9ee3822409f234f969a",
+    "client.py": "1cc04e25402ccd659c7b0d93703f9bb6e614ccc1c2771733f7057eb5cbfaffab",
+    "client.mjs": "5347292c0d806dd576a57765cffd3fdb1ebcdb7817c150b4a55dc6945a15888e",
+    "drive.py": "2a7f3f59e7cc1a389e5b257b03bb6d92c1b3a8ab47de3a8d884db44b8163f21d",
+    "followup.py": "61cdfd6ea2eb4c1263170f241de4af9c0080e1a43348ff5c3113de8beab50291",
+    "replay_sdk.py": "e6fbeb1d997fd3ec9870d9a71e8847592b2951455a471fc976ffc03d8ee16eac"
+  },
+  "pending": "Combined package with the lease supervisor fix, device issuance and host checks."
+}
