@@ -1,4 +1,5 @@
 """Replay authenticated Responses windows from a closed store after a new start."""
+from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
@@ -17,6 +18,24 @@ ACTOR = lifecycle.ROOT / 'tools/serve_responses/compact_window_sdk.py'
 CASES = ('release-old', 'release-current', 'video')
 
 
+@dataclass(frozen=True)
+class WindowSuite:
+    key: str
+    proof: Path
+    cases: tuple[str, ...]
+    capture_directory: str
+
+
+ARCHIVED = WindowSuite(KEY, PROOF, CASES, 'compact-window-wire')
+MEDIA = WindowSuite(
+    'compact_media_handoff',
+    ROOT.parent / 'serve-compact-inline-media-20261127/combined-business.json',
+    ('release-old', 'release-current', 'failed-video', 'fixed-review',
+     'fresh-video', 'blue-image', 'red-image'),
+    'compact-media-wire')
+SUITES = {suite.key: suite for suite in (ARCHIVED, MEDIA)}
+
+
 def read_window(path, digest):
     data = Path(path).read_bytes()
     package.require(hashlib.sha256(data).hexdigest() == digest,
@@ -24,11 +43,11 @@ def read_window(path, digest):
     return json.loads(data)
 
 
-def check(row, previous=None):
-    expected = package.read(PROOF)['receipts']
+def check(row, previous=None, *, suite=ARCHIVED):
+    expected = package.read(suite.proof)['receipts']
     package.require(row['phase'] == ('primary' if previous is None else 'light')
-                    and set(row['cases']) == set(CASES), 'unexpected profile or replay set')
-    for name in CASES:
+                    and set(row['cases']) == set(suite.cases), 'unexpected profile or replay set')
+    for name in suite.cases:
         item = row['cases'][name]
         ref = expected[name]
         package.require(all(item[k] == ref[k] for k in
@@ -36,16 +55,16 @@ def check(row, previous=None):
                         and item['exact_answer'] is True and item['usage']['output_tokens'] > 0
                         and item['response_id'].startswith('resp_'),
                         'saved window failed owner, SDK or foreign-client replay')
-    ids = {row['cases'][name]['response_id'] for name in CASES}
-    package.require(len(ids) == len(CASES), 'separate continuations shared a response')
+    ids = {row['cases'][name]['response_id'] for name in suite.cases}
+    package.require(len(ids) == len(suite.cases), 'separate continuations shared a response')
     if previous is not None:
         package.require(previous['phase'] == 'primary'
                         and ids.isdisjoint(x['response_id'] for x in previous['cases'].values()),
                         'profile continuation reused an earlier response')
 
 
-def verify_captures(directory, row):
-    for name in CASES:
+def verify_captures(directory, row, *, suite=ARCHIVED):
+    for name in suite.cases:
         item = row['cases'][name]
         path = directory / name / 'response.json'
         response = package.read(path)
@@ -55,17 +74,20 @@ def verify_captures(directory, row):
         package.require(package.sha(path) == item['response_sha256']
                         and response['id'] == item['response_id']
                         and response['status'] == 'completed' and response['error'] is None
+                        and response.get('incomplete_details') is None
+                        and all(part.get('status') == 'completed' for part in output
+                                if part['type'] == 'message')
                         and all(part['type'] != 'mcp_call' for part in output)
                         and response['usage']['output_tokens'] == item['usage']['output_tokens']
                         and answer.strip() == item['answer'],
                         'profile receipt differs from the completed response')
 
 
-def exercise(params, settings, errors, captures, previous=None):
-    references = package.read(PROOF)['receipts']
+def exercise(params, settings, errors, captures, previous=None, *, suite=ARCHIVED):
+    references = package.read(suite.proof)['receipts']
     row = dict(phase=params['phase'], cases={})
     captures.mkdir(mode=0o700)
-    for name in CASES:
+    for name in suite.cases:
         ref = references[name]
         window = read_window(settings['windows'][name], ref['window_sha256'])
         capture = captures / name
@@ -82,31 +104,31 @@ def exercise(params, settings, errors, captures, previous=None):
         receipt = json.loads(result.stdout)
         row['cases'][name] = dict(receipt, window_sha256=ref['window_sha256'],
                                   response_id=package.read(capture / 'response.json')['id'])
-    verify_captures(captures, row)
-    check(row, previous)
+    verify_captures(captures, row, suite=suite)
+    check(row, previous, suite=suite)
     return row
 
 
-def prepare(out, build, deployment, interpreters, source, windows):
-    proof = package.read(PROOF)
+def prepare(out, build, deployment, interpreters, source, windows, *, suite=ARCHIVED):
+    proof = package.read(suite.proof)
     package.require(proof['result']['status'] == 'PASS' and
                     all(proof['compiled']['files'][name] == package.sha(build / name)
                         for name in ('q4t', 'q4t-ingress')), 'compaction business binary differs')
-    package.require(set(windows) == set(CASES), 'missing signed compact windows')
-    for name in CASES:
+    package.require(set(windows) == set(suite.cases), 'missing signed compact windows')
+    for name in suite.cases:
         read_window(windows[name], proof['receipts'][name]['window_sha256'])
-    drivers = [ACTOR, ACTOR.with_name('compact_client.py'), PROOF, ROOT / 'source-store.json',
+    drivers = [ACTOR, ACTOR.with_name('compact_client.py'), suite.proof, suite.proof.with_name('source-store.json'),
                Path(__file__), Path(approvals.__file__)]
     lifecycle.prepare_candidate(out, build, deployment, RELEASE, reuse.MCP_ERROR_REVIEWED,
-                                KEY, drivers)
+                                suite.key, drivers)
     store = out / 'state/application-objects'
-    approvals.seed(source, store, package.read(ROOT / 'source-store.json'))
+    approvals.seed(source, store, package.read(suite.proof.with_name('source-store.json')))
     for phase in ('primary', 'light'):
         path = out / phase / 'plan.json'
         plan = package.read(path)
         cmd = plan['command']
         package.require(Path(cmd[cmd.index('--object-store-dir') + 1]) == store,
                         'profile must use the seeded object store')
-        plan[KEY].update(interpreters={v: str(Path(p).absolute()) for v,p in interpreters.items()},
+        plan[suite.key].update(interpreters={v: str(Path(p).absolute()) for v,p in interpreters.items()},
                          windows={case: str(Path(p).absolute()) for case,p in windows.items()})
         package.save(path, plan)

@@ -1,0 +1,46 @@
+{
+  "scope": "Loopback HTTP using the two actual SDK installations and archived bodies; responses served by a fixture",
+  "sdk": {
+    "release-old": "2.33.0",
+    "release-current": "3.55.1",
+    "failed-video": "3.55.1",
+    "fixed-review": "3.55.1",
+    "fresh-video": "3.55.1",
+    "blue-image": "3.55.1",
+    "red-image": "3.55.1"
+  },
+  "requests": 28,
+  "successful_continuations": 14,
+  "foreign_rejections": 14,
+  "source_objects": 24,
+  "negative_controls": [
+    "sdk",
+    "window_sha256",
+    "answer",
+    "foreign_code",
+    "http_status",
+    "exact_answer",
+    "previous response reused",
+    "video omitted",
+    "changed capture",
+    "signed window from another reader",
+    "missing reviewed predecessor",
+    "unissued predecessor for media",
+    "partial_message",
+    "incomplete_reason",
+    "red_mislabeled"
+  ],
+  "model_starts": 0,
+  "baseline_archived_profiles_verified": 2,
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

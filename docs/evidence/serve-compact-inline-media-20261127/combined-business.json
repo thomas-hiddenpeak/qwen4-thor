@@ -1,0 +1,413 @@
+{
+  "scope": "Native descriptor-aware summary and authenticated memory replay, including fresh video and opposite color images",
+  "source_parent": "a9bc43088e6ce9a208e621fd6c34b6f47f0a764d",
+  "compiled": {
+    "files": {
+      "q4t": "2a4e49ddecc441ffe9f261069436ee50e4251a54d40d52f3ec74dd6dedb0d6c6",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "3d4e64d0c2060125f65518f296ccffb05310a623e252021cb1c553bb46a7aedd",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104,
+    "baseline": "949230080b74f93a6ef69b03f6ccae1f22eed51d7d803503f0c1c5648accd4f5",
+    "cpu_count": 42
+  },
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 69.136,
+    "unchanged_default": true,
+    "original_store_unchanged": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "model_requests": 10,
+  "cross_client_rejections": 4,
+  "public_http": {
+    "failed-video/response": {
+      "sha256": "6000ed00bc2d56d48784b1bba44079ac075cfb2a415ff63bb18cf644d34fd4bb",
+      "object_id": "resp_522d2fa9b62ecaa3a4024a8ba5931a0c",
+      "kind": "response",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "denied-tool/response": {
+      "sha256": "ff993e3e8d420e9a7adc3cf3901d51a5d15a7d17e713fd549345a921989c0a58",
+      "object_id": "resp_70f959e50a7102a161cbfd8a9f64d4d1",
+      "kind": "response",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "fixed-review/compact": {
+      "sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+      "object_id": "resp_51a8f2a0cf06b0cda5d852838f3fc2ac",
+      "kind": "window",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "fixed-review/resumed": {
+      "sha256": "99a7e33f8f4c53aa49e11e1b055675f00ce5b9532d5a7a8a2856663546596830",
+      "object_id": "resp_4389e6c1ca3b07684d5cae7d62eb97fc",
+      "kind": "response",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "fresh-video/video_compact": {
+      "sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+      "object_id": "resp_69c0c937a5a58aa5232ea150be5a39ed",
+      "kind": "window",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "fresh-video/video_resumed": {
+      "sha256": "bdf8928bd32c58568e532e5e594b831ed61a12008f9514dcd2a232a08cfda808",
+      "object_id": "resp_8d6e87b347e0031a0cfe626fa1278007",
+      "kind": "response",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "png/Blue-compact": {
+      "sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+      "object_id": "resp_e7680a753ffa9819f78b4bac47cf9605",
+      "kind": "window",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "png/Blue-resumed": {
+      "sha256": "f860c65ee09194be3651c6ec7aade2fc0050dc980d42ffa3d37e20547c0213ad",
+      "object_id": "resp_c849c2290d2c1c11dca3fe1d3936de66",
+      "kind": "response",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "png/Red-compact": {
+      "sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+      "object_id": "resp_0d59cd93e442da9f5648af21b28e3925",
+      "kind": "window",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    },
+    "png/Red-resumed": {
+      "sha256": "eaca25e9c69f5a9c38c69dc53cdc82f7e135fed7ab3bc4f0bb73772b77c90d12",
+      "object_id": "resp_ddd608a8156075168d49d2e41498b3fe",
+      "kind": "response",
+      "strict_upstream": true,
+      "normalized_legacy_fields": []
+    }
+  },
+  "sdk_cases": {
+    "failed-video": {
+      "status": "PASS",
+      "result": {
+        "sdk": "3.55.1",
+        "answer": "Blue",
+        "exact_answer": true,
+        "foreign_code": "invalid_encrypted_content",
+        "usage": {
+          "input_tokens": 1186,
+          "input_tokens_details": {
+            "cache_write_tokens": 1179,
+            "cached_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1188
+        },
+        "http_status": 200,
+        "response_sha256": "6000ed00bc2d56d48784b1bba44079ac075cfb2a415ff63bb18cf644d34fd4bb",
+        "source_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819"
+      }
+    },
+    "denied-tool": {
+      "status": "PASS",
+      "result": {
+        "sdk": "3.55.1",
+        "answer": "560",
+        "exact_answer": true,
+        "foreign_code": "invalid_encrypted_content",
+        "usage": {
+          "input_tokens": 1127,
+          "input_tokens_details": {
+            "cache_write_tokens": 1120,
+            "cached_tokens": 0
+          },
+          "output_tokens": 4,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1131
+        },
+        "http_status": 200,
+        "response_sha256": "ff993e3e8d420e9a7adc3cf3901d51a5d15a7d17e713fd549345a921989c0a58",
+        "source_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7"
+      }
+    },
+    "fixed-review": {
+      "status": "PASS",
+      "result": {
+        "answer": "Blue",
+        "id": "resp_4389e6c1ca3b07684d5cae7d62eb97fc",
+        "window": "resp_51a8f2a0cf06b0cda5d852838f3fc2ac",
+        "usage": {
+          "input_tokens": 1039,
+          "input_tokens_details": {
+            "cache_write_tokens": 1032,
+            "cached_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1041
+        }
+      }
+    },
+    "fresh-video": {
+      "status": "PASS",
+      "result": {
+        "answer": "Blue",
+        "exact_answer": true,
+        "original_item": "item_c7bbdc6f5aa1b35f88a29fa8efdc73e8",
+        "file_preserved": true,
+        "usage": {
+          "input_tokens": 629,
+          "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+          },
+          "output_tokens": 94,
+          "output_tokens_details": {
+            "reasoning_tokens": 94
+          },
+          "total_tokens": 723
+        }
+      }
+    },
+    "png": {
+      "status": "PASS",
+      "result": {
+        "sdk": "3.55.1",
+        "images": {
+          "Blue": {
+            "answer": "Blue",
+            "response_id": "resp_c849c2290d2c1c11dca3fe1d3936de66",
+            "image_url_bytes": 27946,
+            "image_sha256": "30cf947778cf70b9233d577d2f08530a00e1cd358279a904d6e48a71db451856",
+            "retained_ids": [
+              "msg_uploaded_image",
+              "msg_image_question"
+            ],
+            "foreign_code": "invalid_encrypted_content",
+            "summary_usage": {
+              "input_tokens": 748,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 179,
+              "output_tokens_details": {
+                "reasoning_tokens": 179
+              },
+              "total_tokens": 927
+            },
+            "answer_usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            }
+          },
+          "Red": {
+            "answer": "Red",
+            "response_id": "resp_ddd608a8156075168d49d2e41498b3fe",
+            "image_url_bytes": 27934,
+            "image_sha256": "04f0a0102b981389e2c7f8abaf7a33fdc3060be49105ae465dc24b5a97004307",
+            "retained_ids": [
+              "msg_uploaded_image",
+              "msg_image_question"
+            ],
+            "foreign_code": "invalid_encrypted_content",
+            "summary_usage": {
+              "input_tokens": 748,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 179,
+              "output_tokens_details": {
+                "reasoning_tokens": 179
+              },
+              "total_tokens": 927
+            },
+            "answer_usage": {
+              "input_tokens": 517,
+              "input_tokens_details": {
+                "cache_write_tokens": 0,
+                "cached_tokens": 0
+              },
+              "output_tokens": 2,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 519
+            }
+          }
+        }
+      }
+    }
+  },
+  "receipts": {
+    "release-old": {
+      "sdk": "2.33.0",
+      "answer": "560",
+      "window_sha256": "92e5edf52165f802fa0bc8129bfb7ca1178b2e53855e9a89b612fffc05cc5bea",
+      "foreign_code": "invalid_encrypted_content",
+      "http_status": 200
+    },
+    "release-current": {
+      "sdk": "3.55.1",
+      "answer": "560",
+      "window_sha256": "4fbfbd5f0e0f8bb62dc906924c8a07c11a99e400f47b8619e00013f8bd852cd7",
+      "foreign_code": "invalid_encrypted_content",
+      "http_status": 200
+    },
+    "failed-video": {
+      "sdk": "3.55.1",
+      "answer": "Blue",
+      "window_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+      "foreign_code": "invalid_encrypted_content",
+      "http_status": 200
+    },
+    "fixed-review": {
+      "sdk": "3.55.1",
+      "answer": "Blue",
+      "window_sha256": "f96af10ccfb81a176bffb0d2f63b6dbea6cac08be18b2c82e7495960224bc8c0",
+      "foreign_code": "invalid_encrypted_content",
+      "http_status": 200
+    },
+    "fresh-video": {
+      "sdk": "3.55.1",
+      "answer": "Blue",
+      "window_sha256": "25fd4a379aef9eaffd09df71307c57cde90edf6e721baa6125c3052892faf862",
+      "foreign_code": "invalid_encrypted_content",
+      "http_status": 200
+    },
+    "blue-image": {
+      "sdk": "3.55.1",
+      "answer": "Blue",
+      "window_sha256": "ebabb82306043d54b21cad91c8e93f318b2d67aac88a1f330770943960d67b5a",
+      "foreign_code": "invalid_encrypted_content",
+      "http_status": 200
+    },
+    "red-image": {
+      "sdk": "3.55.1",
+      "answer": "Red",
+      "window_sha256": "02697a43024c35dba0af6ddd7ce9f3d717970e493ceb53dbce9e311bd62452ce",
+      "foreign_code": "invalid_encrypted_content",
+      "http_status": 200
+    }
+  },
+  "private_summary_comparison": {
+    "observations": {
+      "a-native": {
+        "finish": "stop",
+        "refused": true,
+        "final_chars": 583,
+        "mentioned_pending": true,
+        "stated_target_color": false,
+        "spec_sha256": "1ea50e4507bf17947d05cf0c62b747630ef657ceec64da1e6dd9fe91199a7279",
+        "final_sha256": "3f24d980344bb051e5a6f2bcd48604b9b448f06c5967fa584a688594518beaf6",
+        "usage": {
+          "prompt_tokens": 553,
+          "completion_tokens": 112,
+          "total_tokens": 665
+        }
+      },
+      "b-descriptors": {
+        "finish": "stop",
+        "refused": false,
+        "final_chars": 437,
+        "mentioned_pending": true,
+        "stated_target_color": false,
+        "spec_sha256": "15ec862385928d417c1441ea65c4a9ae47a515ac93132c430dbb3ecf80a7e6e0",
+        "final_sha256": "8f663ed11eb3e5b20588b6f5dad6da6d2876fab73f1f60c83f06a41968d06e10",
+        "usage": {
+          "prompt_tokens": 602,
+          "completion_tokens": 84,
+          "total_tokens": 686
+        }
+      },
+      "b-native": {
+        "finish": "stop",
+        "refused": false,
+        "final_chars": 424,
+        "mentioned_pending": true,
+        "stated_target_color": false,
+        "spec_sha256": "326a57bd8ed95182485c953c69f38b2014ba3fa6c72391d5edb4c162acf63810",
+        "final_sha256": "d5637f8285baf03e786b6ae3b3d9b4686d0ee69c56b99f86bf981d801723e22f",
+        "usage": {
+          "prompt_tokens": 553,
+          "completion_tokens": 79,
+          "total_tokens": 632
+        }
+      },
+      "a-descriptors": {
+        "finish": "stop",
+        "refused": false,
+        "final_chars": 464,
+        "mentioned_pending": true,
+        "stated_target_color": false,
+        "spec_sha256": "6ed0fbe1272e94da93b67d977a917531be4adac285861b4f2b50a4056dbb12bf",
+        "final_sha256": "f940115091bd1403d523350a068ea372debecb22e300f00eb9f0f6694b6fff2c",
+        "usage": {
+          "prompt_tokens": 602,
+          "completion_tokens": 88,
+          "total_tokens": 690
+        }
+      }
+    },
+    "control": {
+      "lease": "COMPLETED",
+      "command": 0,
+      "result": {
+        "status": "OBSERVED",
+        "starts": 1,
+        "seconds": 51.543,
+        "unchanged_default": true,
+        "original_store_unchanged": true,
+        "phases": [
+          "create"
+        ]
+      }
+    },
+    "causal_scope": "Two synthetic assistant item IDs carrying otherwise identical real benign history. The refused control remains recorded."
+  },
+  "cpu": {
+    "before": "new projection contract failed",
+    "after": 42,
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 247,
+      "native_routes": 409,
+      "reviewed_source_anchors": 1394,
+      "mutation_checks": 40,
+      "errors": []
+    }
+  },
+  "lease_exit_sha256": "305ef88995419d6d1000a3918968688c05816e338b9502f8a8f85d3dd828846c",
+  "store_manifest_sha256": "6ad25d5d8c62a02f9d801e6d3e0e1cc18bdabc2b449e765708a99ff2c7de31dd",
+  "published": false
+}

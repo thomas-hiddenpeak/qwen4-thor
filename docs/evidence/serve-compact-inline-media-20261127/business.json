@@ -1,0 +1,111 @@
+{
+  "scope": "New model summaries and subsequent image continuations through native TLS; two opposite pixel distributions",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 39.172,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "engine": {
+    "files": {
+      "q4t": "684f8e2c3e76a640107b5f3f8b3a67c09e4b8b0db3a8359a65b79a814018acd6",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "3d4e64d0c2060125f65518f296ccffb05310a623e252021cb1c553bb46a7aedd",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "source_commit": "9fb542b678d782fb3e6f81600d8135667d5636cb",
+  "sdk": {
+    "sdk": "3.55.1",
+    "images": {
+      "Blue": {
+        "answer": "Blue",
+        "response_id": "resp_1d292fc09d0c03d5768e8a9ce9aa3167",
+        "image_url_bytes": 27946,
+        "image_sha256": "30cf947778cf70b9233d577d2f08530a00e1cd358279a904d6e48a71db451856",
+        "retained_ids": [
+          "msg_uploaded_image",
+          "msg_image_question"
+        ],
+        "foreign_code": "invalid_encrypted_content",
+        "summary_usage": {
+          "input_tokens": 699,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 66,
+          "output_tokens_details": {
+            "reasoning_tokens": 66
+          },
+          "total_tokens": 765
+        },
+        "answer_usage": {
+          "input_tokens": 366,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 368
+        }
+      },
+      "Red": {
+        "answer": "Red",
+        "response_id": "resp_55a7f12210cdabdb722e74a2dceeaad0",
+        "image_url_bytes": 27934,
+        "image_sha256": "04f0a0102b981389e2c7f8abaf7a33fdc3060be49105ae465dc24b5a97004307",
+        "retained_ids": [
+          "msg_uploaded_image",
+          "msg_image_question"
+        ],
+        "foreign_code": "invalid_encrypted_content",
+        "summary_usage": {
+          "input_tokens": 699,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 66,
+          "output_tokens_details": {
+            "reasoning_tokens": 66
+          },
+          "total_tokens": 765
+        },
+        "answer_usage": {
+          "input_tokens": 366,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 368
+        }
+      }
+    }
+  },
+  "expected_generations": 4,
+  "foreign_rejections": 2,
+  "wire_sha256": {
+    "Blue-compact.json": "49e012e275983f9664950e69ee997f6c755c4ecd3ba8acdd9013fe4cd61d4c5f",
+    "Blue-resumed.json": "1cdc6e2ff77b99200ab67f3f93608681965d3ade37e3c1febada64c7691827a0",
+    "Red-compact.json": "111b58067b3656866772e29c1aec8f36a8e6058260fe3b3bd225ded17ba57d98",
+    "Red-resumed.json": "a0091c40dc446197af82afc2672646b2cae5b97f3a70c3fc7f2d17f5155e8b90"
+  },
+  "lease_exit_sha256": "acb6bce19e65aa95de152814df4f5fe83ae39417d5127f56932211e80f96c4e9",
+  "schemas": {
+    "local": "51cc2aed1edfb2cce23bade3b8fb09076201c37b134cd6a2894574ea65c57ffe",
+    "upstream": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+  }
+}
