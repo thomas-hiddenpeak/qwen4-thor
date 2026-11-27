@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+同一候选完成 10 次真实模型请求。新签发的显式与自动分配 ID 的视频窗口均答 Blue，原失败窗口也答 Blue，工具历史答 560，两张新签发 PNG 各答出自己的颜色；4 次跨客户回填被拒绝。10 份成功响应通过本地与上游模式。一次启动用时 69.136 秒。42 项 CPU 用例通过。下一步是这份二进制的主轻配置与托管恢复。 [业务回执](evidence/serve-compact-inline-media-20261127/combined-business.json)
+
 真实模型分别从两张不同的内联 PNG 新签发压缩窗口并续答，结果为 Blue 和 Red；两次跨客户回填均被拒绝。原始像素 URI 与保留项 ID 的摘要逐一核对，四份响应通过本地模式验证。一次模型启动，用时 39.172 秒。下一步接续主轻配置及可回退发行。 [业务回执](evidence/serve-compact-inline-media-20261127/business.json)
 
 用真实 SDK 3.55.1 校验红、蓝两图的验收驱动。独立 PNG 解码逐像素检查主色，两份 HTTP 请求的指令和历史正文完全一致。篡改图像、允许跨客户读取及返回第三种颜色均会使验收失败。模型实机结果待 GPU 排期。 [夹具回执](evidence/serve-compact-inline-media-20261127/sdk-fixture.json)
