@@ -677,6 +677,7 @@ def current_surface(root):
                        root / "tools/serve_soak/native_audio.py",
                        root / "tools/serve_soak/native_contract.py",
                        root / "tools/serve_soak/native_stage.py",
+                       root / "tools/serve_soak/native_observations.py",
                        root / "tools/serve_soak/native_report.py",
                        root / "cmake/GuardianProcess.cmake",
                        root / "cmake/NativeIngress.cmake",

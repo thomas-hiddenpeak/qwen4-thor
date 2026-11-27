@@ -1,0 +1,33 @@
+{
+  "fixture": "CPU replay in temporary private copies. Original execution, capture, terminal lease and GPU wires are preserved. Only fixture paths and verifier source bindings change for the positive report. The negative fixture omits one worker line before sealing.",
+  "roles": {
+    "primary": {
+      "original_seal_sha256": "b90761537116e914e9809208a9d8ded597972dbbadc1a91d5218f892cfbe7b33",
+      "accepted": "PASS_NATIVE_SHORT_SOAK",
+      "verified_nvml": {
+        "guard_scans": 234,
+        "nvml_queries": 234,
+        "additional_queries": 0,
+        "model_context_queries": 106,
+        "model_context_queries_during_ready": 61
+      },
+      "missing_worker_reply_rejected": "strict guard scan missing or exceeding its worker replies",
+      "original_business_report_equivalent": true
+    },
+    "fallback": {
+      "original_seal_sha256": "82b34bcdd4773667ae25b8c81e752ce8aad58b5d7448ac39aae7a00c8a6065ce",
+      "accepted": "PASS_NATIVE_SHORT_SOAK",
+      "verified_nvml": {
+        "guard_scans": 233,
+        "nvml_queries": 233,
+        "additional_queries": 0,
+        "model_context_queries": 106,
+        "model_context_queries_during_ready": 61
+      },
+      "missing_worker_reply_rejected": "strict guard scan missing or exceeding its worker replies",
+      "original_business_report_equivalent": true
+    }
+  },
+  "model_actions": 0,
+  "day_hours_executed": 0
+}

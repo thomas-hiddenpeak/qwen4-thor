@@ -1,0 +1,47 @@
+{
+  "scope": "Read-only acceptance of the NVML evidence in the previously sealed rev588 short runs. Old evidence and source-bound plans were preserved.",
+  "normal_entry": "tools/serve_soak/native_stage.py run -> native_report.check -> native_observations.verify",
+  "roles": {
+    "primary": {
+      "package": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+      "sealed_files": 87,
+      "original_seal_sha256": "b90761537116e914e9809208a9d8ded597972dbbadc1a91d5218f892cfbe7b33",
+      "previous_short_report": "PASS_NATIVE_SHORT_SOAK",
+      "guard": {
+        "guard_scans": 234,
+        "nvml_queries": 234,
+        "additional_queries": 0,
+        "model_context_queries": 106,
+        "model_context_queries_during_ready": 61
+      },
+      "missing_preflight_query_rejected": "strict guard scan missing or exceeding its worker replies"
+    },
+    "fallback": {
+      "package": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+      "sealed_files": 87,
+      "original_seal_sha256": "82b34bcdd4773667ae25b8c81e752ce8aad58b5d7448ac39aae7a00c8a6065ce",
+      "previous_short_report": "PASS_NATIVE_SHORT_SOAK",
+      "guard": {
+        "guard_scans": 233,
+        "nvml_queries": 233,
+        "additional_queries": 0,
+        "model_context_queries": 106,
+        "model_context_queries_during_ready": 61
+      },
+      "missing_preflight_query_rejected": "strict guard scan missing or exceeding its worker replies"
+    }
+  },
+  "cpu_checks": 10,
+  "historical_comparison": "../serve-native-soak-retention-20261128/nvml-observations.json",
+  "job_effects": {
+    "model_starts": 0,
+    "device_changes": 0,
+    "day_hours_executed": 0
+  },
+  "retained_fixture_error": "One retention test initially needed its .q4t-work temp parent in this sparse checkout. Created the directory and reran the test.",
+  "sources": {
+    "tools/serve_soak/native_observations.py": "227997f9dac2b021ae173fef18f052f8248d1d1f17c9dc7a6f479c7793686ea1",
+    "tools/serve_soak/native_report.py": "db8e62faaa5ef6178ce62737e551435cda7b86d892d7eae7e11db3ac4b594c3c",
+    "tools/serve_soak/test_native_observations.py": "3de42c2dcce8f9109df94f76728e7731be7826dc90b4830bc53dde7d8a6ba554"
+  }
+}

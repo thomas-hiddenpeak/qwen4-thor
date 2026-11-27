@@ -50,16 +50,17 @@ jobs:
           /usr/bin/python3 -c 'import numpy' || packages+=(python3-numpy)
           /usr/bin/python3 -c 'import ensurepip' || packages+=(python3-venv)
           if ((${#packages[@]})); then
-            # The hosted regional mirror repeatedly stalled during cold
-            # dependency downloads. Use Ubuntu's official archive on this
-            # disposable runner; retain signed sources and all apt checks.
-            if test -f /etc/apt/apt-mirrors.txt; then
-              printf '%s\n' 'https://archive.ubuntu.com/ubuntu/' |
-                sudo tee /etc/apt/apt-mirrors.txt >/dev/null
-            fi
-            sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 update
-            sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=20 \
-              install -y --no-install-recommends "${packages[@]}"
+            # This job consumes Ubuntu packages. Hosted images also ship
+            # third-party repositories with independent availability.
+            source_file="$RUNNER_TEMP/q4t-ubuntu.sources"
+            printf '%s\n' 'Types: deb' 'URIs: https://archive.ubuntu.com/ubuntu/' \
+              'Suites: noble noble-updates noble-security' \
+              'Components: main restricted universe multiverse' \
+              'Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg' > "$source_file"
+            apt_options=(-o "Dir::Etc::sourcelist=$source_file" -o Dir::Etc::sourceparts=-
+              -o Acquire::Retries=2 -o Acquire::https::Timeout=20)
+            sudo apt-get "${apt_options[@]}" update
+            sudo apt-get "${apt_options[@]}" install -y --no-install-recommends "${packages[@]}"
           fi
           g++-14 --version
           cmake --version
@@ -292,6 +293,7 @@ jobs:
         run: >-
           env PYTHONPATH=tools/evalscope python3 -B -m unittest
           tools.serve_soak.test_native_soak
+          tools.serve_soak.test_native_observations
           test_gpu_exclusive.ExclusiveTests.test_cli_retention_is_opt_in_and_preserves_the_child_arguments
           test_gpu_exclusive.ExclusiveTests.test_invalid_log_limit_does_not_consume_the_output_directory
       - name: Check JavaScript schema input contracts
