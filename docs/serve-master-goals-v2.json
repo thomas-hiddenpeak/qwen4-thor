@@ -962,10 +962,11 @@
         "wire_errors": 36
       },
       "sdk_retry_boundary_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "device_verified_package_pending",
         "cases": 24,
         "http_attempts": 56,
-        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json",
+        "business": "evidence/serve-inference-http-errors-20261127/foreground.json"
       }
     },
     {
@@ -9463,10 +9464,11 @@
         "wire_errors": 36
       },
       "sdk_retry_boundary_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "device_verified_package_pending",
         "cases": 24,
         "http_attempts": 56,
-        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json",
+        "business": "evidence/serve-inference-http-errors-20261127/foreground.json"
       }
     },
     {
@@ -10024,10 +10026,11 @@
         }
       },
       "sdk_retry_boundary_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "device_verified_package_pending",
         "cases": 24,
         "http_attempts": 56,
-        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json",
+        "business": "evidence/serve-inference-http-errors-20261127/foreground.json"
       }
     },
     {
@@ -13925,10 +13928,11 @@
         "wire_errors": 36
       },
       "sdk_retry_boundary_20261127": {
-        "stage": "cpu_verified_device_pending",
+        "stage": "device_verified_package_pending",
         "cases": 24,
         "http_attempts": 56,
-        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json"
+        "receipt": "evidence/serve-inference-http-errors-20261127/sdk-retries.json",
+        "business": "evidence/serve-inference-http-errors-20261127/foreground.json"
       }
     },
     {
