@@ -673,6 +673,7 @@ def current_surface(root):
                        root / "tools/serve_gateway/gateway.py",
                        root / "tools/serve_gateway/client_policy.py",
                        root / "tools/serve_host/native.py",
+                       root / "tools/serve_soak/evidence.py",
                        root / "tools/serve_soak/native_audio.py",
                        root / "tools/serve_soak/native_contract.py",
                        root / "tools/serve_soak/native_stage.py",

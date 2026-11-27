@@ -1,0 +1,28 @@
+{
+  "stage": "targeted_cpu_verified",
+  "reserve_bytes": 12884901888,
+  "scope": "The native operator soak check and run paths and the existing capture sampler share the same disk threshold.",
+  "sources": {
+    "tools/serve_soak/evidence.py": "539023f8386e27daadea71bd0b4eacd1a883d202c1db5e10f9b10994a4f58eec",
+    "tools/serve_soak/native_stage.py": "3bbab72617d95bd7338efc21cc15f666226cfad6b267adea1eeaae3d88c922ca"
+  },
+  "tests": 33,
+  "short_and_day_at_threshold": true,
+  "short_and_day_one_byte_below_rejected": true,
+  "low_space_guard_starts": 0,
+  "low_space_capture_starts": 0,
+  "low_space_execution_files": 0,
+  "red_sha256": "b43673d8c3a66f5807282d10af3222ab98866b295c720e2b3e7aa64bfe739509",
+  "green_sha256": "8d70510a3a071ee020b5be3726363f365178a1ac285419d3a7db9e9135e242c1",
+  "audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1396,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

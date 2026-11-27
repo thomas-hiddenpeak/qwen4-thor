@@ -316,6 +316,7 @@ def guarded_run(plan, path):
     out = Path(plan['output'])
     CONTRACT.require(not (out/'execution').exists() and not (out/'lease').exists(),
                      'preserve original execution; no automatic retry')
+    evidence.require_disk_reserve(out)
     command = [sys.executable, '-B', str(ROOT/'tools/evalscope/gpu_exclusive.py'),
         '--output', str(out/'lease'), '--compute-backend', 'nvml',
         '--inherit-lease', '--', sys.executable, '-I', '-B',
@@ -405,6 +406,7 @@ def main():
         # Verify the capture/report import path with the actual sealed
         # production namespaces before any GPU operation.
         from tools.serve_soak import evidence, native_report
+        evidence.require_disk_reserve(Path(plan['output']))
         CONTRACT.require(callable(evidence.Capture) and
                          callable(native_report.check), 'handoff helpers missing')
         print(json.dumps(dict(package=plan['package'], profile=plan['profile'],

@@ -127,6 +127,42 @@ class PrivateTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.path = Path(temporary.name)
 
+    def test_space_check_rejects_short_and_day_below_the_exact_reserve(self):
+        from tools.serve_soak import evidence
+        path = self.path/'plan.json'
+        for profile in ('short', 'day'):
+            plan = dict(output=str(self.path), profile=profile, package={})
+            path.write_text(json.dumps(plan))
+            for free, accepted in ((12*1024**3-1, False), (12*1024**3, True)):
+                with self.subTest(profile=profile, free=free), \
+                     mock.patch.object(stage, 'check', return_value={}), \
+                     mock.patch.object(stage.sys, 'argv', ['stage', 'check', '--plan', str(path)]), \
+                     mock.patch.object(evidence.shutil, 'disk_usage', return_value=SimpleNamespace(free=free)) as usage, \
+                     mock.patch('builtins.print') as output:
+                    if accepted:
+                        self.assertEqual(stage.main(), 0)
+                        self.assertEqual(json.loads(output.call_args.args[0])['model_actions'], 0)
+                    else:
+                        with self.assertRaisesRegex(evidence.EvidenceAbort, '12GiB'):
+                            stage.main()
+                        output.assert_not_called()
+                    usage.assert_called_once_with(self.path)
+
+    def test_run_with_insufficient_space_preserves_an_unused_plan(self):
+        from tools.serve_soak import evidence
+        path = self.path/'plan.json'
+        plan = dict(output=str(self.path))
+        path.write_text(json.dumps(plan))
+        with mock.patch.object(evidence.shutil, 'disk_usage', return_value=SimpleNamespace(free=0)), \
+             mock.patch.object(evidence, 'Capture', side_effect=AssertionError('capture started')) as capture, \
+             mock.patch.object(stage.subprocess, 'Popen', side_effect=AssertionError('guard started')) as guard:
+            with self.assertRaisesRegex(evidence.EvidenceAbort, '12GiB'):
+                stage.guarded_run(plan, path)
+            guard.assert_not_called()
+            capture.assert_not_called()
+        self.assertEqual(list(self.path.iterdir()), [path])
+        self.assertEqual(json.loads(path.read_text()), plan)
+
     def test_metrics_use_operations_listener_and_reject_unusable_snapshot(self):
         from tools.serve_ops import fixtures
         from tools.serve_ops import contracts as ops_contracts
@@ -252,6 +288,7 @@ class PrivateTests(unittest.TestCase):
         capture.check.side_effect = RuntimeError('CPU evidence failure')
         before = signal.getsignal(signal.SIGTERM)
         with mock.patch.object(stage, 'check'), \
+             mock.patch.object(evidence, 'require_disk_reserve'), \
              mock.patch.object(evidence, 'Capture', return_value=capture), \
              mock.patch.object(stage.subprocess, 'Popen', side_effect=cpu_child), \
              self.assertRaisesRegex(ValueError, 'execution or evidence'):

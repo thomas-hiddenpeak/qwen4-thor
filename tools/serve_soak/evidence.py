@@ -10,6 +10,7 @@ import time
 
 from tools.serve_service import package as pkg
 
+DISK_RESERVE_BYTES = 12*1024**3
 ROTATION_BYTES = 4*1024**2
 ENVELOPE = dict(rss=64*1024**2, anon=128*1024**2, fds=2, threads=2)
 WARMUP = 16
@@ -22,6 +23,12 @@ class EvidenceAbort(RuntimeError):
 def require(value, message):
     if not value:
         raise EvidenceAbort(message)
+
+
+def require_disk_reserve(directory):
+    free = shutil.disk_usage(directory).free
+    require(free >= DISK_RESERVE_BYTES,
+            f'evidence disk reserve below 12GiB at {directory} ({free} bytes free)')
 
 
 class StreamCopy:
@@ -148,8 +155,7 @@ class Capture:
                 now = time.monotonic()
                 require(now-self.last_tick <= 10, 'evidence sampling gap exceeds 10s')
                 self.last_tick = now
-                require(shutil.disk_usage(self.output).free >= 12*1024**3,
-                        'evidence disk reserve below 12GiB')
+                require_disk_reserve(self.output)
                 for log in self.logs.values():
                     log.poll()
                 with self.mutex:
