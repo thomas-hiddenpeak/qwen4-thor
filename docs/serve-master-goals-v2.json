@@ -11103,6 +11103,12 @@
         "operator_source": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
         "revision": 584,
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      },
+      "native_soak_log_retention_20261128": {
+        "stage": "cpu_verified",
+        "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
+        "model_starts": 0,
+        "day_executed": false
       }
     },
     {
@@ -14822,6 +14828,12 @@
         "operator_source": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
         "revision": 584,
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      },
+      "native_soak_log_retention_20261128": {
+        "stage": "cpu_verified",
+        "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
+        "model_starts": 0,
+        "day_executed": false
       }
     }
   ],

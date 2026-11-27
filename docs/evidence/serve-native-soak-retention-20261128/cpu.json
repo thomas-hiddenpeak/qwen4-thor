@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "byte_limit": 4194304,
+  "previous_short": {
+    "status": "COMPLETED",
+    "configured_retention": false,
+    "archive_copied_both_full_logs": true
+  },
+  "streams": {
+    "events.jsonl": {
+      "original_short_bytes": 43116,
+      "original_short_sha256": "94dc7b5b738ee4be36aba713d77b83b1d829ff4fa2d76fa031dd571ecb810bb1",
+      "repetitions": 195,
+      "replayed_bytes": 8407620,
+      "archived_sha256": "2e8d938129d26d437035ea17436c4fdea2bc62dd5b55ec0612159ba14dbe12dd",
+      "rotations": 2,
+      "retained_source_bytes": 4213316,
+      "archive_matches_all_bytes": true
+    },
+    "nvml-queries.jsonl": {
+      "original_short_bytes": 536965,
+      "original_short_sha256": "3d472a0ec01c39a75fc6eabd6c249415de130ad9186aeaeaab178a0b703ebf48",
+      "repetitions": 16,
+      "replayed_bytes": 8591440,
+      "archived_sha256": "799a3366da0f39b5724950b3d0a3452fe08be85a292bd7ae24f742ca3563df75",
+      "rotations": 2,
+      "retained_source_bytes": 4397136,
+      "archive_matches_all_bytes": true
+    }
+  },
+  "source": "Accepted audio-short-03 monitor bytes, repeated at accelerated rate.",
+  "simulated_wall_hours": 0,
+  "model_starts": 0,
+  "hardware_queries": 0,
+  "stage": "cpu_verified",
+  "base": "3944fc4d5951040d6850920c5b573e071c2ff6a9",
+  "tests": 74,
+  "tests_log_sha256": "345817f53c8b0dcde8131808d19ca48b7514b8df8600971fd0a928ab0bcecd44",
+  "evidence_scope": "Real recorded monitor bytes replayed through the two-generation producer and asynchronous collector. No day workload or model was run.",
+  "gpu_short_accepted": false
+}

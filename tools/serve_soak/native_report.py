@@ -80,6 +80,21 @@ def require_records(plan, sealed):
                      'required native soak records missing from seal')
 
 
+def verify_retention(lease, logs):
+    size = evidence.ROTATION_BYTES
+    contract.require(lease.get('retention') == dict(bytes_per_file=size,
+        generations=2, complete_history_retained=False),
+        'guard did not enable the expected log rotation')
+    contract.require(set(logs) == {'events.jsonl', 'nvml-queries.jsonl'},
+                     'guard capture must contain both monitor logs')
+    for name, item in logs.items():
+        contract.require(item.get('complete_observed_chain') is True and
+            type(item.get('bytes')) is int and item['bytes'] > 0 and
+            type(item.get('rotations')) is int and
+            item['rotations'] == (item['bytes']-1)//size,
+            'guard capture has incomplete rotations: '+name)
+
+
 def check(output):
     output = Path(output).resolve(strict=True)
     sealed = verify_seal(output)
@@ -118,12 +133,13 @@ def check(output):
                      'final bounded counters differ from lifecycle receipt')
     capture = read(output/'capture/capture.json')
     contract.require(capture['passed'], 'continuous guard capture incomplete')
+    lease = read(output/'lease/exit.json')
+    verify_retention(lease, capture['logs'])
     for name, item in capture['logs'].items():
         path = output/'capture'/name
         contract.require(path.stat().st_size == item['bytes'] and
                          sha(path) == item['sha256'], 'guard stream changed')
-    guard = evidence.guard_archive(output/'capture/events.jsonl',
-                                   read(output/'lease/exit.json'))
+    guard = evidence.guard_archive(output/'capture/events.jsonl', lease)
     core = read(output/'execution/stopped-ledger.json')
     launcher = read(output/'execution/launcher-result.json')
     contract.require(core['desired'] == 'STOPPED' and

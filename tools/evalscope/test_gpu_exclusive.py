@@ -20,6 +20,27 @@ WORK = guard.ROOT / '.q4t-work/gpu-exclusive-tests'
 
 
 class ExclusiveTests(unittest.TestCase):
+    def test_cli_retention_is_opt_in_and_preserves_the_child_arguments(self):
+        for flags, expected in (([], None), (['--log-max-bytes', '4194304'], 4194304)):
+            argv = ['guard', '--output', str(WORK/'cli'), *flags,
+                    '--inherit-lease', '--', 'child', '--owned-argument']
+            with self.subTest(flags=flags), patch.object(sys, 'argv', argv), \
+                 patch.object(signal, 'signal'), patch.object(guard, 'common_lock'), \
+                 patch.object(guard, 'run_guard', return_value=0) as run:
+                with self.assertRaises(SystemExit) as done:
+                    guard.main()
+                self.assertEqual(done.exception.code, 0)
+                self.assertEqual(run.call_args.args[0], ['child', '--owned-argument'])
+                self.assertEqual(run.call_args.kwargs['log_max_bytes'], expected)
+                self.assertTrue(run.call_args.kwargs['inherit_lease'])
+
+    def test_invalid_log_limit_does_not_consume_the_output_directory(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp)/'evidence'
+            with self.assertRaisesRegex(ValueError, '64KiB'):
+                guard.run_guard(['unused'], out, Path(tmp)/'lock', log_max_bytes=65535)
+            self.assertFalse(out.exists())
+
     def test_explicit_capability_fds_survive_strict_managed_child_and_are_not_consumed(self):
         read_fd, write_fd = os.pipe()
         self.addCleanup(os.close, read_fd)

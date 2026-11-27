@@ -319,6 +319,7 @@ def guarded_run(plan, path):
     evidence.require_disk_reserve(out)
     command = [sys.executable, '-B', str(ROOT/'tools/evalscope/gpu_exclusive.py'),
         '--output', str(out/'lease'), '--compute-backend', 'nvml',
+        '--log-max-bytes', str(evidence.ROTATION_BYTES),
         '--inherit-lease', '--', sys.executable, '-I', '-B',
         str(Path(__file__).resolve()), 'actor', '--plan', str(path)]
     child = None
