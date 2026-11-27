@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+ChatKit 候选已接入并发模型资产读取修复。与检索发行候选逐一比较 1,104 个编译来源，仅两处 ChatKit 历史处理不同，Release 构建零告警。新增容量交接驱动，主档留下真实待答工具，轻档用新会话核验原历史后提交新问题、迟到回填和跨客户读取。6 项针对性 CPU 检查通过，等待检索版本发行后做两档实机验收。 [整合校验](evidence/serve-chatkit-pending-user-message-20261127/combined.json)
+
 真实模型保留了原待回填客户端调用，接受新问题并答出 42。迟到回填返回 409，重新读取的浏览器历史逐字一致，两类非所属访问均为 404。一次模型启动、12 个 SDK／浏览器请求和一条独立 Chat 通过。下一步验证容量交接与可回退发行。 [实机证据](evidence/serve-chatkit-pending-user-message-20261127/device.json)
 
 首轮实机在新问题 17+25 上又调用了 lookup_release。独立检查两条持久化响应，工具策略已回到 auto，但历史中两个用户请求相邻。现在仅在确实略过未答工具时保留中断边界，浏览器历史仍保留原调用。六项原生测试通过，下一步用同一浏览器请求复验。 [首轮失败与修复](evidence/serve-chatkit-pending-user-message-20261127/interruption-boundary.json)
