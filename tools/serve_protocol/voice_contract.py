@@ -84,7 +84,10 @@ def add_voice_routes(paths, response, error):
             object=dict(const='list'),data=dict(type='array',items=item),has_more=dict(type='boolean')))
     def deleted(kind):
         return obj(dict(id=ident,object=dict(const=kind),deleted=dict(const=True)),['id','object','deleted'])
-    operation('get',consents,json_result(listing(consent)),parameters=pagination)
+    consent_page = listing(consent)
+    cursor = dict(anyOf=[ident, dict(type='null')])
+    consent_page['properties'].update(first_id=cursor, last_id=cursor)
+    operation('get',consents,json_result(consent_page),parameters=pagination)
     operation('post',consents,json_result(consent),body=content('multipart/form-data',
         obj(dict(name=name,language=text,recording=binary),['name','language','recording'])))
     update = obj(dict(name=name),['name'])
