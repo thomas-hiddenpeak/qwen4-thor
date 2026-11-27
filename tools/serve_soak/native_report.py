@@ -69,6 +69,9 @@ def require_records(plan, sealed):
         for label in contract.LABELS:
             required.update(prefix+'-'+label+suffix for suffix in (
                 '-request.json', '-response.json', '-wire.bin'))
+        if number in plan.get('audio_cycles', ()):
+            from tools.serve_soak import native_audio
+            required.update(prefix+'-'+name for name in native_audio.LABELS)
         required.update((prefix+'-tool-executed.json', prefix+'-idle.json',
                          prefix+'-idle-metrics.json'))
     if plan['profile'] == 'day':
@@ -83,6 +86,16 @@ def check(output):
     plan = read(output/'plan.json')
     config = contract.validate_plan(plan)
     require_records(plan, sealed)
+    if plan['version'] == 2:
+        from tools.serve_soak import native_audio
+        module = 'tools/serve_soak/native_audio.py'
+        contract.require(sha(ROOT/module) == plan['sources'][module], 'audio verifier source differs')
+        package = Path(plan['package']['package'])
+        manifest = package/'manifest.json'
+        contract.require(sha(manifest) == plan['package']['manifest_sha256'] and
+                         native_audio.binding(package, read(manifest)) == plan['audio_roundtrip'],
+                         'audio reference differs from the issued package')
+
     contract.require(Path(plan['output']) == output, 'evidence plan path changed')
     for name in ('tools/serve_soak/native_contract.py',
                  'tools/serve_soak/native_report.py',
@@ -99,7 +112,7 @@ def check(output):
         result['package'] == plan['package'], 'native lifecycle did not pass')
     counts = result['budget']['counts']
     contract.require(counts['starts'] == 1 and counts['probes'] == 0 and
-        counts['chats'] == config['cycles']*5+1 and
+        counts['chats'] == contract.business_count(config, config['cycles'])+1 and
         counts['controls'] <= config['limits']['controls'], 'actual count differs')
     contract.require(read(output/'execution/counts.json') == result['budget'],
                      'final bounded counters differ from lifecycle receipt')
@@ -154,6 +167,9 @@ def check(output):
             requests['answer']['messages'][-2:] ==
             [completions['tool']['message'], tool['reply']],
             'actual tool execution or continuation differs')
+        if number in plan.get('audio_cycles', ()):
+            from tools.serve_soak import native_audio
+            native_audio.verify(plan['audio_roundtrip'], output/'execution'/prefix)
         idle = read(output/'execution'/(prefix+'-idle.json'))
         contract.require(idle['model_pid'] == initial['model_pid'] and
             idle['model_start_ticks'] == initial['model_start_ticks'],
@@ -168,14 +184,14 @@ def check(output):
             parsed_metrics == observations[-1]['values'] == metrics,
             'operations wire differs from idle snapshot')
         contract.require(metrics['q4t_requests_total'] ==
-            metrics['q4t_requests_success_total'] == number*5+1 and
+            metrics['q4t_requests_success_total'] == contract.business_count(config, number)+1 and
             metrics['q4t_seq_slots_free'] == metrics['q4t_seq_slots_total'] == 1 and
             metrics['q4t_structured_workers_started_total'] ==
             metrics['q4t_structured_workers_reaped_total'], 'request owners not drained')
         rows.append(idle['resource'])
     soak = read(output/'execution/soak.json')
     expected = contract.checkpoint(plan['profile'], config['cycles'],
-                                    soak['seconds'], final=True)
+                                    soak['seconds'], final=True, audio=plan['version'] == 2)
     expected['envelope'] = (contract.resource_envelope(rows)
                              if plan['profile'] == 'day' else None)
     contract.require(soak == expected, 'final soak result differs')
@@ -183,14 +199,14 @@ def check(output):
     if plan['profile'] == 'day':
         hour = read(hour_path)
         n = 3600//config['interval']
-        expected_hour = contract.checkpoint('day', n, hour['seconds'])
+        expected_hour = contract.checkpoint('day', n, hour['seconds'], audio=plan['version'] == 2)
         expected_hour['envelope'] = contract.resource_envelope(rows[:n])
         contract.require(hour == expected_hour, 'first hour incomplete')
     else:
         contract.require(not hour_path.exists(), 'short run claimed first hour')
     return dict(status='PASS_NATIVE_'+plan['profile'].upper()+'_SOAK',
         package=plan['package'], profile=plan['profile'], cycles=config['cycles'],
-        business_requests=len(identifiers), tool_executions=config['cycles'],
+        business_requests=len(identifiers)+2*len(plan.get('audio_cycles', ())), tool_executions=config['cycles'],
         starts=1, guard=guard, native_cleanup_confirmed=True,
         day_scale_stability_proved=plan['profile'] == 'day', new_model_actions=0,
         performance_acceptance=False, physical_ram_hard_boundary_proved=False)

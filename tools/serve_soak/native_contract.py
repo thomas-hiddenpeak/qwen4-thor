@@ -20,20 +20,35 @@ def require(value, reason):
         raise ValueError(reason)
 
 
-def configuration(profile):
+def audio_cycles(profile):
+    # Load both backends before measuring the steady resource envelope.
+    return [1, 3] if profile == 'short' else [1, *range(60, 1441, 60)]
+
+
+def business_count(plan, cycles):
+    pairs = sum(n <= cycles for n in plan.get('audio_cycles', ()))
+    return cycles * len(LABELS) + pairs * 2
+
+
+def configuration(profile, *, audio=False):
     require(type(profile) is str and profile in PROFILES, 'unknown soak profile')
     config = dict(PROFILES[profile])
+    if audio:
+        config['audio_cycles'] = audio_cycles(profile)
     return dict(profile=profile, **config, growth=dict(GROWTH), warmup=WARMUP,
-        limits=dict(starts=1, chats=config['cycles']*5+1, probes=0,
+        limits=dict(starts=1, chats=business_count(config, config['cycles'])+1, probes=0,
                     controls=5000 if profile == 'short' else 500000,
                     seconds=config['wall_seconds']))
 
 
 def validate_plan(plan):
-    require(plan.get('version') == 1 and
-            plan.get('scenario') == 'native_soak_'+plan.get('profile', ''),
+    audio = plan.get('version') == 2
+    prefix = 'native_soak_audio_' if audio else 'native_soak_'
+    require(type(plan.get('version')) is int and plan['version'] in (1, 2)
+            and ('audio_roundtrip' in plan) == audio and ('audio_cycles' in plan) == audio
+            and plan.get('scenario') == prefix + plan.get('profile', ''),
             'invalid native soak plan')
-    expected = configuration(plan['profile'])
+    expected = configuration(plan['profile'], audio=audio)
     require(all(plan.get(k) == v for k, v in expected.items()),
             'frozen soak contract changed')
     require(plan.get('automatic_request_replay') is False and
@@ -113,13 +128,13 @@ def resource_envelope(rows):
         scope='one original model process; RSS and RssAnon overlap')
 
 
-def checkpoint(profile, cycles, elapsed, *, final=False):
-    config = configuration(profile)
+def checkpoint(profile, cycles, elapsed, *, final=False, audio=False):
+    config = configuration(profile, audio=audio)
     target = config['cycles'] if final else 3600//config['interval']
     seconds = config['seconds'] if final else 3600
     require((final or profile == 'day') and type(cycles) is int and
             cycles == target and seconds <= elapsed <= seconds+900,
             'soak checkpoint duration or cycle count incomplete')
-    return dict(profile=profile, cycles=cycles, business_requests=cycles*5,
+    return dict(profile=profile, cycles=cycles, business_requests=business_count(config, cycles),
         actual_tool_executions=cycles, seconds=elapsed,
         day_scale_stability_proved=profile == 'day' and final)

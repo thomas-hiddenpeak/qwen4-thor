@@ -14736,6 +14736,12 @@
         "business": "evidence/serve-image-speech-recovery-20261126/combined.json",
         "revision": 522,
         "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
+      },
+      "native_soak_audio_20261127": {
+        "stage": "cpu_verified",
+        "cpu": "evidence/serve-native-soak-audio-20261127/cpu.json",
+        "actual_short_run": false,
+        "day_owner": "user"
       }
     }
   ],

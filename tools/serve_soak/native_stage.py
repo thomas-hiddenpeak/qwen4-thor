@@ -23,6 +23,8 @@ LEGACY = runpy.run_path(str(ROOT/'tools/serve_recovery/acceptance.py'))
 save = LEGACY['save']
 old_limits = LEGACY['verify'].__globals__['limits_for']
 LEGACY['verify'].__globals__['limits_for'] = lambda name: (
+    CONTRACT.configuration(name.removeprefix('native_soak_audio_'), audio=True)['limits']
+    if name.startswith('native_soak_audio_') else
     CONTRACT.configuration(name.removeprefix('native_soak_'))['limits']
     if name.startswith('native_soak_') else old_limits(name))
 
@@ -55,6 +57,10 @@ def check(plan):
     manifest = LEGACY['verify'](plan)
     CONTRACT.require(manifest['ingress_mode'] == 'native' and not manifest['tls'],
                      'this soak freezes the native loopback entry')
+    if plan['version'] == 2:
+        from tools.serve_soak import native_audio
+        CONTRACT.require(plan['audio_roundtrip'] == native_audio.binding(plan['package']['package'], manifest),
+                         'audio workload differs from sealed package')
     return manifest
 
 
@@ -76,6 +82,10 @@ def prepare(args):
         and policy['listen_host'] == '127.0.0.1' and alpha is not None and
         alpha['requests_per_minute'] >= 30 and alpha['tokens_per_minute'] >= 6000,
         'qualified loopback alpha quota required; do not raise it for validation')
+    audio = {}
+    if args.audio:
+        from tools.serve_soak import native_audio
+        audio['audio_roundtrip'] = native_audio.binding(package, manifest)
     out.mkdir(parents=True, mode=0o700)
     initialized = service.initialize(receipt['package'],
                                      receipt['manifest_sha256'], out/'state')
@@ -89,8 +99,9 @@ def prepare(args):
         cwd=ROOT, text=True).splitlines()
     sources = sorted(set(sources) | set(bundle.NATIVE_SOURCES) |
                      {CONTRACT.DOCUMENT})
-    plan = dict(version=1, scenario='native_soak_'+args.profile,
-        **CONTRACT.configuration(args.profile), package=receipt,
+    prefix = 'native_soak_audio_' if args.audio else 'native_soak_'
+    plan = dict(version=2 if args.audio else 1, scenario=prefix+args.profile,
+        **CONTRACT.configuration(args.profile, audio=args.audio), **audio, package=receipt,
         output=str(out), service_id=initialized['service_id'],
         sources={n: engine.sha(ROOT/n) for n in sources},
         protected=[dict(path=str(ROOT/n), sha256=engine.sha(ROOT/n)) for n in
@@ -244,7 +255,11 @@ class Stage(LEGACY['Stage']):
             save(self.output/(prefix+'-tool-executed.json'), dict(executions=1,
                 source=dict(path=CONTRACT.DOCUMENT, sha256=digest), reply=reply))
             self.complete(prefix+'-answer', body, digest)
-            metrics = self.metrics(prefix+'-idle', number*5+1)
+            if number in self.plan.get('audio_cycles', ()):
+                from tools.serve_soak import native_audio
+                native_audio.exercise(self, prefix, self.plan['audio_roundtrip'])
+            count = CONTRACT.business_count(self.plan, number)
+            metrics = self.metrics(prefix+'-idle', count+1)
             row = self.resources()
             rows.append(row)
             save(self.output/(prefix+'-idle.json'), dict(metrics=metrics,
@@ -253,14 +268,14 @@ class Stage(LEGACY['Stage']):
             self.pause_until(started+number*self.plan['interval'])
             elapsed = time.monotonic()-started
             save(self.output/'progress.json', dict(cycles=number,
-                business_requests=number*5, seconds=elapsed,
+                business_requests=count, seconds=elapsed,
                 model_pid=self.first['model_pid'], live_status_required=True))
             if self.plan['profile'] == 'day' and number == 3600//self.plan['interval']:
-                hour = CONTRACT.checkpoint('day', number, elapsed)
+                hour = CONTRACT.checkpoint('day', number, elapsed, audio=self.plan['version'] == 2)
                 hour['envelope'] = CONTRACT.resource_envelope(rows)
                 save(self.output/'first-hour.json', hour)
         result = CONTRACT.checkpoint(self.plan['profile'], len(rows),
-                                     time.monotonic()-started, final=True)
+                                     time.monotonic()-started, final=True, audio=self.plan['version'] == 2)
         result['envelope'] = (CONTRACT.resource_envelope(rows)
                              if self.plan['profile'] == 'day' else None)
         save(self.output/'soak.json', result)
@@ -372,10 +387,14 @@ def main():
     parser.add_argument('--package', type=Path, default=ROOT/'build/service')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--profile', choices=tuple(CONTRACT.PROFILES), default='short')
+    parser.add_argument('--audio', action='store_true',
+                        help='include native speech synthesis followed by transcription during the soak')
     parser.add_argument('--model', default='qwen3.8-flash-next')
     parser.add_argument('--plan', type=Path)
     parser.add_argument('--config', type=Path)
     args = parser.parse_args()
+    if args.audio and args.mode != 'prepare':
+        parser.error('--audio selects the workload during prepare')
     if args.mode == 'prepare':
         prepare(args)
         return 0
