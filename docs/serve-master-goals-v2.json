@@ -4138,6 +4138,13 @@
         "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json",
         "revision": 584,
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      },
+      "signed_conversation_sdk_20261128": {
+        "revision": 588,
+        "receipt": "evidence/serve-conversation-sdk-business-20261128/business.json",
+        "wire": "evidence/serve-conversation-sdk-business-20261128/requests.json",
+        "method_sdk_pairs": 48,
+        "authenticated_requests": 74
       }
     },
     {
@@ -9695,6 +9702,13 @@
         "managed": "evidence/serve-openapi-ingress-auth-20261128/managed.json",
         "revision": 586,
         "delivery": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
+      },
+      "signed_conversation_sdk_20261128": {
+        "revision": 588,
+        "receipt": "evidence/serve-conversation-sdk-business-20261128/business.json",
+        "wire": "evidence/serve-conversation-sdk-business-20261128/requests.json",
+        "method_sdk_pairs": 48,
+        "authenticated_requests": 74
       }
     },
     {
@@ -12826,6 +12840,13 @@
         "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json",
         "revision": 578,
         "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
+      },
+      "signed_conversation_sdk_20261128": {
+        "revision": 588,
+        "receipt": "evidence/serve-conversation-sdk-business-20261128/business.json",
+        "wire": "evidence/serve-conversation-sdk-business-20261128/requests.json",
+        "method_sdk_pairs": 48,
+        "authenticated_requests": 74
       }
     },
     {

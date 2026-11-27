@@ -62,3 +62,25 @@ IO 库需要 CUDA runtime 链接依赖，但不执行 CUDA API。
 ```bash
 python3 -B -m tools.serve_audit.scope_queries /path/to/official-openapi.json --defaults
 ```
+
+## 已鉴权的 Conversations 方法
+
+`conversation_business.py` 和 `conversation_business.mjs` 使用当前安装的
+官方 SDK 创建一份独立会话、按真实游标翻页、验证第二把密钥的访问范围并
+删除本次数据。请求记录只包含方法、路径、查询、状态码和请求 ID。
+
+对已运行的测试服务，可用目标 Python 解释器运行
+`python -B -m tools.serve_audit.conversation_business`，或运行
+`node tools/serve_audit/conversation_business.mjs /path/to/node_modules/openai`。
+将 JSON 配置从标准输入传入。字段 `base` 为 HTTPS 的 /v1 地址，
+`certificate` 为信任证书的文件路径，`key` 和 `peer` 为两个独立测试
+客户的密钥，`facts` 为两条可核实的项目记录。Node 进程启动前将
+`NODE_EXTRA_CA_CERTS` 设为同一个证书路径。启用 `generate: true`
+时还需传入 `model`、`question` 和预期答案字符串 `expected`，用于
+验证模型通过已存会话读取记录。传入 `generate: false` 可只操作会话和条目。
+
+可以用以下命令复核已提交的六版 SDK 原始请求和分页、归属反例。
+
+```bash
+python3 -B -m unittest tools.serve_audit.test_conversation_receipt
+```
