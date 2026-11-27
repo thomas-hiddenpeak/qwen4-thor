@@ -26,7 +26,10 @@ MANAGED_TOOL_FORMAT = 'q4t-managed-session-tools-source-v1'
 COMPACT_MEDIA_RECORD = 'q4t-profile-business-v88'
 COMPACT_MEDIA_FORMAT = 'q4t-compact-media-source-v1'
 COMPACT_MEDIA_RECEIPT = 'compact-media-handoff.json'
-COMPACT_MEDIA_REVIEWED = {}
+COMPACT_MEDIA_REVIEWED = {
+    'primary': 'd6cf6b10cf20fd9af51ebd45ff001a906ad9165a47528ca197bfd27c9d75b00a',
+    'light': '4bb3af7504572a94678dd33869f18ad3d88116f9c4f8614b1dbf27ed629fbc91',
+}
 
 COMPACT_WINDOW_RECORD = 'q4t-profile-business-v87'
 COMPACT_WINDOW_FORMAT = 'q4t-compact-window-source-v1'
@@ -727,6 +730,8 @@ REVIEWED = {
 # The SDK ran through this native ingress. The acceptance hash is carried in
 # both reviewed profile records. An engine capability cannot qualify a gateway.
 ACCEPTED_INGRESS = {
+    '07d7d6f4f2d3b9bfb63a1b678e9ee9a08541a1e79c9e8ecaab5f3238033e1b7d':
+        'd886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684',
     'b9b93fbb4ba2d1a1ad7a81b5003807f0a05ed2ca937c41a4821a3189448b6324':
         'd886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684',
     '1cfeabca03225efefc7031ac907b67cf4daa6a8f1c9434b0609947d93d5c1a2e':

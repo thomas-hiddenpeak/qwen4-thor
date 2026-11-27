@@ -3233,7 +3233,8 @@
         "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
         "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
         "business": "evidence/serve-compact-inline-media-20261127/business.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json"
       }
     },
     {
@@ -6911,7 +6912,8 @@
         "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
         "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
         "business": "evidence/serve-compact-inline-media-20261127/business.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json"
       }
     },
     {
@@ -12371,7 +12373,8 @@
         "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
         "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
         "business": "evidence/serve-compact-inline-media-20261127/business.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json"
       }
     },
     {
