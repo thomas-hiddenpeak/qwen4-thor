@@ -1,0 +1,123 @@
+{
+  "stage": "managed_recovery_verified",
+  "issued": false,
+  "qualified_source": "48b75f7095db028179c961c0ba40569ba710cd3d",
+  "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
+  "roles": {
+    "fallback": {
+      "seconds": 199.70717822993174,
+      "model_starts": 2,
+      "observations": [
+        {
+          "generation": 1,
+          "diagnostic": {
+            "status": 400,
+            "trace": "req-609b8365cfee1fa1ea4d565268c1cb29",
+            "body": {
+              "error": {
+                "message": "temperature must be in [0,2] or null",
+                "type": "invalid_request_error",
+                "code": "invalid_request",
+                "param": "temperature"
+              }
+            },
+            "log": "state/runs/c87a396a-a026-475d-a1a1-a277f52257e2/controller-1/model-1/model.log",
+            "log_offset": 6648,
+            "phase": "prepare"
+          },
+          "log_sha256": "aaed9e2ff6bf73a348183e9be79f80f1674623a647f20731a1f4c2ab037f8f8a"
+        },
+        {
+          "generation": 2,
+          "diagnostic": {
+            "status": 400,
+            "trace": "req-9da7707f5e3e5050583cb5069e9e3b47",
+            "body": {
+              "error": {
+                "message": "temperature must be in [0,2] or null",
+                "type": "invalid_request_error",
+                "code": "invalid_request",
+                "param": "temperature"
+              }
+            },
+            "log": "state/runs/c87a396a-a026-475d-a1a1-a277f52257e2/controller-1/model-2/model.log",
+            "log_offset": 7735,
+            "phase": "restore"
+          },
+          "log_sha256": "1d0a259766b2e0c4cecafed70718f5e6e0e5bf21d9b78ce33e5cde646086f079"
+        }
+      ],
+      "independent_chat": "42",
+      "monitor_samples": 186,
+      "unchanged_default": true,
+      "ports_free": true,
+      "remaining": 0,
+      "guardian_survived": true,
+      "decision_sha256": "caa4959d3bc135ae2ccb259c9d6abc81ae43c95f9a3f21270e5612aceaeef81d",
+      "lease_sha256": "a15c75a718f6d91f641fda2acc3e5022a9ce1387f9af85c22cb589237510100f",
+      "origin_sha256": "d0d7e72e71aadbeb5b95b1cbf1668cfe0289aedb9edd4e832d950de19e17ee26",
+      "manifest": "00b9eff560ee921b16f240f7d4ff20a5b556aa539878fd8ccee3ad431730699e",
+      "interruption_sha256": "2de076c2cec56b9b56d1c3c54d8e70af34aba491c3fede40a1f43bab44720a3e",
+      "fault": "owned model SIGKILL"
+    },
+    "primary": {
+      "seconds": 352.8826079419814,
+      "model_starts": 2,
+      "observations": [
+        {
+          "generation": 1,
+          "diagnostic": {
+            "status": 400,
+            "trace": "req-e344f2adf86fa8274fd6c80b917ab112",
+            "body": {
+              "error": {
+                "message": "temperature must be in [0,2] or null",
+                "type": "invalid_request_error",
+                "code": "invalid_request",
+                "param": "temperature"
+              }
+            },
+            "log": "state/runs/38bfc352-9569-49c6-9853-d677f388eea6/primary/controller-1/model-1/model.log",
+            "log_offset": 6648,
+            "phase": "prepare"
+          },
+          "log_sha256": "b02e197724254b2e0ec3b9204209d8ff46b9b2535021ca291bf6f60ff8ae3d34"
+        },
+        {
+          "generation": 2,
+          "diagnostic": {
+            "status": 400,
+            "trace": "req-34211a1956cd2adc49d551f6ff073f47",
+            "body": {
+              "error": {
+                "message": "temperature must be in [0,2] or null",
+                "type": "invalid_request_error",
+                "code": "invalid_request",
+                "param": "temperature"
+              }
+            },
+            "log": "state/runs/38bfc352-9569-49c6-9853-d677f388eea6/fallback/controller-2/model-2/model.log",
+            "log_offset": 6648,
+            "phase": "restore"
+          },
+          "log_sha256": "42e096be474026f07974adc15aa31e332d8d3ad870a3e86ef1e4131b833cc962"
+        }
+      ],
+      "independent_chat": "42",
+      "monitor_samples": 327,
+      "unchanged_default": true,
+      "ports_free": true,
+      "remaining": 0,
+      "guardian_survived": true,
+      "decision_sha256": "433e7fe33539e30eaa177f53c800294ac826620d102b35eaf3f31ff8e2f8eee1",
+      "lease_sha256": "44974125fbe8e116cee2a8e5676704f8c09c687e4a9b4593078fc211e5fb0c16",
+      "origin_sha256": "085e8283af3374df8a4727cc1a3dcd7953e3a6c38761e636b6fa94108ef5faf9",
+      "manifest": "a4190f48718b1bd1b5e516a74861c5ad0a34d0d3d1f4e61f206ab85498647600",
+      "interruption_sha256": "cb5bcd82d87aeaf401b68fbc85b6cbb681f084a6caee6df6ce008b7108915e86",
+      "fault": "owned gateway SIGABRT",
+      "selected": "registered fallback",
+      "probes": 1,
+      "takeover_sha256": "0e8d7b818a4e0f66806f2d56754142e856e38495a41feabd939a83d04c3fc5c0"
+    }
+  }
+}

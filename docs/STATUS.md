@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+托管模型意外退出及主网关故障切换回退包后，两个代次各有一条真实 HTTP 400，其请求 ID 已在对应模型日志的记录位置核对。两种恢复后的独立 Chat 均答出 42，关闭后端口和子进程已清理。下一步登记已通过短验的主包和回退包。 [恢复回执](evidence/serve-diagnostic-pipe-20261128/managed.json)
+
 主、轻容量分别使用已登记配置启动新引擎。两端的错误请求都在原模型日志中留下对应请求 ID，随后 Chat 答出 42，停止后端口已释放。两份新容量记录均逐字段还原至 rev590。下一步封包并核对托管恢复。 [容量回执](evidence/serve-diagnostic-pipe-20261128/profiles.json)
 
 实机 TLS 短验先确认模型的错误日志已抵达读端。将外部日志管道填满，内核可见转发线程阻塞在 pipe_write，此时模型仍返回 400 并答出 42。恢复读取后收到了对应请求的日志；关闭读端后，同一代模型再次返回 400 并答出 42。readiness 与正常停止均通过，下一步纳入可回退发行。 [HTTP 回执](evidence/serve-diagnostic-pipe-20261128/device.json)

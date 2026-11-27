@@ -10442,7 +10442,7 @@
         "issued": false
       },
       "diagnostic_pipe_20261128": {
-        "stage": "diagnostic_output_primary_light",
+        "stage": "managed_recovery_verified",
         "issued": false,
         "evidence": "evidence/serve-diagnostic-pipe-20261128/cpu.json",
         "closed_stderr": "same_generation_returned_chat",
@@ -10451,7 +10451,8 @@
         "original_stall": "pipe_write",
         "descriptor_exhaustion": "evidence/serve-diagnostic-pipe-20261128/descriptor-exhaustion.json",
         "device": "evidence/serve-diagnostic-pipe-20261128/device.json",
-        "capacity": "evidence/serve-diagnostic-pipe-20261128/profiles.json"
+        "capacity": "evidence/serve-diagnostic-pipe-20261128/profiles.json",
+        "managed": "evidence/serve-diagnostic-pipe-20261128/managed.json"
       }
     },
     {
