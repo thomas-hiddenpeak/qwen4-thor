@@ -4287,7 +4287,7 @@
         "existing_evidence_reviewed": true
       },
       "native_recording_retry_20261127": {
-        "stage": "profile_verified_package_pending",
+        "stage": "managed_verified_publication_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -4297,7 +4297,8 @@
           "rejected": 18,
           "state": "lifecycle_pending"
         },
-        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
       }
     },
     {
@@ -6997,7 +6998,7 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "profile_verified_package_pending",
+        "stage": "managed_verified_publication_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -7007,7 +7008,8 @@
           "rejected": 18,
           "state": "lifecycle_pending"
         },
-        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
       }
     },
     {
@@ -9510,7 +9512,7 @@
         "business": "evidence/serve-sdk-method-matrix-20261127/foreground.json"
       },
       "native_recording_retry_20261127": {
-        "stage": "profile_verified_package_pending",
+        "stage": "managed_verified_publication_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -9520,7 +9522,8 @@
           "rejected": 18,
           "state": "lifecycle_pending"
         },
-        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
       }
     },
     {
@@ -14019,7 +14022,7 @@
       },
       "current_ingress_retry_delivery": "evidence/serve-inference-http-errors-20261127/delivery.json",
       "native_recording_retry_20261127": {
-        "stage": "profile_verified_package_pending",
+        "stage": "managed_verified_publication_pending",
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
@@ -14029,7 +14032,8 @@
           "rejected": 18,
           "state": "lifecycle_pending"
         },
-        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json"
+        "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
+        "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
       }
     },
     {

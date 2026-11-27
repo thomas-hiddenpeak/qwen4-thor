@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+托管恢复已核对录音权限。默认主包切换到已登记回退包、回退包从模型退出恢复后，Python 2.8.1 和 Node 7.47.0 都读回同一份 23 项事件列表，录音所有者与其他客户均收到 404。单独启用录音的实例在模型恢复前后共四次读回同一份 2,620,472 字节 WAV，另一客户两次收到 404。三组新 Chat 都返回 42。 当前设备仍为 rev572，候选等待发行。 [托管回执](evidence/serve-sdk-method-matrix-20261127/recording-managed.json)
+
 主、轻两档均以同一入口完成 WebRTC 建立与关闭、会话新建和接续、Chat 返回 42。每档各启动一次，模型退出码均为零，端口已释放。容量记录分别绑定此前同一引擎的六版客户端下载回执与已发行前驱，两档六个篡改反例均被拒绝。下一步验证主包、回退包与托管切换。 [资格回执](evidence/serve-sdk-method-matrix-20261127/recording-profiles.json)
 
 容量资格核验已接入真实录音回执，逐项检查程序、入口、发行号、MTP 配置、六版 SDK、录音字节及跨客户拒绝。两档真实回执通过，18 个改变证据的反例全部被拒绝。下一步运行两档 WebRTC 和 Chat 生命周期短验，核对干净退出后封包。 [录音回执](evidence/serve-sdk-method-matrix-20261127/recording-device.json)
