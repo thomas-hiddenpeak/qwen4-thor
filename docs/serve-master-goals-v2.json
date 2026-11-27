@@ -14756,10 +14756,11 @@
         "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       },
       "native_soak_audio_20261127": {
-        "stage": "cpu_verified",
+        "stage": "corrected_awaiting_short",
         "cpu": "evidence/serve-native-soak-audio-20261127/cpu.json",
         "actual_short_run": false,
-        "day_owner": "user"
+        "day_owner": "user",
+        "multipart": "evidence/serve-native-soak-audio-20261127/multipart.json"
       }
     }
   ],

@@ -40,6 +40,15 @@ class AudioSoak(unittest.TestCase):
         self.reference = dict(speech=dict(input='Read this test.'), bytes=len(self.audio),
                               sha256=audio.digest(self.audio), asr_model='fixture-asr')
 
+    def test_asr_upload_uses_a_valid_multipart_boundary(self):
+        body, content_type = audio.multipart(self.audio, self.reference['asr_model'])
+        message = BytesParser(policy=default).parsebytes(
+            ('Content-Type: ' + content_type + '\r\n\r\n').encode() + body)
+        boundary = message.get_boundary().encode('ascii')
+        self.assertGreater(len(boundary), 0)
+        self.assertLessEqual(len(boundary), 70)
+        self.assertTrue(body.endswith(b'--' + boundary + b'--\r\n'))
+
     def run_http(self, *, fail=False):
         requests = []
         clip = self.audio

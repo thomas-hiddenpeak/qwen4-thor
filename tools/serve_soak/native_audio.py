@@ -40,7 +40,7 @@ def binding(package, manifest):
 def multipart(audio, model):
     # Use a deterministic boundary absent from the payload so the independent
     # report can reconstruct the entire submitted input, including its headers.
-    boundary = 'q4t-soak-' + digest(audio)
+    boundary = 'q4t-' + digest(audio)
     require(boundary.encode() not in audio, 'multipart boundary in speech')
     start = ('--' + boundary + '\r\n').encode()
     def field(name, value):

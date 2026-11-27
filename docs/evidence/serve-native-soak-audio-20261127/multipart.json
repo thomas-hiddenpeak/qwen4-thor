@@ -1,0 +1,53 @@
+{
+  "stage": "corrected_awaiting_short",
+  "initial_device": {
+    "lease": "COMMAND_FAILED",
+    "lease_sha256": "f13225166d7f6ba897a7abc608920479184fbc3584381c18f621578bbe0085ed",
+    "run_sha256": "8c32676aebfbf3dbbca4cf0b2f4a1898054b8a3ac9c47ab45669c169cb031b67",
+    "starts": 1,
+    "calls": 8,
+    "speech_http": 200,
+    "asr_http": 400,
+    "error": {
+      "message": "Expected multipart/form-data",
+      "type": "invalid_request_error",
+      "code": "invalid_request",
+      "param": null
+    },
+    "cleanup_failure": null,
+    "retained_upload_sha256": "2bf4bddd6e216299a28ed6ec540db6ff5fd5f491d8a1d8222a83458f08fa5673"
+  },
+  "corrected_boundary": {
+    "original": {
+      "bytes": 73,
+      "exit": 1
+    },
+    "corrected": {
+      "bytes": 68,
+      "exit": 0
+    },
+    "at_limit": {
+      "bytes": 70,
+      "exit": 0
+    },
+    "over_limit": {
+      "bytes": 71,
+      "exit": 1
+    }
+  },
+  "cpu_tests": 31,
+  "cpu_sha256": "1efd164420a240a5e2787eb16e62836f8d984141b504cd6be56632f8c48c2b57",
+  "original_regression_sha256": "1833232e6b8454e7f033e2e6582698846c55069a9e92ef7119e5c788758a7476",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1395,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "changed_engine": false
+}

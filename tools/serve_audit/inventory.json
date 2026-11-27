@@ -5227,7 +5227,7 @@
     "tools/serve_service/supervisor.py": "fa42997a88616ddd46e5a9ee81f23e25fc55d05a03a43a488179567c9beda116",
     "tools/serve_service/supplement.py": "7da3cd37f6a0c1bf746aa8856570b9c7724ba155745c2b9910f5ffc2e8d65d57",
     "tools/serve_service/telemetry.py": "4008e6d8454e68b11465048da7a04b6f4bf88098e8cc925d216343e5e1f8969f",
-    "tools/serve_soak/native_audio.py": "bbb2b8ae5ddeddce9f44f2a952f5998b74dd1db7887003465be59542cc76d69c",
+    "tools/serve_soak/native_audio.py": "ce52131f29772e760239094ea9648ee684cfb3b191ff238e2cbf4a7891cb09dc",
     "tools/serve_soak/native_contract.py": "53f1f1a256f8621a746a97e673d1700ceb50aa256fa414e77575513357ca30c2",
     "tools/serve_soak/native_report.py": "d997214959cdce87b94128a371862b11329dfd2b3488d17bf6b2b298a45a77dc",
     "tools/serve_soak/native_stage.py": "31712e966bab6a62558aac29bcfca3268179f69b178c51184a1457456de8f2bc"
