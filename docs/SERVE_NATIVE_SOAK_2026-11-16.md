@@ -72,3 +72,5 @@ python3 -I -B tools/serve_soak/native_stage.py check \
 启动，报告核验语音回包、ASR 实际收到的字节、识别文本及核心请求计数。
 短验使用独立输出目录和 `--profile short --audio`，在三轮中的首尾各执行
 一次音频闭环。[校验记录](evidence/serve-native-soak-audio-20261127/cpu.json)
+
+原生验收报告对每次租约采样读取相应 NVML 工作进程的原始回复，对照请求 ID、设备数、进程列表与内存记录。监控可在已退出进程的确认期间再采样一次。就绪区间使用服务的 PID 和启动时钟，同一 PID 出现在未就绪区间不能证明业务进程已被观测到。归档缺样会在验收命令中报错。 [双包离线回放](evidence/serve-soak-observation-report-20261128/archive.json)

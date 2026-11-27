@@ -11145,6 +11145,11 @@
         "device": "evidence/serve-native-soak-retention-20261128/managed.json",
         "revision": 588,
         "delivery": "evidence/serve-native-soak-retention-20261128/delivery.json"
+      },
+      "native_soak_worker_reply_validation_20261128": {
+        "stage": "verified_on_both_sealed_short_runs",
+        "archive": "evidence/serve-soak-observation-report-20261128/archive.json",
+        "day_hours_executed": 0
       }
     },
     {
@@ -14899,6 +14904,11 @@
         "device": "evidence/serve-native-soak-retention-20261128/managed.json",
         "revision": 588,
         "delivery": "evidence/serve-native-soak-retention-20261128/delivery.json"
+      },
+      "native_soak_worker_reply_validation_20261128": {
+        "stage": "verified_on_both_sealed_short_runs",
+        "archive": "evidence/serve-soak-observation-report-20261128/archive.json",
+        "day_hours_executed": 0
       }
     }
   ],

@@ -14,6 +14,7 @@ from tools.examples import chat_client
 from tools.serve_ops import contracts as ops_contracts
 from tools.serve_soak import evidence
 from tools.serve_soak import native_contract as contract
+from tools.serve_soak import native_observations
 
 
 def read(path):
@@ -60,7 +61,7 @@ def verify_seal(output):
 def require_records(plan, sealed):
     required = {'plan.json', 'run.json', 'lease/exit.json',
         'capture/capture.json', 'capture/events.jsonl',
-        'capture/nvml-queries.jsonl', 'execution/result.json',
+        'capture/nvml-queries.jsonl', 'execution/status.jsonl', 'execution/result.json',
         'execution/counts.json', 'execution/stopped-ledger.json',
         'execution/launcher-result.json', 'execution/initial-ready.json',
         'execution/soak.json', 'execution/self-check-1.json'}
@@ -113,7 +114,7 @@ def check(output):
 
     contract.require(Path(plan['output']) == output, 'evidence plan path changed')
     for name in ('tools/serve_soak/native_contract.py',
-                 'tools/serve_soak/native_report.py',
+                 'tools/serve_soak/native_report.py', 'tools/serve_soak/native_observations.py',
                  'tools/serve_soak/evidence.py', 'tools/examples/chat_client.py',
                  'tools/serve_ops/contracts.py'):
         contract.require(sha(ROOT/name) == plan['sources'][name],
@@ -147,6 +148,7 @@ def check(output):
         launcher['state'] == 'STOPPED' and launcher['cleanup_confirmed'],
         'original native service did not stop')
     initial = read(output/'execution/initial-ready.json')
+    guard['nvml'] = native_observations.verify(output, lease, initial)
     identifiers, rows = set(), []
     digest = plan['sources'][contract.DOCUMENT]
     for number in range(1, config['cycles']+1):
