@@ -4323,7 +4323,7 @@
     "src/audio/vad.cpp": "3c30c019586998859c8efdc44fe15349f69b9af2c06263c8c673a9bad5847c56",
     "src/audio/vad_chunks.cpp": "0a4b29d88e992ef12fd895fba476567fde305b773e56d0f880d60ee52c80a81c",
     "src/io/json.cpp": "76590b316f53c6ad710f4bb2e5e3775298e114983c0e1892e8efb24cec8be8b7",
-    "src/main.cpp": "cebf31e3c2b484ef964ec217bd3cf97bb2a1fd2b2e4e24b4b8d8891a134fe4af",
+    "src/main.cpp": "de67d773f91a8dfbdbcd0593dc78092c66c34a88311be231ded5607ffd0e18a6",
     "src/model/embedding_config.cpp": "2096e83190ee05a637a2764047038b4edc3626d9042625b396e3a0251cd8c656",
     "src/model/embedding_layout.cpp": "c4fad82c63c97cc2f6314e85fd610269b789d70c5358828c85d538c7086528bf",
     "src/model/embedding_model.cu": "35f740f37bcb7fe5eb52f335e71f7d33d5ed498b470e8521acb89e5d0412a67f",

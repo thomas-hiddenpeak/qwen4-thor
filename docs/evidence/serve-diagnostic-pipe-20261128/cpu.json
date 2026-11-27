@@ -1,0 +1,31 @@
+{
+  "stage": "targeted_cli_verified",
+  "model_starts": 0,
+  "issued": false,
+  "normal_diagnostic": "serve options: invalid numeric value for --port",
+  "cases": {
+    "previous_candidate": {
+      "engine": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9",
+      "normal_exit": 2,
+      "closed_exit": -13
+    },
+    "installed_at_test": {
+      "engine": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+      "normal_exit": 2,
+      "closed_exit": -13
+    },
+    "candidate": {
+      "engine": "6a05aaa97005a100add60e06fbc1241e779b3771c72e31aa422b28eb5241c6eb",
+      "normal_exit": 2,
+      "closed_exit": 2
+    }
+  },
+  "directly_changed_protocol_sources": {
+    "src/main.cpp": "de67d773f91a8dfbdbcd0593dc78092c66c34a88311be231ded5607ffd0e18a6"
+  },
+  "total_protocol_sources": 1104,
+  "build_warnings": 0,
+  "reviewed_source_anchors": 1397,
+  "source_mutation_controls": 40,
+  "test": "closed read-end of a real anonymous stderr pipe, child starts with inherited SIGPIPE restored to default"
+}

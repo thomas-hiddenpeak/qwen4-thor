@@ -895,6 +895,9 @@ int RunBenchPrefill(int argc, char** argv) {
 }
 
 int RunServe(int argc, char** argv) {
+  // A disconnected log reader must leave the service running. Writers
+  // receive EPIPE and retain their normal error handling.
+  std::signal(SIGPIPE, SIG_IGN);
   const char* kDefaultModelDir =
       "/home/rm01/models/dev/llm/garnermccloud/"
       "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";

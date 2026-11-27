@@ -10329,7 +10329,7 @@
     {
       "id": "R01",
       "required": true,
-      "state": "delivered",
+      "state": "closed_diagnostic_pipe_candidate_pending_runtime",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；会话/前缀缓存文件I/O原生独立worker、有界IPC与恢复",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；缓存故障降级、真实字节合同和同PID业务继续",
       "depends_on": [],
@@ -10440,6 +10440,12 @@
         "stage": "device_cause_reproduced",
         "receipt": "evidence/serve-visual-frame-parts-20261126/workspace.json",
         "issued": false
+      },
+      "diagnostic_pipe_20261128": {
+        "stage": "targeted_cli_verified",
+        "issued": false,
+        "evidence": "evidence/serve-diagnostic-pipe-20261128/cpu.json",
+        "closed_stderr": "runtime_business_pending"
       }
     },
     {
