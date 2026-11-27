@@ -1,0 +1,80 @@
+{
+  "publication": 588,
+  "transport": "authenticated native HTTP on loopback",
+  "input": {
+    "bytes": 493,
+    "sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01",
+    "publication_revision": 588,
+    "version_revision": 223
+  },
+  "runtime": {
+    "status": "PASS",
+    "seconds": 359.83827893668786,
+    "model_starts": 2,
+    "stop_returncode": 0,
+    "supervisor_exit": 0,
+    "remaining": [],
+    "adopted_reaped": 0,
+    "ports_free": true,
+    "unchanged_default": true,
+    "receipt_sha256": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b"
+  },
+  "handoff": {
+    "guardian_same": true,
+    "old_generation": 1,
+    "new_generation": 2,
+    "primary": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+    "fallback": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+    "completed": "file_84bacb1abfc9ef3193539f84cfcbe54a",
+    "resumed": "file_5ff2a45301522d9fb27452fdbf39b711",
+    "answer": "223",
+    "content_sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01",
+    "sdk_requests": 25,
+    "independent_chats": 1
+  },
+  "takeover": {
+    "selected": "fallback",
+    "payload_manifest_sha256": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+    "probe_count": 1,
+    "fallback_consumed": true,
+    "last_fault": {
+      "signal": 6
+    }
+  },
+  "verification": {
+    "sdk_requests": 25,
+    "response_answer": "223",
+    "download_bytes": 493,
+    "download_sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01",
+    "codes": {
+      "200": 21,
+      "400": 1,
+      "404": 2,
+      "409": 1
+    }
+  },
+  "guard": {
+    "status": "COMPLETED",
+    "compute_backend": "nvml",
+    "nvml_queries": 334,
+    "events_sha256": "ae9f3cc8d77ce09d0f06bc89b0c64c308ca73c1fc5e5b660f43ca8bb59a2fe98",
+    "worker_log_sha256": "e03c640849e4e3b0105cf674674fbe5b755ab6c9a8727853409c269a8940e509"
+  },
+  "protected_digests_checked": 20,
+  "existing_client_and_recovery_records": 13,
+  "fresh_chat": "42",
+  "sdk_calls": {
+    "python-2.8.1": 5,
+    "node-6.34.0": 3,
+    "python-2.33.0": 6,
+    "python-3.42.1": 3,
+    "python-3.55.1": 6,
+    "node-7.47.0": 2
+  },
+  "trace_sha256": "2416a5a016afa70477a6dbe001ea3de1c8ab891a93e087e74bd7d2588862d4ab",
+  "cpu": {
+    "pre_model_http_operations": 19,
+    "covered_sdks": 6
+  },
+  "earlier_cpu_fixture": "First CPU client imported httpx directly. One released SDK exposes its transport via OpenAI.DefaultHttpxClient. The corrected client uses that public constructor across all four Python environments."
+}

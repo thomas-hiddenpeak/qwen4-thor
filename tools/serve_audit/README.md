@@ -84,3 +84,18 @@ python3 -B -m tools.serve_audit.scope_queries /path/to/official-openapi.json --d
 ```bash
 python3 -B -m unittest tools.serve_audit.test_conversation_receipt
 ```
+
+## 分片上传跨回退包恢复
+
+`UploadHandoff` 需要一个空的隔离对象目录、发行记录的原始 JSON 字节、两个测试客户的密钥、
+回环 HTTP 的 `/v1` 地址及六个已安装 SDK 的路径。Python 路径指向各自的解释器；
+Node 路径指向含 `package.json` 的 openai 目录。调用同一实例的 `prepare()`，
+让 Guardian 切换至已登记的回退包并确认恢复就绪，再将返回值传给 `restore(previous)`。
+每次 SDK 操作只发出一个请求，并将脱离凭据的结果和请求 ID 写入指定的 JSONL 文件。
+该场景会在自己的状态目录中创建和删除文件。
+
+使用发行时保存的原始记录、逐请求回包和接管回执离线复核。
+
+```bash
+python3 -B -m unittest tools.serve_audit.test_upload_receipt
+```

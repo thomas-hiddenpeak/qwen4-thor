@@ -1,0 +1,497 @@
+[
+  {
+    "step": 1,
+    "sdk": "python-2.8.1",
+    "action": "upload",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "trace": "req-d74d9d4f66a2620473bafef0c3282da8"
+    },
+    "data": {
+      "id": "upload_b80d465c93c50711c98fbc1b101eec48",
+      "bytes": 493,
+      "created_at": 1795812893,
+      "expires_at": 1795816493,
+      "filename": "primary-release.txt",
+      "object": "upload",
+      "purpose": "user_data",
+      "status": "pending"
+    }
+  },
+  {
+    "step": 2,
+    "sdk": "node-6.34.0",
+    "action": "part",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_b80d465c93c50711c98fbc1b101eec48/parts",
+      "status": 200,
+      "trace": "req-2315d548b4fd6ffde715e49f976f9c8d"
+    },
+    "data": {
+      "id": "part_83a47d4e23edef06be8fe166f4a084ce",
+      "object": "upload.part",
+      "created_at": 1795812893,
+      "upload_id": "upload_b80d465c93c50711c98fbc1b101eec48"
+    }
+  },
+  {
+    "step": 3,
+    "sdk": "python-2.33.0",
+    "action": "part",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_b80d465c93c50711c98fbc1b101eec48/parts",
+      "status": 200,
+      "trace": "req-c37aa8aa8d19d7d1152dd869d1125bcf"
+    },
+    "data": {
+      "id": "part_7703646d5777a6da22d8acb307df5741",
+      "created_at": 1795812894,
+      "object": "upload.part",
+      "upload_id": "upload_b80d465c93c50711c98fbc1b101eec48"
+    }
+  },
+  {
+    "step": 4,
+    "sdk": "python-3.42.1",
+    "action": "complete",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_b80d465c93c50711c98fbc1b101eec48/complete",
+      "status": 200,
+      "trace": "req-7714a5ce434e939c1a442ac2118048ea"
+    },
+    "data": {
+      "id": "upload_b80d465c93c50711c98fbc1b101eec48",
+      "bytes": 493,
+      "created_at": 1795812893,
+      "expires_at": 1795816493,
+      "filename": "primary-release.txt",
+      "object": "upload",
+      "purpose": "user_data",
+      "status": "completed",
+      "file": {
+        "id": "file_84bacb1abfc9ef3193539f84cfcbe54a",
+        "bytes": 493,
+        "created_at": 1795812894,
+        "filename": "primary-release.txt",
+        "object": "file",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    }
+  },
+  {
+    "step": 5,
+    "sdk": "python-3.55.1",
+    "action": "upload",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "trace": "req-2e28423e68d1113e651def8effbb2a3e"
+    },
+    "data": {
+      "id": "upload_1e5a50e4facbcc31e9a5ccc1b8a458d7",
+      "bytes": 493,
+      "created_at": 1795812895,
+      "expires_at": 1795816495,
+      "filename": "fallback-release.txt",
+      "object": "upload",
+      "purpose": "user_data",
+      "status": "pending"
+    }
+  },
+  {
+    "step": 6,
+    "sdk": "node-7.47.0",
+    "action": "part",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_1e5a50e4facbcc31e9a5ccc1b8a458d7/parts",
+      "status": 200,
+      "trace": "req-7ad7701a00116895a00283ad084a9c03"
+    },
+    "data": {
+      "id": "part_6b7a8ebd1bf657960f868da2696baa87",
+      "object": "upload.part",
+      "created_at": 1795812895,
+      "upload_id": "upload_1e5a50e4facbcc31e9a5ccc1b8a458d7"
+    }
+  },
+  {
+    "step": 7,
+    "sdk": "python-2.33.0",
+    "action": "upload",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads",
+      "status": 200,
+      "trace": "req-983961c103ce9a03c30e31bb7bb6ecea"
+    },
+    "data": {
+      "id": "upload_0d450be3a8dcb1f19f9aefaaaab4db2a",
+      "bytes": 493,
+      "created_at": 1795812895,
+      "expires_at": 1795816495,
+      "filename": "cancelled-release.txt",
+      "object": "upload",
+      "purpose": "user_data",
+      "status": "pending"
+    }
+  },
+  {
+    "step": 8,
+    "sdk": "python-2.8.1",
+    "action": "file",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "trace": "req-03c86e8dbc3c6e92f91853d7e845b74a"
+    },
+    "data": {
+      "id": "file_81f088c64639cefcc4de1e042d13ee4f",
+      "bytes": 493,
+      "created_at": 1795812896,
+      "filename": "direct-release.txt",
+      "object": "file",
+      "purpose": "user_data",
+      "status": "processed"
+    }
+  },
+  {
+    "step": 9,
+    "sdk": "python-2.8.1",
+    "action": "complete",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_b80d465c93c50711c98fbc1b101eec48/complete",
+      "status": 200,
+      "trace": "req-6b932eb2f35a2bbd8065211d1d681a53"
+    },
+    "data": {
+      "id": "upload_b80d465c93c50711c98fbc1b101eec48",
+      "bytes": 493,
+      "created_at": 1795812893,
+      "expires_at": 1795816493,
+      "filename": "primary-release.txt",
+      "object": "upload",
+      "purpose": "user_data",
+      "status": "completed",
+      "file": {
+        "id": "file_84bacb1abfc9ef3193539f84cfcbe54a",
+        "bytes": 493,
+        "created_at": 1795812894,
+        "filename": "primary-release.txt",
+        "object": "file",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    }
+  },
+  {
+    "step": 10,
+    "sdk": "python-3.55.1",
+    "action": "retrieve",
+    "owner": "alpha",
+    "wire": {
+      "method": "GET",
+      "path": "/v1/files/file_84bacb1abfc9ef3193539f84cfcbe54a",
+      "status": 200,
+      "trace": "req-c31e7d4c249a1a215a342144f016d1d7"
+    },
+    "data": {
+      "id": "file_84bacb1abfc9ef3193539f84cfcbe54a",
+      "bytes": 493,
+      "created_at": 1795812894,
+      "filename": "primary-release.txt",
+      "object": "file",
+      "purpose": "user_data",
+      "status": "processed"
+    }
+  },
+  {
+    "step": 11,
+    "sdk": "python-2.33.0",
+    "action": "download",
+    "owner": "alpha",
+    "wire": {
+      "method": "GET",
+      "path": "/v1/files/file_84bacb1abfc9ef3193539f84cfcbe54a/content",
+      "status": 200,
+      "trace": "req-4891d2b02fe82f6e2f8f45af10f1e0e4"
+    },
+    "data": {
+      "bytes": 493,
+      "sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01"
+    }
+  },
+  {
+    "step": 12,
+    "sdk": "node-6.34.0",
+    "action": "part",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_1e5a50e4facbcc31e9a5ccc1b8a458d7/parts",
+      "status": 200,
+      "trace": "req-09b0b772c2d4bf083184753822bfaa1a"
+    },
+    "data": {
+      "id": "part_b72d3f3ff1b52104a7bc2e5f91867af1",
+      "object": "upload.part",
+      "created_at": 1795812969,
+      "upload_id": "upload_1e5a50e4facbcc31e9a5ccc1b8a458d7"
+    }
+  },
+  {
+    "step": 13,
+    "sdk": "python-3.42.1",
+    "action": "complete",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_1e5a50e4facbcc31e9a5ccc1b8a458d7/complete",
+      "status": 400,
+      "trace": "req-8a109e49accb86a7141f242790d91945"
+    },
+    "data": {
+      "error": "invalid_request",
+      "status": 400
+    }
+  },
+  {
+    "step": 14,
+    "sdk": "python-3.55.1",
+    "action": "complete",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_1e5a50e4facbcc31e9a5ccc1b8a458d7/complete",
+      "status": 200,
+      "trace": "req-bf143c3153b87798b1c8bef0192d7312"
+    },
+    "data": {
+      "id": "upload_1e5a50e4facbcc31e9a5ccc1b8a458d7",
+      "bytes": 493,
+      "created_at": 1795812895,
+      "expires_at": 1795816495,
+      "filename": "fallback-release.txt",
+      "object": "upload",
+      "purpose": "user_data",
+      "status": "completed",
+      "file": {
+        "id": "file_5ff2a45301522d9fb27452fdbf39b711",
+        "bytes": 493,
+        "created_at": 1795812970,
+        "filename": "fallback-release.txt",
+        "object": "file",
+        "purpose": "user_data",
+        "status": "processed"
+      }
+    }
+  },
+  {
+    "step": 15,
+    "sdk": "python-2.8.1",
+    "action": "download",
+    "owner": "alpha",
+    "wire": {
+      "method": "GET",
+      "path": "/v1/files/file_5ff2a45301522d9fb27452fdbf39b711/content",
+      "status": 200,
+      "trace": "req-40e667a2663b4cf99028f679f5c39985"
+    },
+    "data": {
+      "bytes": 493,
+      "sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01"
+    }
+  },
+  {
+    "step": 16,
+    "sdk": "python-2.33.0",
+    "action": "retrieve",
+    "owner": "beta",
+    "wire": {
+      "method": "GET",
+      "path": "/v1/files/file_5ff2a45301522d9fb27452fdbf39b711",
+      "status": 404,
+      "trace": "req-a413e54f8bd2aad9c789fb26378c693e"
+    },
+    "data": {
+      "error": "object_not_found",
+      "status": 404
+    }
+  },
+  {
+    "step": 17,
+    "sdk": "node-7.47.0",
+    "action": "cancel",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_0d450be3a8dcb1f19f9aefaaaab4db2a/cancel",
+      "status": 200,
+      "trace": "req-2ccece9299ba47ab3746a7a88adff243"
+    },
+    "data": {
+      "id": "upload_0d450be3a8dcb1f19f9aefaaaab4db2a",
+      "object": "upload",
+      "bytes": 493,
+      "created_at": 1795812895,
+      "expires_at": 1795816495,
+      "filename": "cancelled-release.txt",
+      "purpose": "user_data",
+      "status": "cancelled"
+    }
+  },
+  {
+    "step": 18,
+    "sdk": "node-6.34.0",
+    "action": "part",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/uploads/upload_0d450be3a8dcb1f19f9aefaaaab4db2a/parts",
+      "status": 409,
+      "trace": "req-82ed889ae90ab25dac063ee244076f80"
+    },
+    "data": {
+      "error": "upload_not_pending",
+      "status": 409
+    }
+  },
+  {
+    "step": 19,
+    "sdk": "python-3.55.1",
+    "action": "list",
+    "owner": "alpha",
+    "wire": {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200,
+      "trace": "req-fde6accc3a648c7c54316761ec3ab21a"
+    },
+    "data": {
+      "ids": [
+        "file_5ff2a45301522d9fb27452fdbf39b711",
+        "file_81f088c64639cefcc4de1e042d13ee4f",
+        "file_84bacb1abfc9ef3193539f84cfcbe54a"
+      ],
+      "has_more": false
+    }
+  },
+  {
+    "step": 20,
+    "sdk": "python-3.55.1",
+    "action": "answer",
+    "owner": "alpha",
+    "wire": {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "trace": "req-fbd05c78d39d1851ce16c4c1a769e10e"
+    },
+    "data": {
+      "id": "resp_d5327d58926ebd6b3db8d1207e2de89c",
+      "status": "completed",
+      "answer": "\n\n223"
+    }
+  },
+  {
+    "step": 21,
+    "sdk": "python-3.42.1",
+    "action": "delete",
+    "owner": "alpha",
+    "wire": {
+      "method": "DELETE",
+      "path": "/v1/files/file_84bacb1abfc9ef3193539f84cfcbe54a",
+      "status": 200,
+      "trace": "req-0e9adadb76c0a0c4592af7312459ae15"
+    },
+    "data": {
+      "id": "file_84bacb1abfc9ef3193539f84cfcbe54a",
+      "deleted": true,
+      "object": "file"
+    }
+  },
+  {
+    "step": 22,
+    "sdk": "python-2.8.1",
+    "action": "delete",
+    "owner": "alpha",
+    "wire": {
+      "method": "DELETE",
+      "path": "/v1/files/file_5ff2a45301522d9fb27452fdbf39b711",
+      "status": 200,
+      "trace": "req-0cec13eb4397db5245717d5b83db28d5"
+    },
+    "data": {
+      "id": "file_5ff2a45301522d9fb27452fdbf39b711",
+      "deleted": true,
+      "object": "file"
+    }
+  },
+  {
+    "step": 23,
+    "sdk": "python-2.33.0",
+    "action": "delete",
+    "owner": "alpha",
+    "wire": {
+      "method": "DELETE",
+      "path": "/v1/files/file_81f088c64639cefcc4de1e042d13ee4f",
+      "status": 200,
+      "trace": "req-630bfa2d2a704d04c4fb2613a03a4109"
+    },
+    "data": {
+      "id": "file_81f088c64639cefcc4de1e042d13ee4f",
+      "deleted": true,
+      "object": "file"
+    }
+  },
+  {
+    "step": 24,
+    "sdk": "python-3.55.1",
+    "action": "retrieve",
+    "owner": "alpha",
+    "wire": {
+      "method": "GET",
+      "path": "/v1/files/file_5ff2a45301522d9fb27452fdbf39b711",
+      "status": 404,
+      "trace": "req-a12e39bb2529c4a81857b5009303ae52"
+    },
+    "data": {
+      "error": "object_not_found",
+      "status": 404
+    }
+  },
+  {
+    "step": 25,
+    "sdk": "python-2.33.0",
+    "action": "list",
+    "owner": "alpha",
+    "wire": {
+      "method": "GET",
+      "path": "/v1/files",
+      "status": 200,
+      "trace": "req-42793f7c6a3669faedb80940643d77ac"
+    },
+    "data": {
+      "ids": [],
+      "has_more": false
+    }
+  }
+]

@@ -4410,6 +4410,17 @@
         "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json",
         "revision": 580,
         "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
+      },
+      "multipart_sdk_package_handoff_20261128": {
+        "stage": "verified_on_issued_pair",
+        "revision": 588,
+        "receipt": "evidence/serve-upload-sdk-recovery-20261128/business.json",
+        "sdk_versions": 6,
+        "sdk_requests": 25,
+        "generation_count": 2,
+        "registered_fallback_probes": 1,
+        "completed_upload_replay": true,
+        "pending_upload_resumed": true
       }
     },
     {
@@ -9709,6 +9720,17 @@
         "wire": "evidence/serve-conversation-sdk-business-20261128/requests.json",
         "method_sdk_pairs": 48,
         "authenticated_requests": 74
+      },
+      "multipart_sdk_package_handoff_20261128": {
+        "stage": "verified_on_issued_pair",
+        "revision": 588,
+        "receipt": "evidence/serve-upload-sdk-recovery-20261128/business.json",
+        "sdk_versions": 6,
+        "sdk_requests": 25,
+        "generation_count": 2,
+        "registered_fallback_probes": 1,
+        "completed_upload_replay": true,
+        "pending_upload_resumed": true
       }
     },
     {
@@ -11476,6 +11498,17 @@
       "chatkit_summary_recovery_delivery_20261126": {
         "revision": 514,
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
+      },
+      "multipart_sdk_package_handoff_20261128": {
+        "stage": "verified_on_issued_pair",
+        "revision": 588,
+        "receipt": "evidence/serve-upload-sdk-recovery-20261128/business.json",
+        "sdk_versions": 6,
+        "sdk_requests": 25,
+        "generation_count": 2,
+        "registered_fallback_probes": 1,
+        "completed_upload_replay": true,
+        "pending_upload_resumed": true
       }
     },
     {
@@ -12853,6 +12886,17 @@
         "wire": "evidence/serve-conversation-sdk-business-20261128/requests.json",
         "method_sdk_pairs": 48,
         "authenticated_requests": 74
+      },
+      "multipart_sdk_package_handoff_20261128": {
+        "stage": "verified_on_issued_pair",
+        "revision": 588,
+        "receipt": "evidence/serve-upload-sdk-recovery-20261128/business.json",
+        "sdk_versions": 6,
+        "sdk_requests": 25,
+        "generation_count": 2,
+        "registered_fallback_probes": 1,
+        "completed_upload_replay": true,
+        "pending_upload_resumed": true
       }
     },
     {
