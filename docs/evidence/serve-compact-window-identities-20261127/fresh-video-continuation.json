@@ -1,0 +1,102 @@
+{
+  "stage": "fresh_summary_returned_continuation_incomplete",
+  "candidate_head": "c4d6ad0cea0dcc8982ae42ecf4211d86b56b0795",
+  "binary": "f225ca066ed5e69ffaa0c0f0444f66aa31566c8086d3f26f39a414c72eb1ac83",
+  "scope": "One source video. The new window contains the exact source file, the follow-up question and a real newly signed summary. Owner returned a partial repeat of the summary.",
+  "result": {
+    "status": "FAIL",
+    "starts": 1,
+    "seconds": 49.216,
+    "unchanged_default": true,
+    "original_store_unchanged": true,
+    "phases": []
+  },
+  "lease": {
+    "state": "COMMAND_FAILED",
+    "sha256": "18375f71a6ebb03d51af48173d0b85a8bea0eee47c9c05539f0414021852bc9a"
+  },
+  "signed_window_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+  "response_sha256": "e679964080b61fe3ae8c98f71e63cc2631d3f2fea6eefcfda5218a437c52e282",
+  "expected": "Blue",
+  "http_status": 200,
+  "actual_status": "incomplete",
+  "incomplete_reason": "max_output_tokens",
+  "actual_usage": {
+    "input_tokens": 1148,
+    "input_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 1141
+    },
+    "output_tokens": 96,
+    "output_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "total_tokens": 1244
+  },
+  "emitted_characters": 421,
+  "matching_memory_prefix_characters": 421,
+  "source_item_id": "item_c7bbdc6f5aa1b35f88a29fa8efdc73e8",
+  "source_item_sha256": "4df82e8cff520ea65c1511782e89e1f767a82684389c46b0f4796a6cc08a08e1",
+  "original_file_and_decoded_frames_equal": true,
+  "rendered_model_inputs": {
+    "old": {
+      "prompt_sha256": "f81e3293584324816951b4a3b67eb78680e9d34c9565e1caca08d242065f1ae9",
+      "bytes": 3864,
+      "question_positions": [
+        2917,
+        3028
+      ],
+      "memory_position": 3163,
+      "roles": [
+        "user",
+        "user",
+        "assistant"
+      ],
+      "same_question_twice": true,
+      "generated_chars": 4,
+      "exact_memory_prefix": false,
+      "completed": true,
+      "cached": 0
+    },
+    "new": {
+      "prompt_sha256": "a686b8248c708206a438d68e7201f62c89cfb712aaeeeef34068f08c19163aff",
+      "bytes": 3947,
+      "question_positions": [
+        2917,
+        3812
+      ],
+      "memory_position": 3052,
+      "roles": [
+        "user",
+        "assistant",
+        "user"
+      ],
+      "same_question_twice": true,
+      "generated_chars": 421,
+      "exact_memory_prefix": true,
+      "completed": false,
+      "cached": 0
+    }
+  },
+  "pending": "Compare exact signed history, cache modes and an alternative presentation of the same memory. The SDK loopback validates request identity only.",
+  "sdk_control": {
+    "kind": "official 3.55.1 HTTP loopback, all six conditions returned the same recorded failure",
+    "cases": [
+      "sealed-explicit",
+      "sealed-default",
+      "expanded-assistant",
+      "quoted-before-question",
+      "distinct-followup",
+      "signed-memory-guidance"
+    ],
+    "hashes": [
+      "837d660db198ed5e0ac1f70dbb64133b9b998a7ac1a0af5a397e70920312c969",
+      "49b788c2c9f7db0d99e43b1293a2079177e37e7fa24bd13cc0f4e63efd882088",
+      "0c0f6003d6f3660618f2adac38704fd499bab5c711f30ce29b64d8bbffe22e55",
+      "7f482b7b9ebb0ea3115ef54cc481f57dfaa8d663e7a4b6ed243f517d098e7e39",
+      "24fd52a4db72051cdd5651980f7b3e1eb07a275f4069b941dac4779dc8227c01",
+      "603d31dadbe760425ab9826af0869089f3cb6d307ce31b06a5efdc13ae8f8d50"
+    ],
+    "failure_classified": 6
+  }
+}

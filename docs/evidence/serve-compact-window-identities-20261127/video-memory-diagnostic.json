@@ -1,0 +1,193 @@
+{
+  "scope": "One previously failing signed window and six actual native TLS requests with stock Python SDK",
+  "source_commit": "c4d6ad0cea0dcc8982ae42ecf4211d86b56b0795",
+  "sealed_window_sha256": "efb2dba1c64bc153ef6142a767e1ed964814e1c1e74f1e745f277f251499a819",
+  "lease": "c7519198a2d5330fbdadd90e0a632aeb76e442516aeea5b6770085534ce1213d",
+  "result": {
+    "command": 0,
+    "lease": "COMPLETED",
+    "business": {
+      "status": "OBSERVED",
+      "starts": 1,
+      "seconds": 56.283,
+      "unchanged_default": true,
+      "original_store_unchanged": true,
+      "phases": [
+        "create"
+      ]
+    }
+  },
+  "six_requests": {
+    "sealed-explicit": {
+      "status": "incomplete",
+      "answer": null,
+      "common_prefix": 421,
+      "usage": {
+        "input_tokens": 1148,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 96,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1244
+      },
+      "sha256": "83d785d714c3ca26f14a823fae2ff8202c0e73adecdc8f7302e3f9b0a8471a72"
+    },
+    "sealed-default": {
+      "status": "incomplete",
+      "answer": null,
+      "common_prefix": 421,
+      "usage": {
+        "input_tokens": 1148,
+        "input_tokens_details": {
+          "cache_write_tokens": 1141,
+          "cached_tokens": 0
+        },
+        "output_tokens": 96,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1244
+      },
+      "sha256": "19e24e80d858c33fbe6f29e15606fa1759a20ba232a1567942f9b7a116fc32f0"
+    },
+    "expanded-assistant": {
+      "status": "incomplete",
+      "answer": null,
+      "common_prefix": 421,
+      "usage": {
+        "input_tokens": 1148,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 96,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1244
+      },
+      "sha256": "7603d8d671d98f0434af3fd6d73f247be144d43bb69a703bbd3d37677b8061f2"
+    },
+    "quoted-before-question": {
+      "status": "completed",
+      "answer": "Blue",
+      "common_prefix": 0,
+      "usage": {
+        "input_tokens": 1138,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 2,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1140
+      },
+      "sha256": "064fd0787484a19ffb0baeb71bc06b91ad9683cc0d4447c94199d775e0e795e4"
+    },
+    "distinct-followup": {
+      "status": "incomplete",
+      "answer": null,
+      "common_prefix": 421,
+      "usage": {
+        "input_tokens": 1170,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 96,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1266
+      },
+      "sha256": "a0012be6a8753443d432933b6b942101fcf6105929eec37993e4e7a4e7d951c6"
+    },
+    "signed-memory-guidance": {
+      "status": "completed",
+      "answer": "Blue",
+      "common_prefix": 0,
+      "usage": {
+        "input_tokens": 1186,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 2,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1188
+      },
+      "sha256": "12ca3eebcc04dd5dfdd7b84cc227e698a79dc7740226442a3cb4709ac2b23beb"
+    }
+  },
+  "terminal_controls": {
+    "3.55.1": {
+      "completed": {
+        "original": true,
+        "candidate": true
+      },
+      "real-truncation": {
+        "original": false,
+        "candidate": false
+      },
+      "matching-partial": {
+        "original": true,
+        "candidate": false
+      },
+      "unfinished-message": {
+        "original": true,
+        "candidate": false
+      },
+      "terminal-error": {
+        "original": true,
+        "candidate": false
+      },
+      "incomplete-details": {
+        "original": true,
+        "candidate": false
+      },
+      "wrong-color": {
+        "original": false,
+        "candidate": false
+      }
+    },
+    "2.33.0": {
+      "completed": {
+        "original": true,
+        "candidate": true
+      },
+      "real-truncation": {
+        "original": false,
+        "candidate": false
+      },
+      "matching-partial": {
+        "original": true,
+        "candidate": false
+      },
+      "unfinished-message": {
+        "original": true,
+        "candidate": false
+      },
+      "terminal-error": {
+        "original": true,
+        "candidate": false
+      },
+      "incomplete-details": {
+        "original": true,
+        "candidate": false
+      },
+      "wrong-color": {
+        "original": false,
+        "candidate": false
+      }
+    }
+  },
+  "model_fix_issued": false
+}

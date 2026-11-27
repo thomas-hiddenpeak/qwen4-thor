@@ -1,0 +1,585 @@
+{
+  "stage": "issued",
+  "previous_revision": 562,
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 564,
+    "version_revision": 211,
+    "profile_revision": 100,
+    "previous_profile_revision": 99,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b",
+    "fallback": "77fb1395803208d28608a52e15b48183fa4d9b946ce5cc94fd1fac117187f876",
+    "engine": "1178ccbd8ea9737932d8d6ebd083e6641c358cec47b92ef91f467fb6be8efb8d",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "package_source": "95b33ec664f8d6b70a669bfa9471b3a44deeb988",
+  "previous_primary": "e5567f955c00f3ddd69e83253bb871feb43727752205106fc28d1659672bb2f5",
+  "recovery": {
+    "primary": {
+      "seconds": 342.021,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": {
+          "2.8.1": {
+            "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+            "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+          },
+          "3.55.1": {
+            "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+            "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+          }
+        },
+        "original": {
+          "2.8.1": {
+            "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+            "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+          },
+          "3.55.1": {
+            "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+            "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+          }
+        },
+        "foreign": {
+          "2.8.1": 2,
+          "3.55.1": 2
+        },
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "phase": "primary",
+        "clients": {
+          "2.8.1": {
+            "receipt": {
+              "sdk": "2.8.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": true,
+              "get_sha256": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+            }
+          },
+          "3.55.1": {
+            "receipt": {
+              "sdk": "3.55.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": false,
+              "get_sha256": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+            }
+          }
+        },
+        "captures": {
+          "2.8.1/replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28",
+          "2.8.1/resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+          "3.55.1/replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc",
+          "3.55.1/resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b"
+        },
+        "sdk_sha256": "1afaf7f74d503c17c8f188b7b2471f1a34d8de1fce2ecbbe651ffa54ed477847"
+      },
+      "recovered": {
+        "phase": "light",
+        "clients": {
+          "2.8.1": {
+            "receipt": {
+              "sdk": "2.8.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": true,
+              "get_sha256": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+            }
+          },
+          "3.55.1": {
+            "receipt": {
+              "sdk": "3.55.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": false,
+              "get_sha256": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+            }
+          }
+        },
+        "captures": {
+          "2.8.1/replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28",
+          "2.8.1/resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+          "3.55.1/replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc",
+          "3.55.1/resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b"
+        },
+        "sdk_sha256": "1afaf7f74d503c17c8f188b7b2471f1a34d8de1fce2ecbbe651ffa54ed477847"
+      },
+      "fresh_chat": "42"
+    },
+    "fallback": {
+      "seconds": 202.329,
+      "starts": 2,
+      "interruption": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": {
+          "2.8.1": {
+            "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+            "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+          },
+          "3.55.1": {
+            "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+            "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+          }
+        },
+        "original": {
+          "2.8.1": {
+            "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+            "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+          },
+          "3.55.1": {
+            "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+            "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+          }
+        },
+        "foreign": {
+          "2.8.1": 2,
+          "3.55.1": 2
+        },
+        "port": 18161,
+        "egress": false
+      },
+      "source": {
+        "phase": "primary",
+        "clients": {
+          "2.8.1": {
+            "receipt": {
+              "sdk": "2.8.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": true,
+              "get_sha256": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+            }
+          },
+          "3.55.1": {
+            "receipt": {
+              "sdk": "3.55.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": false,
+              "get_sha256": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+            }
+          }
+        },
+        "captures": {
+          "2.8.1/replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28",
+          "2.8.1/resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+          "3.55.1/replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc",
+          "3.55.1/resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b"
+        },
+        "sdk_sha256": "1afaf7f74d503c17c8f188b7b2471f1a34d8de1fce2ecbbe651ffa54ed477847"
+      },
+      "recovered": {
+        "phase": "light",
+        "clients": {
+          "2.8.1": {
+            "receipt": {
+              "sdk": "2.8.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": true,
+              "get_sha256": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+              "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+            }
+          },
+          "3.55.1": {
+            "receipt": {
+              "sdk": "3.55.1",
+              "id": "resp_23f5393860c93829077e69f040447b7b",
+              "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+              "string_error": false,
+              "get_sha256": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "events": 38,
+              "cursor": 6,
+              "resumed": 31,
+              "foreign_404": 2
+            },
+            "wire_sha256": {
+              "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+              "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+            }
+          }
+        },
+        "captures": {
+          "2.8.1/replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28",
+          "2.8.1/resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+          "3.55.1/replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc",
+          "3.55.1/resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b"
+        },
+        "sdk_sha256": "1afaf7f74d503c17c8f188b7b2471f1a34d8de1fce2ecbbe651ffa54ed477847"
+      },
+      "fresh_chat": "42"
+    }
+  },
+  "packaged_protocol": {
+    "status": "PASS",
+    "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "packages": {
+      "fallback": {
+        "manifest": "77fb1395803208d28608a52e15b48183fa4d9b946ce5cc94fd1fac117187f876",
+        "issued_spec_sha256": "b5799690fad1830c363f015c2f00c40ab9150930c27274faf00f0951bfe267ae",
+        "observations": [
+          {
+            "stage": "mcp-error-sdk-profiles-01",
+            "phase": "primary",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "mcp-error-sdk-profiles-01",
+            "phase": "light",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "mcp-error-sdk-fallback-business-02",
+            "phase": "prepare",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "mcp-error-sdk-fallback-business-02",
+            "phase": "restore",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-mcp-error-sdk-01",
+            "phase": "prepare",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-mcp-error-sdk-01",
+            "phase": "restore",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "primary": {
+        "manifest": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b",
+        "issued_spec_sha256": "b5799690fad1830c363f015c2f00c40ab9150930c27274faf00f0951bfe267ae",
+        "observations": [
+          {
+            "stage": "mcp-error-sdk-profiles-01",
+            "phase": "primary",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "mcp-error-sdk-profiles-01",
+            "phase": "light",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "mcp-error-sdk-fallback-business-02",
+            "phase": "prepare",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "mcp-error-sdk-fallback-business-02",
+            "phase": "restore",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-mcp-error-sdk-01",
+            "phase": "prepare",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          },
+          {
+            "stage": "fatal-business-mcp-error-sdk-01",
+            "phase": "restore",
+            "protocol": {
+              "resource": "resp_23f5393860c93829077e69f040447b7b",
+              "events": 38,
+              "normalized_events": 4,
+              "wire": {
+                "2.8.1": {
+                  "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+                  "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+                },
+                "3.55.1": {
+                  "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+                  "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "day": {
+    "source_commit": "95b33ec664f8d6b70a669bfa9471b3a44deeb988",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-client-primary-01/bundle",
+      "manifest_sha256": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b"
+    },
+    "revision": 564,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "2b0bf302f03c2718a363ea16e741c46813dfaa23abb3ed1a4182ec2609d825e8",
+    "handoff_sha256": "7a87209f6fcde0f3a2b7940b8f9e44ca287b805dc2c534997a399efbfe9bdcb7",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold": {
+    "status": "PREPARED",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-delivery-soak-src/.q4t-work/cold564-01/plan.json",
+    "plan_sha256": "b335322287d6fd25a9d1f9f4f0bc23b0937e3031478ecc603d8357790e3a4ea2",
+    "service_id": "04092dcb-baf4-41b0-8a8a-36a36483208d",
+    "source": "95b33ec664f8d6b70a669bfa9471b3a44deeb988",
+    "limits": {
+      "starts": 1,
+      "chats": 3,
+      "probes": 1,
+      "controls": 2000,
+      "seconds": 600
+    },
+    "publication": 564,
+    "registered_package": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b",
+    "protected": {
+      "/home/rm01/models/dev/qwen4-thor/build/q4t": "1178ccbd8ea9737932d8d6ebd083e6641c358cec47b92ef91f467fb6be8efb8d",
+      "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "cc65233567e24b7d3b51a438baa2477477c5c82c2a07c085af6ddb5cc6627efd",
+      "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b",
+      "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "c83de33ce343b544e0a8afae695b6663a9082d5ec069e64cf7833f1c88acd41e",
+      "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    },
+    "model_actions": 0,
+    "host_filter_installed": false,
+    "host_units_modified": false
+  },
+  "declared_methods": 219,
+  "required_methods": 231,
+  "query_defaults": 71,
+  "protected_hashes": 13,
+  "first_fallback_receipt_failure": {
+    "failure": "NameError in the interruption receipt after the verified business calls, before the two-generation final assertion",
+    "original_lease": "4b2fa5759d897f708f910d7519719eba11f9bc65fb8a71fc5381ea0d3833634a",
+    "original_driver": "6cc34da8d6bbae73b516e0faff163610272ea25ea16a9e6cc7b73f96089b6ff6",
+    "corrected_driver": "65a446407d2eed0f33118b258c382be1352f9ede52fb89bca1603cc182a629ba",
+    "returned_chat": "42",
+    "result": "3e09dfac6ab2e72a9edb53461e48710456135bb39d2e69f5c2237ab083479dcf",
+    "earlier_readback": "d92ff4f16182bc19af71b4372bf5dfc5b2a6e6cc21823c09b515e55bafa60788",
+    "later_readback": "7a761ab45fc9c79af2c6c2966e356846fceecd6e24547f68c713747911a8c6f7"
+  },
+  "cpu": "af32d3ac1c8ffdf29dbc6544aebbcb427d9dd61667424a8d4a9dc0b94d119857",
+  "business_driver": "e481ff689d4c6d2c9dcb8284a880e8fd2a73b5523d8d999b964548a2e819f7dc",
+  "program_reader": "f041fe2a7e1ab60882f14571acdc7ad9608bbd2e78c87dafe5880709a92c4da3",
+  "store": "d1db5b57fe3e9711edc5c48118b57a30f7d5774c392aaec1dbe863cac4ea4c18",
+  "genuine_sdk_business": "da3ea0771688ef54024799086f059b11363f9684265baa2476e14d7e44560b73",
+  "capacity_qualification": "f7906167aa5da675850fdcfa7a48f18379deef118d33ea551ad9cb522a9987a7"
+}

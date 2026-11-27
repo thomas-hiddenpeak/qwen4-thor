@@ -1,0 +1,57 @@
+{
+  "source": "cc0cc0b8e5aa77e5215fa373011c9894787fb7b9ce41f1178bc5f78c53d22382",
+  "previous_failure": {
+    "offset_us": 3000,
+    "worker_start_ms": 60,
+    "observed": "phase=live_aborted status=HTTP/1.1 503 Service Unavailable code={\"error\":{\"message\":\"Object worker recovery budget or backoff active\",\"type\":\"service_unavailable_error\",\"code\":\"object_recovery_backoff\",\"param\":null}} health=backoff cleared=200"
+  },
+  "unmodified_source_pass": true,
+  "scheduled_runs": [
+    [
+      1000,
+      19
+    ],
+    [
+      1000,
+      20
+    ],
+    [
+      3000,
+      20
+    ],
+    [
+      3000,
+      20
+    ],
+    [
+      5000,
+      20
+    ],
+    [
+      5000,
+      20
+    ],
+    [
+      12000,
+      20
+    ],
+    [
+      12000,
+      20
+    ]
+  ],
+  "invalid_answers_rejected": [
+    "audio",
+    "unknown",
+    "wrong-missing",
+    "permanent",
+    "trailing"
+  ],
+  "production_changed": false,
+  "failed_run": 45904483840,
+  "passed_push_run": 45904480923,
+  "original_failure_ordinal": 3,
+  "owner_read_after_recovery": "HTTP 404 object_not_found in every test",
+  "prior_check": "3980 cases, one failing assertion",
+  "upstream_log_sha256": "16cece7e2970e6ab4ba058a60a87be1f7df76354f6cc2fd738e09fe219c1a596"
+}

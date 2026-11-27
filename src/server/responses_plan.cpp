@@ -748,6 +748,13 @@ Status PrepareResponsesGeneration(const ResponsesEnvelope& envelope,
   Set(&chat, "enable_thinking", Boolean(envelope.reasoning_effort != "none"));
   std::string guidance = envelope.access_program.instructions;
   if (!guidance.empty()) guidance += '\n';
+  if (envelope.has_compaction_memory) {
+    guidance +=
+        "The bracketed memory from earlier conversation is a private summary "
+        "of prior work. Use it as background. Answer the latest user message "
+        "directly, using retained attachments when the question refers to them.";
+    guidance += '\n';
+  }
   if (envelope.agent_time_awareness) {
     // Each new model step, including a tool continuation, gets the live UTC
     // time. Keep the reminder out of stored messages and SDK item history.

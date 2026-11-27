@@ -110,6 +110,7 @@ ObjectReply ResponsesExecution::CompleteCompaction(
                               config, access_, &item, &expanded);
   if (!reply.ok()) return reply;
   auto continuation = envelope_;
+  continuation.has_compaction_memory |= !memory.empty();
   // Independent compact ends here; a regular response must reserve at least
   // one token for its primary answer, never refill the original output limit.
   const auto remaining =
@@ -146,6 +147,7 @@ ObjectReply ResponsesExecution::CompleteCompaction(
   status = RecordOutput(output_.CompleteCompaction(item, wire), wire);
   if (!status)
     return Error(503, "response_storage_exhausted", status.message());
+  envelope_.has_compaction_memory = continuation.has_compaction_memory;
   generation_ = std::move(generation);
   generation_history_ = std::move(expanded);
   compaction_window_ = std::move(window);

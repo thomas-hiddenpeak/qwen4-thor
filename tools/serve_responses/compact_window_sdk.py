@@ -52,7 +52,13 @@ def verify_video(owner, model, record, capture):
         model=model, input=window["output"], max_output_tokens=96, temperature=0,
         reasoning={"effort": "none"}, store=False)
     capture("video_resumed", resumed)
-    text = resumed.parse().output_text.strip()
+    reply = resumed.parse()
+    if (reply.status != "completed" or reply.error is not None or
+            reply.incomplete_details is not None or
+            any(item.status != "completed" for item in reply.output
+                if item.type == "message")):
+        raise ValueError("Video continuation did not complete")
+    text = reply.output_text.strip()
     return dict(answer=text, exact_answer=text.casefold() == record["answer"].casefold(),
                 original_item=original["id"], file_preserved=(retained == original),
                 usage=window["usage"])

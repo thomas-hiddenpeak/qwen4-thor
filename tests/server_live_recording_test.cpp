@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <filesystem>
+#include <thread>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -375,9 +376,25 @@ Q4T_TEST(live_recording_abort_revocation_and_backpressure_preserve_privacy) {
     Q4T_CHECK((id == "live_aborted" ? error.ok() : !error.ok()) &&
               capture.Drained());
     Q4T_CHECK(id != "live_full" || error.code == "live_recording_capacity");
-    Q4T_CHECK(
-        capture.TakeError().ok() &&
-        Download(objects, "client:owner", id).starts_with("HTTP/1.1 404"));
+    Q4T_CHECK(capture.TakeError().ok());
+    // Cancelling a transfer can retire the object worker. Throughout its
+    // configured backoff the only permissible intermediate body is an error.
+    const auto deadline = Clock::now() + 2s;
+    for (;;) {
+      const auto wire = Download(objects, "client:owner", id);
+      const auto body = wire.find("\r\n\r\n");
+      Json error;
+      Q4T_CHECK(body != std::string::npos &&
+                Parse(wire.substr(body + 4), &error));
+      const auto code = Field(error, "error").GetString("code");
+      if (wire.starts_with("HTTP/1.1 404 ")) {
+        Q4T_CHECK(code == "object_not_found");
+        break;
+      }
+      Q4T_CHECK(wire.starts_with("HTTP/1.1 503 ") &&
+                code == "object_recovery_backoff" && Clock::now() < deadline);
+      std::this_thread::sleep_for(5ms);
+    }
   }
   return true;
 }
