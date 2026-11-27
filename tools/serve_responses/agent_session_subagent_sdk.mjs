@@ -89,7 +89,8 @@ assert.ok(parent.some(x => x.type === 'wait_for_subagents_call' && x.recipient_a
 assert.ok(answer(parent).match(/\d+/g)?.includes(String(plan.revision)));
 await assert.rejects(peer.subagents.turns.items.list(one.id, binding), missing);
 const transitions = [];
-for (const [action, state] of [['close', 'closed'], ['resume', 'active']]) {
+const lifecycleActions = cacheTest ? [] : [['close', 'closed'], ['resume', 'active']];
+for (const [action, state] of lifecycleActions) {
   const turn = await runTurn('Please ' + action + ' the existing subagent root/reader now using its ' +
     action + '_subagent function. Confirm when done.');
   const changed = await api.subagents.retrieve(child.id, owned);
