@@ -3175,12 +3175,18 @@
         "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "reproduced",
+        "state": "failed_mcp_issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native negotiated MCP error representation",
-          "compatibility of typed programmatic tools with earlier clients"
-        ]
+          "earlier SDK high-level strict union for programmatic tools"
+        ],
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json",
+        "capacity": "docs/evidence/serve-mcp-error-sdk-20261127/profiles.json",
+        "revision": 564,
+        "delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
       }
     },
     {
@@ -7863,12 +7869,18 @@
         "delivery": "evidence/serve-program-forks-20261126/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "reproduced",
+        "state": "failed_mcp_issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native negotiated MCP error representation",
-          "compatibility of typed programmatic tools with earlier clients"
-        ]
+          "earlier SDK high-level strict union for programmatic tools"
+        ],
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json",
+        "capacity": "docs/evidence/serve-mcp-error-sdk-20261127/profiles.json",
+        "revision": 564,
+        "delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
       }
     },
     {
@@ -9235,12 +9247,18 @@
         "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "tool_output_sdk_range_20261127": {
-        "state": "reproduced",
+        "state": "failed_mcp_issued",
         "evidence": "docs/evidence/serve-response-cache-retention-20261127/tool-sdk-audit.json",
         "remaining": [
-          "native negotiated MCP error representation",
-          "compatibility of typed programmatic tools with earlier clients"
-        ]
+          "earlier SDK high-level strict union for programmatic tools"
+        ],
+        "native_http": "docs/evidence/serve-mcp-error-sdk-20261127/cpu.json",
+        "business": "docs/evidence/serve-mcp-error-sdk-20261127/business.json",
+        "capacity_driver": "docs/evidence/serve-mcp-error-sdk-20261127/handoff-driver.json",
+        "older_program_sdk_read": "docs/evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json",
+        "capacity": "docs/evidence/serve-mcp-error-sdk-20261127/profiles.json",
+        "revision": 564,
+        "delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
       }
     },
     {
@@ -10488,8 +10506,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 562,
-        "receipt": "evidence/serve-response-cache-retention-20261127/delivery.json",
+        "revision": 564,
+        "receipt": "evidence/serve-mcp-error-sdk-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12260,7 +12278,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev562_delivered_remaining_deliveries",
+      "state": "rev564_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13619,7 +13637,8 @@
       "current_track_grid_delivery": "evidence/serve-video-track-grid-20261127/delivery.json",
       "current_chatkit_interrupted_retry_delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json",
       "current_video_layers_delivery": "evidence/serve-video-layer-composition-20261127/delivery.json",
-      "current_response_cache_retention_delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
+      "current_response_cache_retention_delivery": "evidence/serve-response-cache-retention-20261127/delivery.json",
+      "current_mcp_error_sdk_delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -13724,16 +13743,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "1881eebc2eaeb206cf96170e6e9aea49217a2c73",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-delivery-soak-src",
+        "source_commit": "95b33ec664f8d6b70a669bfa9471b3a44deeb988",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-client-primary-01/bundle",
-          "manifest_sha256": "e5567f955c00f3ddd69e83253bb871feb43727752205106fc28d1659672bb2f5"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-client-primary-01/bundle",
+          "manifest_sha256": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b"
         },
-        "revision": 562,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cache-retention-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "9241fa878656233857e7484555ad01bb903c3908869e723eb4b7048f6f091f77",
-        "handoff_sha256": "d565bf2be5ee7e3e2c8fe6097a43bc30f3028f21edf469b5b38a45916ddf5644",
+        "revision": 564,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "2b0bf302f03c2718a363ea16e741c46813dfaa23abb3ed1a4182ec2609d825e8",
+        "handoff_sha256": "7a87209f6fcde0f3a2b7940b8f9e44ca287b805dc2c534997a399efbfe9bdcb7",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14144,9 +14163,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 562,
-        "receipt": "evidence/serve-response-cache-retention-20261127/delivery.json",
-        "plan_sha256": "9241fa878656233857e7484555ad01bb903c3908869e723eb4b7048f6f091f77",
+        "revision": 564,
+        "receipt": "evidence/serve-mcp-error-sdk-20261127/delivery.json",
+        "plan_sha256": "2b0bf302f03c2718a363ea16e741c46813dfaa23abb3ed1a4182ec2609d825e8",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

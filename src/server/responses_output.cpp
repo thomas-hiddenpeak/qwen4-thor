@@ -169,8 +169,28 @@ io::Json ResponsesPublicValue(io::Json value) {
   return value;
 }
 
+void ProjectMcpErrorStrings(io::Json& value) {
+  if (value.GetString("type") == "mcp_call") {
+    auto* error = value.Find("error");
+    if (error && error->IsObject())
+      Set(&value, "error", String(OutputJson(*error)));
+    return;
+  }
+  const auto object = value.GetString("object");
+  if (object == "response" || object == "list") {
+    const auto key = object == "response" ? "output" : "data";
+    if (value.GetArray(key))
+      for (auto& item : Field(value, key).array) ProjectMcpErrorStrings(item);
+  } else if (value.GetString("type").starts_with("response.")) {
+    if (value.Has("item")) ProjectMcpErrorStrings(Field(value, "item"));
+    if (value.Has("response")) ProjectMcpErrorStrings(Field(value, "response"));
+  }
+}
+
 io::Json ResponsesWireValue(io::Json value) {
   ProjectValue(value, true);
+  if (detail::HttpResponseContext::LegacyMcpError())
+    ProjectMcpErrorStrings(value);
   return value;
 }
 
@@ -262,7 +282,8 @@ void ResponsesOutput::Event(std::string_view type, io::Json fields,
   }
   Set(&fields, "type", String(std::string(type)));
   Set(&fields, "sequence_number", Number(sequence_++));
-  fields = ResponsesWireValue(std::move(fields));
+  // Capture consumes this wire before PublicWire renders it for the reader.
+  ProjectValue(fields, true);
   ApplyDeltaObfuscation(&fields, obfuscation_);
   *wire += "event: " + std::string(type) + "\r\ndata: " + OutputJson(fields) +
            "\r\n\r\n";

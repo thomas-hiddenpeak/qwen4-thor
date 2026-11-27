@@ -1,5 +1,17 @@
 # 官方 SDK 的流式兼容记录
 
+### 较早 Python SDK 读取程序化工具
+
+Python 2.8.1 的严格 `responses.retrieve` 不能解析较晚加入的 `program` 项和 `programmatic_tool_calling` 工具。其通用 `client.get(path, cast_to=dict[str, Any])` 可读取两种原生资源。订阅时使用 `stream=True`、`stream_cls=openai.Stream[dict[str, Any]]`、`options={"params": {"stream": "true"}, "headers": {"Accept": "text/event-stream"}}`，续读将 `starting_after` 加入 `params`。2.8.1 和 3.55.1 均完整读取两份真实记录的 144 和 6 个事件以及两个后缀，程序代码、工具定义和调用者字段逐项等于原件。3.55.1 的高层严格入口也通过。[程序化工具读取记录](evidence/serve-mcp-error-sdk-20261127/program-sdk-read.json)
+
+### Responses 的 MCP 错误表示
+
+原生 TLS 下，Python 2.8.1 严格客户端批准读取项目文档，并用另一次审批拒绝同一工具。实际只读取文档一次。旧客户端完整收下拒绝结果的 38 个事件，3.55.1 读回原响应、错误对象和相同事件，两侧均从第 6 号游标续读 31 个事件。四次跨客户读取均返回 404。模型启动一次，用时 53.7 秒；下一步验证配置和托管恢复。[业务短验](evidence/serve-mcp-error-sdk-20261127/business.json)
+
+稳定版 Python 1.80.0 至 3.0.x 将 `mcp_call.error` 定义为字符串。读取 Responses 及其 SSE 时，q4t 将整个错误对象编码为 JSON 文本，保留异常类型、内容和嵌套字段。Python 3.1.0 起和没有协商版本的客户端读取对象。成功调用的空错误保持原值。持久资源和事件均保留同一份结构化错误。[上游类型变更](https://github.com/openai/openai-python/commit/f38355ecdf69b231be218e572f591ce7f389a211)
+
+旧版 Python SDK 2.8.1 严格模式已可读取实际被拒绝的 MCP 调用，并完整回放 38 个事件。错误正文中的代码和消息可逐字段还原。3.42.1、3.55.1 仍收到结构化错误，三个版本也都能读取成功调用的 54 个事件。原生新建事件与落盘记录保持对象形式。程序化工具的旧版客户端兼容和真实 TLS 发行验收仍待推进。[CPU 验证](evidence/serve-mcp-error-sdk-20261127/cpu.json)
+
 ### Responses 的缓存驻留字段
 
 原生 TLS 网关用一次模型启动完成严格客户端验收，用时 41.4 秒。旧版客户端读到了原先报错的历史响应。新旧客户端分别查询发行记录，各自回答 558；互换客户端后，GET 正文和 SSE 事件仅缓存驻留字段的拼写不同。旧版和新版异步客户端还在正文中段关闭连接，分别从同一游标取回 18 个后续事件。七次跨客户读取均返回 404。默认服务保持停止。下一步验证发行包交接。[业务验收](evidence/serve-response-cache-retention-20261127/business.json)

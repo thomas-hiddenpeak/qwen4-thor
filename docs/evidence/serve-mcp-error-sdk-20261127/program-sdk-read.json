@@ -1,0 +1,68 @@
+{
+  "scope": "CPU fixture, closed device journals, public synchronous SDK.get with cast_to=dict, stream_cls=Stream[dict], Accept text/event-stream, query in options.params",
+  "sdk_results": {
+    "2.8.1": {
+      "program": {
+        "id": "resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9",
+        "event_count": 144,
+        "resume_after": 132,
+        "resumed": 11,
+        "closed_union_type_errors": [
+          "resource",
+          "stream"
+        ],
+        "output_types": [
+          "reasoning",
+          "message",
+          "program",
+          "function_call"
+        ],
+        "canonical_output_sha256": "4b7859705755a0fdfbf6353104e36a5917b5b5a11a5ff672f6915c948fdf288c"
+      },
+      "program_function": {
+        "id": "resp_2725eeeada17f2496b7955cea4ab325a",
+        "event_count": 6,
+        "resume_after": 2,
+        "resumed": 3,
+        "closed_union_type_errors": [
+          "resource",
+          "stream"
+        ],
+        "output_types": [
+          "function_call"
+        ],
+        "canonical_output_sha256": "cdca428b51748733bfc60edb1139d1b969e53f5dd97cf8da874cfbdd4cd1fb61"
+      }
+    },
+    "3.55.1": {
+      "program": {
+        "id": "resp_a213d3ebd6a6e35fdf5c92bfaceb2bf9",
+        "event_count": 144,
+        "resume_after": 132,
+        "resumed": 11,
+        "closed_union_type_errors": [],
+        "output_types": [
+          "reasoning",
+          "message",
+          "program",
+          "function_call"
+        ],
+        "canonical_output_sha256": "4b7859705755a0fdfbf6353104e36a5917b5b5a11a5ff672f6915c948fdf288c"
+      },
+      "program_function": {
+        "id": "resp_2725eeeada17f2496b7955cea4ab325a",
+        "event_count": 6,
+        "resume_after": 2,
+        "resumed": 3,
+        "closed_union_type_errors": [],
+        "output_types": [
+          "function_call"
+        ],
+        "canonical_output_sha256": "cdca428b51748733bfc60edb1139d1b969e53f5dd97cf8da874cfbdd4cd1fb61"
+      }
+    }
+  },
+  "model_starts": 0,
+  "native_form": "both resource and replay compared with original unmodified program and function tool definitions, code, caller and output fields",
+  "pending": "2.8.1 high-level strict Responses closed union cannot decode program and programmatic_tool_calling"
+}

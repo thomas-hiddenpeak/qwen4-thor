@@ -5,6 +5,7 @@
 
 #include "object_protocol.h"
 #include "q4t/server/request_json.h"
+#include "q4t/server/http_response.h"
 
 namespace q4t::server {
 using namespace object_detail;
@@ -38,7 +39,9 @@ Json ResponsesExecution::PublicResponse() const {
 }
 
 std::string ResponsesExecution::PublicWire(std::string_view wire) const {
-  if ((Includes(envelope_, "file_search_call.results") ||
+  const bool legacy_mcp = detail::HttpResponseContext::LegacyMcpError() &&
+                          wire.find("\"mcp_call\"") != wire.npos;
+  if (!legacy_mcp && (Includes(envelope_, "file_search_call.results") ||
        wire.find("\"file_search_call\"") == wire.npos) &&
       (Includes(envelope_, "web_search_call.action.sources") ||
        wire.find("\"web_search_call\"") == wire.npos))
@@ -49,15 +52,16 @@ std::string ResponsesExecution::PublicWire(std::string_view wire) const {
     const auto end = wire.find("\r\n\r\n");
     if (!wire.starts_with("event: ") || line == wire.npos || end == wire.npos ||
         end <= line + 8 || wire.substr(line + 2, 6) != "data: ")
-      throw std::logic_error("Invalid native file search event framing");
+      throw std::logic_error("Invalid native Responses event framing");
     Json event;
     const auto status =
         io::ParseJson(std::string(wire.substr(line + 8, end - line - 8)),
                       &event, true, kSchemaJsonLimits);
     if (!status || event.GetString("type") != wire.substr(7, line - 7))
-      throw std::logic_error("Invalid native file search event value");
+      throw std::logic_error("Invalid native Responses event value");
     if (event.Has("item")) HideResult(&Field(event, "item"), envelope_);
     if (event.Has("response")) HideResponse(&Field(event, "response"), envelope_);
+    if (legacy_mcp) ProjectMcpErrorStrings(event);
     result +=
         std::string(wire.substr(0, line + 8)) + OutputJson(event) + "\r\n\r\n";
     wire.remove_prefix(end + 4);

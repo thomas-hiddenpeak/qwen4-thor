@@ -471,7 +471,14 @@ void HttpResponseContext::RecordWriteFailure(HttpWriteObservation value,
 
 bool HttpResponseContext::LegacyCacheRetention() {
   return current_response &&
-         current_response->legacy_cache_retention_.value_or(false);
+         current_response->responses_view_ ==
+             PythonResponsesView::kStringMcpErrorAndHyphenatedCache;
+}
+
+bool HttpResponseContext::LegacyMcpError() {
+  return current_response &&
+         current_response->responses_view_.value_or(
+             PythonResponsesView::kCurrent) != PythonResponsesView::kCurrent;
 }
 
 HttpResponseContext* HttpResponseContext::Current(int fd) {
@@ -695,7 +702,7 @@ bool BeginStreamingResponse(int fd, ResponseState* state,
       "Content-Type: text/event-stream\r\n"
       "Cache-Control: no-cache\r\nX-Accel-Buffering: no\r\n" +
       RequestIdHeader(fd) +
-      (context ? context->ResponsesCacheVaryHeader() : "") +
+      (context ? context->ResponsesSdkVaryHeader() : "") +
       (persistent ? "Connection: keep-alive\r\nTransfer-Encoding: chunked\r\n\r\n"
                   : "Connection: close\r\n\r\n");
   ServeFaultPoint("handler.before_header");
@@ -767,7 +774,7 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
       "\r\nContent-Type: " + content_type +
       "\r\nContent-Length: " + std::to_string(body.size()) + "\r\n" +
       RequestIdHeader(fd) +
-      (context ? context->ResponsesCacheVaryHeader() : "") +
+      (context ? context->ResponsesSdkVaryHeader() : "") +
       (no_store ? "Cache-Control: no-store\r\n" : "") +
       (allow.empty() ? "" : "Allow: " + std::string(allow) + "\r\n") +
       (location.empty() ? "" : "Location: " + std::string(location) + "\r\n") +

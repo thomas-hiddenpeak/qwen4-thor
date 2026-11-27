@@ -1,0 +1,72 @@
+{
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 53.736,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "clients": {
+    "2.8.1": {
+      "sdk": "2.8.1",
+      "id": "resp_23f5393860c93829077e69f040447b7b",
+      "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+      "string_error": true,
+      "get_sha256": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+      "events": 38,
+      "cursor": 6,
+      "resumed": 31,
+      "foreign_404": 2
+    },
+    "3.55.1": {
+      "sdk": "3.55.1",
+      "id": "resp_23f5393860c93829077e69f040447b7b",
+      "approved_id": "resp_46fef633077d3931167ae8dea06ca144",
+      "string_error": false,
+      "get_sha256": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+      "events": 38,
+      "cursor": 6,
+      "resumed": 31,
+      "foreign_404": 2
+    }
+  },
+  "wire_sha256": {
+    "2.8.1": {
+      "resource.json": "43d23711cc30ab4e8fd969c774513c29e084f4d2d40a1a47f85d42d9a6932305",
+      "replay.json": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28"
+    },
+    "3.55.1": {
+      "resource.json": "979404065fb880bb4c616558d5799be988157c793223bc03996bd0c3358e8a7b",
+      "replay.json": "75003394cbb6873e93988135f9f962c0bda6ac1e1afffd29cba025ba76ea20dc"
+    }
+  },
+  "raw_live_sha256": "c464d49269b6880b262549bbdcff49695e6f7c15be38fe32a774e60bf6d2eb28",
+  "raw_approved_sha256": "f389ccee574c919bee20376809ca6061a153322cae814af6711347dac82e3067",
+  "compiled": {
+    "q4t": "1178ccbd8ea9737932d8d6ebd083e6641c358cec47b92ef91f467fb6be8efb8d",
+    "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+    "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+    "q4t-cuda-probe": "4cf9425066acefb6165259624653e3f7b8d5d101a81b3b2c3a0fd9b052881632",
+    "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+  },
+  "source_commit": "e9a81b8db6a60d8e4943ef0af26fa5593f77d74a",
+  "previous_revision": 560,
+  "original": "72c33b261548665a38469e4021285cb9a0fe7238dc28705dd802110f330a0903",
+  "protected": {
+    "build/q4t": "239378a2c0d71e4b7e39aecebf0329057190adb30bc12784ff82cd9e0f05391c",
+    "build/service/manifest.json": "5c7fec159c48911c0b076761d48b21164a7c6de1c3a4b2763e7e969ce7fd7116",
+    "build/service.release.json": "716df35d200638a114aac9425d33066226a91965692142ea5a60eb7f4a8e4870",
+    "build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+  },
+  "strict_lease_sha256": "f3f10e55e08f5ae5247941b2d4f4437de96d9ac76eb2a6a1d5c967b4f72f96b9",
+  "model_requests": 4,
+  "tool_reads": 1,
+  "reason": "one approved project-document read and one denial, both owned by the same principal; complete old live stream and modern replay are lossless",
+  "receipt_sha256": "90e4d51f083d958d13ac5e2b837e86a90e324bb60a16eb984861944f13ce3903",
+  "remaining": [
+    "capacity profiles and managed recovery",
+    "reversible release"
+  ]
+}

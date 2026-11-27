@@ -23,6 +23,7 @@
 namespace q4t::io { struct Json; }
 namespace q4t::server {
 class IResponsesStreamCapture;
+enum class PythonResponsesView : unsigned char;
 }
 namespace q4t::server::detail {
 
@@ -98,11 +99,12 @@ class HttpResponseContext {
   HttpResponseContext& operator=(const HttpResponseContext&) = delete;
   static HttpResponseContext* Current(int fd);
   static bool LegacyCacheRetention();
-  void SetLegacyCacheRetention(bool enabled) {
-    legacy_cache_retention_ = enabled;
+  static bool LegacyMcpError();
+  void SetResponsesView(PythonResponsesView view) {
+    responses_view_ = view;
   }
-  const char* ResponsesCacheVaryHeader() const {
-    return legacy_cache_retention_.has_value()
+  const char* ResponsesSdkVaryHeader() const {
+    return responses_view_.has_value()
                ? "Vary: X-Stainless-Lang, X-Stainless-Package-Version\r\n"
                : "";
   }
@@ -293,7 +295,7 @@ class HttpResponseContext {
   std::optional<double> realtime_temperature_;
   const io::Json* realtime_startup_ = nullptr;
   bool responses_multi_agent_ = false;
-  std::optional<bool> legacy_cache_retention_;
+  std::optional<PythonResponsesView> responses_view_;
   bool assistants_beta_ = false;
   bool agents_beta_ = false;
   bool chatkit_beta_ = false;

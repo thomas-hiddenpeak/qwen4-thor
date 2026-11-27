@@ -5,7 +5,10 @@
 #include <fstream>
 
 #include "../src/server/responses_json.h"
+#include "q4t/server/http_request.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/output_schema.h"
+#include "q4t/server/responses_execution.h"
 #include "q4t/server/responses_item_shape.h"
 #include "q4t/test.h"
 
@@ -159,6 +162,8 @@ Q4T_TEST(responses_mcp_output_approval_is_complete_without_fabricated_call) {
 }
 
 Q4T_TEST(responses_mcp_output_native_error_data_matches_failure_and_dispatch) {
+  detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
+  context.SetResponsesView(PythonResponsesView::kStringMcpError);
   ResponsesOutput output;
   std::string wire, part;
   size_t call;
@@ -202,6 +207,33 @@ Q4T_TEST(responses_mcp_output_native_error_data_matches_failure_and_dispatch) {
   Q4T_CHECK(wire.find("response.mcp_call.failed") != wire.npos);
   Q4T_CHECK(output.Snapshot().GetArray("output")->array[call].GetString(
                 "output") == OutputJson(native));
+  ObjectStore objects({});
+  ResponsesExecution execution(objects);
+  const std::string error = OutputJson(*failed.Find("error"));
+  const auto projected = execution.PublicWire(wire);
+  Q4T_CHECK(wire != projected);
+  std::vector<Json> canonical, legacy;
+  Q4T_CHECK(Events(wire, &canonical) && Events(projected, &legacy));
+  Q4T_CHECK(canonical.size() == legacy.size());
+  size_t changed = 0;
+  for (size_t i = 0; i < canonical.size(); ++i) {
+    if (OutputJson(canonical[i]) == OutputJson(legacy[i])) continue;
+    auto& event = legacy[i];
+    auto& item = event.Has("item") ? Field(event, "item")
+                                   : Field(Field(event, "response"),
+                                           "output").array.at(call);
+    Q4T_CHECK(item.GetString("error") == error);
+    Set(&item, "error", Value(item.GetString("error")));
+    Q4T_CHECK(OutputJson(event) == OutputJson(canonical[i]));
+    ++changed;
+  }
+  Q4T_CHECK(changed == 2);
+  Q4T_CHECK(Value(output.Json()).GetArray("output")->array.at(call)
+                .GetString("error") == error);
+  context.SetResponsesView(PythonResponsesView::kCurrent);
+  Q4T_CHECK(execution.PublicWire(wire) == wire);
+  Q4T_CHECK(Value(output.Json()).GetArray("output")->array.at(call)
+                .Find("error")->IsObject());
   Q4T_CHECK(Save("native-error", output, wire));
   return true;
 }

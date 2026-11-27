@@ -361,7 +361,8 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       context.SetResponsesMultiAgent(headers.responses_multi_agent &&
                                      IsResponsesTarget(path));
       if (IsResponsesTarget(path))
-        context.SetLegacyCacheRetention(!headers.legacy_cache_sdk_version.empty());
+        context.SetResponsesView(
+            ClassifyPythonResponsesVersion(headers.legacy_python_sdk_version));
       const auto kind = ClassifyHttpConnection(method, path);
       if (operations && ((kind != HttpConnectionClass::kControl &&
                           kind != HttpConnectionClass::kObservation) ||

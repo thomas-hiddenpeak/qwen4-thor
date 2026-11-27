@@ -1,0 +1,108 @@
+{
+  "scope": "two independent native CPU HTTP fixture processes against a closed real MCP store",
+  "rows": [
+    {
+      "phase": "primary",
+      "clients": {
+        "2.8.1": {
+          "receipt": {
+            "sdk": "2.8.1",
+            "id": "resp_b10b7c6a9b91952b64c30673b6e79d61",
+            "approved_id": "resp_fb29b55a96a7006c7ce3384683ea1ffc",
+            "string_error": true,
+            "get_sha256": "b00ce114d2e0fd92fd327d6da500093109b0253ef92acf0d996049dcb4779d6c",
+            "events": 38,
+            "cursor": 6,
+            "resumed": 31,
+            "foreign_404": 2
+          },
+          "wire_sha256": {
+            "resource.json": "b00ce114d2e0fd92fd327d6da500093109b0253ef92acf0d996049dcb4779d6c",
+            "replay.json": "367f30c181da107c848f7deb3495edb16335bde9832caedf89b46395b7d37e24"
+          }
+        },
+        "3.55.1": {
+          "receipt": {
+            "sdk": "3.55.1",
+            "id": "resp_b10b7c6a9b91952b64c30673b6e79d61",
+            "approved_id": "resp_fb29b55a96a7006c7ce3384683ea1ffc",
+            "string_error": false,
+            "get_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+            "events": 38,
+            "cursor": 6,
+            "resumed": 31,
+            "foreign_404": 2
+          },
+          "wire_sha256": {
+            "resource.json": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+            "replay.json": "643ad092b3af7de8c026cb4ff5458c2a46a2f2b2fce406eda3fdd2e34b2cb640"
+          }
+        }
+      }
+    },
+    {
+      "phase": "light",
+      "clients": {
+        "2.8.1": {
+          "receipt": {
+            "sdk": "2.8.1",
+            "id": "resp_b10b7c6a9b91952b64c30673b6e79d61",
+            "approved_id": "resp_fb29b55a96a7006c7ce3384683ea1ffc",
+            "string_error": true,
+            "get_sha256": "b00ce114d2e0fd92fd327d6da500093109b0253ef92acf0d996049dcb4779d6c",
+            "events": 38,
+            "cursor": 6,
+            "resumed": 31,
+            "foreign_404": 2
+          },
+          "wire_sha256": {
+            "resource.json": "b00ce114d2e0fd92fd327d6da500093109b0253ef92acf0d996049dcb4779d6c",
+            "replay.json": "367f30c181da107c848f7deb3495edb16335bde9832caedf89b46395b7d37e24"
+          }
+        },
+        "3.55.1": {
+          "receipt": {
+            "sdk": "3.55.1",
+            "id": "resp_b10b7c6a9b91952b64c30673b6e79d61",
+            "approved_id": "resp_fb29b55a96a7006c7ce3384683ea1ffc",
+            "string_error": false,
+            "get_sha256": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+            "events": 38,
+            "cursor": 6,
+            "resumed": 31,
+            "foreign_404": 2
+          },
+          "wire_sha256": {
+            "resource.json": "9f0b338439d6c16ba3b9098e99dd49776cbc9735940681d18ba9fbd0e94e4e7d",
+            "replay.json": "643ad092b3af7de8c026cb4ff5458c2a46a2f2b2fce406eda3fdd2e34b2cb640"
+          }
+        }
+      }
+    }
+  ],
+  "release_handoff": {
+    "tool": "tools/serve_audit/refresh_release_handoff.py",
+    "prior": "rev426",
+    "candidate": 560,
+    "checks": [
+      "installed engine and manifest",
+      "independent rollback identity",
+      "idempotence",
+      "five invalid publication controls"
+    ]
+  },
+  "negative_controls": [
+    "get_sha256",
+    "id",
+    "approved_id",
+    "cursor",
+    "resumed",
+    "foreign_404",
+    "string_error",
+    "replay digest"
+  ],
+  "model_starts": 0,
+  "store_files_unchanged": 7,
+  "source_sha256": "2a739b0019d8047d048683d6c5e00be075257f26c897ac544bb8013a4e7659fe",
+  "actual_predecessor": "requires issued cache-retention release and profiles"
+}

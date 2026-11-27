@@ -251,7 +251,8 @@ class Stage(workers.ice.Stage):
             'response_failure_handoff', 'video_clip_handoff', 'quickdraw_region_handoff', 'tool_map_handoff',
             'null_assistant_history_handoff', 'stored_parts_handoff', 'conversation_compaction_handoff',
             'approval_identifiers_handoff', 'local_shell_handoff', 'client_patch_handoff', 'client_shell_handoff', 'program_fork_handoff',
-            'video_track_grid_handoff', 'chatkit_interrupted_retry_handoff', 'video_layer_handoff', 'cache_retention_handoff'}.intersection(self.plan):
+            'video_track_grid_handoff', 'chatkit_interrupted_retry_handoff', 'video_layer_handoff', 'cache_retention_handoff',
+            'mcp_error_sdk_handoff'}.intersection(self.plan):
             from tools.serve_responses import chatkit_actions_profiles
             chatkit_actions_profiles.business(self, capabilities)
         if 'chatkit_retry_handoff' in self.plan:

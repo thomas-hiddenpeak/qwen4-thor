@@ -36879,7 +36879,14 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               },
               "error": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/523"
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/523"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
               },
               "id": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
@@ -44216,7 +44223,14 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
               },
               "error": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/523"
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/523"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
               },
               "id": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/3"
