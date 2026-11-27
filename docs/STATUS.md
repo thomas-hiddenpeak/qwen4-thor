@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev588 已发行长稳监控日志轮转修复。两个配置各完成了 19 个实际业务请求，归档复核已通过。默认保持 STOPPED，回退包已登记，13 份客户与恢复状态已核对。新版音频日稳入口已完成只读预检，24 小时实跑由用户执行。 [发行和交接](evidence/serve-native-soak-retention-20261128/delivery.json)
+
 当前默认版本表、Q02 任务清单和总计划已与设备登记的 rev586 对齐。交接工具会核对稳定发行号、主包与回退包的实际注册摘要；针对旧发行号、进行中的切换及错误注册包均已通过反例检查。 [发行回执](evidence/serve-openapi-ingress-auth-20261128/delivery.json)
 
 rev586 已发行，默认服务保持 STOPPED，回退包已登记。两份包各用 Swagger 完成 9 个实际请求，均成功创建和吊销会话并答出 42。原有 13 份运行状态保持相同，已为新版校验长稳入口和冷启动预案。 [发行记录](evidence/serve-openapi-ingress-auth-20261128/delivery.json)
@@ -1422,12 +1424,12 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev586**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev586 发行回执](evidence/serve-openapi-ingress-auth-20261128/delivery.json)
+本机登记的发行版本为 **rev588**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev588 发行回执](evidence/serve-native-soak-retention-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246` |
-| 回退服务包清单 | `bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae` |
+| 主服务包清单 | `dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b` |
+| 回退服务包清单 | `105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266` |
 | 默认引擎 | `231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
