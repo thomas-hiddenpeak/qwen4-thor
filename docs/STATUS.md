@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev590 已发行并发上传修复。两个客户会话同时为同一所属者完成上传时，相同参数返回同一个 File ID，不同参数返回 409。模型退出和网关切换后均能按原 ID 重试并续传。设备默认状态为 STOPPED，回退包已登记，发布时模型启动为零。24 小时计划与 NVML 冷启动入口已预检。 [发行回执](evidence/serve-upload-completion-race-20261128/delivery.json)
+
 候选模型意外退出后，六版客户端取回了完成上传的原 File ID，按原分片续传第二份文件；主网关异常、独立回退包接手后重复验证通过。每种故障均有两代模型、25 个 SDK 请求和 1 个独立 Chat，两次均从原文件答出 223，Chat 答出 42。下一步登记已验证的包。 [恢复回执](evidence/serve-upload-completion-race-20261128/managed.json)
 
 主配置留下完成的上传后，轻配置用相同参数重试，取回原 File ID，按原字节下载并删除。两档均验证了并发相同请求得到两个 200，不同参数得到 200 和 409。共两次模型启动、36 个官方 SDK 请求，77 次 NVML 采样通过。两档记录可逐项还原上一版容量记录。下一步封装候选并验证托管恢复。 [容量业务回执](evidence/serve-upload-completion-race-20261128/profiles.json)
@@ -1446,13 +1448,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev588**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev588 发行回执](evidence/serve-native-soak-retention-20261128/delivery.json)
+本机登记的发行版本为 **rev590**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev590 发行回执](evidence/serve-upload-completion-race-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b` |
-| 回退服务包清单 | `105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266` |
-| 默认引擎 | `231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742` |
+| 主服务包清单 | `7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652` |
+| 回退服务包清单 | `eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9` |
+| 默认引擎 | `aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

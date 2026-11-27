@@ -1,0 +1,142 @@
+{
+  "stage": "stopped_default_and_operator_handoff",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 590,
+    "version_revision": 224,
+    "profile_revision": 109,
+    "previous_profile_revision": 108,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652",
+    "fallback": "eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9",
+    "engine": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 588,
+  "short_receipt_sha256": "4168a522e5491d5ec10198ae2c3ea190042a243bacc72f2f86a234293276eb6a",
+  "capacity_receipt_sha256": "d59a87eda1f705b562daf5b662ef8dd34a43a0be35474fb12f0e1f9777deef1b",
+  "profile_transition": {
+    "from_revision": 108,
+    "to_revision": 109,
+    "request": "36c8649c-5d1f-46d7-985d-fd7a3dddb3e3",
+    "migration_request": "d1783daa-811b-5706-a161-85ffeeaf7910",
+    "bound_registry": "bee89af5e57b5b13aa3320f4908e314634d4de024bbbbb5e30ad500a519ff7dd",
+    "policy": "b20410edd9df8adf1dffdb46c38f8a5402586a6aa1ba4edbcbfc5e23c0751401",
+    "capacities_unchanged": true,
+    "thresholds_and_budgets_unchanged": true,
+    "protected_runtime_fields": [
+      "selected",
+      "clock",
+      "pending",
+      "not_before_ns",
+      "light_since_ns",
+      "history"
+    ],
+    "protected_file_count": 13,
+    "model_starts": 0
+  },
+  "day": {
+    "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-completion-day-src/.q4t-work/day-01/audio-day.sh",
+    "operator_sha256": "cd4161ceb6f1c1a7989440f363400201d4fbadda134c1caf5532176afbf61605",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-completion-day-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "cbb1751d660d755220f218063741f1395e40bbe798011acaa7577b84be7d134b",
+    "business_requests": 7250,
+    "first_hour_business": 304,
+    "checked_at": "2026-11-27T22:51:12.966124+00:00",
+    "minimum_evidence_free_bytes": 12884901888,
+    "source": "c48b7aff90ceebd09d0aa064f7990c8d4acc7a97",
+    "audio_pairs": 25,
+    "hours_executed": 0
+  },
+  "cold": {
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/upload-completion-day-src/.q4t-work/cold590-01/plan.json",
+    "plan_sha256": "7608e740e021ee8c749cb2e4b3cabb16357717726adc4e39f683f994b7fa8e51",
+    "model_actions": 0,
+    "host_units_modified": false
+  },
+  "retention_maintenance": {
+    "result": {
+      "status": "PASS",
+      "pools": {
+        "generations": {
+          "before": 32,
+          "archived": [
+            "47b18109b44cbe29f49390330557bb80d3ecf0958ce1f564c250d5e1195bf1da"
+          ],
+          "sha256": "8e834861492e661584f9d73da612a726148ebbb45a764ceab77627b1791f0b1d",
+          "unchanged_bytes_and_inodes": true
+        },
+        "versions": {
+          "before": 18,
+          "archived": [
+            "98b44570-65ae-40f9-952a-1d5ef883755d"
+          ],
+          "sha256": "a375c5e31b43c93c1e979ebfe4945186e901c384bd4cce3b4833e9e4529abe01",
+          "unchanged_bytes_and_inodes": true
+        },
+        "intents": {
+          "before": 128,
+          "archived": [
+            "e2cb440b-3a77-465c-9118-b68aac71c466"
+          ],
+          "sha256": "a438a63a3bb267bc5c893a5935f36df657fac7b0a60b6d7b75ecf8fe55629bcd",
+          "unchanged_bytes_and_inodes": true
+        }
+      },
+      "protected_files": 8,
+      "unchanged": true,
+      "model_starts": 0,
+      "resumed_after_env_abort": true,
+      "original_lease_sha256": "021f0f22d6319fde49d324e8e682c08fb9714f0a3b4382aaf6a4bddf26231fe4",
+      "repeated_archival_actions": 0
+    },
+    "source": "serve-responses-agents-20261123/upload-completion-maintenance-01/result.json",
+    "initial_reason": "competing workload during lease",
+    "competing_command": [
+      "q4t",
+      "serve",
+      "--port",
+      "invalid-port"
+    ],
+    "competing_nvidia_context": false,
+    "intermediate_check": "Compared the archival policy digest with the entire envelope; corrected to the policy canonical digest.",
+    "intermediate_lease_sha256": "5fd5cf9c41741ae6e15e6744855d2665ffe42d6b697c39d2c2fa8b704219f43f",
+    "resumed_lease_sha256": "cbe9009f4b2033223f99d466ce25a409a07165d658004501e1c7b41805d315bf"
+  },
+  "profile_audit_retry": {
+    "first_log_sha256": "e6970d15ff16be8c592b6ab9beb792120888b8fe3f37f2001f4f9cb72866714a",
+    "corrected_check_sha256": "acd62387444418acb82bdbe4a917408455d5593306cf533a547cc6aa6bd24597",
+    "reason": "Initial post-publication audit referenced the first interrupted maintenance lease. Checked both unsuccessful attempts and required the successful maintenance and publication leases.",
+    "repeated_publication": false,
+    "repeated_archival_actions": 0
+  },
+  "required_methods": 231,
+  "declared_methods": 219,
+  "method_coverage": {
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "openapi_sha256": {
+      "primary": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+      "fallback": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326"
+    },
+    "remaining_declarations": [
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "GET /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "GET /videos/{video_id}",
+      "DELETE /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /videos/{video_id}/remix"
+    ]
+  },
+  "previous_delivery": "../serve-native-soak-retention-20261128/delivery.json"
+}
