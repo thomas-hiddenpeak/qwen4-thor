@@ -1,0 +1,28 @@
+{
+  "stage": "server_overlap_observer_cpu",
+  "device_verified": false,
+  "issued": false,
+  "sources": {
+    "tools/native_embedding/asset_admission_http.py": "67355d64eaba6c9b3f74f32a53edd611ae89a021f4c6d956a550b02a080660a6",
+    "tools/native_embedding/test_asset_admission_observer.py": "55716ccec1aff3a495a95166f2eb3a75b87769bbcedcbc12e82c2a65383e6e60"
+  },
+  "targeted_cpu_tests": 4,
+  "log_sha256": "14883f9ccb1c1d3a8c99fa5d4e9a597024aa4305c69f5ed6e92413d43cdcfeea",
+  "observed_conditions": [
+    "both backends cold before requests",
+    "both backends report loading while original embedding reader still holds the expected weight inode",
+    "both ready with positive retained weights and zero load failures"
+  ],
+  "negative_controls": [
+    "already ready VAD",
+    "degraded VAD",
+    "already ready embedding",
+    "closed weight",
+    "changed process identity"
+  ],
+  "business_post_limits": {
+    "embeddings": 1,
+    "live_sessions": 1,
+    "chat": 1
+  }
+}

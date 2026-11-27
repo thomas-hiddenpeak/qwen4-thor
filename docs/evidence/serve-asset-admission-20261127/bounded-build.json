@@ -1,0 +1,27 @@
+{
+  "stage": "native_build_and_observer_cpu",
+  "release": false,
+  "device_verified": false,
+  "source_commit": "d03da49600cf18d102633b7dd174a79372b39ee9",
+  "engine": "312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b",
+  "compiled_sources": 1104,
+  "compiled_delta": [
+    "src/server/model_assets.cpp"
+  ],
+  "compiler_warnings": 0,
+  "protected_files": 5,
+  "cpu_observation": [
+    "owned direct child",
+    "expected weight inode held",
+    "different inode rejected",
+    "closed descriptor rejected",
+    "exited child rejected"
+  ],
+  "http_workload": {
+    "embeddings": 1,
+    "live_webrtc": 1,
+    "chat": 1
+  },
+  "prior_targeted_native": "CPU_VERIFIED",
+  "test_driver_sha256": "31b884a883042a217ad707a9f9789cf2d654d319e4e9f548c99bce742a2ccf2e"
+}

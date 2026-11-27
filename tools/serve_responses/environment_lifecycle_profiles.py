@@ -41,9 +41,13 @@ def prepare(out, build, deployment, preparation=False):
 
 
 def prepare_candidate(out, build, deployment, release_path, reviewed, key, drivers):
-    release = pkg.read(release_path)['publication']
+    prepare_from_manifest(out, build, deployment, pkg.read(release_path)['publication']['primary'],
+                          reviewed, key, drivers)
+
+
+def prepare_from_manifest(out, build, deployment, manifest_sha256, reviewed, key, drivers):
     source = deployment/'build/service'
-    manifest = bundle.verify(source, release['primary'])
+    manifest = bundle.verify(source, manifest_sha256)
     engine = pkg.verify(source/'engine', manifest['engine_manifest_sha256'])
     sources = pkg.read(build/'generated/q4t/server/chat_protocol_sources.json')
     pkg.require(all(pkg.sha(ROOT/name) == digest for name,digest in sources.items()),
@@ -75,7 +79,7 @@ def prepare_candidate(out, build, deployment, release_path, reviewed, key, drive
                               tokens_per_minute=32000, max_prompt_tokens=8192)
         pkg.save(phase/'client-policy.json', policy)
         shutil.copy2(phase/'client-policy.json',phase/'engine/client-policy.json')
-        plan[key] = dict(previous=anchor, release=release['primary'], protocol=protocol(sources))
+        plan[key] = dict(previous=anchor, release=manifest_sha256, protocol=protocol(sources))
         plan.update(ingress=str(ingress),
                     client_policy_sha256=pkg.sha(phase/'client-policy.json'),
                     installed_policy_sha256=pkg.sha(phase/'engine/client-policy.json'))

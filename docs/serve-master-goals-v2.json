@@ -980,13 +980,15 @@
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false,
+        "issued": true,
         "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
-        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json",
+        "revision": 580,
+        "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       }
     },
     {
@@ -4104,13 +4106,15 @@
         "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false,
+        "issued": true,
         "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
-        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json",
+        "revision": 580,
+        "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
         "stage": "device_verified",
@@ -4373,13 +4377,15 @@
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false,
+        "issued": true,
         "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
-        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json",
+        "revision": 580,
+        "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       }
     },
     {
@@ -7093,6 +7099,15 @@
         "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json",
         "revision": 574,
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
+      },
+      "model_asset_admission_20261127": {
+        "stage": "managed_verified",
+        "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
+        "observer": "evidence/serve-asset-admission-20261127/observer.json",
+        "issued": false,
+        "device": "evidence/serve-asset-admission-20261127/device.json",
+        "capacity": "evidence/serve-asset-admission-20261127/profiles.json",
+        "managed": "evidence/serve-asset-admission-20261127/managed.json"
       }
     },
     {
@@ -9633,13 +9648,15 @@
         "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false,
+        "issued": true,
         "device": "evidence/serve-voice-consent-pagination-20261127/device.json",
-        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json"
+        "capacity": "evidence/serve-voice-consent-pagination-20261127/profiles.json",
+        "revision": 580,
+        "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
         "stage": "device_verified",
@@ -10913,8 +10930,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 578,
-        "receipt": "evidence/serve-agent-turn-cache-20261127/delivery.json",
+        "revision": 580,
+        "receipt": "evidence/serve-voice-consent-pagination-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -11053,6 +11070,15 @@
         "business": "evidence/serve-reclaim-pressure-20261126/business.json",
         "revision": 538,
         "delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json"
+      },
+      "model_asset_admission_20261127": {
+        "stage": "managed_verified",
+        "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
+        "observer": "evidence/serve-asset-admission-20261127/observer.json",
+        "issued": false,
+        "device": "evidence/serve-asset-admission-20261127/device.json",
+        "capacity": "evidence/serve-asset-admission-20261127/profiles.json",
+        "managed": "evidence/serve-asset-admission-20261127/managed.json"
       }
     },
     {
@@ -12753,7 +12779,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev578_delivered_remaining_deliveries",
+      "state": "rev580_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -14205,7 +14231,8 @@
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
       "current_defaults_delivery": "evidence/serve-request-defaults-20261127/delivery.json",
-      "current_agent_cache_delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
+      "current_agent_cache_delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json",
+      "current_cursor_pagination_delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -14310,16 +14337,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "2f8270137b757e61cc2046824bef217e7faafdaf",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/turn-cache-soak-src",
+        "source_commit": "72e06be01643969639ef79a735961096890e687c",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cursor-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/turn-cache-client-primary-01/bundle",
-          "manifest_sha256": "c9cc786faa14e543d4a652d7735a07bec43418ffba692fd536c046246c0c5d03"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cursor-page-client-primary-02/bundle",
+          "manifest_sha256": "008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1"
         },
-        "revision": 578,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/turn-cache-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "6be27a8e87a4ad66af6aeefc5c6238043c6d7ab48b4b4caa68ca802cf2f318fe",
-        "handoff_sha256": "2bf8fe366a31a7215a3f6a7031d87121569f477d026704c66e0d917a743ca4bc",
+        "revision": 580,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/cursor-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "f0918b1f05914dedc96181c5938c344557d649778d67bfc9e8bbc2082aef593c",
+        "handoff_sha256": "d65e3f277571ca452ae76360b2a4db2d3a3fe18d33a79fbaa982f13d4db0e39e",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14730,9 +14757,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 578,
-        "receipt": "evidence/serve-agent-turn-cache-20261127/delivery.json",
-        "plan_sha256": "6be27a8e87a4ad66af6aeefc5c6238043c6d7ab48b4b4caa68ca802cf2f318fe",
+        "revision": 580,
+        "receipt": "evidence/serve-voice-consent-pagination-20261127/delivery.json",
+        "plan_sha256": "f0918b1f05914dedc96181c5938c344557d649778d67bfc9e8bbc2082aef593c",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
