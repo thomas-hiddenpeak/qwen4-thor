@@ -5230,8 +5230,8 @@
     "tools/serve_soak/evidence.py": "539023f8386e27daadea71bd0b4eacd1a883d202c1db5e10f9b10994a4f58eec",
     "tools/serve_soak/native_audio.py": "ce52131f29772e760239094ea9648ee684cfb3b191ff238e2cbf4a7891cb09dc",
     "tools/serve_soak/native_contract.py": "53f1f1a256f8621a746a97e673d1700ceb50aa256fa414e77575513357ca30c2",
-    "tools/serve_soak/native_report.py": "d997214959cdce87b94128a371862b11329dfd2b3488d17bf6b2b298a45a77dc",
-    "tools/serve_soak/native_stage.py": "3bbab72617d95bd7338efc21cc15f666226cfad6b267adea1eeaae3d88c922ca"
+    "tools/serve_soak/native_report.py": "d3b69cd5f169ab8bc9f4aa3bad6b2aca17552c11e40418219989669c2342549a",
+    "tools/serve_soak/native_stage.py": "13391d90185c760014c047bc7788dc7a58397280a0a39791537fe2b501cfa1eb"
   },
   "input_contract_review": "docs/SERVE_INPUT_CONTRACT_2026-11-02.md",
   "resource_review": "docs/SERVE_RESOURCE_BOUNDARIES_2026-11-02.md",
