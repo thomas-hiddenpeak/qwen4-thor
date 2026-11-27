@@ -49,5 +49,48 @@
     "interrupted_cpu": "ebf43b798abcea43a23fb79061fd8ea173d8976f03d491d3dcda179b0b71945d"
   },
   "gpu_acceptance": false,
-  "issued": false
+  "issued": false,
+  "sdk_fixture_review": {
+    "previous_real_scenarios": {
+      "subagent-lifecycle-business-02": {
+        "root_count": 4,
+        "delegated_turn_count": 2,
+        "transitions": [
+          "closed",
+          "active"
+        ],
+        "actions": [
+          [
+            "spawn_agent",
+            "wait_agent"
+          ],
+          [],
+          [],
+          [
+            "followup_task",
+            "wait_agent"
+          ]
+        ]
+      },
+      "subagent-sse-business-02": {
+        "root_count": 2,
+        "delegated_turn_count": 2,
+        "transitions": [],
+        "actions": [
+          [
+            "spawn_agent",
+            "wait_agent"
+          ],
+          [
+            "followup_task",
+            "wait_agent"
+          ]
+        ]
+      }
+    },
+    "historical_comparison_sha256": "bcec9d7112be50d6de878e42e48c38d725bb5af33241e6f7710876432c11d983",
+    "sdk_script_sha256": "4f77496598b8435a25d50aa1d96325e62a180bc3c3bfdca218e0b824298c0b23",
+    "syntax_checked": true,
+    "model_starts": 0
+  }
 }
