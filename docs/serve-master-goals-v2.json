@@ -938,13 +938,15 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
-        "stage": "real_tls_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-program-sdk-reader-20261127/cpu.json",
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
         "business": "evidence/serve-program-sdk-reader-20261127/business.json",
-        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
+        "revision": 568,
+        "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       }
     },
     {
@@ -3262,13 +3264,15 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
-        "stage": "real_tls_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-program-sdk-reader-20261127/cpu.json",
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
         "business": "evidence/serve-program-sdk-reader-20261127/business.json",
-        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
+        "revision": 568,
+        "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       }
     },
     {
@@ -7993,13 +7997,15 @@
         "delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
-        "stage": "real_tls_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-program-sdk-reader-20261127/cpu.json",
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
         "business": "evidence/serve-program-sdk-reader-20261127/business.json",
-        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
+        "revision": 568,
+        "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       }
     },
     {
@@ -9398,17 +9404,21 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
-        "stage": "real_tls_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-program-sdk-reader-20261127/cpu.json",
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
         "business": "evidence/serve-program-sdk-reader-20261127/business.json",
-        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
+        "revision": 568,
+        "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       },
       "packaged_response_readers_20261127": {
-        "stage": "cpu_fixture_verified_pending_issued_package",
-        "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json"
+        "stage": "issued",
+        "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json",
+        "revision": 568,
+        "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       }
     },
     {
@@ -10656,8 +10666,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 566,
-        "receipt": "evidence/serve-compact-inline-media-20261127/delivery.json",
+        "revision": 568,
+        "receipt": "evidence/serve-program-sdk-reader-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12453,19 +12463,21 @@
         "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
-        "stage": "real_tls_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-program-sdk-reader-20261127/cpu.json",
         "native_field": "response.function_call_arguments.done.name",
         "scope": "Retained and live presentation; managed GPU and publication pending.",
         "stock_legacy_program_union": false,
         "business": "evidence/serve-program-sdk-reader-20261127/business.json",
-        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
+        "revision": 568,
+        "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev566_delivered_remaining_deliveries",
+      "state": "rev568_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13827,10 +13839,13 @@
       "current_response_cache_retention_delivery": "evidence/serve-response-cache-retention-20261127/delivery.json",
       "current_mcp_error_sdk_delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json",
       "packaged_response_readers_20261127": {
-        "stage": "cpu_fixture_verified_pending_issued_package",
-        "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json"
+        "stage": "issued",
+        "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json",
+        "revision": 568,
+        "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       },
-      "current_compact_media_delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
+      "current_compact_media_delivery": "evidence/serve-compact-inline-media-20261127/delivery.json",
+      "current_program_sdk_delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -13935,16 +13950,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "91a19f2b006530057159e562afebaac5c4a066f3",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-delivery-soak-src",
+        "source_commit": "0928901e4a5e9fa7eb9c4d7129b1d670b9cc07b8",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-sdk-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-client-primary-01/bundle",
-          "manifest_sha256": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-sdk-client-primary-01/bundle",
+          "manifest_sha256": "fa0073b6eedfd3781a15a7265478510b8ecece4952247818bcd2272007dd6146"
         },
-        "revision": 566,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "a8097b4f90e7c6c33c3a063295a6c27b2e9d4817750bc126b9ecee217e34e71f",
-        "handoff_sha256": "10d3d9f892fab8daece512ea96761187d676108027bd4b057eadb44e94a4e84a",
+        "revision": 568,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-sdk-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "e7a735b4fb1027dbac9cf0901b65c9bc4e60be6ef1c00195a39fca747e6c3943",
+        "handoff_sha256": "6f9eece8327f7c0d0abd90262ba58bb50a6d0141df3250c2220add89b5a1d11b",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14355,9 +14370,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 566,
-        "receipt": "evidence/serve-compact-inline-media-20261127/delivery.json",
-        "plan_sha256": "a8097b4f90e7c6c33c3a063295a6c27b2e9d4817750bc126b9ecee217e34e71f",
+        "revision": 568,
+        "receipt": "evidence/serve-program-sdk-reader-20261127/delivery.json",
+        "plan_sha256": "e7a735b4fb1027dbac9cf0901b65c9bc4e60be6ef1c00195a39fca747e6c3943",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
