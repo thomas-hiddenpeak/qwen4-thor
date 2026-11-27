@@ -249,6 +249,44 @@ Q4T_TEST(asr_assets_protocol_profile_sizes_and_truncation_fail_closed) {
   return true;
 }
 
+Q4T_TEST(model_assets_wait_for_live_reader_then_load_verified_metadata) {
+  Fixture f;
+  f.Metadata();
+  GrammarControl holder;
+  holder.domain = IsolatedWorkerDomain::kModelAssets;
+  std::unique_ptr<detail::GrammarProcess> active;
+  Q4T_CHECK(detail::GrammarProcess::Start("--grammar-fixture-silent", holder,
+                                          &active));
+  std::jthread release([worker = std::move(active)]() mutable {
+    std::this_thread::sleep_for(80ms);
+    worker.reset();
+  });
+  Q4T_CHECK(LoadAsrAssets(f.directory, &f.output, f.control, &f.failure,
+                          false));
+  Q4T_CHECK(f.failure == GrammarFailure::kNone && f.output.tokenizer);
+  Q4T_CHECK(f.control.counters->started == 1 &&
+            f.control.counters->reaped == 1);
+  return true;
+}
+
+Q4T_TEST(model_assets_wait_obeys_cancel_and_deadline_without_spawning) {
+  Fixture f;
+  GrammarControl holder;
+  holder.domain = IsolatedWorkerDomain::kModelAssets;
+  std::unique_ptr<detail::GrammarProcess> active;
+  Q4T_CHECK(detail::GrammarProcess::Start("--grammar-fixture-silent", holder,
+                                          &active));
+  f.control.compile_deadline = Clock::now() + 80ms;
+  Q4T_CHECK(f.Rejected() && f.failure == GrammarFailure::kTimeout);
+  f.control.compile_deadline = Clock::now() + 2s;
+  const auto cancel_at = Clock::now() + 30ms;
+  f.control.cancelled = [cancel_at] { return Clock::now() >= cancel_at; };
+  Q4T_CHECK(f.Rejected() && f.failure == GrammarFailure::kCancelled);
+  Q4T_CHECK(f.control.counters->started == 0 &&
+            f.control.counters->active == 0);
+  return true;
+}
+
 Q4T_TEST(asr_assets_timeout_shares_embedding_slot_until_reaped) {
   Fixture f;
   detail::SetModelAssetWorkerForTesting("--model-asset-fixture-silent");

@@ -1,0 +1,59 @@
+{
+  "scope": "Shared native model-asset reader admission under concurrent load",
+  "status": "CPU_VERIFIED",
+  "device_verified": false,
+  "issued": false,
+  "issue": "An active healthy asset reader reserved the only isolation slot. A second backend reported worker unavailable immediately.",
+  "proof": {
+    "released_live_reader": "Next reader loads actual pinned ASR metadata and trained tokenizer with exactly one child.",
+    "exhausted_deadline": "Wait times out without a second child.",
+    "cancelled": "Waiting cancellation starts zero children.",
+    "unreaped": "An unreaped terminated worker retains its slot and returns unavailable immediately."
+  },
+  "affected_target": "q4t_model_asset_tests",
+  "native_link_fix": "Link the existing chat/speech usage and client accounting sources required by the existing TTS tests.",
+  "red": {
+    "passed": 1,
+    "failed": 2,
+    "log_sha256": "be6b90f671b20dbfde28b1033aa115017ac2994a393fdbd9838016c204230884"
+  },
+  "green": {
+    "passed": 3,
+    "failed": 0,
+    "log_sha256": "63f9dee72e9401d4fb84e399e8a88d6889d4b8fff6f5eaa483b5ff092271885e"
+  },
+  "affected": {
+    "names": [
+      "asr_assets_metadata_only_uses_trained_tokenizer_and_ignores_weights",
+      "asr_assets_preflight_cancel_deadline_and_capacity_start_no_child",
+      "model_assets_wait_for_live_reader_then_load_verified_metadata",
+      "model_assets_wait_obeys_cancel_and_deadline_without_spawning",
+      "asr_assets_timeout_shares_embedding_slot_until_reaped",
+      "tts_icl_usage_charges_all_groups_independently_of_workspace_rows",
+      "tts_icl_rate_rejects_text_only_undercount_for_tpm_and_prompt_limits",
+      "tts_icl_cancel_settles_only_started_reference_and_partial_output",
+      "tts_icl_actual_usage_agrees_across_speech_chat_and_settlement"
+    ],
+    "passed": 9,
+    "log_sha256": "54a7999f81704600aecc4154c80656e0dcbe2237f6a44277416d76da6b677ae4"
+  },
+  "source_sha256": {
+    "src/server/model_assets.cpp": "766f407bc347b95f5e4032fc91bf04c2228d438709e281d82e261f985315e3a1",
+    "cmake/ModelAssetTests.cmake": "85786f41da8fc94e41979b6d21d2dda13880dcecd96bbba52c2a5995fc66db34",
+    "tests/server_model_assets_test.cpp": "40f94df2d53e31b0397da858676a8df6d8dd05ab14ae65cf37d44705269c60ba",
+    "tools/serve_audit/inventory.json": "5104c5dc6a3a08e1bc70c586f87f96c231a7285fef75de48c20520d80698fd7f"
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "gpu_model_starts": 0,
+  "remaining": "Overlapping real vector ingestion and VAD through the service; private managed release and mainline integration."
+}

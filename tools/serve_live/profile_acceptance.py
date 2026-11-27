@@ -130,10 +130,11 @@ class Stage(workers.ice.Stage):
                     'client policy drift')
         return self.plan['command']
 
-    def api(self, method, path, *, client='alpha', body=None, agent_beta=False):
+    def api(self, method, path, *, client='alpha', body=None, agent_beta=False, timeout=None):
         ctx = ssl.create_default_context(cafile=self.plan['tls']['certificate'])
         conn = http.client.HTTPSConnection('127.0.0.1', self.plan['public_port'],
-                                           context=ctx, timeout=45 if agent_beta else 10)
+                                           context=ctx, timeout=timeout if timeout is not None
+                                           else (45 if agent_beta else 10))
         try:
             headers = {'Authorization':'Bearer '+self.keys[client], 'Content-Type':'application/json'}
             if agent_beta:
@@ -160,6 +161,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'asset_reader_retrieval' in self.plan:
+            from tools.native_embedding import asset_retrieval_profiles
+            asset_retrieval_profiles.business(self)
         if 'cursor_page_handoff' in self.plan:
             from tools.serve_responses import cursor_profiles
             cursor_profiles.business(self)

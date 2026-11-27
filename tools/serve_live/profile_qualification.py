@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'asset_reader_retrieval' in plan:
+            from tools.native_embedding import asset_retrieval_profiles
+            current = profiles[name]['evidence_sha256']
+            current.update(asset_retrieval_profiles.verify(phase, plan, declared, current))
+            continue
         if 'cursor_page_handoff' in plan:
             from tools.serve_responses import cursor_profiles
             current = profiles[name]['evidence_sha256']
