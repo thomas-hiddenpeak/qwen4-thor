@@ -1,0 +1,60 @@
+{
+  "stage": "short_verified_day_prepared",
+  "manifest_sha256": "12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb",
+  "source": "db68e907c3bdcd1214129f02602659791cd00b5a",
+  "short": {
+    "plan_sha256": "01ca6177ea09db6942e89100e86cbe043156f77db0dfc63ee9a32e3020b4a32a",
+    "report_sha256": "79a8508856f690a2cfdc63ad3c0df807c8bf31c5224b590ab62cedc0506a5eb0",
+    "seal_sha256": "fb78e47703c601ef90f7c492fa84fb1abc778ba1a5fb441b5768172cc1db02a6",
+    "starts": 1,
+    "business": 19,
+    "self_checks": 1,
+    "tool_executions": 3,
+    "cycles": 3,
+    "audio": [
+      {
+        "cycle": 1,
+        "bytes": 58368,
+        "speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+        "asr_upload_sha256": "cd7f384bf171708479c52a8cb2b4c049a10b5e6f02f905b657790dbea84ebbdf",
+        "recognized": "Hello. This is a native speech test.",
+        "speech_status": 200,
+        "transcription_status": 200
+      },
+      {
+        "cycle": 3,
+        "bytes": 58368,
+        "speech_sha256": "ba9ca74cd842909ce3422d42681bcdfacc3d7d09e1247218981ce683f226d9c4",
+        "asr_upload_sha256": "cd7f384bf171708479c52a8cb2b4c049a10b5e6f02f905b657790dbea84ebbdf",
+        "recognized": "Hello. This is a native speech test.",
+        "speech_status": 200,
+        "transcription_status": 200
+      }
+    ],
+    "cleanup": true,
+    "guard": {
+      "passed": true,
+      "records": 233,
+      "observations": 229,
+      "seconds": 254.6212422796525
+    },
+    "seconds": 255.05777745787054
+  },
+  "day": {
+    "plan_sha256": "b14887ee0bdfb684dcc5a9f75c7b1f7f6facb8df5d50b9ceb5bdf0453a8941ed",
+    "handoff_sha256": "afde2419798c671a91f4327941e4cf57c01a7b1abde2d141e63db4d233eac570",
+    "checked_handoff_sha256": "ac270895b96868d944be0cb7744549edcfc18a93967801d9eedf671f25280773",
+    "hours": 24,
+    "first_hour_business": 304,
+    "business": 7250,
+    "audio_pairs": 25,
+    "owner": "user",
+    "executed": false
+  },
+  "previous_short": "8c32676aebfbf3dbbca4cf0b2f4a1898054b8a3ac9c47ab45669c169cb031b67",
+  "boundary_fix": "7130abe683707f6555307c47418afe1e017cc4516fdf8fd134b3ed9c38348d34",
+  "initial_preflight": {
+    "result": "predecessor CLI rejected the newer registered evidence format before starting a model",
+    "log_sha256": "219e08360a25f1aedbc81ec0288411a96121fa3cd167323d1c655c142803e2f0"
+  }
+}

@@ -14756,11 +14756,13 @@
         "delivery": "evidence/serve-image-speech-recovery-20261126/delivery.json"
       },
       "native_soak_audio_20261127": {
-        "stage": "corrected_awaiting_short",
+        "stage": "short_verified_day_prepared",
         "cpu": "evidence/serve-native-soak-audio-20261127/cpu.json",
-        "actual_short_run": false,
+        "actual_short_run": true,
         "day_owner": "user",
-        "multipart": "evidence/serve-native-soak-audio-20261127/multipart.json"
+        "multipart": "evidence/serve-native-soak-audio-20261127/multipart.json",
+        "short": "evidence/serve-native-soak-audio-20261127/short.json",
+        "day_executed": false
       }
     }
   ],
