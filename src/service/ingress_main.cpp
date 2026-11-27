@@ -938,6 +938,11 @@ int Run(const Config& config) {
   server::HttpBodyBudget budget(server::kAggregateChatBodyBytes);
   server::HttpBodyBudget cancel_budget(server::kCancelBodyBudgetBytes);
   const std::string unavailable = UnavailableResponse();
+  const auto reject_before_handshake = [&](int fd) {
+    if (!config.tls)
+      ::send(fd, unavailable.data(), unavailable.size(),
+             MSG_NOSIGNAL | MSG_DONTWAIT);
+  };
   std::array<Slot, 32> slots;
   while (!stopped.load(std::memory_order_relaxed)) {
     if (credentials) credentials->Step(reload_credentials.exchange(false));
@@ -960,9 +965,7 @@ int Run(const Config& config) {
     auto slot = std::find_if(slots.begin(), slots.end(),
                              [](const auto& item) { return item.done.load(); });
     if (slot == slots.end()) {
-      if (!config.tls)
-        ::send(accepted.Get(), unavailable.data(), unavailable.size(),
-               MSG_NOSIGNAL | MSG_DONTWAIT);
+      reject_before_handshake(accepted.Get());
       continue;
     }
     if (slot->thread.joinable()) slot->thread.join();
@@ -971,33 +974,26 @@ int Run(const Config& config) {
     const auto context = credentials ? credentials->Context() : nullptr;
     try {
       slot->thread = std::thread([&, slot, source, context] {
-        bool started = false;
-        try {
-          Connection client(slot->fd);
-          if (!config.tls || client.Handshake(context)) {
-            server::HttpRequestState state;
-            const auto receive = [&](void* data, size_t size,
-                                     Clock::time_point deadline) {
-              return client.Read(data, size, deadline);
-            };
-            for (int request = 0; request < config.http.keep_alive_requests &&
-                                  !stopped.load(); ++request) {
-              if (request && !server::AwaitHttpRequest(client.Fd(), &state,
-                    config.http.keep_alive_idle_ms, receive)) break;
-              started = false;
-              if (!Handle(client, config, capacity, access, budget,
-                          cancel_budget, tunnel_budget, source, &started,
-                          &state,
-                          request + 1 < config.http.keep_alive_requests))
-                break;
-            }
-          }
-        } catch (...) {
-          if (!started && !config.tls) {
-            ::send(slot->fd, unavailable.data(), unavailable.size(),
-                   MSG_NOSIGNAL | MSG_DONTWAIT);
-          }
-        }
+        ServeConnection(
+            slot->fd, config.tls, context, unavailable,
+            [&](Connection& client, bool& started) {
+              server::HttpRequestState state;
+              const auto receive = [&](void* data, size_t size,
+                                       Clock::time_point deadline) {
+                return client.Read(data, size, deadline);
+              };
+              for (int request = 0; request < config.http.keep_alive_requests &&
+                                    !stopped.load(); ++request) {
+                if (request && !server::AwaitHttpRequest(client.Fd(), &state,
+                      config.http.keep_alive_idle_ms, receive)) break;
+                started = false;
+                if (!Handle(client, config, capacity, access, budget,
+                            cancel_budget, tunnel_budget, source, &started,
+                            &state,
+                            request + 1 < config.http.keep_alive_requests))
+                  break;
+              }
+            });
         {
           std::lock_guard guard(slot->mutex);
           ::close(slot->fd);
@@ -1006,6 +1002,7 @@ int Run(const Config& config) {
         slot->done.store(true);
       });
     } catch (...) {
+      reject_before_handshake(slot->fd);
       ::close(slot->fd);
       slot->fd = -1;
       slot->done.store(true);

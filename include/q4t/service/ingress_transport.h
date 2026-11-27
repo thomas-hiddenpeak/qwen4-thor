@@ -63,6 +63,23 @@ class Connection {
   std::unique_ptr<TlsStream> tls_;
 };
 
+// Keep the write half open through error handling. Only a negotiated HTTP
+// connection whose response has not started may receive a new response.
+void ServeConnection(int fd, bool require_tls,
+                     const std::shared_ptr<TlsContext>& context,
+                     std::string_view unavailable, auto&& handle) {
+  Connection client(fd);
+  bool http_ready = !require_tls;
+  bool started = false;
+  try {
+    if (require_tls) http_ready = client.Handshake(context);
+    if (http_ready) handle(client, started);
+  } catch (...) {
+    if (http_ready && !started)
+      client.Send(unavailable, Clock::now() + std::chrono::milliseconds(100));
+  }
+}
+
 Decision Authorize(const std::string& address, pid_t parent,
                    std::string_view client, bool control, int expected_port);
 OwnedFd Connect(int port, Connection& client,

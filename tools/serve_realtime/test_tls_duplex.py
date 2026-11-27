@@ -13,7 +13,7 @@ import unittest
 
 class Peer:
     def __init__(self, owner, *, trusted=True, version=ssl.TLSVersion.TLSv1_3,
-                 stall_ms=1000):
+                 stall_ms=1000, mode='--tls-peer'):
         self.output = Path(tempfile.mkdtemp(prefix='peer-', dir=owner.output))
         self.raw, child = socket.socketpair()
         self.backend, upstream = socket.socketpair()
@@ -23,7 +23,7 @@ class Peer:
         self.backend.settimeout(2)
         child.setblocking(False)
         upstream.setblocking(False)
-        self.process = subprocess.Popen([str(owner.binary), '--tls-peer',
+        self.process = subprocess.Popen([str(owner.binary), mode,
             str(owner.cert), str(owner.key), str(child.fileno()),
             str(upstream.fileno()), str(stall_ms)],
             pass_fds=(child.fileno(), upstream.fileno()),
@@ -131,6 +131,17 @@ class NativeTlsDuplex(unittest.TestCase):
         peer = Peer(self, **kwargs)
         self.addCleanup(peer.close)
         return peer
+
+    def test_error_before_response_is_sent_over_negotiated_tls(self):
+        peer = self.peer(mode='--http-error-peer')
+        peer.handshake()
+        raw = peer.read(4096)
+        headers, body = raw.split(b'\r\n\r\n')
+        self.assertTrue(headers.startswith(b'HTTP/1.1 503 Service Unavailable\r\n'))
+        self.assertIn(b'Content-Length: ' + str(len(body)).encode(), headers)
+        self.assertIn(b'Retry-After: 1', headers)
+        self.assertEqual(json.loads(body)['error']['code'], 'gateway_unavailable')
+        self.assertEqual(peer.result(), {})
 
     def test_partial_tls12_and_tls13_record_does_not_block_output(self):
         for version in (ssl.TLSVersion.TLSv1_2, ssl.TLSVersion.TLSv1_3):

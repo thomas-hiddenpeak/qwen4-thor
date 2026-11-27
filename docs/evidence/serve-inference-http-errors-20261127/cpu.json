@@ -77,8 +77,8 @@
   },
   "captures": {
     "native": {
-      "executable_sha256": "62f396f14e2c4149dec30d27ff16f1b7c296f47870f8594ad907fa5232d9c783",
-      "capture_sha256": "ad6af1738b448e0c8c1ca819a55c46fa3ac9554d9583afd5c19d3257f6e78a5e",
+      "executable_sha256": "f8ca47a78838c4918013cfc87bcd92803e8be346b0e4b2c244ea9341366ba446",
+      "capture_sha256": "e29b16f1f0fc5360341d2947acca7f778457005872bf23a3bcb50018b4bba239",
       "http": [
         [
           "/v1/audio/speech",
@@ -307,5 +307,17 @@
     "reviewed_source_anchors": 1394,
     "mutation_checks": 40,
     "errors": []
+  },
+  "socket_lifecycle": {
+    "native_ingress_sha256": "f8ca47a78838c4918013cfc87bcd92803e8be346b0e4b2c244ea9341366ba446",
+    "cpu_cpp_tests_passed": 11,
+    "cpu_tls_tests_passed": 5,
+    "targeted_cases": [
+      "plain handler exception before reply delivers entire 503",
+      "handler exception after SSE began preserves original bytes",
+      "TLS setup failure sends no plaintext",
+      "negotiated TLS delivers the structured error and closes cleanly"
+    ],
+    "emergency_accept_loop_send": "Best effort before the worker starts. The shared frame was checked independently; worker exhaustion was not induced."
   }
 }
