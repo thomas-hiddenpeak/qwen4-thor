@@ -14,14 +14,21 @@ assert.equal(url.hostname, '127.0.0.1');
 const {OpenAI, version} = loadSdk(sdk);
 let requests = 0;
 let uploadProbes = 0;
-const limit = previous ? 10 : 15;
+let polls = 0;
+let pollingPath;
+const limit = previous ? 11 : 16;
+const pollLimit = previous ? 1 : 25;
 function countedFetch(...args) {
   const target = new URL(args[0] instanceof Request ? args[0].url : args[0]);
   if (target.href === 'data:,') {
     assert.ok(!previous && ++uploadProbes === 1, 'unexpected SDK upload probe');
   } else {
     assert.equal(target.origin, url.origin);
-    assert.ok(++requests <= limit, 'cursor client exceeded its request budget');
+    if (target.pathname === pollingPath && args[1]?.method === 'GET') {
+      assert.ok(++polls <= pollLimit, 'file status polling budget exceeded');
+    } else {
+      assert.ok(++requests <= limit, 'cursor client exceeded its request budget');
+    }
   }
   return fetch(...args);
 }
@@ -61,6 +68,18 @@ if (previous) {
   batch = (await owner.vectorStores.fileBatches.create(store, {file_ids:[file]})).id;
 }
 const vector = owner.vectorStores;
+pollingPath = url.pathname.replace(/\/$/, '') + '/vector_stores/' + store + '/file_batches/' + batch;
+let state;
+for (let i = 0; i < pollLimit; i++) {
+  state = await vector.fileBatches.retrieve(batch, {vector_store_id:store});
+  if (state.status !== 'in_progress') break;
+  if (i + 1 < pollLimit) await new Promise(resolve => setTimeout(resolve, 800));
+}
+assert.equal(state.status, 'completed', JSON.stringify(state.file_counts));
+assert.equal(state.file_counts.completed, 1);
+const search = await vector.search(store, {query:'q4t pagination qualification', max_num_results:1});
+assert.equal(search.data[0]?.file_id, file);
+assert.ok(search.data[0].content.some(part => part.text?.includes('q4t pagination qualification')));
 await page('owned_stores', vector.list(), [store]);
 await page('files', vector.files.list(store), [file]);
 await page('filtered_files', vector.files.list(store, {filter:'cancelled'}), []);
@@ -71,4 +90,4 @@ await assert.rejects(peer.vectorStores.files.list(store), error => error.status 
 await assert.rejects(peer.vectorStores.fileBatches.listFiles(batch, options), error => error.status === 404);
 assert.equal(requests, limit);
 assert.equal(uploadProbes, previous ? 0 : 1);
-process.stdout.write(JSON.stringify({sdk:version, store, file, batch, pages, requests, upload_probes:uploadProbes, foreign_404:2}));
+process.stdout.write(JSON.stringify({sdk:version, store, file, batch, pages, requests, polls, indexed_file:search.data[0].file_id, upload_probes:uploadProbes, foreign_404:2}));

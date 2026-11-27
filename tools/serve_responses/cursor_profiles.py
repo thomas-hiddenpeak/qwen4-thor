@@ -32,7 +32,9 @@ def prepare(out, build, deployment):
 def check(row, name, previous=None):
     package.require(name in ('primary', 'light') and (previous is None) == (name == 'primary')
                     and row['sdk'] == '7.47.0' and row['foreign_404'] == 2
-                    and row['requests'] == (15 if name == 'primary' else 10)
+                    and row['requests'] == (16 if name == 'primary' else 11)
+                    and type(row['polls']) is int and 1 <= row['polls'] <= (25 if name == 'primary' else 1)
+                    and row['indexed_file'] == row['file']
                     and row['upload_probes'] == (1 if name == 'primary' else 0),
                     'missing cursor SDK or owner isolation observation')
     for key, prefix in [('store', 'vs'), ('file', 'file'), ('batch', 'vsfb')]:
@@ -61,7 +63,9 @@ def business(stage):
         result = subprocess.run(['node', ACTOR], input=json.dumps(args).encode(),
                                 stdout=subprocess.PIPE, stderr=err, timeout=100,
                                 env=dict(os.environ, NODE_EXTRA_CA_CERTS=plan['tls']['certificate']))
-    package.require(result.returncode == 0, 'cursor SDK failed; see cursor-sdk.stderr')
+    if result.returncode:
+        stage.http('/v1/config', label='cursor-failure-configuration')
+        raise RuntimeError('cursor SDK failed; see cursor-sdk.stderr')
     row = json.loads(result.stdout)
     check(row, name, previous)
     package.save(stage.out/RECEIPT, row)
