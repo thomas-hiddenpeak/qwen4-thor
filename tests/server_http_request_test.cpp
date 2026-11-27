@@ -98,7 +98,53 @@ Q4T_TEST(http_responses_presentation_matches_published_sdk_ranges) {
            {lang + old + "Connection: x-stainless-lang\r\n", ""}}) {
     Q4T_CHECK(Read("GET /v1/responses/resp_example HTTP/1.1\r\nHost: test\r\n" +
                        headers + "\r\n", &body, &parsed));
-    Q4T_CHECK(parsed.legacy_python_sdk_version == expected);
+    Q4T_CHECK(parsed.legacy_sdk_version == expected);
+  }
+  return true;
+}
+
+Q4T_TEST(http_javascript_responses_version_selects_declared_wire_types) {
+  using namespace q4t::server;
+  using View = ResponsesSdkView;
+  const std::string lang = "X-Stainless-Lang: js\r\n";
+  const std::string header = "X-Stainless-Package-Version: ";
+  const auto read = [&](const std::string& fields, HttpRequestHeaders* result) {
+    std::string body;
+    return Read("GET /v1/responses/r HTTP/1.1\r\nHost: test\r\n" +
+                    fields + "\r\n", &body, result);
+  };
+  for (const auto& [version, view] :
+       std::vector<std::pair<std::string, View>>{
+           {"4.100.0", View::kCurrent}, {"4.101.0", View::kStringMcpError},
+           {"5.23.2", View::kStringMcpError},
+           {"6.0.0", View::kStringMcpErrorAndNamedArguments},
+           {"6.8.1", View::kStringMcpErrorAndNamedArguments},
+           {"6.9.0", View::kStringMcpErrorAndHyphenatedCache},
+           {"6.34.0", View::kStringMcpErrorAndHyphenatedCache},
+           {"6.35.0", View::kStringMcpErrorAndNamedArguments},
+           {"7.4.0", View::kStringMcpErrorAndNamedArguments},
+           {"7.5.0", View::kNamedArguments}, {"7.10.0", View::kNamedArguments},
+           {"7.11.0", View::kCurrent}, {"7.47.0", View::kCurrent},
+           {"7.010.0", View::kCurrent}, {"6.8.1-rc.1", View::kCurrent}}) {
+    HttpRequestHeaders parsed;
+    Q4T_CHECK(read(header + version + "\r\n" + lang, &parsed));
+    Q4T_CHECK(parsed.ResponsesView() == view);
+    Q4T_CHECK(parsed.legacy_sdk_version ==
+              (view == View::kCurrent ? "" : version));
+    Q4T_CHECK((parsed.sdk_language == ResponsesSdkLanguage::kJavaScript) ==
+              (view != View::kCurrent));
+  }
+  const std::string version = header + "7.10.0\r\n";
+  for (const auto& fields :
+       {lang + lang + version, lang + version + version,
+        lang + "X-Stainless-Lang: python\r\n" + version,
+        lang + version + "Connection: x-stainless-lang\r\n",
+        lang + version + "Connection: x-stainless-package-version\r\n",
+        std::string("X-Stainless-Lang: unknown\r\n") + version}) {
+    HttpRequestHeaders parsed;
+    Q4T_CHECK(read(fields, &parsed));
+    Q4T_CHECK(parsed.ResponsesView() == View::kCurrent);
+    Q4T_CHECK(parsed.legacy_sdk_version.empty());
   }
   return true;
 }

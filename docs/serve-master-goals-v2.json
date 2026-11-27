@@ -9409,6 +9409,10 @@
       "packaged_response_readers_20261127": {
         "stage": "cpu_fixture_verified_pending_issued_package",
         "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json"
+      },
+      "node_responses_sdk_20261127": {
+        "evidence": "evidence/serve-node-sdk-presentation-20261127/cpu.json",
+        "status": "cpu_verified_real_tls_and_delivery_pending"
       }
     },
     {
@@ -13830,7 +13834,11 @@
         "stage": "cpu_fixture_verified_pending_issued_package",
         "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json"
       },
-      "current_compact_media_delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
+      "current_compact_media_delivery": "evidence/serve-compact-inline-media-20261127/delivery.json",
+      "node_responses_sdk_20261127": {
+        "evidence": "evidence/serve-node-sdk-presentation-20261127/cpu.json",
+        "status": "cpu_verified_real_tls_and_delivery_pending"
+      }
     },
     {
       "id": "Q03",
