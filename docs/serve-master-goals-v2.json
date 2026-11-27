@@ -4423,10 +4423,11 @@
         "pending_upload_resumed": true
       },
       "concurrent_upload_completion_20261128": {
-        "stage": "candidate_cpu_verified",
-        "device_short_run_pending": true,
+        "stage": "candidate_tls_verified",
+        "device_short_run_pending": false,
         "issued": false,
-        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json"
+        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json",
+        "device": "evidence/serve-upload-completion-race-20261128/device.json"
       }
     },
     {
@@ -9739,10 +9740,11 @@
         "pending_upload_resumed": true
       },
       "concurrent_upload_completion_20261128": {
-        "stage": "candidate_cpu_verified",
-        "device_short_run_pending": true,
+        "stage": "candidate_tls_verified",
+        "device_short_run_pending": false,
         "issued": false,
-        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json"
+        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json",
+        "device": "evidence/serve-upload-completion-race-20261128/device.json"
       }
     },
     {

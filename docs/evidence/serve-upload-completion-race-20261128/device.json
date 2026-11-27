@@ -1,0 +1,38 @@
+{
+  "stage": "candidate_tls",
+  "predecessor_revision": 588,
+  "predecessor_manifest": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+  "engine": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9",
+  "protocol_sources": "026929c9a955d3047887d831ee21bbd21ad64c199657e2d6399445ae00ccad33",
+  "uploads_sha256": "fb613555a81eefbeea0a7b0151208ee516e08eee27483b70c59df0619b6477f9",
+  "actor_sha256": "bc5d5fa3ffd592c5f81fa3471e4c2e3831229d0394f41b0e29351372826868be",
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 1915142,
+    "model_exit": 0,
+    "clients": {
+      "python-3.55.1": {
+        "requests": 17
+      }
+    },
+    "requests": 17,
+    "seconds": 35.606
+  },
+  "model_answer": "223",
+  "fresh_chat": "42",
+  "sdk": "Python 3.55.1",
+  "wire_sha256": "1cda3aa296a8d476d9b3f4850950c5b71a7c458bcc8e07a272f50890c46028e9",
+  "statuses": {
+    "200": 15,
+    "409": 1,
+    "404": 1
+  },
+  "lease_exit_sha256": "ca16e00417c7f1d540d2650999476397422f87145c24bc08e0e5f9d48033c894",
+  "nvml_queries": 35,
+  "declared_admission": "native TLS, isolated PID-bound admission fixture",
+  "protected_digests": 20,
+  "issued": false
+}
