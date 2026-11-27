@@ -9765,6 +9765,15 @@
         "release": 590,
         "model_starts": 1,
         "stage": "issued_engine_and_native_embedding_verified"
+      },
+      "sdk_business_evidence_20261128": {
+        "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
+        "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
+        "source_requests": 149,
+        "unassigned": 1,
+        "method_sdk_pairs_with_success": 90,
+        "methods_with_success": 26,
+        "scope": "Original trace-linked client exchanges for Conversations, Uploads and vector batch polling on releases 588 and 590."
       }
     },
     {
@@ -15005,6 +15014,15 @@
         "archive": "evidence/serve-soak-observation-report-20261128/archive.json",
         "day_hours_executed": 0,
         "handoff": "evidence/serve-soak-observation-report-20261128/handoff.json"
+      },
+      "sdk_business_evidence_20261128": {
+        "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
+        "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
+        "source_requests": 149,
+        "unassigned": 1,
+        "method_sdk_pairs_with_success": 90,
+        "methods_with_success": 26,
+        "scope": "Original trace-linked client exchanges for Conversations, Uploads and vector batch polling on releases 588 and 590."
       }
     }
   ],

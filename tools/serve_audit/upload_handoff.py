@@ -4,6 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+from urllib.parse import parse_qsl
 
 HERE = Path(__file__).resolve().parent
 OLD, MIDDLE, RECENT, CURRENT = ('python-2.8.1', 'python-2.33.0', 'python-3.42.1', 'python-3.55.1')
@@ -41,6 +42,10 @@ class UploadHandoff:
                                        wire=wire, data=reply['data']))+'\n')
         assert reply['sdk'] == sdk and (wire['method'], wire['path'], wire['status']) == (
             method, '/v1'+path, status), (action, wire, reply['data'])
+        expected_query = [('limit', '50'), ('purpose', 'user_data')] if action == 'list' else []
+        actual_query = parse_qsl(wire['query'], strict_parsing=True, keep_blank_values=True)
+        if sorted(actual_query) != expected_query:
+            raise ValueError(f'{sdk} used unexpected query parameters for {action}')
         trace = wire['trace']
         assert isinstance(trace, str) and trace and trace not in self.identities, wire
         self.identities.add(trace)

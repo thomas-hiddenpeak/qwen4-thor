@@ -16,9 +16,10 @@ const client = new OpenAI({baseURL: config.base, apiKey: config.key, maxRetries:
   timeout: 15000, fetch: async (url, init) => {
     if (url === 'data:,') return fetch(url, init);
     const request = new Request(url, init);
-    assert.equal(new URL(request.url).origin, new URL(config.base).origin);
+    const target = new URL(request.url);
+    assert.equal(target.origin, new URL(config.base).origin);
     const response = await fetch(request);
-    wire.push({method: request.method, path: new URL(request.url).pathname,
+    wire.push({method: request.method, path: target.pathname, query: target.search.slice(1),
                status: response.status, trace: response.headers.get('x-request-id')});
     return response;
   }});
