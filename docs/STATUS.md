@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+候选模型意外退出后，六版客户端取回了完成上传的原 File ID，按原分片续传第二份文件；主网关异常、独立回退包接手后重复验证通过。每种故障均有两代模型、25 个 SDK 请求和 1 个独立 Chat，两次均从原文件答出 223，Chat 答出 42。下一步登记已验证的包。 [恢复回执](evidence/serve-upload-completion-race-20261128/managed.json)
+
 主配置留下完成的上传后，轻配置用相同参数重试，取回原 File ID，按原字节下载并删除。两档均验证了并发相同请求得到两个 200，不同参数得到 200 和 409。共两次模型启动、36 个官方 SDK 请求，77 次 NVML 采样通过。两档记录可逐项还原上一版容量记录。下一步封装候选并验证托管恢复。 [容量业务回执](evidence/serve-upload-completion-race-20261128/profiles.json)
 
 候选引擎已通过原生 TLS 实机短验。两个独立的官方 Python SDK 客户端同时请求完成同一上传，相同参数均返回 200 和同一 File ID；不同参数得到 200／409。两份文件按原字节下载，其他客户读取为 404。模型按 File ID 从发行记录答出 223，独立 Chat 答出 42。一次模型启动、17 个业务请求，后续进行主、轻配置及可回退发布。 [实机回执](evidence/serve-upload-completion-race-20261128/device.json)
