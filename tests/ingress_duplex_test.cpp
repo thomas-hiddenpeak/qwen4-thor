@@ -61,6 +61,51 @@ std::string Take(int fd, size_t size) {
 DuplexLimits Short() { return {1000ms, 500ms, 2000ms, 8ULL << 30}; }
 }  // namespace
 
+Q4T_TEST(http_early_error_sent_before_half_close) {
+  Pair pair;
+  const auto reply = UnavailableResponse();
+  ServeConnection(pair.b.Get(), false, nullptr,
+                  [](Connection&, bool&) { throw std::runtime_error("peer"); });
+  Q4T_CHECK(Take(pair.a.Get(), reply.size() + 1) == reply);
+  return true;
+}
+
+Q4T_TEST(http_exception_after_forward_does_not_invite_another_write) {
+  Pair pair;
+  ServeConnection(pair.b.Get(), false, nullptr,
+                  [](Connection& client, bool&) {
+                    client.unsafe_request_forwarded = true;
+                    throw std::runtime_error("peer");
+                  });
+  const auto reply = Take(pair.a.Get(), 1024);
+  Q4T_CHECK(reply.starts_with("HTTP/1.1 503 "));
+  Q4T_CHECK(reply.find("X-Should-Retry: false\r\n") != reply.npos);
+  Q4T_CHECK(reply.find("Retry-After:") == reply.npos);
+  return true;
+}
+
+Q4T_TEST(http_started_stream_preserves_its_only_response) {
+  Pair pair;
+  constexpr std::string_view stream =
+      "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\n\r\ndata: x\n\n";
+  ServeConnection(pair.b.Get(), false, nullptr,
+                  [&](Connection& client, bool& started) {
+                    client.Send(stream, Clock::now() + 1s, &started);
+                    throw std::runtime_error("peer");
+                  });
+  Q4T_CHECK(Take(pair.a.Get(), stream.size() + 1) == stream);
+  return true;
+}
+
+Q4T_TEST(http_failed_tls_setup_sends_no_plaintext_response) {
+  Pair pair;
+  bool dispatched = false;
+  ServeConnection(pair.b.Get(), true, nullptr,
+                  [&](Connection&, bool&) { dispatched = true; });
+  Q4T_CHECK(!dispatched && Take(pair.a.Get(), 1).empty());
+  return true;
+}
+
 Q4T_TEST(duplex_preserves_upgrade_tails_and_bidirectional_bytes) {
   Pair client, backend;
   Connection connection(client.b.Get());
@@ -209,7 +254,9 @@ int main(int argc, char** argv) {
   if (argc == 1) return q4t::test::RunAllTests();
   // CPU-only TLS peer controlled by the Python test through inherited sockets.
   // No listener, model or HTTP route; fds and certificate paths are test inputs.
-  if (argc != 7 || std::string_view(argv[1]) != "--tls-peer") return 2;
+  if (argc != 7) return 2;
+  const std::string_view mode = argv[1];
+  if (mode != "--tls-peer" && mode != "--http-error-peer") return 2;
   const auto file = [](const char* path) {
     std::ifstream stream(path, std::ios::binary);
     if (!stream) throw std::runtime_error("fixture file");
@@ -221,6 +268,17 @@ int main(int argc, char** argv) {
                                    "127.0.0.1", false, &error);
     if (!tls) return 3;
     OwnedFd client(std::stoi(argv[4])), upstream(std::stoi(argv[5]));
+    if (mode == "--http-error-peer") {
+      bool dispatched = false;
+      ServeConnection(client.Get(), true, tls,
+                      [&](Connection&, bool&) {
+                        dispatched = true;
+                        throw std::runtime_error("test handler");
+                      });
+      if (!dispatched) return 4;
+      std::puts("{}");
+      return 0;
+    }
     Connection connection(client.Get());
     if (!connection.Handshake(tls)) return 4;
     auto limits = Short();

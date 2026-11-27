@@ -27,7 +27,7 @@ def verify_record(path, registry, name, base, *, ingress_sha256, require_live=Tr
         ledger.require(live is not None and base.get('live_workers') == live['workers'],
                        'installed Live workers differ from the qualified profile')
         from tools.serve_recovery import profile_live_reuse
-        profile_live_reuse.verify_ingress(live, ingress_sha256)
+        profile_live_reuse.verify_ingress(live, ingress_sha256, digest)
     return digest
 
 

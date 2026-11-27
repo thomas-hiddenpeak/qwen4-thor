@@ -1,0 +1,556 @@
+{
+  "stage": "cpu_contract_verified_device_pending",
+  "scope": "SDK behavior on explicit HTTP responses. An interruption without an HTTP response leaves the caller without this retry hint.",
+  "prior_source": "5237a9f95ff94d90a051bcc36bd2e717fcf815cd",
+  "compiled_model_files_unchanged": 1104,
+  "schema_sha256": "16f47064b4a562babaa1441e46d32c9abe22ee7d8306ab529c6342fb8bac192d",
+  "standalone_package": {
+    "checked_after_source_removal": true,
+    "tamper_rejected": true,
+    "existing_success_replies_unchanged": 241
+  },
+  "official_error_responses": {
+    "native": {
+      "http": 18,
+      "capture_sha256": "ea2959060dc1582d9ff9156ae4fbb0d2c6590624a50bac37d4529566ecd6a495"
+    },
+    "nginx": {
+      "http": 9,
+      "capture_sha256": "9c93d5e7af0698fa6a915b578b65dca7acc4f29dd07c9147271de18c1d490300"
+    },
+    "nginx-quota": {
+      "http": 9,
+      "capture_sha256": "93e1b39ef9dabd3d271dab3883b8ad7b13df57ed239095c30540be4d6ab99cb8"
+    }
+  },
+  "stock_sdk_http_attempts": 56,
+  "stock_sdks": {
+    "native": {
+      "model_starts": 0,
+      "gateway_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+      "gateway": "native",
+      "cases": [
+        {
+          "language": "python",
+          "version": "2.8.1",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "2.8.1",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "2.8.1",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        },
+        {
+          "language": "python",
+          "version": "3.55.1",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "3.55.1",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "3.55.1",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        },
+        {
+          "language": "node",
+          "version": "6.34.0",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "6.34.0",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "6.34.0",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        },
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        }
+      ]
+    },
+    "nginx": {
+      "model_starts": 0,
+      "gateway_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "gateway": "nginx",
+      "cases": [
+        {
+          "language": "python",
+          "version": "2.8.1",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "2.8.1",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "2.8.1",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        },
+        {
+          "language": "python",
+          "version": "3.55.1",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "3.55.1",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "python",
+          "version": "3.55.1",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        },
+        {
+          "language": "node",
+          "version": "6.34.0",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "6.34.0",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "6.34.0",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        },
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "status": 429,
+          "accepted_before_error": false,
+          "attempts": [
+            429,
+            429,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "RateLimitError",
+          "type": "gateway_error",
+          "code": "gateway_rate_limit",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "status": 503,
+          "accepted_before_error": false,
+          "attempts": [
+            503,
+            503,
+            200
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_recovering",
+          "retry_after": "1",
+          "should_retry": null
+        },
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "status": 503,
+          "accepted_before_error": true,
+          "attempts": [
+            503
+          ],
+          "backend_submissions": 1,
+          "trace_verified": true,
+          "error_class": "InternalServerError",
+          "type": "service_error",
+          "code": "service_binding_unavailable",
+          "retry_after": null,
+          "should_retry": "false"
+        }
+      ]
+    }
+  },
+  "original_failure": {
+    "native": {
+      "sha256": "fdabbbee8d0467b1127d0d9e74eee471ee224c4b72c430ee7505c1422ea54e56",
+      "model_starts": 0,
+      "gateway_sha256": "f8ca47a78838c4918013cfc87bcd92803e8be346b0e4b2c244ea9341366ba446",
+      "gateway": "native",
+      "cases": [
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "backend_submissions": 2,
+          "outcome": "InternalServerError",
+          "attempts": [
+            {
+              "status": 503,
+              "retry": null,
+              "delay": "1"
+            },
+            {
+              "status": 503,
+              "retry": null,
+              "delay": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "nginx": {
+      "sha256": "04b7d73d3e9fe0a83eedd1b6b5418567307670191c236539ae008d58e2491c91",
+      "model_starts": 0,
+      "gateway_sha256": "38c84d74ea5e54b177afba3926a4a60d9597e648e01e5c11401791d6f8a64ace",
+      "gateway": "nginx",
+      "cases": [
+        {
+          "language": "node",
+          "version": "7.47.0",
+          "backend_submissions": 2,
+          "outcome": "InternalServerError",
+          "attempts": [
+            {
+              "status": 503,
+              "retry": null,
+              "delay": "1"
+            },
+            {
+              "status": 503,
+              "retry": null,
+              "delay": "1"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "standalone_tls_nginx": {
+    "rows": [
+      {
+        "method": "POST",
+        "status": 401,
+        "retry_hint": null,
+        "request_id_matches_gateway": true,
+        "code": "gateway_unauthorized"
+      },
+      {
+        "method": "GET",
+        "status": 502,
+        "retry_hint": null,
+        "request_id_matches_gateway": true,
+        "code": "gateway_upstream_unavailable"
+      },
+      {
+        "method": "POST",
+        "status": 502,
+        "retry_hint": "false",
+        "request_id_matches_gateway": true,
+        "code": "gateway_upstream_unavailable"
+      }
+    ],
+    "backend_submissions": [
+      "GET",
+      "POST"
+    ],
+    "model_starts": 0
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "host_build": "-Wall -Wextra -Werror",
+  "model_starts": 0
+}

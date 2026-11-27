@@ -74,6 +74,27 @@ def evidence_files(fixture):
     return path, registry, records
 
 
+class IngressRefreshTests(unittest.TestCase):
+    def test_refresh_binds_the_ingress_and_the_sealed_profile(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        accepted = {"acceptance_sha256": "test-live-qualification"}
+        with mock.patch.dict(live.ACCEPTED_INGRESS,
+                {"test-live-qualification": "old-ingress"}), mock.patch.dict(
+                live.REFRESHED_INGRESS_RECORDS,
+                {("test-live-qualification", "new-ingress"): {"sealed-profile"}}):
+            live.verify_ingress(accepted, "old-ingress")
+            live.verify_ingress(accepted, "new-ingress", "sealed-profile")
+            for route, ingress, record in [
+                (accepted, "new-ingress", None),
+                (accepted, "new-ingress", "other-profile"),
+                (accepted, "unknown-ingress", "sealed-profile"),
+                ({"acceptance_sha256": "other-route"}, "new-ingress", "sealed-profile"),
+            ]:
+                with self.subTest(route=route, ingress=ingress, record=record):
+                    with self.assertRaises(ValueError):
+                        live.verify_ingress(route, ingress, record)
+
+
 class IntegrationTests(unittest.TestCase):
     def setUp(self):
         self.fixture = test_native_bundle.BundleTests(); self.fixture.setUp()

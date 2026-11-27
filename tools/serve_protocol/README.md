@@ -101,3 +101,21 @@ launch 全程持锁，CPU 与包身份先验证；同一模型进程完成普通
 业务错误、多来源与真实 TCP 切断恢复，最终只结束自有 PID。失败不自动
 补跑；原 10 生成 / 20 负例 / 2 启动 / 首次 guard 起30分钟上限不能重置。
 本阶段无运行时改动，不复制替换相同默认 ELF，也不改变旧发布接受声明。
+
+## SDK 写请求重试
+
+准入前的限流或恢复拒绝可返回 `Retry-After`。入口已经向上游传输
+写请求、随后无法取得响应头时，会在错误响应中给出
+`X-Should-Retry: false`。已发送的响应流沿用原来的终止方式。
+如果客户端连接本身中断，调用方需要通过持久化业务状态核对操作结果。
+
+在项目根目录运行以下 CPU 检查。SDK 版本和安装路径由测试者传入。
+`--native` 指向原生入口，也可用 `--nginx` 指向可选 nginx 二进制。
+每个客户端依次收到准入前 429、准入前 503 和上游已接收 POST 后的 503。
+
+```bash
+python3 -B -m tools.serve_protocol.check_retry_clients \
+  --native build/q4t-ingress --output .q4t-work/retry-clients-01 \
+  --python-sdk 3.55.1 "$SDK_VENV/bin/python" \
+  --node-sdk 7.47.0 "$SDK_PACKAGES/openai"
+```

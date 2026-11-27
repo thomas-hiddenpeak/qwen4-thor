@@ -71,12 +71,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -153,12 +232,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -296,7 +454,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -349,12 +507,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -449,12 +616,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -579,7 +755,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -665,7 +841,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -684,7 +860,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -723,12 +899,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -742,12 +927,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -761,12 +955,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -823,7 +1026,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -879,7 +1082,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1269,7 +1472,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1374,7 +1577,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1450,12 +1653,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1513,12 +1725,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1603,7 +1824,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1667,7 +1888,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1726,12 +1947,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1790,12 +2020,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1896,7 +2135,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -1953,7 +2192,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2003,12 +2242,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2068,12 +2316,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2125,12 +2382,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2255,7 +2521,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2305,12 +2571,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2386,7 +2661,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2445,12 +2720,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2519,12 +2803,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2590,7 +2883,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2642,12 +2935,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2723,7 +3025,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2847,7 +3149,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2908,12 +3210,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -2974,12 +3285,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3040,12 +3430,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3143,12 +3612,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3286,12 +3834,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3342,12 +3969,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3456,7 +4092,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3514,7 +4150,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3565,12 +4201,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3628,7 +4273,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3681,12 +4326,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3760,12 +4414,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3839,12 +4502,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -3918,12 +4590,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4016,7 +4697,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4057,12 +4738,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4158,7 +4848,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4209,12 +4899,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4275,12 +4974,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4344,7 +5052,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4397,12 +5105,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4532,7 +5249,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4599,7 +5316,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4659,12 +5376,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4737,7 +5463,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4830,7 +5556,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4871,12 +5597,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4944,7 +5679,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -4995,12 +5730,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5053,12 +5797,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5185,7 +5938,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5252,7 +6005,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5312,12 +6065,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5376,7 +6138,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5526,7 +6288,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5587,12 +6349,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5679,7 +6450,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5749,12 +6520,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5834,12 +6614,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -5980,7 +6769,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6032,12 +6821,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6122,7 +6920,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6183,12 +6981,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6259,12 +7066,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6327,12 +7143,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6435,12 +7260,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6560,7 +7394,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6637,7 +7471,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6707,12 +7541,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6794,12 +7637,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -6881,12 +7733,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7038,7 +7899,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7145,7 +8006,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7199,12 +8060,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7289,7 +8159,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7350,12 +8220,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7426,12 +8305,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7494,12 +8382,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7629,7 +8526,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7706,7 +8603,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7776,12 +8673,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7861,12 +8767,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -7920,12 +8835,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8036,7 +8960,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8104,7 +9028,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8165,12 +9089,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8241,12 +9174,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8300,12 +9242,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8409,7 +9360,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8477,7 +9428,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8538,12 +9489,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8614,12 +9574,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8722,7 +9691,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8785,12 +9754,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8868,7 +9846,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -8986,7 +9964,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9047,12 +10025,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9158,7 +10145,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9210,12 +10197,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9300,7 +10296,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9361,12 +10357,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9437,12 +10442,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9485,12 +10499,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9558,7 +10581,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9617,7 +10640,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9676,7 +10699,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9724,7 +10747,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9817,7 +10840,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9858,12 +10881,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9931,7 +10963,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -9982,12 +11014,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10048,12 +11089,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10154,7 +11204,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10205,12 +11255,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10287,7 +11346,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10347,12 +11406,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10412,12 +11480,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10479,12 +11556,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10543,7 +11629,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10653,7 +11739,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10729,7 +11815,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10780,12 +11866,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10891,12 +11986,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -10981,12 +12085,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11076,7 +12189,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11130,12 +12243,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11207,12 +12329,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11329,7 +12460,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11396,7 +12527,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11456,12 +12587,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11574,7 +12714,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11617,12 +12757,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11702,7 +12851,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11760,7 +12909,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11811,12 +12960,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11877,12 +13035,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -11935,12 +13102,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12003,12 +13179,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12072,12 +13257,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12191,7 +13385,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12259,7 +13453,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12320,12 +13514,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12396,12 +13599,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12464,12 +13676,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12532,12 +13753,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12600,12 +13830,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12708,7 +13947,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12785,7 +14024,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12847,12 +14086,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -12974,7 +14222,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13042,7 +14290,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13103,12 +14351,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13179,12 +14436,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13266,7 +14532,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13331,12 +14597,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13451,7 +14726,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13528,7 +14803,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13633,7 +14908,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13735,7 +15010,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13812,7 +15087,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -13923,7 +15198,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14034,7 +15309,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14120,7 +15395,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14240,7 +15515,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14352,7 +15627,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14429,7 +15704,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14499,12 +15774,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14573,7 +15857,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14678,7 +15962,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14792,7 +16076,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14835,12 +16119,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -14945,7 +16238,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15004,7 +16297,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15056,12 +16349,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15123,12 +16425,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15182,12 +16493,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15265,7 +16585,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15341,12 +16661,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15437,12 +16836,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15533,12 +17011,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15711,7 +17198,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15784,12 +17271,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -15864,12 +17360,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16004,7 +17509,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16047,12 +17552,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16127,7 +17641,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16178,12 +17692,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16244,12 +17767,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16323,12 +17855,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16448,7 +17989,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16536,7 +18077,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16596,12 +18137,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16659,7 +18209,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16710,12 +18260,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16776,12 +18335,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16879,7 +18447,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -16922,12 +18490,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17136,12 +18713,91 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Inference request rate limited",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Inference service temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              },
+              "Retry-After": {
+                "description": "Retry delay in seconds when available.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17340,7 +18996,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17407,12 +19063,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17521,12 +19186,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17645,7 +19319,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17712,12 +19386,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17786,12 +19469,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -17969,12 +19661,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18048,7 +19749,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18089,12 +19790,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18144,7 +19854,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18180,12 +19890,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18230,12 +19949,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18280,12 +20008,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18320,12 +20057,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18366,12 +20112,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18422,12 +20177,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18488,7 +20252,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18620,12 +20384,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -18894,12 +20667,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19084,12 +20866,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19171,12 +20962,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19250,12 +21050,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19300,12 +21109,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19350,12 +21168,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19400,12 +21227,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19467,7 +21303,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19517,12 +21353,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19592,7 +21437,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19649,7 +21494,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19793,7 +21638,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19877,7 +21722,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }
@@ -19944,12 +21789,21 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
               }
             },
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/error"
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
                 }
               }
             }

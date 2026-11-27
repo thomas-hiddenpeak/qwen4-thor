@@ -905,9 +905,26 @@ ACCEPTED_INGRESS = {
 }
 
 
-def verify_ingress(live, digest):
-    expected = ACCEPTED_INGRESS.get(live['acceptance_sha256'])
-    ledger.require(expected is not None and digest == expected,
+# The HTTP retry refresh ran the issued engine and Live workers through the
+# new ingress. Limit inheritance to the two sealed records in its receipt.
+# See docs/evidence/serve-inference-http-errors-20261127/foreground.json.
+REFRESHED_INGRESS_RECORDS = {
+    (
+        'fc04e8ac86d0cc216f5b4f0a829cfbf718bf17ba48de8a76023fb2b97b8ae69a',
+        '459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a',
+    ): frozenset({
+        'a2705073e91a2ba9c217f67369c14145a301c1e21e5a68f04df73691fe695d6e',
+        '82f4f873f3f90db5d7853e4bfb8c1c3eaf9e987a28bb7ff98c01b4eecb68592d',
+    }),
+}
+
+
+def verify_ingress(live, digest, record_sha256=None):
+    accepted = live['acceptance_sha256']
+    expected = ACCEPTED_INGRESS.get(accepted)
+    refreshed = REFRESHED_INGRESS_RECORDS.get((accepted, digest), ())
+    ledger.require(expected is not None and
+                   (digest == expected or record_sha256 in refreshed),
                    'installed ingress differs from the qualified Live business route')
 
 

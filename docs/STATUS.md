@@ -7,6 +7,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+设备已发行 rev572。主包和回退包都通过两代 Node SDK 的受管恢复短验：故障前后的已存工具调用、答案、事件与续读结果一致，跨客户读取返回 404，新 Chat 返回 42。准入前 429／503 允许 SDK 重试，上游已收到写请求但应答丢失时入口返回禁止重试提示。首次遗漏 VAD 的 WebRTC 503 与独立补验均已保留。默认服务处于 STOPPED，24 小时长稳与 NVML 不可用冷启动仅准备了计划。 [本次发行回执](evidence/serve-inference-http-errors-20261127/delivery.json)
+
+已发行的 rev570 引擎通过新入口完成真实 TLS 工具调用、续答并返回 570。首轮 WebRTC 请求因测试启动参数遗漏 VAD 返回 503；按发行包实际参数补上 VAD 后，单独重验 WebRTC 成功建立会话并通过数据通道确认关闭。两轮各启动一次，补验没有重复生成请求。保留主、轻配置各自的原始资格，仅允许本次入口与两份经核对的既有资格回执组合。下一步封装并验证该发行组合。 [入口业务验收](evidence/serve-inference-http-errors-20261127/foreground.json)
+
+准入前出现 429 或 503 时，客户端仍可按 Retry-After 重试；写请求已经转交而应答中断时，原生及可选 nginx 入口现在返回 X-Should-Retry: false。旧入口在该情形下把同一次 SDK 调用投递了两次。Python 2.8.1、3.55.1 与 Node 6.34.0、7.47.0 经两个入口共发出 56 个 HTTP 请求，24 个场景均只有一次后端提交。另验独立 TLS nginx 的错误追踪 ID 和 GET、POST 的区别。 [重试回执](evidence/serve-inference-http-errors-20261127/sdk-retries.json)
+
+公开推理 HTTP 合同补上 9 个 POST 方法的 429、503 和可选 Retry-After。原生入口及可选 nginx 各在 CPU 对端上返回 18 个真实拒绝响应，封包内声明通过全部 36 例。实际套接字验证了明文与已握手 TLS 的提前 503、已开始的流以及握手失败四种边界。原有 241 个成功声明逐项一致。设备发行仍待新入口验证。 [请求与报文证据](evidence/serve-inference-http-errors-20261127/cpu.json)
+
 rev570 已发行 Node SDK 工具回填和流式响应的版本兼容。6.34.0 和 7.47.0 可读取同一调用；模型与网关故障后，断点、归属和真实工具续答通过校验。主包与回退包内的标准 OpenAPI 均已校验 12 个流式方法、190 次事件匹配和 5 条真实工具 HTTP 交换。发行时模型启动零次，13 份受保护状态通过复核。 [发行回执](evidence/serve-node-sdk-presentation-20261127/delivery.json)
 
 主配置开启 MTP，轻配置关闭 MTP；均从同一对象库恢复已签发的工具调用和答复。Node SDK 6.34.0 和 7.47.0 各自读到完整事件、相同的断点后缀和对应的函数名表示；两边均按原调用回填实际发行号 568，产生独立的成功续答。每套配置各启动一次模型，耗时分别为 40.039 和 35.148 秒。下一步验证封包、托管恢复与回退。 [容量配置验收](evidence/serve-node-sdk-presentation-20261127/profiles.json)

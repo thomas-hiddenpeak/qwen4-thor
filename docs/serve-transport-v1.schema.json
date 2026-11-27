@@ -34,6 +34,54 @@
     }
   ],
   "$defs": {
+    "http_error": {
+      "description": "JSON errors returned by the model service and its native or optional nginx HTTP entrypoint.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/error"
+        },
+        {
+          "type": "object",
+          "required": [
+            "error"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "type": "object",
+              "required": [
+                "message",
+                "type",
+                "code",
+                "param"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "gateway_error",
+                    "service_error"
+                  ]
+                },
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "param": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "usage": {
       "type": "object",
       "required": [

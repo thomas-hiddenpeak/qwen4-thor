@@ -474,6 +474,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
             server::HttpBodyBudget& tunnel_budget, Address source,
             bool* started, server::HttpRequestState* state,
             bool allow_keep_alive) {
+  client.unsafe_request_forwarded = false;
   client.extra_headers.clear();
   client.keep_alive = false;
   std::string method, path, body;
@@ -585,6 +586,11 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     }
     return true;
   };
+  const auto forward_marker = [&]() -> bool* {
+    if (method == "GET" || method == "HEAD" || method == "OPTIONS")
+      return nullptr;
+    return &client.unsafe_request_forwarded;
+  };
   const auto begin_upload = [&](Clock::time_point deadline) {
     if (upstream.Get() >= 0) return true;
     if (!upload_binding()) return false;
@@ -596,7 +602,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
     upstream = Connect(binding.port, client, deadline);
     if (upstream.Get() < 0) return false;
     if (!WriteUpload(upstream.Get(), head("Transfer-Encoding: chunked"),
-                     deadline, client)) {
+                     deadline, client, forward_marker())) {
       upstream_early = true;
       return false;
     }
@@ -858,7 +864,7 @@ bool Handle(Connection& client, const Config& config, Capacity& capacity,
   const auto deadline = Clock::now() + 15s;
   if (!Write(upstream.Get(),
              head("Content-Length: " + std::to_string(body.size())), deadline,
-             &client) ||
+             &client, forward_marker()) ||
       !Write(upstream.Get(), body, deadline, &client)) {
     Error(client, 503, "service_binding_unavailable", request_id, started);
     return false;
@@ -937,6 +943,12 @@ int Run(const Config& config) {
   server::HttpBodyBudget tunnel_budget(17U << 20);
   server::HttpBodyBudget budget(server::kAggregateChatBodyBytes);
   server::HttpBodyBudget cancel_budget(server::kCancelBodyBudgetBytes);
+  const std::string& unavailable = UnavailableResponse();
+  const auto reject_before_handshake = [&](int fd) {
+    if (!config.tls)
+      ::send(fd, unavailable.data(), unavailable.size(),
+             MSG_NOSIGNAL | MSG_DONTWAIT);
+  };
   std::array<Slot, 32> slots;
   while (!stopped.load(std::memory_order_relaxed)) {
     if (credentials) credentials->Step(reload_credentials.exchange(false));
@@ -959,12 +971,7 @@ int Run(const Config& config) {
     auto slot = std::find_if(slots.begin(), slots.end(),
                              [](const auto& item) { return item.done.load(); });
     if (slot == slots.end()) {
-      constexpr std::string_view busy =
-          "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
-          "Retry-After: 1\r\nContent-Length: 0\r\n\r\n";
-      if (!config.tls)
-        ::send(accepted.Get(), busy.data(), busy.size(),
-               MSG_NOSIGNAL | MSG_DONTWAIT);
+      reject_before_handshake(accepted.Get());
       continue;
     }
     if (slot->thread.joinable()) slot->thread.join();
@@ -973,36 +980,26 @@ int Run(const Config& config) {
     const auto context = credentials ? credentials->Context() : nullptr;
     try {
       slot->thread = std::thread([&, slot, source, context] {
-        bool started = false;
-        try {
-          Connection client(slot->fd);
-          if (!config.tls || client.Handshake(context)) {
-            server::HttpRequestState state;
-            const auto receive = [&](void* data, size_t size,
-                                     Clock::time_point deadline) {
-              return client.Read(data, size, deadline);
-            };
-            for (int request = 0; request < config.http.keep_alive_requests &&
-                                  !stopped.load(); ++request) {
-              if (request && !server::AwaitHttpRequest(client.Fd(), &state,
-                    config.http.keep_alive_idle_ms, receive)) break;
-              started = false;
-              if (!Handle(client, config, capacity, access, budget,
-                          cancel_budget, tunnel_budget, source, &started,
-                          &state,
-                          request + 1 < config.http.keep_alive_requests))
-                break;
-            }
-          }
-        } catch (...) {
-          if (!started && !config.tls) {
-            constexpr std::string_view failure =
-                "HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\n"
-                "Retry-After: 1\r\nContent-Length: 0\r\n\r\n";
-            ::send(slot->fd, failure.data(), failure.size(),
-                   MSG_NOSIGNAL | MSG_DONTWAIT);
-          }
-        }
+        ServeConnection(
+            slot->fd, config.tls, context,
+            [&](Connection& client, bool& started) {
+              server::HttpRequestState state;
+              const auto receive = [&](void* data, size_t size,
+                                       Clock::time_point deadline) {
+                return client.Read(data, size, deadline);
+              };
+              for (int request = 0; request < config.http.keep_alive_requests &&
+                                    !stopped.load(); ++request) {
+                if (request && !server::AwaitHttpRequest(client.Fd(), &state,
+                      config.http.keep_alive_idle_ms, receive)) break;
+                started = false;
+                if (!Handle(client, config, capacity, access, budget,
+                            cancel_budget, tunnel_budget, source, &started,
+                            &state,
+                            request + 1 < config.http.keep_alive_requests))
+                  break;
+              }
+            });
         {
           std::lock_guard guard(slot->mutex);
           ::close(slot->fd);
@@ -1011,6 +1008,7 @@ int Run(const Config& config) {
         slot->done.store(true);
       });
     } catch (...) {
+      reject_before_handshake(slot->fd);
       ::close(slot->fd);
       slot->fd = -1;
       slot->done.store(true);
