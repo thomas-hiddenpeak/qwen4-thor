@@ -18,6 +18,7 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 ## 验证范围
 
 - **路由与错误。** 使用候选发行包的原生入口，在隔离的本机环境实际采集了 232 个缺少凭据的 HTTP 响应，覆盖 231 个方法及旧取消路径。随后让六个未修改的 SDK 按各自方式产生请求，逐个匹配已采集的目标，并解析返回的 `401`。1,386 次 SDK 调用均读回了 `AuthenticationError`、错误字段、请求 ID 和 Bearer 认证挑战。采集时后端收到的请求为零。成功业务、鉴权通过以后的路由和请求体验证各有独立验收。 [采集回包](evidence/serve-sdk-method-matrix-20261127/challenges.json) · [版本统计及摘要](evidence/serve-sdk-method-matrix-20261127/matrix.json)
+- **Webhook 事件目录。** 候选引擎真实直连返回带 Bearer 认证挑战与请求 ID 的 401；同一实例经原生 TLS 提供事件目录，六个官方 SDK 均读回相同的 23 个事件类型。已对收到的错误与目录分别核对官方和项目 OpenAPI。启动一次，生成请求零条。 [设备回执](evidence/serve-sdk-method-matrix-20261127/foreground.json)
 - **工具、流式和恢复。** Responses 的真实工具回填、已存事件续读及故障后接管已有按版本的证明。服务对 SDK 投影的差异、适用接口和限制记录在流式兼容说明中。 [Python 工具恢复](evidence/serve-program-sdk-reader-20261127/delivery.json) · [Node 工具恢复](evidence/serve-node-sdk-presentation-20261127/delivery.json) · [流式兼容说明](SDK_STREAM_COMPATIBILITY.md)
 - **重试。** 准入前的配额或恢复错误，以及已经转交写请求后丢失应答的错误，各有原生和可选 nginx 入口的独立 SDK 记录。 [重试证据](evidence/serve-inference-http-errors-20261127/sdk-retries.json)
 
