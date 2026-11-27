@@ -12,6 +12,11 @@ if(MODEL_ASSET_ICU_FOUND)
     ${model_asset_root}/tests/server_tts_service_test.cpp
     ${model_asset_root}/src/server/tts_assets.cpp
     ${model_asset_root}/src/server/tts_service.cpp
+    ${model_asset_root}/src/server/client_policy.cpp
+    ${model_asset_root}/src/server/client_rate_state.cpp
+    ${model_asset_root}/src/server/output_schema.cpp
+    ${model_asset_root}/src/server/chat_audio_output.cpp
+    ${model_asset_root}/src/server/speech_output.cpp
     ${model_asset_root}/src/runtime/memory_budget.cpp
     ${model_asset_root}/src/audio/tts_config.cpp
     ${model_asset_root}/src/audio/tts_speaker_layout.cpp
@@ -61,5 +66,8 @@ if(MODEL_ASSET_ICU_FOUND)
     ${model_asset_root}/include)
   target_link_libraries(q4t_model_asset_tests PRIVATE
     Threads::Threads PkgConfig::MODEL_ASSET_ICU)
-  target_compile_options(q4t_model_asset_tests PRIVATE -Wall -Wextra -Werror)
+  # Keep the native speech usage checks without linking their codec workers.
+  target_compile_options(q4t_model_asset_tests PRIVATE
+    -Wall -Wextra -Werror -ffunction-sections -fdata-sections)
+  target_link_options(q4t_model_asset_tests PRIVATE -Wl,--gc-sections)
 endif()

@@ -4713,7 +4713,7 @@
     "src/server/media_codec_runtime.h": "0820153e3c026c3a5577e4bb32fd6163c3abfc9a2162a2f169105230b06f4ced",
     "src/server/memory_admission.cpp": "d22dcd71a1a8b634af7d419d50dbaf03628dfcf1dee0bc9d82b4cabf7e9aad7a",
     "src/server/model_asset_io.h": "61c1fa6d3d253c617c6db73ec9fcdfe9ea0c767b0c6dda65231252f84ed12475",
-    "src/server/model_assets.cpp": "42aead17aaf247f527ccd91da587d5379acb4ca13ed61bab05b307b2dc1bf53e",
+    "src/server/model_assets.cpp": "766f407bc347b95f5e4032fc91bf04c2228d438709e281d82e261f985315e3a1",
     "src/server/model_assets_protocol.h": "24577a2d6c544d998fb2b9815e118fdf19b8dea5fd809d9205cb4e4dba157d40",
     "src/server/model_catalog.cpp": "8d0808b669e3ecbc95794d8b07bd6a86b38dc310cf93c98e18befade71fd2d7e",
     "src/server/model_preparation.cpp": "f93b8943664954fcdd6e0f322fe1dbf2baf4eb453bf394cc8f1f34017fcf56e6",

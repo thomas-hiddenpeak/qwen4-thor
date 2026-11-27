@@ -9,6 +9,7 @@
 #include <cerrno>
 #include <cstring>
 #include <new>
+#include <thread>
 
 #include "model_assets_protocol.h"
 #include "model_asset_io.h"
@@ -243,15 +244,23 @@ Status ReadVerifiedModelAssets(ModelAssetProfile profile,
   control.compile_deadline =
       std::min(control.compile_deadline,
                Clock::now() + std::chrono::milliseconds(kModelAssetTimeoutMs));
-  if (auto s = CheckModelAssetControl(control, failure); !s) return s;
   std::unique_ptr<GrammarProcess> process;
   GrammarFailure cause;
   const char* entry = "--model-asset-worker";
 #ifdef Q4T_GRAMMAR_PROCESS_TESTS
   if (!test_entry.empty()) entry = test_entry.c_str();
 #endif
-  if (!GrammarProcess::Start(entry, control, &process, &cause))
-    return fail(cause, "model asset worker unavailable");
+  for (;;) {
+    if (auto s = CheckModelAssetControl(control, failure); !s) return s;
+    if (GrammarProcess::Start(entry, control, &process, &cause)) break;
+    // Active readers share one staging slot. A retired, unreaped worker
+    // still owns its slot and must retain the existing failure boundary.
+    if (cause != GrammarFailure::kUnavailable ||
+        IsolatedCleanupPending(control.domain))
+      return fail(cause, "model asset worker unavailable");
+    std::this_thread::sleep_until(std::min(
+        control.compile_deadline, Clock::now() + std::chrono::milliseconds(10)));
+  }
   const auto transfer = [&](void* data, size_t bytes, bool write) {
     return process->Transfer(data, bytes, write, control.compile_deadline,
                              control.cancelled);

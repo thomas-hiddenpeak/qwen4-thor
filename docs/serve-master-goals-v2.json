@@ -7032,6 +7032,11 @@
         "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json",
         "revision": 574,
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
+      },
+      "model_asset_admission_20261127": {
+        "stage": "cpu_verified",
+        "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
+        "issued": false
       }
     },
     {
@@ -10966,6 +10971,11 @@
         "business": "evidence/serve-reclaim-pressure-20261126/business.json",
         "revision": 538,
         "delivery": "evidence/serve-reclaim-pressure-20261126/delivery.json"
+      },
+      "model_asset_admission_20261127": {
+        "stage": "cpu_verified",
+        "evidence": "evidence/serve-asset-admission-20261127/cpu.json",
+        "issued": false
       }
     },
     {
