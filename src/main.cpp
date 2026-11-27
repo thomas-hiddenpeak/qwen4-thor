@@ -28,6 +28,7 @@
 #include "q4t/model/model.h"
 #include "q4t/mtp/mtp.h"
 #include "q4t/server/chat_server.h"
+#include "q4t/server/serve_diagnostics.h"
 #include "q4t/server/embedding_assets.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/structured_decoder.h"
@@ -895,9 +896,7 @@ int RunBenchPrefill(int argc, char** argv) {
 }
 
 int RunServe(int argc, char** argv) {
-  // A disconnected log reader must leave the service running. Writers
-  // receive EPIPE and retain their normal error handling.
-  std::signal(SIGPIPE, SIG_IGN);
+  q4t::server::ServeDiagnostics diagnostics;
   const char* kDefaultModelDir =
       "/home/rm01/models/dev/llm/garnermccloud/"
       "Qwen3.8-Flash-Next-NVFP4-SSD-Stream";
