@@ -292,6 +292,7 @@ jobs:
         run: >-
           env PYTHONPATH=tools/evalscope python3 -B -m unittest
           tools.serve_soak.test_native_soak
+          tools.serve_soak.test_native_observations
           test_gpu_exclusive.ExclusiveTests.test_cli_retention_is_opt_in_and_preserves_the_child_arguments
           test_gpu_exclusive.ExclusiveTests.test_invalid_log_limit_does_not_consume_the_output_directory
       - name: Check JavaScript schema input contracts

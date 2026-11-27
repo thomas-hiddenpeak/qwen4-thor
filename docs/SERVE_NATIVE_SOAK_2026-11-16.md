@@ -74,3 +74,14 @@ python3 -I -B tools/serve_soak/native_stage.py check \
 一次音频闭环。[校验记录](evidence/serve-native-soak-audio-20261127/cpu.json)
 
 原生验收报告对每次租约采样读取相应 NVML 工作进程的原始回复，对照请求 ID、设备数、进程列表与内存记录。监控可在已退出进程的确认期间再采样一次。就绪区间使用服务的 PID 和启动时钟，同一 PID 出现在未就绪区间不能证明业务进程已被观测到。归档缺样会在验收命令中报错。 [双包离线回放](evidence/serve-soak-observation-report-20261128/archive.json)
+
+## rev588 操作入口
+
+在验收设备上直接运行下列脚本。
+
+```sh
+/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-observation-day-src/.q4t-work/day-01/audio-day.sh check
+/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-observation-day-src/.q4t-work/day-01/audio-day.sh run
+```
+
+`check` 校验签发包、脚本来源和磁盘余量。用户在选定窗口执行 `run`，它持有 GPU 租约并在结束后核对原始业务与监控记录。当前实跑 0 小时。 [来源与摘要](evidence/serve-soak-observation-report-20261128/handoff.json)

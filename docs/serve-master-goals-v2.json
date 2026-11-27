@@ -11147,9 +11147,10 @@
         "delivery": "evidence/serve-native-soak-retention-20261128/delivery.json"
       },
       "native_soak_worker_reply_validation_20261128": {
-        "stage": "verified_on_both_sealed_short_runs",
+        "stage": "operator_handoff_preflight_passed",
         "archive": "evidence/serve-soak-observation-report-20261128/archive.json",
-        "day_hours_executed": 0
+        "day_hours_executed": 0,
+        "handoff": "evidence/serve-soak-observation-report-20261128/handoff.json"
       }
     },
     {
@@ -14906,9 +14907,10 @@
         "delivery": "evidence/serve-native-soak-retention-20261128/delivery.json"
       },
       "native_soak_worker_reply_validation_20261128": {
-        "stage": "verified_on_both_sealed_short_runs",
+        "stage": "operator_handoff_preflight_passed",
         "archive": "evidence/serve-soak-observation-report-20261128/archive.json",
-        "day_hours_executed": 0
+        "day_hours_executed": 0,
+        "handoff": "evidence/serve-soak-observation-report-20261128/handoff.json"
       }
     }
   ],

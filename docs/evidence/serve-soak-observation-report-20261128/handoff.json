@@ -1,0 +1,34 @@
+{
+  "audio_pairs": 25,
+  "first_hour_business": 304,
+  "business_requests": 7250,
+  "source_commit": "2912ae0f1c63a7d71369cc4ca07fcca173fc716e",
+  "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-observation-day-src",
+  "package": {
+    "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-retention-primary-03/bundle",
+    "manifest_sha256": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b"
+  },
+  "revision": 588,
+  "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-observation-day-src/.q4t-work/day-01/plan.json",
+  "plan_sha256": "e5e1a41aebc7d5c96ea97cd88df5451621cf83a1df7f254652e53cf09870f4ea",
+  "handoff_sha256": "771b522e84d43f7619d5f6a88afe6fbafb73937e376bedea7c5c905945c8da06",
+  "checked": true,
+  "source_files": 704,
+  "hours_executed": 0,
+  "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-observation-day-src/.q4t-work/day-01/audio-day.sh",
+  "operator_sha256": "e938754e0c04ec6722997732819a2cd10133c55f10c972ef94337d49631182a4",
+  "checked_at": "2026-11-27T20:25:44.763655+00:00",
+  "minimum_evidence_free_bytes": 12884901888,
+  "prior_plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-retention-soak-src/.q4t-work/day-01/plan.json",
+  "prior_plan_sha256": "1635b864d5f1d5ef66fc020249c1f41f6a057fc51174c043440e6f5d1bf65f0b",
+  "sealed_short_replay": "report-entry.json",
+  "installed_primary": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+  "fallback": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+  "check_sha256": "0565c9db3ec0b88e65bdbb92e879f0f92df590d58dc6047b03b1cebdc8164c84",
+  "host_ci_contract": {
+    "tests": 29,
+    "log_sha256": "afba742a77e03b4fdd377fe30fb28363e629522277b3156bc04f9c959d07b9f7"
+  },
+  "model_actions": 0,
+  "host_units_modified": false
+}
