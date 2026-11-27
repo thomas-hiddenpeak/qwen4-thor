@@ -160,6 +160,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'agent_turn_cache_handoff' in self.plan:
+            from tools.serve_responses import agent_turn_cache_profiles
+            agent_turn_cache_profiles.business(self)
         if 'chatkit_handoff' in self.plan:
             from tools.serve_responses import chatkit_profiles
             chatkit_profiles.business(self, capabilities)
