@@ -600,3 +600,70 @@ int ResponsesApiFixture(int argc, char** argv) {
   }
   return 2;
 }
+
+Q4T_TEST(responses_parallel_function_names_match_live_and_retained_events) {
+  Fixture fixture;
+  ObjectStore objects(fixture.options);
+  detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
+  context.SetResponsesView(ClassifyPythonResponsesVersion("2.8.1"));
+  ResponsesExecution run(objects);
+  std::string wire, part;
+  ChatPlanConfig config;
+  config.model = "cpu";
+  config.structured = true;
+  const auto request = Parse(R"({"input":"call both functions","stream":true,
+    "reasoning":{"effort":"none"},"stream_options":{"include_obfuscation":false},
+    "tools":[{"type":"function","name":"first","strict":false,
+    "parameters":{"type":"object","properties":{}}},{"type":"function",
+    "name":"second","strict":false,"parameters":{"type":"object","properties":{}}}]})");
+  Q4T_CHECK(Ok(run.Prepare(request, config, Access(), 42)));
+  Q4T_CHECK(Ok(run.Begin(&wire)));
+  ResponseDelta delta;
+  delta.kind = ResponseDelta::Kind::kTool;
+  delta.call = {0, "call_first", "first", "{}"};
+  Q4T_CHECK(run.Append(delta, {}, &part));
+  wire += part;
+  delta.call = {1, "call_second", "second", "{}"};
+  Q4T_CHECK(run.Append(delta, {}, &part));
+  wire += part;
+  Q4T_CHECK(Ok(run.Finish(false, 2, {8, 0, 5, 0}, 43, &part)));
+  wire += part;
+  const auto live = run.PublicWire(wire);
+  std::string_view marker = "event: response.function_call_arguments.done\r\ndata: ";
+  size_t start = 0;
+  for (const auto& item : run.Output().Snapshot().GetArray("output")->array) {
+    auto pos = live.find(marker, start);
+    Q4T_CHECK(pos != live.npos);
+    pos += marker.size();
+    const auto end = live.find("\r\n\r\n", pos);
+    Q4T_CHECK(end != live.npos);
+    const auto event = Parse(live.substr(pos, end - pos));
+    Q4T_CHECK(item.GetString("name") == event.GetString("name") &&
+              item.GetString("id") == event.GetString("item_id"));
+    start = end;
+  }
+  Q4T_CHECK(run.Output().Snapshot().GetArray("output")->array.size() == 2);
+  ResponsesReplay replay;
+  const auto path = "/v1/responses/" + run.Output().Snapshot().GetString("id") +
+                    "?stream=true&include_obfuscation=false";
+  Q4T_CHECK(Ok(Read(objects, "GET", path, &replay)) && replay.wire == live);
+  context.SetResponsesView(ClassifyPythonResponsesVersion("3.55.1"));
+  Q4T_CHECK(run.PublicWire(wire) == wire && wire != live);
+  Q4T_CHECK(Ok(Read(objects, "GET", path, &replay)));
+  // The current reader also receives the current cache-retention spelling.
+  // Compare the two function completion frames across both readers' views.
+  start = 0;
+  size_t retained_start = 0;
+  for (size_t i = 0; i < 2; ++i) {
+    const auto pos = wire.find(marker, start);
+    const auto retained = replay.wire.find(marker, retained_start);
+    Q4T_CHECK(pos != wire.npos && retained != replay.wire.npos);
+    start = wire.find("\r\n\r\n", pos);
+    retained_start = replay.wire.find("\r\n\r\n", retained);
+    Q4T_CHECK(start != wire.npos && retained_start != replay.wire.npos);
+    const auto frame = wire.substr(pos, start - pos);
+    Q4T_CHECK(frame == replay.wire.substr(retained, retained_start - retained));
+    Q4T_CHECK(!Parse(frame.substr(marker.size())).Has("name"));
+  }
+  return true;
+}

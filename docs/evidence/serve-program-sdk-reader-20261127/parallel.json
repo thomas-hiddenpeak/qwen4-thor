@@ -1,0 +1,26 @@
+{
+  "scope": "Two function calls in the same foreground ResponsesExecution, using deterministic model deltas and the native object worker. No model start.",
+  "checks": [
+    "Both named legacy final argument frames resolve their distinct function and item IDs",
+    "Full legacy replay equals the legacy live wire",
+    "The current reader receives both original unnamed argument frames byte for byte",
+    "The stored canonical wire and the independently negotiated presentation differ only as expected in the tested argument frames"
+  ],
+  "tested_source": "45ce2e0b9ec3347b4caa1f7d0d66d0dd5bda955d",
+  "raw_sha256": "b7f482e9cf007c9a304b4eb5f35e69ae39fc38103c051527c0d30ea3b14d1d18",
+  "compiled": {
+    "files": {
+      "q4t": "b94562102bf4eb1b5d19528dd4ba00dd1e0a7f35820e055023ed80caba9a2e16",
+      "q4t-ingress": "235632a05b9fe2e222239ce436b183b55e0ca0e82711a0c88b827f4ff50e73bf",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "b06f8b1c04814d1b51fda62da1a7530e66f9ef59f7744f84e0ebc1318259f3d3",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "earlier_checks": [
+    "First fixture did not enable structured capability",
+    "Standalone test entry omitted native object-worker dispatch",
+    "Full cross-version byte comparison included the separately negotiated cache-retention spelling. Final checks compare both complete arguments frames and the full same-version legacy replay."
+  ]
+}

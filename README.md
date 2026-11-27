@@ -389,6 +389,7 @@ def continue_from_compact_window(client, model, history, next_question):
 和[原生 TLS 续答记录](docs/evidence/serve-compact-window-identities-20261127/business.json)。
 
 使用程序化工具的 Python 客户端可以严格校验程序、工具调用来源和结果。
+以下示例使用已启用严格响应校验的 OpenAI 客户端。
 如果项目仍使用 2.8.1 或 2.33.0，可在官方 SDK 的同一次请求上指定
 q4t 的返回类型。3.42.1 和 3.55.1 使用 SDK 自带类型。以下代码读取
 已有响应，并从上一次收到的序号继续消费事件。
