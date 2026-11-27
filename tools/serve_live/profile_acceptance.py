@@ -161,6 +161,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'chatkit_pending_browser_handoff' in self.plan:
+            from tools.serve_responses import chatkit_pending_profiles
+            chatkit_pending_profiles.business(self)
         if 'asset_reader_retrieval' in self.plan:
             from tools.native_embedding import asset_retrieval_profiles
             asset_retrieval_profiles.business(self)

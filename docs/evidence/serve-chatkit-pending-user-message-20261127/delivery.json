@@ -1,0 +1,148 @@
+{
+  "scope": "Pending ChatKit client tool continuity across model and gateway replacement with a fresh browser session",
+  "source": "741025e8c328b386acc8758389269676b217d572",
+  "predecessor_main": {
+    "head": "c98824a97a7b78aee1dd5c175311e150b2c50def",
+    "merge": "d9c1389cb6bad4b9bd42a52c5e4920602327ae5a",
+    "revision": 582
+  },
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 584,
+    "version_revision": 221,
+    "profile_revision": 108,
+    "previous_profile_revision": 107,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a",
+    "fallback": "28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28",
+    "engine": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "prior_revision": 582,
+  "prior_receipt_sha256": "8c989d1040ccae0b45903d63b87057eabf7b9207d81690caca2ec03eea7a9ea2",
+  "profile_registry_migration": {
+    "from_revision": 107,
+    "to_revision": 108,
+    "request": "c84f5387-0461-468f-a5bf-a0c9b7a799b9",
+    "migration_request": "062e4115-efd8-5416-bbf3-8087ec4d6528",
+    "bound_registry": "2e00c799bdadcf6a0f0c855d11809d5abc7e3b3f3b24cd904cd3ed784aa5b28f",
+    "policy": "4fc0c138d417353d93a16ea41382f0911cc9896a0b98089cdf2c878605831f16",
+    "capacities_unchanged": true,
+    "thresholds_and_budgets_unchanged": true,
+    "protected_runtime_fields": [
+      "selected",
+      "clock",
+      "pending",
+      "not_before_ns",
+      "light_since_ns",
+      "history"
+    ],
+    "protected_file_count": 13,
+    "model_starts": 0
+  },
+  "managed": {
+    "primary": {
+      "manifest": "b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a",
+      "origin_sha256": "c467f60d681b5cb6f33fc0d062b7b02d6b35756c6ee430a6f663dde3d4bf9896",
+      "model_starts": 2,
+      "seconds": 350.50367627991363,
+      "original_items_sha256": "be83ee75123c4c6f19695825a7d1b48bb395c118dfcf4df24e00c2fd0a1a38bb",
+      "owned_thread": "cthr_dda62d98986e71a33568ae21a67d3877",
+      "owned_call": "call_resp_8f0b605783ad2483d33b26d82f5f8622_0",
+      "restored_items_sha256": "be83ee75123c4c6f19695825a7d1b48bb395c118dfcf4df24e00c2fd0a1a38bb",
+      "answer": "42",
+      "fresh_chat": "42",
+      "late_tool_http": 409,
+      "other_session_http": 404,
+      "other_project_http": 404,
+      "browser_requests": [
+        4,
+        10
+      ],
+      "generations": [
+        1,
+        2
+      ],
+      "guardian_survived": true,
+      "monitor_samples_ok": 325,
+      "lease_sha256": "f28ece00ae3352abcff2a4d8d07f75812cf23b46b4ec4d18e7941b6027caed39",
+      "ports_free": true,
+      "remaining_children": 0,
+      "default_unchanged": true,
+      "fault": "owned primary gateway SIGABRT",
+      "selected": "registered fallback",
+      "probes": 1,
+      "raw_sha256": {
+        "prepare-run.json": "5c08cd867996c6f2307119b89c534014163534899275b71bef2896d1335d1013",
+        "restore-run.json": "4071299d842c47f3243215e8cad6ac0e962cd3e45d559983cca219f35cd4d0a8",
+        "result.json": "2ab0cd6895964dcf885eb7efb0ab8f109807495c97bc127147dbe1355a5c6729",
+        "interruption.json": "f0776149d0846000cbfc34e435adb5f0e3d7f2037cd70c7708df62d55b1e00ed",
+        "chat-after.wire": "8ae0d931859ac5392c2beb6b0008ca9a83d7f4f5f71752c394ac3a9799ef270b",
+        "takeover.json": "b7c7d309a3fce45a91238e10f594ff600cae9d1d1fdee9384d4d2d8adcb71fe7"
+      }
+    },
+    "fallback": {
+      "manifest": "28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28",
+      "origin_sha256": "426335810b198b8b2c92c61abfd37c83d3b9c8e43b118cb0844eeb32c5079e22",
+      "model_starts": 2,
+      "seconds": 201.8997692130506,
+      "original_items_sha256": "cf2eb1631d4ad882e39168f39c2d6e6ff9281a41a73bdb6f6d1ba3a6406e2fb7",
+      "owned_thread": "cthr_70d9137005d03aa7808b1c7332ec3e0c",
+      "owned_call": "call_resp_cf92cbe81058172d1ae3c64314f38fa5_0",
+      "restored_items_sha256": "cf2eb1631d4ad882e39168f39c2d6e6ff9281a41a73bdb6f6d1ba3a6406e2fb7",
+      "answer": "42",
+      "fresh_chat": "42",
+      "late_tool_http": 409,
+      "other_session_http": 404,
+      "other_project_http": 404,
+      "browser_requests": [
+        4,
+        10
+      ],
+      "generations": [
+        1,
+        2
+      ],
+      "guardian_survived": true,
+      "monitor_samples_ok": 188,
+      "lease_sha256": "7648e092940efdcaf9e1dffb8b5a6b9f4be2f0e92a4f63815cb5677fc58d6a84",
+      "ports_free": true,
+      "remaining_children": 0,
+      "default_unchanged": true,
+      "fault": "owned model SIGKILL",
+      "raw_sha256": {
+        "prepare-run.json": "344c1b48e32c96e30eea58c5e0aca51fa84967653cadb3f51a3279bd734f8fc3",
+        "restore-run.json": "7e847cadf124d39a621dd291623ac8afac84c10935f32a36ecfaf601aab3c575",
+        "result.json": "13cdfa8342f3d6fcf27db53cc761bcbdfde64308c5ea2dbe27bc64a0dd854e9b",
+        "interruption.json": "48c82941cba06b2ff88f124ff2aeee8ec24dc6fbd340a70e7a9582630bf55799",
+        "chat-after.wire": "f242f518590cc95b70bb4361ea4f7b97f767e4d247e00a59ad6fff940e4cf523"
+      }
+    }
+  },
+  "managed_receipt_sha256": "f2b2ef5424e5c37b6b017829f87d10902e9316ff8d3185e1fb49ea634ce663db",
+  "foreground_sha256": "6f2dd9fa6bedf9424ae4f0ebcffa268468a351a4571799458ef59a813c261cd0",
+  "capacities_sha256": "29d1d7a90d1457fd3a66f5085ae7f5af298328b80767538db478205cd1db1f05",
+  "maintenance_sha256": "7d412c6fc24c84abb4a820db74dcc6bdc947c8e2cfd02da00d98f579a4302274",
+  "day": {
+    "plan_sha256": "df0f6e480e5e0b170047a9e1fc77ef99035137b6cb1efe0bbb787dc54a214aab",
+    "operator_sha256": "8a1d5dbf5c4d67e585f82fd8acbfcedb75bb3a88d4f1033cff8f37b946b6a3b4",
+    "hours_executed": 0,
+    "audio_pairs": 25,
+    "first_hour_business": 304,
+    "business_requests": 7250,
+    "minimum_evidence_free_bytes": 12884901888
+  },
+  "cold": {
+    "plan_sha256": "7bb7f9a35abb86cfb813ee4617786259a79501ba396e71cb376612275d120b87",
+    "executed": false
+  },
+  "operator_source": {
+    "head": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
+    "managed": "d0546cdb9c613c0a543a581d848de5a52785c6f1",
+    "operator": "9daa0dcb3f47f413b4e183f742b88789adb2fa89",
+    "source": "741025e8c328b386acc8758389269676b217d572"
+  },
+  "operator_disk_evidence_sha256": "549147d1b2776a7bf5858c5400f4c2c8ea89802bc695ef7d1a5f8de54bedde94"
+}

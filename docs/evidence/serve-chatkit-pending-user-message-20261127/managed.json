@@ -1,0 +1,85 @@
+{
+  "stage": "managed_recovery_verified",
+  "issued": false,
+  "qualified_source": "741025e8c328b386acc8758389269676b217d572",
+  "engine": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+  "roles": {
+    "primary": {
+      "manifest": "b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a",
+      "origin_sha256": "c467f60d681b5cb6f33fc0d062b7b02d6b35756c6ee430a6f663dde3d4bf9896",
+      "model_starts": 2,
+      "seconds": 350.50367627991363,
+      "original_items_sha256": "be83ee75123c4c6f19695825a7d1b48bb395c118dfcf4df24e00c2fd0a1a38bb",
+      "owned_thread": "cthr_dda62d98986e71a33568ae21a67d3877",
+      "owned_call": "call_resp_8f0b605783ad2483d33b26d82f5f8622_0",
+      "restored_items_sha256": "be83ee75123c4c6f19695825a7d1b48bb395c118dfcf4df24e00c2fd0a1a38bb",
+      "answer": "42",
+      "fresh_chat": "42",
+      "late_tool_http": 409,
+      "other_session_http": 404,
+      "other_project_http": 404,
+      "browser_requests": [
+        4,
+        10
+      ],
+      "generations": [
+        1,
+        2
+      ],
+      "guardian_survived": true,
+      "monitor_samples_ok": 325,
+      "lease_sha256": "f28ece00ae3352abcff2a4d8d07f75812cf23b46b4ec4d18e7941b6027caed39",
+      "ports_free": true,
+      "remaining_children": 0,
+      "default_unchanged": true,
+      "fault": "owned primary gateway SIGABRT",
+      "selected": "registered fallback",
+      "probes": 1,
+      "raw_sha256": {
+        "prepare-run.json": "5c08cd867996c6f2307119b89c534014163534899275b71bef2896d1335d1013",
+        "restore-run.json": "4071299d842c47f3243215e8cad6ac0e962cd3e45d559983cca219f35cd4d0a8",
+        "result.json": "2ab0cd6895964dcf885eb7efb0ab8f109807495c97bc127147dbe1355a5c6729",
+        "interruption.json": "f0776149d0846000cbfc34e435adb5f0e3d7f2037cd70c7708df62d55b1e00ed",
+        "chat-after.wire": "8ae0d931859ac5392c2beb6b0008ca9a83d7f4f5f71752c394ac3a9799ef270b",
+        "takeover.json": "b7c7d309a3fce45a91238e10f594ff600cae9d1d1fdee9384d4d2d8adcb71fe7"
+      }
+    },
+    "fallback": {
+      "manifest": "28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28",
+      "origin_sha256": "426335810b198b8b2c92c61abfd37c83d3b9c8e43b118cb0844eeb32c5079e22",
+      "model_starts": 2,
+      "seconds": 201.8997692130506,
+      "original_items_sha256": "cf2eb1631d4ad882e39168f39c2d6e6ff9281a41a73bdb6f6d1ba3a6406e2fb7",
+      "owned_thread": "cthr_70d9137005d03aa7808b1c7332ec3e0c",
+      "owned_call": "call_resp_cf92cbe81058172d1ae3c64314f38fa5_0",
+      "restored_items_sha256": "cf2eb1631d4ad882e39168f39c2d6e6ff9281a41a73bdb6f6d1ba3a6406e2fb7",
+      "answer": "42",
+      "fresh_chat": "42",
+      "late_tool_http": 409,
+      "other_session_http": 404,
+      "other_project_http": 404,
+      "browser_requests": [
+        4,
+        10
+      ],
+      "generations": [
+        1,
+        2
+      ],
+      "guardian_survived": true,
+      "monitor_samples_ok": 188,
+      "lease_sha256": "7648e092940efdcaf9e1dffb8b5a6b9f4be2f0e92a4f63815cb5677fc58d6a84",
+      "ports_free": true,
+      "remaining_children": 0,
+      "default_unchanged": true,
+      "fault": "owned model SIGKILL",
+      "raw_sha256": {
+        "prepare-run.json": "344c1b48e32c96e30eea58c5e0aca51fa84967653cadb3f51a3279bd734f8fc3",
+        "restore-run.json": "7e847cadf124d39a621dd291623ac8afac84c10935f32a36ecfaf601aab3c575",
+        "result.json": "13cdfa8342f3d6fcf27db53cc761bcbdfde64308c5ea2dbe27bc64a0dd854e9b",
+        "interruption.json": "48c82941cba06b2ff88f124ff2aeee8ec24dc6fbd340a70e7a9582630bf55799",
+        "chat-after.wire": "f242f518590cc95b70bb4361ea4f7b97f767e4d247e00a59ad6fff940e4cf523"
+      }
+    }
+  }
+}

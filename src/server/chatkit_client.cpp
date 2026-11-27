@@ -203,9 +203,6 @@ ObjectReply Submit(int fd, ObjectStore& objects, ResponsesJobs& jobs,
     Set(&last, "status", String("completed"));
     *user = last;
   } else {
-    if (waiting)
-      return Error(409, "chatkit_tool_pending",
-                   "Submit the pending client tool result first");
     const auto id = NewObjectId(ObjectKind::kConversationItem);
     if (id.empty())
       return Error(503, "chatkit_id_unavailable", "No message ID");

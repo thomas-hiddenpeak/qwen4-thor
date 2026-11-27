@@ -7,6 +7,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev584 已发行。模型重建与网关故障切换后，新 ChatKit 会话均读回原待回填工具调用并续问得到 42。迟到回填返回 409，跨会话及跨客户读取返回 404。生产期望状态为 STOPPED；登记时模型启动为零。音频日稳按新包重新准备，保留首小时检查点。 [发行回执](evidence/serve-chatkit-pending-user-message-20261127/delivery.json)
+
+模型意外退出、主网关异常后切换至回退包，两种实际恢复中，新浏览器会话均重开了原待回填调用。原两项内容摘要一致，新问题和独立 Chat 均答 42，迟到工具结果返回 409，跨会话与跨客户访问均返回 404。下一步登记已验证的主包和回退包。 [两种故障的恢复记录](evidence/serve-chatkit-pending-user-message-20261127/managed.json)
+
+主档在真实浏览器留下待回填工具后停止，轻档用新会话重新打开相同线程，原两项内容的摘要一致。新问题得到 42，迟到结果为 409，两种非所属读取均为 404。主、轻档分别发出 4 和 10 个浏览器或 SDK 请求，独立 Chat 和 WebRTC 均通过。下一步验证托管故障交接。 [容量交接](evidence/serve-chatkit-pending-user-message-20261127/profiles.json)
+
+ChatKit 候选已接入并发模型资产读取修复。与检索发行候选逐一比较 1,104 个编译来源，仅两处 ChatKit 历史处理不同，Release 构建零告警。新增容量交接驱动，主档留下真实待答工具，轻档用新会话核验原历史后提交新问题、迟到回填和跨客户读取。6 项针对性 CPU 检查通过，等待检索版本发行后做两档实机验收。 [整合校验](evidence/serve-chatkit-pending-user-message-20261127/combined.json)
+
+真实模型保留了原待回填客户端调用，接受新问题并答出 42。迟到回填返回 409，重新读取的浏览器历史逐字一致，两类非所属访问均为 404。一次模型启动、12 个 SDK／浏览器请求和一条独立 Chat 通过。下一步验证容量交接与可回退发行。 [实机证据](evidence/serve-chatkit-pending-user-message-20261127/device.json)
+
+首轮实机在新问题 17+25 上又调用了 lookup_release。独立检查两条持久化响应，工具策略已回到 auto，但历史中两个用户请求相邻。现在仅在确实略过未答工具时保留中断边界，浏览器历史仍保留原调用。六项原生测试通过，下一步用同一浏览器请求复验。 [首轮失败与修复](evidence/serve-chatkit-pending-user-message-20261127/interruption-boundary.json)
+
+真实 ChatKit 驱动已限定一次模型启动、12 条 SDK／浏览器 HTTP 请求及一条独立 Chat。它会先保留模型请求的工具调用，再发新问题，比较两端历史、拒绝迟到结果与两种跨客户访问。SDK 脚本语法及驱动入口已检查，实机结果单独记录。 [已有原生证据](evidence/serve-chatkit-pending-user-message-20261127/native.json)
+
+ChatKit 客户端工具尚未回填时，固定版本参考服务允许发送新消息，旧结果迟到会被拒绝。q4t 已允许新消息进入队列，并从本回合模型输入排除未获结果的调用；浏览器历史、原 Response 和已完成调用保持可读。旧实现的两个原生用例均失败，修改后六项通过。下一步是用真实模型和客户端验证新回合及迟到回填。 [参考与原生验证](evidence/serve-chatkit-pending-user-message-20261127/native.json)
+
+已用已发行主包和同一份计划实测磁盘预检。64 MiB 临时文件系统上，`check` 和 `run` 均在取得 GPU 租约前退出；恢复原文件系统后，同一计划的 `check` 成功，全程模型启动为零。 [同一计划的实机复核](evidence/serve-native-soak-audio-20261127/disk-reserve.json)
+
+原生长稳入口现会在只读检查与每次实际启动前核对证据盘剩余空间。低于采集器已有的 12 GiB 门槛时会报告目录和可用字节，保留计划供空间恢复后再用。33 项 CPU 检查通过，覆盖恰达门槛、少一个字节、零子进程及零执行文件。 [磁盘预检](evidence/serve-native-soak-audio-20261127/disk-reserve.json)
+
 原生长稳驱动已在真实设备完成三轮短验。一次启动处理 19 条业务请求，首尾两轮均以刚合成的 MP3 完成转录，三个项目工具闭环通过。已为同一不可变发行包准备 24 小时计划，保留首小时检查点，由用户选择窗口执行。 [短验与交接](evidence/serve-native-soak-audio-20261127/short.json)
 
 音频长稳短验首轮合成成功，转录接口因驱动生成 73 字节的 multipart 分隔符返回 400。驱动已缩短前缀，保留完整摘要。发行版本的原生解析器接受新 68 字节与 70 字节上限，拒绝 71 字节及原失败输入。31 项针对性 CPU 检查通过，下一步使用相同发行包复验。 [原始失败与边界复核](evidence/serve-native-soak-audio-20261127/multipart.json)
@@ -1382,13 +1402,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev582**。登记时服务意图为 `STOPPED`，模型启动 0 次，保留 13 项客户与恢复状态。 [发行回执](evidence/serve-asset-admission-20261127/delivery.json)
+本机登记的发行版本为 **rev584**。登记时服务意图为 `STOPPED`，模型启动 0 次，保留 13 项客户与恢复状态。 [发行回执](evidence/serve-chatkit-pending-user-message-20261127/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb` |
-| 回退服务包清单 | `a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9` |
-| 默认引擎 | `312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b` |
+| 主服务包清单 | `b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a` |
+| 回退服务包清单 | `28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28` |
+| 默认引擎 | `231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

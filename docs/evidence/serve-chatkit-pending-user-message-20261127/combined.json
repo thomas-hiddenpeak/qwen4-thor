@@ -1,0 +1,41 @@
+{
+  "stage": "combined_native_build",
+  "source": {
+    "head": "d834799f1e21caafb82b386711b724152e398027",
+    "chatkit": "fc2f3a4fd7613d1809e572419e70984240eaf610",
+    "assets": "c3b1c8f1f5c3606a89259c20c04f5b5d3fbc59a4"
+  },
+  "engine": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+  "predecessor_engine": "312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b",
+  "predecessor_manifest": "12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb",
+  "previous_chatkit_engine": "ead16d2821d48352a71029db713ed4100737b37502e49f0968a26a71c388f22f",
+  "reviewed_sources": 1104,
+  "changed_runtime_sources": {
+    "src/server/chatkit_client.cpp": "5004e22fb1c8481bb248ace1e5dadf76ea2e6d161e3a07e905cb1d26fc995a8e",
+    "src/server/responses_state.cpp": "a64d73befe90c57df5637285e7f6d3535887970b44907bcbe979b3f87ca39b08"
+  },
+  "asset_reader_sha256": "766f407bc347b95f5e4032fc91bf04c2228d438709e281d82e261f985315e3a1",
+  "original_business_receipt": "6f2dd9fa6bedf9424ae4f0ebcffa268468a351a4571799458ef59a813c261cd0",
+  "compiled_index_sha256": "217eb0a31dcd43c186c80eacbe3a7f5d7c06e2d0d64ba460c72f5085e7aee19b",
+  "warnings": 0,
+  "issued": false,
+  "capacity_contract": {
+    "primary_requests": 4,
+    "light_requests": 10,
+    "allowed_model_starts": 2,
+    "expected": "A fresh reader session recovers the original pending items before submitting a new question, rejecting the obsolete result and checking project and session ownership.",
+    "cpu_cases": 6,
+    "source_audit": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 247,
+      "native_routes": 409,
+      "reviewed_source_anchors": 1394,
+      "mutation_checks": 40,
+      "errors": []
+    },
+    "device_pair_pending": true
+  }
+}

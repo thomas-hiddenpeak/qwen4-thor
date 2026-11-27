@@ -1,0 +1,57 @@
+{
+  "stage": "targeted_native_history_and_upstream_transport",
+  "issued": false,
+  "device_verified": false,
+  "upstream_reference": {
+    "reference": "dacc133c280b39b9334d06ea73f0f1c199e59927",
+    "upstream_server_sha256": "198261a407ab8f0d8a2fc6c0e44d9f42888617d2f6ea7a18c5185a39eb6adc3d",
+    "actual_reference_events": [
+      "thread.item.done",
+      "stream_options"
+    ],
+    "respond_calls": 1,
+    "pending_call_unmodified": true,
+    "late_output_rejected": true,
+    "candidate_source_sha256": "d813572ab8b5f7f4a7d25e918f209f65f951d9cadebd48024b4995c3356a13aa",
+    "candidate_source_line": 206,
+    "candidate_source_result": "HTTP 409 chatkit_tool_pending before admission",
+    "candidate_runtime_tested": false
+  },
+  "upstream_source": "https://github.com/openai/chatkit-python/blob/dacc133c280b39b9334d06ea73f0f1c199e59927/chatkit/server.py",
+  "previous_commit": "d9adeb0e20c81cec6289c18627d41bd53bf33563",
+  "baseline_compiled_sources": 1104,
+  "changed_runtime_sources": {
+    "src/server/chatkit_client.cpp": "5004e22fb1c8481bb248ace1e5dadf76ea2e6d161e3a07e905cb1d26fc995a8e",
+    "src/server/responses_state.cpp": "55d7cb65e7205e2ad24733409926668713f76c18ec4443aaad372b21196f0b6e"
+  },
+  "checks": [
+    "browser user input omits unanswered client function call from its model input",
+    "assistant text and completed calls and outputs retained",
+    "original response and original tool result branch remain readable",
+    "ordinary Responses history unchanged",
+    "other tenant and other ChatKit thread denied"
+  ],
+  "red": {
+    "checks": 2,
+    "failures": 2,
+    "log_sha256": "7ba2711e09e41366d26baa16558a6651fa4ac222d32d28fa9500313760820b9a"
+  },
+  "green": {
+    "checks": 6,
+    "failures": 0,
+    "log_sha256": "81808c19cf241657e15d1988895cf19f3cfa3c11172a810bdd3b0eca75c7988e"
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "model_starts": 0,
+  "pending": "authenticated SDK/HTTP new user turn with a real pending client tool and late output boundary"
+}
