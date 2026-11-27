@@ -1,0 +1,133 @@
+{
+  "stage": "managed_roles_verified",
+  "issued": false,
+  "source": "72e06be01643969639ef79a735961096890e687c",
+  "roles": {
+    "fallback": {
+      "manifest": "7eea5d6c33de3eff6560fac2466840f09035437ab0a52bf869d2fed923923fa8",
+      "engine": "4e4793560074b3bd6799058c059ab023e72b1bb93a0289a3a7e52b711082e16a",
+      "sdk": "7.47.0",
+      "transport": "isolated native loopback HTTP",
+      "seconds": 261.7368575180881,
+      "model_starts": 2,
+      "guardian_survived": true,
+      "objects": {
+        "store": "vs_490eed6fa5f6175b2d39c4b1021b1530",
+        "batch": "vsfb_25fd226f6cbba3a9e32dd2b00588370e",
+        "file": "file_43b533fb20a3e1a3aedecde86c0e5bfa"
+      },
+      "indexed_file": "file_43b533fb20a3e1a3aedecde86c0e5bfa",
+      "search_matches_uploaded_text": true,
+      "foreign_resource_statuses": [
+        404,
+        404
+      ],
+      "foreign_denials_by_phase": [
+        2,
+        2
+      ],
+      "requests_by_phase": [
+        16,
+        11
+      ],
+      "extra_status_reads": [
+        5,
+        1
+      ],
+      "fresh_chat": "42",
+      "peer_budget": {
+        "client": "beta",
+        "field": "requests_per_minute",
+        "before": 1,
+        "after": 6,
+        "revision": 1,
+        "production_sha256": "a8b39e6c73e6fa8a225ab0ec5b71033232371788589c65f5834038dde5be94b1"
+      },
+      "owned_children_after_stop": 0,
+      "ports_free": true,
+      "default_untouched": true,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "source_sha256": {
+        "prepare-run.json": "fde2593a0e4cbe6d640017b8897a3d31ae83f9b33dfe89982af4c495e3e103b9",
+        "restore-run.json": "a26b43539234cd2a32cf4c4381c761ae3ae70ecf05ef17806690808d0bb4f251",
+        "interruption.json": "228f62ef8cdd6103e14908db8724f22fd17268cd688703a5bf65ea94b97c2a1f",
+        "result.json": "d0e0809b467b1c37ed683d85b4801e2d54bf1bfb33f052b715b442e6dab615c7",
+        "chat-after.wire": "c7987f022d391a6921386ec12e173ffb7c517c57114661169837cba41b2fccff",
+        "startup-progress.jsonl": "8067c12a80cabd306687119a370493de468e25cf4602602a92ec66e41e535bfd"
+      },
+      "lease_sha256": "079bd499a3f5962039d4a730154cc305b8ddcacebd03093cd750cd06806e9a94"
+    },
+    "primary": {
+      "manifest": "008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1",
+      "engine": "4e4793560074b3bd6799058c059ab023e72b1bb93a0289a3a7e52b711082e16a",
+      "sdk": "7.47.0",
+      "transport": "isolated native loopback HTTP",
+      "seconds": 406.3894095849246,
+      "model_starts": 2,
+      "guardian_survived": true,
+      "objects": {
+        "store": "vs_41355e787b8d056b7ff0e809ce98d05f",
+        "batch": "vsfb_27eeb795262eb07b2fa53247af5fd58a",
+        "file": "file_dd419b165becc8bac0706dea24a3f4e6"
+      },
+      "indexed_file": "file_dd419b165becc8bac0706dea24a3f4e6",
+      "search_matches_uploaded_text": true,
+      "foreign_resource_statuses": [
+        404,
+        404
+      ],
+      "foreign_denials_by_phase": [
+        2,
+        2
+      ],
+      "requests_by_phase": [
+        16,
+        11
+      ],
+      "extra_status_reads": [
+        5,
+        1
+      ],
+      "fresh_chat": "42",
+      "peer_budget": {
+        "client": "beta",
+        "field": "requests_per_minute",
+        "before": 1,
+        "after": 6,
+        "revision": 1,
+        "production_sha256": "a8b39e6c73e6fa8a225ab0ec5b71033232371788589c65f5834038dde5be94b1"
+      },
+      "owned_children_after_stop": 0,
+      "ports_free": true,
+      "default_untouched": true,
+      "exit_codes": [
+        0,
+        0
+      ],
+      "source_sha256": {
+        "prepare-run.json": "f7ae2cd90a3efcc2e5ad5cca3aafcd0f65e55c27c27e3485f2eec649c9710a9b",
+        "restore-run.json": "80c165f6fe8db209127591144c6ef0835fd3ae9c1d55c770751c3a5803dae3f5",
+        "interruption.json": "8db9db22f67473fcdccff316a693ad04a6f1b53d1bdef64ba7f833f2858e938d",
+        "result.json": "8d665ca72daec4b4166c22ca63192a7af25bdd09c1b8b706ba2eefb98dbd2d24",
+        "chat-after.wire": "d877658b184289140e747cb78defc1fd2accc94314b72e54ca2002e7dfbea052",
+        "startup-progress.jsonl": "b2d832617fa67d32e78a0cae77c6df5744f6138d239ddbba17fb17488ca91381"
+      },
+      "lease_sha256": "a9c3100503d420253e1707a03fbaf9d877171ee11533358bc0ad43bb751433fc",
+      "gateway_fault_signal": 6,
+      "registered_fallback": "7eea5d6c33de3eff6560fac2466840f09035437ab0a52bf869d2fed923923fa8",
+      "probes": 1
+    }
+  },
+  "unmodified_quota_counterexample": {
+    "role": "beta",
+    "requests_per_minute": 1,
+    "http_status": 429,
+    "code": "client_rpm_exhausted",
+    "receipt_sha256": "f6842fe6de1dccfb2abca125bd9f26b1bac116e60f51a0db541a400122fd50dc",
+    "diagnostic_sha256": "ca96fe3ceba3f200d98e3f5d25b5cf360048547b99680e8afdeb8992cdaf1ce6"
+  },
+  "previous_controller_failure": "controller-history.json"
+}
