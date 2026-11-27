@@ -1,0 +1,83 @@
+{
+  "scope": "Issued request defaults, schema verification and lease receipts. A scoped file-backed Responses recovery and new inference request were exercised on each installed configuration.",
+  "source": "49c02a162862b724d96a4dbee857458a55deaa59",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 576,
+    "version_revision": 217,
+    "profile_revision": 104,
+    "previous_profile_revision": 104,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "bb72e08137b00e0c62689bf3b946176507579773ce5fbab94b80d179a046afa1",
+    "fallback": "bab24673bbbcfbd4834a3ee060ed20c0b91893d9d1021353608324f5aa241dd1",
+    "engine": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "prior_revision": 574,
+  "prior_receipt": "60b69de9c8cc121c96b09d19690d598f2704e83d859a776c2475f087ad8bb482",
+  "managed": {
+    "primary": {
+      "manifest_sha256": "bb72e08137b00e0c62689bf3b946176507579773ce5fbab94b80d179a046afa1",
+      "result_sha256": "1f35b6d5119674049992d1f2f09389fb520d4ce59f0991475f6cdaf3ea4aba82",
+      "lease_sha256": "1a43aa8d77321addc1a7329d59d106d2908a228c3cd79b771c19a3f851c66923",
+      "origin_sha256": "b58125aadef3e623fe88f5ab6cad014a2b9cf1a42d1dbdef7416522d745795c2",
+      "seconds": 355.1459816978313,
+      "owned_model_starts": 2,
+      "prepared_sha256": "c0bac5867e46600b131a3f50d6706a01814a50eda2f569f902040202b2607429",
+      "restored_sha256": "5edd8cc5c0fdec74e8f350fa32db3eda68825bb5c7b630bd7beb45477f98a384",
+      "identical_responses_and_inputs": 2,
+      "owner_status": 200,
+      "peer_status": 404,
+      "deleted_file_status": 404,
+      "nonretained_status": 404,
+      "distinct_request_ids": 18,
+      "fresh_chat": "42",
+      "guardian_preserved": true,
+      "takeover_sha256": "219437d3963b1db798e74d89b1d5aca7ba94cc5d011169225b17956ed7db2d19"
+    },
+    "fallback": {
+      "manifest_sha256": "bab24673bbbcfbd4834a3ee060ed20c0b91893d9d1021353608324f5aa241dd1",
+      "result_sha256": "4f0d2c75938145fcc8a1da760ec4cd2fc7657ae627ac3bce98838eadec1b6760",
+      "lease_sha256": "5b236cbc92f0ece77ae8c423e5c77e745bcb3042da99b8cca28ea6421d8f90d5",
+      "origin_sha256": "27d704d7596ed16d96132c0e6d4a31624de922a0cddd5bb006c3fae05156c638",
+      "seconds": 201.86574025824666,
+      "owned_model_starts": 2,
+      "prepared_sha256": "94227e70208e9181959eb938748c9327c9a9937958ceea75b8ffee5fb0e6bc6b",
+      "restored_sha256": "4c05512fbe0dacb25b17817fe898ff4d575ae9391407323676cbdeeb1d320409",
+      "identical_responses_and_inputs": 2,
+      "owner_status": 200,
+      "peer_status": 404,
+      "deleted_file_status": 404,
+      "nonretained_status": 404,
+      "distinct_request_ids": 18,
+      "fresh_chat": "42",
+      "guardian_preserved": true
+    }
+  },
+  "prior_sdk_evidence_sha256": "d0deee47f61f98f3f1fd7fc3b74b14c7950a51a3b9117220d1fa9d3793745bc8",
+  "combined_package_evidence_sha256": "a4a5c3a7c47691d05c33fb35d1c6f9d1ccdae1e49a93cebe6a8386547f70a9b5",
+  "failed_harness": {
+    "phase": "primary setup; the fatal-fixture operator requires an isolated state path with a checked prefix",
+    "receipt_sha256": "443c2a96fe7a10301907f18dd67c44ac9065ec4afc655921e7b6c574e0587132",
+    "model_starts": 0
+  },
+  "maintenance": {
+    "receipt_sha256": "dada9e278cb3ef9ab387d13643f05c93d0043c72ed1816705c1bfb42a47f3c2b",
+    "deleted_files": 0
+  },
+  "first_publication_precheck": {
+    "status": "ENV_ABORT",
+    "reason": "NVML sampling worker cleanup failed concurrently with the CPU fixture overload; issuance had not created a plan or changed rev574.",
+    "lease_sha256": "43326177aef0e9068eec42bcba1eabbb61e134b0c04f0a66c99b8a51fdea4604"
+  },
+  "day": {
+    "plan_sha256": "8869d6fe51962dc09e7b87c6f4e19c9b2e94196e59030d28fcf26109b93c99bd",
+    "hours_executed": 0
+  },
+  "cold": {
+    "plan_sha256": "4231b0e91b1cc541e6f32454269c4193a861bf0decbfcc2695839b5c3b6aae1d",
+    "executed": false
+  }
+}
