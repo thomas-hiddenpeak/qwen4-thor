@@ -920,9 +920,11 @@
         "delivery": "evidence/serve-response-cache-retention-20261127/delivery.json"
       },
       "compact_message_identity_20261127": {
-        "state": "signed_history_replayed_over_tls",
+        "state": "issued",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
         "device_status": "original_owner_400_repaired_verified_both_readers",
@@ -931,7 +933,9 @@
         "business": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
         "stage": "real_tls_verified",
@@ -3211,9 +3215,11 @@
         "delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
       },
       "compact_message_identity_20261127": {
-        "state": "signed_history_replayed_over_tls",
+        "state": "issued",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
         "device_status": "original_owner_400_repaired_verified_both_readers",
@@ -3222,27 +3228,37 @@
         "business": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "compact_file_replay_20261127": {
-        "state": "real_video_answer_verified",
+        "state": "issued",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
         "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json",
         "signed_memory_guidance": "evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "compact_inline_images_20261127": {
-        "state": "native_tls_verified",
+        "state": "issued",
         "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "business": "evidence/serve-compact-inline-media-20261127/business.json",
         "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
-        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
         "stage": "real_tls_verified",
@@ -6912,24 +6928,32 @@
         "delivery": "evidence/serve-video-layer-composition-20261127/delivery.json"
       },
       "compact_file_replay_20261127": {
-        "state": "real_video_answer_verified",
+        "state": "issued",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
         "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json",
         "signed_memory_guidance": "evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "compact_inline_images_20261127": {
-        "state": "native_tls_verified",
+        "state": "issued",
         "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "business": "evidence/serve-compact-inline-media-20261127/business.json",
         "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
-        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       }
     },
     {
@@ -9353,9 +9377,11 @@
         "delivery": "evidence/serve-mcp-error-sdk-20261127/delivery.json"
       },
       "compact_message_identity_20261127": {
-        "state": "signed_history_replayed_over_tls",
+        "state": "issued",
         "evidence": "evidence/serve-compact-window-identities-20261127/cpu.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "sdk_replay": "evidence/serve-compact-window-identities-20261127/mcp-replay.json",
         "device_failures": "evidence/serve-compact-window-identities-20261127/business-failures.json",
         "device_status": "original_owner_400_repaired_verified_both_readers",
@@ -9364,7 +9390,9 @@
         "business": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
         "stage": "real_tls_verified",
@@ -10624,8 +10652,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 564,
-        "receipt": "evidence/serve-mcp-error-sdk-20261127/delivery.json",
+        "revision": 566,
+        "receipt": "evidence/serve-compact-inline-media-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12393,24 +12421,32 @@
         "delivery": "evidence/serve-visual-frame-parts-20261126/delivery.json"
       },
       "compact_file_replay_20261127": {
-        "state": "real_video_answer_verified",
+        "state": "issued",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
         "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json",
         "signed_memory_guidance": "evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json",
-        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json"
+        "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "compact_inline_images_20261127": {
-        "state": "native_tls_verified",
+        "state": "issued",
         "evidence": "evidence/serve-compact-inline-media-20261127/cpu.json",
-        "remaining": "Combined primary/light, managed recovery, default issuance and main integration.",
+        "remaining": [
+          "stock SDK compact response union excludes retained input messages; use the documented raw reader"
+        ],
         "business": "evidence/serve-compact-inline-media-20261127/business.json",
         "combined_business": "evidence/serve-compact-inline-media-20261127/combined-business.json",
-        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-compact-inline-media-20261127/profiles.json",
+        "revision": 566,
+        "delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
       },
       "program_sdk_reader_20261127": {
         "stage": "real_tls_verified",
@@ -12424,7 +12460,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev564_delivered_remaining_deliveries",
+      "state": "rev566_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13788,7 +13824,8 @@
       "packaged_response_readers_20261127": {
         "stage": "cpu_fixture_verified_pending_issued_package",
         "evidence": "evidence/serve-program-sdk-reader-20261127/packaged-readers.json"
-      }
+      },
+      "current_compact_media_delivery": "evidence/serve-compact-inline-media-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -13893,16 +13930,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "95b33ec664f8d6b70a669bfa9471b3a44deeb988",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-delivery-soak-src",
+        "source_commit": "91a19f2b006530057159e562afebaac5c4a066f3",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-delivery-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-client-primary-01/bundle",
-          "manifest_sha256": "9afdae496af75efdbb44be6170ad14f932f051d0e1a6b75b32fd6451412a423b"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-client-primary-01/bundle",
+          "manifest_sha256": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2"
         },
-        "revision": 564,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/mcp-error-sdk-delivery-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "2b0bf302f03c2718a363ea16e741c46813dfaa23abb3ed1a4182ec2609d825e8",
-        "handoff_sha256": "7a87209f6fcde0f3a2b7940b8f9e44ca287b805dc2c534997a399efbfe9bdcb7",
+        "revision": 566,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/compact-media-delivery-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "a8097b4f90e7c6c33c3a063295a6c27b2e9d4817750bc126b9ecee217e34e71f",
+        "handoff_sha256": "10d3d9f892fab8daece512ea96761187d676108027bd4b057eadb44e94a4e84a",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14313,9 +14350,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 564,
-        "receipt": "evidence/serve-mcp-error-sdk-20261127/delivery.json",
-        "plan_sha256": "2b0bf302f03c2718a363ea16e741c46813dfaa23abb3ed1a4182ec2609d825e8",
+        "revision": 566,
+        "receipt": "evidence/serve-compact-inline-media-20261127/delivery.json",
+        "plan_sha256": "a8097b4f90e7c6c33c3a063295a6c27b2e9d4817750bc126b9ecee217e34e71f",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
