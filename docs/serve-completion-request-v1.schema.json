@@ -55,7 +55,8 @@
         {
           "type": "null"
         }
-      ]
+      ],
+      "default": null
     },
     "presence_penalty": {
       "anyOf": [
@@ -108,7 +109,8 @@
         {
           "type": "null"
         }
-      ]
+      ],
+      "default": null
     },
     "user": {
       "type": [

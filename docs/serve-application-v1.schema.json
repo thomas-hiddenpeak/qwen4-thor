@@ -8840,13 +8840,15 @@
           "$ref": "#/$defs/657"
         },
         "background": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": false
         },
         "context_management": {
           "$ref": "#/$defs/663"
         },
         "conversation": {
-          "$ref": "#/$defs/666"
+          "$ref": "#/$defs/666",
+          "default": null
         },
         "include": {
           "$ref": "#/$defs/668"
@@ -8906,7 +8908,8 @@
           "$ref": "#/$defs/794"
         },
         "parallel_tool_calls": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": true
         },
         "previous_response_id": {
           "$ref": "#/$defs/20"
@@ -8945,13 +8948,16 @@
           "maxLength": 128
         },
         "service_tier": {
-          "$ref": "#/$defs/828"
+          "$ref": "#/$defs/828",
+          "default": "auto"
         },
         "store": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": true
         },
         "stream": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": false
         },
         "stream_options": {
           "$ref": "#/$defs/835"
@@ -8966,7 +8972,8 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "default": 1
         },
         "text": {
           "$ref": "#/$defs/837"
@@ -9018,10 +9025,12 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "default": 1
         },
         "truncation": {
-          "$ref": "#/$defs/860"
+          "$ref": "#/$defs/860",
+          "default": "disabled"
         },
         "user": {
           "anyOf": [
@@ -68314,6 +68323,54 @@
       ],
       "additionalProperties": false
     },
+    "chat_http_error": {
+      "description": "JSON errors returned by the model service and its native or optional nginx HTTP entrypoint.",
+      "oneOf": [
+        {
+          "$ref": "#/$defs/chat_error"
+        },
+        {
+          "type": "object",
+          "required": [
+            "error"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "type": "object",
+              "required": [
+                "message",
+                "type",
+                "code",
+                "param"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "type": {
+                  "enum": [
+                    "gateway_error",
+                    "service_error"
+                  ]
+                },
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "param": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "chat_usage": {
       "type": "object",
       "required": [
@@ -72158,13 +72215,15 @@
           "$ref": "#/$defs/657"
         },
         "background": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": false
         },
         "context_management": {
           "$ref": "#/$defs/663"
         },
         "conversation": {
-          "$ref": "#/$defs/666"
+          "$ref": "#/$defs/666",
+          "default": null
         },
         "include": {
           "$ref": "#/$defs/668"
@@ -72283,7 +72342,8 @@
           "$ref": "#/$defs/794"
         },
         "parallel_tool_calls": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": true
         },
         "previous_response_id": {
           "$ref": "#/$defs/20"
@@ -72322,13 +72382,16 @@
           "maxLength": 128
         },
         "service_tier": {
-          "$ref": "#/$defs/828"
+          "$ref": "#/$defs/828",
+          "default": "auto"
         },
         "store": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": true
         },
         "stream": {
-          "$ref": "#/$defs/368"
+          "$ref": "#/$defs/368",
+          "default": false
         },
         "stream_options": {
           "$ref": "#/$defs/835"
@@ -72343,7 +72406,8 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "default": 1
         },
         "text": {
           "$ref": "#/$defs/837"
@@ -72395,10 +72459,12 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "default": 1
         },
         "truncation": {
-          "$ref": "#/$defs/860"
+          "$ref": "#/$defs/860",
+          "default": "disabled"
         },
         "user": {
           "anyOf": [

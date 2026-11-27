@@ -611,7 +611,8 @@
         {
           "type": "null"
         }
-      ]
+      ],
+      "default": null
     },
     "logprobs": {
       "anyOf": [
@@ -652,7 +653,8 @@
         {
           "type": "null"
         }
-      ]
+      ],
+      "default": null
     },
     "prediction": {
       "anyOf": [

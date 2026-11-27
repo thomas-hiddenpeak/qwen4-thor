@@ -295,6 +295,8 @@ def chat_schema():
             obj(dict(type=dict(const="allowed_tools"), allowed_tools=obj(dict(
                 mode=dict(enum=["auto", "required"]), tools=dict(type="array", items=tool_reference)), ("mode", "tools"))), ("type", "allowed_tools"))])),
         parallel_tool_calls=dict(type="boolean", default=True))
+    properties['stop']['default'] = None
+    properties['logit_bias']['default'] = None
     result = obj(properties)
     result.update({"$schema": DRAFT, "$id": "urn:q4t:serve-chat-request:v1",
         "title": "Q4T Chat request structure v1",

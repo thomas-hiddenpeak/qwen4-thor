@@ -27,6 +27,33 @@ class RequestFieldsContract(unittest.TestCase):
                 expected = row.get('wire_accepted', row['accepted'])
                 self.assertEqual(not errors(row['request'], 'response_create'), expected)
 
+    def test_response_create_defaults_on_stable_and_agent_requests(self):
+        expected = dict(store=True, background=False, stream=False,
+                        parallel_tool_calls=True, temperature=1, top_p=1,
+                        conversation=None, service_tier='auto', truncation='disabled')
+        for name in ('response_create', 'agent_history_response_create'):
+            properties = resolve(SCHEMA['$defs'][name])['properties']
+            with self.subTest(name=name):
+                actual = {key: properties[key]['default'] for key in expected}
+                self.assertEqual(json.dumps(actual), json.dumps(expected))
+                self.assertEqual(errors(dict(input='Hello', **actual), name), [])
+
+    def test_saved_prompt_does_not_supply_create_defaults(self):
+        definition = resolve(SCHEMA['$defs']['prompt_definition'])
+        properties = definition['properties']['request']['properties']
+        for key in ('temperature', 'top_p', 'parallel_tool_calls', 'truncation'):
+            self.assertNotIn('default', properties[key])
+
+    def test_default_stop_and_bias_on_all_completion_inputs(self):
+        bundle = json.loads((ROOT / 'docs/serve-openapi-bundle-v1.json').read_bytes())
+        for family in ('chat', 'vision', 'completion'):
+            name = f'serve-{family}-request-v1.schema.json'
+            standalone = json.loads((ROOT / 'docs' / name).read_bytes())
+            for document in (standalone, bundle['components']['schemas'][name]):
+                with self.subTest(schema=name):
+                    for field in ('stop', 'logit_bias'):
+                        self.assertIsNone(document['properties'][field]['default'])
+
     def test_nullable_user_on_stable_and_agent_wire(self):
         for kind in ('response_create', 'agent_history_response_create'):
             with self.subTest(kind=kind):

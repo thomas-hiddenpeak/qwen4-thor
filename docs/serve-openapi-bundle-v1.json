@@ -23369,7 +23369,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           },
           "presence_penalty": {
             "anyOf": [
@@ -23422,7 +23423,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           },
           "user": {
             "type": [
@@ -24270,7 +24272,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           },
           "logprobs": {
             "anyOf": [
@@ -24311,7 +24314,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           },
           "prediction": {
             "anyOf": [
@@ -27987,7 +27991,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           },
           "logprobs": {
             "anyOf": [
@@ -28028,7 +28033,8 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "default": null
           },
           "prediction": {
             "anyOf": [
@@ -40168,13 +40174,15 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/657"
               },
               "background": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": false
               },
               "context_management": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
               },
               "conversation": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666",
+                "default": null
               },
               "include": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/668"
@@ -40234,7 +40242,8 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/794"
               },
               "parallel_tool_calls": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": true
               },
               "previous_response_id": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
@@ -40273,13 +40282,16 @@
                 "maxLength": 128
               },
               "service_tier": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/828"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/828",
+                "default": "auto"
               },
               "store": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": true
               },
               "stream": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": false
               },
               "stream_options": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/835"
@@ -40294,7 +40306,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": 1
               },
               "text": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/837"
@@ -40346,10 +40359,12 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": 1
               },
               "truncation": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860",
+                "default": "disabled"
               },
               "user": {
                 "anyOf": [
@@ -99642,6 +99657,54 @@
             ],
             "additionalProperties": false
           },
+          "chat_http_error": {
+            "description": "JSON errors returned by the model service and its native or optional nginx HTTP entrypoint.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/chat_error"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "error"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "error": {
+                    "type": "object",
+                    "required": [
+                      "message",
+                      "type",
+                      "code",
+                      "param"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "message": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "enum": [
+                          "gateway_error",
+                          "service_error"
+                        ]
+                      },
+                      "code": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "param": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
           "chat_usage": {
             "type": "object",
             "required": [
@@ -103486,13 +103549,15 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/657"
               },
               "background": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": false
               },
               "context_management": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/663"
               },
               "conversation": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/666",
+                "default": null
               },
               "include": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/668"
@@ -103611,7 +103676,8 @@
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/794"
               },
               "parallel_tool_calls": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": true
               },
               "previous_response_id": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/20"
@@ -103650,13 +103716,16 @@
                 "maxLength": 128
               },
               "service_tier": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/828"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/828",
+                "default": "auto"
               },
               "store": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": true
               },
               "stream": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/368",
+                "default": false
               },
               "stream_options": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/835"
@@ -103671,7 +103740,8 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": 1
               },
               "text": {
                 "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/837"
@@ -103723,10 +103793,12 @@
                   {
                     "type": "null"
                   }
-                ]
+                ],
+                "default": 1
               },
               "truncation": {
-                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860"
+                "$ref": "#/components/schemas/serve-application-v1.schema.json/$defs/860",
+                "default": "disabled"
               },
               "user": {
                 "anyOf": [

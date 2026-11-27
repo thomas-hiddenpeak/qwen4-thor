@@ -969,6 +969,10 @@
         "business": "evidence/serve-inference-http-errors-20261127/foreground.json",
         "revision": 572,
         "delivery": "evidence/serve-inference-http-errors-20261127/delivery.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "source_cpu_verified_pending_issuance",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
       }
     },
     {
@@ -3295,6 +3299,10 @@
         "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
         "revision": 568,
         "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "source_cpu_verified_pending_issuance",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
       }
     },
     {
@@ -9524,6 +9532,10 @@
         },
         "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
         "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "source_cpu_verified_pending_issuance",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
       }
     },
     {
@@ -14034,6 +14046,10 @@
         },
         "qualification": "evidence/serve-sdk-method-matrix-20261127/recording-profiles.json",
         "managed": "evidence/serve-sdk-method-matrix-20261127/recording-managed.json"
+      },
+      "inference_body_defaults_20261127": {
+        "state": "source_cpu_verified_pending_issuance",
+        "evidence": "docs/evidence/serve-request-defaults-20261127/cpu.json"
       }
     },
     {
