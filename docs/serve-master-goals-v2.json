@@ -3323,13 +3323,15 @@
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
       "agent_turn_cache_projection_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
         "device_business_pending": false,
-        "issued": false,
+        "issued": true,
         "dispatch_evidence": "evidence/serve-agent-turn-cache-20261127/agent-cache-dispatch.json",
         "device_evidence": "evidence/serve-agent-turn-cache-20261127/sdk-business.json",
-        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json"
+        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json",
+        "revision": 578,
+        "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       }
     },
     {
@@ -4084,13 +4086,15 @@
         "delivery": "evidence/serve-chatkit-interrupted-retry-20261127/delivery.json"
       },
       "agent_turn_cache_projection_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
         "device_business_pending": false,
-        "issued": false,
+        "issued": true,
         "dispatch_evidence": "evidence/serve-agent-turn-cache-20261127/agent-cache-dispatch.json",
         "device_evidence": "evidence/serve-agent-turn-cache-20261127/sdk-business.json",
-        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json"
+        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json",
+        "revision": 578,
+        "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
         "stage": "device_verified",
@@ -9603,13 +9607,15 @@
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
       "agent_turn_cache_projection_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
         "device_business_pending": false,
-        "issued": false,
+        "issued": true,
         "dispatch_evidence": "evidence/serve-agent-turn-cache-20261127/agent-cache-dispatch.json",
         "device_evidence": "evidence/serve-agent-turn-cache-20261127/sdk-business.json",
-        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json"
+        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json",
+        "revision": 578,
+        "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
         "stage": "device_verified",
@@ -10885,8 +10891,8 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 576,
-        "receipt": "evidence/serve-request-defaults-20261127/delivery.json",
+        "revision": 578,
+        "receipt": "evidence/serve-agent-turn-cache-20261127/delivery.json",
         "model_starts": 0,
         "executed": false
       },
@@ -12711,19 +12717,21 @@
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
       "agent_turn_cache_projection_20261127": {
-        "stage": "profile_verified",
+        "stage": "issued",
         "evidence": "evidence/serve-agent-turn-cache-20261127/cpu.json",
         "device_business_pending": false,
-        "issued": false,
+        "issued": true,
         "dispatch_evidence": "evidence/serve-agent-turn-cache-20261127/agent-cache-dispatch.json",
         "device_evidence": "evidence/serve-agent-turn-cache-20261127/sdk-business.json",
-        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json"
+        "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json",
+        "revision": 578,
+        "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev576_delivered_remaining_deliveries",
+      "state": "rev578_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -14174,7 +14182,8 @@
         "revision": 576,
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
-      "current_defaults_delivery": "evidence/serve-request-defaults-20261127/delivery.json"
+      "current_defaults_delivery": "evidence/serve-request-defaults-20261127/delivery.json",
+      "current_agent_cache_delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
     },
     {
       "id": "Q03",
@@ -14279,16 +14288,16 @@
         "main_evidence": "evidence/serve-pr35-merged-20261117/README.md"
       },
       "current_native_day_handoff": {
-        "source_commit": "49c02a162862b724d96a4dbee857458a55deaa59",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/defaults-response-soak-src",
+        "source_commit": "2f8270137b757e61cc2046824bef217e7faafdaf",
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/turn-cache-soak-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/request-body-defaults-src/build/request-defaults/combined-candidates/primary/bundle",
-          "manifest_sha256": "bb72e08137b00e0c62689bf3b946176507579773ce5fbab94b80d179a046afa1"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/turn-cache-client-primary-01/bundle",
+          "manifest_sha256": "c9cc786faa14e543d4a652d7735a07bec43418ffba692fd536c046246c0c5d03"
         },
-        "revision": 576,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/defaults-response-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "8869d6fe51962dc09e7b87c6f4e19c9b2e94196e59030d28fcf26109b93c99bd",
-        "handoff_sha256": "6fd029f8ddb7f479df886a5a93b64be331c9b14309f54fdb98027d9a9577175f",
+        "revision": 578,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/turn-cache-soak-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "6be27a8e87a4ad66af6aeefc5c6238043c6d7ab48b4b4caa68ca802cf2f318fe",
+        "handoff_sha256": "2bf8fe366a31a7215a3f6a7031d87121569f477d026704c66e0d917a743ca4bc",
         "checked": true,
         "source_files": 700,
         "hours_executed": 0
@@ -14699,9 +14708,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 576,
-        "receipt": "evidence/serve-request-defaults-20261127/delivery.json",
-        "plan_sha256": "8869d6fe51962dc09e7b87c6f4e19c9b2e94196e59030d28fcf26109b93c99bd",
+        "revision": 578,
+        "receipt": "evidence/serve-agent-turn-cache-20261127/delivery.json",
+        "plan_sha256": "6be27a8e87a4ad66af6aeefc5c6238043c6d7ab48b4b4caa68ca802cf2f318fe",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
