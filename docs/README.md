@@ -64,6 +64,8 @@
 
 [R01缓存文件I/O原生隔离与R03组合验收](SERVE_CACHE_IO_ISOLATION_2026-11-09.md)
 
+[官方 Python 与 Node SDK 的逐方法兼容矩阵](SDK_METHOD_COMPATIBILITY.md)
+
 [Chat持久对象、官方SDK及原生/可选入口](SERVE_CHAT_STORAGE_2026-11-09.md)
 
 [Conversations原生状态、请求处理与官方SDK HTTP验证](SERVE_CONVERSATIONS_2026-11-09.md)

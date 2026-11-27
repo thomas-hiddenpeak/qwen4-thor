@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include "q4t/server/application_routes.h"
+#include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/live_recording_store.h"
 #include "q4t/server/object_retention.h"
@@ -200,7 +201,8 @@ ObjectStoreOptions RecordingDirectory() {
 BinaryAccess Access(std::string scope) {
   return {std::move(scope), Clock::now() + 3s, {}};
 }
-std::string Download(ObjectStore& objects, std::string scope, std::string id) {
+std::string Download(ObjectStore& objects, std::string scope, std::string id,
+                     HttpBodyBudget& budget) {
   int fds[2];
   if (socketpair(AF_UNIX, SOCK_STREAM, 0, fds))
     throw std::runtime_error("socketpair");
@@ -208,7 +210,8 @@ std::string Download(ObjectStore& objects, std::string scope, std::string id) {
     close(fds[0]);
     close(fds[1]);
   });
-  SendLiveRecording(fds[0], objects, Access(std::move(scope)), id);
+  detail::HttpResponseContext context(fds[0]);
+  SendLiveRecording(fds[0], objects, Access(std::move(scope)), id, budget);
   shutdown(fds[0], SHUT_WR);
   std::string response;
   char buffer[4096];
@@ -220,25 +223,40 @@ std::string Download(ObjectStore& objects, std::string scope, std::string id) {
     response.append(buffer, n);
   }
 }
+std::string Download(ObjectStore& objects, std::string scope, std::string id) {
+  HttpBodyBudget budget(kLiveRecordingHostBytes);
+  return Download(objects, std::move(scope), std::move(id), budget);
+}
 }  // namespace
 
 Q4T_TEST(
     live_recording_store_publishes_atomically_and_scopes_download_after_restart) {
   const auto options = RecordingDirectory();
   const std::string id = "live_recorded";
+  HttpBodyBudget budget(kLiveRecordingHostBytes);
   {
     ObjectStore objects(options);
     LiveRecordingCapture capture(objects, "client:owner", id, {}, {});
     capture.Audio(left, 0, Samples({21, 22}));
     capture.Audio(right, 2, Samples({-1, -2}));
     Q4T_CHECK(
-        Download(objects, "client:owner", id).starts_with("HTTP/1.1 404"));
+        Download(objects, "client:owner", id, budget).starts_with("HTTP/1.1 404"));
     capture.Finish(8);
     capture.Join();
     Q4T_CHECK(capture.TakeError().ok() && capture.Drained());
   }
   ObjectStore reopened(options);
-  const auto response = Download(reopened, "client:owner", id);
+  {
+    HttpBodyLease busy(budget);
+    Q4T_CHECK(busy.Acquire(1));
+    const auto full = Download(reopened, "client:owner", id, budget);
+    const auto end = full.find("\r\n\r\n");
+    Q4T_CHECK(full.starts_with("HTTP/1.1 503") && end != full.npos);
+    Q4T_CHECK(full.find("\r\nRetry-After: 1\r\n") < end);
+    Q4T_CHECK(full.substr(end + 4).find("capacity_exhausted") != full.npos);
+  }
+  const auto response = Download(reopened, "client:owner", id, budget);
+  Q4T_CHECK(response.find("Retry-After:") == response.npos);
   const auto begin = response.find("\r\n\r\n");
   Q4T_CHECK(response.starts_with("HTTP/1.1 200") && begin != response.npos);
   Q4T_CHECK(response.find("Content-Type: audio/wav\r\n") < begin &&
@@ -247,7 +265,9 @@ Q4T_TEST(
   Q4T_CHECK(response.substr(begin + 4, 4) == "RIFF" &&
             response.substr(begin + 48) ==
                 Samples({21, 0, 22, -1, 0, -2, 0, 0}));
-  Q4T_CHECK(Download(reopened, "client:other", id).starts_with("HTTP/1.1 404"));
+  const auto foreign = Download(reopened, "client:other", id, budget);
+  Q4T_CHECK(foreign.starts_with("HTTP/1.1 404") &&
+            foreign.find("Retry-After:") == foreign.npos);
   ObjectRequest root;
   root.kind = ObjectKind::kLiveRecording;
   root.scope = "client:owner";
@@ -259,6 +279,29 @@ Q4T_TEST(
   const auto retention =
       InspectObjectRetention("live_recording", *record.value.Find("data"));
   Q4T_CHECK(!retention.uncertain && retention.references.size() == 2);
+  ObjectRequest invalid = root;
+  invalid.id = "live_invalid";
+  invalid.operation = ObjectOperation::kPut;
+  invalid.data = Object({{"format", String("incomplete")}});
+  Q4T_CHECK(reopened.Execute(invalid, Clock::now() + 3s).ok());
+  const auto corrupt = Download(reopened, "client:owner", invalid.id, budget);
+  Q4T_CHECK(corrupt.starts_with("HTTP/1.1 503") &&
+            corrupt.find("binary_state_invalid") != corrupt.npos &&
+            corrupt.find("Retry-After:") == corrupt.npos);
+  return true;
+}
+
+Q4T_TEST(live_recording_download_hints_during_object_controller_backoff) {
+  auto options = RecordingDirectory();
+  options.restart_backoff_ms = 5000;
+  FailObjectThreadStartForTesting();
+  ObjectStore objects(options);
+  const auto response = Download(objects, "client:owner", "live_recorded");
+  const auto end = response.find("\r\n\r\n");
+  Q4T_CHECK(response.starts_with("HTTP/1.1 503") && end != response.npos);
+  Q4T_CHECK(response.find("\r\nRetry-After: 1\r\n") < end);
+  Q4T_CHECK(response.substr(end + 4).find("object_controller_backoff") !=
+            response.npos);
   return true;
 }
 

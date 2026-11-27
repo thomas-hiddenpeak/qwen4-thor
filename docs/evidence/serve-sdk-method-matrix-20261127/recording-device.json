@@ -1,0 +1,381 @@
+{
+  "stage": "both_device_capacities_verified_package_pending",
+  "source_commit": "75b884f0e730868d7c7904d03c86805c74093704",
+  "integrated_source": "21bfbe35d77e9b16eb3faf1e8b491714bf77dfa6",
+  "capacity_source": 572,
+  "engine": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "real_recording": {
+    "bytes": 2620472,
+    "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+    "original_status": "PASS",
+    "original_receipt": "230c7f22fc546fb02b801c5cb9bace54efd9aaa4a6f53babe6084068613b9c8f",
+    "original_lease": "e75831e9ee9a97c82821cbb4ed1d1a95725a6462057b17e4599fa33a66eab400",
+    "original_sdk": "f02e68562058b5b37200fc39eeaaa2a101e20ae05a8e70c47101e389e113aec0",
+    "original_store_unchanged": true
+  },
+  "final": {
+    "status": "PASS",
+    "duration_seconds": 67.783,
+    "starts": 2,
+    "business_requests": 18,
+    "authenticated_capability_reads": 2,
+    "generation_requests": 0,
+    "signed_downloads": 12,
+    "lease_sha256": "c3a5ce5cf72033c62f0d9a2db7fd1aef42bfa5a0846b710fb72ca84f3cef7931",
+    "queries": 65,
+    "result_sha256": "66f1802568dc692dcb45a2196ed4a5d495049984911dbab6593746dd1bb86f2a",
+    "protected_files": 4,
+    "default_unchanged": true
+  },
+  "previous_attempts": [
+    {
+      "starts": 0,
+      "scope": "sparse worktree input missing before launch",
+      "lease": "3c6caa6064f311fc8843f5b650a613f8fdb8e37175d73b856aaba3bc6f033e1a"
+    },
+    {
+      "starts": 1,
+      "scope": "unsigned capabilities returned 401 before any downloads",
+      "lease": "87d80ddf9df335e751d624eb8e6fe39d8a5c4be7398fd212133e44b627f3b314",
+      "result": "172f0f30d25f6edfa3753794726606be6cb12929a29273333d9aaccc699d6bf5"
+    }
+  ],
+  "all_model_starts": 3,
+  "profiles": {
+    "primary": {
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": true,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "actual_configuration": {
+        "protocol_sha256": "ba50b55fd1eded44bdd45dbae2de72ac6cf68cb8932fb1a7a11196d9d7ad9adc",
+        "max_context_tokens": 8192,
+        "max_sequences": 1,
+        "prefill_chunk_tokens": 2048,
+        "request_deadline_ms": 1200000,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "memory_floor_mib": 2048,
+        "memory_recovery_mib": 2560,
+        "memory_enabled": true,
+        "whole_server_ram_limit": false,
+        "mtp_enabled": true,
+        "structured_backend": true,
+        "media_enabled": true,
+        "default_output_tokens": 256,
+        "mtp_k": 3,
+        "startup_memory_headroom_mib": 2048,
+        "business_connections": 128,
+        "observation_connections": 4,
+        "control_connections": 4,
+        "connection_handlers": 144,
+        "public_port": 34957,
+        "operations_port": 45649,
+        "public_host": "127.0.0.1"
+      },
+      "startup_memory": {
+        "state": "admitted",
+        "estimate_bytes": 118635525036,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 120783008684,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 123638099968
+      },
+      "workers": {
+        "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+        "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+        "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+      },
+      "sdk": [
+        {
+          "language": "python",
+          "sdk": "2.8.1",
+          "mode": "generic",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-cae2b752cdff284e1bbe87b02228b935"
+        },
+        {
+          "language": "python",
+          "sdk": "2.33.0",
+          "mode": "generic",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-956e7927e5e9752eeb59696fdc315ceb"
+        },
+        {
+          "language": "python",
+          "sdk": "3.42.1",
+          "mode": "resource",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-0c34d9b72e6da414dbfb0aacd8439aea"
+        },
+        {
+          "language": "python",
+          "sdk": "3.55.1",
+          "mode": "resource",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-faf6bd9164923191b61dfb561d780816"
+        },
+        {
+          "language": "node",
+          "sdk": "6.34.0",
+          "mode": "generic",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-447a9f474d9337e5dd0f844da4c9885f"
+        },
+        {
+          "language": "node",
+          "sdk": "7.47.0",
+          "mode": "resource",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-ba3609be883dc44b0fc3520fb44b906e"
+        }
+      ],
+      "catalog": {
+        "trace": "req-ffd0dce4f9f843a5240ed74e35514c43",
+        "data": [
+          "response.completed",
+          "response.failed",
+          "response.cancelled",
+          "response.incomplete",
+          "batch.completed",
+          "batch.failed",
+          "batch.cancelled",
+          "batch.expired",
+          "agent.session.created",
+          "agent.environment.ready",
+          "agent.session.idle",
+          "agent.session.in_progress",
+          "agent.session.failed",
+          "agent.session.action_required",
+          "agent.environment.expired",
+          "agent.environment.suspended",
+          "agent.environment.failed",
+          "eval.run.succeeded",
+          "eval.run.failed",
+          "eval.run.canceled",
+          "safety.alert.created",
+          "safety.warning_issued",
+          "safety.deactivation_issued"
+        ]
+      },
+      "direct_401": {
+        "status": 401,
+        "challenge": "Bearer realm=\"q4t\"",
+        "trace": "req-deb29168f455adea512fecdf8fcbbf97",
+        "body": {
+          "error": {
+            "message": "Unauthorized",
+            "type": "authentication_error",
+            "code": "client_authentication_failed",
+            "param": null
+          }
+        }
+      },
+      "foreign_download": 404,
+      "shutdown_inflight": 0,
+      "shutdown_charged_bytes": 0,
+      "observation_sha256": {
+        "capabilities.json": "b11bc7f12cd11c082e11e0d79a1fdb60eca581eff3941f2ce38d6db796c68797",
+        "config.json": "163b13dafe6c9aee65d837e62c04bb151460195e0f02c806b23fcfbc64c02d07",
+        "model.log": "16f877bc1c3bd46d1f1088bbb78b1f8bda9f191b9db7661a20aac53e6aef9f3a",
+        "download.json": "641483571286ca9f89284ba13025c228e3d6740257ef2c46e88ce0343a95ae19",
+        "catalog.json": "fa5e97ea254058a83455d8e3423de423b1c9ef8837ff0359f088e60ee206daef",
+        "direct-401.json": "9c48eb366348bf72c58f4867e6fbe6084663b8e5bda3b9d05dcdb2a3e925df8a",
+        "runtime-inputs.json": "c4708421f61ef7ce8669a2b6e94c023103f5adbc1691fb095e72ccd858cbe128"
+      }
+    },
+    "light": {
+      "capacity": {
+        "name": "native-managed-capacity-v2",
+        "host": "127.0.0.1",
+        "max_seq": 1,
+        "max_len": 8192,
+        "max_prefill": 2048,
+        "max_tokens": 256,
+        "mtp_k": 3,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "min_available_memory_mib": 2048,
+        "memory_recovery_margin_mib": 512,
+        "startup_memory_headroom_mib": 2048,
+        "mtp_enabled": false,
+        "request_deadline_ms": 1200000,
+        "allow_media": true
+      },
+      "actual_configuration": {
+        "protocol_sha256": "ba50b55fd1eded44bdd45dbae2de72ac6cf68cb8932fb1a7a11196d9d7ad9adc",
+        "max_context_tokens": 8192,
+        "max_sequences": 1,
+        "prefill_chunk_tokens": 2048,
+        "request_deadline_ms": 1200000,
+        "max_inflight_requests": 8,
+        "max_queued_requests": 3,
+        "memory_floor_mib": 2048,
+        "memory_recovery_mib": 2560,
+        "memory_enabled": true,
+        "whole_server_ram_limit": false,
+        "mtp_enabled": false,
+        "structured_backend": true,
+        "media_enabled": true,
+        "default_output_tokens": 256,
+        "mtp_k": null,
+        "startup_memory_headroom_mib": 2048,
+        "business_connections": 128,
+        "observation_connections": 4,
+        "control_connections": 4,
+        "connection_handlers": 144,
+        "public_port": 51201,
+        "operations_port": 35807,
+        "public_host": "127.0.0.1"
+      },
+      "startup_memory": {
+        "state": "admitted",
+        "estimate_bytes": 112086532404,
+        "headroom_bytes": 2147483648,
+        "required_bytes": 114234016052,
+        "observed_total_bytes": 131920637952,
+        "observed_available_bytes": 122903056384
+      },
+      "workers": {
+        "q4t-live-webrtc": "e99de572b2986c2ee41c3af386570f4923e7131142606d66602a663475c534de",
+        "q4t-live-sip": "8a37ee54c1b0a579a1cacd874be4ac4215b471dc1e31658ba1529acc28c24726",
+        "q4t-sip-media": "ca704a1055e5def54c22c3fe369f6ab412bd508279664b8f1ee88fd6b55f5299"
+      },
+      "sdk": [
+        {
+          "language": "python",
+          "sdk": "2.8.1",
+          "mode": "generic",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-b304983d054571305423d6fd274f3a0a"
+        },
+        {
+          "language": "python",
+          "sdk": "2.33.0",
+          "mode": "generic",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-c1ffe01709ca4fc919f15b87419fe88d"
+        },
+        {
+          "language": "python",
+          "sdk": "3.42.1",
+          "mode": "resource",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-70e017b586ed8fcf24329fd0c6389c34"
+        },
+        {
+          "language": "python",
+          "sdk": "3.55.1",
+          "mode": "resource",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-529ec9037dea0dd013cfa5132fae5ac8"
+        },
+        {
+          "language": "node",
+          "sdk": "6.34.0",
+          "mode": "generic",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-191ee67c27262030ffea2df81dfaf0f1"
+        },
+        {
+          "language": "node",
+          "sdk": "7.47.0",
+          "mode": "resource",
+          "status": 200,
+          "bytes": 2620472,
+          "sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+          "trace": "req-fc0c5ed2bd7ba449506002ee0d3f0cb0"
+        }
+      ],
+      "catalog": {
+        "trace": "req-7e7d13dcb82a2386f1c411b584983158",
+        "data": [
+          "response.completed",
+          "response.failed",
+          "response.cancelled",
+          "response.incomplete",
+          "batch.completed",
+          "batch.failed",
+          "batch.cancelled",
+          "batch.expired",
+          "agent.session.created",
+          "agent.environment.ready",
+          "agent.session.idle",
+          "agent.session.in_progress",
+          "agent.session.failed",
+          "agent.session.action_required",
+          "agent.environment.expired",
+          "agent.environment.suspended",
+          "agent.environment.failed",
+          "eval.run.succeeded",
+          "eval.run.failed",
+          "eval.run.canceled",
+          "safety.alert.created",
+          "safety.warning_issued",
+          "safety.deactivation_issued"
+        ]
+      },
+      "direct_401": {
+        "status": 401,
+        "challenge": "Bearer realm=\"q4t\"",
+        "trace": "req-24df25d4923abaec2fc00a883d6603d7",
+        "body": {
+          "error": {
+            "message": "Unauthorized",
+            "type": "authentication_error",
+            "code": "client_authentication_failed",
+            "param": null
+          }
+        }
+      },
+      "foreign_download": 404,
+      "shutdown_inflight": 0,
+      "shutdown_charged_bytes": 0,
+      "observation_sha256": {
+        "capabilities.json": "2341392c1d7155e5583918f187c32be36ef5136934e3558f6db641bf0657143d",
+        "config.json": "84915398dd8441faf36235ef2317e38dfb58f92f2e38453a09a43d90304c4bd5",
+        "model.log": "1b6546861b997b74debecce0c1bbf6895ae4ae88ca44d87c880c00e51095e00d",
+        "download.json": "a5b25361e0f09fbe38f507b5201bb6b69afda28c62ace49faa3612ce4901123c",
+        "catalog.json": "f3a64b0d438a3668656a82ab7e1958f6ae8684ffd812bf13f6cf364f91564a23",
+        "direct-401.json": "e1c9760e1fa9770d3c6621089579c0ed6db9920cabf04fc175d2e6f1873c728b",
+        "runtime-inputs.json": "7e3b4c3970f994486521d656dedd78273a6581d81b348575674fd0b8a4844aa6"
+      }
+    }
+  }
+}

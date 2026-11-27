@@ -855,6 +855,12 @@ def openapi():
                             reply["headers"] = dict(reply.get("headers", {}), **{
                                 "X-Should-Retry": dict(schema=dict(type="string", enum=["false"]),
                                     description="Automatic retries are suppressed when the upstream may have executed this request.")})
+    events = paths["/v1/webhook_event_types"]["get"]["responses"]
+    events["401"] = dict(events["default"], description="Bearer authentication required",
+        headers={**events["default"]["headers"],
+            "WWW-Authenticate": dict(required=True, schema=dict(type="string"),
+            description="Bearer authentication challenge for this service.",
+            example='Bearer realm="q4t"')})
     inference_routes = (
         "audio/speech", "audio/transcriptions", "audio/translations",
         "chat/completions", "completions", "embeddings", "moderations",

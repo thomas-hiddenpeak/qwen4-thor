@@ -230,7 +230,21 @@ ObjectReply ReadLiveForkState(ObjectStore& objects, const BinaryAccess& access,
 }
 
 void SendLiveRecording(int fd, ObjectStore& objects, const BinaryAccess& access,
-                       const std::string& id) {
+                       const std::string& id, HttpBodyBudget& budget) {
+  HttpBodyLease working(budget);
+  if (!working.Acquire(kLiveRecordingHostBytes)) {
+    detail::SendError(fd, 503, "Recording download capacity exhausted",
+                      {.retry_after = 1s}, "capacity_exhausted");
+    return;
+  }
+  const auto send_error = [&](const ObjectReply& reply) {
+    detail::WriteOptions write{access.deadline};
+    if (!reply.commit_unknown && (reply.code == "object_recovery_backoff" ||
+                                  reply.code == "object_controller_backoff"))
+      write.retry_after = 1s;
+    detail::SendError(fd, reply.http_status, reply.ClientMessage(), write,
+                      reply.ClientCode());
+  };
   BinaryStore binary(objects);
   BinaryRead pin;
   Json data;
@@ -249,8 +263,7 @@ void SendLiveRecording(int fd, ObjectStore& objects, const BinaryAccess& access,
   if (result.ok() && !ReadLiveRecordingLayout(data, pin.manifest, &layout))
     result = Error(503, "invalid_recording", "Invalid stored recording layout");
   if (!result.ok()) {
-    detail::SendError(fd, result.http_status, result.ClientMessage(),
-                      {access.deadline}, result.ClientCode());
+    send_error(result);
     return;
   }
   LiveRecordingWaveReader reader(std::move(layout),
@@ -262,8 +275,7 @@ void SendLiveRecording(int fd, ObjectStore& objects, const BinaryAccess& access,
   if (result.ok() && reader.Bytes() > first.size())
     result = reader.Next(&samples);
   if (!result.ok()) {
-    detail::SendError(fd, result.http_status, result.ClientMessage(),
-                      {access.deadline}, result.ClientCode());
+    send_error(result);
     return;
   }
   first += samples;

@@ -139,7 +139,9 @@ def current_surface(root):
             'server::RealtimeTraceMethodAllowed(method, path)' not in native or \
             'inline bool RealtimeTraceMethodAllowed' not in application_routes:
         raise ValueError('review native trace transport and authenticated scope')
-    if 'SendLiveRecording(fd, *objects_, access, std::string(id))' not in dispatch or \
+    recording = (root / 'src/server/live_recording_store.cpp').read_text()
+    if 'SendLiveRecording(fd, *objects_, access, std::string(id), body_budget_)' not in dispatch or \
+            'if (!working.Acquire(kLiveRecordingHostBytes))' not in recording or \
             'server::LiveRecordingId(path)' not in native or 'inline std::string_view LiveRecordingId' not in application_routes:
         raise ValueError('review authenticated binary Live content routing')
     content = '/v1/live/sessions/{session_id}/content'

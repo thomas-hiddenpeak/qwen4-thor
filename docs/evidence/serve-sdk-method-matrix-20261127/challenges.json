@@ -1,0 +1,3720 @@
+{
+  "ingress_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "method_catalog_sha256": "29d308c67660c3657714426669a9df3127b40ef0743088423fe7ec697b28f8ba",
+  "model_starts": 0,
+  "backend_submissions": 0,
+  "packets": {
+    "GET /v1/agents": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-011ee1fcef688d1b19201a6e0234345b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c8937f3085ba7fe2a0ea135d73fb5c26",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/automations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-aad9db9c95741e7896adcb97c8ea6c44",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/automations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b14ba2750dd74adfc92c4924a4cfba2b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/automations/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d6417d5ceb7140bab73329b44c86dd1a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/automations/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-669e76cc590ad6c0911df5f3710c4b08",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/agents/automations/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d8b0842b0f66187af06c6f0b77a91480",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/automations/q4tfixture/invocations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-94f0017308e301af2985498cb3b8633c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/automations/q4tfixture/invocations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0b1ab1317ee407131fd044d73050480b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/automations/q4tfixture/invocations/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0eb50b126b82578bb1ad940d74eacb3b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/automations/q4tfixture/pause": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-eddf7b5fe13a6fdefbd2b4459a1e251c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/automations/q4tfixture/resume": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-8acb70504b3f7123d09c952aed9af14c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/environments": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-6656c3e3314d4f6377be3c7fe585f4a2",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/environments": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-7e89686759e9b539983736cbc00768bd",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/environments/templates": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-6f3c7ad9b48fdcdc871db0af90542bef",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/environments/templates": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a28d5dc25a027907c60d3132f86dd8d2",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/environments/templates/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-95a66ccb3da888b667e9821896ce5484",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/environments/templates/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-7d31a73457a5a6eb92c2b228fe8c8c48",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/agents/environments/templates/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-79962aa17ecf3f2a8d27056b277cfd15",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/environments/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d30d9e25f9868783d21e0fe34a075c9c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/environments/q4tfixture/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c1941333b4d5cba7beb0cfd787b83b11",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/environments/q4tfixture/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-1fe81704356eb83619c2bf6401fd2eac",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-fdf6abee2fbad701a3e39975bb4e8e5d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/sessions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-37d58a4b15c8db8750a06a8841c23bed",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ef5b371d4b340dae87922e40df15dbbb",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/sessions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-60c8048534b092f4b968dded5f9bce18",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/agents/sessions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-36086daf1b91bb38fab31e17b74ac037",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/artifacts": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-50aa3a599cde670a1851e83a58608eef",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/artifacts/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-957ebede0d0afaab9233bb38893432ee",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/agents/sessions/q4tfixture/artifacts/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-27442fef8ae86e124e260e2884fa6469",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/artifacts/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-5f296068c7eecae745a7312d10176a0c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/events": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-55848ffb0c694cbc865c9012e986962a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/sessions/q4tfixture/events": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-085ffbd5d36e82899c12d6fff0c62364",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b0b23e08ce095fe251eda5f95e37b1d1",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/subagents": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-74e3ea8b29eea72bb2c1c24fdee0804c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/subagents/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-1aa62e1f29086267dfeb58d40f175d53",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/subagents/q4tfixture/items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-6f5edc8416444692c5ec82235d03aa0f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/subagents/q4tfixture/turns": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-93e2ce4eb8f74b9d1e3bf1963d0aa63d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/subagents/q4tfixture/turns/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-5be26044eda36906d6649668c149222f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/subagents/q4tfixture/turns/q4tfixture/items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-add0f7845791aa6a03c033088d7b5e75",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/traces": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-13349a3c8f443a9c0142d4fb1bdb7290",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/turns": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0da4ffc88a19be6d3b91789500de1e4c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/turns/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0522f7524697420a61c05f16db77a423",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/sessions/q4tfixture/turns/q4tfixture/items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-50cbb0de704c5ef132f9ce141883e2d8",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/agents/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a82da60b31097abfffb41af4855927ed",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/agents/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ab0096947a866fae5a3d9bcaba14c3c4",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/agents/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-72f4f137bb8caae721c95892de33e0d1",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/assistants": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-253d954c49a816b6e9b5803061b8f0fc",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/assistants": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-88e4a470daeb2a75885da2694ca3f529",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/assistants/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f7c1f145e6992a3f8ae639ca076aa6eb",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/assistants/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d6f51cf7ac2c01d605c66cfa3fa4a439",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/assistants/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0b60920086d33fc652da299bd86c7f62",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/audio/speech": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-93dd7b0f63c01e7890858135a996a278",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/audio/transcriptions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4e1dc643dac08137bcd482a58b55d193",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/audio/translations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-de777f00f1ee445082d954f297c55b42",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/audio/voice_consents": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d29c5c0c7ace2967ba0e995251789d82",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/audio/voice_consents": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f41c75ca13f838c8af8378ac23a59953",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/audio/voice_consents/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-e43526c44f974a14dd8d593ec7b61875",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/audio/voice_consents/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-dcb3af6cf05ec0f734b0d0d73c544b4f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/audio/voice_consents/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-fb42ca913c59981d6047e916246cf3ab",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/audio/voices": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ee1716b492838651c35b144459358c23",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/audio/voices/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-1415f3022361cc11785452eb167346e0",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/batches": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-2d5a928ee95509f5bf3db0e1fb09f51d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/batches": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-7829442b16c64f864855f2cbfd8b34df",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/batches/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-bd7aefd723fa5eb257db88c6a8ae7404",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/batches/q4tfixture/cancel": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-03b2296726bd513420a9f344a77f71fa",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/chat/completions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-3fca287228c527fced0e865ba0d561a2",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/chat/completions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-169d5517eb10fd3840db47ad931e5519",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/chat/completions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ed32c8188be0f64e75e17af54d5d3460",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/chat/completions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-8c96b0877f160500df0f5b6acfa18576",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/chat/completions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ab0c5e8c24f158d5cbc3450190dd258b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/chat/completions/q4tfixture/messages": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f4ad78d055786957d8fa01d0317e23ef",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/chatkit/sessions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-46ac130815ac52a627249c6ef5beda75",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/chatkit/sessions/q4tfixture/cancel": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c47f57ef7d8edd61c3d14339e52b8969",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/chatkit/threads": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-fda4043ef3656471d3e93efaa7cebd15",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/chatkit/threads/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-51311701e277edba16878c9d2875af79",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/chatkit/threads/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-48610a94b0225ef139f55a14b3e9d825",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/chatkit/threads/q4tfixture/items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c28aee3a81609c2ff643b967f4965691",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/completions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-86d4087ec520fe9b95f7503700f5a45c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/containers": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-eae9f24a874d017c45432b2b5645c813",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/containers": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-53d6089fc6bcfb0c76ee6c0691e30100",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/containers/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-00cf0e833d3dce516fe5613cbf0531f0",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/containers/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a89582b4d06ef08486da5f8715a55c23",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/containers/q4tfixture/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-6075557da1f04413a99bfcc0bcb260be",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/containers/q4tfixture/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-75436dbd65e3b4105e1e2ddbae77a53a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/containers/q4tfixture/files/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-dea759059bdd03d53821484f62b79428",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/containers/q4tfixture/files/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ba783947484a78d4813d54320ad819fa",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/containers/q4tfixture/files/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-cb243443f8c4b9d2d55b258afbc9fc86",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/content_provenance_checks": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-292e3acfaf23db2fff3409a6d44b0738",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/conversations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-e9abd4c1a6683ca8acc82913f6b3eb98",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/conversations/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c65961a21493f459142e95f7dad42e15",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/conversations/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-840d89f63356bd35f895bfb3a812d7f6",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/conversations/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a7b3b3e8c7de792840a2852f57763624",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/conversations/q4tfixture/items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-62a1983d4f942cad677ae17131bb14a8",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/conversations/q4tfixture/items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-52be1ae8d6cfef51577812aceb59fc2a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/conversations/q4tfixture/items/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-95582b014b8e5b29d83d05a93bfb9c10",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/conversations/q4tfixture/items/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-5ceac84c0e11787cbb92ef26620bb435",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/decisions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-9080a0ad81b59afd084dcd4fdb46fa81",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/embeddings": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-6a7cfb27427cb3233bba8068211888c8",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/evals": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-3e933696a308faae16329f50332b7a75",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/evals": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f6593e2a31fdbf50a30721e2dbcf13e6",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/evals/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-dc4dd78b5087924626a7538103a13f9c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/evals/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-601b35b21c0f4e1ae013fdda93d4f25a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/evals/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0f6424e3766194bb8283a692da994fb2",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/evals/q4tfixture/runs": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-15f88848ebea98bd1a28e65867779f7b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/evals/q4tfixture/runs": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-e5268e488060ec6d24ca9da286ab0ec1",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/evals/q4tfixture/runs/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-eeea114be2538192170ca4e857c417b1",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/evals/q4tfixture/runs/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-97670452c380f3b8668dab120e772bf0",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/evals/q4tfixture/runs/q4tfixture/cancel": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-64d8e0caf64672c3ae37cc2c34dc05da",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/evals/q4tfixture/runs/q4tfixture/output_items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-076d31c940d105f44f0c2664f65fdd62",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/evals/q4tfixture/runs/q4tfixture/output_items/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-51e3ef97fe7bd595a068f43ba8f46257",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d8e3a225296f064d0c0db82b9f8941dd",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-624ca2d47270d52ae719ddbe28d122b5",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/files/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-e650334b83b3738d632f4403629f8e0f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/files/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c38a28ceb72ffe02e8c9d1c209a89c55",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/files/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-43364c74514eb6f63c795d4035e596ea",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/images/edits": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-247f884ec802bf5ae520af3e07b035f8",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/images/generations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4c859cc9222a314b090d65f807e7e4f7",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/images/variations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-7d41af19be5bb6baac94de4906d7fa6b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/live/sessions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-5f19efb21cf35d48f7464833203029de",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/live/sessions/q4tfixture/accept": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-67714868a6aa59184b8a5e276106bc4b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/live/sessions/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c48d95ccafe362258bcad666bd6301f2",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/live/sessions/q4tfixture/fork": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4ed8ffeee8c665ae13ae6c885f997493",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/live/sessions/q4tfixture/hangup": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4745f47ac373354300b6e32a5637f171",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/live/sessions/q4tfixture/refer": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-bad183b881fd87503512af37e659270c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/live/sessions/q4tfixture/reject": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c25a0588ea15417256158636cd198965",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/models": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-977e772c14ac4818a14943b69435779d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/models/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-9eb2bfc9b8a61350e82d73a28b8a4d15",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/moderations": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b4eef7de79e577674be30bf21efc3ffb",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/calls": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-dea2c26d015640ff5cbb19ec1eb7fe08",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/calls/q4tfixture/accept": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c83686fdef95960c6f4e22fbc504e881",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/calls/q4tfixture/hangup": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-85c9d9a7564afc21597cfe014e039d51",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/calls/q4tfixture/refer": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-89614afc23a2a8efa1a1413469cbe224",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/calls/q4tfixture/reject": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-5719ce903483de107e2f359a5d903d2d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/client_secrets": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-75489c21d093d2b03cf0ef9825336b52",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/sessions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d4f71e448de0705ea6b00bc7f2dc7a77",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/transcription_sessions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-e83747eda4fbced212e6c736ea46179b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/realtime/translations/client_secrets": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-25d829afde9031860c9ca9f38e349661",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-707e12bda38d00f98f5eece9f2f41d8e",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses/compact": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d143f3cfd0bc234a4bb40f9efb617a65",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses/compact?beta=true": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f17575294941d684f5fb4351f94a47ec",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses/input_tokens": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b331534bdf1e2baa3f00efb13ccc839d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses/input_tokens?beta=true": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-1ba6908d2b7681600d6f3006e5de73a6",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/responses/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0fe315334ce4f0c4f6a4fe383525589f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/responses/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-87adb4091eeaa7f747304b676af95520",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses/q4tfixture/cancel": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d6cfed170e144c48c2979a8ed8f56ba4",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses/q4tfixture/cancel?beta=true": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-96d5961de0d69cd5b48137a8cbf40d86",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/responses/q4tfixture/input_items": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-143e9ae3af908ea4f59ef5b60295d58f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/responses/q4tfixture/input_items?beta=true": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-cdb9d3b3b99b9e101977dd163ebd572a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/responses/q4tfixture?beta=true": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-74946ba93db7b8f9b9fd500b6331edf0",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/responses/q4tfixture?beta=true": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c6642ee25223aa80543e987745510f7a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/responses?beta=true": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-571b1f560a0c940444a637e7c3057e6f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/safety/alerts/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b6c0297e3dbaee121a77981b4ea5a134",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/safety/cases/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-34165c7d6df9f3614519d73c7da30fb4",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/skills": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4075faed4f79312673a6d63ca6d23f1c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/skills": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4f7b9799a521b491884f25c26f0daad3",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/skills/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-6984fcd942bec2a2fd77e0caea8651d1",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/skills/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-40243a86ab5d5d57a58897c2d4e0fbda",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/skills/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-34332ff4470ab37533043ba2c576576f",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/skills/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-aebdaa300c1872bd10db650209d42142",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/skills/q4tfixture/versions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-78361f3e8b3806e5b9d5d379180dedfd",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/skills/q4tfixture/versions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4fac44ce8fd40d493f7e5dfe191bfce7",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/skills/q4tfixture/versions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-3b308fc4e1e7634fd7c8065d57e38662",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/skills/q4tfixture/versions/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-be40728cfb85547944e33955001742b4",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/skills/q4tfixture/versions/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ef9cba3fcaa68d69960997d9f0a30726",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-23375184e77d89892c4902de00386b17",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/runs": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0dc2a2e5c2359e56ceaf05a37e22aeea",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/threads/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c15a90f9ab489484142b74105a396100",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-9cfeb30dd884aedbbd5953cc7c7e59b8",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/threads/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-424d1e9d74e4e37ad9a9e960af67dd1b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/threads/q4tfixture/messages": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-59d4b63783f0db1fdf841b32276add98",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/q4tfixture/messages": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c31570177289cd6c2e85dc1e51e1d657",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/threads/q4tfixture/messages/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-4ce8f6873c9f645619833af751a2a041",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/q4tfixture/messages/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-06399fc0face50a42b3be126c32685cb",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/threads/q4tfixture/messages/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-809d122f95ed1a74d015fea0e06d30bc",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/threads/q4tfixture/runs": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-e692e570feb834a686c53027d993a232",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/q4tfixture/runs": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-91db0747ec48dca0c729aa0688241ebc",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/threads/q4tfixture/runs/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-dc8d6d651404db1faccee04051e392fc",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/q4tfixture/runs/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-e0c1dc5af711dca9f6b4d28646aee5ce",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/q4tfixture/runs/q4tfixture/cancel": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-9a43753e90691c33e7a7731a06abe66b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/threads/q4tfixture/runs/q4tfixture/steps": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-822eff1dbbb469e77652e8ddfa4355cd",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/threads/q4tfixture/runs/q4tfixture/steps/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-fb7010d35148d916ef97d395bd2b8432",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/threads/q4tfixture/runs/q4tfixture/submit_tool_outputs": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0ab137f17a0bc2f64f84f0a10f410275",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/uploads": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-912e24aebbe34d66cbb9e07669d2c09a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/uploads/q4tfixture/cancel": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-75db989f6144e827a8f6e3d8e1d7aa45",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/uploads/q4tfixture/complete": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-8f86a02e12ecb0600040346d50876ea9",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/uploads/q4tfixture/parts": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-440d12c3004c80b30d53b5cc3aee6bb4",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vaults": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d361deee5813e5c3fe02922493e8d212",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vaults": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b7c308f4f5eccb34b89be99efce77eb5",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vaults/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d4981c930e9c47a3bf2e1f7949a10f0c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vaults/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-8ae6b83a9ec778be6cc07efebec1a6e7",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/vaults/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-25126872546b46c01aa2775ca0e0e65e",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vaults/q4tfixture/credentials": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a7b95ab18c453793d948458bfa50cdb4",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vaults/q4tfixture/credentials": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-65ecb3e95b609bbd936888d95c629b4d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vaults/q4tfixture/credentials/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-2b19b7460af298ffb3b9389617400893",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vaults/q4tfixture/credentials/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b8539c0658d21d9e4e21ecfac1b9ea1a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/vaults/q4tfixture/credentials/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-1018415eff9d3a65e301976b6d47011a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vector_stores": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a5c6a46b34249127ec60254eac131a04",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vector_stores": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-1c19f4a28a05ed991ecc09b7901c7d33",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vector_stores/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-32916d8ddfe06636ee3eebd0ac7dd280",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vector_stores/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-0e3d33c55ee11faba33d5d60fb8d48fd",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/vector_stores/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-35bf243b53ead7a16eecf779dc335090",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vector_stores/q4tfixture/file_batches": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f8278f0083dd8aea6b03ef088c8b31c5",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vector_stores/q4tfixture/file_batches/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-8f512bc9c7b4ad410d7a7a50b8a3b273",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vector_stores/q4tfixture/file_batches/q4tfixture/cancel": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f88a4b772b959f5280150ae24a5d81ec",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vector_stores/q4tfixture/file_batches/q4tfixture/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-8053de33902cc9339f7d2981e93e26ed",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vector_stores/q4tfixture/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-aa65108963e301cc0d80b35c25f32bc6",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vector_stores/q4tfixture/files": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a6ffd4d68e0c31df896d3fa61826765e",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vector_stores/q4tfixture/files/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f1b1347a3e557bd7354d05fe3f944bf5",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/vector_stores/q4tfixture/files/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-55be3756e557cd9d829abab5256a35bd",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vector_stores/q4tfixture/files/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-3a649e67c6b81a4459953b9ee40f151d",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/vector_stores/q4tfixture/files/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b5b8181a3f6e2556f1c26638d2327e71",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/vector_stores/q4tfixture/search": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-aed7967d616265629bc43d9588be71bc",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/videos": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-9f75cdf51b1e31ba8a6f9cec2fa3989c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/videos": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-8b358e95d50875fb753a2fb2519724f8",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/videos/characters": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ed40e805bd69a5a081bb439331805392",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/videos/characters/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-d9e8ace817668414374052a1ca3fbe61",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/videos/edits": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a8036db535971b1551613cca8dcdb48e",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/videos/extensions": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-a908130edb5397acbbe62904eefcf539",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/videos/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-b246069c626a35ff1d03c815aae07bc5",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/videos/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-ba68bd87f1b09c0bf6d19c1aff48de0c",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/videos/q4tfixture/content": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-722d27944d27522b440eec7611a3a965",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/videos/q4tfixture/remix": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-89d90c99bf9c7ae09f51c56a947f968a",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/webhook_endpoints": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-bd091b8a3e10f0a9460276b047bb74fb",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/webhook_endpoints": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-f2f03ed2ab0b524bd5f20381bd7d9fc4",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/webhook_endpoints/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-cb83f48b6f21223b8a90238beab1d99b",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/webhook_endpoints/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-178f134c3edbc0a0dddc7bf4b4c29581",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "DELETE /v1/webhook_endpoints/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-056c9401e79112660f9322418d987148",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/webhook_endpoints/q4tfixture/rotate_secret": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-dc6797de5604ce7057f6c27df57e9484",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/webhook_endpoints/q4tfixture/test": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-82fc9dfee0d30f7be8c356599e1af9dc",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "GET /v1/webhook_event_types": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-c1e0451479e5b48514dd8ebba2cabb85",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    },
+    "POST /v1/evals/q4tfixture/runs/q4tfixture": {
+      "status": 401,
+      "headers": {
+        "content-type": "application/json",
+        "x-request-id": "req-efb8b5fa0dbb0af5cf4eb311cf6d5644",
+        "www-authenticate": "Bearer realm=\"q4t\""
+      },
+      "body": {
+        "error": {
+          "message": "Service entrypoint rejected request",
+          "type": "gateway_error",
+          "param": null,
+          "code": "gateway_unauthorized"
+        }
+      }
+    }
+  }
+}

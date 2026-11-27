@@ -1,0 +1,136 @@
+{
+  "stage": "managed_verified",
+  "candidate_source": "9b5c20d313125eac75d179e796658e3c9fe03e2a",
+  "predecessor_revision": 572,
+  "device_published": false,
+  "packages": {
+    "primary": {
+      "manifest": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6",
+      "engine_manifest": "35cd8bbb7ce4a058f2c3639475c058a66dae5d6a411bf4459a0ff4aa255ce42a",
+      "engine": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+      "openapi": "24c70fc7b30a9eee29dcc278d9e3df6c6e79d487ed4893081ab9ab80fe12f852",
+      "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+      "directory": "sdk-recording-client-primary-01"
+    },
+    "fallback": {
+      "manifest": "0d25a64aa16e7c7ba50625346416004bf7e34cce1600d3851cfde85e3e168f38",
+      "engine_manifest": "68cf5d9ad70156ead64edb8576cd97fe27ab5d1bc4efdeece96096cb020f4131",
+      "engine": "6ff5f1f7aa03e18b905665a77dd3f3ff06ac49655aadb893dd47856cc205507a",
+      "openapi": "24c70fc7b30a9eee29dcc278d9e3df6c6e79d487ed4893081ab9ab80fe12f852",
+      "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+      "directory": "sdk-recording-client-fallback-01"
+    }
+  },
+  "roles": {
+    "primary": {
+      "manifest": "7f2cd6e46509be749bc3c8afc70dc5e78f3ab8061b1b09deee701167ec5fd3d6",
+      "model_starts": 2,
+      "seconds": 356.254,
+      "chat": "42",
+      "model_generation": [
+        1,
+        2
+      ],
+      "guardian_preserved": true,
+      "clean_stop": true,
+      "ports_released": true,
+      "unchanged_default": true,
+      "signed_clients": [
+        "node-7.47.0",
+        "python-2.8.1"
+      ],
+      "lease_sha256": "41b5bcb623f3e9eed11c3cf4bc230d46f1cdc0c7e7cd6caa99531a68c30e50e8",
+      "result_sha256": "c724c537e503b450763600dfe451a953ec0a7b817c4bd2e1f325f1e24eb4905b",
+      "before_sha256": "6808439de428bf825d6843708262d37a441f6b70416e8272e69b35f9b2d999d9",
+      "after_sha256": "bccccd5c788f2adb1c0021d7f9e6410fb8758bef8656ee776b67abd47bad705d",
+      "live_recordings": false,
+      "event_catalog_entries": 23,
+      "signed_catalogue_reads": 4,
+      "owner_status": [
+        404,
+        404
+      ],
+      "foreign_status": [
+        404,
+        404
+      ]
+    },
+    "fallback": {
+      "manifest": "0d25a64aa16e7c7ba50625346416004bf7e34cce1600d3851cfde85e3e168f38",
+      "model_starts": 2,
+      "seconds": 203.543,
+      "chat": "42",
+      "model_generation": [
+        1,
+        2
+      ],
+      "guardian_preserved": true,
+      "clean_stop": true,
+      "ports_released": true,
+      "unchanged_default": true,
+      "signed_clients": [
+        "node-7.47.0",
+        "python-2.8.1"
+      ],
+      "lease_sha256": "40bbaf79ba17c9a9db2c4f4bfed4ddff2cd9276e9e3c49ebce8c49eeb9cd2b42",
+      "result_sha256": "16dbc7c808c97a5966da2c62d6dafa536204c00767d18db3e64a6dfe9c62e682",
+      "before_sha256": "a4b49ed1e4f28f74b224a39856ef9ed0eeeed81094fe5a2e89c3d2f5b10e9a43",
+      "after_sha256": "f4fe6cf2fab801b4ea38edad32b9d8793c100a2083fb70c6c7912b1418c44b3a",
+      "live_recordings": false,
+      "event_catalog_entries": 23,
+      "signed_catalogue_reads": 4,
+      "owner_status": [
+        404,
+        404
+      ],
+      "foreign_status": [
+        404,
+        404
+      ]
+    },
+    "opt_in": {
+      "manifest": "b8c72fef905224f9345f9f5445afc8d18c403ab6284276820fcd874c9d984767",
+      "model_starts": 2,
+      "seconds": 204.359,
+      "chat": "42",
+      "model_generation": [
+        1,
+        2
+      ],
+      "guardian_preserved": true,
+      "clean_stop": true,
+      "ports_released": true,
+      "unchanged_default": true,
+      "signed_clients": [
+        "node-7.47.0",
+        "python-2.8.1"
+      ],
+      "lease_sha256": "c2085741e6f9c88c2fabfda2814d14e33d001ced8466fc22517d945d2aa51d7e",
+      "result_sha256": "dcfbcfcee36e4475939d3846a1df363a5820243a750cea5af5bc34e9d477c1fd",
+      "before_sha256": "a5e195fced1e17edd35e80cb7d4fb8311fea85250412360173b92ae5e56c0b06",
+      "after_sha256": "d9baae6806d68d2545e6caf9a21fa5865059ccc74077e93e37b2181939fb166e",
+      "live_recordings": true,
+      "owner_downloads": 4,
+      "bytes_each": 2620472,
+      "waveform_sha256": "e42cc244fb935192643159716489c108931c7f980e8c684540abdc3c863466b6",
+      "foreign": [
+        404,
+        404
+      ]
+    }
+  },
+  "prior_attempts": [
+    {
+      "status": "COMMAND_FAILED",
+      "model_starts": 1,
+      "reason": "default recording permission was disabled; authentic owner received 404",
+      "receipt_sha256": "8cbb402f2694db6496bbab73118960b3ff45b1f4cde85b59c71a2ad56d9db96a"
+    },
+    {
+      "status": "COMMAND_FAILED",
+      "model_starts": 0,
+      "reason": "validation driver init timed out at 30 seconds",
+      "receipt_sha256": "8488cb66c50b7e9b930615dafb66bf8c0a1585c8d46a2ae6611584d9e639a339"
+    }
+  ]
+}
