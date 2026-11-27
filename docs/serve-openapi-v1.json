@@ -8,7 +8,7 @@
   "servers": [
     {
       "url": "http://127.0.0.1:8080",
-      "description": "Example only; use effective configured address"
+      "description": "Example only. Set the managed ingress origin to the deployed address and scheme. TLS deployments can additionally require a client certificate."
     }
   ],
   "paths": {
@@ -159,6 +159,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -320,6 +323,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -458,6 +464,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "stored_chat_query",
@@ -525,6 +534,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -634,6 +646,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -759,6 +774,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -864,6 +882,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       },
@@ -973,6 +994,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -1030,6 +1054,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -1087,7 +1114,14 @@
               }
             }
           }
-        }
+        },
+        "security": [],
+        "servers": [
+          {
+            "url": "http://127.0.0.1:8080",
+            "description": "Trusted local runner. Select the configured local operations listener."
+          }
+        ]
       }
     },
     "/healthz": {
@@ -1223,6 +1257,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Local backend health. Permanent PLE dependency faults also return 503; gpu_healthy reports CUDA health independently. Liveness and memory admission use /livez and /readyz."
@@ -1299,6 +1336,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -1374,6 +1414,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -1422,7 +1465,14 @@
               }
             }
           }
-        }
+        },
+        "security": [],
+        "servers": [
+          {
+            "url": "http://127.0.0.1:8080",
+            "description": "Trusted local runner. Select the configured local operations listener."
+          }
+        ]
       }
     },
     "/v1/tunnels/{tunnel_id}": {
@@ -1476,6 +1526,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t": {
@@ -1584,6 +1637,9 @@
           },
           "204": {
             "description": "No commands before poll deadline; no body."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t": {
@@ -1671,6 +1727,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t": {
@@ -1743,6 +1802,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
@@ -1828,6 +1890,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
@@ -1892,6 +1957,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
@@ -1965,6 +2033,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native client-scoped asynchronous task; input frozen before execution, independent Batch minute pool; original deadline and no started-row replay.",
@@ -2038,6 +2109,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -2139,6 +2213,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -2196,6 +2273,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -2260,6 +2340,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -2369,6 +2452,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -2435,6 +2521,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped source-bound retrieval with actual query embedding, optional real model rewriting, exact shared quota and complete snapshot checks; auto ranking uses local cosine/BM25 RRF, not the private hosted ranker.",
@@ -2560,6 +2649,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -2659,6 +2751,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -2735,6 +2830,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -2843,6 +2941,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -2961,6 +3062,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -3027,6 +3131,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -3128,6 +3235,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -3204,6 +3314,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -3328,6 +3441,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -3438,6 +3554,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -3583,6 +3702,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t": {
@@ -3728,6 +3850,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t": {
@@ -3910,6 +4035,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t": {
@@ -4132,6 +4260,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t": {
@@ -4197,6 +4328,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
@@ -4306,6 +4440,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
@@ -4364,6 +4501,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
@@ -4429,6 +4569,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
@@ -4487,6 +4630,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Authenticated client-scoped durable file; unrelated clients receive 404.",
@@ -4554,6 +4700,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
@@ -4642,6 +4791,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
@@ -4730,6 +4882,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
@@ -4818,6 +4973,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Client-scoped durable Upload; parts retain original IDs, completion verifies actual bytes and atomically publishes File.",
@@ -4911,6 +5069,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "skill_query",
@@ -4966,6 +5127,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5062,6 +5226,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5127,6 +5294,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5202,6 +5372,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5266,6 +5439,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5333,6 +5509,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5463,6 +5642,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "skill_version_query",
@@ -5530,6 +5712,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5604,6 +5789,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5677,6 +5865,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5770,6 +5961,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "container_query",
@@ -5825,6 +6019,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5893,6 +6090,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -5958,6 +6158,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6025,6 +6228,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6152,6 +6358,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "container_file_query",
@@ -6219,6 +6428,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6293,6 +6505,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6352,6 +6567,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6502,6 +6720,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "vault_query",
@@ -6577,6 +6798,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6664,6 +6888,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6748,6 +6975,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6842,6 +7072,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -6983,6 +7216,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "vault_query",
@@ -7049,6 +7285,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7134,6 +7373,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7209,6 +7451,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7294,6 +7539,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7317,7 +7565,7 @@
         ],
         "responses": {
           "200": {
-            "description": "JSON response",
+            "description": "Run resource as JSON, or Assistants v2 named SSE resource and delta events followed by done.",
             "headers": {
               "X-Request-Id": {
                 "schema": {
@@ -7339,8 +7587,7 @@
                 },
                 "x-q4t-event-schema": {
                   "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_event"
-                },
-                "description": "Assistants v2 named SSE resource and delta events, followed by done."
+                }
               }
             }
           },
@@ -7371,6 +7618,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7434,7 +7684,7 @@
         ],
         "responses": {
           "200": {
-            "description": "JSON response",
+            "description": "Run resource as JSON, or Assistants v2 named SSE resource and delta events followed by done.",
             "headers": {
               "X-Request-Id": {
                 "schema": {
@@ -7456,8 +7706,7 @@
                 },
                 "x-q4t-event-schema": {
                   "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_event"
-                },
-                "description": "Assistants v2 named SSE resource and delta events, followed by done."
+                }
               }
             }
           },
@@ -7488,6 +7737,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "assistant_step_query",
@@ -7608,6 +7860,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "assistant_run_list_query",
@@ -7685,6 +7940,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7769,6 +8027,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7865,6 +8126,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -7907,7 +8171,7 @@
         ],
         "responses": {
           "200": {
-            "description": "JSON response",
+            "description": "Run resource as JSON, or Assistants v2 named SSE resource and delta events followed by done.",
             "headers": {
               "X-Request-Id": {
                 "schema": {
@@ -7929,8 +8193,7 @@
                 },
                 "x-q4t-event-schema": {
                   "$ref": "serve-application-v1.schema.json#/$defs/assistant_run_event"
-                },
-                "description": "Assistants v2 named SSE resource and delta events, followed by done."
+                }
               }
             }
           },
@@ -7961,6 +8224,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8113,6 +8379,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "assistant_step_list_query",
@@ -8220,6 +8489,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "assistant_step_query",
@@ -8288,6 +8560,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8373,6 +8648,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8448,6 +8726,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8533,6 +8814,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8610,6 +8894,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8740,6 +9027,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "assistant_message_query",
@@ -8817,6 +9107,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8901,6 +9194,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -8995,6 +9291,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9063,6 +9362,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9174,6 +9476,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "assistant_query",
@@ -9242,6 +9547,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9317,6 +9625,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9402,6 +9713,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9470,6 +9784,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9574,6 +9891,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agents_query",
@@ -9642,6 +9962,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9717,6 +10040,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9802,6 +10128,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -9905,6 +10234,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "hosted_environment_query",
@@ -9982,6 +10314,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10060,6 +10395,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10178,6 +10516,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "hosted_file_query",
@@ -10253,6 +10594,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10359,6 +10703,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agents_query",
@@ -10425,6 +10772,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10510,6 +10860,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10585,6 +10938,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10670,6 +11026,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10727,6 +11086,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10795,6 +11157,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10854,6 +11219,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10913,6 +11281,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -10963,31 +11334,7 @@
             }
           },
           "401": {
-            "description": "Bearer authentication required",
-            "headers": {
-              "X-Request-Id": {
-                "schema": {
-                  "type": "string",
-                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
-                },
-                "description": "Trace only; not cancellation credentials or an idempotency key"
-              },
-              "WWW-Authenticate": {
-                "required": true,
-                "schema": {
-                  "type": "string"
-                },
-                "description": "Bearer authentication challenge for this service.",
-                "example": "Bearer realm=\"q4t\""
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
-                }
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11081,6 +11428,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "eval_query",
@@ -11136,6 +11486,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11204,6 +11557,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11269,6 +11625,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11344,6 +11703,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11445,6 +11807,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "eval_run_query",
@@ -11510,6 +11875,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11587,6 +11955,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11661,6 +12032,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11735,6 +12109,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11811,6 +12188,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11870,6 +12250,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -11980,6 +12363,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "eval_output_query",
@@ -12056,6 +12442,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12121,6 +12510,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12187,7 +12579,12 @@
           "threads.custom_action": {
             "$ref": "serve-application-v1.schema.json#/$defs/chatkit_browser_output_event"
           }
-        }
+        },
+        "security": [
+          {
+            "ChatKitSession": []
+          }
+        ]
       }
     },
     "/v1/chatkit/attachments": {
@@ -12241,6 +12638,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12265,7 +12665,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "ChatKitSession": []
+          }
+        ]
       }
     },
     "/v1/chatkit/attachments/{session_id}/{file_id}": {
@@ -12340,6 +12745,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12355,7 +12763,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "AttachmentUpload": []
+          }
+        ]
       }
     },
     "/v1/chatkit/attachments/{session_id}/{file_id}/preview": {
@@ -12380,15 +12793,6 @@
               "type": "string",
               "minLength": 1,
               "pattern": "^file_[0-9a-f]{32}$"
-            }
-          },
-          {
-            "name": "ticket",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "pattern": "^ckpv_[A-Za-z0-9._-]+$"
             }
           }
         ],
@@ -12430,11 +12834,19 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "one attachment-scoped read ticket",
         "x-q4t-body-contract": "empty body only",
-        "description": "Read the PNG from the reserved image URL after upload. The query ticket is bound to this file and the active session. Before publication or after file deletion the response is 404."
+        "description": "Read the PNG from the reserved image URL after upload. The query ticket is bound to this file and the active session. Before publication or after file deletion the response is 404.",
+        "security": [
+          {
+            "PreviewTicket": []
+          }
+        ]
       }
     },
     "/v1/chatkit/sessions": {
@@ -12498,6 +12910,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12584,6 +12999,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12701,6 +13119,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "chatkit_thread_query",
@@ -12768,6 +13189,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12842,6 +13266,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -12955,6 +13382,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "chatkit_item_query",
@@ -13012,6 +13442,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13092,6 +13525,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "webhook_query",
@@ -13150,6 +13586,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13215,6 +13654,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13290,6 +13732,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13357,6 +13802,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13434,6 +13882,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13512,6 +13963,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13626,6 +14080,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "automation_query",
@@ -13694,6 +14151,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13769,6 +14229,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13854,6 +14317,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -13931,6 +14397,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14008,6 +14477,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14085,6 +14557,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14188,6 +14663,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "automation_invocation_query",
@@ -14265,6 +14743,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14341,6 +14822,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14463,6 +14947,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agent_session_query",
@@ -14531,6 +15018,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14606,6 +15096,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14691,6 +15184,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14773,6 +15269,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agent_session_event_query",
@@ -14852,6 +15351,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -14967,6 +15469,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agents_query",
@@ -15044,6 +15549,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -15149,6 +15657,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agents_query",
@@ -15251,6 +15762,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agent_session_subagent_query",
@@ -15328,6 +15842,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -15439,6 +15956,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agent_session_subagent_query",
@@ -15550,6 +16070,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agent_session_subagent_query",
@@ -15636,6 +16159,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -15756,6 +16282,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agent_session_subagent_query",
@@ -15868,6 +16397,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agent_session_artifact_query",
@@ -15945,6 +16477,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16029,6 +16564,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16098,6 +16636,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16203,6 +16744,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agents_query",
@@ -16317,6 +16861,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "agents_query",
@@ -16374,6 +16921,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16479,6 +17029,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "prompt_query",
@@ -16538,6 +17091,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16604,6 +17160,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16680,6 +17239,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16748,6 +17310,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16826,6 +17391,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -16986,6 +17554,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "optional beta",
@@ -17161,6 +17732,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "optional beta",
@@ -17266,6 +17840,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "optional beta",
@@ -17439,6 +18016,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "response_retrieve with optional beta",
@@ -17526,6 +18106,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "optional beta",
@@ -17615,6 +18198,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "optional beta",
@@ -17750,6 +18336,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "input_items_query with optional beta",
@@ -17807,6 +18396,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -17882,6 +18474,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -17947,6 +18542,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -18022,6 +18620,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -18110,6 +18711,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "item_include_query",
@@ -18230,6 +18834,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "conversation_items_query",
@@ -18318,6 +18925,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "item_include_query",
@@ -18392,6 +19002,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -18450,6 +19063,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -18515,6 +19131,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -18590,6 +19209,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "no query",
@@ -18688,6 +19310,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-query-contract": "stored_chat_messages_query",
@@ -18745,6 +19370,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -19047,6 +19675,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -19268,6 +19899,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       },
@@ -19349,6 +19983,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -19472,6 +20109,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -19591,6 +20231,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       },
@@ -19672,6 +20315,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -19755,6 +20401,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "description": "Sample voices require verified consent and audio. Prompt voice requests currently return 503 voice_design_not_configured.",
@@ -19947,6 +20596,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -20021,8 +20673,22 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
-        }
+        },
+        "security": [
+          {
+            "ProjectKey": []
+          },
+          {
+            "RealtimeSession": []
+          },
+          {
+            "WebSocketProtocol": []
+          }
+        ]
       }
     },
     "/v1/live/sessions": {
@@ -20076,6 +20742,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -20126,9 +20795,20 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
-        "description": "Start a native primary Live WebSocket with session.start."
+        "description": "Start a native primary Live WebSocket with session.start.",
+        "security": [
+          {
+            "ProjectKey": []
+          },
+          {
+            "WebSocketProtocol": []
+          }
+        ]
       }
     },
     "/v1/live/sessions/{session_id}/reject": {
@@ -20176,6 +20856,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -20235,6 +20918,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -20294,6 +20980,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -20343,6 +21032,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -20398,6 +21090,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -20463,6 +21158,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -20524,6 +21222,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "x-q4t-client-event": {
@@ -20531,7 +21232,18 @@
         },
         "x-q4t-server-event": {
           "$ref": "serve-application-v1.schema.json#/$defs/realtime_translation_server_event"
-        }
+        },
+        "security": [
+          {
+            "ProjectKey": []
+          },
+          {
+            "RealtimeSession": []
+          },
+          {
+            "WebSocketProtocol": []
+          }
+        ]
       }
     },
     "/v1/realtime/transcription_sessions": {
@@ -20670,6 +21382,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -20953,6 +21668,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21152,6 +21870,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21192,7 +21913,15 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "ProjectKey": []
+          },
+          {
+            "RealtimeSession": []
+          }
+        ]
       }
     },
     "/v1/realtime/translations/calls": {
@@ -21248,6 +21977,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21288,7 +22020,15 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "ProjectKey": []
+          },
+          {
+            "RealtimeSession": []
+          }
+        ]
       }
     },
     "/v1/realtime/calls/{call_id}/accept": {
@@ -21336,6 +22076,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21395,6 +22138,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21454,6 +22200,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21513,6 +22262,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21575,9 +22327,20 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
-        "description": "Open a new Live WebSocket from a completed recording owned by this client. Send session.start with fork overrides."
+        "description": "Open a new Live WebSocket from a completed recording owned by this client. Send session.start with fork overrides.",
+        "security": [
+          {
+            "ProjectKey": []
+          },
+          {
+            "WebSocketProtocol": []
+          }
+        ]
       },
       "post": {
         "operationId": "post_v1_live_sessions_session_id_fork",
@@ -21639,6 +22402,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "requestBody": {
@@ -21709,9 +22475,20 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
-        "description": "Authenticated sideband for a running media session. Replays three seconds of events and audio before live delivery."
+        "description": "Authenticated sideband for a running media session. Replays three seconds of events and audio before live delivery.",
+        "security": [
+          {
+            "ProjectKey": []
+          },
+          {
+            "WebSocketProtocol": []
+          }
+        ]
       }
     },
     "/v1/live/sessions/{session_id}/content": {
@@ -21792,6 +22569,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -21936,6 +22716,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       }
@@ -22020,6 +22803,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
           }
         }
       },
@@ -22101,6 +22887,92 @@
                 }
               }
             }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ProjectKey": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "ProjectKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "API key for the configured project client."
+      },
+      "ChatKitSession": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Client secret issued by the ChatKit session."
+      },
+      "AttachmentUpload": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Bearer ticket supplied in this attachment's upload descriptor."
+      },
+      "PreviewTicket": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "ticket",
+        "x-q4t-value-schema": {
+          "type": "string",
+          "pattern": "^ckpv_[A-Za-z0-9._-]+$"
+        },
+        "description": "Use the signed preview URL supplied with the attachment."
+      },
+      "RealtimeSession": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Ephemeral client secret issued for this Realtime session and transport. Sideband access by call ID requires a project key."
+      },
+      "WebSocketProtocol": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Sec-WebSocket-Protocol",
+        "description": "Offer openai-insecure-api-key.<credential> alongside the selected WebSocket protocol. Supply a project key or a Realtime secret on an eligible session upgrade."
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Native service authentication failed",
+        "headers": {
+          "X-Request-Id": {
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+            },
+            "description": "Trace only; not cancellation credentials or an idempotency key"
+          },
+          "X-Should-Retry": {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "false"
+              ]
+            },
+            "description": "Automatic retries are suppressed when the upstream may have executed this request."
+          },
+          "WWW-Authenticate": {
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer authentication challenge for this service.",
+            "example": "Bearer realm=\"q4t\""
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+            }
           }
         }
       }
@@ -22180,7 +23052,7 @@
         "automatic_retry": false
       },
       "defaults": "omitted/null output budget is min(server default, client output limit)",
-      "local_admin": "exact GET health/liveness/readiness/config/metrics remain trusted same-host routes; gateway denies them",
+      "local_admin": "The native ingress authenticates GET /healthz, /livez and /readyz. GET /metrics and /v1/config use the trusted local operations listener. Direct loopback inference without a client policy uses the local anonymous identity.",
       "no_guarantee": [
         "per-client physical RAM",
         "GPU-time or preparation fairness",
