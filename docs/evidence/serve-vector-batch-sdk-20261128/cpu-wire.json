@@ -1,0 +1,422 @@
+[
+  {
+    "write": {
+      "version": "2.8.1",
+      "store": "vs_695ff02ab40f91246712e414ed8fcde1",
+      "batch": "vsfb_57efea7dda1c1ef69ed983bfd0f259f9",
+      "counts": {
+        "cancelled": 0,
+        "completed": 2,
+        "failed": 0,
+        "in_progress": 0,
+        "total": 2
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores",
+          "query": "",
+          "status": 200,
+          "trace": "req-181863167a4e9263a126503783bc8c0b",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/files",
+          "query": "",
+          "status": 200,
+          "trace": "req-d65866d6e56c377f49f2ac9d1393fbc1",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/files",
+          "query": "",
+          "status": 200,
+          "trace": "req-e7748e489261e799c828046964478fa9",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/file_batches",
+          "query": "",
+          "status": 200,
+          "trace": "req-4ab3b38645001166774f1ead7645a7f5",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/file_batches/vsfb_57efea7dda1c1ef69ed983bfd0f259f9",
+          "query": "",
+          "status": 200,
+          "trace": "req-f4652c2d0ae2285668619ef9aa4cebe9",
+          "helper": "true"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/file_batches/vsfb_57efea7dda1c1ef69ed983bfd0f259f9",
+          "query": "",
+          "status": 200,
+          "trace": "req-e4455e0e903a5eaa7bf9412d6a5820b6",
+          "helper": "true"
+        }
+      ]
+    },
+    "read": {
+      "version": "3.55.1",
+      "store": "vs_695ff02ab40f91246712e414ed8fcde1",
+      "batch": "vsfb_57efea7dda1c1ef69ed983bfd0f259f9",
+      "files": {
+        "release-586.txt": "file_2404cb9fd90101fefee00ff5156fa93a",
+        "release-588.txt": "file_bfeadb5b3e4bc7fe1484739f799ff48e"
+      },
+      "answer": null,
+      "selected": "file_bfeadb5b3e4bc7fe1484739f799ff48e",
+      "revision": 588,
+      "counts": {
+        "cancelled": 0,
+        "completed": 2,
+        "failed": 0,
+        "in_progress": 0,
+        "total": 2
+      },
+      "page_ids": [
+        "file_2404cb9fd90101fefee00ff5156fa93a",
+        "file_bfeadb5b3e4bc7fe1484739f799ff48e"
+      ],
+      "tool_files": [],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/file_batches/vsfb_57efea7dda1c1ef69ed983bfd0f259f9",
+          "query": "",
+          "status": 200,
+          "trace": "req-0d8d2c53909893b2f3abcefc7a72d135",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/file_batches/vsfb_57efea7dda1c1ef69ed983bfd0f259f9/files",
+          "query": "filter=completed&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-e059235bae4ac565e051612d14707bd8",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/file_batches/vsfb_57efea7dda1c1ef69ed983bfd0f259f9/files",
+          "query": "filter=completed&limit=1&order=asc&after=file_2404cb9fd90101fefee00ff5156fa93a",
+          "status": 200,
+          "trace": "req-65b6f5c8a5e8d6e2fec4358a2dd42738",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/files/file_2404cb9fd90101fefee00ff5156fa93a",
+          "query": "",
+          "status": 200,
+          "trace": "req-fa79081064f9e12c2869c6eadf14ab02",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/files/file_2404cb9fd90101fefee00ff5156fa93a/content",
+          "query": "",
+          "status": 200,
+          "trace": "req-81b8634df015536b915de9b95c9aa2f4",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/files/file_2404cb9fd90101fefee00ff5156fa93a",
+          "query": "",
+          "status": 200,
+          "trace": "req-e89ebbb8fa5cccc69ea7e743ed31be13",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/files/file_bfeadb5b3e4bc7fe1484739f799ff48e",
+          "query": "",
+          "status": 200,
+          "trace": "req-4036970cf5415829facc862dd049a782",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/files/file_bfeadb5b3e4bc7fe1484739f799ff48e/content",
+          "query": "",
+          "status": 200,
+          "trace": "req-6b36b42e3345555558128db665824db0",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/files/file_bfeadb5b3e4bc7fe1484739f799ff48e",
+          "query": "",
+          "status": 200,
+          "trace": "req-94476411cc7d1873342be4021badb237",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/search",
+          "query": "",
+          "status": 200,
+          "trace": "req-5e775fa1852d15a6501cf1cbb79a271d",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1/file_batches/vsfb_57efea7dda1c1ef69ed983bfd0f259f9",
+          "query": "",
+          "status": 404,
+          "trace": "req-d93a876db7d69120152d4fdd461925f0",
+          "helper": null
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/vector_stores/vs_695ff02ab40f91246712e414ed8fcde1",
+          "query": "",
+          "status": 200,
+          "trace": "req-816747e4e627bab25a0b5baf29a0c23f",
+          "helper": null
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/files/file_2404cb9fd90101fefee00ff5156fa93a",
+          "query": "",
+          "status": 200,
+          "trace": "req-ebae7e7edf9c938e1dbc8642f2aa6248",
+          "helper": null
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/files/file_bfeadb5b3e4bc7fe1484739f799ff48e",
+          "query": "",
+          "status": 200,
+          "trace": "req-cbed07322258765d447343356df6f4a6",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/files",
+          "query": "purpose=assistants",
+          "status": 200,
+          "trace": "req-0a112312dcd18c7a51233e53cda0029d",
+          "helper": null
+        }
+      ]
+    }
+  },
+  {
+    "write": {
+      "version": "7.47.0",
+      "store": "vs_8fcb7a84c664d25928429338b065973e",
+      "batch": "vsfb_ba9dc9a920ed34599c53184a27b6d656",
+      "counts": {
+        "in_progress": 0,
+        "completed": 2,
+        "failed": 0,
+        "cancelled": 0,
+        "total": 2
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores",
+          "query": "",
+          "status": 200,
+          "trace": "req-581bcb091505168c2280f299ec56ea92",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/files",
+          "query": "",
+          "status": 200,
+          "trace": "req-2e53abf7d8e3201cf400c172fe0de5a5",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/files",
+          "query": "",
+          "status": 200,
+          "trace": "req-28b697721bb11c0a1c67ac8d29c386dd",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/file_batches",
+          "query": "",
+          "status": 200,
+          "trace": "req-5442719bd6851eb688ef13f327c78f6a",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/file_batches/vsfb_ba9dc9a920ed34599c53184a27b6d656",
+          "query": "",
+          "status": 200,
+          "trace": "req-1d5986e6d1400c24655d97ef0a08c07e",
+          "helper": "true"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/file_batches/vsfb_ba9dc9a920ed34599c53184a27b6d656",
+          "query": "",
+          "status": 200,
+          "trace": "req-8aff4a3b89217a61b72f5af79412f2e2",
+          "helper": "true"
+        }
+      ]
+    },
+    "read": {
+      "version": "2.33.0",
+      "store": "vs_8fcb7a84c664d25928429338b065973e",
+      "batch": "vsfb_ba9dc9a920ed34599c53184a27b6d656",
+      "files": {
+        "release-588.txt": "file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+        "release-586.txt": "file_9a0933bfa9034ee008e364ae3de1bea3"
+      },
+      "answer": null,
+      "selected": "file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+      "revision": 588,
+      "counts": {
+        "cancelled": 0,
+        "completed": 2,
+        "failed": 0,
+        "in_progress": 0,
+        "total": 2
+      },
+      "page_ids": [
+        "file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+        "file_9a0933bfa9034ee008e364ae3de1bea3"
+      ],
+      "tool_files": [],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/file_batches/vsfb_ba9dc9a920ed34599c53184a27b6d656",
+          "query": "",
+          "status": 200,
+          "trace": "req-aab5205a60a0ed4f82d5cd9d51ec7cc0",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/file_batches/vsfb_ba9dc9a920ed34599c53184a27b6d656/files",
+          "query": "filter=completed&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-3e99855f74bc2f9c67816e7daec30107",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/file_batches/vsfb_ba9dc9a920ed34599c53184a27b6d656/files",
+          "query": "filter=completed&limit=1&order=asc&after=file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+          "status": 200,
+          "trace": "req-b6a028e63040e0c367e0093c3b76b101",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/files/file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+          "query": "",
+          "status": 200,
+          "trace": "req-566d411bd0ac08d27c87f70ee8e8862d",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/files/file_7dc2647c8043ce1f8bd6f4bbfc1123ca/content",
+          "query": "",
+          "status": 200,
+          "trace": "req-24138434eec5df795f4d736418876294",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/files/file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+          "query": "",
+          "status": 200,
+          "trace": "req-efdaf8f1889221d688db1b1ff254d5ae",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/files/file_9a0933bfa9034ee008e364ae3de1bea3",
+          "query": "",
+          "status": 200,
+          "trace": "req-9a0fc0ddfa962aaf59809aecabba8ada",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/files/file_9a0933bfa9034ee008e364ae3de1bea3/content",
+          "query": "",
+          "status": 200,
+          "trace": "req-007982d69ed600acfb01507ab44e810f",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/files/file_9a0933bfa9034ee008e364ae3de1bea3",
+          "query": "",
+          "status": 200,
+          "trace": "req-d31d8c88a650c31dc6ead97ef993cba7",
+          "helper": null
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/search",
+          "query": "",
+          "status": 200,
+          "trace": "req-92d54404b0ecce09ebf4e5ea58ba0d7f",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e/file_batches/vsfb_ba9dc9a920ed34599c53184a27b6d656",
+          "query": "",
+          "status": 404,
+          "trace": "req-572152518ba10bc9b916c3fa51aca84f",
+          "helper": null
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/vector_stores/vs_8fcb7a84c664d25928429338b065973e",
+          "query": "",
+          "status": 200,
+          "trace": "req-5388f5d9b717ae1215470f2ee86e894f",
+          "helper": null
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/files/file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+          "query": "",
+          "status": 200,
+          "trace": "req-eba5d0840b6f0c3ac52c0afc4c6dbe95",
+          "helper": null
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/files/file_9a0933bfa9034ee008e364ae3de1bea3",
+          "query": "",
+          "status": 200,
+          "trace": "req-8aee7d33da64bf4c1fcd6779780ee10f",
+          "helper": null
+        },
+        {
+          "method": "GET",
+          "path": "/v1/files",
+          "query": "purpose=assistants",
+          "status": 200,
+          "trace": "req-735cff0d5aa364e3065db2f70c76e775",
+          "helper": null
+        }
+      ]
+    }
+  }
+]

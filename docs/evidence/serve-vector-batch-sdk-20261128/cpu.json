@@ -1,0 +1,54 @@
+{
+  "stage": "cpu_tls_verified",
+  "model_starts": 0,
+  "transport": "native TLS, isolated C++ handlers and disk, mathematical CPU embedding fixture",
+  "status": "PASS",
+  "source_engine_commit": "c48b7aff90ceebd09d0aa064f7990c8d4acc7a97",
+  "scenarios": [
+    {
+      "writer": "python-2.8.1",
+      "reader": "python-3.55.1",
+      "store": "vs_695ff02ab40f91246712e414ed8fcde1",
+      "batch": "vsfb_57efea7dda1c1ef69ed983bfd0f259f9",
+      "polls": 2,
+      "files": {
+        "release-586.txt": "file_2404cb9fd90101fefee00ff5156fa93a",
+        "release-588.txt": "file_bfeadb5b3e4bc7fe1484739f799ff48e"
+      },
+      "selected": "file_bfeadb5b3e4bc7fe1484739f799ff48e",
+      "answer": null
+    },
+    {
+      "writer": "node-7.47.0",
+      "reader": "python-2.33.0",
+      "store": "vs_8fcb7a84c664d25928429338b065973e",
+      "batch": "vsfb_ba9dc9a920ed34599c53184a27b6d656",
+      "polls": 2,
+      "files": {
+        "release-588.txt": "file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+        "release-586.txt": "file_9a0933bfa9034ee008e364ae3de1bea3"
+      },
+      "selected": "file_7dc2647c8043ce1f8bd6f4bbfc1123ca",
+      "answer": null
+    }
+  ],
+  "requests": 42,
+  "original_documents": {
+    "release-586.txt": "18bf32fc13a366b60f9e0f2366d5f11f583f20594a861b0f4f952fcf8a1e701b",
+    "release-588.txt": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01"
+  },
+  "initial_attempt": {
+    "status": "FAIL",
+    "cause": "CPU harness dispatched object storage workers but did not dispatch the file document worker. Both ingestion edges correctly recorded terminal failure.",
+    "sdk_stderr_sha256": "18dfd5309649fac44a8d99f962904147f0de54c0acceeb89632cf36d14bbba07",
+    "preserved_batch_failed": true
+  },
+  "driver": {
+    "vector_batch_poll.py": "54b4398ee96a90179678b629dcc4f44cfde7c6f231f99d033853482e63e21a7e",
+    "vector_batch_poll.mjs": "a03c026bfe42b15e3ad301687debc80af5b41c2fcc50f5f67efa733871c8624e",
+    "vector_batch_receipt.py": "86b1fb02c1fc6d6b48c1c36da1845bd5f0d07bcdcfd52b882dee0eae1f8d4024"
+  },
+  "host": "0242a023241addda777197b49eac7bf2a7ce849d1746603312344dafb5412ebc",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "wire_sha256": "57b864e5c3fcb36f1fba7c3c97d63891ce66b0159d42c12e59722547d3eedc62"
+}
