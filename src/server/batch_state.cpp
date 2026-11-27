@@ -323,6 +323,10 @@ ObjectReply BatchState::List(const BinaryAccess& access, const Json& query) {
     if (!item.ok()) return item;
     stored = std::move(item.value);
   }
+  if (data->array.empty()) {
+    Set(&reply.value, "first_id", String(""));
+    Set(&reply.value, "last_id", String(""));
+  }
   return reply;
 }
 

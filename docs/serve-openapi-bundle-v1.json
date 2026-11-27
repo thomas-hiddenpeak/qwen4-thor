@@ -19222,6 +19222,28 @@
                     },
                     "has_more": {
                       "type": "boolean"
+                    },
+                    "first_id": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "last_id": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
                     }
                   }
                 }
@@ -96461,24 +96483,10 @@
                 }
               },
               "first_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               },
               "last_id": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
+                "type": "string"
               },
               "has_more": {
                 "type": "boolean"
@@ -96487,8 +96495,6 @@
             "required": [
               "object",
               "data",
-              "first_id",
-              "last_id",
               "has_more"
             ],
             "additionalProperties": false
@@ -97194,7 +97200,8 @@
                     "pattern": "^[A-Za-z0-9_-]+$"
                   },
                   {
-                    "type": "null"
+                    "type": "string",
+                    "const": ""
                   }
                 ]
               },
@@ -97207,7 +97214,8 @@
                     "pattern": "^[A-Za-z0-9_-]+$"
                   },
                   {
-                    "type": "null"
+                    "type": "string",
+                    "const": ""
                   }
                 ]
               },
@@ -97592,7 +97600,8 @@
                     "pattern": "^[A-Za-z0-9_-]+$"
                   },
                   {
-                    "type": "null"
+                    "type": "string",
+                    "const": ""
                   }
                 ]
               },
@@ -97605,7 +97614,8 @@
                     "pattern": "^[A-Za-z0-9_-]+$"
                   },
                   {
-                    "type": "null"
+                    "type": "string",
+                    "const": ""
                   }
                 ]
               },

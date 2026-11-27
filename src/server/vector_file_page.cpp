@@ -58,8 +58,9 @@ ObjectReply SelectFilePage(std::vector<Json> rows, const Json& page,
   return {};
 }
 ObjectReply FilePage(Json items, bool more) {
-  auto first = items.array.empty() ? Json() : *items.array.front().Find("id");
-  auto last = items.array.empty() ? Json() : *items.array.back().Find("id");
+  auto first =
+      items.array.empty() ? String("") : *items.array.front().Find("id");
+  auto last = items.array.empty() ? String("") : *items.array.back().Find("id");
   return Result(Object({{"object", String("list")},
                         {"data", std::move(items)},
                         {"first_id", std::move(first)},

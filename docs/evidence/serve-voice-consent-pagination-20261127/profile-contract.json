@@ -1,0 +1,46 @@
+{
+  "scope": "Bounded cursor SDK profile handoff and reviewed native source inventory",
+  "sdk": "7.47.0",
+  "business_limits": {
+    "primary": 15,
+    "light": 10,
+    "model_starts_per_role": 1,
+    "seconds_per_role": 300
+  },
+  "linked_objects": [
+    "vector store",
+    "file",
+    "file batch"
+  ],
+  "targeted_cpu_tests": 2,
+  "reviewed_native_sources": [
+    "src/server/batch_state.cpp",
+    "src/server/vector_stores.cpp",
+    "src/server/vector_file_page.cpp"
+  ],
+  "original_failed_jobs": [
+    "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45994611281/job/140490754032",
+    "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/45994603472/job/140490728861"
+  ],
+  "original_failure": "Both host jobs passed the 65 test groups and rejected the three stale inventory hashes.",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "source_sha256": {
+    "tools/serve_responses/cursor_profiles.py": "f941f57ed186e83834602032db21a08d5d8ea007cb5a544be0d762a61202f90e",
+    "tools/serve_responses/cursor_handoff_sdk.mjs": "bf71d9ad06fab0bd82a74d787470c93294ca51cdf2ef3c9c189d87b54ce5c46a",
+    "tools/serve_live/profile_acceptance.py": "6d913501f5d15bcdddfe5ca82793412307adf571027967c21aba01acd413fef4",
+    "tools/serve_live/profile_qualification.py": "6a67b7da4f185e2c6747d2430a2efbb89f935bc13361781ee12f7e42ba45fea2",
+    "tools/serve_responses/test_cursor_profiles.py": "4c614aef2298f182d4d04231ab3ee9ee18ca5c8319416768d4c8f40b15a437e4",
+    "tools/serve_audit/inventory.json": "cdf1d4cfe1b1ef54588af6355197d7d881c2599216da5623979e40c7230b2afd"
+  },
+  "device_profiles_verified": false
+}

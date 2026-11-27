@@ -1,5 +1,6 @@
 """Production model lifecycle under Guardian authority; never replays requests."""
 import argparse
+from contextlib import ExitStack
 import hashlib
 import json
 import os
@@ -771,15 +772,20 @@ def main():
     parser.add_argument('--config', type=Path, required=True)
     args = parser.parse_args()
     channel = control.ControllerChannel()
-    controller = Controller(ingress.parse(ingress.read_file(args.config, private=True)), channel)
-    def stop(_signal, _frame):
-        controller.stopping = True
-    signal.signal(signal.SIGTERM, stop)
-    signal.signal(signal.SIGINT, stop)
-    try:
+    with ExitStack() as lifetime:
+        lifetime.callback(channel.close)
+        config = ingress.parse(ingress.read_file(args.config, private=True))
+        if config.get('profiles') is not None:
+            # Bootstrap proves both capacity histories before this controller
+            # advertises readiness. Every launch rechecks the package bytes.
+            from tools.serve_recovery import profile_evidence
+            lifetime.enter_context(profile_evidence.qualification_scope())
+        controller = Controller(config, channel)
+        def stop(_signal, _frame):
+            controller.stopping = True
+        signal.signal(signal.SIGTERM, stop)
+        signal.signal(signal.SIGINT, stop)
         controller.run()
-    finally:
-        channel.close()
 
 
 if __name__ == '__main__':

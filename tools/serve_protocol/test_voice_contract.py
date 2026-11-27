@@ -162,6 +162,20 @@ class VoiceContract(unittest.TestCase):
         self.assertIn('/$defs/decisions_decision',self.paths['/v1/decisions']['post']
             ['responses']['200']['content']['application/json']['schema']['$ref'])
 
+    def test_consent_page_declares_optional_nullable_cursors(self):
+        result = self.paths['/v1/audio/voice_consents']['get']['responses']['200']
+        schema = result['content']['application/json']['schema']
+        validate = Draft202012Validator(schema).is_valid
+        page = dict(object='list', data=[], has_more=False)
+        self.assertTrue(validate(page))
+        self.assertTrue(validate(dict(page, first_id=None, last_id=None)))
+        for field in ('first_id', 'last_id'):
+            with self.subTest(field=field):
+                self.assertIn(field, schema['properties'])
+                self.assertTrue(validate(dict(page, **{field: 'consent_123'})))
+                for invalid in (42, False, '', 'invalid/id'):
+                    self.assertFalse(validate(dict(page, **{field: invalid})))
+
     def test_audio_bytes_multipart_and_upgrade_are_distinct(self):
         speech = self.paths['/v1/audio/speech']['post']
         validate = Draft202012Validator(speech['requestBody']['content']['application/json']['schema']).is_valid
