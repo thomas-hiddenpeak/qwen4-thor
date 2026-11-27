@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+设备已发行 rev572。主包和回退包都通过两代 Node SDK 的受管恢复短验：故障前后的已存工具调用、答案、事件与续读结果一致，跨客户读取返回 404，新 Chat 返回 42。准入前 429／503 允许 SDK 重试，上游已收到写请求但应答丢失时入口返回禁止重试提示。首次遗漏 VAD 的 WebRTC 503 与独立补验均已保留。默认服务处于 STOPPED，24 小时长稳与 NVML 不可用冷启动仅准备了计划。 [本次发行回执](evidence/serve-inference-http-errors-20261127/delivery.json)
+
 已发行的 rev570 引擎通过新入口完成真实 TLS 工具调用、续答并返回 570。首轮 WebRTC 请求因测试启动参数遗漏 VAD 返回 503；按发行包实际参数补上 VAD 后，单独重验 WebRTC 成功建立会话并通过数据通道确认关闭。两轮各启动一次，补验没有重复生成请求。保留主、轻配置各自的原始资格，仅允许本次入口与两份经核对的既有资格回执组合。下一步封装并验证该发行组合。 [入口业务验收](evidence/serve-inference-http-errors-20261127/foreground.json)
 
 准入前出现 429 或 503 时，客户端仍可按 Retry-After 重试；写请求已经转交而应答中断时，原生及可选 nginx 入口现在返回 X-Should-Retry: false。旧入口在该情形下把同一次 SDK 调用投递了两次。Python 2.8.1、3.55.1 与 Node 6.34.0、7.47.0 经两个入口共发出 56 个 HTTP 请求，24 个场景均只有一次后端提交。另验独立 TLS nginx 的错误追踪 ID 和 GET、POST 的区别。 [重试回执](evidence/serve-inference-http-errors-20261127/sdk-retries.json)
