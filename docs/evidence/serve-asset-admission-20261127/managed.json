@@ -1,0 +1,114 @@
+{
+  "stage": "managed_recovery_verified",
+  "issued": false,
+  "qualified_source": "990573497446b1df63d2aae7e8c07d07630de9af",
+  "engine": "312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b",
+  "roles": {
+    "primary": {
+      "manifest": "12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb",
+      "origin_sha256": "40cadd3d8ebe3784d875397d111b0774a41a270c7a329ac78355c44b72dd3f1c",
+      "seconds": 348.83016228256747,
+      "model_starts": 2,
+      "transport": "authenticated native loopback HTTP",
+      "queries": [
+        "optional nginx ingress",
+        "monitoring dependency"
+      ],
+      "document_and_query_vectors": 4,
+      "dimensions": 1024,
+      "max_error_against_previous_release": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cosine_scores": [
+        [
+          0.5875816706166335,
+          0.42299861337748773
+        ],
+        [
+          0.5181602001982596,
+          0.6595509779589005
+        ]
+      ],
+      "identical_before_after": true,
+      "guardian_survived": true,
+      "generations": [
+        1,
+        2
+      ],
+      "fresh_chat": "42",
+      "monitor_samples_ok": 323,
+      "ports_free": true,
+      "remaining_children": 0,
+      "default_unchanged": true,
+      "lease_sha256": "d8155d62503c182a9292d6b63e030bb334a077213af7cfe5a718b1a02cb34399",
+      "fault": "owned primary gateway SIGABRT",
+      "selected_after_fault": "registered fallback",
+      "fallback_manifest": "a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9",
+      "probe_count": 1,
+      "raw_sha256": {
+        "prepare-run.json": "759ce65479b23e1ff269ef7ac942b63607faf2a3f3990b194cbed5729abec984",
+        "restore-run.json": "759ce65479b23e1ff269ef7ac942b63607faf2a3f3990b194cbed5729abec984",
+        "prepare-retrieval.wire": "fb8eaec535dee6e45c6f7d0fa155cfb6efdcd34676637755afaddfb7895b471b",
+        "restore-retrieval.wire": "fb8eaec535dee6e45c6f7d0fa155cfb6efdcd34676637755afaddfb7895b471b",
+        "result.json": "3e285632e649ca67f3639b5db5594b67201f529f175eb8ed208db5504860615a",
+        "interruption.json": "647e4c2af2eb965f5cf790f4d09c06cff66b94c00971b77a3f0e9dbcfc450f4e",
+        "chat-after.wire": "42ab03dc952478e05cd79c1ce524b024054bcb9451ad8efb42629feea64260a4",
+        "takeover.json": "e29c63c28cc7197a9f7a86c65146817f30419bfc1a62beeb41b211faafd758a4"
+      }
+    },
+    "fallback": {
+      "manifest": "a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9",
+      "origin_sha256": "99661d501782e4fe35974401e1fb788ef5b022a265cca51fbe391b2c96f7fe5a",
+      "seconds": 206.95440356060863,
+      "model_starts": 2,
+      "transport": "authenticated native loopback HTTP",
+      "queries": [
+        "optional nginx ingress",
+        "monitoring dependency"
+      ],
+      "document_and_query_vectors": 4,
+      "dimensions": 1024,
+      "max_error_against_previous_release": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "cosine_scores": [
+        [
+          0.5875816706166335,
+          0.42299861337748773
+        ],
+        [
+          0.5181602001982596,
+          0.6595509779589005
+        ]
+      ],
+      "identical_before_after": true,
+      "guardian_survived": true,
+      "generations": [
+        1,
+        2
+      ],
+      "fresh_chat": "42",
+      "monitor_samples_ok": 192,
+      "ports_free": true,
+      "remaining_children": 0,
+      "default_unchanged": true,
+      "lease_sha256": "630e16d868361947000a233f3180d1f0b59423ff605b26142220561aba2848a8",
+      "fault": "owned model SIGKILL",
+      "raw_sha256": {
+        "prepare-run.json": "759ce65479b23e1ff269ef7ac942b63607faf2a3f3990b194cbed5729abec984",
+        "restore-run.json": "759ce65479b23e1ff269ef7ac942b63607faf2a3f3990b194cbed5729abec984",
+        "prepare-retrieval.wire": "fb8eaec535dee6e45c6f7d0fa155cfb6efdcd34676637755afaddfb7895b471b",
+        "restore-retrieval.wire": "fb8eaec535dee6e45c6f7d0fa155cfb6efdcd34676637755afaddfb7895b471b",
+        "result.json": "1d3983353217efa58af8c076bf24081d48956caf9b374ca26f6f3b9122643614",
+        "interruption.json": "647e4c2af2eb965f5cf790f4d09c06cff66b94c00971b77a3f0e9dbcfc450f4e",
+        "chat-after.wire": "6135ef098795c4e8d8caab71324f09d08b4a09ad0d38c88cc56d62b3d6ae7b96"
+      }
+    }
+  }
+}

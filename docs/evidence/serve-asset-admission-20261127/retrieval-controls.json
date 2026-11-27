@@ -1,0 +1,35 @@
+{
+  "stage": "project_retrieval_controls",
+  "source": "issued native retrieval business",
+  "inputs": [
+    "architecture passage about optional nginx",
+    "native monitoring passage",
+    "gateway query",
+    "monitoring query"
+  ],
+  "selected_indices": [
+    2,
+    5,
+    7,
+    10
+  ],
+  "baseline_sha256": {
+    "default.wire": "707baa2c84031c846cde8a0b339c109bb638b15c28bffcf758f17a7406d1f553",
+    "default.request.json": "1199260b11df1d725a2077cf3854067bae67353b34af097f9623975a59d0343b",
+    "acceptance-final.json": "bef95bb4f771c4f1f9829400892f1d936d7fe9603f3a83c890e55c11c0bf1ce7"
+  },
+  "dimension": 1024,
+  "minimum_cosine": 0.999,
+  "maximum_absolute_error": 0.005,
+  "suite_tests": 7,
+  "new_retrieval_controls": 3,
+  "log_sha256": "26f6db29cb87a79af3583d660f64bb15b4282a6fa7eb86a54b174d8f657dd0aa",
+  "device_verified": false,
+  "issued": false,
+  "release_binding": {
+    "tests": 10,
+    "log_sha256": "1902acbf968a13912a1ce2c0db01c100981ccd988b871a47fd09dd921796a561",
+    "basis": "previous deployment manifest observed in the strict overlap run and reviewed primary/light qualifications",
+    "stale_deployment_rejected": true
+  }
+}

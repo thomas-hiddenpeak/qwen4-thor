@@ -1,0 +1,127 @@
+{
+  "stage": "asset_retrieval_primary_light",
+  "issued": false,
+  "engine": "312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "roles": {
+    "primary": {
+      "sha256": "7b04a80f2e775df65d83a6859d2cb8c26a33df9080cd4bebb07d0108aaed33ee",
+      "retrieval": {
+        "model": "qwen3-embedding-0.6b",
+        "dimensions": 1024,
+        "vectors": [
+          {
+            "cosine": 1.0000000045394704,
+            "max_absolute_error": 0.0
+          },
+          {
+            "cosine": 0.9999999947330218,
+            "max_absolute_error": 0.0
+          },
+          {
+            "cosine": 0.9999999989286613,
+            "max_absolute_error": 0.0
+          },
+          {
+            "cosine": 0.9999999975483829,
+            "max_absolute_error": 0.0
+          }
+        ],
+        "cosine_scores": [
+          [
+            0.5875816706166335,
+            0.42299861337748773
+          ],
+          [
+            0.5181602001982596,
+            0.6595509779589005
+          ]
+        ],
+        "prompt_tokens": 415,
+        "response_sha256": "a255b8e1c53a2815998a41cd6e76d07c4aade6438a6d41b9eb2df5b734bc7daa"
+      },
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      },
+      "seconds": 39.980225218925625,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 70
+      },
+      "mtp": true,
+      "conversation": "created",
+      "chat": "42"
+    },
+    "light": {
+      "sha256": "ba466cda9a00d8d65d640eb276b931ed75078cf07d4df6a048a28a0acdcb3763",
+      "retrieval": {
+        "model": "qwen3-embedding-0.6b",
+        "dimensions": 1024,
+        "vectors": [
+          {
+            "cosine": 1.0000000045394704,
+            "max_absolute_error": 0.0
+          },
+          {
+            "cosine": 0.9999999947330218,
+            "max_absolute_error": 0.0
+          },
+          {
+            "cosine": 0.9999999989286613,
+            "max_absolute_error": 0.0
+          },
+          {
+            "cosine": 0.9999999975483829,
+            "max_absolute_error": 0.0
+          }
+        ],
+        "cosine_scores": [
+          [
+            0.5875816706166335,
+            0.42299861337748773
+          ],
+          [
+            0.5181602001982596,
+            0.6595509779589005
+          ]
+        ],
+        "prompt_tokens": 415,
+        "response_sha256": "a255b8e1c53a2815998a41cd6e76d07c4aade6438a6d41b9eb2df5b734bc7daa"
+      },
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      },
+      "seconds": 36.00158462114632,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 70
+      },
+      "mtp": false,
+      "conversation": "recovered",
+      "chat": "42"
+    }
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 73,
+    "cleanup_complete": true
+  },
+  "registry_acceptance_sha256": "352f144500a580d504653c85f02b65c3130948d325f4338c32db4113b51bc310",
+  "lease_sha256": "7da87b3f9c2f769808ba5f987a0ad8decc7462bd6b20f2786289cff3f415fcf0",
+  "lifecycle_sha256": "17771821d2f993004677cae0b78411fa40c48d38bd30779ba4bf7aad86b2153e",
+  "previous_profiles_reconstruct_exactly": true,
+  "cpu_log_sha256": "e9131977bce7d1f6a5d25630eb964c642f56a490e9f87d05adadaec0f6fb3b52",
+  "inventory_log_sha256": "bd34a6e0ea4070b11e1a6a4332d285e2f36dc0325661832926e96d65cb698cc8"
+}
