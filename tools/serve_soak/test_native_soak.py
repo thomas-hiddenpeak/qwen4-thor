@@ -127,6 +127,36 @@ class PrivateTests(unittest.TestCase):
         self.addCleanup(temporary.cleanup)
         self.path = Path(temporary.name)
 
+    def test_native_stage_selects_the_collectors_rotation_size(self):
+        from tools.serve_soak import evidence
+        with mock.patch.object(evidence, 'require_disk_reserve'), \
+             mock.patch.object(evidence, 'Capture'), \
+             mock.patch.object(stage.subprocess, 'Popen', side_effect=OSError('test guard launch')) as spawn:
+            with self.assertRaisesRegex(ValueError, 'native soak execution or evidence incomplete'):
+                stage.guarded_run(dict(output=str(self.path), profile='short'), self.path/'plan.json')
+        argv = spawn.call_args.args[0]
+        options = argv[:argv.index('--')]
+        self.assertIn('--inherit-lease', options)
+        self.assertEqual(options[options.index('--compute-backend')+1], 'nvml')
+        self.assertEqual(options[options.index('--log-max-bytes')+1],
+                         str(evidence.ROTATION_BYTES))
+
+    def test_retention_report_requires_both_complete_archive_chains(self):
+        from tools.serve_soak import evidence
+        size = evidence.ROTATION_BYTES
+        lease = dict(retention=dict(bytes_per_file=size, generations=2,
+                                    complete_history_retained=False))
+        record = dict(bytes=2*size+1, rotations=2, complete_observed_chain=True)
+        logs = {name: dict(record) for name in ('events.jsonl', 'nvml-queries.jsonl')}
+        report.verify_retention(lease, logs)
+        for bad_lease, bad_logs in [
+            ({}, logs), (lease, {'events.jsonl': record}),
+            (lease, dict(logs, **{'events.jsonl':dict(record, rotations=1)})),
+            (lease, dict(logs, **{'nvml-queries.jsonl':dict(record, complete_observed_chain=False)})),
+        ]:
+            with self.subTest(lease=bad_lease, logs=bad_logs), self.assertRaises(ValueError):
+                report.verify_retention(bad_lease, bad_logs)
+
     def test_space_check_rejects_short_and_day_below_the_exact_reserve(self):
         from tools.serve_soak import evidence
         path = self.path/'plan.json'

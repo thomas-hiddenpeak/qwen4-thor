@@ -1,0 +1,49 @@
+{
+  "roles": {
+    "primary": {
+      "guard_scans": 234,
+      "nvml_queries": 234,
+      "additional_queries": 0,
+      "model_context_queries": 106,
+      "model_context_queries_during_ready": 61,
+      "original_seal_sha256": "b90761537116e914e9809208a9d8ded597972dbbadc1a91d5218f892cfbe7b33",
+      "model_pid": 1851715,
+      "model_start_ticks": 399573261,
+      "ready_observation_seconds": 67.1419658982195
+    },
+    "fallback": {
+      "guard_scans": 233,
+      "nvml_queries": 233,
+      "additional_queries": 0,
+      "model_context_queries": 106,
+      "model_context_queries_during_ready": 61,
+      "original_seal_sha256": "82b34bcdd4773667ae25b8c81e752ce8aad58b5d7448ac39aae7a00c8a6065ce",
+      "model_pid": 1853860,
+      "model_start_ticks": 399601648,
+      "ready_observation_seconds": 66.49393942207098
+    }
+  },
+  "controls": {
+    "recorded_short": {
+      "guard_scans": 229,
+      "nvml_queries": 229,
+      "additional_queries": 0,
+      "model_context_queries": 105,
+      "model_context_queries_during_ready": 59,
+      "original_seal_sha256": "fb78e47703c601ef90f7c492fa84fb1abc778ba1a5fb441b5768172cc1db02a6",
+      "model_pid": 1783237,
+      "model_start_ticks": 398691500,
+      "ready_observation_seconds": 71.85385928675532
+    },
+    "rejected": {
+      "missing NVML query": "guard scan lacks its original NVML query or has excess replies",
+      "missing model PID": "missing completed lease or model NVML observation while ready",
+      "damaged NVML worker binding": "NVML worker request ID differs",
+      "query summary conflicts with worker": "query summary differs from the original NVML reply",
+      "query clock regression": "guard scan lacks its original NVML query or has excess replies",
+      "incomplete lease": "missing completed lease or model NVML observation while ready",
+      "reply outside scan interval": "guard scan lacks its original NVML query or has excess replies"
+    },
+    "second_query_control": "accepted"
+  }
+}

@@ -336,6 +336,8 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
         raise ValueError('explicit inherited descriptors require a managed lease')
     for fd in inherited_fds:
         os.fstat(fd)  # Reject closed descriptors before any workload/monitor.
+    if log_max_bytes is not None and (type(log_max_bytes) is not int or log_max_bytes < 65536):
+        raise ValueError('monitor log limit must be at least 64KiB')
     out.mkdir(parents=True, exist_ok=False)
     scan = inspect
     if compute_backend == 'nvml':
@@ -353,8 +355,6 @@ def run_guard(command, out, lock_path, interval=1.0, grace=30.0, lease_fd=None,
     if managed_monitor is not None:
         status['monitor_policy'] = managed_monitor.state['policy']
     if log_max_bytes is not None:
-        if type(log_max_bytes) is not int or log_max_bytes < 65536:
-            raise ValueError('monitor log limit must be at least 64KiB')
         status['retention'] = dict(bytes_per_file=log_max_bytes, generations=2,
                                   complete_history_retained=False)
     child = None
@@ -501,6 +501,8 @@ def main():
     parser.add_argument('--compute-backend', choices=['nvidia-smi', 'nvml'],
                         default=DEFAULT_COMPUTE_BACKEND,
                         help='explicit compute PID query backend; no fallback')
+    parser.add_argument('--log-max-bytes', type=int,
+                        help='retain two generations per monitor log with this byte limit per file')
     parser.add_argument('--lease-fd', type=int,
                         help='inherited exclusive lease; external owner handles recovery')
     parser.add_argument('--inherit-lease', action='store_true',
@@ -516,7 +518,7 @@ def main():
     if not any(out.is_relative_to(ROOT / p) for p in ('build', '.q4t-work')):
         parser.error('output must be under build/ or .q4t-work/')
     result = run_guard(command, out, common_lock(), lease_fd=args.lease_fd,
-                       compute_backend=args.compute_backend,
+                       compute_backend=args.compute_backend, log_max_bytes=args.log_max_bytes,
                        inherit_lease=args.inherit_lease, inherited_fds=args.inherit_fd)
     raise SystemExit(result)
 

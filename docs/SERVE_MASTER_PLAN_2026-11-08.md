@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev588 已发行长稳监控日志轮转修复。两个配置各完成了 19 个实际业务请求，归档复核已通过。默认保持 STOPPED，回退包已登记，13 份客户与恢复状态已核对。新版音频日稳入口已完成只读预检，24 小时实跑由用户执行。 [发行和交接](evidence/serve-native-soak-retention-20261128/delivery.json)
+
 rev586 已发行原生 OpenAPI 鉴权合同。主包和回退包分别通过从包内规范构造请求的客户端短验。两份规范均为范围内 231 个方法中的 219 个声明了预期成功状态。 [发行回执](evidence/serve-openapi-ingress-auth-20261128/delivery.json)
 
 rev584 已发行。模型重建与网关故障切换后，新 ChatKit 会话均读回原待回填工具调用并续问得到 42。迟到回填返回 409，跨会话及跨客户读取返回 404。生产期望状态为 STOPPED；登记时模型启动为零。音频日稳按新包重新准备，保留首小时检查点。 [发行回执](evidence/serve-chatkit-pending-user-message-20261127/delivery.json)

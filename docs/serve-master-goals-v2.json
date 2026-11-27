@@ -11121,6 +11121,16 @@
         "operator_source": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
         "revision": 584,
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      },
+      "native_soak_log_retention_20261128": {
+        "stage": "stopped_default_and_operator_handoff",
+        "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
+        "model_starts": 2,
+        "day_executed": false,
+        "packages": "evidence/serve-native-soak-retention-20261128/packages.json",
+        "device": "evidence/serve-native-soak-retention-20261128/managed.json",
+        "revision": 588,
+        "delivery": "evidence/serve-native-soak-retention-20261128/delivery.json"
       }
     },
     {
@@ -12821,7 +12831,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev586_delivered_remaining_deliveries",
+      "state": "rev588_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12871,13 +12881,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 586,
+        "revision": 588,
         "state": "STOPPED",
-        "primary_manifest_sha256": "3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246",
-        "fallback_manifest_sha256": "bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae",
+        "primary_manifest_sha256": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+        "fallback_manifest_sha256": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
         "binary_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
+        "evidence": "evidence/serve-native-soak-retention-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14285,6 +14295,15 @@
         "all_master_tasks_active": true,
         "secret_scan_matches": 0,
         "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      },
+      "release_revision_586": {
+        "revision": 586,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246",
+        "fallback_manifest_sha256": "bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae",
+        "binary_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
       }
     },
     {
@@ -14849,6 +14868,16 @@
         "operator_source": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
         "revision": 584,
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      },
+      "native_soak_log_retention_20261128": {
+        "stage": "stopped_default_and_operator_handoff",
+        "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
+        "model_starts": 2,
+        "day_executed": false,
+        "packages": "evidence/serve-native-soak-retention-20261128/packages.json",
+        "device": "evidence/serve-native-soak-retention-20261128/managed.json",
+        "revision": 588,
+        "delivery": "evidence/serve-native-soak-retention-20261128/delivery.json"
       }
     }
   ],

@@ -1,0 +1,49 @@
+{
+  "stage": "packages_and_operator_preflight_verified",
+  "model_actions": 0,
+  "gpu_short_accepted": false,
+  "roles": {
+    "primary": {
+      "manifest": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+      "predecessor_manifest": "3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246",
+      "guard_sha256": "c577312109f50f5f14d88eb6976053ced7b290c654cc95cbba0241a2054862a9",
+      "previous_guard_sha256": "dc86ff0bd47663c52166217d4a0bb346a8b5d836d7741be5acd0c7bf77bbe95e",
+      "unchanged_engine_sources": 1309,
+      "unchanged_engine_files": 75,
+      "unchanged_service_files": 177,
+      "engine_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+      "ingress_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+      "source": "528745c22f8a32d118cc5b4df1fac95e5695eb1d",
+      "plan_sha256": "2535047c5ba47f20801847c4f36642c3264afd19fb3af95b3d6baf75b59e6fe4",
+      "limits": {
+        "starts": 1,
+        "chats": 20,
+        "probes": 0,
+        "controls": 5000,
+        "seconds": 600
+      },
+      "preflight_passed": true
+    },
+    "fallback": {
+      "manifest": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+      "predecessor_manifest": "bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae",
+      "guard_sha256": "c577312109f50f5f14d88eb6976053ced7b290c654cc95cbba0241a2054862a9",
+      "previous_guard_sha256": "dc86ff0bd47663c52166217d4a0bb346a8b5d836d7741be5acd0c7bf77bbe95e",
+      "unchanged_engine_sources": 1309,
+      "unchanged_engine_files": 75,
+      "unchanged_service_files": 177,
+      "engine_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+      "ingress_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+      "source": "528745c22f8a32d118cc5b4df1fac95e5695eb1d",
+      "plan_sha256": "37838a72c86d95b2c39700685cdb19bb35e5a9150952a73f670bb9a3537f64ba",
+      "limits": {
+        "starts": 1,
+        "chats": 20,
+        "probes": 0,
+        "controls": 5000,
+        "seconds": 600
+      },
+      "preflight_passed": true
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "stage": "both_short_profiles_verified",
+  "roles": {
+    "primary": {
+      "manifest": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+      "verified": {
+        "status": "PASS_NATIVE_SHORT_SOAK",
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-retention-primary-03/bundle",
+          "manifest_sha256": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b"
+        },
+        "profile": "short",
+        "cycles": 3,
+        "business_requests": 19,
+        "tool_executions": 3,
+        "starts": 1,
+        "guard": {
+          "passed": true,
+          "records": 238,
+          "observations": 234,
+          "seconds": 253.30694152787328
+        },
+        "native_cleanup_confirmed": true,
+        "day_scale_stability_proved": false,
+        "new_model_actions": 0,
+        "performance_acceptance": false,
+        "physical_ram_hard_boundary_proved": false
+      },
+      "lease_sha256": "44abfdc10f00f2fe4e5a8d3d62c5a0807c0dcf87be913d01b8ff0d4f5caf9c5b",
+      "retention": {
+        "bytes_per_file": 4194304,
+        "generations": 2,
+        "complete_history_retained": false
+      },
+      "archived": {
+        "events.jsonl": {
+          "bytes": 44038,
+          "sha256": "0eb95bc470bf3c18946753f3acbfec14d7f3d0943eef04909ef76506aee885a7",
+          "rotations": 0,
+          "complete_observed_chain": true
+        },
+        "nvml-queries.jsonl": {
+          "bytes": 548461,
+          "sha256": "44b55fabe1f6a1492d0ba2360086a4f670cc9ac809b3614a46b3c70e9d02661d",
+          "rotations": 0,
+          "complete_observed_chain": true
+        }
+      },
+      "seal_sha256": "b90761537116e914e9809208a9d8ded597972dbbadc1a91d5218f892cfbe7b33",
+      "decision_sha256": "0b11c3c284426f998dd7729946a5528724147c1a603a8f72a099811824b97293",
+      "release_sha256": "8045b7cff7d43e4fdc63e58359dc0f1108aebc4024adfe6c8d0d464c5245dc95"
+    },
+    "fallback": {
+      "manifest": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+      "verified": {
+        "status": "PASS_NATIVE_SHORT_SOAK",
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-retention-fallback-03/bundle",
+          "manifest_sha256": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266"
+        },
+        "profile": "short",
+        "cycles": 3,
+        "business_requests": 19,
+        "tool_executions": 3,
+        "starts": 1,
+        "guard": {
+          "passed": true,
+          "records": 237,
+          "observations": 233,
+          "seconds": 251.85342331789434
+        },
+        "native_cleanup_confirmed": true,
+        "day_scale_stability_proved": false,
+        "new_model_actions": 0,
+        "performance_acceptance": false,
+        "physical_ram_hard_boundary_proved": false
+      },
+      "lease_sha256": "e9c904ae0b431ad51ba7cce1122bb3b02dd527680fab41732769c88a5b0e5dc1",
+      "retention": {
+        "bytes_per_file": 4194304,
+        "generations": 2,
+        "complete_history_retained": false
+      },
+      "archived": {
+        "events.jsonl": {
+          "bytes": 43854,
+          "sha256": "10904ecaeb196e22479e8fb525aaa982f790ae89be24430bf35b4584de668d9c",
+          "rotations": 0,
+          "complete_observed_chain": true
+        },
+        "nvml-queries.jsonl": {
+          "bytes": 546228,
+          "sha256": "f3177476ec491feb22c3663707bdbf2b698d42af5b05aa8c6665883cf2bce1fb",
+          "rotations": 0,
+          "complete_observed_chain": true
+        }
+      },
+      "seal_sha256": "82b34bcdd4773667ae25b8c81e752ce8aad58b5d7448ac39aae7a00c8a6065ce",
+      "decision_sha256": "5e22bf17e371a2d3ad0fdb97bbc05d503f711e3f7dae527f041f785b2bf26f0b",
+      "release_sha256": "a89efa760e0b96b4c73023f90915cabe27c3634eb29ca4a13c333c69dc83035c"
+    }
+  },
+  "device_issued": false,
+  "day_executed": false
+}

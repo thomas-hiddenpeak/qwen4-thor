@@ -1,0 +1,98 @@
+{
+  "stage": "stopped_default_and_operator_handoff",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 588,
+    "version_revision": 223,
+    "profile_revision": 108,
+    "previous_profile_revision": 108,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+    "fallback": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+    "engine": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 586,
+  "short_receipt_sha256": "276fec9ffdef4bed9d6f2788fda401410928262590f709c3d46f7822f0a95e2b",
+  "source_checks": 702,
+  "maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "d5443a251105696368319bfaf8babd00638f9997932165fa1cf6ae4fb04f6e9c"
+        ],
+        "sha256": "94233469651923924b6387e34701a91492e21eef3dd294e67d720242e697817d",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "46e356b0-cbe0-4b47-98ca-e62bb838d0ae"
+        ],
+        "sha256": "56a47c0a51f2ec7956647c5bd1d7bafdf5a6ecd947c25adc7dd6117f8e3a7a91",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "ad5c6f94-9f4c-4289-8c0f-08024558dccb"
+        ],
+        "sha256": "c31a9894131a0f96f524852587c70dd55cd59eaf411cfa0cea213cdbc4d05e49",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "day": {
+    "plan_sha256": "1635b864d5f1d5ef66fc020249c1f41f6a057fc51174c043440e6f5d1bf65f0b",
+    "source": "528745c22f8a32d118cc5b4df1fac95e5695eb1d",
+    "hours_executed": 0,
+    "audio_pairs": 25,
+    "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-retention-soak-src/.q4t-work/day-01/audio-day.sh",
+    "operator_sha256": "90e3a7dbccca314af4dd07e5ef2bf9155458c2bd17c29c843fb7d674ff184443",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-retention-soak-src/.q4t-work/day-01/plan.json",
+    "business_requests": 7250,
+    "first_hour_business": 304,
+    "checked_at": "2026-11-27T20:03:26.032050+00:00",
+    "minimum_evidence_free_bytes": 12884901888
+  },
+  "cold": {
+    "plan_sha256": "bd08add4c5f6342374182b8959ef7614942bc6da28956cea68a188ec991f1ac7",
+    "model_actions": 0,
+    "host_units_modified": false,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/soak-retention-soak-src/.q4t-work/cold588-01/plan.json"
+  },
+  "previous_delivery": "../serve-openapi-ingress-auth-20261128/delivery.json",
+  "required_methods": 231,
+  "declared_methods": 219,
+  "method_coverage": {
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "openapi_sha256": {
+      "primary": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+      "fallback": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326"
+    },
+    "remaining_declarations": [
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "GET /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "GET /videos/{video_id}",
+      "DELETE /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /videos/{video_id}/remix"
+    ]
+  }
+}
