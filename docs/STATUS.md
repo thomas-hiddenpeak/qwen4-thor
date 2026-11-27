@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+同一签名窗口在显式缓存、默认缓存及展开的助手历史下都复述相同的 421 个字符。两种背景呈现分别保留原视频并返回 Blue；另加追问仍复述。验收工具现要求回复和消息均正常完成，两版官方 SDK 各 7 组回放均能区分正确答案与截断、错误状态。下一步验证仅对真实压缩记忆启用的原生提示。 [对照回执](evidence/serve-compact-window-identities-20261127/video-memory-diagnostic.json)
+
 已修正 R07 的设备状态。早期预检记录的相机和 jtop 占用已于 11 月 26 日清理。11 月 27 日复查两项均处于 inactive/disabled，风扇控制正常。NVML 不可用冷启动实测仍按用户决定暂缓。 [维护回执](evidence/serve-local-shell-20261126/delivery.json)
 
 新签发的视频压缩窗口保留了原视频与问题。续答返回 incomplete，在 96 个输出 token 内逐字复述了摘要前 421 个字符。原生离线渲染确认视频帧相同，用户问题在摘要之后。主、轻配置对已签发窗口的通过记录仍有效；新窗口续答待修复。 [实机记录](evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json)
