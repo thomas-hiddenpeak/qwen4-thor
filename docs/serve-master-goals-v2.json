@@ -3337,11 +3337,12 @@
         "delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
-        "stage": "profile_verified",
+        "stage": "managed_verified",
         "reference_and_native": "evidence/serve-chatkit-pending-user-message-20261127/native.json",
         "issued": false,
         "device": "evidence/serve-chatkit-pending-user-message-20261127/device.json",
-        "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json"
+        "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json",
+        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json"
       }
     },
     {
@@ -4118,11 +4119,12 @@
         "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
-        "stage": "profile_verified",
+        "stage": "managed_verified",
         "reference_and_native": "evidence/serve-chatkit-pending-user-message-20261127/native.json",
         "issued": false,
         "device": "evidence/serve-chatkit-pending-user-message-20261127/device.json",
-        "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json"
+        "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json",
+        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json"
       }
     },
     {
@@ -9661,11 +9663,12 @@
         "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "chatkit_pending_user_message_20261127": {
-        "stage": "profile_verified",
+        "stage": "managed_verified",
         "reference_and_native": "evidence/serve-chatkit-pending-user-message-20261127/native.json",
         "issued": false,
         "device": "evidence/serve-chatkit-pending-user-message-20261127/device.json",
-        "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json"
+        "capacity": "evidence/serve-chatkit-pending-user-message-20261127/profiles.json",
+        "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json"
       }
     },
     {

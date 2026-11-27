@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+模型意外退出、主网关异常后切换至回退包，两种实际恢复中，新浏览器会话均重开了原待回填调用。原两项内容摘要一致，新问题和独立 Chat 均答 42，迟到工具结果返回 409，跨会话与跨客户访问均返回 404。下一步登记已验证的主包和回退包。 [两种故障的恢复记录](evidence/serve-chatkit-pending-user-message-20261127/managed.json)
+
 主档在真实浏览器留下待回填工具后停止，轻档用新会话重新打开相同线程，原两项内容的摘要一致。新问题得到 42，迟到结果为 409，两种非所属读取均为 404。主、轻档分别发出 4 和 10 个浏览器或 SDK 请求，独立 Chat 和 WebRTC 均通过。下一步验证托管故障交接。 [容量交接](evidence/serve-chatkit-pending-user-message-20261127/profiles.json)
 
 ChatKit 候选已接入并发模型资产读取修复。与检索发行候选逐一比较 1,104 个编译来源，仅两处 ChatKit 历史处理不同，Release 构建零告警。新增容量交接驱动，主档留下真实待答工具，轻档用新会话核验原历史后提交新问题、迟到回填和跨客户读取。6 项针对性 CPU 检查通过，等待检索版本发行后做两档实机验收。 [整合校验](evidence/serve-chatkit-pending-user-message-20261127/combined.json)
