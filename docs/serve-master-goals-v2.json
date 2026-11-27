@@ -11119,11 +11119,12 @@
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       },
       "native_soak_log_retention_20261128": {
-        "stage": "packages_and_operator_preflight_verified",
+        "stage": "both_short_profiles_verified",
         "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
-        "model_starts": 0,
+        "model_starts": 2,
         "day_executed": false,
-        "packages": "evidence/serve-native-soak-retention-20261128/packages.json"
+        "packages": "evidence/serve-native-soak-retention-20261128/packages.json",
+        "device": "evidence/serve-native-soak-retention-20261128/managed.json"
       }
     },
     {
@@ -14845,11 +14846,12 @@
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       },
       "native_soak_log_retention_20261128": {
-        "stage": "packages_and_operator_preflight_verified",
+        "stage": "both_short_profiles_verified",
         "receipt": "evidence/serve-native-soak-retention-20261128/cpu.json",
-        "model_starts": 0,
+        "model_starts": 2,
         "day_executed": false,
-        "packages": "evidence/serve-native-soak-retention-20261128/packages.json"
+        "packages": "evidence/serve-native-soak-retention-20261128/packages.json",
+        "device": "evidence/serve-native-soak-retention-20261128/managed.json"
       }
     }
   ],

@@ -7,6 +7,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主包和回退包均通过了 3 个真实短验周期，各完成 19 个业务请求，覆盖 JSON、SSE、真实文档工具回填和两次语音合成转录。两个严格 GPU 租约都记录了每文件 4 MiB 的上限，停止后已复核封存记录。24 小时日稳仍由用户执行。 [双包实机记录](evidence/serve-native-soak-retention-20261128/managed.json)
+
+主包与回退包分别有 234 和 233 个守护采样点。每个采样点均已对上原始 NVML 回答，且服务就绪期间均观察到原模型 PID。 [离线复核](evidence/serve-native-soak-retention-20261128/nvml-observations.json)
+
 轮转修复已写入主包与回退包。两份包与各自前驱相比，内外清单均只有 GPU guard 的源码摘要变化。两档原生短验的正常 prepare 和 check 入口均已通过，模型启动为零。真实短验将在前一笔停止态发行完成后执行。 [封包和短验预检](evidence/serve-native-soak-retention-20261128/packages.json)
 
 原生长稳现向严格 GPU guard 传入每文件 4 MiB 的轮转上限。原短验的两份监控日志在租约和归档目录各占一份。用其真实字节加速回放，两条日志各轮转两次，完整归档与输入逐字节一致。74 项 CPU 检查通过；新包短验待执行。 [轮转证据](evidence/serve-native-soak-retention-20261128/cpu.json)
