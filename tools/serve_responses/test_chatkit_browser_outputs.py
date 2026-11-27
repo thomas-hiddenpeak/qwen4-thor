@@ -57,8 +57,10 @@ class BrowserOutputTest(unittest.TestCase):
         path = '/v1/chatkit/attachments/{session_id}/{file_id}/preview'
         op = self.spec['paths'][path]['get']
         self.assertEqual(set(op['responses']['200']['content']), {'image/png'})
-        self.assertEqual({p['name'] for p in op['parameters']}, {'session_id', 'file_id', 'ticket'})
-        self.assertTrue(next(p for p in op['parameters'] if p['name']=='ticket')['required'])
+        self.assertEqual({p['name'] for p in op['parameters']}, {'session_id', 'file_id'})
+        self.assertEqual(op['security'], [{'PreviewTicket': []}])
+        ticket = self.spec['components']['securitySchemes']['PreviewTicket']
+        self.assertEqual((ticket['type'], ticket['in'], ticket['name']), ('apiKey', 'query', 'ticket'))
 
     def test_json_bodies_are_selected_by_operation(self):
         empty_page = dict(data=[], has_more=False, after=None)

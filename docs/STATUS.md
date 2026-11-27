@@ -9,6 +9,14 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 原生长稳现向严格 GPU guard 传入每文件 4 MiB 的轮转上限。原短验的两份监控日志在租约和归档目录各占一份。用其真实字节加速回放，两条日志各轮转两次，完整归档与输入逐字节一致。74 项 CPU 检查通过；新包短验待执行。 [轮转证据](evidence/serve-native-soak-retention-20261128/cpu.json)
 
+主包和回退包各从自己的 OpenAPI 构造 9 个请求，完成项目鉴权、创建与吊销 ChatKit 会话及真实聊天。两份包的模型都答出 42，三种应拒绝的请求均返回 401。修正验收脚本后共启动两个模型，均干净退出。 [真实客户端记录](evidence/serve-openapi-ingress-auth-20261128/managed.json)
+
+主包与回退包已封入相同的 OpenAPI 合同。逐包校验确认两份原生程序、1,309 项运行时源文件和 178 项外层文件与 rev584 对应配置相同。首次托管短验中，验收脚本跳过了 Swagger 的 JSON 序列化，创建 Agent 返回 400；改用标准执行入口后，8 项入口请求通过了 CPU 复验。 [封包核验](evidence/serve-openapi-ingress-auth-20261128/packages.json)
+
+两份合同通过官方 OpenAPI 3.1 元模式，通用客户端按修订后的合同发出全部 8 个预期请求。401 继续声明已转发写请求的重试提示，预览票据保留原格式约束。18 项合同与打包检查通过，下一步核对两个实际封包。 [验证记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)
+
+OpenAPI 已为 244 个原生入口操作声明凭据和 401 挑战，另两项本地运维操作单列。通用 Swagger 客户端按打包版合同生成了 8 个请求，在真实入口通过了项目 Key、浏览器会话、上传和预览的正反例。两个完整文档通过 OpenAPI 3.1 官方元模式校验，补齐了三个 Assistants SSE 声明。下一步装入主、回退发行包。 [合同与入口记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)
+
 rev584 已发行。模型重建与网关故障切换后，新 ChatKit 会话均读回原待回填工具调用并续问得到 42。迟到回填返回 409，跨会话及跨客户读取返回 404。生产期望状态为 STOPPED；登记时模型启动为零。音频日稳按新包重新准备，保留首小时检查点。 [发行回执](evidence/serve-chatkit-pending-user-message-20261127/delivery.json)
 
 模型意外退出、主网关异常后切换至回退包，两种实际恢复中，新浏览器会话均重开了原待回填调用。原两项内容摘要一致，新问题和独立 Chat 均答 42，迟到工具结果返回 409，跨会话与跨客户访问均返回 404。下一步登记已验证的主包和回退包。 [两种故障的恢复记录](evidence/serve-chatkit-pending-user-message-20261127/managed.json)

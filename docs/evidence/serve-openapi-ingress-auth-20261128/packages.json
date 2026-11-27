@@ -1,0 +1,43 @@
+{
+  "stage": "candidate_packages_verified",
+  "predecessor_revision": 584,
+  "device_issued": false,
+  "primary": {
+    "source": "6d89538eb9a78730c5cc6ac5891e7af94e1160a2",
+    "role": "primary",
+    "manifest": "3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246",
+    "predecessor_manifest": "b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a",
+    "openapi": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+    "previous_openapi": "1cae9575ca0d6eb1bba8e49f553f5cfedab2221efab4028ef7e6958ab49ba350",
+    "engine_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+    "ingress_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+    "unchanged_runtime_sources": 1309,
+    "unchanged_outer_files": 178,
+    "engine_files": 76,
+    "changed_engine_files": [
+      "q4t.release.json",
+      "acceptance.json",
+      "declarations/schemas/openapi.json"
+    ],
+    "model_starts": 0
+  },
+  "fallback": {
+    "source": "6d89538eb9a78730c5cc6ac5891e7af94e1160a2",
+    "role": "fallback",
+    "manifest": "bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae",
+    "predecessor_manifest": "28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28",
+    "openapi": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+    "previous_openapi": "1cae9575ca0d6eb1bba8e49f553f5cfedab2221efab4028ef7e6958ab49ba350",
+    "engine_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+    "ingress_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+    "unchanged_runtime_sources": 1309,
+    "unchanged_outer_files": 178,
+    "engine_files": 76,
+    "changed_engine_files": [
+      "q4t.release.json",
+      "acceptance.json",
+      "declarations/schemas/openapi.json"
+    ],
+    "model_starts": 0
+  }
+}

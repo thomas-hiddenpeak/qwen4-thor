@@ -1039,8 +1039,6 @@ def add_openapi(paths, response, error):
             success = dict(description='Completed raster preview', content={
                 'image/png': dict(schema=dict(type='string', format='binary'))},
                 headers={'Cache-Control': dict(schema=dict(type='string', const='no-store'))})
-            parameters.append(dict(name='ticket', **{'in': 'query'}, required=True,
-                                   schema=dict(type='string', pattern='^ckpv_[A-Za-z0-9._-]+$')))
             query_contract = 'one attachment-scoped read ticket'
         elif path.startswith('/v1/skills/') and path.endswith('/content'):
             success = dict(description='Immutable ZIP bundle for the selected skill version', content={
@@ -1059,9 +1057,10 @@ def add_openapi(paths, response, error):
         else:
             success = response(external(result))
         if body in ('assistant_run_create','assistant_thread_run_create','assistant_run_submit'):
+            success['description'] = (
+                'Run resource as JSON, or Assistants v2 named SSE resource and delta events followed by done.')
             success['content']['text/event-stream'] = event_media(
-                external('assistant_run_event'),
-                description='Assistants v2 named SSE resource and delta events, followed by done.')
+                external('assistant_run_event'))
         if event_stream or body == 'agent_session_create':
             success.setdefault('content', {})['text/event-stream'] = event_media(
                 external('agent_session_event'))
@@ -1183,6 +1182,10 @@ def standalone_openapi(spec):
                 if key in ('$schema', '$id') and isinstance(child, str):
                     continue
                 if key == '$ref' and isinstance(child, str):
+                    if owner is None and child.startswith('#/components/'):
+                        result[key] = child
+                        references.add(child)
+                        continue
                     file, sep, fragment = child.partition('#')
                     if file:
                         if '/' in file or not file.endswith('.json'):
@@ -1205,7 +1208,12 @@ def standalone_openapi(spec):
         return value
 
     bundled = rewrite(spec)
-    bundled['components'] = dict(schemas=components)
+    declared = bundled.pop('components', {})
+    schemas = declared.setdefault('schemas', {})
+    if schemas.keys() & components.keys():
+        raise ValueError('imported schema conflicts with an OpenAPI component')
+    schemas.update(components)
+    bundled['components'] = declared
     for pointer in sorted(references):
         node = bundled
         try:
