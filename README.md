@@ -1051,7 +1051,7 @@ sudo apt install --no-install-recommends ./q4t-live-workers.deb
 
 Live 工作分支提供按会话录制。启动 `q4t serve` 或托管 `prepare` 时使用
 `--live-recordings` 开放权限，具名客户端在 `session.start` 中传入
-`store: true` 启用本次录制。收到 `session.closed` 后，同一 API Key 对应的客户端可调用
+`store: true` 启用本次录制。部署关闭录音权限时，历史录音的下载也返回 404。收到 `session.closed` 后，同一 API Key 对应的客户端可调用
 `client.live.sessions.downloadRecording(session.id)`。下载为双声道 16 位 PCM WAV，
 左声道是接受的输入，右声道是发出的音频，采样率沿用会话协商值。
 录音保留 30 天，占用应用对象存储配额。存储出错会在会话内报告

@@ -481,8 +481,12 @@ Q4T_TEST(server_http_error_classification) {
     const auto n = recv(sockets.fd[1], bytes.data(), bytes.size(), MSG_WAITALL);
     Q4T_CHECK(n > 0);
     const std::string output(bytes.data(), static_cast<size_t>(n));
+    Q4T_CHECK(output.find("Retry-After:") == output.npos);
     Q4T_CHECK(output.starts_with("HTTP/1.1 " + std::to_string(item.status) +
                                  " " + item.reason + "\r\n"));
+    const auto header = output.substr(0, output.find("\r\n\r\n") + 2);
+    Q4T_CHECK((header.find("WWW-Authenticate: Bearer realm=\"q4t\"\r\n") !=
+               std::string::npos) == (item.status == 401));
     q4t::io::Json value;
     Q4T_CHECK(q4t::io::ParseJson(
         output.substr(output.find("\r\n\r\n") + 4), &value).ok());

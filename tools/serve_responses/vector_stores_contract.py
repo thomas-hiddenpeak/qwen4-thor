@@ -178,6 +178,14 @@ def add_openapi(paths, response, error):
             .replace('{', '').replace('}', ''), parameters=parameters,
             responses={'200': response(external(result)), 'default': response(error)},
             description='Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.')
+        if (result in ('vector_store_deleted', 'vector_file_deleted') or
+                request in ('vector_batch_create', 'vector_batch_cancel',
+                            'vector_file_create', 'vector_file_update')):
+            conflict = response(error, 'Vector store change conflicts with its current state')
+            conflict['headers']['Retry-After'] = dict(schema=dict(type='integer', minimum=1),
+                description='Minimum delay in seconds when a migration temporarily blocks the change. '
+                            'Other conflicts can omit this header.')
+            operation['responses']['409'] = conflict
         if request:
             operation['requestBody'] = dict(required=not path.endswith('/cancel'),
                 content={'application/json': dict(schema=external(request))})

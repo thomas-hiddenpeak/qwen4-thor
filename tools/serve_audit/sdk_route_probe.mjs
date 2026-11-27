@@ -2,6 +2,7 @@
 import {readFileSync} from 'node:fs';
 import {createRequire} from 'node:module';
 import {resolve} from 'node:path';
+import {routeArguments} from './sdk_route_arguments.mjs';
 
 const catalog = JSON.parse(readFileSync(new URL(
   '../../docs/evidence/serve-sdk-routes-20261126/methods.json', import.meta.url)));
@@ -24,17 +25,7 @@ for (const [verb, path, , accessor] of catalog.rows) {
   const keys = accessor.split('.');
   const resource = keys.slice(0, -1).reduce((object, key) => object[key], client);
   const method = resource[keys.at(-1)];
-  // Generated Node methods accept some path parameters positionally and others in params.
-  const head = method.toString().split(')')[0];
-  const names = head.slice(head.indexOf('(') + 1).split(',')
-    .map(key => key.split('=')[0].trim()).filter(Boolean);
-  const params = Object.fromEntries([...path.matchAll(/\{([^}]+)\}/g)].map(m => [m[1], 'q4tfixture']));
-  const args = names.map(name => {
-    if (/(?:ID|Id)$/.test(name) || Object.hasOwn(params, name) ||
-        ['model', 'id', 'filename'].includes(name)) return 'q4tfixture';
-    if (name === 'options') return {};
-    return {...params, model: 'q4tfixture', input: 'fixture', encoding_format: 'float'};
-  });
+  const args = routeArguments(method, path);
   seen.length = 0;
   try {
     await method.apply(resource, args);

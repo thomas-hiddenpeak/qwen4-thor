@@ -2334,6 +2334,41 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Vector store change conflicts with its current state",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Minimum delay in seconds when a migration temporarily blocks the change. Other conflicts can omit this header."
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains."
@@ -2589,6 +2624,41 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Vector store change conflicts with its current state",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Minimum delay in seconds when a migration temporarily blocks the change. Other conflicts can omit this header."
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -2738,6 +2808,41 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "Vector store change conflicts with its current state",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Minimum delay in seconds when a migration temporarily blocks the change. Other conflicts can omit this header."
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
           }
         },
         "description": "Native scoped durable vector management and source-bound indexed text; ingestion is asynchronous and cancellation completes after owned execution drains.",
@@ -2803,6 +2908,41 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Vector store change conflicts with its current state",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Minimum delay in seconds when a migration temporarily blocks the change. Other conflicts can omit this header."
               },
               "X-Should-Retry": {
                 "schema": {
@@ -2935,6 +3075,41 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Vector store change conflicts with its current state",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Minimum delay in seconds when a migration temporarily blocks the change. Other conflicts can omit this header."
               },
               "X-Should-Retry": {
                 "schema": {
@@ -3210,6 +3385,41 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "X-Should-Retry": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "false"
+                  ]
+                },
+                "description": "Automatic retries are suppressed when the upstream may have executed this request."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Vector store change conflicts with its current state",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Minimum delay in seconds when a migration temporarily blocks the change. Other conflicts can omit this header."
               },
               "X-Should-Retry": {
                 "schema": {
@@ -10742,6 +10952,33 @@
                   "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
                 },
                 "description": "Trace only; not cancellation credentials or an idempotency key"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer authentication required",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Bearer authentication challenge for this service.",
+                "example": "Bearer realm=\"q4t\""
               }
             },
             "content": {
@@ -18529,6 +18766,15 @@
         "responses": {
           "200": {
             "description": "Audio or server-sent speech events",
+            "headers": {
+              "Transfer-Encoding": {
+                "schema": {
+                  "type": "string",
+                  "const": "chunked"
+                },
+                "description": "Present for chunk-framed HTTP/1.1 audio or event streams."
+              }
+            },
             "content": {
               "audio/mpeg": {
                 "schema": {
@@ -21461,6 +21707,32 @@
           }
         ],
         "responses": {
+          "503": {
+            "description": "Recording export temporarily unavailable",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "description": "Minimum delay in seconds for a temporary export admission or recovery failure."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
+          },
           "200": {
             "description": "Completed owner-scoped stereo PCM WAV, input left and output right",
             "headers": {

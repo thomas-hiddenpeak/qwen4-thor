@@ -13,6 +13,48 @@ class HttpErrors(unittest.TestCase):
         cls.document = json.loads(path.read_bytes())
         cls.validator = Draft202012Validator(cls.document)
 
+    def test_media_and_vector_header_contracts(self):
+        paths = self.document['paths']
+        store = '/v1/vector_stores/{vector_store_id}'
+        targets = [('get', '/v1/live/sessions/{session_id}/content', '503'),
+                   ('delete', store, '409'), ('post', store+'/file_batches', '409'),
+                   ('post', store+'/file_batches/{batch_id}/cancel', '409'),
+                   ('post', store+'/files', '409'), ('post', store+'/files/{file_id}', '409'),
+                   ('delete', store+'/files/{file_id}', '409')]
+        for method, path, code in targets:
+            with self.subTest(method=method, path=path):
+                replies = paths[path][method]['responses']
+                reply = replies[code]
+                self.assertEqual(reply['content'], replies['default']['content'])
+                self.assertEqual(reply['headers']['X-Request-Id'], replies['default']['headers']['X-Request-Id'])
+                header = reply['headers']['Retry-After']
+                self.assertFalse(header.get('required', False))
+                delay = self.validator.evolve(schema=header['schema'])
+                self.assertTrue(delay.is_valid(1))
+                for invalid in (0, -1, 1.5, True):
+                    self.assertFalse(delay.is_valid(invalid))
+                self.assertNotIn('Retry-After', replies['200'].get('headers', {}))
+        speech = paths['/v1/audio/speech']['post']['responses']['200']['headers']['Transfer-Encoding']
+        self.assertFalse(speech.get('required', False))
+        encoding = self.validator.evolve(schema=speech['schema'])
+        self.assertTrue(encoding.is_valid('chunked'))
+        self.assertFalse(encoding.is_valid('gzip'))
+        self.assertNotIn('409', paths[store+'/search']['post']['responses'])
+
+    def test_event_type_catalog_bearer_challenge(self):
+        responses = self.document['paths']['/v1/webhook_event_types']['get']['responses']
+        self.assertEqual(responses['401']['headers']['X-Request-Id'],
+                         responses['default']['headers']['X-Request-Id'])
+        challenge = responses['401']['headers']['WWW-Authenticate']
+        self.assertTrue(challenge['required'])
+        self.validator.evolve(schema=challenge['schema']).validate('Bearer realm="q4t"')
+        self.assertNotIn('WWW-Authenticate', responses['200'].get('headers', {}))
+        error = responses['401']['content']['application/json']['schema']
+        for kind in ('authentication_error', 'gateway_error'):
+            self.validator.evolve(schema=error).validate({'error': {
+                'message': 'Authentication required', 'code': 'invalid_api_key',
+                'type': kind, 'param': None}})
+
     def test_inference_retry_headers_and_bodies(self):
         for route in ('audio/speech', 'audio/transcriptions', 'audio/translations',
                       'chat/completions', 'completions', 'embeddings', 'moderations',
