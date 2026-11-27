@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+新签发的视频压缩窗口保留了原视频与问题。续答返回 incomplete，在 96 个输出 token 内逐字复述了摘要前 421 个字符。原生离线渲染确认视频帧相同，用户问题在摘要之后。主、轻配置对已签发窗口的通过记录仍有效；新窗口续答待修复。 [实机记录](evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json)
+
 主、轻两种真实配置分别重新启动模型并打开密封历史。两版 SDK 在每种配置下均答出版本号 560，视频续答为 Blue。6 份回答都由新请求生成，6 次跨客户提交均被拒绝。主配置用时 43.749 秒，轻配置用时 38.74 秒，各启动模型一次。下一步验证托管故障接管和可回退发行。 [主轻验收](evidence/serve-compact-window-identities-20261127/profiles.json)
 
 README 增加官方 Python SDK 压缩并继续对话的可运行示例。客户端可以直接读取压缩窗口 JSON，原样保留输入消息、媒体和既有工具决定；另给出严格字段校验入口。2.33.0 与 3.55.1 均以真实 SDK 重放既有 HTTP 正文，验证完整窗口、新问题位置及续答内容。接续主轻配置实机验收。 [示例验证](evidence/serve-compact-window-identities-20261127/sdk-example.json)

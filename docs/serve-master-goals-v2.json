@@ -3223,11 +3223,12 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "fresh video compaction on repaired binary, managed recovery and publication",
+        "remaining": "Repair and verify new signed video continuation, then qualify the selected release.",
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
-        "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
+        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json"
       }
     },
     {
@@ -6891,11 +6892,12 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "fresh video compaction on repaired binary, managed recovery and publication",
+        "remaining": "Repair and verify new signed video continuation, then qualify the selected release.",
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
-        "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
+        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json"
       }
     },
     {
@@ -12343,11 +12345,12 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "fresh video compaction on repaired binary, managed recovery and publication",
+        "remaining": "Repair and verify new signed video continuation, then qualify the selected release.",
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
-        "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json"
+        "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
+        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json"
       }
     },
     {
