@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主配置开启 MTP，轻配置关闭 MTP；均从同一对象库恢复已签发的工具调用和答复。Node SDK 6.34.0 和 7.47.0 各自读到完整事件、相同的断点后缀和对应的函数名表示；两边均按原调用回填实际发行号 568，产生独立的成功续答。每套配置各启动一次模型，耗时分别为 40.039 和 35.148 秒。下一步验证封包、托管恢复与回退。 [容量配置验收](evidence/serve-node-sdk-presentation-20261127/profiles.json)
+
 在移除原始声明和发行输入的 CPU 引擎测试包中，标准 OpenAPI 仍校验全部 12 个流式方法和 190 次事件匹配，包内声明修改后拒绝验证。Node SDK 6.34.0 和 7.47.0 各通过四次同客户读取和两次跨客户 404，复用了设备签发的函数调用、答复及断点后缀。该组未加载模型；生产候选主包与回退包仍待验。 [CPU 封包与读取回执](evidence/serve-node-sdk-presentation-20261127/portable-and-reader.json)
 
 Node SDK 6.34.0 通过候选原生 TLS 实际发起 get_project_release，使用调用 ID 回填当前设备发行号 568，模型答复 568。7.47.0 断点读回同一项和终态；两端确认各自的函数名表示及缓存拼写，跨客户读取返回 404。共 1 次模型启动、2 次生成请求，耗时 31.76 秒。四版 Python SDK 回读亦通过。下一步完成服务包与发行验证。 [业务回执](evidence/serve-node-sdk-presentation-20261127/business.json)
