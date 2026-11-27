@@ -13,6 +13,20 @@ class HttpErrors(unittest.TestCase):
         cls.document = json.loads(path.read_bytes())
         cls.validator = Draft202012Validator(cls.document)
 
+    def test_event_type_catalog_bearer_challenge(self):
+        responses = self.document['paths']['/v1/webhook_event_types']['get']['responses']
+        self.assertEqual(responses['401']['headers']['X-Request-Id'],
+                         responses['default']['headers']['X-Request-Id'])
+        challenge = responses['401']['headers']['WWW-Authenticate']
+        self.assertTrue(challenge['required'])
+        self.validator.evolve(schema=challenge['schema']).validate('Bearer realm="q4t"')
+        self.assertNotIn('WWW-Authenticate', responses['200'].get('headers', {}))
+        error = responses['401']['content']['application/json']['schema']
+        for kind in ('authentication_error', 'gateway_error'):
+            self.validator.evolve(schema=error).validate({'error': {
+                'message': 'Authentication required', 'code': 'invalid_api_key',
+                'type': kind, 'param': None}})
+
     def test_inference_retry_headers_and_bodies(self):
         for route in ('audio/speech', 'audio/transcriptions', 'audio/translations',
                       'chat/completions', 'completions', 'embeddings', 'moderations',

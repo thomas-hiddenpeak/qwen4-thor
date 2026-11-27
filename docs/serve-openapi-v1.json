@@ -10751,6 +10751,33 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Bearer authentication required",
+            "headers": {
+              "X-Request-Id": {
+                "schema": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+                },
+                "description": "Trace only; not cancellation credentials or an idempotency key"
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Bearer authentication challenge for this service.",
+                "example": "Bearer realm=\"q4t\""
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "serve-transport-v1.schema.json#/$defs/http_error"
+                }
+              }
+            }
           }
         },
         "x-q4t-query-contract": "no query",

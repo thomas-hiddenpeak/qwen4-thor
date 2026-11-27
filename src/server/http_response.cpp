@@ -786,6 +786,7 @@ bool SendSimple(int fd, int code, const char* status, const std::string& body,
       RequestIdHeader(fd) +
       (context ? context->ResponsesSdkVaryHeader() : "") +
       (no_store ? "Cache-Control: no-store\r\n" : "") +
+      (code == 401 ? "WWW-Authenticate: Bearer realm=\"q4t\"\r\n" : "") +
       (allow.empty() ? "" : "Allow: " + std::string(allow) + "\r\n") +
       (location.empty() ? "" : "Location: " + std::string(location) + "\r\n") +
       (persistent ? "Connection: keep-alive\r\n\r\n"

@@ -1,0 +1,49 @@
+{
+  "catalog_sha256": "29d308c67660c3657714426669a9df3127b40ef0743088423fe7ec697b28f8ba",
+  "capture_sha256": "fcde4220b0c6387a4282a9271090705aa0850c6b8157d8f73a7874425c8b68a4",
+  "ingress_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "methods": 231,
+  "wire_targets": 232,
+  "sdk_invocations": 1386,
+  "sdk_versions": {
+    "python-2.8.1": {
+      "measured_sha256": "f876c57dfdc819335a39de9208b6802931254c90f7c4cb501a5bb9e68816f6f1",
+      "resource": 123,
+      "legacy_cancel": 1,
+      "generic": 107
+    },
+    "python-2.33.0": {
+      "measured_sha256": "95f0bd813b310d21c5b4f4fbfa55925b48a038d87fa9e37803339eed93fbfe73",
+      "resource": 139,
+      "legacy_cancel": 1,
+      "generic": 91
+    },
+    "python-3.42.1": {
+      "measured_sha256": "e97ec9d49116f5763bd118b458e3c8c551801ac3a86d53a327d4d3e1324bfa9c",
+      "resource": 231,
+      "legacy_cancel": 0,
+      "generic": 0
+    },
+    "python-3.55.1": {
+      "measured_sha256": "8e8ccfb79673d57cf942dba1c05cc9051a919c3f5860beed61cb4c8029fa63ba",
+      "resource": 231,
+      "legacy_cancel": 0,
+      "generic": 0
+    },
+    "node-6.34.0": {
+      "measured_sha256": "48bbb36b74f862e0ea944941a08aec496a039394d23a09d9bfd3e24120764c58",
+      "resource": 138,
+      "legacy_cancel": 1,
+      "generic": 92
+    },
+    "node-7.47.0": {
+      "measured_sha256": "5831f2f68b15b90c88d9d1ef884f2a154ee6ce28926164f888ee7fb0de6170fd",
+      "resource": 231,
+      "legacy_cancel": 0,
+      "generic": 0
+    }
+  },
+  "model_starts": 0,
+  "backend_submissions": 0,
+  "csv_sha256": "dc26e69dfc41db52ae80d0ca78dadc8642f6e3c98c62b0352805bf29a54deb3e"
+}

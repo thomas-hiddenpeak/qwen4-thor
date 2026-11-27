@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+6 个官方 Python／Node SDK 已逐项核对 231 个方法、旧取消路径和认证错误，矩阵逐版本标明资源调用、旧路径和通用 HTTP。隔离的原生入口实际采集 232 个拒绝响应，六个 SDK 共解析 1386 次。直连引擎漏发 Bearer 认证挑战和标准 Webhook 事件类型接口漏列 401 均已修复；原版失败保留，三个写回测试通过。下一步验证直连 401 与六个 SDK 在原生 TLS 上读取真实事件目录。 [SDK 方法矩阵](SDK_METHOD_COMPATIBILITY.md)
+
 已发行的 rev570 引擎通过新入口完成真实 TLS 工具调用、续答并返回 570。首轮 WebRTC 请求因测试启动参数遗漏 VAD 返回 503；按发行包实际参数补上 VAD 后，单独重验 WebRTC 成功建立会话并通过数据通道确认关闭。两轮各启动一次，补验没有重复生成请求。保留主、轻配置各自的原始资格，仅允许本次入口与两份经核对的既有资格回执组合。下一步封装并验证该发行组合。 [入口业务验收](evidence/serve-inference-http-errors-20261127/foreground.json)
 
 准入前出现 429 或 503 时，客户端仍可按 Retry-After 重试；写请求已经转交而应答中断时，原生及可选 nginx 入口现在返回 X-Should-Retry: false。旧入口在该情形下把同一次 SDK 调用投递了两次。Python 2.8.1、3.55.1 与 Node 6.34.0、7.47.0 经两个入口共发出 56 个 HTTP 请求，24 个场景均只有一次后端提交。另验独立 TLS nginx 的错误追踪 ID 和 GET、POST 的区别。 [重试回执](evidence/serve-inference-http-errors-20261127/sdk-retries.json)

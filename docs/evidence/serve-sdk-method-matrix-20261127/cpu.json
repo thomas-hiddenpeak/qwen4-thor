@@ -1,0 +1,33 @@
+{
+  "stage": "cpu_verified_device_pending",
+  "parent": "24b0d6571587317503d8dca4286efffb5024ebed",
+  "matrix": "5df9bf3dad31b9125d908b7a8d6bb82a83e0c062e99057fbeb7b97cc0f8595cf",
+  "catalog_sha256": "29d308c67660c3657714426669a9df3127b40ef0743088423fe7ec697b28f8ba",
+  "capture": {
+    "lease_sha256": "c5caff35ef6377e9818eb603cada65db59ec9aa305fa33fa570c1aee4187fe02",
+    "original_launcher_failed_before_first_request": true,
+    "original_lease_sha256": "2781b489a746328420e999cdc6aba7207fd81789c128926b5168a95d44354ee8",
+    "packaged_ingress_sha256": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+    "wire_targets": 232,
+    "model_starts": 0,
+    "backend_submissions": 0
+  },
+  "direct_writer": {
+    "previous_status": "expected assertion failed on HTTP 401",
+    "candidate_cases": 3,
+    "original": "90be4ba013b4b33ebf742518d57e2c1a3d1b520af4c891d9c1650ba1308bf979",
+    "corrected": "39159b0c4ec5cafcf81bf0cb40366920d2892b3d279eced0f7742f904b099789"
+  },
+  "declaration": {
+    "original_missing_status": 401,
+    "official_source_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "only_changed_response": "GET /v1/webhook_event_types 401",
+    "installed_source_openapi_sha256": "09734e296be91fc9a06222909f654f12933cbdaeca6ce715435b84030eb4c241",
+    "tests": 3
+  },
+  "inventory": {
+    "anchors": 1394,
+    "mutations": 40
+  },
+  "sdk_measurement": "missing-credential responses captured from one sealed gateway, replayed through six SDKs; positive business is separately verified"
+}
