@@ -1,0 +1,175 @@
+{
+  "stage": "matched_managed_clients_verified",
+  "sdk": "swagger-client@3.35.6",
+  "sdk_lock_sha256": "0e3fd6ca4bbe5fcb75f9d0f4a32faf79bb3c0fe3265de96bfc958721978578a5",
+  "actor_sha256": "be393349347021b6527315a2906465d5e35a9912b82ec9ca88307b553db50597",
+  "guard_sha256": "03ecf56f1ce716a6dd1ac5b21680e00ecb881f518273ece0e1d86e38cbda1195",
+  "actual_fault_injection": false,
+  "device_issued": false,
+  "operations_per_role": 9,
+  "roles": {
+    "primary": {
+      "manifest_sha256": "3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246",
+      "attempt_seconds": 136.27783796517178,
+      "model_starts": 1,
+      "wire": {
+        "sdk": "swagger-client@3.35.6",
+        "checked_package_declaration": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+        "requests": [
+          {
+            "path": "/livez",
+            "method": "get",
+            "status": 401,
+            "bearer": false
+          },
+          {
+            "path": "/v1/models",
+            "method": "get",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/agents",
+            "method": "post",
+            "status": 201,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit/sessions",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit",
+            "method": "post",
+            "status": 401,
+            "bearer": false
+          },
+          {
+            "path": "/v1/chatkit",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chat/completions",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit/sessions/{session_id}/cancel",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit",
+            "method": "post",
+            "status": 401,
+            "bearer": true
+          }
+        ],
+        "answer": "42",
+        "session_revoked": true
+      },
+      "lease_cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true,
+        "clean_stop": true
+      },
+      "raw_result_sha256": "afae65f0312ad623b8c1ad17eecf18e63dee0f38325c25f1239acc6b473959ca",
+      "raw_business_sha256": "d1bef41eb29e17cfface892bd03aac44684ecca4e48733aac785f037e634993e"
+    },
+    "fallback": {
+      "manifest_sha256": "bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae",
+      "attempt_seconds": 136.57817308837548,
+      "model_starts": 1,
+      "wire": {
+        "sdk": "swagger-client@3.35.6",
+        "checked_package_declaration": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+        "requests": [
+          {
+            "path": "/livez",
+            "method": "get",
+            "status": 401,
+            "bearer": false
+          },
+          {
+            "path": "/v1/models",
+            "method": "get",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/agents",
+            "method": "post",
+            "status": 201,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit/sessions",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit",
+            "method": "post",
+            "status": 401,
+            "bearer": false
+          },
+          {
+            "path": "/v1/chatkit",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chat/completions",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit/sessions/{session_id}/cancel",
+            "method": "post",
+            "status": 200,
+            "bearer": true
+          },
+          {
+            "path": "/v1/chatkit",
+            "method": "post",
+            "status": 401,
+            "bearer": true
+          }
+        ],
+        "answer": "42",
+        "session_revoked": true
+      },
+      "lease_cleanup": {
+        "remaining": [],
+        "ports_free": true,
+        "default_unchanged": true,
+        "clean_stop": true
+      },
+      "raw_result_sha256": "79c7fe3e0b6d2b8cd145e261071e64b4f96247e9951967b69e36858c1547a539",
+      "raw_business_sha256": "d1bef41eb29e17cfface892bd03aac44684ecca4e48733aac785f037e634993e"
+    }
+  },
+  "initial_driver_failure": {
+    "requests": [
+      401,
+      200,
+      400
+    ],
+    "stage": "project agent creation",
+    "cause": "The initial test driver sent a JavaScript object to fetch without the JSON serialization performed by Swagger.execute.",
+    "model_starts": 1,
+    "lease_status": "COMMAND_FAILED",
+    "native_service_stopped_cleanly": true,
+    "default_unchanged": true
+  }
+}

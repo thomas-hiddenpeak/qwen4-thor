@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主包和回退包各从自己的 OpenAPI 构造 9 个请求，完成项目鉴权、创建与吊销 ChatKit 会话及真实聊天。两份包的模型都答出 42，三种应拒绝的请求均返回 401。修正验收脚本后共启动两个模型，均干净退出。 [真实客户端记录](evidence/serve-openapi-ingress-auth-20261128/managed.json)
+
 主包与回退包已封入相同的 OpenAPI 合同。逐包校验确认两份原生程序、1,309 项运行时源文件和 178 项外层文件与 rev584 对应配置相同。首次托管短验中，验收脚本跳过了 Swagger 的 JSON 序列化，创建 Agent 返回 400；改用标准执行入口后，8 项入口请求通过了 CPU 复验。 [封包核验](evidence/serve-openapi-ingress-auth-20261128/packages.json)
 
 两份合同通过官方 OpenAPI 3.1 元模式，通用客户端按修订后的合同发出全部 8 个预期请求。401 继续声明已转发写请求的重试提示，预览票据保留原格式约束。18 项合同与打包检查通过，下一步核对两个实际封包。 [验证记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)
