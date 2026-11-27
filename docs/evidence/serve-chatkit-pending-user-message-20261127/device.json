@@ -1,0 +1,52 @@
+{
+  "stage": "actual_browser_tool_interruption",
+  "issued": false,
+  "source": "33a64cadb01d7234d43f2c46ab63bca3400a2c06",
+  "build": "ead16d2821d48352a71029db713ed4100737b37502e49f0968a26a71c388f22f",
+  "previous_revision": 580,
+  "engine_compiled_sources": 1104,
+  "compiler_warnings": 0,
+  "actor": {
+    "sdk": "7.47.0",
+    "requests": 12,
+    "thread": "cthr_9d57556adafd37412bda63138adf3469",
+    "workflow": "agent_785c6f47ff58c2b4819353e217259a6d",
+    "call": "call_resp_5c34407db6e8a61d17af8cf1ae3dfbf4_0",
+    "original_item": "fc_1d9445631e3133ca8365a2ee8beda2e5",
+    "history": [
+      "item_6f386e6c9d7677aea992be4a9ff7eed5",
+      "fc_1d9445631e3133ca8365a2ee8beda2e5",
+      "item_286d0f4de41a1b3b2d6812d1192cad9c",
+      "msg_675e097a68f51898bcec3a524ca6f07c"
+    ],
+    "answer": "42",
+    "late_output": 409,
+    "foreign_session": 404,
+    "foreign_project": 404,
+    "unchanged_pending_call": true
+  },
+  "independent_chat": "42",
+  "counts": {
+    "starts": 1,
+    "ingress_starts": 1,
+    "sdk_posts": 1,
+    "chats": 1,
+    "controls": 29
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 38,
+    "cleanup_complete": true
+  },
+  "seconds": 37.77991050994024,
+  "raw_sha256": {
+    "lease/exit.json": "3e44e168633ba5b020f853d79d4ef2e34516c6a5057d951a31d87261fc162201",
+    "primary/plan.json": "e354e06fb52d025728ae8095e042f3fa001b08a287a0f5234b2dd3737d8771e4",
+    "primary/browser.json": "98e038237a5bd8c1e29cde95e26b239f7f18cdf54d52767ce674764fc52efe5b",
+    "primary/independent-chat.json": "050612d1a60652f96ed4277a34659f7edc3b3b1e335e55f1d9e1709c30dd3d64",
+    "primary/cleanup.json": "4789bd003b3601e2517a1eee52d6cf9cd9b164893cfb799e5b5b4e7d7a2e6ba2",
+    "primary/result.json": "32b27e8ca94d1f5d5f58253314978927a1f7c622501ca67559dd4b265f3b7dc8"
+  }
+}
