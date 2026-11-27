@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+空页修复已在真实模型和原生 HTTPS 入口通过。批处理和向量存储的空游标均为空字符串，语音授权空页保留 null，非空首尾 ID、跨客户 404 和独立 Chat 的 42 均通过。模型退出 0，三个端口已释放。设备默认仍为 rev578。 [实机记录](evidence/serve-voice-consent-pagination-20261127/device.json)
+
 批处理及向量列表的声明回归已进入常规应用合同测试，覆盖空字符串、字段缺省和非法类型。 [游标验收](evidence/serve-voice-consent-pagination-20261127/empty-pages.json)
 
 批处理、向量库、库文件和文件批次成员四个列表已修复空页游标。原生 TLS 下，官方 SDK 实测四个方法原先返回 null，修复后返回空字符串并结束分页，非空页仍返回真实首尾 ID。四项原生回归均先失败后通过。与固定上游对照，41 个可比较列表的游标类型和必填性均一致。下一步核对候选发行包。 [验证记录](evidence/serve-voice-consent-pagination-20261127/empty-pages.json)

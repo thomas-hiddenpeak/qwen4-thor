@@ -980,11 +980,12 @@
         "delivery": "evidence/serve-request-defaults-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "validated_native_tls_sdk",
+        "stage": "device_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false
+        "issued": false,
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
       }
     },
     {
@@ -4092,11 +4093,12 @@
         "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "validated_native_tls_sdk",
+        "stage": "device_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false
+        "issued": false,
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
       }
     },
     {
@@ -4353,11 +4355,12 @@
         "delivery": "evidence/serve-sdk-method-matrix-20261127/delivery.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "validated_native_tls_sdk",
+        "stage": "device_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false
+        "issued": false,
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
       }
     },
     {
@@ -9609,11 +9612,12 @@
         "capacity_evidence": "evidence/serve-agent-turn-cache-20261127/profiles.json"
       },
       "cursor_page_compatibility_20261127": {
-        "stage": "validated_native_tls_sdk",
+        "stage": "device_verified",
         "methods": 4,
         "client": "Node 7.47.0",
         "evidence": "evidence/serve-voice-consent-pagination-20261127/empty-pages.json",
-        "issued": false
+        "issued": false,
+        "device": "evidence/serve-voice-consent-pagination-20261127/device.json"
       }
     },
     {
