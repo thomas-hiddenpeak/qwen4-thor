@@ -5044,7 +5044,7 @@
     "tools/serve_recovery/cold_watch.py": "b2a611dd90e0c82e0f1d4becc2fb48b61203722ebb6834d24c057495dca8d692",
     "tools/serve_recovery/cold_watch_policy.py": "df5ae447d238ff4dfc7da1681637b22d4483962cf5fe327690894f7032663e1a",
     "tools/serve_recovery/control.py": "24c6cc09bf2442637b23963dc061e966a5050ca4ee24652cd178cc2093961e90",
-    "tools/serve_recovery/controller.py": "7f40764ed7fde43297953ef20c55e904e48ca447d4cea68dbe9c6a84436931af",
+    "tools/serve_recovery/controller.py": "48692aca2b489d5e30332379684b248ba82855e38fb684f83f176614f7c46642",
     "tools/serve_recovery/core_http.py": "91ed363e9aa38b14b643aab9b21dcd7d5bb5f3b5ef91cc6750d873f288d42c4c",
     "tools/serve_recovery/cpu_exec.py": "6815ad563afb569fa7eb662d48b240066b69bc7da5ff44742a413f25045acfd1",
     "tools/serve_recovery/deployment.py": "60173e88027c608dee20ca26d2dcaee1ecbc829dfb9d31271e2e93f763491817",
