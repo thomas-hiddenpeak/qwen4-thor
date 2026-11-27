@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev586 已发行，默认服务保持 STOPPED，回退包已登记。两份包各用 Swagger 完成 9 个实际请求，均成功创建和吊销会话并答出 42。原有 13 份运行状态保持相同，已为新版校验长稳入口和冷启动预案。 [发行记录](evidence/serve-openapi-ingress-auth-20261128/delivery.json)
+
 主包和回退包各从自己的 OpenAPI 构造 9 个请求，完成项目鉴权、创建与吊销 ChatKit 会话及真实聊天。两份包的模型都答出 42，三种应拒绝的请求均返回 401。修正验收脚本后共启动两个模型，均干净退出。 [真实客户端记录](evidence/serve-openapi-ingress-auth-20261128/managed.json)
 
 主包与回退包已封入相同的 OpenAPI 合同。逐包校验确认两份原生程序、1,309 项运行时源文件和 178 项外层文件与 rev584 对应配置相同。首次托管短验中，验收脚本跳过了 Swagger 的 JSON 序列化，创建 Agent 返回 400；改用标准执行入口后，8 项入口请求通过了 CPU 复验。 [封包核验](evidence/serve-openapi-ingress-auth-20261128/packages.json)
