@@ -1,0 +1,132 @@
+{
+  "release": {
+    "revision": 588,
+    "version_revision": 223,
+    "primary_manifest": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+    "engine_manifest": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+    "binary": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+    "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+    "issuance_receipt": "../serve-native-soak-retention-20261128/delivery.json",
+    "issuance_sha256": "eef8c868e9883fa93b9f5a1f2dbbcda363bf82f2240037ef26a3cbd17de5594e",
+    "fallback_exercised_in_this_run": false
+  },
+  "transport": "Native TLS with a temporary leaf certificate verified against its loopback IP. The admission fixture binds the two API keys to the running native backend.",
+  "model": {
+    "starts": 1,
+    "elapsed_seconds": 45.656,
+    "generation_requests": 2,
+    "answers": [
+      "223",
+      "223"
+    ],
+    "source_facts": [
+      "The published q4t release revision is 588.",
+      "The registered q4t version selection revision is 223."
+    ],
+    "question": "Return only the decimal number of the registered q4t version selection revision.",
+    "engine_options": [
+      "--no-mtp",
+      "--max-seq 1",
+      "--max-len 8192",
+      "--max-prefill 2048"
+    ],
+    "private_object_store": true
+  },
+  "sdk": [
+    "python-2.8.1",
+    "python-2.33.0",
+    "python-3.42.1",
+    "python-3.55.1",
+    "node-6.34.0",
+    "node-7.47.0"
+  ],
+  "distinct_requests": 74,
+  "status_counts": {
+    "200": 56,
+    "404": 18
+  },
+  "distinct_conversations": 6,
+  "signed_conversation_methods": [
+    {
+      "method": "DELETE",
+      "path": "/conversations/{conversation_id}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/conversations/{conversation_id}/items/{item_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/conversations/{conversation_id}"
+    },
+    {
+      "method": "GET",
+      "path": "/conversations/{conversation_id}/items"
+    },
+    {
+      "method": "GET",
+      "path": "/conversations/{conversation_id}/items/{item_id}"
+    },
+    {
+      "method": "POST",
+      "path": "/conversations"
+    },
+    {
+      "method": "POST",
+      "path": "/conversations/{conversation_id}"
+    },
+    {
+      "method": "POST",
+      "path": "/conversations/{conversation_id}/items"
+    }
+  ],
+  "invocation_mode": "Official SDK resource methods on a real listener with retries disabled",
+  "positive_method_sdk_pairs": 48,
+  "signed_conversation_successes": 54,
+  "signed_response_successes": 2,
+  "negative_cases": [
+    "foreign item via a second valid API key",
+    "item retrieved after its deletion",
+    "conversation retrieved after its deletion"
+  ],
+  "sdk_catalog_sha256": "dc26e69dfc41db52ae80d0ca78dadc8642f6e3c98c62b0352805bf29a54deb3e",
+  "requests_sha256": "50acc9c1f5fd655b0cc68b7e1f031b8ca5244539f69d05a89c1d2b71f320231b",
+  "raw_sdk_sha256": {
+    "python-2.8.1": "3f842d1c65f7ddf40522e8fda254c6c067071f8be4dd7d3a92e8bc1645016513",
+    "python-2.33.0": "550b94fe49939c83c8ebfe81dd792a570deaa06614d931aa7f0221f0789d8fae",
+    "python-3.42.1": "785baeb3dccdc820936ada2445272515bf0e1c6692b65a0cbdea59c76604b82f",
+    "python-3.55.1": "31783a6476be1f52a87119d460839c585bf7a93f3cf14b7ba9ce84e40c1f4b51",
+    "node-6.34.0": "aeda09bc0b625991fe62284b2535a87273935289c04c3805c8364bda7383fe6b",
+    "node-7.47.0": "48a92712b39e93aede73bf94c171778a8ace5a63f78fb145e8ea0fb14daf32ac"
+  },
+  "actor_sha256": {
+    "conversation_business.py": "ca78ba6b4d1d51664a83e881fe2ab631e22fd147f0d622841a26477fc207ce5b",
+    "conversation_business.mjs": "9ce0f49f7f5af0981a20c7a7c6813707853c6edebed4cab719147c8bb363ed10",
+    "conversation_receipt.py": "6f1232db1f485e851f99bbfe1a7d92794fb8766e1356cc4b319f29211cc49250"
+  },
+  "bounded_plan_sha256": "b3cffc824ac077269ae98fe2dee09d5c3ecc6621e9e24899d6aa923766e86e52",
+  "device_driver_sha256": "446fe8c0639208522b886a3b623ac4696f7912a16b48b08915bb9e0aef6a14ca",
+  "strict_lease": {
+    "status": "COMPLETED",
+    "compute_backend": "nvml",
+    "sha256": "b8d216c653f2e030920a0b7d1d12cb7d2971e4463d372b8f49f0932d15524123"
+  },
+  "cleanup": {
+    "model_exit": 0,
+    "model_pid_gone": true,
+    "ports_free": true,
+    "default_files_unchanged": true,
+    "default_desired": "STOPPED"
+  },
+  "prior_attempt": {
+    "stage": "startup client policy validation",
+    "reason": "Private policy permissions were missing in the acceptance driver. Switched to the existing private metadata writer.",
+    "process_launches": 1,
+    "real_business_requests": 0,
+    "model_loaded": false,
+    "ports_free": true,
+    "original_model_log_sha256": "a749ac9ebada711a3729d618841d8bcb042ed494761e009276f5ece8ba097422",
+    "lease_sha256": "e4bd0a8774d76e6e13e9d6210724df35006eab7e5bd8880c55e213e9e4e47abe"
+  },
+  "prior_cli_error": "The lease guard rejected an output path outside its checkout before starting a process."
+}

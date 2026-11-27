@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev588 已通过六版官方 SDK 的 Conversations 真实业务短验。四版 Python 与两版 Node 都通过原生 TLS 创建、更新、读取和删除会话，追加、分页、读取和删除条目。74 个实际请求中，56 个成功，18 个跨客户或删除后读取按预期返回 404。Python 3.55.1 与 Node 7.47.0 各从已存会话取回发行记录中的版本登记号 223。使用已发行主包的引擎与入口、独立对象目录及测试凭据，一次模型加载，45.656 秒。 [业务回执](evidence/serve-conversation-sdk-business-20261128/business.json)
+
 rev588 已发行长稳监控日志轮转修复。两个配置各完成了 19 个实际业务请求，归档复核已通过。默认保持 STOPPED，回退包已登记，13 份客户与恢复状态已核对。新版音频日稳入口已完成只读预检，24 小时实跑由用户执行。 [发行和交接](evidence/serve-native-soak-retention-20261128/delivery.json)
 
 当前默认版本表、Q02 任务清单和总计划已与设备登记的 rev586 对齐。交接工具会核对稳定发行号、主包与回退包的实际注册摘要；针对旧发行号、进行中的切换及错误注册包均已通过反例检查。 [发行回执](evidence/serve-openapi-ingress-auth-20261128/delivery.json)
