@@ -1,0 +1,64 @@
+{
+  "old_sha256": "887c6bf53dbf02f6dc6a9075e2c56481233b48b7457c3f034dae451d93622e57",
+  "new_sha256": "d40dae0836f0f0c9b9a18c5b294719066a35cf8cf8aaa0797127e43516d325ba",
+  "original": {
+    "passed": false,
+    "failures": 1,
+    "state": "FAILED",
+    "reason": "startup deadline exceeded",
+    "starts": 1,
+    "restarts": 0,
+    "clean": true,
+    "observation_loss": true,
+    "delay": 0.18
+  },
+  "corrected": [
+    {
+      "passed": true,
+      "failures": 0,
+      "state": "STOPPED",
+      "reason": null,
+      "starts": 1,
+      "restarts": 0,
+      "clean": true,
+      "observation_loss": true,
+      "delay": 0
+    },
+    {
+      "passed": true,
+      "failures": 0,
+      "state": "STOPPED",
+      "reason": null,
+      "starts": 1,
+      "restarts": 0,
+      "clean": true,
+      "observation_loss": true,
+      "delay": 0.18
+    },
+    {
+      "passed": true,
+      "failures": 0,
+      "state": "STOPPED",
+      "reason": null,
+      "starts": 1,
+      "restarts": 0,
+      "clean": true,
+      "observation_loss": true,
+      "delay": 0.35
+    }
+  ],
+  "module_cases": 16,
+  "check_url": "https://github.com/thomas-hiddenpeak/qwen4-thor/actions/runs/46079197098/job/140773954766",
+  "original_run_scope": "Ubuntu push CI reported return code 1, one start, zero restarts. The runner did not record the state error. The controlled delayed child identity read reproduced that tuple with startup deadline exceeded.",
+  "original_run_log_sha256": "66c6a6c4db727a7f4e1a535413b27aee61b2f0d28bec863d4f7fb322ee364fd1",
+  "suites": [
+    "tools.serve_service.test_auxiliary",
+    "tools.serve_service.test_deadlines"
+  ],
+  "command_cases": 54,
+  "command_result": "OK",
+  "command_log_sha256": "57ec6a86121377436ab876de31707f73b6297e30af376df6a5003fc5c7fab94f",
+  "underlying_revision": 590,
+  "test_file": "tools/serve_service/test_auxiliary.py",
+  "model_starts": 0
+}
