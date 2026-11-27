@@ -4291,7 +4291,12 @@
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
-        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json",
+        "qualification_controls": {
+          "valid": 2,
+          "rejected": 18,
+          "state": "lifecycle_pending"
+        }
       }
     },
     {
@@ -6995,7 +7000,12 @@
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
-        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json",
+        "qualification_controls": {
+          "valid": 2,
+          "rejected": 18,
+          "state": "lifecycle_pending"
+        }
       }
     },
     {
@@ -9502,7 +9512,12 @@
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
-        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json",
+        "qualification_controls": {
+          "valid": 2,
+          "rejected": 18,
+          "state": "lifecycle_pending"
+        }
       }
     },
     {
@@ -14005,7 +14020,12 @@
         "receipt": "evidence/serve-sdk-method-matrix-20261127/response-headers.json",
         "declared_header_combinations": 10,
         "pending_image_rate_headers": 3,
-        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json"
+        "device": "evidence/serve-sdk-method-matrix-20261127/recording-device.json",
+        "qualification_controls": {
+          "valid": 2,
+          "rejected": 18,
+          "state": "lifecycle_pending"
+        }
       }
     },
     {

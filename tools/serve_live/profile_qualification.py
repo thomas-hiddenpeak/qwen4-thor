@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'recording_download_handoff' in plan:
+            from tools.serve_live import recording_profiles
+            current = profiles[name]['evidence_sha256']
+            current.update(recording_profiles.verify(phase, plan, declared, current))
+            continue
         if {'chatkit_actions_handoff', 'chatkit_browser_output_handoff',
             'chatkit_generation_handoff', 'chatkit_workflow_handoff',
             'chatkit_image_handoff', 'chatkit_widget_handoff', 'agent_session_control_handoff',
