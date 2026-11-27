@@ -1,0 +1,173 @@
+{
+  "stage": "issued_stopped",
+  "source": "24b0d6571587317503d8dca4286efffb5024ebed",
+  "tested": "f1d2d64d3c9480c08e94d5f0a2b06b5163e69117",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 572,
+    "version_revision": 215,
+    "profile_revision": 103,
+    "previous_profile_revision": 103,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "ebcef0710e6d94e6a22c02b2d3ce71341fa8fb5cf59bcf6b5095a118a094ff20",
+    "fallback": "65aa9dcb8582f9f390519ab98bb78e73ac5fb08ec1a71c83c0b0489b4b638be5",
+    "engine": "1e19aca99f8493c20065ee90e37509a72c729ce12005b7412be3434a5c35f403",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "predecessor": "90d518c8dca4856e152b75251d3235ce79ccdd2bd3dd479dea9e330af75fc76c",
+  "package_checks": {
+    "primary": {
+      "role": "primary",
+      "candidate": "ebcef0710e6d94e6a22c02b2d3ce71341fa8fb5cf59bcf6b5095a118a094ff20",
+      "engine_manifest": "822c5e2eceeeb967979477a764314f93236753a60fe04a722d634e1b6da9d1a6",
+      "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+      "model": "1e19aca99f8493c20065ee90e37509a72c729ce12005b7412be3434a5c35f403",
+      "profiles": {
+        "primary": "a2705073e91a2ba9c217f67369c14145a301c1e21e5a68f04df73691fe695d6e",
+        "light": "82f4f873f3f90db5d7853e4bfb8c1c3eaf9e987a28bb7ff98c01b4eecb68592d"
+      },
+      "sdk_cases": 24,
+      "wire_errors": 36,
+      "published_predecessor": "90d518c8dca4856e152b75251d3235ce79ccdd2bd3dd479dea9e330af75fc76c",
+      "installed_openapi": "16f47064b4a562babaa1441e46d32c9abe22ee7d8306ab529c6342fb8bac192d",
+      "default_unchanged": true,
+      "model_starts": 0
+    },
+    "fallback": {
+      "role": "fallback",
+      "candidate": "65aa9dcb8582f9f390519ab98bb78e73ac5fb08ec1a71c83c0b0489b4b638be5",
+      "engine_manifest": "1188bbdbf7f3e050595e1602f5ffa4ab7ff09ea3df7282d2ba5f1ee061fbecff",
+      "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+      "model": "1e19aca99f8493c20065ee90e37509a72c729ce12005b7412be3434a5c35f403",
+      "profiles": {
+        "primary": "a2705073e91a2ba9c217f67369c14145a301c1e21e5a68f04df73691fe695d6e",
+        "light": "82f4f873f3f90db5d7853e4bfb8c1c3eaf9e987a28bb7ff98c01b4eecb68592d"
+      },
+      "sdk_cases": 24,
+      "wire_errors": 36,
+      "published_predecessor": "90d518c8dca4856e152b75251d3235ce79ccdd2bd3dd479dea9e330af75fc76c",
+      "installed_openapi": "16f47064b4a562babaa1441e46d32c9abe22ee7d8306ab529c6342fb8bac192d",
+      "default_unchanged": true,
+      "model_starts": 0
+    }
+  },
+  "managed": {
+    "primary": {
+      "model_starts": 2,
+      "seconds": 353.2526923636906,
+      "manifest": "ebcef0710e6d94e6a22c02b2d3ce71341fa8fb5cf59bcf6b5095a118a094ff20",
+      "origin_sha256": "13ad63e534f31238283f5c031901fadec256aed72fda8a8493d7adce5c95abc5",
+      "guardian_preserved": true,
+      "sdk_versions": [
+        "6.34.0",
+        "7.47.0"
+      ],
+      "tool_revision": 570,
+      "fresh_chat": "42",
+      "foreign_reads": {
+        "6.34.0": [
+          404,
+          404
+        ],
+        "7.47.0": [
+          404,
+          404
+        ]
+      },
+      "original_sha256": "11848d341e4f64e3fe9e697e1a77a67d49038289c5467a5df50a4f13390ff7a6",
+      "lease_sha256": "322b6268dece46aa87aa1a2eaa6a292052f8c4ad95d5519077774fc212be5579"
+    },
+    "fallback": {
+      "model_starts": 2,
+      "seconds": 204.36550056328997,
+      "manifest": "65aa9dcb8582f9f390519ab98bb78e73ac5fb08ec1a71c83c0b0489b4b638be5",
+      "origin_sha256": "fe4e5454c102d8c182270b4c94a6f692e91acc6c3a21034bf7792a5cadb97381",
+      "guardian_preserved": true,
+      "sdk_versions": [
+        "6.34.0",
+        "7.47.0"
+      ],
+      "tool_revision": 570,
+      "fresh_chat": "42",
+      "foreign_reads": {
+        "6.34.0": [
+          404,
+          404
+        ],
+        "7.47.0": [
+          404,
+          404
+        ]
+      },
+      "original_sha256": "11848d341e4f64e3fe9e697e1a77a67d49038289c5467a5df50a4f13390ff7a6",
+      "lease_sha256": "25dedfd7bc6edfa2df93ff17ba93faf66130829cb3905f56d326b6798554d603"
+    }
+  },
+  "maintenance": {
+    "status": "PASS",
+    "resumed_from": "ingress-retry-maintenance-lease-01",
+    "accepted_lease": "ingress-retry-maintenance-lease-02",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "e3601271d30b460ebc2daad4d3a9c453a4f483f6da2a4b9f26b91fb1415a8972"
+        ],
+        "sha256": "a0d60280f818ea7515503f93502b454316c77265c68e704eb16117a5cc318625",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "87c5d5f4-dead-4cab-8851-2a3b5cd76b37"
+        ],
+        "sha256": "238ffd1976f13e4571490906c5e1ac47e604baf57bb437685439e1db72e29537",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "0bdec16f-29ce-4d39-ab72-7ba754c32b00"
+        ],
+        "sha256": "bf1869936370480430d9e05051e991818651903240b0fcbc034cffcc82866d5e",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "original_maintenance_interruption": {
+    "status": "INTERRUPTED_WITHOUT_EXIT_RECEIPT",
+    "previous_owner": {
+      "pid": 1447454,
+      "birth": "394577775"
+    },
+    "old_guard": 1452270,
+    "last_sample": "2026-11-27T05:26:20.001456+00:00",
+    "original_exit_bytes": 0,
+    "original_exit_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lease_events_sha256": "0218808af2b8b859997d25ed1bfe84800385c781fca077bca744106879465cf3",
+    "build_failure_sha256": "2b0b4d172328dd39fcef68851902919b02f05b9c2589fec804f2667cd39b0035",
+    "previous_primary": "90d518c8dca4856e152b75251d3235ce79ccdd2bd3dd479dea9e330af75fc76c",
+    "generation_archive_sha256": "bce237d9b6dd015be274ac605aac9855d617c2cd89b3470859d481218194fb9f",
+    "version_plan_sha256": "238ffd1976f13e4571490906c5e1ac47e604baf57bb437685439e1db72e29537"
+  },
+  "installed": {
+    "required_methods": 231,
+    "exact_success_declarations": 219,
+    "explicit_query_defaults": 71,
+    "hash": "16f47064b4a562babaa1441e46d32c9abe22ee7d8306ab529c6342fb8bac192d"
+  },
+  "foreground": "foreground.json",
+  "sdk_retry_protocol": "sdk-retries.json",
+  "retention_inputs_sha256": "4cdda5ae5891905eefaa5bbd591219f7f31a6610df964f24036d5c49b5591609",
+  "handoff": {
+    "soak_plan_sha256": "382cbe76bb51d16cc9a86565986a33866391affdbcea3716f2424ef6dc246ee2",
+    "hours_executed": 0,
+    "cold_plan_sha256": "8090453dbc45539cb0356cdd0818c7657c39af9b238f331eea8aea448460af74",
+    "cold_model_starts": 0
+  }
+}

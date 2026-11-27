@@ -10,6 +10,7 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 候选引擎真实直连返回带 Bearer 认证挑战与请求 ID 的 401；同一实例经原生 TLS 提供事件目录，六个官方 SDK 均读回相同的 23 个事件类型。已对收到的错误与目录分别核对官方和项目 OpenAPI。启动一次，生成请求零条。下一步核验两种服务容量以及可回退的发行组合。 [设备回执](evidence/serve-sdk-method-matrix-20261127/foreground.json)
 
 6 个官方 Python／Node SDK 已逐项核对 231 个方法、旧取消路径和认证错误，矩阵逐版本标明资源调用、旧路径和通用 HTTP。隔离的原生入口实际采集 232 个拒绝响应，六个 SDK 共解析 1386 次。直连引擎漏发 Bearer 认证挑战和标准 Webhook 事件类型接口漏列 401 均已修复；原版失败保留，三个写回测试通过。下一步验证直连 401 与六个 SDK 在原生 TLS 上读取真实事件目录。 [SDK 方法矩阵](SDK_METHOD_COMPATIBILITY.md)
+设备已发行 rev572。主包和回退包都通过两代 Node SDK 的受管恢复短验：故障前后的已存工具调用、答案、事件与续读结果一致，跨客户读取返回 404，新 Chat 返回 42。准入前 429／503 允许 SDK 重试，上游已收到写请求但应答丢失时入口返回禁止重试提示。首次遗漏 VAD 的 WebRTC 503 与独立补验均已保留。默认服务处于 STOPPED，24 小时长稳与 NVML 不可用冷启动仅准备了计划。 [本次发行回执](evidence/serve-inference-http-errors-20261127/delivery.json)
 
 已发行的 rev570 引擎通过新入口完成真实 TLS 工具调用、续答并返回 570。首轮 WebRTC 请求因测试启动参数遗漏 VAD 返回 503；按发行包实际参数补上 VAD 后，单独重验 WebRTC 成功建立会话并通过数据通道确认关闭。两轮各启动一次，补验没有重复生成请求。保留主、轻配置各自的原始资格，仅允许本次入口与两份经核对的既有资格回执组合。下一步封装并验证该发行组合。 [入口业务验收](evidence/serve-inference-http-errors-20261127/foreground.json)
 

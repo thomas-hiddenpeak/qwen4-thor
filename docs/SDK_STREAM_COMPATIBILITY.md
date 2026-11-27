@@ -1,5 +1,17 @@
 # 官方 SDK 的流式兼容记录
 
+### 推理请求的重试与结果核对
+
+原生入口与可选 nginx 入口在以下三种场景返回相同的客户端合同。已在 Python SDK 2.8.1、3.55.1 和 Node SDK 6.34.0、7.47.0 上通过真实 HTTP 核对。
+
+| 入口返回错误时的状态 | HTTP 与错误码 | SDK 行为 |
+|---|---|---|
+| 请求在转交前触发配额 | `429 gateway_rate_limit`，附 `Retry-After: 1` | 开启重试后，配额恢复时可以成功提交。 |
+| 服务正在恢复，请求尚未转交 | `503 service_recovering`，附 `Retry-After: 1` | 开启重试后，服务就绪时可以成功提交。 |
+| 上游已收到写请求，随后应答中断 | `503 service_binding_unavailable`，附 `X-Should-Retry: false` | 即使允许一次自动重试，四个 SDK 都只发送了一次 POST。业务执行结果仍待核对。 |
+
+客户端收到错误响应时可以通过请求 ID 关联服务记录。如果连接在收到任何 HTTP 响应前断开，客户端无法读取重试提示；对已取得对象 ID 的操作，可以先按 ID 查询状态再决定是否重发。正在消费 SSE 时，已取得的响应 ID 和事件序号可用于支持断点续读的 Responses 接口。 [重试实测](evidence/serve-inference-http-errors-20261127/sdk-retries.json) · [真实工具调用和续读](evidence/serve-inference-http-errors-20261127/foreground.json)
+
 ### 独立压缩的 HTTP 窗口与 Python SDK
 
 `POST /v1/responses/compact` 返回的用户消息包含原始 ID、状态、角色和输入内容。原样回填整个 `output` 可在同一客户范围内恢复加密摘要。官方 HTTP 合同与项目合同均已用包含真实 MCP 拒绝记录的 7 项窗口核对。
