@@ -263,6 +263,93 @@ Q4T_TEST(responses_state_chatkit_cancelled_context_is_bound_to_original_thread) 
   return true;
 }
 
+Q4T_TEST(chatkit_new_user_turn_ignores_unanswered_call_only_in_model_history) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState states(objects);
+  ResponseStatePlan first, next;
+  Q4T_CHECK(Ok(states.Resolve(Envelope(R"({"input":"look up the version"})"),
+                              Access(), &first)));
+  first.chatkit_thread_id = "cthr_reader";
+  Q4T_CHECK(Ok(states.Begin(Snapshot(first, "in_progress"), Access(), &first)));
+  auto output = Answer();
+  output.array.push_back(Parse(R"({"type":"function_call","id":"fc_lookup",
+    "call_id":"call_doc","name":"lookup","arguments":"{}","status":"completed"})"));
+  Q4T_CHECK(Ok(states.Finish(Snapshot(first, "completed", output),
+                             Parse("[]"), Access(), &first)));
+
+  auto user = Envelope(R"({"input":"Tell me about monitoring instead"})");
+  user.previous_response_id = first.id;
+  Q4T_CHECK(Ok(states.Resolve(user, Access(), &next, nullptr, {},
+                              first.chatkit_thread_id)));
+  Q4T_CHECK(next.history.array.size() == 3);
+  Q4T_CHECK(next.history.array[1].GetString("id") == "msg_answer");
+  Q4T_CHECK(next.history.array.back().GetString("role") == "user");
+  ChatPlanConfig config;
+  config.model = "cpu";
+  ChatPlanError error;
+  ResponsesGenerationPlan generation;
+  Q4T_CHECK(PrepareResponsesGeneration(user, next.history, config,
+                                       &generation, &error));
+  Q4T_CHECK(Ok(states.Resolve(user, Access(), &next)));
+  Q4T_CHECK(next.history.array.size() == 4 &&
+            next.history.array[2].GetString("call_id") == "call_doc");
+  Q4T_CHECK(!states.Resolve(user, Access(), &next, nullptr, {},
+                            "cthr_other").ok());
+  Q4T_CHECK(states.Resolve(user, Access("client:b"), &next, nullptr, {},
+                           first.chatkit_thread_id).http_status == 404);
+
+  auto reply = Envelope(R"({"input":[{"type":"function_call_output",
+    "call_id":"call_doc","output":"580"}]})");
+  reply.previous_response_id = first.id;
+  Q4T_CHECK(Ok(states.Resolve(reply, Access(), &next, nullptr, {},
+                              first.chatkit_thread_id)));
+  Q4T_CHECK(next.history.array.size() == 4 &&
+            next.history.array[2].GetString("call_id") == "call_doc" &&
+            next.history.array.back().GetString("output") == "580");
+  return true;
+}
+
+Q4T_TEST(chatkit_new_message_keeps_completed_tool_history_and_original_call) {
+  Fixture f;
+  ObjectStore objects(f.options);
+  ResponsesState states(objects);
+  ResponseStatePlan first, second, next;
+  auto call = Parse(R"([{"type":"function_call","id":"fc_1",
+    "call_id":"call_1","name":"lookup","arguments":"{}","status":"completed"}])");
+  Q4T_CHECK(Ok(states.Resolve(Envelope(R"({"input":"lookup"})"), Access(),
+                              &first)));
+  first.chatkit_thread_id = "cthr_reader";
+  Q4T_CHECK(Ok(states.Begin(Snapshot(first, "in_progress"), Access(), &first)));
+  Q4T_CHECK(Ok(states.Finish(Snapshot(first, "completed", call), Parse("[]"),
+                             Access(), &first)));
+  auto tool = Envelope(R"({"input":[{"type":"function_call_output",
+    "call_id":"call_1","output":"first result"}]})");
+  tool.previous_response_id = first.id;
+  Q4T_CHECK(Ok(states.Resolve(tool, Access(), &second, nullptr, {},
+                              first.chatkit_thread_id)));
+  second.chatkit_thread_id = first.chatkit_thread_id;
+  Q4T_CHECK(Ok(states.Begin(Snapshot(second, "in_progress"), Access(),
+                            &second)));
+  auto unanswered = Parse(R"([{"type":"function_call","id":"fc_2",
+    "call_id":"call_2","name":"lookup","arguments":"{}","status":"completed"}])");
+  Q4T_CHECK(Ok(states.Finish(Snapshot(second, "completed", unanswered),
+                             Parse("[]"), Access(), &second)));
+  auto user = Envelope(R"({"input":"another question"})");
+  user.previous_response_id = second.id;
+  Q4T_CHECK(Ok(states.Resolve(user, Access(), &next, nullptr, {},
+                              second.chatkit_thread_id)));
+  const auto& history = next.history.array;
+  Q4T_CHECK(history.size() == 4 && history[1].GetString("call_id") == "call_1" &&
+            history[2].GetString("output") == "first result" &&
+            history[3].GetString("role") == "user");
+  auto original = states.Retrieve(second.id, Access());
+  Q4T_CHECK(Ok(original) && original.value.GetArray("output") &&
+            original.value.GetArray("output")->array.front().GetString("call_id") ==
+                "call_2");
+  return true;
+}
+
 Q4T_TEST(chatkit_retry_replays_unpublished_input_from_cancelled_turn) {
   Fixture f;
   ObjectStore objects(f.options);

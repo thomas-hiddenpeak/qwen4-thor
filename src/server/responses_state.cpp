@@ -590,6 +590,24 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
           access, 1);
       if (!boundary.ok()) return boundary;
       plan->history.array.push_back(std::move(boundary.value.array.front()));
+    } else if (!chatkit_thread.empty() && plan->own_input.array.size() == 1 &&
+               plan->own_input.array.front().GetString("type") == "message" &&
+               plan->own_input.array.front().GetString("role") == "user") {
+      // A browser may submit another message before returning a client tool
+      // result. Keep the original thread and Response intact. Only answered
+      // function calls belong in this new turn's model input.
+      std::unordered_set<std::string> answered;
+      for (const auto& row : output) {
+        if (row.GetString("type") == "function_call_output")
+          answered.insert(row.GetString("call_id"));
+      }
+      for (const auto& row : output) {
+        const auto call = row.GetString("call_id");
+        if (row.GetString("type") == "function_call" && !call.empty() &&
+            !answered.contains(call))
+          continue;
+        plan->history.array.push_back(row);
+      }
     } else {
       plan->history.array.insert(plan->history.array.end(), output.begin(), output.end());
     }
