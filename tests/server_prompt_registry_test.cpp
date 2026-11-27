@@ -2014,6 +2014,12 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
                                           Access(), resumed, &replay)) &&
               resumed.HasToolSearch() == replace);
     Q4T_CHECK(resumed.Envelope().cache.ttl_seconds == run.Envelope().cache.ttl_seconds);
+    const auto* original_ttl = view.turn.Find("prompt_cache_options");
+    Q4T_CHECK(original_ttl &&
+              (replace ? original_ttl->GetString("ttl") == "12h"
+                       : original_ttl->IsNull()));
+    const auto frozen_turn = view.turn.GetString("id");
+
     Q4T_CHECK(resumed.Envelope().request.Has("prompt_cache_options") == replace);
     const auto* active = resumed.Generation().generation_request.GetArray("tools");
     if (replace) {
@@ -2052,6 +2058,10 @@ Q4T_TEST(agent_session_deferred_function_discovery_survives_turn_reconfiguration
               !next.HasToolSearch());
     Q4T_CHECK(next.Envelope().cache.ttl_seconds == (replace ? 1800 : 43200));
     Q4T_CHECK(next.Envelope().request.Has("prompt_cache_options") != replace);
+    AgentSessionView reread;
+    Q4T_CHECK(Ok(ReadAgentSessionTurn(store, id, frozen_turn, Access(), &reread)));
+    const auto* saved_ttl = reread.turn.Find("prompt_cache_options");
+    Q4T_CHECK(saved_ttl && OutputJson(*saved_ttl) == OutputJson(*original_ttl));
     const auto& configured = replace ? resumed.Envelope().cache : next.Envelope().cache;
     const std::array points{
         PromptCacheBoundary{1024, 0, PromptCacheBoundary::Kind::kEligibleMessage}};
@@ -3677,7 +3687,7 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
   auto config = Config();
   config.structured = true;
   const auto request = Parse(R"({"agent":{"model":"cpu","multi_agent":{"enabled":true,"max_concurrent_subagents":1}},
-      "environment":{"type":"none"},"input":"Delegate the lookup."})");
+      "environment":{"type":"none"},"prompt_cache_options":{"ttl":"12h"},"input":"Delegate the lookup."})");
   const auto now = std::time(nullptr);
   std::string wire;
   const auto begin = [&](ResponsesExecution& run) {
@@ -3712,8 +3722,14 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
                        turn.messages.array[2].GetString("content") != "recall")))
         throw std::runtime_error("Child did not recover its own transcript");
       Json child_request = Parse("{}");
-      run.ConfigureAgentModelStep(turn, true, &child_request);
-      if (child_request.GetArray("tools")->array.size() != 2 ||
+      const auto* cache = run.ConfigureAgentModelStep(turn, true, &child_request);
+      ChatRequestPlan child_plan;
+      ChatPlanError child_error;
+      if (!PlanChatRequest(child_request, config, &child_plan, &child_error) ||
+          child_request.Has("prompt_cache_options") || !cache ||
+          cache->api != PromptCacheApi::kResponses || !cache->requested ||
+          cache->ttl_seconds != 43200 ||
+          child_request.GetArray("tools")->array.size() != 2 ||
           child_request.GetArray("messages")->array.front().GetString("role") != "system" ||
           child_request.GetArray("messages")->array.front().GetString("content").find(turn.name) == std::string::npos)
         throw std::runtime_error("Incorrect delegated identity or impossible operation advertised");
@@ -3756,6 +3772,27 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
              }) == 1;
     };
     Q4T_CHECK(begin(first) && dispatch(first, false) && end(first));
+    auto old = ResponsesState(objects).ReadRecord(first.Id(), Access());
+    Q4T_CHECK(Ok(old) && old.value.Has("agent_claim_cache_ttls"));
+    auto& ttls = *old.value.Find("agent_claim_cache_ttls");
+    const auto* claims = old.value.Find("agent_claim_times");
+    Q4T_CHECK(agent_detail::ValidSubagentCacheTtls(ttls, claims));
+    auto changed = ttls;
+    changed.object.front().second = Parse(R"("24h")");
+    Q4T_CHECK(!agent_detail::ValidSubagentCacheTtls(changed, claims));
+    changed.object.front().first = "unclaimed";
+    changed.object.front().second = ttls.object.front().second;
+    Q4T_CHECK(!agent_detail::ValidSubagentCacheTtls(changed, claims));
+    std::erase_if(old.value.object, [](const auto& field) {
+      return field.first == "agent_claim_cache_ttls";
+    });
+    agent_detail::SubagentStepEvents legacy;
+    Q4T_CHECK(Ok(agent_detail::IndexSubagentEvents(created.value, old.value, &legacy)) &&
+              legacy.claims.size() == 1);
+    const auto& claimed = legacy.claims.begin()->second.front();
+    const auto* original = claimed.Find("turn")->Find("prompt_cache_options");
+    Q4T_CHECK(original && original->IsNull());
+
     inspect_claim = {};
   }
   const auto base = "/v1/agents/sessions/" + id + "/subagents";
@@ -3780,10 +3817,20 @@ Q4T_TEST(agent_session_subagent_owned_history_survives_another_turn) {
   const auto turn = turns.value.GetString("first_id");
   auto detail = read(resource+"/turns/"+turn);
   Q4T_CHECK(Ok(detail) && detail.value.GetString("status") == "completed" &&
+            detail.value.Find("prompt_cache_options") &&
+            detail.value.Find("prompt_cache_options")->GetString("ttl") == "12h" &&
             detail.value.GetInt("started_at") >= now &&
             detail.value.GetInt("completed_at") >= detail.value.GetInt("started_at") &&
             ValidateAgentSession(detail.value, AgentSessionShape::kTurn, &error));
   Q4T_CHECK(drain(reopened, from_create, &early_events, true));
+  for (const auto& event : early_events.array) {
+    const auto* row = event.Find("turn");
+    if (!row || row->GetString("id") != turn) continue;
+    const auto* selection = row->Find("prompt_cache_options");
+    Q4T_CHECK(selection && (row->GetString("status") == "queued"
+                                ? selection->IsNull()
+                                : selection->GetString("ttl") == "12h"));
+  }
   Json late_events = Parse("[]");
   Q4T_CHECK(drain(reopened, late, &late_events, true));
   const auto verify_stream = [&](const Json& events, bool subscribed_late) {

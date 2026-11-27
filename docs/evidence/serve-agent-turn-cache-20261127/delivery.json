@@ -1,0 +1,164 @@
+{
+  "scope": "Delegated agent history, cache policy and real continuation across supervised process and package recovery",
+  "source": "2f8270137b757e61cc2046824bef217e7faafdaf",
+  "predecessor_main": {
+    "merge": "9dde419951e28fd1128bc767c1dd8f13681d2e85",
+    "head": "959b46361a1804d7f3c4e1896a7b9d928756e158",
+    "revision": 576
+  },
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 578,
+    "version_revision": 218,
+    "profile_revision": 105,
+    "previous_profile_revision": 104,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "c9cc786faa14e543d4a652d7735a07bec43418ffba692fd536c046246c0c5d03",
+    "fallback": "6a44166a37bbac3e79d6c94fd3c5cd3a0bcb35df92ceaf269775b5495e58e991",
+    "engine": "a074df1089b38fc3118a9fbec4fa543858314fcf4ad287c5a5b091515faf46e7",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "prior_revision": 576,
+  "prior_receipt_sha256": "2f9e5aef7854e797aae0820dd8a6efb0da2b4c99ff403f787fe795a05b0f3d17",
+  "profile_registry_migration": {
+    "from_revision": 104,
+    "to_revision": 105,
+    "request": "adb71a76-d342-42c7-bab3-c2f218faf976",
+    "migration_request": "aed671e3-e9b2-5e31-9bbc-f2ccbf33b2fa",
+    "bound_registry": "96360e737069244aa205e48921651827bf68db0f671c58e5657884bf3dd47f0d",
+    "policy": "e8c277bc614d3b7125e5f7299dd94cea66a04d7a4920977dc44dd8271384533f",
+    "capacities_unchanged": true,
+    "thresholds_and_budgets_unchanged": true,
+    "protected_runtime_fields": [
+      "selected",
+      "clock",
+      "pending",
+      "not_before_ns",
+      "light_since_ns",
+      "history"
+    ],
+    "protected_file_count": 13,
+    "model_starts": 0
+  },
+  "original_receipt_gate": {
+    "log_sha256": "014cae82303680de67465fe611333c21b46f56e389183ee8154c8029fefb4f16",
+    "reason": "Registry migration advances the policy revision once; capacities, thresholds, switch budgets and history verified"
+  },
+  "managed": {
+    "primary": {
+      "sha256": "c9cc786faa14e543d4a652d7735a07bec43418ffba692fd536c046246c0c5d03",
+      "model_starts": 2,
+      "seconds": 432.8912040819414,
+      "guardian_survived": true,
+      "generations": [
+        1,
+        2
+      ],
+      "original_identical_after_recovery": true,
+      "prior_ttls": [
+        "12h",
+        "30m"
+      ],
+      "same_subagent": true,
+      "resumed_answer": "578",
+      "resumed_ttl": "12h",
+      "completed_sse": 2,
+      "cross_client_404": [
+        4,
+        4
+      ],
+      "independent_chat": "42",
+      "client_budget": {
+        "client": "alpha",
+        "before": 4096,
+        "after": 8192,
+        "revision": 1,
+        "source": "scoped service limits-propose and limits-apply",
+        "private_state": true,
+        "other_clients_unchanged": true,
+        "production_policy_unchanged": true
+      },
+      "ports_free": true,
+      "owned_children_remaining": 0,
+      "hashes": {
+        "prepare-run.json": "9a2abea977d654da941a93286fe5ae06e0f9aabf71c0b44189bf27e2afaaeef3",
+        "restore-run.json": "8a786ac49f38745ed6c470a18d84edf9851e308a13cce33b83c640426e17d7f6",
+        "interruption.json": "27bf715971246d4dbc0af6e0379d12177855ce3aa707ae2bf345cababf47ec09",
+        "result.json": "28376606a982abddf7aeae21d19c463e719b6de614ff4a0022d65529b779cf82",
+        "chat-after.wire": "819d60aa0f83eece0143fa2a72cac6b0a0293c40153aa25d300497a0417e5bb5"
+      },
+      "lease_sha256": "796d014285b2fdd4a2db46b330d7fafef185926af30f77f34b2b90031e54efeb",
+      "origin_sha256": "c157ba29ab0d2cd561dc57d82df932670274199fe497836798e43320c1af0b46",
+      "gateway_fault_signal": 6,
+      "probe_count": 1,
+      "registered_fallback": "6a44166a37bbac3e79d6c94fd3c5cd3a0bcb35df92ceaf269775b5495e58e991"
+    },
+    "fallback": {
+      "sha256": "6a44166a37bbac3e79d6c94fd3c5cd3a0bcb35df92ceaf269775b5495e58e991",
+      "model_starts": 2,
+      "seconds": 278.9842907949351,
+      "guardian_survived": true,
+      "generations": [
+        1,
+        2
+      ],
+      "original_identical_after_recovery": true,
+      "prior_ttls": [
+        "12h",
+        "30m"
+      ],
+      "same_subagent": true,
+      "resumed_answer": "578",
+      "resumed_ttl": "12h",
+      "completed_sse": 2,
+      "cross_client_404": [
+        4,
+        4
+      ],
+      "independent_chat": "42",
+      "client_budget": {
+        "client": "alpha",
+        "before": 4096,
+        "after": 8192,
+        "revision": 1,
+        "source": "scoped service limits-propose and limits-apply",
+        "private_state": true,
+        "other_clients_unchanged": true,
+        "production_policy_unchanged": true
+      },
+      "ports_free": true,
+      "owned_children_remaining": 0,
+      "hashes": {
+        "prepare-run.json": "9a2abea977d654da941a93286fe5ae06e0f9aabf71c0b44189bf27e2afaaeef3",
+        "restore-run.json": "50ea6dde306e7703cfd9e53a6f21447ac6e73c462a68271f2de0a25a11de0dd4",
+        "interruption.json": "27bf715971246d4dbc0af6e0379d12177855ce3aa707ae2bf345cababf47ec09",
+        "result.json": "3e3d38f462fd4a352ebd6d43b14eee0a443c11d01217487e15e7c5cf347b751f",
+        "chat-after.wire": "03e869aa98babad62d70a70f36a3a298874fa5f4fd42f9d47be02f9f8fc8787b"
+      },
+      "lease_sha256": "e6c8bf3b919bfd82c7a1645dc07c4b610c95a9d5f166a1de308871f04fffc43f",
+      "origin_sha256": "a2e47fdfa8e701a8a893ff1e1523d4e409a26320fe0c1de71cfab484bc1ffdff"
+    }
+  },
+  "foreground_sha256": "0b44ab4f4341595c351aca21536544fb83a26e76fbc546991f51a2fe751c1551",
+  "capacity_sha256": "1c15cc8fe4f84244c319ee8e221be67164e76a6d0635213deb4cadd5e7aaf918",
+  "source_store_sha256": "9078f2228b30186df715f1bf6fb5f08a26d96e90535a6335d8b20078216d23ea",
+  "managed_input_limit_counterexample": {
+    "receipt": "12125669c5d9f979724597188beab709203b65ed5bfddd0178abe3bfe503033b",
+    "diagnostic_sha256": "a7b484b9ffda1685eee6e04a28c30119a1594c3991372faa2ef20fbf60c3ac8a",
+    "model_starts": 2,
+    "prompt_limit": 4096,
+    "observed": "Legitimate cumulative input rejection on continued delegated work",
+    "cleanup_ok": true
+  },
+  "maintenance_sha256": "94bce48e021a07784e4685cebf04bfa2abdb9539753110a2842ffd1a7ba7413a",
+  "day": {
+    "plan_sha256": "6be27a8e87a4ad66af6aeefc5c6238043c6d7ab48b4b4caa68ca802cf2f318fe",
+    "hours_executed": 0
+  },
+  "cold": {
+    "plan_sha256": "1acf7411071423393bcac0eac70bc899aa1e3edf0e128f3d65af27394584851e",
+    "executed": false
+  }
+}

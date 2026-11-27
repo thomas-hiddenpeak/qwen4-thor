@@ -1,0 +1,145 @@
+{
+  "stage": "foreground_native_tls_and_stock_sdk_verified",
+  "source": "c3a230c66f11296cbbfe8a14d899aee5b1450020",
+  "engine_sha256": "a074df1089b38fc3118a9fbec4fa543858314fcf4ad287c5a5b091515faf46e7",
+  "issued": false,
+  "default_revision": 576,
+  "observations": {
+    "sdk": "7.47.0",
+    "model_starts": 1,
+    "seconds": 76.653,
+    "first_answer": "576",
+    "followup_answer": "577",
+    "fresh_chat": "42",
+    "session": "agent_session_f9c3bac234b71a4c27b062b7a005f2a5",
+    "child": "subagent_0aa68469b85013a0f35a0ea49883cfac",
+    "turns": [
+      {
+        "root": "turn_d9b406d3bd2d2a1db176a867545eeb5b",
+        "child": "turn_1ab721e0ff8abf555e7b19b9aa4aa0a3",
+        "ttl": "12h"
+      },
+      {
+        "root": "turn_7d8a62a4c67736dd722c37bde5514354",
+        "child": "turn_92a74e11adadaea9a45428f192b8b94e",
+        "ttl": "30m"
+      }
+    ],
+    "dispatch": [
+      {
+        "response": "resp_b2a615d2e39911a95ae908561d679ee7",
+        "selected_ttls": {
+          "agentresult_35ed71062761dd31a4da8d0a7f80c72b": "12h"
+        }
+      },
+      {
+        "response": "resp_cee24d56261d266adb4bc98dd9628914",
+        "selected_ttls": {
+          "agentresult_7a04ae61c90a13ff4a45464bd95d7512": "30m"
+        }
+      }
+    ],
+    "child_sse": [
+      {
+        "edges": [
+          "queued",
+          "in_progress",
+          "completed"
+        ],
+        "deltas": 1,
+        "item": "msg_bd1c7bcb19b105dc510e34f22f79ca68",
+        "outputIndex": 0
+      },
+      {
+        "edges": [
+          "queued",
+          "in_progress",
+          "completed"
+        ],
+        "deltas": 1,
+        "item": "msg_acc55687c9c9113f89c7abfbc80b8d66",
+        "outputIndex": 0
+      }
+    ],
+    "tenant_isolation": 404,
+    "child_read_methods": 6,
+    "prefix_cache_write_events": 6,
+    "successful_writes_by_ttl": {
+      "43200": 3,
+      "1800": 3
+    },
+    "expiry_clock_exercised": false,
+    "cleanup": {
+      "model_reaped": true,
+      "model_exit": 0,
+      "listeners_rebound": 3
+    }
+  },
+  "protected_defaults_unchanged": true,
+  "receipts": [
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/turn-cache-projection-business-03/result.json",
+      "sha256": "eb5e69a26c93d5f4de7285c4b9211fbbc7909389f73a063c288da25e40043777"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/turn-cache-projection-business-03/plan.json",
+      "sha256": "95f80ced9f99f9c42aa5e789f8056f4c746e8150ca28da395c07c2a154f7d8a9"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/turn-cache-projection-business-03/create/sdk-result.json",
+      "sha256": "dc23d3cfe3f41725c93f6f8159999b780c05b55fedf232035ddde992c1458ddf"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/turn-cache-projection-business-03/create/subagent-history.json",
+      "sha256": "9b01b006bdb3c037c6135c0a87a62a59c3692f4ea3fc271e6c11884a4e3e89c8"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/turn-cache-projection-business-03/create/chat-result.json",
+      "sha256": "d90747d2a5dfdd61eb8e632c7b9174b35e71deed58065e38465c56e1be8e62f4"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/turn-cache-projection-business-03/create/cache-writes.json",
+      "sha256": "1793f6aa75bc236edbb6917516654e46718ec5bd4225634338b9e237d17b94d7"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/agent-turn-cache-projection-src/.q4t-work/turn-cache-business-03/lease/exit.json",
+      "sha256": "c4f589599c21403cd22d31738ebfaf4621026fb0fefe2ca75bbe29345c48d000"
+    },
+    {
+      "path": ".q4t-work/serve-responses-agents-20261123/defaults-response-publication-01/result.json",
+      "sha256": "2f9e5aef7854e797aae0820dd8a6efb0da2b4c99ff403f787fe795a05b0f3d17"
+    }
+  ],
+  "prior_real_failure": {
+    "model_starts": 1,
+    "seconds": 60.962,
+    "cleanup": {
+      "model_reaped": true,
+      "model_exit": 0,
+      "listeners_rebound": 3
+    },
+    "default_unchanged": true,
+    "result_sha256": "09e61e2514165471f3af8c4904430abf2ced1fa5d074c73276dd2ca0a6441228",
+    "lease_sha256": "87e24306a6fad189c8dc8c6dfe04577dc041c43dab93ee27d3a713e4f60a8459",
+    "error": {
+      "code": "invalid_request",
+      "message": "Chat request TTL must be 30m"
+    },
+    "response_sha256": "b0a9639a2a56a38e985a877ff0ee7d0c2b2cc3f2f5779b18e0f3a319a947b45b",
+    "dispatch_ttl": "12h"
+  },
+  "prior_failed_fixture": {
+    "model_starts": 1,
+    "business_requests": 0,
+    "cause": "expired test certificate; a CPU-only side-by-side reproduced refusal and verified the fresh TLS handshake",
+    "cleanup": {
+      "model_reaped": true,
+      "model_exit": 0,
+      "listeners_rebound": 3
+    },
+    "failure_sha256": "bfebdeed3decaa284fa82407fe6e92319b6377c154a79777f82604a1280736d8",
+    "lease_sha256": "90bf2e44d8928d13ab95c7293e0fcd0fd503514c5c83b0cd433001bdc70747fb",
+    "preflight_sha256": "316ff52f6aeaed6c8d6e3dc43201a1ef39ecfd6dc2410c84e9bd4338b452c07c"
+  },
+  "pending": "Managed primary and fallback recovery, reversible issuance, mainline."
+}

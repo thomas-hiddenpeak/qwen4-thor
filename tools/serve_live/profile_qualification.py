@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'agent_turn_cache_handoff' in plan:
+            from tools.serve_responses import agent_turn_cache_profiles
+            current = profiles[name]['evidence_sha256']
+            current.update(agent_turn_cache_profiles.verify(phase, plan, declared, current))
+            continue
         if 'recording_download_handoff' in plan:
             from tools.serve_live import recording_profiles
             current = profiles[name]['evidence_sha256']
