@@ -991,11 +991,13 @@
         "delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json"
       },
       "openapi_ingress_auth_20261128": {
-        "stage": "matched_managed_clients_verified",
+        "stage": "device_issued_handoffs_prepared",
         "receipt": "evidence/serve-openapi-ingress-auth-20261128/contract.json",
         "packages": "evidence/serve-openapi-ingress-auth-20261128/packages.json",
-        "device_issued": false,
-        "managed": "evidence/serve-openapi-ingress-auth-20261128/managed.json"
+        "device_issued": true,
+        "managed": "evidence/serve-openapi-ingress-auth-20261128/managed.json",
+        "revision": 586,
+        "delivery": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
       }
     },
     {
@@ -9686,11 +9688,13 @@
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       },
       "openapi_ingress_auth_20261128": {
-        "stage": "matched_managed_clients_verified",
+        "stage": "device_issued_handoffs_prepared",
         "receipt": "evidence/serve-openapi-ingress-auth-20261128/contract.json",
         "packages": "evidence/serve-openapi-ingress-auth-20261128/packages.json",
-        "device_issued": false,
-        "managed": "evidence/serve-openapi-ingress-auth-20261128/managed.json"
+        "device_issued": true,
+        "managed": "evidence/serve-openapi-ingress-auth-20261128/managed.json",
+        "revision": 586,
+        "delivery": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
       }
     },
     {
@@ -12825,7 +12829,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev584_delivered_remaining_deliveries",
+      "state": "rev586_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12875,68 +12879,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "status": "PASS_NATIVE_REALTIME_DUPLEX_DELIVERED",
-        "revision": 386,
+        "revision": 586,
         "state": "STOPPED",
-        "current": {
-          "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
-          "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
-          "generation_sha256": "292c8d9214f87cacc871c38f549eb26ca936f5e103ebeeb30ab315a4c01e4fc2",
-          "manifest_sha256": "1fbaf0cb3cf106cc6b165810559697f9085d463499ead41e2af445b5fbfb12b8",
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/service-package-01/bundle",
-          "service_acceptance_sha256": "6ffee31b93835479331758ae744714ea5c5629b34dd3d8343bc07232f39dcc73",
-          "service_release_sha256": "931499ee08cd87fa583e801dc5337cfff4cab36ade6127d054b7cd757660e6b8"
-        },
-        "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
-        "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
-        "successful_commands": 19,
-        "seconds": 349.2686820998788,
+        "primary_manifest_sha256": "3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246",
+        "fallback_manifest_sha256": "bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae",
+        "binary_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
         "new_gpu_starts": 0,
-        "outer_enabled": true,
-        "outer_charged_total": 0,
-        "persistent_client_limits": {
-          "alpha": {
-            "requests_per_minute": 30,
-            "tokens_per_minute": 6000,
-            "max_output_tokens": 3457
-          },
-          "beta": {
-            "requests_per_minute": 1,
-            "tokens_per_minute": 6000,
-            "max_output_tokens": 256
-          }
-        },
-        "usage_reset": false,
-        "profile_history_and_cooldown_preserved": true,
-        "version_cycles_preserved": true,
-        "manual_root": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
-          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
-        },
-        "automatic_payload": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
-          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
-        },
-        "candidate_to_retained_automatic_fault_actually_tested": true,
-        "reciprocal_automatic_fault_additionally_injected": false,
-        "reciprocal_registration_and_stopped_rollback_verified": true,
-        "previous_rev376_preserved": true,
-        "retired_records_archived_per_pool": 4,
-        "deleted_files": 0,
-        "maintenance_seconds": 124.12811847496778,
-        "model_quality_status": "FAIL",
-        "model_quality_separate": true,
-        "original_model_quality_failures_preserved": true,
-        "original_driver_failure_preserved": true,
-        "listening_deferred_by_owner": true,
-        "main_integration_pending": true,
-        "full_model_quality": false,
-        "performance_claim": false,
-        "long_stability_run": false,
-        "full_openai_compatibility": false,
-        "all_master_tasks_active": true,
-        "secret_scan_matches": 0,
-        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+        "evidence": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14280,7 +14229,71 @@
       "current_agent_cache_delivery": "evidence/serve-agent-turn-cache-20261127/delivery.json",
       "current_cursor_pagination_delivery": "evidence/serve-voice-consent-pagination-20261127/delivery.json",
       "current_model_asset_admission_delivery": "evidence/serve-asset-admission-20261127/delivery.json",
-      "current_chatkit_pending_tool_delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      "current_chatkit_pending_tool_delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json",
+      "release_revision_386": {
+        "status": "PASS_NATIVE_REALTIME_DUPLEX_DELIVERED",
+        "revision": 386,
+        "state": "STOPPED",
+        "current": {
+          "engine_binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+          "engine_release_sha256": "cb882f718cb865caa4ae85a83225a45614e21869a2996b61fbae4d290e2ab6d3",
+          "generation_sha256": "292c8d9214f87cacc871c38f549eb26ca936f5e103ebeeb30ab315a4c01e4fc2",
+          "manifest_sha256": "1fbaf0cb3cf106cc6b165810559697f9085d463499ead41e2af445b5fbfb12b8",
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/service-package-01/bundle",
+          "service_acceptance_sha256": "6ffee31b93835479331758ae744714ea5c5629b34dd3d8343bc07232f39dcc73",
+          "service_release_sha256": "931499ee08cd87fa583e801dc5337cfff4cab36ade6127d054b7cd757660e6b8"
+        },
+        "binary_sha256": "ecd6cc23bd768a81e3fbd3fd1e59543176dc329e2ae7c8378956f09ffafe5580",
+        "protocol_sha256": "f0c82ef97660964b63fb5a245a151af98d667b43478f1c367364db7df8ac5f11",
+        "successful_commands": 19,
+        "seconds": 349.2686820998788,
+        "new_gpu_starts": 0,
+        "outer_enabled": true,
+        "outer_charged_total": 0,
+        "persistent_client_limits": {
+          "alpha": {
+            "requests_per_minute": 30,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 3457
+          },
+          "beta": {
+            "requests_per_minute": 1,
+            "tokens_per_minute": 6000,
+            "max_output_tokens": 256
+          }
+        },
+        "usage_reset": false,
+        "profile_history_and_cooldown_preserved": true,
+        "version_cycles_preserved": true,
+        "manual_root": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+        },
+        "automatic_payload": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-realtime-duplex-20261120/retained-01/bundle",
+          "manifest_sha256": "c5ff88e65d6529e9118b246911e67e5202a57fa606a1afd44f9b1dba86c3372f"
+        },
+        "candidate_to_retained_automatic_fault_actually_tested": true,
+        "reciprocal_automatic_fault_additionally_injected": false,
+        "reciprocal_registration_and_stopped_rollback_verified": true,
+        "previous_rev376_preserved": true,
+        "retired_records_archived_per_pool": 4,
+        "deleted_files": 0,
+        "maintenance_seconds": 124.12811847496778,
+        "model_quality_status": "FAIL",
+        "model_quality_separate": true,
+        "original_model_quality_failures_preserved": true,
+        "original_driver_failure_preserved": true,
+        "listening_deferred_by_owner": true,
+        "main_integration_pending": true,
+        "full_model_quality": false,
+        "performance_claim": false,
+        "long_stability_run": false,
+        "full_openai_compatibility": false,
+        "all_master_tasks_active": true,
+        "secret_scan_matches": 0,
+        "evidence": "evidence/serve-realtime-duplex-delivery-20261120/README.md"
+      }
     },
     {
       "id": "Q03",
