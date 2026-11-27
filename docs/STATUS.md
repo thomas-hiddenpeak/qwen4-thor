@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+首轮实机在新问题 17+25 上又调用了 lookup_release。独立检查两条持久化响应，工具策略已回到 auto，但历史中两个用户请求相邻。现在仅在确实略过未答工具时保留中断边界，浏览器历史仍保留原调用。六项原生测试通过，下一步用同一浏览器请求复验。 [首轮失败与修复](evidence/serve-chatkit-pending-user-message-20261127/interruption-boundary.json)
+
 真实 ChatKit 驱动已限定一次模型启动、12 条 SDK／浏览器 HTTP 请求及一条独立 Chat。它会先保留模型请求的工具调用，再发新问题，比较两端历史、拒绝迟到结果与两种跨客户访问。SDK 脚本语法及驱动入口已检查，实机结果单独记录。 [已有原生证据](evidence/serve-chatkit-pending-user-message-20261127/native.json)
 
 ChatKit 客户端工具尚未回填时，固定版本参考服务允许发送新消息，旧结果迟到会被拒绝。q4t 已允许新消息进入队列，并从本回合模型输入排除未获结果的调用；浏览器历史、原 Response 和已完成调用保持可读。旧实现的两个原生用例均失败，修改后六项通过。下一步是用真实模型和客户端验证新回合及迟到回填。 [参考与原生验证](evidence/serve-chatkit-pending-user-message-20261127/native.json)

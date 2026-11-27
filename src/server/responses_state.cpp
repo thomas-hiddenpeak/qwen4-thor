@@ -601,12 +601,30 @@ ObjectReply ResponsesState::Resolve(const ResponsesEnvelope& envelope,
         if (row.GetString("type") == "function_call_output")
           answered.insert(row.GetString("call_id"));
       }
+      bool interrupted_call = false;
       for (const auto& row : output) {
         const auto call = row.GetString("call_id");
         if (row.GetString("type") == "function_call" && !call.empty() &&
-            !answered.contains(call))
+            !answered.contains(call)) {
+          interrupted_call = true;
           continue;
+        }
         plan->history.array.push_back(row);
+      }
+      if (interrupted_call) {
+        // Preserve the turn boundary when a call was the only model output.
+        // The browser still owns the original call and its pending status.
+        auto boundary = ResolveItems(
+            Array({Object({{"type", String("message")},
+                           {"role", String("developer")},
+                           {"content", String("The previous client tool call "
+                                              "was interrupted by a new user "
+                                              "message. Follow the new request. "
+                                              "Only resume the earlier call if "
+                                              "the user asks for it.")}})}),
+            access, 1);
+        if (!boundary.ok()) return boundary;
+        plan->history.array.push_back(std::move(boundary.value.array.front()));
       }
     } else {
       plan->history.array.insert(plan->history.array.end(), output.begin(), output.end());

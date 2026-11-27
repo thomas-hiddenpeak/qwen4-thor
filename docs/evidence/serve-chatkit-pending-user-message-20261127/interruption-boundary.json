@@ -1,0 +1,33 @@
+{
+  "first_http": "FAIL",
+  "first_turn": "named lookup_release",
+  "followup_request": "17 + 25",
+  "followup_tool_choice": "auto",
+  "followup_input_roles": [
+    "user",
+    "user"
+  ],
+  "observed": "new distinct lookup_release call",
+  "expected_answer": "42",
+  "previous_engine": "647c7948f2238061f44ef85c0d20d224bb961eed7be83e3dd6d5a5a2c0191aae",
+  "wire_records": [
+    "4becc2d9b70fa1daad9d36db36615197e18d985aabbaa7c9f1d25a0c41158821",
+    "c89cc7b73e6b81aa4e514c13217acc943efcb2a9f7d92749fe776f3de12f4629"
+  ],
+  "cleanup_sha256": "a47a349715ee782d066857f7f238020d769b9cffa13163a85ccfc3c72050cb47",
+  "result_sha256": "26761806a7e90886a28ff4429f7b45637e3a28e8f0ad7059306dabd22a797850",
+  "cpu_cases": 6,
+  "cpu_log": "81808c19cf241657e15d1988895cf19f3cfa3c11172a810bdd3b0eca75c7988e",
+  "source_audit": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "http_recheck_pending": true
+}

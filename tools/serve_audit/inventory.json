@@ -4842,7 +4842,7 @@
     "src/server/responses_python.cpp": "185081f43e8457562e97e554d4d5b6479a2530f4a61d15c9630f8e9b9527f454",
     "src/server/responses_python_execution.cpp": "dcd96969a10944cd90d90d6e039c72e22c27fab1fc89f3b5d30c90b5a44b9462",
     "src/server/responses_reasoning.cpp": "d05e3c2d3aead4ee7d2dead0c67c98be562899e55876aac01375dc3a58fed1e9",
-    "src/server/responses_state.cpp": "55d7cb65e7205e2ad24733409926668713f76c18ec4443aaad372b21196f0b6e",
+    "src/server/responses_state.cpp": "a64d73befe90c57df5637285e7f6d3535887970b44907bcbe979b3f87ca39b08",
     "src/server/responses_summary.cpp": "c9ddf70b2de5aae3ba85dfc52885b581d48158f68372d4aae940a9acd375721a",
     "src/server/responses_tokens.cpp": "9ebdf955e1dbe6bacaad748005e8200dff0930a66799ade9c0bff6a7238f32e2",
     "src/server/responses_tool_catalog_history.cpp": "45cf84849052cd594342a968b3ff41cbf65596bd3aed2db10d6ba9ef036be0e5",

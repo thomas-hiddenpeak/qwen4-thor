@@ -282,8 +282,10 @@ Q4T_TEST(chatkit_new_user_turn_ignores_unanswered_call_only_in_model_history) {
   user.previous_response_id = first.id;
   Q4T_CHECK(Ok(states.Resolve(user, Access(), &next, nullptr, {},
                               first.chatkit_thread_id)));
-  Q4T_CHECK(next.history.array.size() == 3);
+  Q4T_CHECK(next.history.array.size() == 4);
   Q4T_CHECK(next.history.array[1].GetString("id") == "msg_answer");
+  Q4T_CHECK(next.history.array[2].GetString("role") == "developer");
+  Q4T_CHECK(next.own_input.array.size() == 1);
   Q4T_CHECK(next.history.array.back().GetString("role") == "user");
   ChatPlanConfig config;
   config.model = "cpu";
@@ -340,9 +342,10 @@ Q4T_TEST(chatkit_new_message_keeps_completed_tool_history_and_original_call) {
   Q4T_CHECK(Ok(states.Resolve(user, Access(), &next, nullptr, {},
                               second.chatkit_thread_id)));
   const auto& history = next.history.array;
-  Q4T_CHECK(history.size() == 4 && history[1].GetString("call_id") == "call_1" &&
+  Q4T_CHECK(history.size() == 5 && history[1].GetString("call_id") == "call_1" &&
             history[2].GetString("output") == "first result" &&
-            history[3].GetString("role") == "user");
+            history[3].GetString("role") == "developer" &&
+            history[4].GetString("role") == "user");
   auto original = states.Retrieve(second.id, Access());
   Q4T_CHECK(Ok(original) && original.value.GetArray("output") &&
             original.value.GetArray("output")->array.front().GetString("call_id") ==
