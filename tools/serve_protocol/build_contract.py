@@ -774,6 +774,7 @@ def ingress_authentication(paths, unauthorized):
         ChatKitSession=bearer("Client secret issued by the ChatKit session."),
         AttachmentUpload=bearer("Bearer ticket supplied in this attachment's upload descriptor."),
         PreviewTicket=dict(type="apiKey", **{"in": "query"}, name="ticket",
+                           **{"x-q4t-value-schema": dict(type="string", pattern="^ckpv_[A-Za-z0-9._-]+$")},
                            description="Use the signed preview URL supplied with the attachment."),
         RealtimeSession=bearer("Ephemeral client secret issued for this Realtime session and transport. "
                                "Sideband access by call ID requires a project key."),
@@ -904,7 +905,9 @@ def openapi():
                             reply["headers"] = dict(reply.get("headers", {}), **{
                                 "X-Should-Retry": dict(schema=dict(type="string", enum=["false"]),
                                     description="Automatic retries are suppressed when the upstream may have executed this request.")})
-    unauthorized = response(public_error, "Native ingress rejected the credentials")
+    unauthorized = response(public_error, "Native service authentication failed")
+    unauthorized["headers"]["X-Should-Retry"] = (
+        paths["/v1/responses"]["post"]["responses"]["default"]["headers"]["X-Should-Retry"])
     unauthorized["headers"].update({
             "WWW-Authenticate": dict(required=True, schema=dict(type="string"),
             description="Bearer authentication challenge for this service.",

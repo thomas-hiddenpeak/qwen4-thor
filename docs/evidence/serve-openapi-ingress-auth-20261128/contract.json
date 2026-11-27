@@ -23,13 +23,13 @@
     "schema": "https://spec.openapis.org/oas/3.1/schema/2022-10-07",
     "documents": {
       "serve-openapi-v1.json": {
-        "sha256": "0e2c14da28169eea4a4eacfe07691b85913fa33426d5dbd455b2baa2cc0124da",
+        "sha256": "cded92c32200cd54b2901fc12729307405cc1a9eeaf694df8be03be6c542f5da",
         "paths": 167,
         "operations": 246,
         "errors": []
       },
       "serve-openapi-bundle-v1.json": {
-        "sha256": "e38be20a4d6a9cda1523c77997083196cfd5cb4b7ca5dc6d39e0f5354f2dfe5c",
+        "sha256": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
         "paths": 167,
         "operations": 246,
         "errors": []
@@ -147,5 +147,8 @@
   "consumer_script_sha256": "3bb44e27588cc0835b2a2b11875b20ff4c3f7147352152d4fcc8d8602f3ae67f",
   "consumer_lock_sha256": "0e3fd6ca4bbe5fcb75f9d0f4a32faf79bb3c0fe3265de96bfc958721978578a5",
   "portable_package_verifier": true,
-  "model_starts": 0
+  "model_starts": 0,
+  "static_contract_tests": 18,
+  "preview_ticket_shape_retained": true,
+  "conditional_retry_header_retained": true
 }

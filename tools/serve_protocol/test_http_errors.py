@@ -42,6 +42,9 @@ class HttpErrors(unittest.TestCase):
             self.assertEqual(schemes['ProjectKey']['scheme'], 'bearer')
             self.assertEqual(schemes['PreviewTicket']['in'], 'query')
             self.assertEqual(schemes['PreviewTicket']['name'], 'ticket')
+            ticket = Draft202012Validator(schemes['PreviewTicket']['x-q4t-value-schema'])
+            self.assertTrue(ticket.is_valid('ckpv_test'))
+            self.assertFalse(ticket.is_valid('ckup_test'))
             self.assertEqual(schemes['WebSocketProtocol']['name'], 'Sec-WebSocket-Protocol')
             paths = document['paths']
             attachment = '/v1/chatkit/attachments/{session_id}/{file_id}'
@@ -98,6 +101,9 @@ class HttpErrors(unittest.TestCase):
         self.assertEqual(unauthorized['headers']['X-Request-Id'],
                          responses['default']['headers']['X-Request-Id'])
         challenge = unauthorized['headers']['WWW-Authenticate']
+        retry = unauthorized['headers']['X-Should-Retry']
+        self.assertFalse(retry.get('required', False))
+        self.assertEqual(retry['schema']['enum'], ['false'])
         self.assertTrue(challenge['required'])
         self.validator.evolve(schema=challenge['schema']).validate('Bearer realm="q4t"')
         self.assertNotIn('WWW-Authenticate', responses['200'].get('headers', {}))

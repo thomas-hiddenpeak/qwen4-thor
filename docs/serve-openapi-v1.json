@@ -22921,6 +22921,10 @@
         "type": "apiKey",
         "in": "query",
         "name": "ticket",
+        "x-q4t-value-schema": {
+          "type": "string",
+          "pattern": "^ckpv_[A-Za-z0-9._-]+$"
+        },
         "description": "Use the signed preview URL supplied with the attachment."
       },
       "RealtimeSession": {
@@ -22937,7 +22941,7 @@
     },
     "responses": {
       "Unauthorized": {
-        "description": "Native ingress rejected the credentials",
+        "description": "Native service authentication failed",
         "headers": {
           "X-Request-Id": {
             "schema": {
@@ -22945,6 +22949,15 @@
               "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
             },
             "description": "Trace only; not cancellation credentials or an idempotency key"
+          },
+          "X-Should-Retry": {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "false"
+              ]
+            },
+            "description": "Automatic retries are suppressed when the upstream may have executed this request."
           },
           "WWW-Authenticate": {
             "required": true,

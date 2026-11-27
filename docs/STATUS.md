@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+两份合同通过官方 OpenAPI 3.1 元模式，通用客户端按修订后的合同发出全部 8 个预期请求。401 继续声明已转发写请求的重试提示，预览票据保留原格式约束。18 项合同与打包检查通过，下一步核对两个实际封包。 [验证记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)
+
 OpenAPI 已为 244 个原生入口操作声明凭据和 401 挑战，另两项本地运维操作单列。通用 Swagger 客户端按打包版合同生成了 8 个请求，在真实入口通过了项目 Key、浏览器会话、上传和预览的正反例。两个完整文档通过 OpenAPI 3.1 官方元模式校验，补齐了三个 Assistants SSE 声明。下一步装入主、回退发行包。 [合同与入口记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)
 
 模型意外退出、主网关异常后切换至回退包，两种实际恢复中，新浏览器会话均重开了原待回填调用。原两项内容摘要一致，新问题和独立 Chat 均答 42，迟到工具结果返回 409，跨会话与跨客户访问均返回 404。下一步登记已验证的主包和回退包。 [两种故障的恢复记录](evidence/serve-chatkit-pending-user-message-20261127/managed.json)
