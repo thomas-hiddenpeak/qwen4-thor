@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+原生续答现在仅在服务端已签发或解封非空摘要时增加固定背景说明。原故障窗口与旧版视频均答 Blue，工具窗口答 560，三次跨客户请求均被拒绝。38 项 CPU 用例通过。该次新签发在摘要生成阶段返回 502 compaction_refused，整组实机验收失败，默认仍为 rev564。下一步定位媒体摘要请求。 [分项验收](evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json)
+
 同一签名窗口在显式缓存、默认缓存及展开的助手历史下都复述相同的 421 个字符。两种背景呈现分别保留原视频并返回 Blue；另加追问仍复述。验收工具现要求回复和消息均正常完成，两版官方 SDK 各 7 组回放均能区分正确答案与截断、错误状态。下一步验证仅对真实压缩记忆启用的原生提示。 [对照回执](evidence/serve-compact-window-identities-20261127/video-memory-diagnostic.json)
 
 已修正 R07 的设备状态。早期预检记录的相机和 jtop 占用已于 11 月 26 日清理。11 月 27 日复查两项均处于 inactive/disabled，风扇控制正常。NVML 不可用冷启动实测仍按用户决定暂缓。 [维护回执](evidence/serve-local-shell-20261126/delivery.json)

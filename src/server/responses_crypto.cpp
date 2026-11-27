@@ -84,23 +84,27 @@ ObjectReply Validate(const Json& item) {
 ObjectReply OpenResponsesReasoning(StateCipher& cipher, const Json& history,
                                    const ChatPlanConfig& config,
                                    const StateAccess& access,
-                                   Json* generation_history) {
+                                   Json* generation_history,
+                                   bool* has_compaction_memory) {
   if (!generation_history || !history.IsArray() || history.array.size() > 4096)
     return Invalid();
   auto result = Array();
+  bool memory_seen = false;
   for (size_t i = 0; i < history.array.size(); ++i) {
     auto active = Active(access);
     if (!active.ok()) return At(std::move(active), i);
     const auto& incoming = history.array[i];
     if (incoming.GetString("type") == "compaction") {
       Json compacted;
+      bool has_memory = false;
       auto opened = OpenResponsesCompaction(cipher, result, incoming, config,
-                                            access, &compacted);
+                                            access, &compacted, &has_memory);
       if (!opened.ok()) return At(std::move(opened), i);
       if (compacted.array.size() + history.array.size() - i - 1 > 4096)
         return At(Error(400, "input_limit_exceeded",
                         "Restored compaction context exceeds 4096 items"),
                   i);
+      memory_seen |= has_memory;
       result = std::move(compacted);
       continue;
     }
@@ -172,6 +176,7 @@ ObjectReply OpenResponsesReasoning(StateCipher& cipher, const Json& history,
       return Invalid("Restored reasoning context contains duplicate item IDs");
   }
   *generation_history = std::move(result);
+  if (has_compaction_memory) *has_compaction_memory = memory_seen;
   return {};
 }
 

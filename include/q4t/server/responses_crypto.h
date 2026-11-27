@@ -9,7 +9,8 @@ namespace q4t::server {
 ObjectReply OpenResponsesReasoning(StateCipher& cipher, const io::Json& history,
                                    const ChatPlanConfig& config,
                                    const StateAccess& access,
-                                   io::Json* generation_history);
+                                   io::Json* generation_history,
+                                   bool* has_compaction_memory = nullptr);
 ObjectReply SealResponsesReasoning(StateCipher& cipher,
                                    const io::Json& generation_history,
                                    const io::Json& output, size_t index,

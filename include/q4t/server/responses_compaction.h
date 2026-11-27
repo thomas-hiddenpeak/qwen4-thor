@@ -54,5 +54,6 @@ ObjectReply OpenResponsesCompaction(StateCipher& cipher,
                                     const io::Json& item,
                                     const ChatPlanConfig& config,
                                     const StateAccess& access,
-                                    io::Json* expanded);
+                                    io::Json* expanded,
+                                    bool* has_memory = nullptr);
 }  // namespace q4t::server

@@ -31,6 +31,8 @@ struct ResponsesEnvelope {
   bool encrypted_reasoning = false;
   // Execution-owned budget policy, never accepted from public JSON.
   bool native_tools_exhausted = false;
+  // A native model summary was authenticated or created for this execution.
+  bool has_compaction_memory = false;
   bool managed_agent_tools = false;
   bool session_automations = false;
   bool agent_time_awareness = false;  // Owned Agent settings for this step.

@@ -1,0 +1,128 @@
+{
+  "scope": "Private static instructions for actual, authenticated nonempty memory; ordinary data, no-op, ownership and terminal contracts",
+  "source_parent": "124d97f7aa2d9822bbee05cb3fbb973ae6573016",
+  "candidate": {
+    "files": {
+      "q4t": "7b43e1811df7056d40d7842b76594704a4fea1e4ce0e1a0da4ffe0c5dbaa88aa",
+      "q4t-ingress": "d886ac03ea8432eb80a52b271bf6810f2abc5a9d9305acdbc8c2a0d6340e7684",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "de3b25545ede1fe9be9c3bb18b02f39a294b382e337f58ec384ab72edea7f032",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104,
+    "changed": [
+      "include/q4t/server/responses_compaction.h",
+      "include/q4t/server/responses_crypto.h",
+      "include/q4t/server/responses_plan.h",
+      "src/server/responses_compaction.cpp",
+      "src/server/responses_crypto.cpp",
+      "src/server/responses_execution.cpp",
+      "src/server/responses_execution_compaction.cpp",
+      "src/server/responses_plan.cpp"
+    ]
+  },
+  "native": {
+    "before_failing": 2,
+    "after_pass": 38,
+    "before_log": "61f41dc70d8d0f23b242f143d515e8f36859cfd04d183a020561fef43410b3db",
+    "after_log": "b3cf35182a1f3e92fa47ac2d1ae129ffba077d39f8f92ec5676a227b1f0ddf9e",
+    "inventory": {
+      "inventory_current": true,
+      "semantics_certified": false,
+      "fields": 53,
+      "completion_fields": 21,
+      "routes": 247,
+      "native_routes": 409,
+      "reviewed_source_anchors": 1394,
+      "mutation_checks": 40,
+      "errors": []
+    },
+    "explicit_instruction_comparison": {
+      "reference": {
+        "sha256": "db1480c8e446647ce695f0475b82ca5518edc309655b6df9ac25aee7651407eb",
+        "bytes": 4155
+      },
+      "candidate": {
+        "sha256": "db1480c8e446647ce695f0475b82ca5518edc309655b6df9ac25aee7651407eb",
+        "bytes": 4155
+      },
+      "exact": true,
+      "only_whitespace_diff": true
+    }
+  },
+  "real": {
+    "command": 1,
+    "lease": "COMMAND_FAILED",
+    "result": {
+      "status": "FAIL",
+      "starts": 1,
+      "seconds": 41.164,
+      "unchanged_default": true,
+      "original_store_unchanged": true,
+      "phases": []
+    }
+  },
+  "closed_store_cases": {
+    "failed-video": {
+      "sha256": "abe072995695bc3f5288cb06a3d5e7a98725e1025409f4d6fc9007d646116d25",
+      "answer": "Blue",
+      "status": "completed",
+      "foreign": "invalid_encrypted_content",
+      "usage": {
+        "input_tokens": 1186,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 1179
+        },
+        "output_tokens": 2,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1188
+      }
+    },
+    "earlier-video": {
+      "sha256": "5f069bb2459fe6c63a1d474cbf2230cfc0589701fd0400faa283346c17bf4b19",
+      "answer": "Blue",
+      "status": "completed",
+      "foreign": "invalid_encrypted_content",
+      "usage": {
+        "input_tokens": 1171,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0
+        },
+        "output_tokens": 2,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1173
+      }
+    },
+    "denied-tool": {
+      "sha256": "bb6aa8d554528486d801d7ff26802427f967927db1a9547002202334ac2ff59c",
+      "answer": "560",
+      "status": "completed",
+      "foreign": "invalid_encrypted_content",
+      "usage": {
+        "input_tokens": 1127,
+        "input_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 1120
+        },
+        "output_tokens": 4,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 1131
+      }
+    }
+  },
+  "fresh_signing": {
+    "status": "FAIL",
+    "http_status": 502,
+    "code": "compaction_refused",
+    "wire_model_log_sha256": "198b1bd0b0a938b13687bb56114ab4dbf7bf025162939cda5b2d26480156fa2e"
+  },
+  "published": false
+}

@@ -400,7 +400,8 @@ ObjectReply OpenResponsesCompaction(StateCipher& cipher,
                                     const Json& supplied_prefix,
                                     const Json& item,
                                     const ChatPlanConfig& config,
-                                    const StateAccess& access, Json* expanded) {
+                                    const StateAccess& access, Json* expanded,
+                                    bool* has_memory) {
   auto active = Active(access);
   if (!active.ok()) return active;
   if (!expanded || !supplied_prefix.IsArray() ||
@@ -449,6 +450,8 @@ ObjectReply OpenResponsesCompaction(StateCipher& cipher,
   }
   active = Active(access);
   if (!active.ok()) return active;
-  return Expanded(*retained, index->AsInt(), id, memory->str, expanded);
+  auto opened = Expanded(*retained, index->AsInt(), id, memory->str, expanded);
+  if (opened.ok() && has_memory) *has_memory = !memory->str.empty();
+  return opened;
 }
 }  // namespace q4t::server

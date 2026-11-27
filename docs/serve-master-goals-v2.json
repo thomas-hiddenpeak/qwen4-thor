@@ -3223,12 +3223,13 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Repair and verify new signed video continuation, then qualify the selected release.",
+        "remaining": "Fresh media summarizer refusal, final managed qualification and issuance.",
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
-        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json"
+        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json",
+        "signed_memory_guidance": "evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json"
       }
     },
     {
@@ -6892,12 +6893,13 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Repair and verify new signed video continuation, then qualify the selected release.",
+        "remaining": "Fresh media summarizer refusal, final managed qualification and issuance.",
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
-        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json"
+        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json",
+        "signed_memory_guidance": "evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json"
       }
     },
     {
@@ -12345,12 +12347,13 @@
       "compact_file_replay_20261127": {
         "state": "real_video_answer_verified",
         "evidence": "evidence/serve-compact-window-identities-20261127/files.json",
-        "remaining": "Repair and verify new signed video continuation, then qualify the selected release.",
+        "remaining": "Fresh media summarizer refusal, final managed qualification and issuance.",
         "business": "evidence/serve-compact-window-identities-20261127/video-business.json",
         "repaired_binary_replay": "evidence/serve-compact-window-identities-20261127/business.json",
         "profile_driver": "evidence/serve-compact-window-identities-20261127/handoff-driver.json",
         "capacity_profiles": "evidence/serve-compact-window-identities-20261127/profiles.json",
-        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json"
+        "fresh_window_continuation": "evidence/serve-compact-window-identities-20261127/fresh-video-continuation.json",
+        "signed_memory_guidance": "evidence/serve-compact-window-identities-20261127/signed-memory-guidance.json"
       }
     },
     {
