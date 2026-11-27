@@ -4431,6 +4431,11 @@
         "capacity": "evidence/serve-upload-completion-race-20261128/profiles.json",
         "managed": "evidence/serve-upload-completion-race-20261128/managed.json",
         "delivery": "evidence/serve-upload-completion-race-20261128/delivery.json"
+      },
+      "batch_cancellation_20261128": {
+        "stage": "native_cpu_validated",
+        "evidence": "evidence/serve-batch-cancel-20261128/cpu.json",
+        "issued": false
       }
     },
     {
