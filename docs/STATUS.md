@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已用已发行主包和同一份计划实测磁盘预检。64 MiB 临时文件系统上，`check` 和 `run` 均在取得 GPU 租约前退出；恢复原文件系统后，同一计划的 `check` 成功，全程模型启动为零。 [同一计划的实机复核](evidence/serve-native-soak-audio-20261127/disk-reserve.json)
+
 原生长稳入口现会在只读检查与每次实际启动前核对证据盘剩余空间。低于采集器已有的 12 GiB 门槛时会报告目录和可用字节，保留计划供空间恢复后再用。33 项 CPU 检查通过，覆盖恰达门槛、少一个字节、零子进程及零执行文件。 [磁盘预检](evidence/serve-native-soak-audio-20261127/disk-reserve.json)
 
 原生长稳驱动已在真实设备完成三轮短验。一次启动处理 19 条业务请求，首尾两轮均以刚合成的 MP3 完成转录，三个项目工具闭环通过。已为同一不可变发行包准备 24 小时计划，保留首小时检查点，由用户选择窗口执行。 [短验与交接](evidence/serve-native-soak-audio-20261127/short.json)

@@ -11061,6 +11061,11 @@
         "device": "evidence/serve-asset-admission-20261127/device.json",
         "capacity": "evidence/serve-asset-admission-20261127/profiles.json",
         "managed": "evidence/serve-asset-admission-20261127/managed.json"
+      },
+      "native_soak_disk_reserve_20261128": {
+        "stage": "real_cli_verified",
+        "evidence": "evidence/serve-native-soak-audio-20261127/disk-reserve.json",
+        "issued": false
       }
     },
     {
@@ -14763,6 +14768,11 @@
         "multipart": "evidence/serve-native-soak-audio-20261127/multipart.json",
         "short": "evidence/serve-native-soak-audio-20261127/short.json",
         "day_executed": false
+      },
+      "native_soak_disk_reserve_20261128": {
+        "stage": "real_cli_verified",
+        "evidence": "evidence/serve-native-soak-audio-20261127/disk-reserve.json",
+        "issued": false
       }
     }
   ],
