@@ -13,6 +13,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 OpenAPI 已为 244 个原生入口操作声明凭据和 401 挑战，另两项本地运维操作单列。通用 Swagger 客户端按打包版合同生成了 8 个请求，在真实入口通过了项目 Key、浏览器会话、上传和预览的正反例。两个完整文档通过 OpenAPI 3.1 官方元模式校验，补齐了三个 Assistants SSE 声明。下一步装入主、回退发行包。 [合同与入口记录](evidence/serve-openapi-ingress-auth-20261128/contract.json)
 
+rev584 已发行。模型重建与网关故障切换后，新 ChatKit 会话均读回原待回填工具调用并续问得到 42。迟到回填返回 409，跨会话及跨客户读取返回 404。生产期望状态为 STOPPED；登记时模型启动为零。音频日稳按新包重新准备，保留首小时检查点。 [发行回执](evidence/serve-chatkit-pending-user-message-20261127/delivery.json)
+
 模型意外退出、主网关异常后切换至回退包，两种实际恢复中，新浏览器会话均重开了原待回填调用。原两项内容摘要一致，新问题和独立 Chat 均答 42，迟到工具结果返回 409，跨会话与跨客户访问均返回 404。下一步登记已验证的主包和回退包。 [两种故障的恢复记录](evidence/serve-chatkit-pending-user-message-20261127/managed.json)
 
 主档在真实浏览器留下待回填工具后停止，轻档用新会话重新打开相同线程，原两项内容的摘要一致。新问题得到 42，迟到结果为 409，两种非所属读取均为 404。主、轻档分别发出 4 和 10 个浏览器或 SDK 请求，独立 Chat 和 WebRTC 均通过。下一步验证托管故障交接。 [容量交接](evidence/serve-chatkit-pending-user-message-20261127/profiles.json)
@@ -1406,13 +1408,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev582**。登记时服务意图为 `STOPPED`，模型启动 0 次，保留 13 项客户与恢复状态。 [发行回执](evidence/serve-asset-admission-20261127/delivery.json)
+本机登记的发行版本为 **rev584**。登记时服务意图为 `STOPPED`，模型启动 0 次，保留 13 项客户与恢复状态。 [发行回执](evidence/serve-chatkit-pending-user-message-20261127/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb` |
-| 回退服务包清单 | `a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9` |
-| 默认引擎 | `312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b` |
+| 主服务包清单 | `b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a` |
+| 回退服务包清单 | `28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28` |
+| 默认引擎 | `231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 
