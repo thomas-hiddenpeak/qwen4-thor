@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+六版官方 SDK 已通过原生 TLS 上传或读取 rev574 的真实发行记录，并在省略九项默认值时各自返回 574、读回保存的回答。显式流式且关闭保存也返回 574，完成后读取为 404。隔离主包完成 7 次生成，另有 12 次跨客户读取均为 404；包含租约修复的新发行仍待核验。[业务回执](evidence/serve-request-defaults-20261127/sdk-business.json)
+
 新包在封装时逐项比对六份独立 schema 及 OpenAPI 内嵌副本，覆盖类型化默认值和改写后的引用。设备已发行 rev574；用其主、回退包试验，原包均通过，跨版本混用两种方向均被拒绝。新校验和默认值仍待下一次发行。[封包验证](evidence/serve-request-defaults-20261127/seal.json)
 
 Responses 创建请求的九项默认值已写入稳定版和代理历史版 schema。Chat、视觉和 Completion 同步声明 `stop=null` 和 `logit_bias=null`。对照冻结 OpenAPI，8 项 Python 检查与 3 项原生 CPU 解析检查通过；保存的 Prompt 继续保留调用方的覆盖权。此项已验源码，发行包待同步。[对照回执](evidence/serve-request-defaults-20261127/cpu.json)
