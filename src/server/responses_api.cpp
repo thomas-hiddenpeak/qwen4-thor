@@ -287,8 +287,11 @@ ObjectReply ReadResponsesState(ObjectStore& objects,
           sequence->AsInt() != static_cast<int64_t>(i))
         return Error(503, "response_state_invalid", "Invalid retained event");
       if (static_cast<int64_t>(i) <= plan.starting_after) continue;
-      const auto wire = "event: " + type +
-                        "\r\ndata: " + OutputJson(ViewEvent(event, plan)) +
+      auto view = ViewEvent(event, plan);
+      if (!ProjectFunctionArgumentName(&view, response))
+        return Error(503, "response_state_invalid",
+                     "Function argument event has no matching output item");
+      const auto wire = "event: " + type + "\r\ndata: " + OutputJson(view) +
                         "\r\n\r\n";
       constexpr size_t limit = 32 * 1024 * 1024;
       if (wire.size() > limit || replay->wire.size() > limit - wire.size())

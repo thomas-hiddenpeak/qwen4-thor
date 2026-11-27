@@ -1,0 +1,13 @@
+{
+  "scope": "CPU driver checks with two actual predecessor records and the compiled candidate protocol. Profile observations are synthetic; the device profiles are pending.",
+  "positive_sdk_wires": 2,
+  "negative_wire_cases": 24,
+  "exact_predecessor_roundtrip": {
+    "primary": "d6cf6b10cf20fd9af51ebd45ff001a906ad9165a47528ca197bfd27c9d75b00a",
+    "light": "4bb3af7504572a94678dd33869f18ad3d88116f9c4f8614b1dbf27ed629fbc91"
+  },
+  "missing_predecessor_rejected": 2,
+  "checked_anchors": 1394,
+  "mutation_checks": 40,
+  "model_starts": 0
+}

@@ -39,6 +39,8 @@ void SetResponseCacheRetentionSpelling(io::Json& response, bool legacy);
 // Serialize an HTTP resource or SSE event, including records from older
 // releases. The stored snapshot keeps the native recovery diagnostic.
 io::Json ResponsesWireValue(io::Json value);
+// Resolve legacy arguments.done names against the same response and item ID.
+bool ProjectFunctionArgumentName(io::Json* event, const io::Json& response);
 // Apply the legacy SDK type only to typed output items at the HTTP boundary.
 void ProjectMcpErrorStrings(io::Json& value);
 

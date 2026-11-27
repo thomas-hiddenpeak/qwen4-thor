@@ -13019,6 +13019,9 @@
         },
         "type": {
           "$ref": "#/$defs/1006"
+        },
+        "name": {
+          "type": "string"
         }
       },
       "required": [

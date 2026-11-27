@@ -29,7 +29,9 @@ inline bool ValidHttpRequestId(std::string_view id) {
 enum class PythonResponsesView : unsigned char {
   kCurrent,
   kStringMcpError,
+  kStringMcpErrorAndNamedArguments,
   kStringMcpErrorAndHyphenatedCache,
+  kNamedArguments,
 };
 PythonResponsesView ClassifyPythonResponsesVersion(std::string_view version);
 

@@ -1,0 +1,877 @@
+{
+  "stage": "issued",
+  "previous_revision": 566,
+  "package_source": "0928901e4a5e9fa7eb9c4d7129b1d670b9cc07b8",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 568,
+    "version_revision": 213,
+    "profile_revision": 102,
+    "previous_profile_revision": 101,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "fa0073b6eedfd3781a15a7265478510b8ecece4952247818bcd2272007dd6146",
+    "fallback": "3db59f528a22d7ce08f6bbac2d3348f4986c783d232efa15cb5a9b7b8a3f55d5",
+    "engine": "b94562102bf4eb1b5d19528dd4ba00dd1e0a7f35820e055023ed80caba9a2e16",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "prior_primary": "245e90abc65d75893ba0d172e5f6fb19f19ba07838f0d2b23910d9f2a940f1d2",
+  "recovery": {
+    "fallback": {
+      "seconds": 202.9745327453129,
+      "starts": 2,
+      "journals": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": {
+          "2.8.1": {
+            "call": "3f138d8405617e8e8ca5890616203686895b3a445e6167b91253f11f26e4cff9",
+            "answer": "ebdb3e28f59b1e42261a5b136d65f11b0921c03af6f3892ae3358d667dad55ec",
+            "events": "571aa9e1d91711171ef5b4514174151ac6eabf427e7e72fa30feed9a9aa1edd9",
+            "resumed": "40f501c8bd0d6d96629d50e2c3f2f773ddd4fd477aa7ae774f65d63cf50b4115"
+          },
+          "3.55.1": {
+            "call": "2883e8adc15480e1ad6b9b7dac2daf328d0d511a83f60809e4275d79fc4d4202",
+            "answer": "856286859c381adef63d49f90f2b34b72c394781a007bd4197c8eb259c1f9b3e",
+            "events": "2f5cfc7578cb811649d5ab88604860936b15c61d16331c5b272ec179b857e7a0",
+            "resumed": "baaddf5fc5f354bbcd2d6c479fb3881d9a8b3ee7b510494a38bc159f794fb112"
+          }
+        },
+        "original": {
+          "2.8.1": {
+            "call": "3f138d8405617e8e8ca5890616203686895b3a445e6167b91253f11f26e4cff9",
+            "answer": "ebdb3e28f59b1e42261a5b136d65f11b0921c03af6f3892ae3358d667dad55ec",
+            "events": "571aa9e1d91711171ef5b4514174151ac6eabf427e7e72fa30feed9a9aa1edd9",
+            "resumed": "40f501c8bd0d6d96629d50e2c3f2f773ddd4fd477aa7ae774f65d63cf50b4115"
+          },
+          "3.55.1": {
+            "call": "2883e8adc15480e1ad6b9b7dac2daf328d0d511a83f60809e4275d79fc4d4202",
+            "answer": "856286859c381adef63d49f90f2b34b72c394781a007bd4197c8eb259c1f9b3e",
+            "events": "2f5cfc7578cb811649d5ab88604860936b15c61d16331c5b272ec179b857e7a0",
+            "resumed": "baaddf5fc5f354bbcd2d6c479fb3881d9a8b3ee7b510494a38bc159f794fb112"
+          }
+        },
+        "foreign": {
+          "2.8.1": [
+            404,
+            404
+          ],
+          "3.55.1": [
+            404,
+            404
+          ]
+        },
+        "port": 18161,
+        "egress": false
+      },
+      "new_responses": [
+        "resp_88ed2eeede8bc1de4d4414c15a9f283a",
+        "resp_36e613b8552dc55759b26a6b9d4411ee"
+      ],
+      "independent_chat": "42",
+      "lease": "ba0726fc8656693f315c40558c11d529f33cf3e3053609be805878aa45a56ef3"
+    },
+    "primary": {
+      "seconds": 348.22880324115977,
+      "starts": 2,
+      "journals": {
+        "guardian_same": true,
+        "old_generation": 1,
+        "new_generation": 2,
+        "restored": {
+          "2.8.1": {
+            "call": "3f138d8405617e8e8ca5890616203686895b3a445e6167b91253f11f26e4cff9",
+            "answer": "ebdb3e28f59b1e42261a5b136d65f11b0921c03af6f3892ae3358d667dad55ec",
+            "events": "571aa9e1d91711171ef5b4514174151ac6eabf427e7e72fa30feed9a9aa1edd9",
+            "resumed": "40f501c8bd0d6d96629d50e2c3f2f773ddd4fd477aa7ae774f65d63cf50b4115"
+          },
+          "3.55.1": {
+            "call": "2883e8adc15480e1ad6b9b7dac2daf328d0d511a83f60809e4275d79fc4d4202",
+            "answer": "856286859c381adef63d49f90f2b34b72c394781a007bd4197c8eb259c1f9b3e",
+            "events": "2f5cfc7578cb811649d5ab88604860936b15c61d16331c5b272ec179b857e7a0",
+            "resumed": "baaddf5fc5f354bbcd2d6c479fb3881d9a8b3ee7b510494a38bc159f794fb112"
+          }
+        },
+        "original": {
+          "2.8.1": {
+            "call": "3f138d8405617e8e8ca5890616203686895b3a445e6167b91253f11f26e4cff9",
+            "answer": "ebdb3e28f59b1e42261a5b136d65f11b0921c03af6f3892ae3358d667dad55ec",
+            "events": "571aa9e1d91711171ef5b4514174151ac6eabf427e7e72fa30feed9a9aa1edd9",
+            "resumed": "40f501c8bd0d6d96629d50e2c3f2f773ddd4fd477aa7ae774f65d63cf50b4115"
+          },
+          "3.55.1": {
+            "call": "2883e8adc15480e1ad6b9b7dac2daf328d0d511a83f60809e4275d79fc4d4202",
+            "answer": "856286859c381adef63d49f90f2b34b72c394781a007bd4197c8eb259c1f9b3e",
+            "events": "2f5cfc7578cb811649d5ab88604860936b15c61d16331c5b272ec179b857e7a0",
+            "resumed": "baaddf5fc5f354bbcd2d6c479fb3881d9a8b3ee7b510494a38bc159f794fb112"
+          }
+        },
+        "foreign": {
+          "2.8.1": [
+            404,
+            404
+          ],
+          "3.55.1": [
+            404,
+            404
+          ]
+        },
+        "port": 18161,
+        "egress": false
+      },
+      "new_responses": [
+        "resp_25a19bfec90401f1a095225dbab9ec35",
+        "resp_c453f4c0cb6f56e16377bfa8ebb005fb"
+      ],
+      "independent_chat": "42",
+      "lease": "fef2ced7cab79ede4e747b4f4c94a526f141eb3ba5966c20b23c34f4e131aa57"
+    }
+  },
+  "packaged_protocol": {
+    "before_publication": true,
+    "local_and_official_contracts": true,
+    "official_source": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+    "packages": {
+      "fallback": {
+        "manifest": "3db59f528a22d7ce08f6bbac2d3348f4986c783d232efa15cb5a9b7b8a3f55d5",
+        "optional_readers": {
+          "tools/serve_responses/compact_client.py": "67896abd2957b936e6d6015a8423ffc67bc01941ad79cc2818bd5c7321ec98e5",
+          "tools/serve_responses/program_client.py": "3da145fb4f713870e2a8017d8424fd11398125680d50887f24d90102f380004f"
+        },
+        "observed_resources": {
+          "program-sdk-profiles-01/primary/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "continuation": {
+              "content_sha256": "92519a4d3f926b70712fb5fdb8d9807572cd9ecdf5b9e8a399ea1716eb21d6be",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-profiles-01/primary/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "program-sdk-profiles-01/light/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-profiles-01/light/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "continuation": {
+              "content_sha256": "363562ff47a9f641571758f601f3e031aaef01534c0952e6642c231bbb1c1f92",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "program-sdk-fallback-business-01/prepare/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "continuation": {
+              "content_sha256": "0ac60ce8ef4da7b56f8a8404fc9a02f1a63a3d14ad0303b86f7690533ec8dee3",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-fallback-business-01/prepare/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "program-sdk-fallback-business-01/restore/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-fallback-business-01/restore/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "continuation": {
+              "content_sha256": "95de3e69ea337a101d3bad1e02bfcce2cece31109a7021c6b5432bdee5494943",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "fatal-business-program-sdk-01/prepare/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "continuation": {
+              "content_sha256": "d040d800af4f7a8402a7411d2a47e4bb8daa2848180c092d8ac530d30fa75d91",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "fatal-business-program-sdk-01/prepare/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "fatal-business-program-sdk-01/restore/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "fatal-business-program-sdk-01/restore/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "continuation": {
+              "content_sha256": "59b8b7f8c35734f233c9d08afb7d0f9e135903487e2639d9c0cf0e0eead9331a",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          }
+        }
+      },
+      "primary": {
+        "manifest": "fa0073b6eedfd3781a15a7265478510b8ecece4952247818bcd2272007dd6146",
+        "optional_readers": {
+          "tools/serve_responses/compact_client.py": "67896abd2957b936e6d6015a8423ffc67bc01941ad79cc2818bd5c7321ec98e5",
+          "tools/serve_responses/program_client.py": "3da145fb4f713870e2a8017d8424fd11398125680d50887f24d90102f380004f"
+        },
+        "observed_resources": {
+          "program-sdk-profiles-01/primary/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "continuation": {
+              "content_sha256": "92519a4d3f926b70712fb5fdb8d9807572cd9ecdf5b9e8a399ea1716eb21d6be",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-profiles-01/primary/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "program-sdk-profiles-01/light/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-profiles-01/light/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "continuation": {
+              "content_sha256": "363562ff47a9f641571758f601f3e031aaef01534c0952e6642c231bbb1c1f92",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "program-sdk-fallback-business-01/prepare/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "continuation": {
+              "content_sha256": "0ac60ce8ef4da7b56f8a8404fc9a02f1a63a3d14ad0303b86f7690533ec8dee3",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-fallback-business-01/prepare/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "program-sdk-fallback-business-01/restore/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "program-sdk-fallback-business-01/restore/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "continuation": {
+              "content_sha256": "95de3e69ea337a101d3bad1e02bfcce2cece31109a7021c6b5432bdee5494943",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "fatal-business-program-sdk-01/prepare/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "continuation": {
+              "content_sha256": "d040d800af4f7a8402a7411d2a47e4bb8daa2848180c092d8ac530d30fa75d91",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "fatal-business-program-sdk-01/prepare/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          },
+          "fatal-business-program-sdk-01/restore/2.8.1": {
+            "call": {
+              "content_sha256": "d55120161662b952f934e42d0c1949bd6da4a083e9e19649ae668b7419291533",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "answer": {
+              "content_sha256": "1647ce9dcd52f3702e13d3934574d63cc61e6d707fb95c4523b59e0be8ad10f8",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            },
+            "marker": {
+              "content_sha256": "8a554214bc8984bafd0c05eef9a9e8906319b0fcee41bbd9a501c709b55789cb",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "42c985f2af38bff48f5fdacb69ddc2c450cb6efcf291c74030052e05953c3366",
+              "upstream_original": false,
+              "reviewed_legacy_fields": [
+                "prompt_cache_retention"
+              ]
+            }
+          },
+          "fatal-business-program-sdk-01/restore/3.55.1": {
+            "call": {
+              "content_sha256": "8c0efbb1daf7d3f42e9f9f1cbb0265c45c23cb8744493787d73b477ac5971fbf",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "answer": {
+              "content_sha256": "ea7d820a9fef8461ea61b8069af23ce81dded5e0d2c1dafbae4dfbaf0d44dafc",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "continuation": {
+              "content_sha256": "59b8b7f8c35734f233c9d08afb7d0f9e135903487e2639d9c0cf0e0eead9331a",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "marker": {
+              "content_sha256": "2e1936b7bcf94d9f82190df127fe8c32b0e29a20a1c3aeb8ab87180ee16044a2",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            },
+            "terminal": {
+              "content_sha256": "95d538922c3e97f6763363ee4b1f927a4a47295ab13252a185494c9888a493de",
+              "upstream_original": true,
+              "reviewed_legacy_fields": []
+            }
+          }
+        }
+      }
+    }
+  },
+  "optional_readers": {
+    "tools/serve_responses/compact_client.py": "67896abd2957b936e6d6015a8423ffc67bc01941ad79cc2818bd5c7321ec98e5",
+    "tools/serve_responses/program_client.py": "3da145fb4f713870e2a8017d8424fd11398125680d50887f24d90102f380004f"
+  },
+  "day": {
+    "source_commit": "0928901e4a5e9fa7eb9c4d7129b1d670b9cc07b8",
+    "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-sdk-delivery-soak-src",
+    "package": {
+      "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-sdk-client-primary-01/bundle",
+      "manifest_sha256": "fa0073b6eedfd3781a15a7265478510b8ecece4952247818bcd2272007dd6146"
+    },
+    "revision": 568,
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-sdk-delivery-soak-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "e7a735b4fb1027dbac9cf0901b65c9bc4e60be6ef1c00195a39fca747e6c3943",
+    "handoff_sha256": "6f9eece8327f7c0d0abd90262ba58bb50a6d0141df3250c2220add89b5a1d11b",
+    "checked": true,
+    "source_files": 700,
+    "hours_executed": 0
+  },
+  "cold": {
+    "status": "PREPARED",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/program-sdk-delivery-soak-src/.q4t-work/cold568-01/plan.json",
+    "plan_sha256": "3d4f61f760b8b1ba8f39cb3add061b663ed8c706e957f074c063ca4019b5bad0",
+    "service_id": "bcd54d5c-f466-47fd-8d86-e3ddbbbb5c5f",
+    "source": "0928901e4a5e9fa7eb9c4d7129b1d670b9cc07b8",
+    "limits": {
+      "starts": 1,
+      "chats": 3,
+      "probes": 1,
+      "controls": 2000,
+      "seconds": 600
+    },
+    "publication": 568,
+    "registered_package": "fa0073b6eedfd3781a15a7265478510b8ecece4952247818bcd2272007dd6146",
+    "protected": {
+      "/home/rm01/models/dev/qwen4-thor/build/q4t": "b94562102bf4eb1b5d19528dd4ba00dd1e0a7f35820e055023ed80caba9a2e16",
+      "/home/rm01/models/dev/qwen4-thor/build/q4t.release.json": "1edf6b3f0d48a58979750ac1eecd97e9c81914c5947bfd040bbbe7c046a1b5d9",
+      "/home/rm01/models/dev/qwen4-thor/build/service/manifest.json": "fa0073b6eedfd3781a15a7265478510b8ecece4952247818bcd2272007dd6146",
+      "/home/rm01/models/dev/qwen4-thor/build/service.release.json": "78e35e9d5b1e99c5a5550e239ee6faeabf24d68cdb6312b219e3cf65b8a9b9ca",
+      "/home/rm01/models/dev/qwen4-thor/build/service-native-state/ledger.json": "2a4e326b50e2867482cdc06cc9d343dbb42fdffbc85bd884c7e2d9a09efdab16"
+    },
+    "model_actions": 0,
+    "host_filter_installed": false,
+    "host_units_modified": false
+  },
+  "declared_methods": "219/231",
+  "real_foreground": "9878010ae39cf5ff12a2a0eb689ee9f160cee6335a2d9a4e3a2fe0453ff69f79",
+  "profiles_sha256": "24f574e1b4b47e658944640e730cd96b813c119ce85932310ebc62bfa539a892"
+}

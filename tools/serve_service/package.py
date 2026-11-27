@@ -31,6 +31,10 @@ V9_SOURCES = (*V8_SOURCES, 'tools/serve_service/auxiliary.py')
 V10_SOURCES = V9_SOURCES  # Same inventory; new resource-control contract.
 V11_SOURCES = (*V10_SOURCES, 'tools/serve_service/capacity.py')
 FILES = ('q4t', 'q4t.release.json', 'CMakeCache.txt', 'acceptance.json')
+RESPONSE_READERS = {
+    'compaction': 'tools/serve_responses/compact_client.py',
+    'programmatic_tools': 'tools/serve_responses/program_client.py',
+}
 APPLICATION_LIMITS = dict(max_object_mib=16, max_client_mib=64, max_total_mib=256,
     max_client_objects=1000, max_total_objects=10000, io_timeout_ms=2000)
 # Absent in historical x-vector-only releases. Keep this behavior declaration
@@ -731,6 +735,32 @@ def web_policy_binding(binary, path, raw):
         digest_field='source_sha256')
 
 
+def response_reader_paths(metadata):
+    responses = metadata.get('chat_protocol', {}).get('responses', {})
+    return [path for feature, path in RESPONSE_READERS.items()
+            if responses.get(feature, {}).get('enabled') is True]
+
+
+def verify_response_readers(package, digest):
+    """Check client distribution files without loading the SDK or model."""
+    package = Path(package).resolve(strict=True)
+    require(sha(package/'manifest.json') == digest, 'package manifest changed')
+    manifest = read(package/'manifest.json')
+    release = package/'q4t.release.json'
+    require(sha(release) == manifest['files']['q4t.release.json'],
+            'client release metadata changed')
+    paths = response_reader_paths(read(release))
+    files = manifest.get('response_sdk_readers', {})
+    require(paths and type(files) is dict and set(files) == set(paths),
+            'package lacks the declared Responses SDK readers')
+    for name, expected in files.items():
+        path = package/'clients'/name
+        require(path == path.resolve(), 'client reader path changed: '+name)
+        regular(path)
+        require(sha(path) == expected, 'client reader changed: '+name)
+    return files
+
+
 def prepare(binary, release, model, output, port=8080, restart_limit=0,
             critical_memory_mib=1024, client_policy=None, host_resources=None,
             operations_port=0, nvml_policy='strict', model_names=None,
@@ -970,6 +1000,23 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['webhook_policy'] = webhook_binding
     manifest['release_declarations'] = metadata['release_declarations']['profile']
     manifest['third_party_notices'] = dict(profile='q4t-notices-v1', files=list(NOTICE_FILES))
+    reader_paths = response_reader_paths(metadata)
+    if reader_paths:
+        # A prepared engine's source tree has the client files in ../clients.
+        reader_root = ROOT
+        previous_manifest = ROOT.parent/'manifest.json'
+        if ROOT.name == 'source' and previous_manifest.is_file():
+            verify_response_readers(ROOT.parent, sha(previous_manifest))
+            reader_root = ROOT.parent/'clients'
+        files = {}
+        for name in reader_paths:
+            source, dest = reader_root/name, target/'clients'/name
+            regular(source)
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, dest)
+            dest.chmod(0o400)
+            files[name] = sha(source)
+        manifest['response_sdk_readers'] = files
     if policy_raw is not None:
         manifest['version'] = 4
         manifest['client_policy'] = cp.binding(policy_raw)
@@ -985,6 +1032,8 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
         manifest['version'] = 11
     save(target/'manifest.json', manifest)
     verify(target, sha(target/'manifest.json'))
+    if reader_paths:
+        verify_response_readers(target, sha(target/'manifest.json'))
     return dict(package=str(target), manifest_sha256=sha(target/'manifest.json'),
                 binary_sha256=manifest['files']['q4t'])
 

@@ -47,9 +47,11 @@ PythonResponsesView ClassifyPythonResponsesVersion(std::string_view version) {
   if (major == 2 && minor >= 8 && minor < 33)
     return View::kStringMcpErrorAndHyphenatedCache;
   // MCP arrived in 1.80.0. Structured MCP errors arrived in 3.1.0.
-  if ((major == 1 && minor >= 80) || major == 2 ||
-      (major == 3 && minor == 0))
-    return View::kStringMcpError;
+  if (major == 1 && minor >= 80) return View::kStringMcpError;
+  if (major == 2 || (major == 3 && minor == 0))
+    return View::kStringMcpErrorAndNamedArguments;
+  // 2.0.0 through 3.8.x require the function name in arguments.done.
+  if (major == 3 && minor < 9) return View::kNamedArguments;
   return View::kCurrent;
 }
 

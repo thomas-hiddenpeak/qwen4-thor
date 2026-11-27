@@ -1,0 +1,58 @@
+{
+  "scope": "New ordinary function over real native TLS using the stock strict generated methods",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "seconds": 32.533,
+    "unchanged_default": true,
+    "phases": [
+      "create"
+    ]
+  },
+  "build": {
+    "files": {
+      "q4t": "b94562102bf4eb1b5d19528dd4ba00dd1e0a7f35820e055023ed80caba9a2e16",
+      "q4t-ingress": "235632a05b9fe2e222239ce436b183b55e0ca0e82711a0c88b827f4ff50e73bf",
+      "q4t-guardian": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+      "q4t-cuda-probe": "b06f8b1c04814d1b51fda62da1a7530e66f9ef59f7744f84e0ebc1318259f3d3",
+      "q4t-device-control": "00a8a4837bf81b87135416de250023a925e58bed4f9032e55c2c2d69f2577f3f"
+    },
+    "protocol_sources": 1104
+  },
+  "sdk": {
+    "sdk": "2.8.1",
+    "response_id": "resp_f45df1118cbadcc527c1e4eb19911a3c",
+    "followup": "resp_ba6b0c693fdff233dda5b29024a68512",
+    "function": "get_project_release",
+    "item_id": "fc_7185dab41c55f0e8f02a851e5e21f977",
+    "call_id": "call_resp_f45df1118cbadcc527c1e4eb19911a3c_0",
+    "marker": {
+      "arguments": "{}",
+      "item_id": "fc_7185dab41c55f0e8f02a851e5e21f977",
+      "name": "get_project_release",
+      "output_index": 0,
+      "sequence_number": 5,
+      "type": "response.function_call_arguments.done"
+    },
+    "cursor": 4,
+    "frames": 8,
+    "vary": [
+      "x-stainless-lang",
+      "x-stainless-package-version"
+    ],
+    "peer": 404,
+    "modern": {
+      "version": "3.55.1",
+      "has_name": false,
+      "sequence": 5,
+      "item_id": "fc_7185dab41c55f0e8f02a851e5e21f977"
+    },
+    "revision": 566,
+    "answer": "566"
+  },
+  "driver_sha256": "d3bb442ceb559e48d0753fb078aca7f68329b65cca51d9dc887679d54856710b",
+  "actor_sha256": "0a3a67e7afeb5e8de958fbd6b317e2dfb2ca9667ac04dc755977e68e6d82d12b",
+  "lease_sha256": "2ae9f5ceeb5c982a690ea20cd4c1b9fd0ce34d5dfe2e37395fefdceed83956b6",
+  "source_parent": "282c4d7cc0e158526aac0aa1603ce7bfd3bbd33b",
+  "published": false
+}

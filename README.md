@@ -388,6 +388,40 @@ def continue_from_compact_window(client, model, history, next_question):
 [双版本类型验证](docs/evidence/serve-compact-window-identities-20261127/typed-client.json)
 和[原生 TLS 续答记录](docs/evidence/serve-compact-window-identities-20261127/business.json)。
 
+从 SDK 2.8.1 的客户端也可以用上面的 `client.post` 调用读取压缩窗口。
+读取器会保留历史 MCP 错误的原始表示，包括字符串和结构化对象。
+两种历史格式及文件、图像窗口已在四个 SDK 版本核对。[版本与回放记录](docs/evidence/serve-program-sdk-reader-20261127/packaged-readers.json)
+
+含 `response_sdk_readers` 清单的服务包在 `engine/clients/` 中提供对应
+Python 模块。将下列路径替换为实际服务包目录和随包登记的引擎清单摘要，
+验证后可把 `clients/` 目录复制到客户端，并加入其 `PYTHONPATH`。
+只有使用读取器的客户端需要安装 OpenAI Python SDK。
+
+```bash
+python3 -IB "$engine/source/tools/serve_service/service.py" verify-clients \
+  --package "$engine" --manifest-sha256 "$engine_manifest_sha256"
+```
+
+使用程序化工具的 Python 客户端可以严格校验程序、工具调用来源和结果。
+以下示例使用已启用严格响应校验的 OpenAI 客户端。
+如果项目仍使用 2.8.1 或 2.33.0，可在官方 SDK 的同一次请求上指定
+q4t 的返回类型。3.42.1 和 3.55.1 使用 SDK 自带类型。以下代码读取
+已有响应，并从上一次收到的序号继续消费事件。
+
+```python
+from openai import Stream
+from tools.serve_responses.program_client import ProgramResponse, ProgramStreamEvent
+
+raw = client.responses.with_raw_response.retrieve(response_id)
+response = raw.parse(to=ProgramResponse)
+raw_stream = client.responses.with_raw_response.retrieve(
+    response_id, stream=True, starting_after=last_sequence
+)
+with raw_stream.parse(to=Stream[ProgramStreamEvent]) as events:
+    for event in events:
+        consume(event)
+```
+
 部署方可按需在原生入口之前放置 nginx。下面的片段放在 nginx 的
 `http` 块。本机示例将请求转给 18161 端口的 q4t 原生入口；公开监听
 地址、TLS 和来源限制由部署方配置，Host 应与原生 `server_name` 一致。

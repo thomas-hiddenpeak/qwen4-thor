@@ -1,0 +1,400 @@
+{
+  "scope": "Four saved program responses and immutable events read on native CPU HTTP through strict clients",
+  "model_starts": 0,
+  "foreign_read_status": 404,
+  "source_store_files": 6,
+  "fixture_sha256": "09c5575bff6eaf3484035e386566050af078e26c7948e9e34aae7d28928f2dfb",
+  "sources": {
+    "initial": {
+      "wire": "a9c4d44a181ec6d338ce2530b75ed33ec69a67b6a541b95f2e528214db2268c9",
+      "record": "64cefb22e7f3f65fb6d1b4b151886476bc5d0453d60e70017370b0ed9458c04a"
+    },
+    "repeat": {
+      "wire": "931a97fa83b24d28f6912c9e66b6c236f457bbcfbaed38979b5d12257faabd24",
+      "record": "acccddf5feae185a6f1b642243afb8db645683fafd1e75ac90f0654ed96de93f"
+    },
+    "answer-548": {
+      "wire": "df42d3b53bb177ae9dcddaf8b26354ae3612f3c11c481f3fde10ac9b27fedd1a",
+      "record": "ccb9022274be4d63cd4f221a6b12d5b5446097fdcb8eaf5fac2a073d4c2fc60e"
+    },
+    "answer-550": {
+      "wire": "173fd207969a279c915fb91714dc169fbf41dd9a238bb57a7b7d65a881dcd9c3",
+      "record": "11477be399c8628db72f899f690fba90c33ae60879f5e11f759bd2a2084843d9"
+    }
+  },
+  "readers": {
+    "2.8.1": {
+      "version": "2.8.1",
+      "native_types": false,
+      "cases": {
+        "initial": {
+          "stock_type_rejected": true,
+          "body_sha256": "fb6ccc77696dedbd308850ab802c2b87f0356390a897f7ebd7445f3dc1a3035d",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 144,
+              "sha256": "4deae9fa25552e62824caaf436c11aa41d4047d5ade3b853d1ae72ec77ad8f45"
+            },
+            "2": {
+              "events": 141,
+              "sha256": "b91bb961e8fa4b52b125de13c284d97d7a20275e2b45a4fb42bf346a94b4f70f"
+            },
+            "134": {
+              "events": 9,
+              "sha256": "6abf16fbba0d3a7bfadd7edff938f5dde4d44a27ad4dae88152a2624451e9d67"
+            }
+          }
+        },
+        "repeat": {
+          "stock_type_rejected": true,
+          "body_sha256": "4d68c6983734cc1cf9295cde799a2c10c6bf5f9e1eae38e4d0a88451a34438de",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 6,
+              "sha256": "ab2193aa5e84c1515226b345f8f7f291e3d36d9885f8ea645b25f478c28b31e8"
+            },
+            "2": {
+              "events": 3,
+              "sha256": "ddd8a01880259ac4165d90200d52d867a84a802b948bdae1b45e3ea5b9e832ae"
+            }
+          }
+        },
+        "answer-548": {
+          "stock_type_rejected": true,
+          "body_sha256": "c0681b3b2171f74e523def72ca5dd294b32d7e59f6a221205a5e5006cb34aca9",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "40a9e4cefc7e90318211ec3d6e6f98ed39a5c6ce5454b1ff4f1e78787d2546b3"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "f35f0099cf34e85c421f8179d26efcae696fbe4d385c1a3899437dca21de194d"
+            }
+          }
+        },
+        "answer-550": {
+          "stock_type_rejected": true,
+          "body_sha256": "5b82068cad5cc57d27e1436260147e04ec408cf19cae400ecfe552223b25d013",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "1e151e9b2164d805602ae465a00e5cb7d4386b879a593bec2fb5d387fb9f2eee"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "e446ed0d67806f4f23e288cf4ecc4a825fb0a7785257d0dd22539c902fc9560c"
+            }
+          }
+        }
+      },
+      "negative": {
+        "missing_fingerprint": true,
+        "nontext_code": true,
+        "unknown_caller": true,
+        "caller_id_missing": true,
+        "bad_output_done_item": true,
+        "invalid_allowed_caller": true,
+        "invalid_program_status": true
+      }
+    },
+    "2.33.0": {
+      "version": "2.33.0",
+      "native_types": false,
+      "cases": {
+        "initial": {
+          "stock_type_rejected": true,
+          "body_sha256": "c2c782fa0c286b94874d14e4e0f20d23a91b16cec59aaaf332387c849fde7829",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 144,
+              "sha256": "147dd201add0654b971a072e9bec7dad88aa94806ca60a9b784141fbe4a5bf9e"
+            },
+            "2": {
+              "events": 141,
+              "sha256": "ec6717842285f92b90b26aea14fc21e481ef63e53b4f4cfb74be1bb342feb452"
+            },
+            "134": {
+              "events": 9,
+              "sha256": "100ba7cc4b7040f7d634542cfa94dc003a4360007b553823d679a6e1f37a5021"
+            }
+          }
+        },
+        "repeat": {
+          "stock_type_rejected": true,
+          "body_sha256": "e237b16c57388e38c3e9eb56de4d2d33b7165965a72a3b0493ed4deb214d3cdf",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 6,
+              "sha256": "56a9ed1a2a4498b22684ffdcea1bbf019d714ff927be9d83e23673b45b6c9bb9"
+            },
+            "2": {
+              "events": 3,
+              "sha256": "c50f489e69d01251c1267d0e4436a52f40e4033e63030e97c706d3af341b6599"
+            }
+          }
+        },
+        "answer-548": {
+          "stock_type_rejected": true,
+          "body_sha256": "3168f4a424a60640c6b603688f9207233241b585178f43b1e80babb641b38a65",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "d8aa228ded20abb7f2698a9032c99cb3a6420da2aaf5fd8e23db75dc33947f6f"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "5a8d0b7eb6d735e0f8b19818463d362bd7c09a80f6ef32c3a262960e7d46388e"
+            }
+          }
+        },
+        "answer-550": {
+          "stock_type_rejected": true,
+          "body_sha256": "9c943c5fa7850f393b35c75d1f0da839f9427c3fa4133d9c7d01c934638adcd3",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "abb4955717376511c9d9aec27138df036a093a0c472a71a4342217d73acb9fa7"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "8b9fcbcf694570449b9374021dc4394a5e16bd7728a394ece5357307746cf839"
+            }
+          }
+        }
+      },
+      "negative": {
+        "missing_fingerprint": true,
+        "nontext_code": true,
+        "unknown_caller": true,
+        "caller_id_missing": true,
+        "bad_output_done_item": true,
+        "invalid_allowed_caller": true,
+        "invalid_program_status": true
+      }
+    },
+    "3.42.1": {
+      "version": "3.42.1",
+      "native_types": true,
+      "cases": {
+        "initial": {
+          "stock_type_rejected": false,
+          "body_sha256": "c2c782fa0c286b94874d14e4e0f20d23a91b16cec59aaaf332387c849fde7829",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 144,
+              "sha256": "b4a59e7cce7a2e96f823def14cd0a56f6aacacd7e594f18294f568618ae94e06"
+            },
+            "2": {
+              "events": 141,
+              "sha256": "99e80e8efce59d559fee9f457d1072ba70157fdeb5ecb37df9508157ad99811f"
+            },
+            "134": {
+              "events": 9,
+              "sha256": "e3c2970773ba136a62619bda101724f33b14c7436a97aaebb4fd98a0a7e7c076"
+            }
+          }
+        },
+        "repeat": {
+          "stock_type_rejected": false,
+          "body_sha256": "e237b16c57388e38c3e9eb56de4d2d33b7165965a72a3b0493ed4deb214d3cdf",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 6,
+              "sha256": "ada296ab524fa6d626811023ccfb1de65479918eef1a1d3d310983e67a1a753e"
+            },
+            "2": {
+              "events": 3,
+              "sha256": "e25e8dc6d2956cb93b65f1b2db2238015369ec981b39829eaa9da308f4c1436d"
+            }
+          }
+        },
+        "answer-548": {
+          "stock_type_rejected": false,
+          "body_sha256": "3168f4a424a60640c6b603688f9207233241b585178f43b1e80babb641b38a65",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "d8aa228ded20abb7f2698a9032c99cb3a6420da2aaf5fd8e23db75dc33947f6f"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "5a8d0b7eb6d735e0f8b19818463d362bd7c09a80f6ef32c3a262960e7d46388e"
+            }
+          }
+        },
+        "answer-550": {
+          "stock_type_rejected": false,
+          "body_sha256": "9c943c5fa7850f393b35c75d1f0da839f9427c3fa4133d9c7d01c934638adcd3",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "abb4955717376511c9d9aec27138df036a093a0c472a71a4342217d73acb9fa7"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "8b9fcbcf694570449b9374021dc4394a5e16bd7728a394ece5357307746cf839"
+            }
+          }
+        }
+      },
+      "negative": {
+        "missing_fingerprint": true,
+        "nontext_code": true,
+        "unknown_caller": true,
+        "caller_id_missing": true,
+        "bad_output_done_item": true,
+        "invalid_allowed_caller": true,
+        "invalid_program_status": true
+      }
+    },
+    "3.55.1": {
+      "version": "3.55.1",
+      "native_types": true,
+      "cases": {
+        "initial": {
+          "stock_type_rejected": false,
+          "body_sha256": "c2c782fa0c286b94874d14e4e0f20d23a91b16cec59aaaf332387c849fde7829",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 144,
+              "sha256": "b4a59e7cce7a2e96f823def14cd0a56f6aacacd7e594f18294f568618ae94e06"
+            },
+            "2": {
+              "events": 141,
+              "sha256": "99e80e8efce59d559fee9f457d1072ba70157fdeb5ecb37df9508157ad99811f"
+            },
+            "134": {
+              "events": 9,
+              "sha256": "e3c2970773ba136a62619bda101724f33b14c7436a97aaebb4fd98a0a7e7c076"
+            }
+          }
+        },
+        "repeat": {
+          "stock_type_rejected": false,
+          "body_sha256": "e237b16c57388e38c3e9eb56de4d2d33b7165965a72a3b0493ed4deb214d3cdf",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 6,
+              "sha256": "ada296ab524fa6d626811023ccfb1de65479918eef1a1d3d310983e67a1a753e"
+            },
+            "2": {
+              "events": 3,
+              "sha256": "e25e8dc6d2956cb93b65f1b2db2238015369ec981b39829eaa9da308f4c1436d"
+            }
+          }
+        },
+        "answer-548": {
+          "stock_type_rejected": false,
+          "body_sha256": "3168f4a424a60640c6b603688f9207233241b585178f43b1e80babb641b38a65",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "d8aa228ded20abb7f2698a9032c99cb3a6420da2aaf5fd8e23db75dc33947f6f"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "5a8d0b7eb6d735e0f8b19818463d362bd7c09a80f6ef32c3a262960e7d46388e"
+            }
+          }
+        },
+        "answer-550": {
+          "stock_type_rejected": false,
+          "body_sha256": "9c943c5fa7850f393b35c75d1f0da839f9427c3fa4133d9c7d01c934638adcd3",
+          "body_roundtrip": true,
+          "streams": {
+            "None": {
+              "events": 73,
+              "sha256": "abb4955717376511c9d9aec27138df036a093a0c472a71a4342217d73acb9fa7"
+            },
+            "2": {
+              "events": 70,
+              "sha256": "8b9fcbcf694570449b9374021dc4394a5e16bd7728a394ece5357307746cf839"
+            }
+          }
+        }
+      },
+      "negative": {
+        "missing_fingerprint": true,
+        "nontext_code": true,
+        "unknown_caller": true,
+        "caller_id_missing": true,
+        "bad_output_done_item": true,
+        "invalid_allowed_caller": true,
+        "invalid_program_status": true
+      }
+    }
+  },
+  "upstream": {
+    "v1.109.1": {
+      "requires_name": false,
+      "sha256": "3f0dd886eae7ab6c724668fe1e934fa77994f6b83c66048cba51e56f83530d0f",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v1.109.1/src/openai/types/responses/response_function_call_arguments_done_event.py"
+    },
+    "v2.0.0": {
+      "requires_name": true,
+      "sha256": "e912b920f95b34a78459b7fceed75469fd6a74a6a7bb618b993a62bf20afe700",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.0.0/src/openai/types/responses/response_function_call_arguments_done_event.py"
+    },
+    "v2.8.1": {
+      "requires_name": true,
+      "sha256": "e912b920f95b34a78459b7fceed75469fd6a74a6a7bb618b993a62bf20afe700",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.8.1/src/openai/types/responses/response_function_call_arguments_done_event.py"
+    },
+    "v2.33.0": {
+      "requires_name": true,
+      "sha256": "e3cde3192ef1356f954a2bdfae0142a31e5623d0176a461137729a4d56796739",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v2.33.0/src/openai/types/responses/response_function_call_arguments_done_event.py"
+    },
+    "v3.8.0": {
+      "requires_name": true,
+      "sha256": "c88f2b3f73dd36bfc8857dd6d23dd6099ef0d337c782cb3d3dcb1dd5c0871f0b",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.8.0/src/openai/types/responses/response_function_call_arguments_done_event.py"
+    },
+    "v3.9.0": {
+      "requires_name": false,
+      "sha256": "6326663994821d5952697a5da07b48ab558a0668da408653746c5bef66ac2dab",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.9.0/src/openai/types/responses/response_function_call_arguments_done_event.py"
+    },
+    "v3.55.1": {
+      "requires_name": false,
+      "sha256": "6326663994821d5952697a5da07b48ab558a0668da408653746c5bef66ac2dab",
+      "url": "https://raw.githubusercontent.com/openai/openai-python/v3.55.1/src/openai/types/responses/response_function_call_arguments_done_event.py"
+    }
+  },
+  "native_cases": 3,
+  "unit_cases_per_sdk": 2,
+  "source_check": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1394,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "baseline_failures": [
+    "Old SDK strict resource rejected programmatic tools and output",
+    "After typed resource support, original event stream still rejected missing function name",
+    "Initial fixture isolation check counted the store lock created on first read. Final run pre-created the normal lock and verified the entire file set and its hashes."
+  ],
+  "native_rule": "Only negotiated Python 2.0.0–3.8.x. Event name resolved from matching output index, item ID and function type, including starting_after immediately before the event.",
+  "limits": "Saved native device records replayed through CPU HTTP. Fresh model-generated foreground SSE pending. The stock old SDK union does not gain new classes; its documented parse(to=...) path uses the project types."
+}

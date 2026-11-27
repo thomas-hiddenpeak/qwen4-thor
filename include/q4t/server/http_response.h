@@ -100,6 +100,7 @@ class HttpResponseContext {
   static HttpResponseContext* Current(int fd);
   static bool LegacyCacheRetention();
   static bool LegacyMcpError();
+  static bool LegacyFunctionArgumentName();
   void SetResponsesView(PythonResponsesView view) {
     responses_view_ = view;
   }
