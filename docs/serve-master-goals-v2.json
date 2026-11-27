@@ -9418,7 +9418,8 @@
       "node_responses_sdk_20261127": {
         "evidence": "evidence/serve-node-sdk-presentation-20261127/cpu.json",
         "status": "native_tls_business_verified_package_pending",
-        "business": "evidence/serve-node-sdk-presentation-20261127/business.json"
+        "business": "evidence/serve-node-sdk-presentation-20261127/business.json",
+        "profile_cpu": "evidence/serve-node-sdk-presentation-20261127/profile-cpu.json"
       },
       "standard_stream_media_20261127": {
         "receipt": "evidence/serve-stream-media-20261127/routes.json",
@@ -13849,7 +13850,8 @@
       "node_responses_sdk_20261127": {
         "evidence": "evidence/serve-node-sdk-presentation-20261127/cpu.json",
         "status": "native_tls_business_verified_package_pending",
-        "business": "evidence/serve-node-sdk-presentation-20261127/business.json"
+        "business": "evidence/serve-node-sdk-presentation-20261127/business.json",
+        "profile_cpu": "evidence/serve-node-sdk-presentation-20261127/profile-cpu.json"
       },
       "standard_stream_media_20261127": {
         "receipt": "evidence/serve-stream-media-20261127/routes.json",
