@@ -1,0 +1,326 @@
+{
+  "status": "PASS",
+  "registered": false,
+  "stock_sdk": "python-3.55.1",
+  "actor_sha256": "184deb87cad6eb4d390e600ac5c06f04a10408c61a4501f5bfd9eca663974404",
+  "roles": {
+    "fallback": {
+      "incident": "model_exit",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967",
+      "requests": {
+        "prepare": {
+          "response": "resp_5334418d58558301e1cc1cc461a82f67",
+          "traces": [
+            "req-7c5d69af91f75632ad383ce970a93543",
+            "req-0cb77ec0eb694313cff95549770be1fb",
+            "req-cbb6a2b0967d2eb8e28c53cf4e0cae34",
+            "req-c0306631f80c72f77991265e832af8ed",
+            "req-2081fda48f74ee4fef7a58b7365906dc"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-7c5d69af91f75632ad383ce970a93543",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-0cb77ec0eb694313cff95549770be1fb",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses/resp_5334418d58558301e1cc1cc461a82f67",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-cbb6a2b0967d2eb8e28c53cf4e0cae34",
+              "query": "include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_5334418d58558301e1cc1cc461a82f67",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-c0306631f80c72f77991265e832af8ed",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_5334418d58558301e1cc1cc461a82f67",
+              "method": "GET",
+              "status": 404,
+              "trace": "req-2081fda48f74ee4fef7a58b7365906dc",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "source_sha256": {
+            "prepare-capabilities.json": "e45d60a8d469885918171f2a21d49f59d0be429352846ae5ede4ff758df4a986",
+            "prepare-requests.json": "e753b6a2cd9c02ca862bbd8e7626d9be26f8067bb513e200cc45ad5146a56362",
+            "prepare-projection.json": "6ee7f6058ba5b28dacf82ab8905af3271f814efcf18c2496c4839798262f264c"
+          }
+        },
+        "restore": {
+          "response": "resp_830afaf5b5ad66a4b9b9b15e7461df3c",
+          "traces": [
+            "req-a3b2a3522e0ef4c32212e7e613da84c8",
+            "req-aeffe5453f405fc13e240205eab7cd12",
+            "req-a1ea7ba0190f3d217065fa9314881186",
+            "req-a260e350a74a3ae27ddfba4fe1f50c81",
+            "req-96fce584befbef3067469261f9008ab9",
+            "req-6c17ea43f35d6da0be28c9a899720616",
+            "req-82e7bf20eb31c266f62ed189c7b13b05"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-a3b2a3522e0ef4c32212e7e613da84c8",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses/resp_5334418d58558301e1cc1cc461a82f67",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-aeffe5453f405fc13e240205eab7cd12",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_5334418d58558301e1cc1cc461a82f67",
+              "method": "GET",
+              "status": 404,
+              "trace": "req-a1ea7ba0190f3d217065fa9314881186",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-a260e350a74a3ae27ddfba4fe1f50c81",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses/resp_830afaf5b5ad66a4b9b9b15e7461df3c",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-96fce584befbef3067469261f9008ab9",
+              "query": "include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_830afaf5b5ad66a4b9b9b15e7461df3c",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-6c17ea43f35d6da0be28c9a899720616",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_830afaf5b5ad66a4b9b9b15e7461df3c",
+              "method": "GET",
+              "status": 404,
+              "trace": "req-82e7bf20eb31c266f62ed189c7b13b05",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "source_sha256": {
+            "restore-capabilities.json": "e45d60a8d469885918171f2a21d49f59d0be429352846ae5ede4ff758df4a986",
+            "restore-requests.json": "5397d73e819701f9fda276a15fa7e0c22799ced1459b15846988c08713d6e05e",
+            "restore-projection.json": "fa7dc473bec8ed673cd6fca777a36a5608f75b0fcc1078c640700fe2f0dad23b",
+            "restore-recovered.json": "cdefc36d0588545e6d235faf5a32f7fa4c728b2136e4888f445e181962014a2f"
+          }
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 215.55478210793808,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 200,
+      "lease_sha256": "4c96a56bed08af975d98be6446dd4e82696ff7549bd3d0a5b630fcd2a2909845",
+      "decision_sha256": "f701ec2344b1ee0f15791f3dd211d30bd1f774431dfcc6c76028d8f717d05140",
+      "result_sha256": "44d7e8bd23c0d501c70b5e30c0928ffb82f2ae39514d4a049c66010a5b15d634"
+    },
+    "primary": {
+      "incident": "primary_gateway_SIGABRT",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349",
+      "requests": {
+        "prepare": {
+          "response": "resp_8595bd25f8860cd9992ef03c4d83ac73",
+          "traces": [
+            "req-ee0d27325de5f80553c104300f154406",
+            "req-bc35dc83df3e4c6914be5b2f266429f2",
+            "req-05d020e9ac9494ea58cc84c6879a7fbf",
+            "req-a58006357c6e294f06a47c56e5687b40",
+            "req-5088b0a8f3c5ac7929122295a8b53244"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-ee0d27325de5f80553c104300f154406",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-bc35dc83df3e4c6914be5b2f266429f2",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses/resp_8595bd25f8860cd9992ef03c4d83ac73",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-05d020e9ac9494ea58cc84c6879a7fbf",
+              "query": "include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_8595bd25f8860cd9992ef03c4d83ac73",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-a58006357c6e294f06a47c56e5687b40",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_8595bd25f8860cd9992ef03c4d83ac73",
+              "method": "GET",
+              "status": 404,
+              "trace": "req-5088b0a8f3c5ac7929122295a8b53244",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "source_sha256": {
+            "prepare-capabilities.json": "e45d60a8d469885918171f2a21d49f59d0be429352846ae5ede4ff758df4a986",
+            "prepare-requests.json": "9abbe03b2956e00f3417a0269f0b55d0b0b8ea3fb0a0d41f025b16457e27ac21",
+            "prepare-projection.json": "2e3d761cf775c2da1cc9e6292b67a0ed4004089d94eeee8561116f7e412faa35"
+          }
+        },
+        "restore": {
+          "response": "resp_a80778854db0a6aa6d573cbeaddc2a73",
+          "traces": [
+            "req-3bed88d2e854431fd62c917c3b02be63",
+            "req-7f6d6996f7ba7f120ae6f1d6e15b0795",
+            "req-f7eb49e2f6a091da955fb4031e528c33",
+            "req-b22d1bcd03320c05a2044b1f1c6a826c",
+            "req-68d9cce672f0ad6a18054885f35f8f51",
+            "req-79426e1623c87803e7b68d747a66010f",
+            "req-446f0eb96310e13f11268bc9328f58bb"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-3bed88d2e854431fd62c917c3b02be63",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses/resp_8595bd25f8860cd9992ef03c4d83ac73",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-7f6d6996f7ba7f120ae6f1d6e15b0795",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_8595bd25f8860cd9992ef03c4d83ac73",
+              "method": "GET",
+              "status": 404,
+              "trace": "req-f7eb49e2f6a091da955fb4031e528c33",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-b22d1bcd03320c05a2044b1f1c6a826c",
+              "query": ""
+            },
+            {
+              "path": "/v1/responses/resp_a80778854db0a6aa6d573cbeaddc2a73",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-68d9cce672f0ad6a18054885f35f8f51",
+              "query": "include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_a80778854db0a6aa6d573cbeaddc2a73",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-79426e1623c87803e7b68d747a66010f",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            },
+            {
+              "path": "/v1/responses/resp_a80778854db0a6aa6d573cbeaddc2a73",
+              "method": "GET",
+              "status": 404,
+              "trace": "req-446f0eb96310e13f11268bc9328f58bb",
+              "query": "include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs&include%5B%5D=message.output_text.logprobs"
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "source_sha256": {
+            "restore-capabilities.json": "e45d60a8d469885918171f2a21d49f59d0be429352846ae5ede4ff758df4a986",
+            "restore-requests.json": "14935da4a605ee77202d14137b62d4c93207be7a69d0c2dea58a02af860394a6",
+            "restore-projection.json": "818c92135270e599bf8f485412a1b7522421076b539a8130bac43fe6f974b3ee",
+            "restore-recovered.json": "b613e1ec3d1480e9216b012f00ef1b888e858c2740f959e5259c73630d4b291a"
+          }
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 381.7448622654192,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 355,
+      "lease_sha256": "1537b5f257f0cb1acf9a2a97e40ad45e3965a61d3c71aec3913708b87a8f3f60",
+      "decision_sha256": "c375bf4a7f61342656e43933b8de2043d460265a491891a9a8e05093760dade6",
+      "result_sha256": "06bd1d968dace68c40143735671e9122c6e63b1c8546beecc5f955f027cefe98",
+      "registered_fallback": "2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967"
+    }
+  },
+  "engine": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+  "package_source": "f07ab44ad48d41de97e08f83da57bb1b08443f18",
+  "model_starts": 4
+}

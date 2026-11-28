@@ -21,6 +21,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主包网关退出和回退包模型退出后，客户端用十二个选择器读回同一响应的正文与 token 概率，跨客户读取返回 404。两次恢复均能生成新响应，独立 Chat 均答 42。 [托管恢复记录](evidence/serve-response-include-projection-20261128/managed.json)
+
 rev604 已登记主包与独立回退包。普通 Responses 声明解释器输出，Beta 选择器声明两种多代理输出；两次托管故障恢复后原结果可读，新调用与 Chat 均成功。两档容量的前序记录和 13 份运行状态已核对。 [发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
 
 回退包模型退出和主网关切换两组实机验收均已通过。恢复后，原解释器和 Beta 多代理响应按 ID 读回，输出逐项一致，第二个客户端查询均为 404。两个新模型实例继续执行解释器与多代理，各自的独立 Chat 均答 42。 [托管恢复记录](evidence/serve-interpreter-output-discovery-20261128/managed.json)
