@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+内存采集曾在持锁时读取内核，读阻塞会卡住健康快照。实机旧包另在相隔 300 秒的两次低读数后错误触发停模回调。候选隔离了采集线程，拒用超时结果并重置中断的低内存计时；23 项 CPU 检查通过，含持续压力下的真实子进程保护。GPU 业务与发行待验，Thor 的 CUDA 物理硬限额仍待证实。 [CPU 回执](evidence/serve-memory-watchdog-stall-20261128/cpu.json)
+
 rev596 已发行可选的网页搜索提供方。主、轻容量验证了真实查询的引用与同客户离线交接。发行配置默认关闭外部搜索，在模型退出和网关切换后均能按原 ID 取回项目答复。主包和回退包已经登记，发行时意图为 STOPPED。 [发行回执](evidence/serve-web-provider-20261128/delivery.json)
 
 公共 CPU 检查链接失败，独立测试目标遗漏了网页索引实现。已补齐源文件并用 CI 的独立 CMake 入口重新链接；同一可执行文件的 25 项网页合同通过。下一步复核 GitHub 检查及发行登记。 [链接回执](evidence/serve-web-provider-20261128/host-link.json)
