@@ -1029,7 +1029,9 @@
       "overlap_discovery_http_20261128": {
         "status": "targeted_http_passed",
         "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
-        "issued": false
+        "issued": false,
+        "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
+        "capacity": "primary_and_light_passed"
       }
     },
     {
@@ -7236,7 +7238,9 @@
       "overlap_discovery_http_20261128": {
         "status": "targeted_http_passed",
         "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
-        "issued": false
+        "issued": false,
+        "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
+        "capacity": "primary_and_light_passed"
       }
     },
     {
@@ -9914,7 +9918,9 @@
       "overlap_discovery_http_20261128": {
         "status": "targeted_http_passed",
         "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
-        "issued": false
+        "issued": false,
+        "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
+        "capacity": "primary_and_light_passed"
       }
     },
     {
