@@ -1,5 +1,7 @@
 # 当前状态（2026-11-29）
 
+已在登记的 rev610 主包上，经原生 TLS 用六版正式 SDK 复验 Assistants、Threads 和 Messages。120 次请求中 84 次成功、36 次按预期拒绝。独立 Chat 从已回读的线程消息回答 610，模型正常退出，三个端口已释放。 [实机回执](evidence/serve-assistants-crud-sdk-20261129-device/device.json)
+
 按冻结的接口目录重放六版 SDK 的 120 条真实 CPU HTTP 记录，每条均能唯一归属，共覆盖 14 个方法和 84 个方法与客户端组合。已加入重复查询参数、来源摘要及 SDK 身份反例。发行矩阵仍以已登记包的实机请求为准，下一步复验线程回读与独立 Chat。 [回执](evidence/serve-assistants-crud-sdk-20261128/matrix-preview.json)
 
 四版 Python 和两版 Node 正式客户端通过本机原生 TLS、C++ 处理器和磁盘对象存储，完成 Assistants、Threads 和 Messages 的 14 个方法。120 次请求中 84 次成功、36 次按预期返回 404，覆盖跨客户隔离及删除后回读。内容来自 rev608 发行记录，12 种证据篡改均被拒绝。下一步在已登记发行包复验后计入实机兼容矩阵。 [CPU 回执](evidence/serve-assistants-crud-sdk-20261128/cpu.json)
