@@ -4433,10 +4433,11 @@
         "delivery": "evidence/serve-upload-completion-race-20261128/delivery.json"
       },
       "batch_cancellation_20261128": {
-        "stage": "native_sdk_pilot_passed",
+        "stage": "batch_cancellation_primary_light",
         "evidence": "evidence/serve-batch-cancel-20261128/cpu.json",
         "issued": false,
-        "device": "evidence/serve-batch-cancel-20261128/device.json"
+        "device": "evidence/serve-batch-cancel-20261128/device.json",
+        "capacity": "evidence/serve-batch-cancel-20261128/profiles.json"
       }
     },
     {

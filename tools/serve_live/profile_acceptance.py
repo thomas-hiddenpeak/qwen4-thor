@@ -161,6 +161,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'batch_cancellation_handoff' in self.plan:
+            from tools.serve_audit import batch_cancel_profiles
+            batch_cancel_profiles.business(self)
         if 'standalone_diagnostic_output' in self.plan:
             from tools.serve_audit import diagnostic_profiles
             diagnostic_profiles.business(self)

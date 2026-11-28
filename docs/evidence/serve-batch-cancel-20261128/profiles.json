@@ -1,0 +1,495 @@
+{
+  "stage": "batch_cancellation_primary_light",
+  "issued": false,
+  "engine": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 71,
+    "cleanup_complete": true
+  },
+  "roles": {
+    "primary": {
+      "sha256": "3b1d159b0fb555417152c68ff4c3cb24fb6b58d70746b609fd03ed53f91d992c",
+      "batch": {
+        "writer": {
+          "sdk": "python-3.55.1",
+          "completed": {
+            "id": "batch_9a76084efc08a1a42f99a7cccaec6d8f",
+            "input": "file_98b1578d419e57fec8d92959b038b495",
+            "source_sha256": "fd95463523431e1e40e27a3f44d592e9f79ca91871c066d20768f52ce899e819",
+            "rows": 1,
+            "metadata": {
+              "project": "q4t",
+              "scenario": "publication",
+              "revision": "592"
+            }
+          },
+          "pending": {
+            "id": "batch_17655b88353d21210d525cafb5312623",
+            "input": "file_4f792d1924d89cb4595ad15f5f3a4e18",
+            "source_sha256": "4a3f425cb7c7553fc4621b8d5d924ca7a334bc8106cbb55b5cf1c97496fe9d9a",
+            "rows": 12,
+            "metadata": {
+              "project": "q4t",
+              "scenario": "cancel",
+              "revision": "592"
+            }
+          },
+          "cancel": [
+            {
+              "client": 0,
+              "id": "batch_17655b88353d21210d525cafb5312623",
+              "status": "cancelling",
+              "cancelling_at": 1795825691
+            },
+            {
+              "client": 1,
+              "id": "batch_17655b88353d21210d525cafb5312623",
+              "status": "cancelled",
+              "cancelling_at": 1795825691
+            }
+          ],
+          "revision": 592,
+          "requests": [
+            {
+              "method": "POST",
+              "path": "/v1/files",
+              "query": "",
+              "status": 200,
+              "trace": "req-2256fba74844ab846bf1a65fd6345b34",
+              "start_ns": 4015773501276236,
+              "headers_ns": 4015773509962522
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches",
+              "query": "",
+              "status": 200,
+              "trace": "req-9ea54f1c8dcd204cf3fa864c963d18ca",
+              "start_ns": 4015773553741839,
+              "headers_ns": 4015773560370559
+            },
+            {
+              "method": "POST",
+              "path": "/v1/files",
+              "query": "",
+              "status": 200,
+              "trace": "req-a8c4dcb47ce38a2058932fca1d3e9c32",
+              "start_ns": 4015773606313886,
+              "headers_ns": 4015773613039162
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches",
+              "query": "",
+              "status": 200,
+              "trace": "req-8c7022473d14990f3c38f0943c8031d7",
+              "start_ns": 4015773657006840,
+              "headers_ns": 4015773662739889
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches/batch_17655b88353d21210d525cafb5312623/cancel",
+              "query": "",
+              "status": 429,
+              "trace": "req-9d74b684f750a83e94c6949d4d27c390",
+              "start_ns": 4015773710256246,
+              "headers_ns": 4015773713559768,
+              "client": 1,
+              "attempt": 1,
+              "error": "gateway_rate_limit",
+              "retry_after": "1"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches/batch_17655b88353d21210d525cafb5312623/cancel",
+              "query": "",
+              "status": 200,
+              "trace": "req-d3d016b63924e88e6def57f57428f1a9",
+              "start_ns": 4015773710404032,
+              "headers_ns": 4015773760314193,
+              "client": 0,
+              "attempt": 1
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches/batch_17655b88353d21210d525cafb5312623/cancel",
+              "query": "",
+              "status": 200,
+              "trace": "req-98eba22dd1e28beccfddfafbe645b308",
+              "start_ns": 4015774864920104,
+              "headers_ns": 4015774908160506,
+              "client": 1,
+              "attempt": 2
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches/batch_17655b88353d21210d525cafb5312623/cancel",
+              "query": "",
+              "status": 404,
+              "trace": "req-b8dd41afc2bf53d13ddb68b318666360",
+              "start_ns": 4015774909211445,
+              "headers_ns": 4015774956198805
+            }
+          ]
+        },
+        "settled": {
+          "finished": {
+            "id": "batch_9a76084efc08a1a42f99a7cccaec6d8f",
+            "completion_window": "24h",
+            "created_at": 1795825691,
+            "endpoint": "/v1/chat/completions",
+            "input_file_id": "file_98b1578d419e57fec8d92959b038b495",
+            "object": "batch",
+            "status": "completed",
+            "completed_at": 1795825691,
+            "error_file_id": null,
+            "errors": null,
+            "expires_at": 1795912091,
+            "finalizing_at": 1795825691,
+            "in_progress_at": 1795825691,
+            "metadata": {
+              "project": "q4t",
+              "scenario": "publication",
+              "revision": "592"
+            },
+            "model": "qwen3.8-flash-next",
+            "output_file_id": "file_2be1ceba2881e980fe78ec3e5cc0aa46",
+            "request_counts": {
+              "completed": 1,
+              "failed": 0,
+              "total": 1
+            },
+            "usage": {
+              "input_tokens": 390,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens": 4,
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              },
+              "total_tokens": 394
+            }
+          },
+          "stopped": {
+            "id": "batch_17655b88353d21210d525cafb5312623",
+            "completion_window": "24h",
+            "created_at": 1795825691,
+            "endpoint": "/v1/chat/completions",
+            "input_file_id": "file_4f792d1924d89cb4595ad15f5f3a4e18",
+            "object": "batch",
+            "status": "cancelled",
+            "cancelled_at": 1795825691,
+            "cancelling_at": 1795825691,
+            "error_file_id": null,
+            "errors": null,
+            "expires_at": 1795912091,
+            "metadata": {
+              "project": "q4t",
+              "scenario": "cancel",
+              "revision": "592"
+            },
+            "output_file_id": null,
+            "request_counts": {
+              "completed": 0,
+              "failed": 0,
+              "total": 0
+            }
+          },
+          "output_sha256": "f9ebf0eb07dba4354919a500c07df5c051a5dd956c06eee1e3315800320d6e55",
+          "output_bytes": 635,
+          "row_id": "batch_req_tool_run_9dc0eacced6531ed1f30ffd8c3415365",
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/batches/batch_9a76084efc08a1a42f99a7cccaec6d8f",
+              "query": "",
+              "status": 200,
+              "trace": "req-fea023df03002d2d6f4c2cb146c27864"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/batches/batch_17655b88353d21210d525cafb5312623",
+              "query": "",
+              "status": 200,
+              "trace": "req-2625773f7f8f0a40ecd22b4394db7333"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_2be1ceba2881e980fe78ec3e5cc0aa46/content",
+              "query": "",
+              "status": 200,
+              "trace": "req-2a2d39809280f115e1d915b8f2d7dac3"
+            }
+          ],
+          "sdk": "python-3.55.1"
+        }
+      },
+      "seconds": 39.64379124669358,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 74
+      },
+      "mtp": true,
+      "returned_chat": "42",
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      }
+    },
+    "light": {
+      "sha256": "eb19d5709fb8779f65143688c0e5b1362b31e3bc2bae1a69d0d9f46c50ba38d7",
+      "batch": {
+        "reader": {
+          "sdk": "node-7.47.0",
+          "stopped": {
+            "id": "batch_17655b88353d21210d525cafb5312623",
+            "object": "batch",
+            "status": "cancelled",
+            "endpoint": "/v1/chat/completions",
+            "input_file_id": "file_4f792d1924d89cb4595ad15f5f3a4e18",
+            "completion_window": "24h",
+            "created_at": 1795825691,
+            "expires_at": 1795912091,
+            "metadata": {
+              "project": "q4t",
+              "scenario": "cancel",
+              "revision": "592"
+            },
+            "output_file_id": null,
+            "error_file_id": null,
+            "errors": null,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "cancelling_at": 1795825691,
+            "cancelled_at": 1795825691
+          },
+          "finished": {
+            "id": "batch_9a76084efc08a1a42f99a7cccaec6d8f",
+            "object": "batch",
+            "status": "completed",
+            "endpoint": "/v1/chat/completions",
+            "input_file_id": "file_98b1578d419e57fec8d92959b038b495",
+            "completion_window": "24h",
+            "created_at": 1795825691,
+            "expires_at": 1795912091,
+            "metadata": {
+              "project": "q4t",
+              "scenario": "publication",
+              "revision": "592"
+            },
+            "output_file_id": "file_2be1ceba2881e980fe78ec3e5cc0aa46",
+            "error_file_id": null,
+            "errors": null,
+            "request_counts": {
+              "total": 1,
+              "completed": 1,
+              "failed": 0
+            },
+            "model": "qwen3.8-flash-next",
+            "in_progress_at": 1795825691,
+            "usage": {
+              "input_tokens": 390,
+              "output_tokens": 4,
+              "total_tokens": 394,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "finalizing_at": 1795825691,
+            "completed_at": 1795825691
+          },
+          "result": {
+            "id": "batch_req_tool_run_9dc0eacced6531ed1f30ffd8c3415365",
+            "custom_id": "publication-0",
+            "response": {
+              "status_code": 200,
+              "request_id": "req_tool_run_1b3bef87de1d83a2437af95e5e0ab350",
+              "body": {
+                "id": "chatcmpl-auto-c5a597c192d5aaaa96dde54acd90ca28",
+                "object": "chat.completion",
+                "created": 1795825691,
+                "model": "qwen3.8-flash-next",
+                "choices": [
+                  {
+                    "index": 0,
+                    "message": {
+                      "role": "assistant",
+                      "content": "592"
+                    },
+                    "finish_reason": "stop",
+                    "logprobs": null
+                  }
+                ],
+                "service_tier": "default",
+                "usage": {
+                  "prompt_tokens": 390,
+                  "completion_tokens": 4,
+                  "total_tokens": 394,
+                  "prompt_tokens_details": {
+                    "cached_tokens": 0
+                  },
+                  "completion_tokens_details": {
+                    "reasoning_tokens": 0
+                  }
+                }
+              }
+            },
+            "error": null
+          },
+          "output_text": "{\"id\":\"batch_req_tool_run_9dc0eacced6531ed1f30ffd8c3415365\",\"custom_id\":\"publication-0\",\"response\":{\"status_code\":200,\"request_id\":\"req_tool_run_1b3bef87de1d83a2437af95e5e0ab350\",\"body\":{\"id\":\"chatcmpl-auto-c5a597c192d5aaaa96dde54acd90ca28\",\"object\":\"chat.completion\",\"created\":1795825691,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"592\"},\"finish_reason\":\"stop\",\"logprobs\":null}],\"service_tier\":\"default\",\"usage\":{\"prompt_tokens\":390,\"completion_tokens\":4,\"total_tokens\":394,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0}}}},\"error\":null}\n",
+          "repeated": {
+            "id": "batch_17655b88353d21210d525cafb5312623",
+            "status": "cancelled",
+            "cancelled_at": 1795825691,
+            "cancelling_at": 1795825691
+          },
+          "page_ids": [
+            "batch_9a76084efc08a1a42f99a7cccaec6d8f",
+            "batch_17655b88353d21210d525cafb5312623"
+          ],
+          "independent_chat": "42",
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/batches/batch_17655b88353d21210d525cafb5312623",
+              "query": "",
+              "status": 200,
+              "trace": "req-53a4e2bef8b2fd6feb7a42704bd6ca75"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches/batch_17655b88353d21210d525cafb5312623/cancel",
+              "query": "",
+              "status": 200,
+              "trace": "req-271924b3ab7e4d11cb3cf8a6d749d553"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/batches/batch_9a76084efc08a1a42f99a7cccaec6d8f",
+              "query": "",
+              "status": 200,
+              "trace": "req-e597eb759b257fcc2d28f181b46fa9b6"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/batches/batch_9a76084efc08a1a42f99a7cccaec6d8f/cancel",
+              "query": "",
+              "status": 409,
+              "trace": "req-e235f25238343a105048c160d180507d"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/batches/batch_9a76084efc08a1a42f99a7cccaec6d8f",
+              "query": "",
+              "status": 404,
+              "trace": "req-b84010672e1a0c034b6bd1a314e9291b"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/batches",
+              "query": "limit=1",
+              "status": 200,
+              "trace": "req-a922c30fa75586288becb1a04f9109b2"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/batches",
+              "query": "limit=1&after=batch_9a76084efc08a1a42f99a7cccaec6d8f",
+              "status": 200,
+              "trace": "req-88d58c44cedbc7a7a691d140e36066c8"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_2be1ceba2881e980fe78ec3e5cc0aa46/content",
+              "query": "",
+              "status": 200,
+              "trace": "req-2105dc7ec0fe40f760f71489380f0ea6"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/chat/completions",
+              "query": "",
+              "status": 200,
+              "trace": "req-8d23680146da5f57c02dd7621a262118"
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/files/file_4f792d1924d89cb4595ad15f5f3a4e18",
+              "query": "",
+              "status": 200,
+              "trace": "req-c4a7610aa2d15895ed2a1417ea24bd26"
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/files/file_98b1578d419e57fec8d92959b038b495",
+              "query": "",
+              "status": 200,
+              "trace": "req-062a900893d39ec557f23cf9cb199341"
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/files/file_2be1ceba2881e980fe78ec3e5cc0aa46",
+              "query": "",
+              "status": 200,
+              "trace": "req-dad20d951dce7e86ff61ad430a958ed6"
+            }
+          ]
+        }
+      },
+      "seconds": 34.77317896578461,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 69
+      },
+      "mtp": false,
+      "returned_chat": "42",
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      }
+    }
+  },
+  "registry_acceptance_sha256": "269a562310fe0db49074731dae8727d59c165cac0f0d2b5bb1cc32ea52c5408d",
+  "lease_sha256": "e2aedb6bdb5db73d26647beaeffe97352c831103a22a5084decf934974fb0270",
+  "lifecycle_sha256": "7ade6a5bfa94754159613cfd618d2d577964661246a26cc136d21d164b0245e3",
+  "previous_profiles_reconstruct_exactly": true,
+  "prior_primary_fixture": {
+    "status": "FAIL",
+    "cause": "primary fixture admitted one business request per owner, issued owner permits two; first executing Batch used the single slot before the second input upload",
+    "active_client_data_slots": 2,
+    "fixture_slots": 1,
+    "http_status": 429,
+    "code": "client_capacity_exhausted",
+    "register": "868b25e852263d99dda0cbda900e36bc97f9bdf02377a27bbc72cc66f7334052",
+    "selected_profile": "native-managed-capacity-v2",
+    "model_exit": 0,
+    "ports_free": true,
+    "remaining": [],
+    "model_log_sha256": "097e4bc00d0acc68e7ac77f4039e18259b97e406995edf6bfdc294724edeff45",
+    "cleanup_sha256": "10b6233d3c4444730e82811721b409620ec09efe4a8419596da13eced755990f",
+    "sdk_error_sha256": "29a90360effeb5d3273301e1e625812300d7f425a936081be435783064d6b52f",
+    "guard_sha256": "2c3c4da6cc3cc78a2441540219f04d6a5fe3e5f982e2ce78d05715a17523edf8"
+  },
+  "receipt_checks_sha256": "431058ef0fffce753d0045f352e80cf2c02bfe64f6f4e15b2ebb0ff5d978a815",
+  "cpu_log_sha256": "969457805402a9d7a1717cb9a2f1263c25aca5ea8781977bb005a5e12bc6e4d2",
+  "inventory_log_sha256": "c8c785be8d5ec9d9341a0ae752fed390d630ea0b6818327fba640e775deeb748"
+}
