@@ -1,0 +1,41 @@
+{
+  "stage": "guardian_isolated_memory_targeted_cpu",
+  "guardian_sha256": "8df9c88ff8c87560fc7eb969fd12a103e3635441bfd0548650fccaed9169bd83",
+  "source_sha256": {
+    "include/q4t/service/guardian_journal.h": "f43dac08136cbf5cf8cc6864910f58ccd1ccf44523f740ab46a93b04f2f2f8b0",
+    "src/service/guardian_journal.cpp": "88756a0a8f2bb91fb832ecc5ea4fce0ac0920c0014785add9b6cf93f805d13b6",
+    "src/service/guardian_main.cpp": "26d560ac9adb0cd51cb1284ca8f46865581d7019da9fe11dcdb8d425b7ac92ef",
+    "tools/serve_recovery/journal.py": "e3558909f26202d9867899132dc397776e1579a3c88ced6535dd5851619f92b8"
+  },
+  "distinct_pass": 20,
+  "tests": [
+    "tools.serve_recovery.test_guardian_memory.GuardianMemoryTests.test_memory_returned_after_exit_cannot_replace_low_pre_fault_witness",
+    "tools.serve_recovery.test_guardian_memory.GuardianMemoryTests.test_new_allocations_resume_after_cold_collector_recovers",
+    "tools.serve_recovery.test_guardian_memory.GuardianMemoryTests.test_stalled_read_preserves_ready_control_and_discards_late_positive",
+    "tools.serve_recovery.test_guardian_memory.GuardianMemoryTests.test_unavailable_first_sample_allows_stop_without_a_model_grant",
+    "tools.serve_recovery.test_guardian_memory.GuardianMemoryTests.test_version_switch_waits_for_independent_post_fault_headroom",
+    "tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_observer_loss_after_grant_allows_first_generation_to_become_ready",
+    "tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_stalled_launch_memory_keeps_guardian_responsive_without_a_grant",
+    "tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_stalled_runtime_memory_degrades_and_recovers_in_same_generation",
+    "tools.serve_recovery.test_version_native.NativeTests.test_actual_controller_fault_replaces_whole_tree_then_fallback_fault_protects",
+    "tools.serve_recovery.test_version_native.NativeTests.test_alive_or_malformed_model_exit_reports_leave_original_tree_running",
+    "tools.serve_recovery.test_version_native.NativeTests.test_dead_prepare_worker_leaves_no_exempt_orphans_on_retry",
+    "tools.serve_recovery.test_version_native.NativeTests.test_eof_before_fatal_wait_result_is_not_overwritten_by_cleanup_signal",
+    "tools.serve_recovery.test_version_native.NativeTests.test_model_parent_wait_result_preserves_original_fault_before_fallback",
+    "tools.serve_recovery.test_version_native.NativeTests.test_pending_version_write_timeout_reaps_worker_before_resuming_one_switch",
+    "tools.serve_recovery.test_version_native.NativeTests.test_prepare_subtree_survives_initial_and_fallback_payload_cleanup",
+    "tools.serve_recovery.test_version_native.NativeTests.test_stop_during_device_probe_never_starts_fallback_and_reaps_helpers",
+    "tools.serve_recovery.test_version_native.NativeTests.test_stop_during_preparation_reaps_worker_children_without_model_start",
+    "tools.serve_recovery.test_version_native.NativeTests.test_unknown_kill_uses_existing_role_budget_without_version_blame",
+    "tools.serve_recovery.test_version_native.NativeTests.test_unqualified_fallback_binding_never_opens_business",
+    "tools.serve_recovery.test_version_native.NativeTests.test_version_worker_exit_recovers_only_worker_with_same_healthy_tree"
+  ],
+  "logs_sha256": {
+    "isolation-02": "1f630357c79c830a57a83394480db5adbee8895cb0c9753a86c242583dc4a0ee",
+    "native-contracts-02": "37691dcbc4911ab83c33e2f65a27d2d3459781583e78a15629aa3fe193073731",
+    "isolation-01": "f06c527900a204744310b9038a66a84315628ea34f552e559ef15cca6ad9391f"
+  },
+  "prior_failure": "The initial positive read began before an observation gap but was allowed to restore OPEN briefly. The recipient now requires a sample that began after loss of freshness. The original counterexample and the negative post-fault checks passed.",
+  "real_gpu_models_in_this_receipt": 0,
+  "device_business": "pending"
+}

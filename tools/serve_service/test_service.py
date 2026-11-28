@@ -501,6 +501,42 @@ raise SystemExit(g.run_guard([sys.executable, '-B', {str(fixture)!r}],
         self.assertFalse(state['memory']['signal_sent'])
         self.assertTrue(state['cleanup_confirmed'])
 
+    def test_stalled_memory_read_preserves_owned_backend_and_clean_stop(self):
+        armed, entered, release = (threading.Event() for _ in range(3))
+        read_returned = threading.Event()
+        seen = []
+        def reader():
+            if armed.is_set():
+                entered.set()
+                release.wait(4)
+                read_returned.set()
+                return dict(total_bytes=8*1024**3, available_bytes=0)
+            return dict(total_bytes=8*1024**3, available_bytes=4*1024**3)
+        def observe(pid, _port):
+            seen.append(pid)
+            if len(seen) == 1:
+                return self.observation(pid)
+            armed.set()
+            self.assertTrue(entered.wait(1))
+            end = time.monotonic() + .12
+            while time.monotonic() < end:
+                self.assertNotIn(Path(f'/proc/{pid}/stat').read_text().rsplit(')', 1)[1].split()[0],
+                                 ('Z', 'X'))
+                time.sleep(.005)
+            pkg.save(self.root/'runtime/stop.request.json', {})
+            return self.observation(pid)
+        try:
+            rc, state = self.run_supervisor(observe, restarts=3, read_memory=reader,
+                                            config_overrides=dict(startup_seconds=1))
+            self.assertFalse(read_returned.is_set())
+        finally:
+            release.set()
+        self.assertEqual((rc, state['attempts'], state['restarts']), (0, 1, 0))
+        self.assertEqual(len(set(seen)), 1)
+        self.assertEqual(state['memory']['state'], 'UNKNOWN')
+        self.assertFalse(state['memory']['signal_sent'])
+        self.assertTrue(state['cleanup_confirmed'])
+
     def test_operator_stop_cannot_hide_memory_trip_during_cleanup(self):
         armed = threading.Event()
         def reader():

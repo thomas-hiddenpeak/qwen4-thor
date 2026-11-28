@@ -347,6 +347,7 @@ class ControllerProgressTests(unittest.TestCase):
         actor.phase, actor.reason, actor.heartbeat_at = 'READY', 'serving', 0
         actor.channel, actor.watchdog = mock.Mock(), mock.Mock()
         actor.watchdog.tripped.is_set.return_value = False
+        actor.watchdog.snapshot.return_value = dict(reason=None)
         actor.model = mock.Mock()
         actor.model.poll.return_value = None
         actor.protect = mock.Mock(return_value=False)

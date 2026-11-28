@@ -56,8 +56,11 @@ class Service:
                  probe_only=False, aux_health=False, production=False,
                  usage_handoff=False, quota_restore=None, stop_handoff=False,
                  gateway_diagnostics=False, capacity_fingerprint=None,
-                 version_fixture=None, recovery_fixture=None):
+                 version_fixture=None, recovery_fixture=None, memory_stall=None):
         self.directory = Path(tempfile.mkdtemp(prefix='service-', dir=output))
+        if memory_stall is not None:
+            assert memory_stall in ('memory.stall', 'memory.after-grant')
+            (self.directory/memory_stall).touch()
         self.service_id = str(uuid.uuid4())
         with store.Store(self.directory, self.service_id, initialize=True) as writer:
             if recovery_fixture is not None:
@@ -852,6 +855,50 @@ class ProductionRuntimeTests(GuardianFixture):
         self.assertIsNone(state['quarantine'])
         self.assertEqual([f['generation'] for f in state['failures'] if f['unknown']], [1])
         self.assertEqual(len(state['attempts']['model']), 2)
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_stalled_launch_memory_keeps_guardian_responsive_without_a_grant(self):
+        service = self.launch(production=True, gateway=True, memory_stall='memory.stall')
+        first = service.wait(lambda s: (service.directory/'memory.entered').exists() and
+                             s['controller_generation'] == 1)
+        # The read lasts longer than the one-second fixture heartbeat limit.
+        time.sleep(1.25)
+        pending = service.status()
+        self.assertEqual(pending['controller_pid'], first['controller_pid'])
+        self.assertFalse(pending['business_ready'])
+        self.assertEqual(pending['model_generation'], 0)
+        self.assertFalse(service.persistent()['attempts']['model'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_observer_loss_after_grant_allows_first_generation_to_become_ready(self):
+        service = self.launch(production=True, gateway=True, memory_stall='memory.after-grant')
+        ready = service.wait(lambda s: s['business_ready'] and
+            s['controller_health']['reason'] == 'memory_observation_unavailable', timeout=15)
+        self.assertEqual(ready['model_generation'], 1)
+        state = service.persistent()
+        self.assertEqual(state['generations']['model'], 1)
+        self.assertFalse(state['attempts']['model'])
+        self.assertFalse(state['failures'])
+        self.assertTrue(service.stop()['cleanup_confirmed'])
+        service.assert_lease_free()
+
+    def test_stalled_runtime_memory_degrades_and_recovers_in_same_generation(self):
+        service = self.launch(production=True, gateway=True)
+        first = service.wait(lambda s: s['business_ready'], timeout=15)
+        flag = service.directory/'memory.stall'
+        flag.touch()
+        degraded = service.wait(lambda s: s['business_ready'] and
+            s['controller_health']['reason'] == 'memory_observation_unavailable', timeout=10)
+        self.assertEqual(degraded['state'], 'READY_DEGRADED')
+        self.assertEqual(degraded['controller_health']['observation'], 'UNKNOWN')
+        flag.unlink()
+        restored = service.wait(lambda s: s['business_ready'] and
+            s['controller_health']['observation'] == 'AVAILABLE', timeout=12)
+        for status in (degraded, restored):
+            for key in ('controller_pid', 'model_pid', 'model_start_ticks', 'model_generation'):
+                self.assertEqual(status[key], first[key])
         self.assertTrue(service.stop()['cleanup_confirmed'])
         service.assert_lease_free()
 

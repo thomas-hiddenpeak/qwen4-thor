@@ -138,6 +138,15 @@ def run_controller(directory):
         client_policy=dict(enabled=True))
     read_memory = controller.memory.read
     def observed_memory():
+        flag = directory/'memory.stall'
+        if (directory/'controller-1/model-1').is_dir() and (directory/'memory.after-grant').exists():
+            flag = directory/'memory.after-grant'
+        if flag.exists():
+            (directory/'memory.entered').touch()
+            while flag.exists():
+                time.sleep(.025)
+            # The observation that timed out must never be reused.
+            return dict(total_bytes=128 << 30, available_bytes=0)
         if (directory/'report-memory-floor').exists():
             free = 112 if (directory/'restore-memory').exists() else 96
             return dict(total_bytes=128 << 30, available_bytes=free << 30)

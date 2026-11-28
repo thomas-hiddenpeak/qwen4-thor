@@ -1,0 +1,20 @@
+{
+  "status": "REPRODUCED",
+  "before_ready": true,
+  "after_ready": true,
+  "native_status_timed_out": true,
+  "timeout_seconds": 0.3,
+  "elapsed_seconds": 0.3003809400834143,
+  "guardian_pid": 2171416,
+  "fixture_model_pid": 2171423,
+  "source": "Original Guardian with one CPU-only wait immediately before its actual meminfo read.",
+  "instrumented_guardian_sha256": "f7dbafdd673d0132a1e60451c7ede8f985858cf368d74859304512699a8d2ee1",
+  "stop_after_unblock_confirmed": true,
+  "gpu_models": 0,
+  "registered_guardian_sha256": "25c9d72bd758fb58a4cba7fd8214321c99cf99c57179f126879cf42e8fed3ae4",
+  "source_sha256": "31bc3d98c08572d08f3fb1b633392ac8f92116bb2ca026cd8f429452b0707f07",
+  "instrumented_source_sha256": "e033ba799a9fa43caac493b5a6ef57aef23bd3e3e607925881c3f57112eba2e9",
+  "log_sha256": "1909b529d7c50a925601a8e839df6e142e488b03fc0091928f7496869200f668",
+  "prior_fixture_attempt": "The retained version journal fixture was missing from the sparse checkout and was materialized from the same commit before the successful reproduction.",
+  "work_remaining": "Isolate the native Guardian memory read from its event loop. Keep admission and version changes dependent on current positive evidence, bind the pre-fault witness while the owned workload is alive, and preserve single-threaded process supervision."
+}

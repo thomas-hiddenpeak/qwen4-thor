@@ -25,7 +25,7 @@
 #include <map>
 #include <memory>
 #include <set>
-#include <sstream>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -98,38 +98,6 @@ std::string ReadFile(const std::string& path, bool private_file) {
           "startup file is empty, oversized or unavailable");
   return std::string(bytes.data(), count);
 }
-bool HostMemorySafe(uint64_t floor) {
-  try {
-    std::istringstream lines(ReadFile("/proc/meminfo", false));
-    std::string line;
-    uint64_t available = 0, total = 0;
-    bool saw_available = false, saw_total = false;
-    while (std::getline(lines, line)) {
-      std::istringstream fields(line);
-      std::string key, unit, extra;
-      uint64_t value = 0;
-      fields >> key;
-      if (key != "MemTotal:" && key != "MemAvailable:") continue;
-      if (!(fields >> value >> unit) || unit != "kB" || fields >> extra) {
-        return false;
-      }
-      if (key == "MemAvailable:") {
-        if (saw_available) return false;
-        saw_available = true;
-        available = value;
-      } else {
-        if (saw_total) return false;
-        saw_total = true;
-        total = value;
-      }
-    }
-    return saw_available && saw_total && total && available <= total &&
-           available / 1024 >= floor;
-  } catch (const std::exception&) {
-    return false;
-  }
-}
-
 // Seqpacket preserves each bounded command. No caller can stall this loop by
 // withholding a body or by refusing to read a response.
 bool Send(int fd, const Json& message) {
@@ -333,6 +301,7 @@ struct ModelRequest {
   uint64_t sequence = 0;
   std::string operation;
   Json args;
+  int64_t memory_since = 0;
 };
 struct Client {
   s::OwnedFd fd;
@@ -436,7 +405,8 @@ class Guardian {
     }
     const auto status =
         journal_.Start(config_.python, config_.journal, config_.directory,
-                       config_.service_id, Now(), 5 * kSecond);
+                       config_.service_id, Now(), 5 * kSecond,
+                       s::JournalDomain::kCore, true);
     if (!status.ok()) Freeze(status.message());
   }
 
@@ -508,6 +478,7 @@ class Guardian {
       if (stop_signal) RequestStop(now);
       CheckOuter(now);
       Clients(now);  // Stop precedes consuming any new durable launch receipt.
+      journal_.PollMemory();
       if (versions_) versions_->Tick(now);
       if (versions_ && versions_->NeedsCleanup() && !stopping_ &&
           !version_draining_)
@@ -546,6 +517,7 @@ class Guardian {
       CheckController(now);
       CheckGateway(now);
       CheckModel();
+      ResolveVersionSignal(now);
       Drive(now);
       ObserveVersionMemory(now);
       if (stopping_ && stop_durable_ && !cold_unreconciled_ &&
@@ -582,9 +554,17 @@ class Guardian {
     return PayloadReady() && (!versions_ || versions_->CanServe());
   }
   void ObserveVersionMemory(int64_t now) {
-    if (!versions_ || stopping_ || version_draining_ ||
-        now - version_memory_at_ < kSecond / 4)
-      return;
+    if (!versions_ || stopping_ || version_draining_) return;
+    auto pinned = [](const auto& child) {
+      return child.pidfd.Get() >= 0 ? child.identity : s::ProcessIdentity{};
+    };
+    const std::array owners{pinned(model_), pinned(controller_),
+                            pinned(gateway_)};
+    if (owners != witness_owners_) {
+      witness_owners_ = owners;
+      witness_since_ = now;
+      version_memory_safe_ = false;
+    }
     // Sample while the owned workload is alive. Reading newly freed memory
     // after its exit must not be substituted for the pre-fault witness.
     for (const auto* process : {&model_, &controller_, &gateway_}) {
@@ -593,20 +573,19 @@ class Guardian {
       if (!s::ProcessExited(process->pidfd.Get(), &exited).ok() || exited)
         return;
     }
-    version_memory_safe_ = HostMemorySafe(config_.memory_floor_mib);
-    version_memory_at_ = now;
+    version_memory_safe_ =
+        journal_.MemorySafe(config_.memory_floor_mib, witness_since_, now)
+            .value_or(false);
+    version_memory_at_ = journal_.MemorySampleTime();
   }
-  s::VersionFacts VersionContext(int64_t now, bool before_fault) const {
+  s::VersionFacts VersionContext(bool memory_safe) const {
     s::VersionFacts facts;
     facts.running = desired_running_;
     facts.termination_requested =
         stopping_ || stop_signal || quarantined_ || gate_.Frozen();
     facts.lease_continuous =
         s::CheckInheritedLease(lease_.Get(), config_.lease_path).ok();
-    facts.resources_safe =
-        HostMemorySafe(config_.memory_floor_mib) &&
-        (!before_fault || (version_memory_safe_ && version_memory_at_ > 0 &&
-                           now - version_memory_at_ <= 2 * kSecond));
+    facts.resources_safe = memory_safe;
     facts.device_failure =
         controller_health_.GetString("observation") == "DEVICE_FAILURE";
     const auto reason = controller_health_.GetString("reason");
@@ -622,20 +601,63 @@ class Guardian {
     if (version_draining_ || stopping_) return;
     stop_handoff_ = config_.usage_handoff && controller_ready_ &&
                     model_ready_ && !recovering_ && !quarantined_;
+    version_clean_since_ = version_confirm_since_ = 0;
     version_draining_ = true;
     model_admission_open_ = false;
     gateway_bound_model_ = 0;
     cleanup_started_ = now;
     GatewayDiagnostic("gateway_recovering", model_generation_, now);
   }
+  struct VersionSignal {
+    std::string role;
+    uint64_t generation;
+    uint64_t signum;
+    int64_t observed_at;
+    bool owned;
+  };
+
   void NoteVersionSignal(const std::string& role, uint64_t generation,
                          uint64_t signum, int64_t now,
                          const s::ProcessIdentity& owner) {
-    if (!versions_) return;
-    const auto facts = VersionContext(now, true);
-    const bool owned = signalled_.contains({owner.pid, owner.start_ticks});
+    if (!versions_ || pending_signal_) return;
+    VersionSignal fault{role, generation, signum, now,
+                        signalled_.contains({owner.pid, owner.start_ticks})};
+    const size_t index = role == "model" ? 0 : role == "controller" ? 1 : 2;
+    const bool witnessed = version_memory_safe_ && version_memory_at_ > 0 &&
+                           now - version_memory_at_ <= 2 * kSecond &&
+                           witness_owners_[index] == owner;
+    const auto facts = VersionContext(
+        witnessed && journal_.MemorySafe(config_.memory_floor_mib, 0, now)
+                         .value_or(false));
+    if (!fault.owned && !version_draining_ && facts.running &&
+        !facts.termination_requested && facts.lease_continuous &&
+        !facts.device_failure && facts.resources_safe &&
+        (signum == SIGILL || signum == SIGABRT || signum == SIGSEGV)) {
+      // A later sample can establish current headroom. It cannot establish
+      // what memory was available while the faulted process was still alive.
+      pending_signal_ = fault;
+      return;
+    }
+    FinishVersionSignal(fault, now, false);
+  }
+
+  void ResolveVersionSignal(int64_t now) {
+    if (!pending_signal_) return;
+    const auto& fault = *pending_signal_;
+    auto safe =
+        journal_.MemorySafe(config_.memory_floor_mib, fault.observed_at, now);
+    if (!safe && !stopping_ && !quarantined_ &&
+        now - fault.observed_at < 2 * kSecond)
+      return;
+    FinishVersionSignal(fault, now, safe.value_or(false));
+    pending_signal_.reset();
+  }
+
+  void FinishVersionSignal(const VersionSignal& fault, int64_t now, bool safe) {
+    const auto& [role, generation, signum, observed_at, owned] = fault;
+    const auto facts = VersionContext(safe);
     const bool accepted =
-        !version_draining_ && !stopping_ && signum <= 64 && !owned &&
+        !version_draining_ && !stopping_ && !owned &&
         versions_->Signal(role, generation, static_cast<int>(signum), now,
                           facts);
     version_exit_ =
@@ -649,6 +671,11 @@ class Guardian {
                    {"accepted", w::Boolean(accepted)}});
     if (accepted) BeginVersionDrain(now);
   }
+  std::optional<bool> MemorySince(int64_t& since, int64_t now) {
+    if (since == 0) since = now;
+    return journal_.MemorySafe(config_.memory_floor_mib, since, now);
+  }
+
   void GatewayDiagnostic(const std::string& reason, uint64_t generation,
                          int64_t now) {
     gateway_reason_ = reason;
@@ -676,9 +703,11 @@ class Guardian {
                               : 0;
     const auto& outer_owner =
         outer_attached_ ? outer_observer_.identity : config_.launcher;
+    const auto memory = journal_.MemorySafe(config_.memory_floor_mib, 0, now);
     const bool observations_unknown =
-        !controller_health_.IsNull() &&
-        controller_health_.GetString("observation") != "AVAILABLE";
+        !memory.has_value() ||
+        (!controller_health_.IsNull() &&
+         controller_health_.GetString("observation") != "AVAILABLE");
     const char* state =
         stopped_                                ? "STOPPED"
         : stopping_                             ? "DRAINING"
@@ -730,6 +759,8 @@ class Guardian {
           w::Unsigned(controller_.identity.start_ticks)},
          {"controller_events", w::Unsigned(controller_event_)},
          {"controller_health", controller_health_},
+         {"guardian_memory",
+          w::String(!memory ? "UNKNOWN" : (*memory ? "OPEN" : "LOW"))},
          {"version_recovery", versions_ ? versions_->StatusValue() : Json{}},
          {"version_exit_observation", version_exit_},
          {"auxiliary_projection_errors",
@@ -1396,8 +1427,14 @@ class Guardian {
           return;
         }
         if (!model_ticket_.empty() || !ModelTreeEmpty() ||
-            !s::CheckInheritedLease(lease_.Get(), config_.lease_path).ok() ||
-            !HostMemorySafe(config_.memory_floor_mib)) {
+            !s::CheckInheritedLease(lease_.Get(), config_.lease_path).ok()) {
+          ReplyModel(false, "replacement_preflight_incomplete");
+          return;
+        }
+        auto& since = model_request_->memory_since;
+        const auto safe = MemorySince(since, now);
+        if (!safe && now - since < 2 * kSecond) return;
+        if (!safe.value_or(false)) {
           ReplyModel(false, "replacement_preflight_incomplete");
           return;
         }
@@ -1987,7 +2024,8 @@ class Guardian {
         journal_.BeginStop(now, config_.term_ns);
         if (!stop_durable_ && journal_.CleanupConfirmed()) ReplyToStops();
       } else if (version_draining_ && purpose_ == Purpose::kNone) {
-        versions_->Cleaned(now, VersionContext(now, false));
+        versions_->Cleaned(now, VersionContext(
+            MemorySince(version_clean_since_, now).value_or(false)));
         if (versions_->CanLaunch()) {
           version_draining_ = false;
           recovering_ = gateway_recovering_ = false;
@@ -1999,10 +2037,13 @@ class Guardian {
     if (versions_ && desired_running_ && purpose_ == Purpose::kNone &&
         model_ticket_.empty() && controller_ticket_.empty() &&
         gateway_ticket_.empty() && CleanupScope(now, now, s::ProcessIdentity{}))
-      versions_->Cleaned(now, VersionContext(now, false));
+      versions_->Cleaned(now, VersionContext(
+            MemorySince(version_clean_since_, now).value_or(false)));
     if (versions_ && PayloadReady() &&
         versions_->BindingMatches(model_binding_))
-      versions_->Confirm(now, VersionContext(now, false));
+      versions_->Confirm(now, VersionContext(
+          MemorySince(version_confirm_since_, now).value_or(false)));
+    if (pending_signal_) return;
     DriveGateway(now);
     DriveModel(now);
     // A rejected model transaction can enter recovery synchronously. Do not
@@ -2043,7 +2084,8 @@ class Guardian {
       Freeze("GPU lease continuity lost");
       return;
     }
-    if (!HostMemorySafe(config_.memory_floor_mib)) return;
+    if (!MemorySince(controller_grant_since_, now).value_or(false)) return;
+    controller_grant_since_ = 0;
     const auto proof = w::Object({{"cleanup_complete", w::Boolean(true)},
                                   {"resources_safe", w::Boolean(true)},
                                   {"identity_valid", w::Boolean(true)},
@@ -2057,6 +2099,11 @@ class Guardian {
   Config config_;
   std::unique_ptr<s::VersionRecovery> versions_;
   bool version_draining_ = false;
+  std::optional<VersionSignal> pending_signal_;
+  std::array<s::ProcessIdentity, 3> witness_owners_{};
+  int64_t witness_since_ = 0;
+  int64_t controller_grant_since_ = 0;
+  int64_t version_clean_since_ = 0, version_confirm_since_ = 0;
   int64_t version_memory_at_ = 0;
   bool version_memory_safe_ = false;
   int model_exit_signal_ = 0;

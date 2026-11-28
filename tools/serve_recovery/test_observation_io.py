@@ -259,6 +259,7 @@ class ControllerIsolationTests(unittest.TestCase):
         actor.observations = io.Observations()
         actor.observations.unavailable = True
         actor.ownership_unknown = actor.stopping = actor.frozen = False
+        actor.watchdog = None
         actor.logger = None
         actor.ready, actor.progress = True, None
         actor.progress_detector = controller.progress.Detector()
@@ -274,6 +275,15 @@ class ControllerIsolationTests(unittest.TestCase):
             'auxiliary_io_unavailable', auxiliary_io=actor.observations.snapshot())
         actor.channel.begin.assert_not_called()
         self.assertEqual(actor.phase, 'READY')
+
+    def test_missing_memory_and_io_only_degrade_observation(self):
+        actor = self.actor()
+        actor.watchdog = mock.Mock()
+        actor.watchdog.snapshot.return_value = dict(reason='memory_observation_unavailable')
+        self.assertFalse(actor.tick())
+        actor.channel.health.assert_called_once_with('READY', 'UNKNOWN',
+            'memory_observation_unavailable', auxiliary_io=actor.observations.snapshot())
+        actor.channel.begin.assert_not_called()
 
     def test_true_device_failure_still_wins_over_ordinary_io_failure(self):
         actor = self.actor()

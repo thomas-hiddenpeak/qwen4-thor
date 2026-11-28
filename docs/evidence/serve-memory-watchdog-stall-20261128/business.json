@@ -1,0 +1,193 @@
+{
+  "stage": "watchdog_isolation_real_http",
+  "source_commit": "1fd430397be38b703c243fed5819ef57064349aa",
+  "default_revision_at_test": 598,
+  "release_applied": false,
+  "model_starts": 3,
+  "real_chats": 4,
+  "candidates": {
+    "primary": {
+      "parent": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
+      "manifest_sha256": "2ed4a4221a7694e7249d619be8385bd2591b32b1d710289887647e27a0b55a86",
+      "engine_manifest_sha256": "b6a9458d823bef775bb9747d6bd87eacbe76f33c4e46d66bdbceda87601287da",
+      "changed": [
+        "bin/q4t",
+        "engine/manifest.json",
+        "engine/source/tools/serve_service/memory.py",
+        "manifest.json",
+        "source/tools/serve_recovery/controller.py",
+        "source/tools/serve_service/memory.py"
+      ],
+      "inventory": 262,
+      "unchanged_binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+      "memory_source": "c8568ea4f4750d80cce04555d8fa5c21c945924d002aa0c5f4ca3659f308845b",
+      "controller_source": "3afa7df7d65b7851c0c83b1cc22fd874109e17e38700b1165e4fd341e8ba268f"
+    },
+    "fallback": {
+      "parent": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+      "manifest_sha256": "73524843c0bd7f20a5cc8ea131c6a9a68d9477dd3ac2e20f3162068885a9d0eb",
+      "engine_manifest_sha256": "269ca44b31aff61df391af8cf11ab1e1773dabb4ef9858f4d2f19fbf0b7791d2",
+      "changed": [
+        "bin/q4t",
+        "engine/manifest.json",
+        "engine/source/tools/serve_service/memory.py",
+        "manifest.json",
+        "source/tools/serve_recovery/controller.py",
+        "source/tools/serve_service/memory.py"
+      ],
+      "inventory": 262,
+      "unchanged_binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+      "memory_source": "c8568ea4f4750d80cce04555d8fa5c21c945924d002aa0c5f4ca3659f308845b",
+      "controller_source": "3afa7df7d65b7851c0c83b1cc22fd874109e17e38700b1165e4fd341e8ba268f"
+    }
+  },
+  "standalone": {
+    "lease": {
+      "sha256": "f0ccd4f0809e7d6c9c4b7722df9be40d5e5df7defc4395947fb827684c2fc763",
+      "nvml_queries": 71,
+      "nvml_all_ok": true,
+      "events_sha256": "b898586af0724ed7b40156a683a59eb8f287d22eb88376f8193866899e4e7c52",
+      "nvml_sha256": "6db69fd3634e802baa5dcc059963b98a8f46d923dee9ad5ba30138b7904ea533"
+    },
+    "read_fault": "Test-owned memory reader stalls after the first real Chat. NVML and real device pressure were not faulted.",
+    "result": {
+      "registered_bindings_unchanged": true,
+      "protected_files": 13,
+      "primary": "2ed4a4221a7694e7249d619be8385bd2591b32b1d710289887647e27a0b55a86",
+      "fallback": "73524843c0bd7f20a5cc8ea131c6a9a68d9477dd3ac2e20f3162068885a9d0eb",
+      "both_bundles_verified": true,
+      "before": {
+        "answer": "42",
+        "request_id": "chatcmpl-auto-7e5b0b5ce3c9039cfef3beb20ed84b98",
+        "http_status": 200,
+        "sha256": "a1d85b93d91c404ad433865790bfda77c25a7ad8d02a30ed5bf67c64baec5ead"
+      },
+      "while_stalled": {
+        "answer": "37",
+        "request_id": "chatcmpl-auto-2a66128a8680e013040294bf956bb5af",
+        "http_status": 200,
+        "sha256": "0894352b8314f9e042675c675768ead3af1b2dcc981c6ae070de8ab6dbabf34a"
+      },
+      "initial": {
+        "state": "READY",
+        "attempts": 1,
+        "restarts": 0,
+        "backend": {
+          "pid": 2167046,
+          "start_ticks": 403501053,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "memory": {
+          "state": "OPEN",
+          "samples": 35,
+          "failures": 0,
+          "floor_bytes": 1073741824,
+          "reason": null,
+          "signal_sent": false,
+          "sampled_monotonic": 4035043.392219664,
+          "total_bytes": 131920637952,
+          "available_bytes": 32705253376
+        }
+      },
+      "affected": {
+        "state": "READY",
+        "attempts": 1,
+        "restarts": 0,
+        "backend": {
+          "pid": 2167046,
+          "start_ticks": 403501053,
+          "boot_id": "67aedfc7-025a-4a36-afe3-58ec3fc670d8"
+        },
+        "memory": {
+          "state": "UNKNOWN",
+          "samples": 38,
+          "failures": 2,
+          "floor_bytes": 1073741824,
+          "reason": "memory_observation_unavailable",
+          "signal_sent": false,
+          "sampled_monotonic": 4035048.392865676,
+          "total_bytes": null,
+          "available_bytes": null
+        }
+      },
+      "final": {
+        "state": "STOPPED",
+        "attempts": 1,
+        "restarts": 0,
+        "backend": null,
+        "memory": {
+          "state": "UNKNOWN",
+          "samples": 39,
+          "failures": 3,
+          "floor_bytes": 1073741824,
+          "reason": "memory_observation_unavailable",
+          "signal_sent": false,
+          "sampled_monotonic": 4035050.393070921,
+          "total_bytes": null,
+          "available_bytes": null
+        }
+      },
+      "cleanup_before_reader_returned": true,
+      "both_ports_released": true
+    }
+  },
+  "managed": {
+    "lease": {
+      "sha256": "c3d06a3b0e4f5e3ebed34f3066542f019c5aa1de3f04a831b1c7a45f53df5da6",
+      "nvml_queries": 169,
+      "nvml_all_ok": true,
+      "events_sha256": "5593babc4b0d47b718ab5b6f0069317e6add35457e8778b862209fe15f871c3e",
+      "nvml_sha256": "d3627cfa232ec98dbd282f54d06bf232de555c0484251ac1859cb324a20f8489"
+    },
+    "result": {
+      "status": "PASS",
+      "roles": [
+        {
+          "role": "primary",
+          "sha256": "2ed4a4221a7694e7249d619be8385bd2591b32b1d710289887647e27a0b55a86",
+          "native_entry": "bin/q4t service run",
+          "http_status": 200,
+          "response_id": "chatcmpl-auto-29a0846eb8df243b5ebdbf1829e589cd",
+          "answer": "42",
+          "wire_sha256": "7650855b73bf7e43b5cc1eee20803b345f2fdf7fe52615ab85dfa860539b7189",
+          "state": "STOPPED",
+          "model_starts": 1,
+          "recovery_attempts": 0,
+          "model_pid": 2168249,
+          "model_start_ticks": 403510624,
+          "controller_pid": 2168107,
+          "ports_released": true,
+          "unchanged_default": true
+        },
+        {
+          "role": "fallback",
+          "sha256": "73524843c0bd7f20a5cc8ea131c6a9a68d9477dd3ac2e20f3162068885a9d0eb",
+          "native_entry": "bin/q4t service run",
+          "http_status": 200,
+          "response_id": "chatcmpl-auto-cf78e834fe03780e0b0cd6c250f70e19",
+          "answer": "37",
+          "wire_sha256": "053a1d4625083eed9750b7dce51a2d02f9739916dc46991cf79592b85d759ec8",
+          "state": "STOPPED",
+          "model_starts": 1,
+          "recovery_attempts": 0,
+          "model_pid": 2169699,
+          "model_start_ticks": 403519673,
+          "controller_pid": 2169589,
+          "ports_released": true,
+          "unchanged_default": true
+        }
+      ],
+      "model_starts": 2,
+      "chats": 2,
+      "registered_bindings_unchanged": true
+    },
+    "scope": "Normal packaged foreground entry and operator shutdown, with an independent real Chat in each capacity. Native-controller memory-stall fault injection was verified separately with the actual Guardian and CPU backend."
+  },
+  "wire_sha256": {
+    "before-chat": "a1d85b93d91c404ad433865790bfda77c25a7ad8d02a30ed5bf67c64baec5ead",
+    "stalled-chat": "0894352b8314f9e042675c675768ead3af1b2dcc981c6ae070de8ab6dbabf34a",
+    "primary-native-chat": "7650855b73bf7e43b5cc1eee20803b345f2fdf7fe52615ab85dfa860539b7189",
+    "fallback-native-chat": "053a1d4625083eed9750b7dce51a2d02f9739916dc46991cf79592b85d759ec8"
+  },
+  "prior_host_cleanup": "Host units were not changed in these leases."
+}
