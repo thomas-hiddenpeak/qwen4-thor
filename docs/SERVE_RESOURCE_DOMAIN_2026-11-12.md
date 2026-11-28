@@ -1,5 +1,13 @@
 # R08 / R09：原生资源域与新监护者核验
 
+Guardian 在独立的私有 seqpacket 通道接收运行中 journal 辅助线程的物理内存样本。
+采集与 journal 的事务使用不同套接字。控制循环、进程回收和状态查询均可在读端
+阻塞时继续。状态中的 `guardian_memory` 为 `OPEN`、`LOW` 或 `UNKNOWN`。
+超过两秒的样本失效，恢复观测需要一次始于缺口之后的读取。低值或缺失会阻止
+新的资源授权。已就绪的模型继续服务。版本归因保留进程存活时的样本，并在
+故障后重新核验，随后才允许切换。[候选验证](evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json)
+
+
 原生资源安装、前后台进入、旧域清理、跨boot续办与冷许可组合已
 完成针对性CPU验证。创建/运行路径直接使用Linux能力，systemd
 适配是显式选配。当前继续统一DRAM与memcg压力观察/合格profile

@@ -10590,6 +10590,31 @@
         "capacity": "evidence/serve-diagnostic-pipe-20261128/profiles.json",
         "managed": "evidence/serve-diagnostic-pipe-20261128/managed.json",
         "delivery": "evidence/serve-diagnostic-pipe-20261128/delivery.json"
+      },
+      "memory_watchdog_stall_20261128": {
+        "stage": "issued",
+        "evidence": "evidence/serve-memory-watchdog-stall-20261128/cpu.json",
+        "cpu_checks": 28,
+        "model_business": "evidence/serve-memory-watchdog-stall-20261128/business.json",
+        "issued": true,
+        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json",
+        "model_starts": 3,
+        "chats": 4,
+        "revision": 600,
+        "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
+      },
+      "guardian_memory_read_20261128": {
+        "stage": "issued",
+        "evidence": "evidence/serve-memory-watchdog-stall-20261128/guardian-before.json",
+        "fix": "candidate",
+        "targeted_cpu": "evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json",
+        "cpu_checks": 20,
+        "issued": true,
+        "business": "evidence/serve-memory-watchdog-stall-20261128/guardian-business.json",
+        "model_starts": 4,
+        "chats": 5,
+        "revision": 600,
+        "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
       }
     },
     {
@@ -11166,10 +11191,10 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 598,
-        "receipt": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src/.q4t-work/cold598-01/plan.json",
-        "plan_sha256": "651658704039d9845e1ae1f213b19deee99caa88da3163594cfdcf2fe139822d",
+        "revision": 600,
+        "receipt": "evidence/serve-memory-watchdog-stall-20261128/delivery.json",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/cold600-01/plan.json",
+        "plan_sha256": "0da61b02a3fe6cb44c48e4c93e9e6806159805015ee7144fa6807d45da60b2c4",
         "model_starts": 0,
         "executed": false
       },
@@ -11343,6 +11368,31 @@
         "archive": "evidence/serve-soak-observation-report-20261128/archive.json",
         "day_hours_executed": 0,
         "handoff": "evidence/serve-soak-observation-report-20261128/handoff.json"
+      },
+      "memory_watchdog_stall_20261128": {
+        "stage": "issued",
+        "evidence": "evidence/serve-memory-watchdog-stall-20261128/cpu.json",
+        "cpu_checks": 28,
+        "model_business": "evidence/serve-memory-watchdog-stall-20261128/business.json",
+        "issued": true,
+        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json",
+        "model_starts": 3,
+        "chats": 4,
+        "revision": 600,
+        "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
+      },
+      "guardian_memory_read_20261128": {
+        "stage": "issued",
+        "evidence": "evidence/serve-memory-watchdog-stall-20261128/guardian-before.json",
+        "fix": "candidate",
+        "targeted_cpu": "evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json",
+        "cpu_checks": 20,
+        "issued": true,
+        "business": "evidence/serve-memory-watchdog-stall-20261128/guardian-business.json",
+        "model_starts": 4,
+        "chats": 5,
+        "revision": 600,
+        "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
       }
     },
     {
@@ -11679,6 +11729,19 @@
         "registered_fallback_probes": 1,
         "completed_upload_replay": true,
         "pending_upload_resumed": true
+      },
+      "guardian_memory_read_20261128": {
+        "stage": "issued",
+        "evidence": "evidence/serve-memory-watchdog-stall-20261128/guardian-before.json",
+        "fix": "candidate",
+        "targeted_cpu": "evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json",
+        "cpu_checks": 20,
+        "issued": true,
+        "business": "evidence/serve-memory-watchdog-stall-20261128/guardian-business.json",
+        "model_starts": 4,
+        "chats": 5,
+        "revision": 600,
+        "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
       }
     },
     {
@@ -13099,7 +13162,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev598_delivered_remaining_deliveries",
+      "state": "rev600_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13149,13 +13212,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 598,
+        "revision": 600,
         "state": "STOPPED",
-        "primary_manifest_sha256": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
-        "fallback_manifest_sha256": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+        "primary_manifest_sha256": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1",
+        "fallback_manifest_sha256": "8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61",
         "binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
+        "evidence": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14617,6 +14680,15 @@
         "binary_sha256": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-web-provider-20261128/delivery.json"
+      },
+      "release_revision_598": {
+        "revision": 598,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
+        "fallback_manifest_sha256": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+        "binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
       }
     },
     {
@@ -14725,22 +14797,22 @@
         "audio_pairs": 25,
         "first_hour_business": 304,
         "business_requests": 7250,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "b10bf32b44333cd9859b405040212b97baa63d4ac9f2c6a9c2e5c906892a9b09",
-        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src/.q4t-work/day-01/audio-day.sh",
-        "operator_sha256": "56b946394075349305073960fad654cc9683ca1f07eecc7a2c4495f7c5c97563",
-        "checked_at": "2026-11-28T05:46:13.515680+00:00",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "8a3fcb56bee493ad1c8aa522162aae7959319d48311880b7512e9343de1aee69",
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "d97a0b98ea7c0932af67bc8223ee8c6935a9c70d7cf5c460ec050f847ad38f73",
+        "checked_at": "2026-11-28T07:39:24.382010+00:00",
         "minimum_evidence_free_bytes": 12884901888,
         "hours_executed": 0,
-        "revision": 598,
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src",
+        "revision": 600,
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-client-primary-01/bundle",
-          "manifest_sha256": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/memory-watchdog-src/.q4t-work/memory-watchdog-candidates-03/primary",
+          "manifest_sha256": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1"
         },
-        "source_commit": "78de876c7cd82cf4341b7f3f186b58df8e893e69",
-        "handoff_sha256": "5f835bb9b94f0d35827e8ff7ebd51c4f95d9742914bb2e33950f1ea10a0d6b2e",
-        "source_files": 704,
+        "source_commit": "e81696920420f6aa46061fe08254e4e70f1ea955",
+        "handoff_sha256": "a67170c2a8328bc6da098c5dc4e23084d0dbf7a4dc6eabf7493a2a0d3bd27d0f",
+        "source_files": 705,
         "checked": true
       },
       "video_affine_detail_20261117": {
@@ -15149,9 +15221,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 598,
-        "receipt": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json",
-        "plan_sha256": "b10bf32b44333cd9859b405040212b97baa63d4ac9f2c6a9c2e5c906892a9b09",
+        "revision": 600,
+        "receipt": "evidence/serve-memory-watchdog-stall-20261128/delivery.json",
+        "plan_sha256": "8a3fcb56bee493ad1c8aa522162aae7959319d48311880b7512e9343de1aee69",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

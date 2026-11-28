@@ -1,0 +1,57 @@
+{
+  "stage": "targeted_cpu",
+  "before": {
+    "source_sha256": "24c5d82e19553890f280f9f77242c768a73ffbf161dea3e99e3ef4ec688a8e3f",
+    "source_commit": "40dac8c14eafecb9629afd27a4e8694acca3e649",
+    "snapshot_blocked_while_reader_stalled": true,
+    "elapsed_without_observations": 300,
+    "samples": 2,
+    "final_state": "TRIPPED",
+    "signal_callback_count": 1,
+    "model_starts": 0,
+    "real_signals": 0
+  },
+  "candidate_source_sha256": "95de489a964978b4cdc573bf64692125e9c621c9fe4970b9d9be3cee75cfb826",
+  "targeted_cpu": {
+    "passed": 23,
+    "cases": [
+      "tools.serve_service.test_memory.MemoryTests.test_closed_watchdog_cannot_signal_a_new_owner",
+      "tools.serve_service.test_memory.MemoryTests.test_delayed_low_result_is_unknown_and_cannot_complete_a_streak",
+      "tools.serve_service.test_memory.MemoryTests.test_detached_old_process_is_never_notified",
+      "tools.serve_service.test_memory.MemoryTests.test_forked_controller_gets_its_own_reader",
+      "tools.serve_service.test_memory.MemoryTests.test_parser_rejects_invalid_and_oversized_kernel_observations",
+      "tools.serve_service.test_memory.MemoryTests.test_reader_exit_releases_slot_for_next_observation",
+      "tools.serve_service.test_memory.MemoryTests.test_runtime_unknown_never_signals_and_recovers_in_place",
+      "tools.serve_service.test_memory.MemoryTests.test_signal_failure_retains_protective_cause",
+      "tools.serve_service.test_memory.MemoryTests.test_stalled_reader_is_bounded_across_observers_and_drops_late_result",
+      "tools.serve_service.test_memory.MemoryTests.test_startup_unknown_still_refuses_new_allocation",
+      "tools.serve_service.test_memory.MemoryTests.test_transient_low_recovers_and_resets_continuous_deadline",
+      "tools.serve_service.test_memory.MemoryTests.test_trip_before_attachment_signals_late_owned_child_only_once",
+      "tools.serve_service.test_memory.MemoryTests.test_unknown_cannot_substitute_for_confirmed_low_pressure",
+      "tools.serve_service.test_memory.MemoryTests.test_unobserved_interval_cannot_earn_critical_pressure_time",
+      "tools.serve_recovery.test_profile_memory.MemoryTests.test_cached_unknown_and_stale_observations_never_accumulate_pressure",
+      "tools.serve_recovery.test_profile_memory.MemoryTests.test_cold_selection_requires_actual_qualified_capacity",
+      "tools.serve_recovery.test_profile_memory.MemoryTests.test_invalid_future_and_interrupted_samples_reset_evidence",
+      "tools.serve_recovery.test_profile_memory.MemoryTests.test_promotion_requires_extra_allocation_headroom_and_continuous_high_water",
+      "tools.serve_service.test_service.Case.test_memory_gate_refuses_launch_on_low_or_unknown_sample",
+      "tools.serve_service.test_service.Case.test_memory_trip_interrupts_blocked_probe_and_prevents_restart",
+      "tools.serve_service.test_service.Case.test_runtime_memory_observer_loss_keeps_real_owned_child_until_operator_stop",
+      "tools.serve_service.test_service.Case.test_stalled_memory_read_preserves_owned_backend_and_clean_stop",
+      "tools.serve_service.test_service.Case.test_operator_stop_cannot_hide_memory_trip_during_cleanup"
+    ],
+    "log_sha256": "ce80b2072138a0218f94e8f4ffc65701356b768d5b66092f0c3530297bab9c8f",
+    "initial_fixture_errors": 4,
+    "initial_fixture_cause": "Sparse checkout lacked two existing profile evidence directories. The four affected checks were rerun against their original fixtures.",
+    "fixture_retest_sha256": "81ccd4d4e3ae10ee8f6b20241a6feb38e39631a05b1473b2fe64836e5ab42a1a"
+  },
+  "standalone_supervisor": {
+    "owned_child": "real CPU process",
+    "state_while_stalled": "UNKNOWN",
+    "attempts": 1,
+    "restarts": 0,
+    "watchdog_signal_sent": false,
+    "stop": "STOPPED with cleanup confirmed before releasing the stalled observation"
+  },
+  "hardware_model_tests_in_this_receipt": 0,
+  "physical_cuda_memory_limit": "unverified"
+}

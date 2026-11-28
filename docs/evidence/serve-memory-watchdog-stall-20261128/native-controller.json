@@ -1,0 +1,98 @@
+{
+  "stage": "native_controller_and_standalone_targeted_cpu",
+  "cpu_distinct_passed": 28,
+  "cases": [
+    "tools.serve_recovery.test_production.ControllerTests.test_fresh_launch_gate_precedes_grant_when_memory_changes",
+    "tools.serve_recovery.test_profile_memory.MemoryTests.test_cached_unknown_and_stale_observations_never_accumulate_pressure",
+    "tools.serve_recovery.test_profile_memory.MemoryTests.test_cold_selection_requires_actual_qualified_capacity",
+    "tools.serve_recovery.test_profile_memory.MemoryTests.test_invalid_future_and_interrupted_samples_reset_evidence",
+    "tools.serve_recovery.test_profile_memory.MemoryTests.test_promotion_requires_extra_allocation_headroom_and_continuous_high_water",
+    "tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_model_crash_then_startup_pressure_recovers_without_quarantine",
+    "tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_observer_loss_after_grant_allows_first_generation_to_become_ready",
+    "tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_stalled_launch_memory_keeps_guardian_responsive_without_a_grant",
+    "tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_stalled_runtime_memory_degrades_and_recovers_in_same_generation",
+    "tools.serve_service.test_memory.MemoryTests.test_closed_watchdog_cannot_signal_a_new_owner",
+    "tools.serve_service.test_memory.MemoryTests.test_delayed_low_result_is_unknown_and_cannot_complete_a_streak",
+    "tools.serve_service.test_memory.MemoryTests.test_detached_old_process_is_never_notified",
+    "tools.serve_service.test_memory.MemoryTests.test_forked_controller_gets_its_own_reader",
+    "tools.serve_service.test_memory.MemoryTests.test_parser_rejects_invalid_and_oversized_kernel_observations",
+    "tools.serve_service.test_memory.MemoryTests.test_reader_exit_releases_slot_for_next_observation",
+    "tools.serve_service.test_memory.MemoryTests.test_runtime_unknown_never_signals_and_recovers_in_place",
+    "tools.serve_service.test_memory.MemoryTests.test_signal_failure_retains_protective_cause",
+    "tools.serve_service.test_memory.MemoryTests.test_stalled_reader_is_bounded_across_observers_and_drops_late_result",
+    "tools.serve_service.test_memory.MemoryTests.test_startup_unknown_still_refuses_new_allocation",
+    "tools.serve_service.test_memory.MemoryTests.test_transient_low_recovers_and_resets_continuous_deadline",
+    "tools.serve_service.test_memory.MemoryTests.test_trip_before_attachment_signals_late_owned_child_only_once",
+    "tools.serve_service.test_memory.MemoryTests.test_unknown_cannot_substitute_for_confirmed_low_pressure",
+    "tools.serve_service.test_memory.MemoryTests.test_unobserved_interval_cannot_earn_critical_pressure_time",
+    "tools.serve_service.test_service.Case.test_memory_gate_refuses_launch_on_low_or_unknown_sample",
+    "tools.serve_service.test_service.Case.test_memory_trip_interrupts_blocked_probe_and_prevents_restart",
+    "tools.serve_service.test_service.Case.test_operator_stop_cannot_hide_memory_trip_during_cleanup",
+    "tools.serve_service.test_service.Case.test_runtime_memory_observer_loss_keeps_real_owned_child_until_operator_stop",
+    "tools.serve_service.test_service.Case.test_stalled_memory_read_preserves_owned_backend_and_clean_stop"
+  ],
+  "initial_failed_case": "test_observer_loss_after_grant_allows_first_generation_to_become_ready",
+  "initial_failure": "The test counted the first launch as a recovery attempt. The ledger correctly showed generation one, no failure and zero recovery attempts. Those conditions passed on retest.",
+  "logs": {
+    "native-final-01": "19e682f1817e3474c522f782ec8fe66e4753ca145dce8e5d306ae07d37eb2b28",
+    "after-grant-retest-01": "cbdef734109a52a79e355d68bd7c138e86ffa7af5cf2fab1a33e1c8637ba20b5",
+    "native-pressure-regression-01": "909b2b1572d7d8a674c1a8b74b9ddca67659a11fd33455de9d209749f827ca53"
+  },
+  "memory_source_sha256": "c8568ea4f4750d80cce04555d8fa5c21c945924d002aa0c5f4ca3659f308845b",
+  "controller_source_sha256": "3afa7df7d65b7851c0c83b1cc22fd874109e17e38700b1165e4fd341e8ba268f",
+  "cpu_native_guardian": {
+    "preflight": {
+      "observations_sha256": "439e8574117902094f7635bdadf65e6ff4e52ec291cc6349c8bf1f85e83aa075",
+      "samples": 23,
+      "final_ledger_sha256": "e44e47af6d245b9a2fde21b68a372ce6014c648267c2027337ed174b0e4ec4f9",
+      "generations": {
+        "controller": 1,
+        "gateway": 1,
+        "model": 0
+      },
+      "model_recovery_attempts": 0,
+      "observed_ready_with_memory_unknown": false,
+      "stopped": true
+    },
+    "runtime": {
+      "observations_sha256": "d0e4f5ac52717ef109aada080400826ab4e15d4a7ab4a587c1179ea23712b841",
+      "samples": 146,
+      "final_ledger_sha256": "39467b4279781a55ecf705f55481ee7131e5f4b59f8e904dee6b40f72be81c40",
+      "generations": {
+        "controller": 1,
+        "gateway": 1,
+        "model": 1
+      },
+      "model_recovery_attempts": 0,
+      "observed_ready_with_memory_unknown": true,
+      "stopped": true
+    },
+    "after_grant": {
+      "observations_sha256": "58c5dd377822fa5dc4717d588ab7bdf4573e162f584c6b7b42321892ba3541e1",
+      "samples": 94,
+      "final_ledger_sha256": "28b418149fed46a95070dea1d9b9e6a4bfec4afc398ddc43e06d06bd24b863e7",
+      "generations": {
+        "controller": 1,
+        "gateway": 1,
+        "model": 1
+      },
+      "model_recovery_attempts": 0,
+      "observed_ready_with_memory_unknown": true,
+      "stopped": true
+    },
+    "startup_pressure": {
+      "observations_sha256": "800b94eef63f59ed96c003886e72d3860c43f952ceafb3819ed400cee1042755",
+      "samples": 909,
+      "final_ledger_sha256": "56a08b956eaff56df0014338f4e9887aade237f8078816dee6080c58ff0691ec",
+      "generations": {
+        "controller": 1,
+        "gateway": 1,
+        "model": 3
+      },
+      "model_recovery_attempts": 2,
+      "observed_ready_with_memory_unknown": false,
+      "stopped": true
+    }
+  },
+  "model_starts_on_gpu": 0
+}

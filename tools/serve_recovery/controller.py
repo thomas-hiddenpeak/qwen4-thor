@@ -134,13 +134,13 @@ class Controller:
         self.check_client = core_http.self_check_client(self.base_policy)
         self.phase, self.reason = 'WAIT_DEPENDENCY', 'cold_preflight'
 
-    def observation(self):
+    def observation(self, *, memory_missing=False):
         if self.monitor.fatal:
             return 'DEVICE_FAILURE'
         resources = getattr(self, 'resource_memory', None)
         if (resources is not None and resources.snapshot() is None or
                 self.monitor.visibility != 'AVAILABLE' or
-                self.observations.unavailable or
+                self.observations.unavailable or memory_missing or
                 self.ownership_unknown or
                 (self.ready and (self.progress is None or
                                  self.progress.snapshot() is None))):
@@ -194,7 +194,11 @@ class Controller:
             if (self.phase == 'READY' and resources is not None and
                     resources.snapshot() is None and not self.monitor.fatal):
                 reason = 'resource_observation_unavailable'
-            self.channel.health(self.phase, self.observation(), reason,
+            memory_missing = (self.watchdog is not None and
+                self.watchdog.snapshot()['reason'] == 'memory_observation_unavailable')
+            if self.phase == 'READY' and memory_missing and not self.monitor.fatal:
+                reason = 'memory_observation_unavailable'
+            self.channel.health(self.phase, self.observation(memory_missing=memory_missing), reason,
                                 auxiliary_io=self.observations.snapshot(self.logger))
             self.channel.event('heartbeat')
             self.heartbeat_at = now+0.25
@@ -242,6 +246,37 @@ class Controller:
             return True
         return False
 
+    def launch_memory_ready(self):
+        sample = memory.read_for_launch(self.settings['memory_unknown_seconds'],
+                                        lambda: self.tick(allow_query=False))
+        if sample is None:
+            self.phase, self.reason = 'WAIT_DEPENDENCY', 'memory_unknown'
+            return False
+        minimum = max(4096, self.settings['critical_memory_mib'])*1024**2
+        if sample['available_bytes'] < minimum:
+            self.phase, self.reason = 'WAIT_DEPENDENCY', 'memory_headroom'
+            return False
+        if self.profiles is not None:
+            try:
+                if not self.profiles.prepare_launch(self, sample):
+                    return False
+            except OSError:
+                self.phase, self.reason = 'WAIT_DEPENDENCY', 'dependency_unavailable'
+                return False
+            except ValueError:
+                self.quarantine('identity_invalid')
+                return False
+            except RuntimeError:
+                self.phase, self.reason = 'WAIT_DEPENDENCY', 'profile_unavailable'
+                return False
+        capacity = self.profiles.launch if self.profiles is not None else None
+        floor = self.startup_memory_floors.get(capacity)
+        if (floor is not None and floor[0] == sample['total_bytes'] and
+                sample['available_bytes'] < floor[1]):
+            self.phase, self.reason = 'WAIT_DEPENDENCY', 'startup_memory_floor'
+            return False
+        return True
+
     def preflight(self):
         self.tick()
         if self.protect(force=True):
@@ -253,23 +288,9 @@ class Controller:
         if self.monitor.job is not None or resources is not None and resources.job is not None:
             self.reason = 'query_pending'
             return None
-        try:
-            observed_memory = memory.read()
-        except (OSError, ValueError):
-            self.phase, self.reason = 'WAIT_DEPENDENCY', 'memory_unknown'
+        if not self.launch_memory_ready():
             return None
         try:
-            if observed_memory['available_bytes'] < 4096*1024**2:
-                self.reason = 'memory_headroom'
-                return None
-            if self.profiles is not None and not self.profiles.prepare_launch(self, observed_memory):
-                return None
-            capacity = self.profiles.launch if self.profiles is not None else None
-            floor = self.startup_memory_floors.get(capacity)
-            if floor is not None and floor[0] == observed_memory.get('total_bytes') and (
-                    observed_memory['available_bytes'] < floor[1]):
-                self.phase, self.reason = 'WAIT_DEPENDENCY', 'startup_memory_floor'
-                return None
             model = Path(self.base['model_dir'])
             bundle.check_assets(model, bundle.observed_assets(model, self.manifest), read_edges=True)
             supervisor.preflight_ports(self.settings)
@@ -353,6 +374,10 @@ class Controller:
             return False
         except (ValueError, KeyError, TypeError, RuntimeError):
             self.quarantine('identity_invalid')
+            return False
+        # Bundle verification can take time. Check current headroom before
+        # granting allocation authority, while there is still no owned model.
+        if not self.launch_memory_ready():
             return False
         reply = self.transaction('authorize', dict(role='model', proof=proof))
         if not reply['ok']:
@@ -438,9 +463,9 @@ class Controller:
             if publisher is not None:
                 publisher.close()
         self.watchdog = memory.Watchdog(self.settings,
-            lambda owner: supervisor.signal_owner(owner, signal.SIGTERM))
+            lambda owner: supervisor.signal_owner(owner, signal.SIGTERM), reader=memory.read)
         self.watchdog.attach(self.owner)
-        self.watchdog.start()
+        self.watchdog.start_monitoring()
         end = time.monotonic()+300
         while not self.stopping and time.monotonic() < end:
             self.tick()

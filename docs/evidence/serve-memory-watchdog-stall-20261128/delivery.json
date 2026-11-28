@@ -1,0 +1,144 @@
+{
+  "stage": "stopped_default_and_operator_handoff",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 600,
+    "version_revision": 229,
+    "profile_revision": 113,
+    "previous_profile_revision": 113,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1",
+    "fallback": "8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61",
+    "engine": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 598,
+  "previous_delivery": "../serve-responses-search-stream-sdk-20261128/delivery.json",
+  "signed_source": "e81696920420f6aa46061fe08254e4e70f1ea955",
+  "day": {
+    "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/day-01/audio-day.sh",
+    "operator_sha256": "d97a0b98ea7c0932af67bc8223ee8c6935a9c70d7cf5c460ec050f847ad38f73",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "8a3fcb56bee493ad1c8aa522162aae7959319d48311880b7512e9343de1aee69",
+    "business_requests": 7250,
+    "first_hour_business": 304,
+    "checked_at": "2026-11-28T07:39:24.382010+00:00",
+    "minimum_evidence_free_bytes": 12884901888,
+    "source": "e81696920420f6aa46061fe08254e4e70f1ea955",
+    "audio_pairs": 25,
+    "hours_executed": 0
+  },
+  "cold": {
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/cold600-01/plan.json",
+    "plan_sha256": "0da61b02a3fe6cb44c48e4c93e9e6806159805015ee7144fa6807d45da60b2c4",
+    "model_actions": 0,
+    "host_units_modified": false
+  },
+  "inspection_inputs_sha256": "b90226b421b6d3bfa1adc756cc0eaf8a8cc4a6c7ed0a895e8346e6fb3730c374",
+  "input_files": 51,
+  "leases": {
+    "maintenance": "7f3816c3559e70e4e88a0406abcf30714832ca297597d112b4fd541d33ae12b4",
+    "publish": "eebeb21a2bad8c52ab8379530b6cfdf8e41b9d86322099bb669351e39841e37c"
+  },
+  "profile_selection_unchanged_sha256": "e4d2b8fc203398eeb9a4dade5b56a0a4f84d7df18f78729559489b578fdb8196",
+  "disk_reserve_recovery": {
+    "free_before": 12177084416,
+    "free_after": 15795638272,
+    "disk_reserve_bytes": 12884901888,
+    "archives": [
+      {
+        "name": "movie-clip-src.tar.zst",
+        "sha256": "d9c8d1fe8966aa8c11647045e59409b7a240592bc11c98aea48108cb49f8974b",
+        "manifest_sha256": "7c85f429174bb022b2f9550e86b164d7dca7f14ef2b79996470a3c3b01fc00e7",
+        "members": 601,
+        "source_commit": "054b02557ee69509fd68b690910c4204789494b0"
+      },
+      {
+        "name": "sdk-route-compat-src.tar.zst",
+        "sha256": "941c5caaa8542975fc1d5a8af50cb356310932bd0f8609e94a99a0de6817e3fb",
+        "manifest_sha256": "78b0c2d6012a31a33a65b291d8572dccfe1c6702419acd95fe795a6ed40ffff7",
+        "members": 601,
+        "source_commit": "e82dff2a35d2c7f0b9810313f63afd2e182986e2"
+      }
+    ],
+    "prior_failed_log_sha256": "0b79fe4c51ef52e97fa59ff4d51ccbb8007ea07cbf1067d67172aa4a0b5adaa5",
+    "operator_plan_sha256": "8a3fcb56bee493ad1c8aa522162aae7959319d48311880b7512e9343de1aee69"
+  },
+  "host_fixture_repair": {
+    "head": "72e79a7bce09b7d32443e6e4b500304b0e03503d",
+    "output": "e68ed809989e1501ee7ef183ae43a92c91a3d5b0ca3c0043a893095ca535f53d",
+    "tests": 40,
+    "failed_workflow_runs": [
+      46116901385,
+      46116905689
+    ]
+  },
+  "evidence_sha256": {
+    "cpu.json": "31c1050a59a79c635b5c2ecaaf3b2a83c32458850a9dc9eb6a58be3c4493b9f2",
+    "native-controller.json": "1ac62b63785d5bc510958027341cabec2b0ba9a7a6524367fa5bfde0e20ebd47",
+    "guardian-cpu.json": "90d383ef9906e204be1a1a0f2fbba95488291cd8e9e0cad49b8708b49f3a3f12",
+    "guardian-before.json": "414d06de2912dfddcb14f76d33d00551e9fed23b4cedaf3ae46534cc0e389bca",
+    "business.json": "b5348d4d2253274c51587bef57243988a0bbebd9ae6eb317f47915be736c692d",
+    "guardian-business.json": "138401379b402d9bc59e927a37d69a659f6d17668bbe9c21dfa7ae4ba12d2e0f"
+  },
+  "required_methods": 231,
+  "declared_methods": 219,
+  "method_coverage": {
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "openapi_sha256": {
+      "primary": "4e3e1826406cf4c182d1c970c06510b0df5425abf4d6cebfc0a848d1b51edc8d",
+      "fallback": "4e3e1826406cf4c182d1c970c06510b0df5425abf4d6cebfc0a848d1b51edc8d"
+    },
+    "remaining_declarations": [
+      "DELETE /videos/{video_id}",
+      "GET /videos",
+      "GET /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "POST /videos/{video_id}/remix"
+    ]
+  },
+  "retention_maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "4b6eee78788a9123c4d4b990a495479cadae5d834fdced55433367317f0c9886"
+        ],
+        "sha256": "db69b37198082359302e6c9332e0df59135b65f304bb0d99ad2ca7045ffaaa38",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "ccd7ecaf-4b39-43f2-8291-9239e2c6bb2c"
+        ],
+        "sha256": "6b9940969d7a34d1db167057d1d40b61b045d1faf68ad65d1785eb8109078897",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "2bf94dcd-0440-49ba-9a1b-f93a22d673c4"
+        ],
+        "sha256": "f41cd7a27979bf0bf9702b6da34ed4234721b4463683931af52257bae9c01ba3",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  }
+}

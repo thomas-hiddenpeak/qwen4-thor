@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <array>
 #include <cerrno>
+#include <chrono>
 #include <limits>
 #include <vector>
 
@@ -17,6 +18,12 @@
 namespace q4t::service {
 namespace {
 constexpr int64_t kMaxTimeout = 300'000'000'000;
+constexpr int64_t kMemoryFreshNs = 2'000'000'000;
+
+int64_t MemoryClock() {
+  return std::chrono::duration_cast<std::chrono::nanoseconds>(
+      std::chrono::steady_clock::now().time_since_epoch()).count();
+}
 // Version preparation verifies sealed packages and their full business
 // receipts before it grants launch. Other journal operations only update state.
 constexpr int64_t kVersionPrepareTimeoutNs = 30'000'000'000;
@@ -69,7 +76,8 @@ Status JournalClient::Start(const std::string& python,
                             const std::string& script,
                             const std::string& directory,
                             const std::string& service_id, int64_t now_ns,
-                            int64_t timeout_ns, JournalDomain domain) {
+                            int64_t timeout_ns, JournalDomain domain,
+                            bool observe_memory) {
   if (state_ != JournalState::kNew || !ValidTime(now_ns, timeout_ns) ||
       timeout_ns == 0 || service_id.size() != 36) {
     return Status::Fail("invalid journal startup");
@@ -106,9 +114,66 @@ Status JournalClient::Start(const std::string& python,
                                       directory,
                                       "--service-id",
                                       service_id};
-  status = SpawnProcess(argv, {}, {child_socket.Get()}, &worker_);
+  OwnedFd memory_peer;
+  std::vector<int> pass{child_socket.Get()};
+  std::vector<std::string> env;
+  if (observe_memory && domain == JournalDomain::kCore &&
+      socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC | SOCK_NONBLOCK, 0,
+                 pair) == 0) {
+    memory_socket_.Reset(pair[0]);
+    memory_peer.Reset(pair[1]);
+    pass.push_back(memory_peer.Get());
+    env.push_back("Q4T_GUARDIAN_MEMORY_FD=" + std::to_string(memory_peer.Get()));
+  }
+  status = SpawnProcess(argv, env, pass, &worker_);
   if (!status.ok()) return Freeze(status.message());
   return Status{};
+}
+
+void JournalClient::PollMemory() {
+  if (memory_socket_.Get() < 0) return;
+  if (total_bytes_ && MemoryClock() - memory_at_ > kMemoryFreshNs) {
+    // Once the witness has expired, a read that was already in flight
+    // cannot restore it. Require a new observation after the gap.
+    memory_required_after_ = memory_at_ + kMemoryFreshNs;
+    total_bytes_ = 0;
+  }
+  // A dedicated worker samples at 10 Hz. Bound work even with a full queue.
+  for (int i = 0; i < 16; ++i) {
+    std::array<uint64_t, 3> frame{};
+    const auto count = recv(memory_socket_.Get(), frame.data(), sizeof(frame),
+                            MSG_DONTWAIT | MSG_TRUNC);
+    if (count < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) return;
+    if (count < 0 && errno == EINTR) continue;
+    const auto now_ns = MemoryClock();
+    if (count != static_cast<ssize_t>(sizeof(frame)) ||
+        frame[0] <= static_cast<uint64_t>(memory_at_) ||
+        frame[0] > static_cast<uint64_t>(now_ns) ||
+        frame[0] < static_cast<uint64_t>(memory_required_after_) ||
+        frame[2] > frame[1]) {
+      // Drop malformed observations independently of journal transactions.
+      total_bytes_ = 0;
+      if (count <= 0) {
+        memory_socket_.Reset();
+        return;
+      }
+      continue;
+    }
+    memory_at_ = static_cast<int64_t>(frame[0]);
+    total_bytes_ = frame[1];
+    available_bytes_ = frame[2];
+  }
+  // Do not grant from an arbitrary prefix if reads are backlogged.
+  total_bytes_ = 0;
+}
+
+std::optional<bool> JournalClient::MemorySafe(uint64_t floor_mib,
+                                              int64_t since_ns,
+                                              int64_t now_ns) const {
+  if (memory_at_ == 0 || memory_at_ < since_ns || now_ns < memory_at_ ||
+      now_ns - memory_at_ > kMemoryFreshNs || !total_bytes_)
+    return std::nullopt;
+  return available_bytes_ / (1024 * 1024) >= floor_mib;
 }
 
 Status JournalClient::Submit(const std::string& operation, const io::Json& args,

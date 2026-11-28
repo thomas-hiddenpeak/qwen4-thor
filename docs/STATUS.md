@@ -7,6 +7,26 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev600 的 PR 检查中，终态日志写满用例在注入故障前返回 FAILED。Thor 上为内存读取注入 80 毫秒延迟，复现了相同返回；该用例的独立等待预算已修正。16 项辅助依赖隔离检查通过，原始远端失败原因未写入状态，复跑将附状态详情。[针对性复核](evidence/serve-memory-watchdog-stall-20261128/terminal-event-fixture.json)
+
+远端清单检查发现 Guardian 的 7 个源码摘要仍指向旧版，涉及内存采样通道、启动准入和 CPU 夹具。已逐文件与 rev600 及原基线对照，Thor 本机通过 1,401 个源码锚点和 40 个反例检查。发行包沿用先前的真实恢复回执。 [清单校验记录](evidence/serve-memory-watchdog-stall-20261128/inventory-review.json)
+
+rev600 已登记主包和回退包。Guardian 的内存采集卡住期间，同一模型与管理入口继续响应。采集恢复后，主网关故障触发回退接管。登记期间服务处于 STOPPED，模型启动次数为零，13 份运行状态和既有容量策略通过复核。长稳及冷启动交接入口已更新。 [发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
+
+PR #207 的 push 和 pull_request 检查均在观测隔离夹具报错。构造函数已初始化 watchdog，测试使用的手工控制器缺少该字段，进度夹具也未提供真实快照结构。补齐两处夹具，增加“日志和内存同时失去观测”的心跳断言，确认 READY、UNKNOWN 且不发模型事务。Thor 运行两份完整 CPU 测试文件，40 项通过。等待最终提交的两次远端检查。
+
+Guardian 内存采集卡住后，同一模型在 READY_DEGRADED 状态回答了 37，管理请求也在 300 ms 的期限内完成。采集恢复后，主网关故障触发已登记的回退包接管；另验回退包模型意外退出后原控制器恢复服务。共 4 次模型启动、5 条经鉴权的 HTTP Chat，13 份运行状态及 7 项发行绑定通过复核。下一步登记已验主包及回退包。 [业务回执](evidence/serve-memory-watchdog-stall-20261128/guardian-business.json)
+
+Guardian 通过独立私有通道接收物理内存样本。采集卡住时管理请求与停机仍可用，健康模型保留服务；新的模型许可及版本切换均等待对应的新鲜证据。过期前开始的读取不能把准入重新打开。5 个故障反例及 15 个既有恢复用例通过。新 Guardian 仍待实机与发行。 [CPU 验收](evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json)
+
+在原生 Guardian 的内存读取点加入 CPU 等待，版本恢复已启用、CPU 后端已就绪时，状态请求 300 ms 超时。解除等待后同一后端继续就绪，正常停止并释放锁。下一步隔离 Guardian 自身的读取，保留发放许可及版本切换所需的独立内存证据。 [复现记录](evidence/serve-memory-watchdog-stall-20261128/guardian-before.json)
+
+独立监督器的内存采集卡住后，同一 GPU 模型保持 READY 并回答第二个 Chat，读端仍阻塞时完成停机。原生主包和回退包各从发行入口启动、完成 Chat 并清理，合计 3 次启动、4 条真实 Chat，13 份受保护状态一致。待发行。另在 Guardian 的版本恢复与授权路径发现同步内存读取，需要独立定位。 [实机回执](evidence/serve-memory-watchdog-stall-20261128/business.json)
+
+原生控制器在内存采集阻塞期间持续发送心跳。发放新模型许可前会重新核对物理内存和容量门槛，已取得许可的进程在观测中断时可继续就绪，状态报告观测降级。28 项针对性 CPU 用例通过，含真实 Guardian、CPU 后端、运行期恢复及启动压力保护。GPU 业务和发行待验。 [托管 CPU 回执](evidence/serve-memory-watchdog-stall-20261128/native-controller.json)
+
+内存采集曾在持锁时读取内核，读阻塞会卡住健康快照。实机旧包另在相隔 300 秒的两次低读数后错误触发停模回调。候选隔离了采集线程，拒用超时结果并重置中断的低内存计时；23 项 CPU 检查通过，含持续压力下的真实子进程保护。GPU 业务与发行待验，Thor 的 CUDA 物理硬限额仍待证实。 [CPU 回执](evidence/serve-memory-watchdog-stall-20261128/cpu.json)
+
 rev598 已发行旧版 Node SDK 的流式正文兼容修复。模型重启和主网关切换后，Node 6.34 与 7.47 均按原 ID 读回原文、事件顺序和终态，跨客户读取为 404。主包与独立回退包已登记，发行时服务为 STOPPED。 [发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
 
 设备已登记 rev596，Q03 长稳和 R07 冷启动入口原先仍指向 rev584。发行刷新现核对主包、计划摘要和操作者入口，再同步两处交接；冷启动的设备占用改为执行时检查。9 项 CPU 检查及 rev596 实盘回执复核通过。下一次发行将通过同一入口刷新两项计划。 [交接复核](evidence/serve-responses-search-stream-sdk-20261128/operator-handoff.json)
@@ -1530,12 +1550,12 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev598**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev598 发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
+本机登记的发行版本为 **rev600**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev600 发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b` |
-| 回退服务包清单 | `74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1` |
+| 主服务包清单 | `0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1` |
+| 回退服务包清单 | `8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61` |
 | 默认引擎 | `5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。

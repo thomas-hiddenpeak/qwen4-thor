@@ -288,6 +288,27 @@ class ControllerTests(unittest.TestCase):
                 if expected == 'device':
                     actor.quarantine.assert_called_once_with('device_failure')
 
+    def test_fresh_launch_gate_precedes_grant_when_memory_changes(self):
+        actor = object.__new__(controller.Controller)
+        actor.package, actor.config = ROOT, dict(manifest_sha256='a'*64)
+        actor.settings = dict(memory_unknown_seconds=.3, critical_memory_mib=64)
+        actor.profiles = None
+        actor.startup_memory_floors = {None: (16 << 30, 10 << 30)}
+        actor.tick = mock.Mock(return_value=False)
+        actor.transaction = mock.Mock()
+        candidates = [(None, 'memory_unknown'), (2 << 30, 'memory_headroom'),
+                      (8 << 30, 'startup_memory_floor')]
+        with mock.patch.object(controller.bundle, 'verify'):
+            for available, reason in candidates:
+                ok = dict(total_bytes=16 << 30, available_bytes=12 << 30)
+                late = dict(total_bytes=16 << 30, available_bytes=available)
+                with self.subTest(reason=reason), mock.patch.object(
+                        controller.memory, 'read', side_effect=[ok, late]):
+                    self.assertTrue(actor.launch_memory_ready())
+                    self.assertFalse(actor.load({}))
+                    self.assertEqual((actor.phase, actor.reason), ('WAIT_DEPENDENCY', reason))
+                    actor.transaction.assert_not_called()
+
     def test_changed_bundle_quarantines_before_spending_model_budget(self):
         actor = object.__new__(controller.Controller)
         actor.package, actor.config = ROOT, dict(manifest_sha256='a'*64)

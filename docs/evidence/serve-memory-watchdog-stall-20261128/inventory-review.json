@@ -1,0 +1,58 @@
+{
+  "issued_head": "18dcdc0abc4ffa3221f5d835dd7b8f6b188a44d3",
+  "source_baseline": "fa3714aa98f7d1f317a1d7bd45e379bbc2567f34",
+  "changed_sources": {
+    "include/q4t/service/guardian_journal.h": {
+      "before": "6ab7166679562584ab71e5d3764abed68c3aa7bf5e6d75c50e74c448b7793b16",
+      "after": "f43dac08136cbf5cf8cc6864910f58ccd1ccf44523f740ab46a93b04f2f2f8b0",
+      "review": "Private independent memory sampler and cached sample interface."
+    },
+    "src/service/guardian_journal.cpp": {
+      "before": "11deeb32c5c6c749b9c3a2b0dd0a3e5d0cfa69aba8dc1c030bd403c1c771ffd7",
+      "after": "88756a0a8f2bb91fb832ecc5ea4fce0ac0920c0014785add9b6cf93f805d13b6",
+      "review": "Dedicated sample fd, bounded nonblocking reads and freshness."
+    },
+    "src/service/guardian_main.cpp": {
+      "before": "31bc3d98c08572d08f3fb1b633392ac8f92116bb2ca026cd8f429452b0707f07",
+      "after": "26d560ac9adb0cd51cb1284ca8f46865581d7019da9fe11dcdb8d425b7ac92ef",
+      "review": "Asynchronous physical memory requests, freshness checks and launch/switch authority."
+    },
+    "tools/serve_recovery/controller.py": {
+      "before": "48692aca2b489d5e30332379684b248ba82855e38fb684f83f176614f7c46642",
+      "after": "3afa7df7d65b7851c0c83b1cc22fd874109e17e38700b1165e4fd341e8ba268f",
+      "review": "Memory snapshots on model heartbeat and launch admission; existing model remains available."
+    },
+    "tools/serve_recovery/fixture_production.py": {
+      "before": "8825395ed84eeed4ff50574d13670a3d2fab8afc72fa032c77c2f2479a99b099",
+      "after": "54f05b5ed988e61625fa3afa874d207968d0a762500cfc1777cbd10bab5c2c62",
+      "review": "CPU controller fixture sends explicit launch admission evidence."
+    },
+    "tools/serve_recovery/journal.py": {
+      "before": "b965cb03f08932b508c9af083abd7020abe25a5f9d8f5d1ad0920494ed127cac",
+      "after": "e3558909f26202d9867899132dc397776e1579a3c88ced6535dd5851619f92b8",
+      "review": "Independent memory channel and bounded sample worker."
+    },
+    "tools/serve_service/memory.py": {
+      "before": "24c5d82e19553890f280f9f77242c768a73ffbf161dea3e99e3ef4ec688a8e3f",
+      "after": "c8568ea4f4750d80cce04555d8fa5c21c945924d002aa0c5f4ca3659f308845b",
+      "review": "Background sampling, stale result handling and sustained-pressure decisions."
+    }
+  },
+  "initial_failure": [
+    "sources_sha256 requires renewed review: ['include/q4t/service/guardian_journal.h', 'src/service/guardian_journal.cpp', 'src/service/guardian_main.cpp', 'tools/serve_recovery/controller.py', 'tools/serve_recovery/fixture_production.py', 'tools/serve_recovery/journal.py', 'tools/serve_service/memory.py']"
+  ],
+  "remote_failure": 46122283802,
+  "checks": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1401,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "retained_business_sha256": "138401379b402d9bc59e927a37d69a659f6d17668bbe9c21dfa7ae4ba12d2e0f",
+  "retained_delivery_sha256": "4dc1bcbf03cfd5797c9cc5a8c6f3c79470d87a138a79bd897a55b0a842b85ce8"
+}
