@@ -1,8 +1,32 @@
 # 当前状态（2026-11-28）
 
+rev608 已登记主包与独立回退包。传统补全执行显式 best_of 上限 20，独立 n=21 逐项返回。模型重建和主网关回退后仍可按相同输入生成 606，独立 Chat 均答 42。发行期间启动模型零次，13 份受保护状态的摘要一致。客户端矩阵收录了恢复前后的 16 次 SDK 补全，4 次普通 HTTP 能力查询单独计数。 [发行回执](evidence/serve-completion-best-of-20261128/delivery.json)
+
+模型退出重建和主网关故障接管后，正式客户端均观察到 best_of=21 返回 400、20 成功、独立 n=21 返回 21 项。前后四次种子补全均读回实际发行号 606，两个独立 Chat 均答 42。 [托管恢复记录](evidence/serve-completion-best-of-20261128/managed.json)
+
+传统补全上限修复的主、轻容量记录均已登记，可逐字节还原 rev606 的前驱记录。下一步生成主包与独立回退包。 [登记回执](evidence/serve-completion-best-of-20261128/capacity.json)
+
+传统补全候选在主、轻两档容量均已通过。两档分别拒绝 best_of=21、接受 20，只给 n=21 时逐项返回 21 个有序结果，独立 Chat 均回答 42。候选待独立封包和登记。 [实机容量回执](evidence/serve-completion-best-of-20261128/capacity-business.json)
+
+首轮主、轻容量实机请求均成功。离线汇总因未初始化本档证据表而失败；已修正，并用两档原始响应复核，76 次 NVML 采样正常。容量计划固定校验器摘要，将以修复后的来源登记。
+
+已为主容量和轻量容量准备针对传统补全候选上限的发行检查。每档各测越界拒绝、边界成功和独立的 21 项返回，并核对原登记容量。用已验 HTTP 响应复核，通过正例，四项破坏性修改均被检出。 [候选短验](evidence/serve-completion-best-of-20261128/device.json)
+
+显式 `best_of` 上限修复已在独立候选通过原生 HTTPS 短验。20 得到 200，21 得到带参数名的 400，只指定 `n=21` 收到 21 项，超出总候选预算得到 503，普通生成回答 42。共一次启动、6 次请求、37.194 秒，退出后端口已释放。默认仍为 rev606，待候选的发行与回退登记。 [实机回执](evidence/serve-completion-best-of-20261128/device.json)
+
+rev606 已用六版正式客户端在 Thor 通过模型发现、传统补全和嵌入的原生 HTTPS 短验。42 次请求中 36 次成功，6 次查询不存在的模型均返回 404。六版回答均为 606，JSON 与流式正文、token 概率和用量相符，批量向量两种编码逐行相同。SDK 成功业务覆盖现为 59 个方法和 255 个方法与版本组合。 [实机回执](evidence/serve-model-inference-sdk-20261128/business.json)
+
 SDK 业务矩阵已计入 rev606 同一引擎的 30 次正式 Python 调用。其中 10 次来自 TLS 后台流与存储读回，另外 20 次来自模型恢复与网关回退的前后对照。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
 
+六版正式客户端省略嵌入输出编码时，都会在线路请求中发送 `base64`，并为应用解码成数值向量。使用真实模型历史响应，各版均读回原始顺序的 11 行 1024 维向量，FP32 字节全部相同。 [复核记录](evidence/serve-model-inference-sdk-20261128/embedding-defaults.json)
+
+客户端复核现同时检查字符偏移和 token 对数概率的合法性。此前 JSON 与 SSE 同时出错时，逐项相等仍可能误判通过。复用 42 个正式 SDK 的夹具响应，六个成对错误均已检出。真机记录将用同一规则复核。 [反例回执](evidence/serve-model-inference-sdk-20261128/paired-validation.json)
+
+传统文本补全已在请求解析阶段拒绝显式 `best_of=21`，上限为 20。只传 `n` 时仍可请求最多 128 个结果。旧实现复现了越界接受；修复通过 11 项原生测试与 55 项合同对照。候选待 HTTP 短验和发行。 [CPU 回执](evidence/serve-completion-best-of-20261128/cpu.json)
+
 输入语义清单的三个源码摘要已随重复选择器修复同步；完整生成合同核对通过。
+
+六版正式 SDK 已在 CPU 夹具完成模型发现、传统文本补全和两种编码的嵌入读取，共 42 个请求。发行包实机验证待执行。 [CPU 回执](evidence/serve-model-inference-sdk-20261128/cpu.json)
 
 重复选择器候选的两份容量记录已登记。主容量和轻量容量均可逐字节还原各自 rev604 的发行证据。下一步准备独立主包与回退包。 [登记回执](evidence/serve-response-include-projection-20261128/capacity.json)
 
@@ -1606,13 +1630,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev606**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev606 发行回执](evidence/serve-response-include-projection-20261128/delivery.json)
+本机登记的发行版本为 **rev608**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev608 发行回执](evidence/serve-completion-best-of-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349` |
-| 回退服务包清单 | `2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967` |
-| 默认引擎 | `a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0` |
+| 主服务包清单 | `0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245` |
+| 回退服务包清单 | `d9c93f4f3885b38125703ce3ab8bc273adce9ef1febc9af7bf2f18fc3fb63f4c` |
+| 默认引擎 | `c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

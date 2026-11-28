@@ -1,5 +1,9 @@
 # 官方 Python 与 Node SDK 的方法兼容性
 
+## 嵌入结果与编码
+
+使用 `client.embeddings.create(...)` 并省略 `encoding_format`，四版 Python 和两版 Node 客户端均在线路上请求 base64，再给应用返回数值向量。需要自行解码时可显式传入 `encoding_format="base64"`，按小端 FP32 读取每行的 `embedding`；直接读取 JSON 数组可显式传入 `"float"`。本次默认模式复核使用已验的原生模型 `qwen3-embedding-0.6b` 实际响应，11 行各 1024 维，六版解码结果逐字节一致。 [默认编码复核](evidence/serve-model-inference-sdk-20261128/embedding-defaults.json) [显式编码用例](evidence/serve-model-inference-sdk-20261128/cpu.json)
+
 选择 SDK 版本时，可在[逐方法 CSV](evidence/serve-sdk-method-matrix-20261127/methods.csv)中按 HTTP 方法和路径查找。每行给出两个官方客户端的资源方法名和六个版本各自的调用方式。路径保留 `?beta=true` 等选择器，使用时在服务的 `/v1` 基地址下展开。
 
 | SDK | 使用当前路径的资源方法 | 使用旧取消路径的资源方法 | 通过通用 HTTP 方法调用 |

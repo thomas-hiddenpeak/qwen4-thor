@@ -83,7 +83,7 @@ Status PlanCompletionRequest(const io::Json& req, const ChatPlanConfig& config,
   };
   status = integer("n", 1, 128, &result.n);
   result.best_of = result.n;
-  if (status) status = integer("best_of", 1, 128, &result.best_of);
+  if (status) status = integer("best_of", 0, 20, &result.best_of);
   if (status) status = integer("logprobs", 0, 5, &result.logprobs);
   if (status)
     status = integer("max_tokens", 0, std::numeric_limits<int>::max(),

@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "revision": 606,
+  "manifest": "68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349",
+  "engine": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "delivery_sha256": "e2d764f57e207687f5c4dbaa7a4828c6131d5f46c53418dc1f234161f7765ed7",
+  "plan_sha256": "7b5a70a422ce4935693e9a571a07ebaf6d013b9b25efa6a7ae6cf35af5cf320a",
+  "scenario_sha256": "fe816a354d50f610b72cdea4a322da85602b664e30cd9cd3da5972e5208c1003",
+  "lease": {
+    "status": "COMPLETED",
+    "child_returncode": 0,
+    "compute_backend": "nvml",
+    "lease_inherited_by_child": true,
+    "successful_samples": 53,
+    "sha256": "21a863f8ecaa808732614aebc8d1d5667a63b43b8d7e240696af1e4d294d1bcf"
+  },
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2427887,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 42,
+    "seconds": 54.549
+  },
+  "request_status": {
+    "200": 36,
+    "404": 6
+  },
+  "answers": {
+    "python-2.8.1": " 606",
+    "python-2.33.0": " 606",
+    "python-3.42.1": " 606",
+    "python-3.55.1": " 606",
+    "node-6.34.0": " 606",
+    "node-7.47.0": " 606"
+  },
+  "captures": {
+    "python-2.8.1": "2cdfea8161199c0c59eaf245339ad367bc181c09d20267ad901293a41e8d324f",
+    "python-2.33.0": "3862a227b502362ba1a7c339f23b5ed313454b02f1680f77e95f34da6e7f3c47",
+    "python-3.42.1": "e55128dc0479dabc1a7cf3e693bc913b002d52c559cfef2dfee08638e60bbef7",
+    "python-3.55.1": "5344050dea957cf2e1f6b5e9cc624a9d13f6d0855910475403ffd346fd062f12",
+    "node-6.34.0": "a509e372f53431c1df1c645348bc5a05e435f744e0211c7e17212f53122ed3b6",
+    "node-7.47.0": "08b0af356cccc164dcf4e5b8788df77ad7260617dfed5c97dd37c8eeb3ecf1ea"
+  }
+}

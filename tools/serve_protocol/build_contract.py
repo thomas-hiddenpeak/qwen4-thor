@@ -374,7 +374,7 @@ def completion_schema():
         pattern="^[^\\x00-\\x20\\x7f]+$", **{"x-q4t-max-utf8-bytes": 256},
         **{"x-q4t-registered-model-or-alias": True}), prompt=prompt,
         n=nullable(dict(type="integer", minimum=1, maximum=128, default=1)),
-        best_of=nullable(dict(type="integer", minimum=1, maximum=128)),
+        best_of=nullable(dict(type="integer", minimum=0, maximum=20, default=1)),
         echo=nullable(dict(type="boolean", default=False)),
         stream=nullable(dict(type="boolean", default=False)),
         logprobs=nullable(dict(type="integer", minimum=0, maximum=5)),

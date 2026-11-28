@@ -701,7 +701,7 @@
     "src/server/client_policy.cpp": "d84bb2c8eaf9bc4b8a61d5f73a4da920257d39d6a8755de47de2738477a3dde3",
     "src/server/client_rate_state.cpp": "6cc9a359c870bb3d774a5468c4844589e606618d4f57952be3e53f0d6ad98fe8",
     "src/server/client_request.cpp": "1fb436f54d8914d99c58e466f6af5c5d049b4c36752d51de1867d4bb99d76473",
-    "src/server/completion_plan.cpp": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
+    "src/server/completion_plan.cpp": "949f6908057707c0a3892012adf98387429a5a7d73539ffc10038aa5e7ba76d5",
     "src/server/completion_response.cpp": "786da208679835dd8ade51f093c1b308dab589d737195d2fc0079006636b3d22",
     "src/server/conversation_api.cpp": "ec65f0359467c68ac58ef07e63142604966072bb1900d4ff1dd2b95a36d8b832",
     "src/server/conversation_state.cpp": "b5c1512843ce38cf7343c5aa7779530821121150af2726686789880d690914ae",

@@ -147,8 +147,24 @@ Q4T_TEST(completion_invalid_values_and_combinations_are_transactional) {
     Q4T_CHECK(!Read(body, &plan, &error));
     Q4T_CHECK(error.param == param && plan.prompts.empty());
   }
-  Q4T_CHECK(!Read(R"("prompt":["a","b"],"best_of":128)", &plan, &error));
+  Q4T_CHECK(!Read(R"("prompt":["a","b"],"n":65)", &plan, &error));
   Q4T_CHECK(error.http_status == 503 && error.code == "completion_resource_exhausted");
+  return true;
+}
+
+Q4T_TEST(completion_explicit_best_of_has_its_own_wire_limit) {
+  CompletionRequestPlan plan;
+  ChatPlanError error;
+  Q4T_CHECK(Read(R"("prompt":"x","best_of":20)", &plan, &error));
+  Q4T_CHECK(plan.best_of == 20 && plan.n == 1);
+  Q4T_CHECK(!Read(R"("prompt":"x","best_of":21)", &plan, &error));
+  Q4T_CHECK(error.param == "best_of" && error.http_status == 400);
+  Q4T_CHECK(!Read(R"("prompt":"x","n":2,"best_of":0)", &plan, &error));
+  Q4T_CHECK(error.param == "best_of" && error.http_status == 400);
+  Q4T_CHECK(Read(R"("prompt":"x","n":128)", &plan, &error));
+  Q4T_CHECK(plan.CandidateCount() == 128);
+  Q4T_CHECK(Read(R"("prompt":"x","n":21,"best_of":null)", &plan, &error));
+  Q4T_CHECK(plan.best_of == plan.n && plan.n == 21);
   return true;
 }
 

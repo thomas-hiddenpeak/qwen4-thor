@@ -1,0 +1,322 @@
+{
+  "status": "PASS",
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2429715,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 6,
+    "seconds": 37.194
+  },
+  "source": "42f1471ff047fd1af485900965695bada15ee943",
+  "candidate": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
+  "previous": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+  "gateway": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "trace_count": 6,
+  "lease": "d00a630c739ef07bdc02b8d1465c3bacd3097a1490d30ef19e51f0dd745a2c19",
+  "samples": 37,
+  "rows": {
+    "range": {
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "prompt": "q4t release 606",
+        "temperature": 0,
+        "max_tokens": 0,
+        "echo": true,
+        "best_of": 21
+      },
+      "status": 400,
+      "trace": "req-5b265988d4a2ff386fc5f8ed9ad78081",
+      "response": {
+        "error": {
+          "message": "invalid integer completion option",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "best_of"
+        }
+      }
+    },
+    "wire-max": {
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "prompt": "q4t release 606",
+        "temperature": 0,
+        "max_tokens": 0,
+        "echo": true,
+        "best_of": 20
+      },
+      "status": 200,
+      "trace": "req-3fb767cbbd03c204eed799ef3ca96eab",
+      "response": {
+        "id": "cmpl-auto-949e8a2df3bae98796006a76ff1afed2",
+        "object": "text_completion",
+        "created": 1795870999,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8,
+          "completion_tokens": 0,
+          "total_tokens": 8
+        }
+      }
+    },
+    "selection": {
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "prompt": "q4t release 606",
+        "temperature": 0,
+        "max_tokens": 0,
+        "echo": true,
+        "n": 2,
+        "best_of": 0
+      },
+      "status": 400,
+      "trace": "req-871a0be8f6c6f4369631bf264f1323a2",
+      "response": {
+        "error": {
+          "message": "best_of must be at least n",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "best_of"
+        }
+      }
+    },
+    "independent-n": {
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "prompt": "q4t release 606",
+        "temperature": 0,
+        "max_tokens": 0,
+        "echo": true,
+        "n": 21
+      },
+      "status": 200,
+      "trace": "req-728a0e2bdd99f770c0c2ab9e094f49d4",
+      "response": {
+        "id": "cmpl-auto-a59de642d8db9184f51d65afc13a2797",
+        "object": "text_completion",
+        "created": 1795871001,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 1,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 2,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 3,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 4,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 5,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 6,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 7,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 8,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 9,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 10,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 11,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 12,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 13,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 14,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 15,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 16,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 17,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 18,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 19,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          },
+          {
+            "index": 20,
+            "text": "q4t release 606",
+            "finish_reason": "length",
+            "logprobs": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8,
+          "completion_tokens": 0,
+          "total_tokens": 8
+        }
+      }
+    },
+    "batch-capacity": {
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "prompt": [
+          "a",
+          "b"
+        ],
+        "temperature": 0,
+        "max_tokens": 0,
+        "echo": true,
+        "n": 65
+      },
+      "status": 503,
+      "trace": "req-febe4adc098e20e3d27de4895ded3d96",
+      "response": {
+        "error": {
+          "message": "completion batch exceeds 128 candidates",
+          "type": "service_unavailable_error",
+          "code": "completion_resource_exhausted",
+          "param": "best_of"
+        }
+      }
+    },
+    "generate": {
+      "request": {
+        "model": "qwen3.8-flash-next",
+        "prompt": "The next number after 41 is",
+        "temperature": 0,
+        "max_tokens": 5,
+        "echo": false,
+        "best_of": 1,
+        "seed": 17
+      },
+      "status": 200,
+      "trace": "req-b8a14e4204be6e1ead909428b931e504",
+      "response": {
+        "id": "cmpl-auto-9a4b394815d2bdafa7cf0ed836a11756",
+        "object": "text_completion",
+        "created": 1795871002,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "text": " 42.\n\n",
+            "finish_reason": "length",
+            "logprobs": null
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8,
+          "completion_tokens": 5,
+          "total_tokens": 13
+        }
+      }
+    }
+  },
+  "build_identity": {
+    "status": "BUILD_IDENTITY_VERIFIED",
+    "built": "42f1471ff047fd1af485900965695bada15ee943",
+    "source": "90b4dbcc8b7b5868e69c53814e1e8e3909333e7b",
+    "engine_sha256": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
+    "compiled_protocol": "8ebd80589d431f427ae425d2bcba318c9b5529ef0c2b00eb1e4fe4bfecff58f9",
+    "compiled_source_files": 1108,
+    "compiled_sources_sha256": "11b0ac3fd96fe69fbc4b36d44c10439d69e3cee1c78c16b4bb3f093c3e759a06",
+    "packaged_input_schema": "3e1064973b78bf51b60621b8751f60e9d2fa6a1f65cc146e2f960dd2a067187f",
+    "model_starts": 0
+  },
+  "installed_revision": 606,
+  "installed_manifest": "68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349",
+  "candidate_deployed": false,
+  "guard": {
+    "status": "COMPLETED",
+    "child_returncode": 0,
+    "backend": "nvml",
+    "inherited": true
+  },
+  "source_qualification": "4a33b4734687861ede39eb1eff533fbc5ae7656e5590c83a7413d729a908a044"
+}

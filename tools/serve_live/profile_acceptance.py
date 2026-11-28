@@ -125,6 +125,8 @@ class Stage(workers.ice.Stage):
                   controls=2000, seconds=300)
 
     def __init__(self, plan):
+        if 'completion_candidate_limit' in plan:
+            self.limits = dict(self.limits, completion_limits=3)
         if 'responses_include_projection' in plan:
             self.limits = dict(self.limits, projected_responses=1)
         if 'responses_producer_handoff' in plan:
@@ -170,6 +172,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'completion_candidate_limit' in self.plan:
+            from tools.serve_completions import boundary_profiles
+            boundary_profiles.business(self, capabilities)
         if 'responses_include_projection' in self.plan:
             from tools.serve_responses import include_projection_profiles
             include_projection_profiles.business(self, capabilities)

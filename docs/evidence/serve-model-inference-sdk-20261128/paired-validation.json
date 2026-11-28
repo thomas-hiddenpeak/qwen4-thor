@@ -1,0 +1,32 @@
+{
+  "status": "CPU_PASS",
+  "data_source": "pre-existing six stock SDK fixture captures",
+  "model_starts": 0,
+  "new_http_requests": 0,
+  "existing_sdk_responses": 42,
+  "before": {
+    "negative offset": false,
+    "offset beyond text": false,
+    "positive token log probability": false,
+    "positive alternative log probability": false,
+    "undefined first probability": false,
+    "invalid model owner": false
+  },
+  "after": {
+    "negative offset": true,
+    "offset beyond text": true,
+    "positive token log probability": true,
+    "positive alternative log probability": true,
+    "undefined first probability": true,
+    "invalid model owner": true
+  },
+  "capture_sha256": {
+    "python-2.8.1": "f4177dde26cc124121ada1b19e92ebe3219da7a60ec1c29bc4cd53a5564967fe",
+    "python-2.33.0": "96f79d636ecbf52513c42f187c8a67c266444f799cb1d87c60506647eb08e827",
+    "python-3.42.1": "99d453c500c828828c62d8ea9d42968e79c952a3208357714e7395ccfa656a43",
+    "python-3.55.1": "012185d9232ed6395b8e8bdee2d97dc1f98d3d9484f21862786dbe7097b7db6e",
+    "node-6.34.0": "b6600dbd65d3ba2c44de5f7db98ab7149644eac53a773fdb4865753b1a2d5c8f",
+    "node-7.47.0": "e4cd39cbe3587652e24558b32f6893632fd6549260cd5462b87d83e66c9a6555"
+  },
+  "scenario_sha256": "6d63ca7b110d73307e02cfb21650ff1f4b40d663012ccc51b469f129f6ae1117"
+}
