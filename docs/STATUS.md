@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+选用外部网页索引时，发行包在准备与复核两处都要求 Chat 和 Responses 声明该提供方。8 项封包测试和 1 项分别制造 HTTP 503、连接被拒的原生检查通过，服务端统一返回提供方不可用。 [封包与故障回执](evidence/serve-web-provider-20261128/qualified-provider.json)
+
 可选的 Mwmbl v2 网页索引已在 Thor 上取回真实搜索结果和 RFC 2606 来源。32,453 字节正文与独立下载的 SHA-256 一致，重开存储后可离线搜索和打开原 URL。17 项原有网页检查、6 项新增用例及 5 项迁移检查通过。IANA 降级跳转和 IETF 动态页面的原失败已保留。下一步验收模型 HTTP 回答、引用和失败隔离。 [原生回执](evidence/serve-web-provider-20261128/cpu.json)
 
 已按请求 ID 将两次 Batch 故障恢复的 46 条官方 SDK 请求并入兼容矩阵。Python 在故障前提交和记录终态，Node 在恢复后用原 ID 读取、重复取消并下载原文件。模型退出和主网关切换分别保留，38 次成功、4 次 404、2 次 409 和 2 次 429 均可追溯至设备原始记录。 下一步补齐其他应用接口的跨版本记录。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)

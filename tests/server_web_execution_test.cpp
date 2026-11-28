@@ -843,6 +843,35 @@ Q4T_TEST(web_provider_egress_budget_redirect_and_cancellation) {
   return true;
 }
 
+Q4T_TEST(web_provider_unavailable_is_distinct_from_an_empty_result) {
+  Directory directory;
+  Site page;
+  WebDeploymentPolicy policy;
+  ObjectStore objects(directory.objects);
+  WebExecutionBudget budget;
+  WebExecutionResult output;
+  {
+    Site provider;
+    policy = Configured(ProviderConfig(provider, page));
+    provider.Wire("/api/search/?q=alpha",
+                  "HTTP/1.1 503 Service Unavailable\r\n"
+                  "Content-Length: 0\r\n\r\n");
+    auto failed = Run(objects, policy, &budget, &output);
+    Q4T_CHECK(failed.http_status == 503 &&
+              failed.code == "web_search_provider_unavailable");
+  }
+  auto failed = Run(objects, policy, &budget, &output);
+  Q4T_CHECK(failed.http_status == 503 &&
+            failed.code == "web_search_provider_unavailable" &&
+            budget.acquisition.used_files == 2 && output.sources.empty() &&
+            page.requests == 0);
+  WebSearchOptions offline;
+  offline.external_web_access = false;
+  Q4T_CHECK(Run(objects, policy, &budget, &output, offline).code ==
+            "web_index_unavailable");
+  return true;
+}
+
 Q4T_TEST(web_provider_source_preflight) {
   Directory directory;
   Site local_index, local_page;

@@ -54,7 +54,10 @@ ObjectReply Discover(const WebDeploymentPolicy& policy,
   budget->used_files += transfer.used_files;
   budget->used_bytes += transfer.used_bytes;
   if (!reply.ok()) {
-    if (reply.code == "file_fetch_http_error")
+    if (reply.code == "file_fetch_http_error" ||
+        reply.code == "file_fetch_dns_failed" ||
+        reply.code == "file_fetch_transport_failed" ||
+        reply.code == "file_fetch_tls_failed")
       return Error(503, "web_search_provider_unavailable",
                    "Search provider did not serve the query");
     return reply;
