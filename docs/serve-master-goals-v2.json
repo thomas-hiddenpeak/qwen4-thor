@@ -1014,6 +1014,12 @@
         "fields": 26,
         "evidence": "evidence/serve-responses-sdk-business-20261128/chat-null-input.json",
         "nested_contracts": "Tracked separately"
+      },
+      "chat_output_wire_20261128": {
+        "scope": "targeted raw JSON/SSE and error validation",
+        "evidence": "evidence/serve-responses-sdk-business-20261128/chat-output-wire.json",
+        "sources": 24,
+        "new_model_starts": 0
       }
     },
     {
