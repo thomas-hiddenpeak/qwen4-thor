@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+六个官方 Python 和 Node SDK 用原 ID 从两份历史 Thor 对象各重放 66 个事件，经候选原生读取路径取得完整正文与引用。四组跨客户和未知 ID 读取均为 404，保存的文件与测试副本逐字节一致。下一步通过原生网关检验实时创建与回读。 [回读验收](evidence/serve-responses-search-stream-sdk-20261128/retained.json)
+
 公共 CPU 检查链接失败，独立测试目标遗漏了网页索引实现。已补齐源文件并用 CI 的独立 CMake 入口重新链接；同一可执行文件的 25 项网页合同通过。下一步复核 GitHub 检查及发行登记。 [链接回执](evidence/serve-web-provider-20261128/host-link.json)
 
 Node 6.34 的流式助手曾能读回正文与引用，但 finalResponse().output_text 为空。候选为受影响的 Node 版本在终态事件补齐聚合文本；当前客户端的原始回包和持久对象保持原合同。六个登记版本及 6.44/6.45 边界均从同一段 Thor 实机流重组出 66 个事件和正确引用，3,900 个 token 的概率输出也已回归。下一步通过原生 TLS 验证实际创建及按原 ID 重放。 [客户端回执](evidence/serve-responses-search-stream-sdk-20261128/cpu.json)

@@ -3393,7 +3393,8 @@
         "remaining": [
           "candidate model HTTP and stored replay",
           "reversible issuance and main"
-        ]
+        ],
+        "retained_sdk_get": "evidence/serve-responses-search-stream-sdk-20261128/retained.json"
       }
     },
     {
@@ -9871,7 +9872,8 @@
         "remaining": [
           "candidate model HTTP and stored replay",
           "reversible issuance and main"
-        ]
+        ],
+        "retained_sdk_get": "evidence/serve-responses-search-stream-sdk-20261128/retained.json"
       }
     },
     {
