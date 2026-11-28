@@ -1,0 +1,144 @@
+{
+  "status": "CPU_PASS",
+  "api": "POST /v1/completions",
+  "pinned_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "model_starts": 0,
+  "prior": {
+    "failed_case": "completion_explicit_best_of_has_its_own_wire_limit",
+    "observed": "accepted an explicit best_of=21",
+    "source_sha256": "c0db099d3125374d362734b192e527f8135cab48be604520526ae3446dfc2d81",
+    "log": "CHECK failed: !Read(R\"(\"prompt\":\"x\",\"best_of\":21)\", &plan, &error) (line 160)\n[FAIL] completion_explicit_best_of_has_its_own_wire_limit\n1 tests, 0 passed, 1 failed, 0 skipped"
+  },
+  "native_cases": {
+    "completion_batch_budget_precedes_execution_and_charges_all_candidates": "4e4e039a0c170dba98f0be60047c674c7f159ddc384034664c155768956a1ca9",
+    "completion_best_of_ranks_mean_counts_hidden_work_and_preserves_n_order": "e7dc1b86c4b00dc418ba4603e175cc8e921431003ae61442f992b62470eecc8a",
+    "completion_echo_scalar_offsets_survive_split_utf8_and_repair": "9b8f676447e5978a76432967750711d505a31bc0f773a5a85a5bf98115f69df9",
+    "completion_explicit_best_of_has_its_own_wire_limit": "31360aba9b7718624308780fbbb4b9495abe0493e6bbda2d19178324675d2e6c",
+    "completion_generated_probability_offsets_follow_stream_and_stop": "95379424bb8529b6874d05476bb30ed3f50b1456a79bc004eae774abeaf5630d",
+    "completion_invalid_values_and_combinations_are_transactional": "92916ee840b65acdc3801b9cc9eae724fa51dc8c1c313da9269d249a576927f2",
+    "completion_models_stable_list_aliases_and_exact_url_decode": "126fe3a17621b262d03fc8d4242ef66b04f4c75e176491c1322221484a52863c",
+    "completion_probability_rows_use_actual_scores_and_null_first_token": "676c0e659b7c777043679426e3551461c5a94aba59d6c2f90c4e7e09a4fd615f",
+    "completion_prompt_ids_fim_and_empty_document_preserve_actual_input": "bbb8bbed47233668a6eda2fb573578a437edc32bbe0e2b42c15c50f2ad281524",
+    "completion_sse_shape_usage_and_optional_padding": "36a501e5f222d42ca4fb1efd7388d38c1f50a1bb46e25d5952b5d9983588bf2d",
+    "completion_standard_defaults_null_shapes_and_model_errors": "c5e5e116eb93266db30b370f04d51042e69fe36b38bfe8849f36742f9afec790"
+  },
+  "contract": {
+    "cases": 55,
+    "accepted": 14,
+    "rejected": 41,
+    "probe_sha256": "95d2f2429552568039c61ad346029b6e50f76a27830deeeb46210229a5afbd01"
+  },
+  "boundaries": [
+    {
+      "id": "completion-best-of-wire-max",
+      "field": null,
+      "expected": true,
+      "shape_accepted": true,
+      "shape_error": null,
+      "native": {
+        "accepted": true
+      },
+      "passed": true
+    },
+    {
+      "id": "completion-best-of-beyond-wire-max",
+      "field": null,
+      "expected": false,
+      "shape_accepted": false,
+      "shape_error": "Decimal('21') is not valid under any of the given schemas",
+      "native": {
+        "accepted": false,
+        "response": {
+          "error": {
+            "message": "invalid integer completion option",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": "best_of"
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "id": "completion-best-of-zero-below-n",
+      "field": null,
+      "expected": false,
+      "shape_accepted": true,
+      "shape_error": null,
+      "native": {
+        "accepted": false,
+        "response": {
+          "error": {
+            "message": "best_of must be at least n",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": "best_of"
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "id": "completion-n-without-explicit-best-of",
+      "field": null,
+      "expected": true,
+      "shape_accepted": true,
+      "shape_error": null,
+      "native": {
+        "accepted": true
+      },
+      "passed": true
+    },
+    {
+      "id": "completion-best-of-less-n",
+      "field": null,
+      "expected": false,
+      "shape_accepted": true,
+      "shape_error": null,
+      "native": {
+        "accepted": false,
+        "response": {
+          "error": {
+            "message": "best_of must be at least n",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": "best_of"
+          }
+        }
+      },
+      "passed": true
+    },
+    {
+      "id": "completion-best-of-stream",
+      "field": null,
+      "expected": false,
+      "shape_accepted": true,
+      "shape_error": null,
+      "native": {
+        "accepted": false,
+        "response": {
+          "error": {
+            "message": "best_of selection cannot be streamed",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": "best_of"
+          }
+        }
+      },
+      "passed": true
+    }
+  ],
+  "comparisons_sha256": "0b7cb0a8b397e30dc360fecef9f867caf3db178a89b19abe8be947674994de67",
+  "sources": {
+    "src/server/completion_plan.cpp": "949f6908057707c0a3892012adf98387429a5a7d73539ffc10038aa5e7ba76d5",
+    "tests/server_completion_test.cpp": "c3802a4db82c798c44913a2dca73404103283e4bbc92dabd89cd60b3434c01c1",
+    "tools/serve_protocol/completion_cases.py": "0b917b07a6135814f09d4b7e500d3dcf99b8df85a4385046cf263bc7e5451cad",
+    "docs/serve-completion-request-v1.schema.json": "3e1064973b78bf51b60621b8751f60e9d2fa6a1f65cc146e2f960dd2a067187f"
+  },
+  "generated_contract_current": true,
+  "source_inventory": {
+    "anchors": 1401,
+    "mutation_checks": 40
+  },
+  "release": "candidate; runtime HTTP and issuance pending"
+}

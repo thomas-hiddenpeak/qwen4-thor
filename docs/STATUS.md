@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+传统文本补全已在请求解析阶段拒绝显式 `best_of=21`，上限为 20。只传 `n` 时仍可请求最多 128 个结果。旧实现复现了越界接受；修复通过 11 项原生测试与 55 项合同对照。候选待 HTTP 短验和发行。 [CPU 回执](evidence/serve-completion-best-of-20261128/cpu.json)
+
 六版正式 SDK 已在 CPU 夹具完成模型发现、传统文本补全和两种编码的嵌入读取，共 42 个请求。发行包实机验证待执行。 [CPU 回执](evidence/serve-model-inference-sdk-20261128/cpu.json)
 
 重复选择器候选的两份容量记录已登记。主容量和轻量容量均可逐字节还原各自 rev604 的发行证据。下一步准备独立主包与回退包。 [登记回执](evidence/serve-response-include-projection-20261128/capacity.json)

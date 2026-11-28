@@ -49,8 +49,12 @@ def cases():
         ('vocab', [10], True), ('batch-candidates', ['a', 'b'], True)]:
         config = dict(token_vocab=10) if label == 'vocab' else {}
         request = dict(base, prompt=prompt)
-        if label == 'batch-candidates': request['best_of'] = 128
+        if label == 'batch-candidates': request['n'] = 65
         add('prompt-invalid-'+label, request, False, semantic=semantic, **config)
+    add('best-of-wire-max', dict(base, best_of=20), True)
+    add('best-of-beyond-wire-max', dict(base, best_of=21), False)
+    add('best-of-zero-below-n', dict(base, best_of=0), False, semantic=True)
+    add('n-without-explicit-best-of', dict(base, n=21, best_of=None), True)
     add('best-of-less-n', dict(base, n=2, best_of=1), False, semantic=True)
     add('best-of-stream', dict(base, best_of=2, stream=True), False, semantic=True)
     add('options-without-stream', dict(base, stream_options={}), False)

@@ -1051,6 +1051,10 @@
         "scope": "model catalogue, legacy completions and embeddings",
         "cpu": "evidence/serve-model-inference-sdk-20261128/cpu.json",
         "state": "six stock clients on synthetic CPU fixture; device pending"
+      },
+      "completion_best_of_20261128": {
+        "status": "candidate_cpu_pass_http_pending",
+        "evidence": "evidence/serve-completion-best-of-20261128/cpu.json"
       }
     },
     {
@@ -1839,6 +1843,10 @@
         "new_runtime_acceptance": false,
         "remaining": [],
         "existing_evidence_reviewed": true
+      },
+      "completion_best_of_20261128": {
+        "status": "candidate_cpu_pass_http_pending",
+        "evidence": "evidence/serve-completion-best-of-20261128/cpu.json"
       }
     },
     {
