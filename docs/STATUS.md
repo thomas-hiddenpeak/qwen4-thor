@@ -23,6 +23,8 @@ rev604 已登记主包与独立回退包。普通 Responses 声明解释器输�
 
 Responses 的能力发现候选已补上原生解释器实际返回的 `code_interpreter_call`。已回查主包和回退包的四份真实 SSE 与四份后续能力快照，新增回归覆盖从原生终态到公开声明及恢复合同的匹配。18 项原生和 51 项迁移 CPU 测试通过；候选 HTTP 短验与发行待完成。[合同与原始数据摘要](evidence/serve-interpreter-output-discovery-20261128/contract.json)
 
+PR #208 的公开主机检查中，4013 项原生测试有 1 项在首次写入时已过期。现将未完成上传与读句柄的短有效期放到数据准备后的同一笔事务中，启动新存储进程前仍等待两者到期。插入 1150 毫秒准备延迟时原测试失败，修复后通过；二进制存储组 13 项全过。 下一步复核 GitHub 合并检查。[复现与验证](evidence/serve-transcription-discovery-20261128/binary-expiry-fixture.json)
+
 rev602 已登记双人重叠转录的主包和回退包。官方 SDK 在两档容量和两种托管恢复场景中均识别出两位说话人；原录音的 1.68 秒重叠与首句词形误差已记录。登记期间服务为 STOPPED，13 份运行状态通过复核。 [发行回执](evidence/serve-transcription-discovery-20261128/delivery.json)
 
 已验收两个托管恢复场景：回退包的模型退出后恢复，主包的网关故障后切换到已登记的独立回退包。每个场景在故障前后各完成一次真实 SDK 转录，四条请求 ID 独立，均识别出两位说话人。两次后续 Chat 均答 42。正式发行登记待完成。 [托管恢复记录](evidence/serve-transcription-discovery-20261128/managed.json)
