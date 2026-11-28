@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev596 已发行可选的网页搜索提供方。主、轻容量验证了真实查询的引用与同客户离线交接。发行配置默认关闭外部搜索，在模型退出和网关切换后均能按原 ID 取回项目答复。主包和回退包已经登记，发行时意图为 STOPPED。 [发行回执](evidence/serve-web-provider-20261128/delivery.json)
+
 公共 CPU 检查链接失败，独立测试目标遗漏了网页索引实现。已补齐源文件并用 CI 的独立 CMake 入口重新链接；同一可执行文件的 25 项网页合同通过。下一步复核 GitHub 检查及发行登记。 [链接回执](evidence/serve-web-provider-20261128/host-link.json)
 
 模型退出和主网关切换后均按原 ID 读回项目发行答复，另一客户读取返回 404。未配置网页策略的搜索请求在故障前后均返回明确的 503，两个恢复后的独立 Chat 均答 42。下一步登记经过短验的主包与回退包。 [托管恢复回执](evidence/serve-web-provider-20261128/managed.json)
@@ -1512,13 +1514,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev594**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev594 发行回执](evidence/serve-batch-cancel-20261128/delivery.json)
+本机登记的发行版本为 **rev596**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev596 发行回执](evidence/serve-web-provider-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed` |
-| 回退服务包清单 | `202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc` |
-| 默认引擎 | `e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34` |
+| 主服务包清单 | `a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3` |
+| 回退服务包清单 | `f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5` |
+| 默认引擎 | `8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 
