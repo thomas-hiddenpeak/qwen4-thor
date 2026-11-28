@@ -3423,7 +3423,9 @@
       "producer_discovery_20261128": {
         "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
-        "release": "candidate"
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -8320,7 +8322,9 @@
       "producer_discovery_20261128": {
         "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
-        "release": "candidate"
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -9956,7 +9960,9 @@
       "producer_discovery_20261128": {
         "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
-        "release": "candidate"
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -14774,7 +14780,9 @@
       "producer_discovery_20261128": {
         "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
-        "release": "candidate"
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
