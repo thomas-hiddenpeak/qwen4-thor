@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "released": false,
+  "prior_revision": 610,
+  "previous_engine": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
+  "candidate": "8a430b251c7a4a23aec01302750a06d08a0b1e6edfed635e8e26b2bf61250906",
+  "source": "a3c4515e7f20639e5cc732cedcb7728aebfaa32e",
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2532415,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 18,
+    "seconds": 42.095
+  },
+  "actual_chunks": 23,
+  "jobs": 2,
+  "sdk": "python-3.55.1",
+  "chat": "610",
+  "admission_sha256": "1f7366fbe82f0a248a6f681ccd392b2173d6bbd464b8b86db986d9c3f5f66426",
+  "nvml_samples": 41,
+  "guard_sha256": "a51edb37a8efedb58342f07c81d209a0da83d29c4b16817344576a379397f370",
+  "plan_sha256": "00a253edaacee35e5849bde720554cc6e6dac1df232e2a56b25a8ab1a8a84d49",
+  "wire_sha256": "2b53a7455018c3138a6d7b8f080ee21a8f6ca43e91ef435ff41febdaea104a95",
+  "cpu_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942"
+}

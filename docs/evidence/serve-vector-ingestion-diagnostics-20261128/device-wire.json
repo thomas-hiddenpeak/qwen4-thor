@@ -1,0 +1,301 @@
+{
+  "sdk": {
+    "requests": [
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores",
+        "query": "",
+        "status": 200,
+        "trace": "req-ac41dd633b4112805e3bc19098c5c381"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-aaa58f28c9e26e970ddedc06a1f61fb0"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-9ba1e22ebe01fae077a23dd42c1e4edd"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/file_batches",
+        "query": "",
+        "status": 200,
+        "trace": "req-ac82800cca698e24e250233e97c86c94"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/file_batches/vsfb_a8bb27eab0f5e2380f71dd091a3cc956",
+        "query": "",
+        "status": 200,
+        "trace": "req-37a989dbf1926162ab0a00f66ab9a63b"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/file_batches/vsfb_a8bb27eab0f5e2380f71dd091a3cc956",
+        "query": "",
+        "status": 200,
+        "trace": "req-9e1a52bcf4427d4bc9f529112520e6f1"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/file_batches/vsfb_a8bb27eab0f5e2380f71dd091a3cc956",
+        "query": "",
+        "status": 200,
+        "trace": "req-0ed6b9aba671efc4b1433735b5c6fa4a"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/file_batches/vsfb_a8bb27eab0f5e2380f71dd091a3cc956",
+        "query": "",
+        "status": 200,
+        "trace": "req-17c946909f97b9de33955f6e4fee2264"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/file_batches/vsfb_a8bb27eab0f5e2380f71dd091a3cc956",
+        "query": "",
+        "status": 200,
+        "trace": "req-779bd9d9d82bc269cefa2a227646834b"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/file_batches/vsfb_a8bb27eab0f5e2380f71dd091a3cc956",
+        "query": "",
+        "status": 200,
+        "trace": "req-90ea3c1c75c0742cdf347424850f9056"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94/files",
+        "query": "filter=completed&limit=10",
+        "status": 200,
+        "trace": "req-2d4d80e6341dbcbccdabb348ec9d935d"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/files/file_452ba95eaf4611976c6c1d138edd4fdd/content",
+        "query": "",
+        "status": 200,
+        "trace": "req-342718486f82fe9289bf7cdeb119b65d"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "query": "",
+        "status": 200,
+        "trace": "req-10436bd3800c931c73bb01b016dc54a5"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/vector_stores/vs_fb4f9ddf3351a2c907006d6a9ad4fb94",
+        "query": "",
+        "status": 200,
+        "trace": "req-9e2e22211ffd0b7ff0f77890e59fdb66"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_452ba95eaf4611976c6c1d138edd4fdd",
+        "query": "",
+        "status": 200,
+        "trace": "req-57aea9b783147583cfbbd965cd5b9c84"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_b7376312ac293412861fb70a0cc26f78",
+        "query": "",
+        "status": 200,
+        "trace": "req-668b30f765c6e05100e8592ec61a4f10"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores",
+        "query": "limit=1",
+        "status": 200,
+        "trace": "req-2ac31c325d0910f15409ca6863823ae8"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/files",
+        "query": "limit=1",
+        "status": 200,
+        "trace": "req-51872f9b30a8719d11bddf7cb7e776a9"
+      }
+    ],
+    "store": "vs_fb4f9ddf3351a2c907006d6a9ad4fb94",
+    "batch": "vsfb_a8bb27eab0f5e2380f71dd091a3cc956",
+    "jobs": {
+      "tool_run_edbbc19830b35151276c1d0457de7418": {
+        "file": "file_452ba95eaf4611976c6c1d138edd4fdd",
+        "source": "c5341a2218c30931d0620a29b4d2f67b31e33a4d9dc8aeb007aea202d95c7a62",
+        "chunks": 15,
+        "dimensions": 1024,
+        "binding": "78b1bfb8d462c82dbbf9ad2564802d04ceeff97f5ddf1621d804140cd9bf2e04",
+        "usage_bytes": 67635
+      },
+      "tool_run_df723036f9bfd92c0d3ae079624e89f1": {
+        "file": "file_b7376312ac293412861fb70a0cc26f78",
+        "source": "ba21292f12c8b0d85e87ad02be94df7a1e91592d12cd0524bc46e8f38fb7a95c",
+        "chunks": 8,
+        "dimensions": 1024,
+        "binding": "3a029328f6221cb2b0af121963ebadebf87b44201ede082f185b294b0fd4990f",
+        "usage_bytes": 35629
+      }
+    },
+    "chat": "610",
+    "sdk": "python-3.55.1",
+    "clean": true
+  },
+  "diagnostics": {
+    "expected": {
+      "tool_run_edbbc19830b35151276c1d0457de7418": 15,
+      "tool_run_df723036f9bfd92c0d3ae079624e89f1": 8
+    },
+    "rows": [
+      {
+        "instance": 0,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 1,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 2,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 3,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 4,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 5,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 6,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 7,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 8,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 9,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 10,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 11,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 12,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 13,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 14,
+        "trace": "tool_run_edbbc19830b35151276c1d0457de7418",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 15,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 16,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 17,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 18,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 19,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 20,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 21,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      },
+      {
+        "instance": 22,
+        "trace": "tool_run_df723036f9bfd92c0d3ae079624e89f1",
+        "outcome": "success",
+        "reason": "execution_complete"
+      }
+    ]
+  }
+}
