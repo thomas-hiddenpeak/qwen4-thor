@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主容量通过原生 TLS 检索并存储 RFC 2606 答复。轻容量按原 ID 读回相同输出，再以离线模式从同一来源生成带引用的答复。跨客户读取在两档都返回与未知 ID 相同的 404，两次独立 Chat 均答 42。下一步验证发行包的托管恢复。 [容量回执](evidence/serve-web-provider-20261128/profiles.json)
+
 已使独立 OpenAPI 包和配置 schema 都能验证提供方启用时的真实配置，生成校验还同步了 PR203 的 Batch 源码摘要。主、轻容量交接使用原 RFC 问题、同客户存储和独立 TLS 客户，回执校验通过 7 个反例。 [准备回执](evidence/serve-web-provider-20261128/profile-preparation.json)
 
 原问题与低预算实机复验通过。Chat、Responses 和离线 Responses 流均给出 RFC 2606 的三个示例域名，引用指向实际取得的网页，字符偏移逐条吻合。实机查询按配置刷新，离线流只使用之前保留的同客户查询。候选进程和端口已释放，安装仍为 rev594。下一步完成主轻容量及可回退发行。 [模型 HTTP 回执](evidence/serve-web-provider-20261128/device.json)

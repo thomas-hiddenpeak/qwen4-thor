@@ -1,0 +1,82 @@
+{
+  "stage": "web_provider_primary_light",
+  "engine": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "roles": {
+    "primary": {
+      "sha256": "be03127c972efae4ee666236090934e5e836209e2c2502f0309eb7412928244c",
+      "receipt_sha256": "bc46f297646e956458e950aad84f889a89687adb31eda51068397761b36b1903",
+      "created_id": "resp_9a85fe8adf1b29c613cc55dad4510a94",
+      "retrieved_id": null,
+      "seconds": 62.26333103282377,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 73
+      },
+      "error": {
+        "type": "invalid_request_error",
+        "code": "object_not_found",
+        "param": null
+      },
+      "foreign_status": 404,
+      "missing_status": 404,
+      "returned_chat": "42",
+      "mtp": true,
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      }
+    },
+    "light": {
+      "sha256": "aa460d395a3312fe0d366adc7d04c6c73d851fc28e388c764f9c2d3030cfb040",
+      "receipt_sha256": "613688c8e0136515cca2f130a96951c3d04c69b87f21eba3ef2901e8722cef30",
+      "created_id": "resp_50393bd09d10efafb140a9564f64968e",
+      "retrieved_id": "resp_9a85fe8adf1b29c613cc55dad4510a94",
+      "seconds": 54.54608078999445,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 69
+      },
+      "error": {
+        "type": "invalid_request_error",
+        "code": "object_not_found",
+        "param": null
+      },
+      "foreign_status": 404,
+      "missing_status": 404,
+      "returned_chat": "42",
+      "mtp": false,
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      }
+    }
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 110,
+    "cleanup_complete": true
+  },
+  "source": {
+    "url": "https://tex2e.github.io/rfc-translater/html/rfc2606.html",
+    "title": "RFC 2606 - Reserved Top Level DNS Names \u65e5\u672c\u8a9e\u8a33",
+    "bytes": 32453,
+    "sha256": "7dcac3c4800a70e14f764e09704a786ef91e7df41fdcaac0a05fb138cab1b253",
+    "refresh_seconds": 0
+  },
+  "profile_registry_acceptance_sha256": "e2cb5a1cc9ba99e05f1bdf6bde520f8c4a30deba5fba91131d04f58c9449e55a",
+  "lease_sha256": "ca0b35ef2d5dc911d39dc01034783d02e6dd5507947d1a612aff139dfc8afcc0",
+  "lifecycle_sha256": "08d7afd99efe6f737f920bb26d1bcb0d5aefe9dc7c9ec146e6067a37d15479d5",
+  "previous_profiles_reconstruct_exactly": true,
+  "issued": false
+}
