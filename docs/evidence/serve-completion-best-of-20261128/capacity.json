@@ -1,0 +1,74 @@
+{
+  "status": "PASS_CAPACITY",
+  "history": "ACCEPT_COMPLETION_LIMIT_PRIMARY_LIGHT",
+  "roles": {
+    "primary": {
+      "mtp": true,
+      "time_seconds": 40.56759019987658,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 73,
+        "completion_limits": 3
+      },
+      "status_codes": {
+        "rejected": 400,
+        "maximum": 200,
+        "independent": 200
+      },
+      "best_of_error_parameter": "best_of",
+      "maximum_choices": 1,
+      "independent_choices": 21,
+      "chat": "42",
+      "receipt_sha256": "25b0d348e90cfb7603a27e38b43a32a41138e180d888c10a550dac4555c074ea",
+      "previous_profile_sha256": "31fbe427aba04806de3fbba73d1791fa978971abcd9673eb5f3ff5afb55659a1",
+      "profile": "cc6c8ae39a35b95b579a4cca0d51f6b3cf64e7b2ed6da3da6668975387c08e06"
+    },
+    "light": {
+      "mtp": false,
+      "time_seconds": 37.388357469812036,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 71,
+        "completion_limits": 3
+      },
+      "status_codes": {
+        "rejected": 400,
+        "maximum": 200,
+        "independent": 200
+      },
+      "best_of_error_parameter": "best_of",
+      "maximum_choices": 1,
+      "independent_choices": 21,
+      "chat": "42",
+      "receipt_sha256": "48573a6f6586ca8d895cdcbc28ca46a8b6d3b6806a430899f806dc7e5594c9fd",
+      "previous_profile_sha256": "42cd56e78f9a7128c4a77ba3e3a8e6f510896eacf09f4e317f5cc95d2b7e94d6",
+      "profile": "f328e66696cf7fe43b9ea793093b16f48440fb32982a9b35254004c8a6e2fe26"
+    }
+  },
+  "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "lease_sha256": "bbde94f00e93aad706218887707abf013f25b4ab81194c1f9e3cd803669c4d20",
+  "previous_revision": 606,
+  "observations_sha256": "e399571bd45934fc4b932498d985aa5bc4598ea329ba054320b4e9dfc5631868",
+  "accepted_sha256": "00896e531ebfb115178d56bf174ae6a48c17c31dfeacc596cc4c2f5cc6d9d2bb",
+  "capacity_business": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+  "invalid_history_controls": {
+    "primary": {
+      "prior": "31fbe427aba04806de3fbba73d1791fa978971abcd9673eb5f3ff5afb55659a1",
+      "receipt": "25b0d348e90cfb7603a27e38b43a32a41138e180d888c10a550dac4555c074ea",
+      "invalid_histories_denied": 2
+    },
+    "light": {
+      "prior": "42cd56e78f9a7128c4a77ba3e3a8e6f510896eacf09f4e317f5cc95d2b7e94d6",
+      "receipt": "48573a6f6586ca8d895cdcbc28ca46a8b6d3b6806a430899f806dc7e5594c9fd",
+      "invalid_histories_denied": 2
+    }
+  },
+  "release": "candidate"
+}

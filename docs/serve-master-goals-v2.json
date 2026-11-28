@@ -1072,7 +1072,8 @@
         "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
         "model_starts": 1,
         "requests": 6,
-        "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json"
       }
     },
     {
@@ -1869,7 +1870,8 @@
         "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
         "model_starts": 1,
         "requests": 6,
-        "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json"
       },
       "model_inference_sdk_20261128": {
         "status": "published_engine_native_tls_business_pass",
