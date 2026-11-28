@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+发行包的客户端矩阵已收录六版 SDK 的 90 个容器业务响应，9 个方法均有逐版本成功记录。 [矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
+
 rev604 已发行引擎和原生 TLS 网关上，六版官方 SDK 均已完成容器与文件 9 个方法的短验。一次独占模型启动，90 个业务响应，默认实例维持 STOPPED。 [实机验收](evidence/serve-container-sdk-issued-20261128/business.json)
 
 六版官方 SDK 已在 Thor 通过原生 TLS 完成容器与文件的 9 个方法。每版 15 次请求，真实发行记录上传、翻页和下载均一致，另一个客户端和删除后的查询都返回 404。CPU 测试服务已接入容器管理路由。[CPU 验收回执](evidence/serve-container-sdk-lifecycle-20261128/cpu.json)

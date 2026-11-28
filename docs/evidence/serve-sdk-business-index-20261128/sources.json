@@ -1,6 +1,15 @@
 {
   "method_catalog_sha256": "29d308c67660c3657714426669a9df3127b40ef0743088423fe7ec697b28f8ba",
   "sources": {
+    "containers": {
+      "revision": 604,
+      "transport": "native TLS, issued engine and ingress, two private tenants",
+      "requests": 90,
+      "receipt": "serve-container-sdk-issued-20261128/business.json",
+      "receipt_sha256": "f2f5b51777ec7ee01d427f3e0b3d0986d56ff31434b1e640fdb81ff17d342bb9",
+      "wire": "serve-container-sdk-issued-20261128/requests.json",
+      "wire_sha256": "0af6792cf8b0fa97575b64ff6b70a642dda6375f5208b9bf072e83bbaa802bca"
+    },
     "conversations": {
       "revision": 588,
       "transport": "Native TLS with a temporary leaf certificate verified against its loopback IP. The admission fixture binds the two API keys to the running native backend.",
@@ -582,10 +591,10 @@
   },
   "methods": 231,
   "sdk_versions": 6,
-  "source_requests": 372,
-  "assigned_requests": 371,
-  "methods_with_success": 47,
-  "method_sdk_pairs_with_success": 182,
+  "source_requests": 462,
+  "assigned_requests": 461,
+  "methods_with_success": 55,
+  "method_sdk_pairs_with_success": 230,
   "unassigned": [
     {
       "suite": "uploads",

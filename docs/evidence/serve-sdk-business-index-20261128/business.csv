@@ -78,15 +78,15 @@ GET,/chatkit/threads/{thread_id},,,,,,
 DELETE,/chatkit/threads/{thread_id},,,,,,
 GET,/chatkit/threads/{thread_id}/items,,,,,,
 POST,/completions,,,,,,
-GET,/containers,,,,,,
-POST,/containers,interpreter-issued-python-2.8.1/200=1,interpreter-issued-python-2.33.0/200=1,interpreter-issued-python-3.42.1/200=1,interpreter-issued-python-3.55.1/200=1,interpreter-issued-node-6.34.0/200=1,interpreter-issued-node-7.47.0/200=1
-GET,/containers/{container_id},,,,,,
-DELETE,/containers/{container_id},,,,,,
-POST,/containers/{container_id}/files,,,,,,
-GET,/containers/{container_id}/files,,,,,,
-GET,/containers/{container_id}/files/{file_id},,,,,,
-DELETE,/containers/{container_id}/files/{file_id},,,,,,
-GET,/containers/{container_id}/files/{file_id}/content,,,,,,
+GET,/containers,containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1
+POST,/containers,containers/200=1 interpreter-issued-python-2.8.1/200=1,containers/200=1 interpreter-issued-python-2.33.0/200=1,containers/200=1 interpreter-issued-python-3.42.1/200=1,containers/200=1 interpreter-issued-python-3.55.1/200=1,containers/200=1 interpreter-issued-node-6.34.0/200=1,containers/200=1 interpreter-issued-node-7.47.0/200=1
+GET,/containers/{container_id},containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2
+DELETE,/containers/{container_id},containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1
+POST,/containers/{container_id}/files,containers/200=2,containers/200=2,containers/200=2,containers/200=2,containers/200=2,containers/200=2
+GET,/containers/{container_id}/files,containers/200=2,containers/200=2,containers/200=2,containers/200=2,containers/200=2,containers/200=2
+GET,/containers/{container_id}/files/{file_id},containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1
+DELETE,/containers/{container_id}/files/{file_id},containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1
+GET,/containers/{container_id}/files/{file_id}/content,containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1,containers/200=1 containers/404=1
 POST,/content_provenance_checks,,,,,,
 POST,/conversations,conversations/200=1,conversations/200=1,conversations/200=1,conversations/200=1,conversations/200=1,conversations/200=1
 GET,/conversations/{conversation_id},conversations/200=1 conversations/404=1,conversations/200=1 conversations/404=1,conversations/200=1 conversations/404=1,conversations/200=1 conversations/404=1,conversations/200=1 conversations/404=1,conversations/200=1 conversations/404=1
