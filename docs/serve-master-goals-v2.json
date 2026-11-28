@@ -1043,7 +1043,8 @@
       "include_projection_20261128": {
         "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
-        "device": "evidence/serve-response-include-projection-20261128/device.json"
+        "device": "evidence/serve-response-include-projection-20261128/device.json",
+        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json"
       }
     },
     {
@@ -3435,7 +3436,8 @@
       "include_projection_20261128": {
         "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
-        "device": "evidence/serve-response-include-projection-20261128/device.json"
+        "device": "evidence/serve-response-include-projection-20261128/device.json",
+        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json"
       }
     },
     {
@@ -9977,7 +9979,8 @@
       "include_projection_20261128": {
         "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
-        "device": "evidence/serve-response-include-projection-20261128/device.json"
+        "device": "evidence/serve-response-include-projection-20261128/device.json",
+        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json"
       }
     },
     {
