@@ -1,0 +1,65 @@
+[
+  {
+    "method": "POST",
+    "path": "/v1/responses",
+    "query": "",
+    "status": 200,
+    "trace": "req-e9e9cfebbfb1b153e7c181cc60e6b063"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "stream=true",
+    "status": 200,
+    "trace": "req-6403c63a2bec00d7634af9a6e58a2e59"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "stream=true",
+    "status": 200,
+    "trace": "req-fffd0673e8ed2c103ef1db4c7f66f55e"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "stream=true",
+    "status": 200,
+    "trace": "req-d872ae8c0ce5eff7871058e149531eee"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "stream=true",
+    "status": 200,
+    "trace": "req-005a1a2d075a2bd7f9c2df6e44ea5f9d"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "stream=true",
+    "status": 200,
+    "trace": "req-1c64472f01278e761da612402fb03e33"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "stream=true",
+    "status": 200,
+    "trace": "req-36d065a8dc3cb077776a8e503c7deb6b"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "",
+    "status": 200,
+    "trace": "req-6f917d68da263afd0bac6f2a016243a8"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+    "query": "",
+    "status": 404,
+    "trace": "req-ebb561895e222b2a8ce269f49757e6b4"
+  }
+]

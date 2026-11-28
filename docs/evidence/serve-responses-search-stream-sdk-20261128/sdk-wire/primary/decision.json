@@ -1,0 +1,45 @@
+{
+  "status": "PASS_STREAM_TEXT_VERSION_TAKEOVER",
+  "acceptance": "ACCEPT_STREAM_TEXT_VERSION_TAKEOVER",
+  "manifest_sha256": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
+  "engine_binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+  "actual_business": {
+    "status": "PASS_STREAM_TEXT_VERSION_TAKEOVER",
+    "env_abort": false,
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true
+    },
+    "original_sources": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/chat-after.wire": "b36823ebbf50f7dd55dc6e6d01616e03511e9e1958ee6cfd00a24650fb54e99f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/interruption.json": "030f3990cabce4144ec3f4994c181bf8476450db16d99e56822601f93e46e2d0",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/result.json": "e5c12e5a62fed73e70813e07594425aacf8cc350dd2fd34f95fe7289153da6aa",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/responses-search-stream-sdk-src/.q4t-work/stream-text-primary-lease-01/exit.json": "df9d7f048387b6bed8f10b8b1232dbaea10b0e00a40934195f60373cb0580c1f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed_stream_text_primary.py": "7da39cf4dc2ca44cdc5d06acd1579c4e33dd26630e2eb0bd93c93641c72474eb",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream_text_managed_handoff.py": "898a2dd2e43d4775eb4b71ecfd5ceebc3768446549cd4e0151981e243fa4f26b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-publication-01/result.json": "2247a283f5937b972a33e5d1f103a8d3c24036a634ed1a375d257a11e41ab069",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/responses-search-stream-sdk-src/docs/evidence/serve-responses-search-stream-sdk-20261128/profiles.json": "1b0c0d2f44a185b483c0a1192d9be1e966a22bafe76770717e73f0552f3ee55b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream_text_managed_reader.mjs": "bc9c3815e2355b079b95ce6b8e640defe0d6cd1d73fd0d740d6a6379d75021c8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-client-primary-01/bundle/manifest.json": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/prepare-node-6.34.0.json": "283f559cf0623e7c3bd529b22baa05481a613e785b9916ed5dcbcd8b5abc231c",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/restore-node-6.34.0.json": "ccf2410bf9d04af12794ad88a981ccbd283c96ebac58ab18eb0d5b120818f5ed",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/restore-node-7.47.0.json": "43e111a1545d5688b3e366067c96e06fa5475e9d1ee2d45b6a97d736cba3f052",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/prepare-run.json": "0fc42419be5a51b0f925468d455447800e60b7b2160cc9eaac3442ba887112ab",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/restore-run.json": "68e58e3880f52e71c88cfee8617a57dc6dd0d697e58b23862ad2e32c06164d48",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/prepare-node-6.34.0.wire": "13fd72bba83c5d04b125986520b6fe35a4f13d3eae8ccc6c03c088d5f715d0f2",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/restore-node-6.34.0.wire": "0b1c7f9728fc354549da571a2fe791fda08b3b7383e5126ad61556fcc999e155",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/restore-node-7.47.0.wire": "ee46eba2c67223c83b1cbf78fe3f9c59cdd33135697fa65b6a9ccdc047a01768",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/restore-retrieve.wire": "5448dbdd58f212194f9a815a5e8cae53f3aa64c43ea6aa3f0a4394a1e006b009",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/restore-foreign.wire": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/startup-progress.jsonl": "c5ba10c1c656521496f5789c39d9e1418ed748df2c98fa99fa5418ea6631bc2f",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal-business-stream-text-01/takeover.json": "1983c044df88310b9599fa6b30410807b1c861c96742e5d9b09a6b6f891ebced",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/fatal_actor.py": "6f3bbd8353435d2e80625de467d40d61d246cebc82c56854e3b90509f86f9f17"
+    },
+    "seconds": 365.84633995080367,
+    "model_starts": 2,
+    "full_model_quality": false
+  },
+  "scope": "A legacy SDK completed a stored project response. Its original text and event sequence were recovered through legacy and current SDKs after the isolated incident. The canonical read, foreign refusal, independent Chat and cleanup were verified."
+}

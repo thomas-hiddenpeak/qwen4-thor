@@ -1,0 +1,64 @@
+{
+  "sdk": "node-6.34.0",
+  "requests": [
+    {
+      "url": "/v1/responses",
+      "method": "POST",
+      "version": "6.34.0",
+      "trace": "req-36e9fda7cf949017a6d98378722cd006",
+      "status": 200
+    }
+  ],
+  "id": "resp_4bd15e86d600c70b9f67ff47d2da80ce",
+  "status": "completed",
+  "output_text": "596",
+  "parts": [
+    "596"
+  ],
+  "events": [
+    [
+      0,
+      "response.created"
+    ],
+    [
+      1,
+      "response.in_progress"
+    ],
+    [
+      2,
+      "response.output_item.added"
+    ],
+    [
+      3,
+      "response.content_part.added"
+    ],
+    [
+      4,
+      "response.output_text.delta"
+    ],
+    [
+      5,
+      "response.output_text.delta"
+    ],
+    [
+      6,
+      "response.output_text.delta"
+    ],
+    [
+      7,
+      "response.output_text.done"
+    ],
+    [
+      8,
+      "response.content_part.done"
+    ],
+    [
+      9,
+      "response.output_item.done"
+    ],
+    [
+      10,
+      "response.completed"
+    ]
+  ]
+}

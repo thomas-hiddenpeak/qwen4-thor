@@ -3388,16 +3388,18 @@
         "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
       },
       "sdk_stream_text_20261128": {
-        "state": "managed_recovery_verified",
+        "state": "issued",
         "cpu": "evidence/serve-responses-search-stream-sdk-20261128/cpu.json",
         "remaining": [
-          "reversible issuance and main"
+          "main integration"
         ],
         "retained_sdk_get": "evidence/serve-responses-search-stream-sdk-20261128/retained.json",
         "failed_and_incomplete_sdk_readers": "evidence/serve-responses-search-stream-sdk-20261128/terminal-clients.json",
         "device": "evidence/serve-responses-search-stream-sdk-20261128/device.json",
         "profiles": "evidence/serve-responses-search-stream-sdk-20261128/profiles.json",
-        "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json"
+        "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json",
+        "issued": true,
+        "delivery": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
       }
     },
     {
@@ -9832,11 +9834,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 209,
+        "source_requests": 328,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 126,
-        "methods_with_success": 32,
-        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590."
+        "method_sdk_pairs_with_success": 170,
+        "methods_with_success": 45,
+        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery.",
+        "assigned_requests": 327
       },
       "stored_chat_sdk_handoff_20261128": {
         "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
@@ -9870,16 +9873,18 @@
         ]
       },
       "sdk_stream_text_20261128": {
-        "state": "managed_recovery_verified",
+        "state": "issued",
         "cpu": "evidence/serve-responses-search-stream-sdk-20261128/cpu.json",
         "remaining": [
-          "reversible issuance and main"
+          "main integration"
         ],
         "retained_sdk_get": "evidence/serve-responses-search-stream-sdk-20261128/retained.json",
         "failed_and_incomplete_sdk_readers": "evidence/serve-responses-search-stream-sdk-20261128/terminal-clients.json",
         "device": "evidence/serve-responses-search-stream-sdk-20261128/device.json",
         "profiles": "evidence/serve-responses-search-stream-sdk-20261128/profiles.json",
-        "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json"
+        "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json",
+        "issued": true,
+        "delivery": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
       }
     },
     {
@@ -11161,10 +11166,10 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 596,
-        "receipt": "evidence/serve-web-provider-20261128/delivery.json",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src/.q4t-work/cold596-01/plan.json",
-        "plan_sha256": "41b0069ae1466908a0998a3d28072689dfeec64486f8da6a78a34ad614d95e89",
+        "revision": 598,
+        "receipt": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src/.q4t-work/cold598-01/plan.json",
+        "plan_sha256": "651658704039d9845e1ae1f213b19deee99caa88da3163594cfdcf2fe139822d",
         "model_starts": 0,
         "executed": false
       },
@@ -13094,7 +13099,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev596_delivered_remaining_deliveries",
+      "state": "rev598_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13144,13 +13149,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 596,
+        "revision": 598,
         "state": "STOPPED",
-        "primary_manifest_sha256": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3",
-        "fallback_manifest_sha256": "f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5",
-        "binary_sha256": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
+        "primary_manifest_sha256": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
+        "fallback_manifest_sha256": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+        "binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-web-provider-20261128/delivery.json"
+        "evidence": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14603,6 +14608,15 @@
         "binary_sha256": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-batch-cancel-20261128/delivery.json"
+      },
+      "release_revision_596": {
+        "revision": 596,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3",
+        "fallback_manifest_sha256": "f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5",
+        "binary_sha256": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-web-provider-20261128/delivery.json"
       }
     },
     {
@@ -14711,21 +14725,21 @@
         "audio_pairs": 25,
         "first_hour_business": 304,
         "business_requests": 7250,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "aee90296054bdb15b61a4d570ea3139612cdec89d317c6789b463037af05badb",
-        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src/.q4t-work/day-01/audio-day.sh",
-        "operator_sha256": "46aafd74417d32166eb1f59806f17d4854f795625e3309b3e92720a04c96aa77",
-        "checked_at": "2026-11-28T04:16:36.015766+00:00",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "b10bf32b44333cd9859b405040212b97baa63d4ac9f2c6a9c2e5c906892a9b09",
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "56b946394075349305073960fad654cc9683ca1f07eecc7a2c4495f7c5c97563",
+        "checked_at": "2026-11-28T05:46:13.515680+00:00",
         "minimum_evidence_free_bytes": 12884901888,
         "hours_executed": 0,
-        "revision": 596,
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src",
+        "revision": 598,
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-day-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-client-primary-01/bundle",
-          "manifest_sha256": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-client-primary-01/bundle",
+          "manifest_sha256": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b"
         },
-        "source_commit": "091a392b524516670d865be22076c86d054e7914",
-        "handoff_sha256": "979c59660eefc2f58515ac9ead36054f02ef85d0405fc3c377e4aebceb618228",
+        "source_commit": "78de876c7cd82cf4341b7f3f186b58df8e893e69",
+        "handoff_sha256": "5f835bb9b94f0d35827e8ff7ebd51c4f95d9742914bb2e33950f1ea10a0d6b2e",
         "source_files": 704,
         "checked": true
       },
@@ -15135,9 +15149,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 596,
-        "receipt": "evidence/serve-web-provider-20261128/delivery.json",
-        "plan_sha256": "aee90296054bdb15b61a4d570ea3139612cdec89d317c6789b463037af05badb",
+        "revision": 598,
+        "receipt": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json",
+        "plan_sha256": "b10bf32b44333cd9859b405040212b97baa63d4ac9f2c6a9c2e5c906892a9b09",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

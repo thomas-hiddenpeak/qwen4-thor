@@ -17,9 +17,9 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 ## 按方法查真实业务回包
 
-[业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)按同一组 231 个公开方法和六版 SDK 列出历史实机回包。例如 `vectors/200=1` 表示这个 SDK 在向量库业务中调用该方法一次并收到 200。空白表示此次纳入的四组回执没有该组合的记录。400、404、409 单独计数；每组的发行号、原始请求和校验摘要见[来源清单](evidence/serve-sdk-business-index-20261128/sources.json)。
+业务矩阵按 231 个公开方法和六版 SDK 列出实机回包。例如 `stream-gateway-restore/200=1` 表示该版本客户端在网关切换后，用原响应 ID 请求成功一次。空白表示所收录的原始记录未覆盖该组合。各组的发行身份、传输方式、故障阶段和原始凭据可从来源清单核对。[业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv) · [来源清单](evidence/serve-sdk-business-index-20261128/sources.json)
 
-四组业务共 209 个已认证请求，208 个可对应到具体方法，覆盖 32 个有成功回包的方法和 126 个有成功回包的方法与版本组合。旧上传记录中的一条 `POST /v1/responses` 缺少原始查询串，保留在来源清单的 `unassigned`。新上传验证器保留查询串，可区分普通与 beta 路径。复核命令为 `python3 -B -m tools.serve_audit.sdk_business_evidence build/sdk-business`。
+来源清单的 `methods_with_success` 和 `method_sdk_pairs_with_success` 分别给出有成功回包的方法数、方法与版本组合数。每组请求数记录在 `sources` 下。旧上传记录中缺少查询串的请求保留在 `unassigned`。Responses 流式短验的七次原生 TLS SDK 请求和六次托管恢复 SDK 请求均可追溯到原始请求 ID；两次直接 HTTP 对照单独记录。可以用 `python3 -B -m tools.serve_audit.sdk_business_evidence build/sdk-business` 重建清单。
 
 ## 验证范围
 

@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev598 已发行旧版 Node SDK 的流式正文兼容修复。模型重启和主网关切换后，Node 6.34 与 7.47 均按原 ID 读回原文、事件顺序和终态，跨客户读取为 404。主包与独立回退包已登记，发行时服务为 STOPPED。 [发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
+
 设备已登记 rev596，Q03 长稳和 R07 冷启动入口原先仍指向 rev584。发行刷新现核对主包、计划摘要和操作者入口，再同步两处交接；冷启动的设备占用改为执行时检查。9 项 CPU 检查及 rev596 实盘回执复核通过。下一次发行将通过同一入口刷新两项计划。 [交接复核](evidence/serve-responses-search-stream-sdk-20261128/operator-handoff.json)
 
 在模型退出与主网关切换两种故障后，旧版和当前 Node 客户端均按原 ID 恢复了完整事件、原文和终态。跨客户读取返回 404，独立 Chat 得到 42。下一步登记主包及回退包。 [托管恢复回执](evidence/serve-responses-search-stream-sdk-20261128/managed.json)
@@ -1528,13 +1530,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev596**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev596 发行回执](evidence/serve-web-provider-20261128/delivery.json)
+本机登记的发行版本为 **rev598**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev598 发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3` |
-| 回退服务包清单 | `f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5` |
-| 默认引擎 | `8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56` |
+| 主服务包清单 | `2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b` |
+| 回退服务包清单 | `74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1` |
+| 默认引擎 | `5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

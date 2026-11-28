@@ -1,0 +1,324 @@
+{
+  "sdk": "python-3.42.1",
+  "id": "resp_5b1b7dc60f09b1d32967def17cea1cae",
+  "status": "completed",
+  "text": "The three example second-level domains reserved by RFC 2606 are:\n\n1. example.com\n2. example.net\n3. example.org\n\n[source](<https://tex2e.github.io/rfc-translater/html/rfc2606.html>)",
+  "messages": [
+    [
+      "msg_f1cf8ae470fd21ef761ce1554d278d41",
+      "The three example second-level domains reserved by RFC 2606 are:\n\n1. example.com\n2. example.net\n3. example.org\n\n[source](<https://tex2e.github.io/rfc-translater/html/rfc2606.html>)",
+      [
+        {
+          "end_index": 180,
+          "start_index": 112,
+          "title": "RFC 2606 - Reserved Top Level DNS Names \u65e5\u672c\u8a9e\u8a33",
+          "type": "url_citation",
+          "url": "https://tex2e.github.io/rfc-translater/html/rfc2606.html"
+        }
+      ]
+    ]
+  ],
+  "searches": [
+    [
+      "ws_3f387188ac460cdeaa87256fd9ae00de",
+      "completed",
+      {
+        "type": "search",
+        "queries": [
+          "RFC 2606 reserved example domains"
+        ],
+        "query": "RFC 2606 reserved example domains"
+      }
+    ]
+  ],
+  "events": [
+    [
+      0,
+      "response.created"
+    ],
+    [
+      1,
+      "response.in_progress"
+    ],
+    [
+      2,
+      "response.output_item.added"
+    ],
+    [
+      3,
+      "response.web_search_call.in_progress"
+    ],
+    [
+      4,
+      "response.web_search_call.searching"
+    ],
+    [
+      5,
+      "response.web_search_call.completed"
+    ],
+    [
+      6,
+      "response.output_item.done"
+    ],
+    [
+      7,
+      "response.output_item.added"
+    ],
+    [
+      8,
+      "response.content_part.added"
+    ],
+    [
+      9,
+      "response.output_text.delta"
+    ],
+    [
+      10,
+      "response.output_text.delta"
+    ],
+    [
+      11,
+      "response.output_text.delta"
+    ],
+    [
+      12,
+      "response.output_text.delta"
+    ],
+    [
+      13,
+      "response.output_text.delta"
+    ],
+    [
+      14,
+      "response.output_text.delta"
+    ],
+    [
+      15,
+      "response.output_text.delta"
+    ],
+    [
+      16,
+      "response.output_text.delta"
+    ],
+    [
+      17,
+      "response.output_text.delta"
+    ],
+    [
+      18,
+      "response.output_text.delta"
+    ],
+    [
+      19,
+      "response.output_text.delta"
+    ],
+    [
+      20,
+      "response.output_text.delta"
+    ],
+    [
+      21,
+      "response.output_text.delta"
+    ],
+    [
+      22,
+      "response.output_text.delta"
+    ],
+    [
+      23,
+      "response.output_text.delta"
+    ],
+    [
+      24,
+      "response.output_text.delta"
+    ],
+    [
+      25,
+      "response.output_text.delta"
+    ],
+    [
+      26,
+      "response.output_text.delta"
+    ],
+    [
+      27,
+      "response.output_text.delta"
+    ],
+    [
+      28,
+      "response.output_text.delta"
+    ],
+    [
+      29,
+      "response.output_text.delta"
+    ],
+    [
+      30,
+      "response.output_text.delta"
+    ],
+    [
+      31,
+      "response.output_text.delta"
+    ],
+    [
+      32,
+      "response.output_text.delta"
+    ],
+    [
+      33,
+      "response.output_text.delta"
+    ],
+    [
+      34,
+      "response.output_text.delta"
+    ],
+    [
+      35,
+      "response.output_text.delta"
+    ],
+    [
+      36,
+      "response.output_text.delta"
+    ],
+    [
+      37,
+      "response.output_text.delta"
+    ],
+    [
+      38,
+      "response.output_text.delta"
+    ],
+    [
+      39,
+      "response.output_text.delta"
+    ],
+    [
+      40,
+      "response.output_text.delta"
+    ],
+    [
+      41,
+      "response.output_text.delta"
+    ],
+    [
+      42,
+      "response.output_text.delta"
+    ],
+    [
+      43,
+      "response.output_text.delta"
+    ],
+    [
+      44,
+      "response.output_text.delta"
+    ],
+    [
+      45,
+      "response.output_text.delta"
+    ],
+    [
+      46,
+      "response.output_text.delta"
+    ],
+    [
+      47,
+      "response.output_text.delta"
+    ],
+    [
+      48,
+      "response.output_text.delta"
+    ],
+    [
+      49,
+      "response.output_text.delta"
+    ],
+    [
+      50,
+      "response.output_text.delta"
+    ],
+    [
+      51,
+      "response.output_text.delta"
+    ],
+    [
+      52,
+      "response.output_text.delta"
+    ],
+    [
+      53,
+      "response.output_text.delta"
+    ],
+    [
+      54,
+      "response.output_text.delta"
+    ],
+    [
+      55,
+      "response.output_text.delta"
+    ],
+    [
+      56,
+      "response.output_text.delta"
+    ],
+    [
+      57,
+      "response.output_text.delta"
+    ],
+    [
+      58,
+      "response.output_text.delta"
+    ],
+    [
+      59,
+      "response.output_text.delta"
+    ],
+    [
+      60,
+      "response.output_text.delta"
+    ],
+    [
+      61,
+      "response.output_text.annotation.added"
+    ],
+    [
+      62,
+      "response.output_text.done"
+    ],
+    [
+      63,
+      "response.content_part.done"
+    ],
+    [
+      64,
+      "response.output_item.done"
+    ],
+    [
+      65,
+      "response.completed"
+    ]
+  ],
+  "annotations": [
+    {
+      "item_id": "msg_f1cf8ae470fd21ef761ce1554d278d41",
+      "output_index": 1,
+      "content_index": 0,
+      "annotation_index": 0,
+      "annotation": {
+        "end_index": 180,
+        "start_index": 112,
+        "title": "RFC 2606 - Reserved Top Level DNS Names \u65e5\u672c\u8a9e\u8a33",
+        "type": "url_citation",
+        "url": "https://tex2e.github.io/rfc-translater/html/rfc2606.html"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/responses/resp_5b1b7dc60f09b1d32967def17cea1cae",
+      "query": "stream=true",
+      "status": 200,
+      "trace": "req-d872ae8c0ce5eff7871058e149531eee"
+    }
+  ]
+}
