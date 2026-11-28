@@ -23,6 +23,10 @@ rev602 已登记双人重叠转录的主包和回退包。官方 SDK 在两档�
 
 rev598 主包和回退包均保留了主、轻两档的双人转录记录，但能力接口和 OpenAPI 仍将重叠说话人分离列为待实现。候选已统一声明，并列出启用分离所需后端。6 项原生测试与 5 项 Python 检查通过；原录音的 1.68 秒交叠和首句 1/7 词错误率均已复核。下一步核对候选的实际 HTTP 发现入口与发行交接。 [声明与复核记录](evidence/serve-transcription-discovery-20261128/cpu.json)
 
+rev600 的 PR 检查中，终态日志写满用例在注入故障前返回 FAILED。Thor 上为内存读取注入 80 毫秒延迟，复现了相同返回；该用例的独立等待预算已修正。16 项辅助依赖隔离检查通过，原始远端失败原因未写入状态，复跑将附状态详情。[针对性复核](evidence/serve-memory-watchdog-stall-20261128/terminal-event-fixture.json)
+
+远端清单检查发现 Guardian 的 7 个源码摘要仍指向旧版，涉及内存采样通道、启动准入和 CPU 夹具。已逐文件与 rev600 及原基线对照，Thor 本机通过 1,401 个源码锚点和 40 个反例检查。发行包沿用先前的真实恢复回执。 [清单校验记录](evidence/serve-memory-watchdog-stall-20261128/inventory-review.json)
+
 rev600 已登记主包和回退包。Guardian 的内存采集卡住期间，同一模型与管理入口继续响应。采集恢复后，主网关故障触发回退接管。登记期间服务处于 STOPPED，模型启动次数为零，13 份运行状态和既有容量策略通过复核。长稳及冷启动交接入口已更新。 [发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
 
 PR #207 的 push 和 pull_request 检查均在观测隔离夹具报错。构造函数已初始化 watchdog，测试使用的手工控制器缺少该字段，进度夹具也未提供真实快照结构。补齐两处夹具，增加“日志和内存同时失去观测”的心跳断言，确认 READY、UNKNOWN 且不发模型事务。Thor 运行两份完整 CPU 测试文件，40 项通过。等待最终提交的两次远端检查。

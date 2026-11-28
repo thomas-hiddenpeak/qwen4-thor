@@ -1,0 +1,19 @@
+{
+  "remote_pr_run": 46125134005,
+  "remote_push_pass": 46125128354,
+  "head": "fd50e564132d27531b6da4b6c6222912bf7067cf",
+  "remote_symptom": "expected (0, STOPPED), observed (1, FAILED); remote status reason not recorded",
+  "reproduction": {
+    "injected_memory_read_delay_ms": 80,
+    "old_reason": "memory_observation_unavailable",
+    "fixed_result": "STOPPED",
+    "lost_terminal_events": 1
+  },
+  "original_sha256": "002629e69b2d0ec3e6da85f2f76f5fa0fba7dcd4a33f12c920f470d0259613b1",
+  "before_sha256": "9ec5e86f356d55b948323678a3d6d5cd3f745f5691b4d467c2af8ebf4b255585",
+  "after_sha256": "155637a8115c3918c5537cfcbfd92d87cda4a0da4a838a355ace523270fd5c56",
+  "tests": 16,
+  "suite_sha256": "e358684b05a9f1446574c60b144cd53bcd22c1dd2a6afef6c9d7d84ba9500666",
+  "changed_runtime_files": [],
+  "model_starts": 0
+}
