@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev594 的 HTTP 实机短验已通过。六版官方 SDK 交接六份真实发行记录。原始和重放流的事件序号、增量及终态相符，按原响应 ID 续答取得另一项发行数据。两页输入、跨客户隔离与删除后的 404 也已核对。共 60 个 HTTP 请求，新增 31 个有成功请求的接口与 SDK 版本组合。 [实机回执](evidence/serve-responses-sdk-business-20261128/business.json)
+
 已按冻结 OpenAPI 复核 24 份原始 Chat 回包，含两次 Batch 恢复后返回的 42。17 份完整响应、108 个增量、2 个错误终态和 7 个流结束标记均通过校验。缺失必填字段、错误增量、流内 ID 变化、错误体缺码和缺失结束标记均被拒绝。 其他模态与输出组合仍待分别核对。 [原文校验回执](evidence/serve-responses-sdk-business-20261128/chat-output-wire.json)
 
 六版官方 SDK 的九种调用方式通过本机 TLS 重放同一段真实 Responses 流。现在逐项核对 content_part 的消息 ID、输出位置、片段位置及完整载荷，并把它与输出项和最终响应对照。错误归属、缺失结束事件和终态片段错序均有反例。18 个夹具请求和 23 项相关 CPU 检查通过，下一步用 rev594 验证实时流与按原 ID 重放。 [片段校验回执](evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json)

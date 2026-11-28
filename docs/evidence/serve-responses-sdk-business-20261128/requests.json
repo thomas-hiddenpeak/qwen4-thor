@@ -1,0 +1,2792 @@
+[
+  {
+    "writer": {
+      "sdk": "python-2.8.1",
+      "beta": false,
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-638166a3e56a5bf3f1dede8362b990b3"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-b87836021d0ee4541fdbe84a8b4463fe"
+        }
+      ],
+      "count": 392,
+      "created": {
+        "id": "resp_9d60406a7f696fdc7fab82962f4736e4",
+        "status": "completed",
+        "text": "580",
+        "metadata": {
+          "writer": "python-2.8.1"
+        },
+        "previous": null,
+        "messages": [
+          "msg_10afb99e0c585c9c1f29b03801f22916"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "580",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_9d60406a7f696fdc7fab82962f4736e4"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_9d60406a7f696fdc7fab82962f4736e4"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "0"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "580"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "580",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "580",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_9d60406a7f696fdc7fab82962f4736e4",
+          "response": {
+            "id": "resp_9d60406a7f696fdc7fab82962f4736e4",
+            "status": "completed",
+            "text": "580",
+            "metadata": {
+              "writer": "python-2.8.1"
+            },
+            "previous": null,
+            "messages": [
+              "msg_10afb99e0c585c9c1f29b03801f22916"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "580",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "reader": {
+      "sdk": "python-2.33.0",
+      "beta": false,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9d60406a7f696fdc7fab82962f4736e4",
+          "query": "",
+          "status": 200,
+          "trace": "req-9ec65fc3da6c06af05ea6ecf64cc0458"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9d60406a7f696fdc7fab82962f4736e4",
+          "query": "",
+          "status": 404,
+          "trace": "req-e4d0830c289a9ae5c99da585ce130690"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9d60406a7f696fdc7fab82962f4736e4/input_items",
+          "query": "limit=1&order=asc",
+          "status": 200,
+          "trace": "req-24ac55c5ee551b2b7f58fe0f7e23f928"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9d60406a7f696fdc7fab82962f4736e4/input_items",
+          "query": "after=item_4bb0b28757111dca8a5ce0ac246d15a7&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-b97d037c3b70376d5d7f574a0bc068bf"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-826f47d81553bf4662129c9397ec5cb2"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9d60406a7f696fdc7fab82962f4736e4",
+          "query": "stream=true",
+          "status": 200,
+          "trace": "req-43c55eb09a7b27fe30fe57b7f7717fc2"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/responses/resp_9d60406a7f696fdc7fab82962f4736e4",
+          "query": "",
+          "status": 200,
+          "trace": "req-a935968f4fa4e3789684fe9ff9f0e229"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9d60406a7f696fdc7fab82962f4736e4",
+          "query": "",
+          "status": 404,
+          "trace": "req-ca030c3b9c3925040fd061e187e1ae71"
+        }
+      ],
+      "before": {
+        "id": "resp_9d60406a7f696fdc7fab82962f4736e4",
+        "status": "completed",
+        "text": "580",
+        "metadata": {
+          "writer": "python-2.8.1"
+        },
+        "previous": null,
+        "messages": [
+          "msg_10afb99e0c585c9c1f29b03801f22916"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "580",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "foreign": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "pages": [
+        {
+          "id": "item_4bb0b28757111dca8a5ce0ac246d15a7",
+          "role": "developer",
+          "text": [
+            "For each question reply with only the requested integer from the project receipt."
+          ],
+          "more": true
+        },
+        {
+          "id": "item_c231f3e0b4ea495bb8593970e579f0fe",
+          "role": "user",
+          "text": [
+            "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 580,\n  \"version_revision\": 219,\n  \"profile_revision\": 106,\n  \"previous_profile_revision\": 105,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1\",\n  \"fallback\": \"7eea5d6c33de3eff6560fac2466840f09035437ab0a52bf869d2fed923923fa8\",\n  \"engine\": \"4e4793560074b3bd6799058c059ab023e72b1bb93a0289a3a7e52b711082e16a\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+          ],
+          "more": false
+        }
+      ],
+      "follow": {
+        "id": "resp_98a1be114aa92fe52a19f576555dc1a0",
+        "status": "completed",
+        "text": "219",
+        "metadata": {
+          "reader": "python-2.33.0"
+        },
+        "previous": "resp_9d60406a7f696fdc7fab82962f4736e4",
+        "messages": [
+          "msg_fd422cccc75f8048a36ee70c6507534c"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "219",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_9d60406a7f696fdc7fab82962f4736e4"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_9d60406a7f696fdc7fab82962f4736e4"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "0"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "580"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "580",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_10afb99e0c585c9c1f29b03801f22916",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "580",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_9d60406a7f696fdc7fab82962f4736e4",
+          "response": {
+            "id": "resp_9d60406a7f696fdc7fab82962f4736e4",
+            "status": "completed",
+            "text": "580",
+            "metadata": {
+              "writer": "python-2.8.1"
+            },
+            "previous": null,
+            "messages": [
+              "msg_10afb99e0c585c9c1f29b03801f22916"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "580",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "writer": "python-2.8.1"
+      },
+      "input": [
+        {
+          "type": "message",
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "For each question reply with only the requested integer from the project receipt."
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 580,\n  \"version_revision\": 219,\n  \"profile_revision\": 106,\n  \"previous_profile_revision\": 105,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1\",\n  \"fallback\": \"7eea5d6c33de3eff6560fac2466840f09035437ab0a52bf869d2fed923923fa8\",\n  \"engine\": \"4e4793560074b3bd6799058c059ab023e72b1bb93a0289a3a7e52b711082e16a\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+            }
+          ]
+        }
+      ]
+    },
+    "followup": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "reader": "python-2.33.0"
+      },
+      "input": "From that same receipt, what is the version_revision? Reply only with that integer."
+    },
+    "source": "serve-voice-consent-pagination-20261127/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "python-2.33.0",
+      "beta": false,
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-bda49e0220356320c569ed393df0d43a"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-0d32fce80db25254669d34c918a8ffda"
+        }
+      ],
+      "count": 390,
+      "created": {
+        "id": "resp_a02c03e1820c37f2e462b90567a5f097",
+        "status": "completed",
+        "text": "582",
+        "metadata": {
+          "writer": "python-2.33.0"
+        },
+        "previous": null,
+        "messages": [
+          "msg_5447f76f7f085e1144c0090c443594c4"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "582",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_a02c03e1820c37f2e462b90567a5f097"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_a02c03e1820c37f2e462b90567a5f097"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "2"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "582"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "582",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "582",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_a02c03e1820c37f2e462b90567a5f097",
+          "response": {
+            "id": "resp_a02c03e1820c37f2e462b90567a5f097",
+            "status": "completed",
+            "text": "582",
+            "metadata": {
+              "writer": "python-2.33.0"
+            },
+            "previous": null,
+            "messages": [
+              "msg_5447f76f7f085e1144c0090c443594c4"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "582",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "reader": {
+      "sdk": "python-3.42.1",
+      "beta": true,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_a02c03e1820c37f2e462b90567a5f097",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-e11ebe0a2b405f912b6aa4fa172d76c2"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_a02c03e1820c37f2e462b90567a5f097",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-8c24f63cb500d54025a631a4a985211c"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_a02c03e1820c37f2e462b90567a5f097/input_items",
+          "query": "beta=true&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-52db5837b4880842542125f2ccb3b6fe"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_a02c03e1820c37f2e462b90567a5f097/input_items",
+          "query": "beta=true&after=item_bf2b245461e7ff09cf628824b6a8c9fe&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-c6baad497e6f131f2e019481a70bf13b"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-108f823513dc9d773169fa1547c98aa6"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_a02c03e1820c37f2e462b90567a5f097",
+          "query": "beta=true&stream=true",
+          "status": 200,
+          "trace": "req-21a6c7f6447eadf23f587b1f0f7575e2"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/responses/resp_a02c03e1820c37f2e462b90567a5f097",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-61d99a22a2a2f12cf6c8f670d327ef28"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_a02c03e1820c37f2e462b90567a5f097",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-278f94a1b3d85fc385b02e0b27daf158"
+        }
+      ],
+      "before": {
+        "id": "resp_a02c03e1820c37f2e462b90567a5f097",
+        "status": "completed",
+        "text": "582",
+        "metadata": {
+          "writer": "python-2.33.0"
+        },
+        "previous": null,
+        "messages": [
+          "msg_5447f76f7f085e1144c0090c443594c4"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "582",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "foreign": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "pages": [
+        {
+          "id": "item_bf2b245461e7ff09cf628824b6a8c9fe",
+          "role": "developer",
+          "text": [
+            "For each question reply with only the requested integer from the project receipt."
+          ],
+          "more": true
+        },
+        {
+          "id": "item_0e52be9d8df7328a77cf067ac4394178",
+          "role": "user",
+          "text": [
+            "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 582,\n  \"version_revision\": 220,\n  \"profile_revision\": 107,\n  \"previous_profile_revision\": 106,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb\",\n  \"fallback\": \"a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9\",\n  \"engine\": \"312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+          ],
+          "more": false
+        }
+      ],
+      "follow": {
+        "id": "resp_e76d4029935af3656c3554f5b459b7c0",
+        "status": "completed",
+        "text": "220",
+        "metadata": {
+          "reader": "python-3.42.1"
+        },
+        "previous": "resp_a02c03e1820c37f2e462b90567a5f097",
+        "messages": [
+          "msg_1abb39c8a3dc10999ac23a04bafdd9ea"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "220",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_a02c03e1820c37f2e462b90567a5f097"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_a02c03e1820c37f2e462b90567a5f097"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "2"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "582"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "582",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_5447f76f7f085e1144c0090c443594c4",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "582",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_a02c03e1820c37f2e462b90567a5f097",
+          "response": {
+            "id": "resp_a02c03e1820c37f2e462b90567a5f097",
+            "status": "completed",
+            "text": "582",
+            "metadata": {
+              "writer": "python-2.33.0"
+            },
+            "previous": null,
+            "messages": [
+              "msg_5447f76f7f085e1144c0090c443594c4"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "582",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "writer": "python-2.33.0"
+      },
+      "input": [
+        {
+          "type": "message",
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "For each question reply with only the requested integer from the project receipt."
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 582,\n  \"version_revision\": 220,\n  \"profile_revision\": 107,\n  \"previous_profile_revision\": 106,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb\",\n  \"fallback\": \"a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9\",\n  \"engine\": \"312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+            }
+          ]
+        }
+      ]
+    },
+    "followup": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "reader": "python-3.42.1"
+      },
+      "input": "From that same receipt, what is the version_revision? Reply only with that integer."
+    },
+    "source": "serve-asset-admission-20261127/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "python-3.42.1",
+      "beta": false,
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-514087edc4a4838692bd1d837dda9663"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-1415524afc70e658d781a67d6ab65e24"
+        }
+      ],
+      "count": 396,
+      "created": {
+        "id": "resp_2231b74f3ced1b00763521c08b890e12",
+        "status": "completed",
+        "text": "584",
+        "metadata": {
+          "writer": "python-3.42.1"
+        },
+        "previous": null,
+        "messages": [
+          "msg_ea6b53152734aad968ae4ea054d4f5e1"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "584",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_2231b74f3ced1b00763521c08b890e12"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_2231b74f3ced1b00763521c08b890e12"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "4"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "584"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "584",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "584",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_2231b74f3ced1b00763521c08b890e12",
+          "response": {
+            "id": "resp_2231b74f3ced1b00763521c08b890e12",
+            "status": "completed",
+            "text": "584",
+            "metadata": {
+              "writer": "python-3.42.1"
+            },
+            "previous": null,
+            "messages": [
+              "msg_ea6b53152734aad968ae4ea054d4f5e1"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "584",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "reader": {
+      "sdk": "python-3.55.1",
+      "beta": true,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_2231b74f3ced1b00763521c08b890e12",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-9aff726ac115097dbaa3dce7154ebf82"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_2231b74f3ced1b00763521c08b890e12",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-36589aefd9bf1f44dfe8c4428eb52151"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_2231b74f3ced1b00763521c08b890e12/input_items",
+          "query": "beta=true&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-487f6b4b1d4fd3096834b12389b7ab7d"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_2231b74f3ced1b00763521c08b890e12/input_items",
+          "query": "beta=true&after=item_f9a61b96eda87b25ec9071b98a18cfbe&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-7477a45643529d0ec657e448b933c25e"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-4340e72227be6f15c2ca61f0053950e8"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_2231b74f3ced1b00763521c08b890e12",
+          "query": "beta=true&stream=true",
+          "status": 200,
+          "trace": "req-90b98e50c2570dea824113dbe7fb7e08"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/responses/resp_2231b74f3ced1b00763521c08b890e12",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-2ae8da8c8637038c1a0ffa0497d10894"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_2231b74f3ced1b00763521c08b890e12",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-5c5af66eb4ee9000d51293949d882a43"
+        }
+      ],
+      "before": {
+        "id": "resp_2231b74f3ced1b00763521c08b890e12",
+        "status": "completed",
+        "text": "584",
+        "metadata": {
+          "writer": "python-3.42.1"
+        },
+        "previous": null,
+        "messages": [
+          "msg_ea6b53152734aad968ae4ea054d4f5e1"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "584",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "foreign": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "pages": [
+        {
+          "id": "item_f9a61b96eda87b25ec9071b98a18cfbe",
+          "role": "developer",
+          "text": [
+            "For each question reply with only the requested integer from the project receipt."
+          ],
+          "more": true
+        },
+        {
+          "id": "item_6d6938a3f491324adb15b278d8b6dc1b",
+          "role": "user",
+          "text": [
+            "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 584,\n  \"version_revision\": 221,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 107,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a\",\n  \"fallback\": \"28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+          ],
+          "more": false
+        }
+      ],
+      "follow": {
+        "id": "resp_c1524b1473282e53cbeccca1a7d8806e",
+        "status": "completed",
+        "text": "221",
+        "metadata": {
+          "reader": "python-3.55.1"
+        },
+        "previous": "resp_2231b74f3ced1b00763521c08b890e12",
+        "messages": [
+          "msg_c1c60e4421cd8d075e0f2741e93b22d1"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "221",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_2231b74f3ced1b00763521c08b890e12"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_2231b74f3ced1b00763521c08b890e12"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "4"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "584"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "584",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_ea6b53152734aad968ae4ea054d4f5e1",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "584",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_2231b74f3ced1b00763521c08b890e12",
+          "response": {
+            "id": "resp_2231b74f3ced1b00763521c08b890e12",
+            "status": "completed",
+            "text": "584",
+            "metadata": {
+              "writer": "python-3.42.1"
+            },
+            "previous": null,
+            "messages": [
+              "msg_ea6b53152734aad968ae4ea054d4f5e1"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "584",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "writer": "python-3.42.1"
+      },
+      "input": [
+        {
+          "type": "message",
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "For each question reply with only the requested integer from the project receipt."
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 584,\n  \"version_revision\": 221,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 107,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a\",\n  \"fallback\": \"28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+            }
+          ]
+        }
+      ]
+    },
+    "followup": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "reader": "python-3.55.1"
+      },
+      "input": "From that same receipt, what is the version_revision? Reply only with that integer."
+    },
+    "source": "serve-chatkit-pending-user-message-20261127/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "python-3.55.1",
+      "beta": true,
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-f48f881797977fe80cd499897e334555"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-67c11a3f792b2ada5c2fbf0bf3584b6e"
+        }
+      ],
+      "count": 395,
+      "created": {
+        "id": "resp_32e51a15597b9cc0dc92ec44f95c782d",
+        "status": "completed",
+        "text": "586",
+        "metadata": {
+          "writer": "python-3.55.1"
+        },
+        "previous": null,
+        "messages": [
+          "msg_e1540d85ab2dd0e210b5b0c74d8a0456"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "586",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_32e51a15597b9cc0dc92ec44f95c782d"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_32e51a15597b9cc0dc92ec44f95c782d"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "6"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "586"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "586",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "586",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_32e51a15597b9cc0dc92ec44f95c782d",
+          "response": {
+            "id": "resp_32e51a15597b9cc0dc92ec44f95c782d",
+            "status": "completed",
+            "text": "586",
+            "metadata": {
+              "writer": "python-3.55.1"
+            },
+            "previous": null,
+            "messages": [
+              "msg_e1540d85ab2dd0e210b5b0c74d8a0456"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "586",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "reader": {
+      "sdk": "node-6.34.0",
+      "beta": false,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_32e51a15597b9cc0dc92ec44f95c782d",
+          "query": "",
+          "status": 200,
+          "trace": "req-c66778ed1007896491599a59bedda4bf"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_32e51a15597b9cc0dc92ec44f95c782d",
+          "query": "",
+          "status": 404,
+          "trace": "req-2b4a918d211e9e7382c6a55e2933245f"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_32e51a15597b9cc0dc92ec44f95c782d/input_items",
+          "query": "limit=1&order=asc",
+          "status": 200,
+          "trace": "req-26eea492bfd0607cb3a021a8716a9514"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_32e51a15597b9cc0dc92ec44f95c782d/input_items",
+          "query": "limit=1&order=asc&after=item_96edde890d5952f5fc999e1b26faf9d8",
+          "status": 200,
+          "trace": "req-fce86a77432f68d15113e366c16efc34"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-f56722a921a85b72e52760661e5afa1d"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_32e51a15597b9cc0dc92ec44f95c782d",
+          "query": "stream=true",
+          "status": 200,
+          "trace": "req-f63f692336ba852cee88aeccaeef30d6"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/responses/resp_32e51a15597b9cc0dc92ec44f95c782d",
+          "query": "",
+          "status": 200,
+          "trace": "req-12ad1dd1dabb2853b8759eddc9b2cfda"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_32e51a15597b9cc0dc92ec44f95c782d",
+          "query": "",
+          "status": 404,
+          "trace": "req-1ccecdb9d263f361a5a3d78ecc06094f"
+        }
+      ],
+      "before": {
+        "id": "resp_32e51a15597b9cc0dc92ec44f95c782d",
+        "status": "completed",
+        "text": "586",
+        "metadata": {
+          "writer": "python-3.55.1"
+        },
+        "previous": null,
+        "messages": [
+          "msg_e1540d85ab2dd0e210b5b0c74d8a0456"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "type": "output_text",
+              "text": "586",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "foreign": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "pages": [
+        {
+          "id": "item_96edde890d5952f5fc999e1b26faf9d8",
+          "role": "developer",
+          "text": [
+            "For each question reply with only the requested integer from the project receipt."
+          ],
+          "more": true
+        },
+        {
+          "id": "item_86126c1e5fb8e56362e2a6d9649674be",
+          "role": "user",
+          "text": [
+            "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 586,\n  \"version_revision\": 222,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246\",\n  \"fallback\": \"bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+          ],
+          "more": false
+        }
+      ],
+      "follow": {
+        "id": "resp_669ad071cc6e92631b7f613cf4601220",
+        "status": "completed",
+        "text": "222",
+        "metadata": {
+          "reader": "node-6.34.0"
+        },
+        "previous": "resp_32e51a15597b9cc0dc92ec44f95c782d",
+        "messages": [
+          "msg_75299decb58e8ef77b170795206b335a"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "type": "output_text",
+              "text": "222",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_32e51a15597b9cc0dc92ec44f95c782d"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_32e51a15597b9cc0dc92ec44f95c782d"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "6"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "586"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "586",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_e1540d85ab2dd0e210b5b0c74d8a0456",
+          "item_type": "message",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "586",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_32e51a15597b9cc0dc92ec44f95c782d",
+          "response": {
+            "id": "resp_32e51a15597b9cc0dc92ec44f95c782d",
+            "status": "completed",
+            "text": "586",
+            "metadata": {
+              "writer": "python-3.55.1"
+            },
+            "previous": null,
+            "messages": [
+              "msg_e1540d85ab2dd0e210b5b0c74d8a0456"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "type": "output_text",
+                  "text": "586",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "writer": "python-3.55.1"
+      },
+      "input": [
+        {
+          "type": "message",
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "For each question reply with only the requested integer from the project receipt."
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 586,\n  \"version_revision\": 222,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246\",\n  \"fallback\": \"bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+            }
+          ]
+        }
+      ]
+    },
+    "followup": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "reader": "node-6.34.0"
+      },
+      "input": "From that same receipt, what is the version_revision? Reply only with that integer."
+    },
+    "source": "serve-openapi-ingress-auth-20261128/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "node-6.34.0",
+      "beta": false,
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-b161dff206174cb61e522baf61bddee6"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-399a262b04c497d018f04dcbe3dd9e56"
+        }
+      ],
+      "count": 394,
+      "created": {
+        "id": "resp_0231b52ff8edd3c1bb7660617d2562da",
+        "status": "completed",
+        "text": "588",
+        "metadata": {
+          "writer": "node-6.34.0"
+        },
+        "previous": null,
+        "messages": [
+          "msg_d8296120fc0d9e9b956e77e887c79727"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "type": "output_text",
+              "text": "588",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_0231b52ff8edd3c1bb7660617d2562da"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_0231b52ff8edd3c1bb7660617d2562da"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "588"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "588",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "item_type": "message",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "588",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_0231b52ff8edd3c1bb7660617d2562da",
+          "response": {
+            "id": "resp_0231b52ff8edd3c1bb7660617d2562da",
+            "status": "completed",
+            "text": "588",
+            "metadata": {
+              "writer": "node-6.34.0"
+            },
+            "previous": null,
+            "messages": [
+              "msg_d8296120fc0d9e9b956e77e887c79727"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "type": "output_text",
+                  "text": "588",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "reader": {
+      "sdk": "node-7.47.0",
+      "beta": true,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0231b52ff8edd3c1bb7660617d2562da",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-635c14c7c86ee64c1c1a60e52fa5ac9b"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0231b52ff8edd3c1bb7660617d2562da",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-50fb5eb7bf6e6cff7b7d23a29ddbfa11"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0231b52ff8edd3c1bb7660617d2562da/input_items",
+          "query": "beta=true&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-fc88479bebb784220450ed475da6989e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0231b52ff8edd3c1bb7660617d2562da/input_items",
+          "query": "beta=true&limit=1&order=asc&after=item_18775d7d9c44edde1b0beac2c13ed497",
+          "status": 200,
+          "trace": "req-1ae8d83daab382e66189d7518e2c02ee"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-e78e28bb73ff63d277601ca5eeff0316"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0231b52ff8edd3c1bb7660617d2562da",
+          "query": "beta=true&stream=true",
+          "status": 200,
+          "trace": "req-92b82e54baf399dd54ab9b12b40712c9"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/responses/resp_0231b52ff8edd3c1bb7660617d2562da",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-1e2f2dabfa7a1883aba864b89ee356ee"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0231b52ff8edd3c1bb7660617d2562da",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-b27dea49ba76fead8792a9dc3d10d36a"
+        }
+      ],
+      "before": {
+        "id": "resp_0231b52ff8edd3c1bb7660617d2562da",
+        "status": "completed",
+        "text": "588",
+        "metadata": {
+          "writer": "node-6.34.0"
+        },
+        "previous": null,
+        "messages": [
+          "msg_d8296120fc0d9e9b956e77e887c79727"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "type": "output_text",
+              "text": "588",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "foreign": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "pages": [
+        {
+          "id": "item_18775d7d9c44edde1b0beac2c13ed497",
+          "role": "developer",
+          "text": [
+            "For each question reply with only the requested integer from the project receipt."
+          ],
+          "more": true
+        },
+        {
+          "id": "item_b26e3a92b560672823650eeb848d7364",
+          "role": "user",
+          "text": [
+            "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 588,\n  \"version_revision\": 223,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b\",\n  \"fallback\": \"105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+          ],
+          "more": false
+        }
+      ],
+      "follow": {
+        "id": "resp_95ca63197bc2c52cea59b9467d704de2",
+        "status": "completed",
+        "text": "223",
+        "metadata": {
+          "reader": "node-7.47.0"
+        },
+        "previous": "resp_0231b52ff8edd3c1bb7660617d2562da",
+        "messages": [
+          "msg_0b32e5a659fd0ec895cd50a9ba0c5cb4"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "type": "output_text",
+              "text": "223",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_0231b52ff8edd3c1bb7660617d2562da"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_0231b52ff8edd3c1bb7660617d2562da"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "8"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "588"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "588",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_d8296120fc0d9e9b956e77e887c79727",
+          "item_type": "message",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "588",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_0231b52ff8edd3c1bb7660617d2562da",
+          "response": {
+            "id": "resp_0231b52ff8edd3c1bb7660617d2562da",
+            "status": "completed",
+            "text": "588",
+            "metadata": {
+              "writer": "node-6.34.0"
+            },
+            "previous": null,
+            "messages": [
+              "msg_d8296120fc0d9e9b956e77e887c79727"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "type": "output_text",
+                  "text": "588",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "writer": "node-6.34.0"
+      },
+      "input": [
+        {
+          "type": "message",
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "For each question reply with only the requested integer from the project receipt."
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 588,\n  \"version_revision\": 223,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b\",\n  \"fallback\": \"105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+            }
+          ]
+        }
+      ]
+    },
+    "followup": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "reader": "node-7.47.0"
+      },
+      "input": "From that same receipt, what is the version_revision? Reply only with that integer."
+    },
+    "source": "serve-native-soak-retention-20261128/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "node-7.47.0",
+      "beta": true,
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-6b53e0210c4d09c833e40ef8060f49c5"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-29a97eb542d46adb539d92f7283de50d"
+        }
+      ],
+      "count": 391,
+      "created": {
+        "id": "resp_0919fa8f8355827be99a0567da0beeb0",
+        "status": "completed",
+        "text": "590",
+        "metadata": {
+          "writer": "node-7.47.0"
+        },
+        "previous": null,
+        "messages": [
+          "msg_0b5362fc512a687e3e303ebddcb612f1"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "type": "output_text",
+              "text": "590",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_0919fa8f8355827be99a0567da0beeb0"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_0919fa8f8355827be99a0567da0beeb0"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "9"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "0"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "590"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "type": "output_text",
+            "text": "590",
+            "annotations": [],
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "item_type": "message",
+          "content": [
+            {
+              "type": "output_text",
+              "text": "590",
+              "annotations": [],
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_0919fa8f8355827be99a0567da0beeb0",
+          "response": {
+            "id": "resp_0919fa8f8355827be99a0567da0beeb0",
+            "status": "completed",
+            "text": "590",
+            "metadata": {
+              "writer": "node-7.47.0"
+            },
+            "previous": null,
+            "messages": [
+              "msg_0b5362fc512a687e3e303ebddcb612f1"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "type": "output_text",
+                  "text": "590",
+                  "annotations": [],
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "reader": {
+      "sdk": "python-2.8.1",
+      "beta": false,
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0919fa8f8355827be99a0567da0beeb0",
+          "query": "",
+          "status": 200,
+          "trace": "req-0b304bd114bcf14f7e2bc3ac9d90b270"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0919fa8f8355827be99a0567da0beeb0",
+          "query": "",
+          "status": 404,
+          "trace": "req-5a5ae777482eec46acff333ed5add7ec"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0919fa8f8355827be99a0567da0beeb0/input_items",
+          "query": "limit=1&order=asc",
+          "status": 200,
+          "trace": "req-a1673d21ecfea403413aa9e2df7fead6"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0919fa8f8355827be99a0567da0beeb0/input_items",
+          "query": "after=item_f37473a55cce561c946486d71ba6b7d4&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-6ad5e1138aac4e35f7370346261004cf"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-87757293941928de6fd8291d8d9eadc8"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0919fa8f8355827be99a0567da0beeb0",
+          "query": "stream=true",
+          "status": 200,
+          "trace": "req-008d25248733180249646e5cc0baf583"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/responses/resp_0919fa8f8355827be99a0567da0beeb0",
+          "query": "",
+          "status": 200,
+          "trace": "req-234174bcef1f6039db408d220a03484e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_0919fa8f8355827be99a0567da0beeb0",
+          "query": "",
+          "status": 404,
+          "trace": "req-5d93eb182e5df297dffa816e5eea59af"
+        }
+      ],
+      "before": {
+        "id": "resp_0919fa8f8355827be99a0567da0beeb0",
+        "status": "completed",
+        "text": "590",
+        "metadata": {
+          "writer": "node-7.47.0"
+        },
+        "previous": null,
+        "messages": [
+          "msg_0b5362fc512a687e3e303ebddcb612f1"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "590",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "foreign": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "pages": [
+        {
+          "id": "item_f37473a55cce561c946486d71ba6b7d4",
+          "role": "developer",
+          "text": [
+            "For each question reply with only the requested integer from the project receipt."
+          ],
+          "more": true
+        },
+        {
+          "id": "item_d10dde75f27421e52b69bc4805b203b8",
+          "role": "user",
+          "text": [
+            "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 590,\n  \"version_revision\": 224,\n  \"profile_revision\": 109,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652\",\n  \"fallback\": \"eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9\",\n  \"engine\": \"aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+          ],
+          "more": false
+        }
+      ],
+      "follow": {
+        "id": "resp_e745387daaff126e376cc6ee0a3fe15d",
+        "status": "completed",
+        "text": "224",
+        "metadata": {
+          "reader": "python-2.8.1"
+        },
+        "previous": "resp_0919fa8f8355827be99a0567da0beeb0",
+        "messages": [
+          "msg_398c1676e8025524fbf7d8e6e2b67f0b"
+        ],
+        "message_parts": {
+          "0": [
+            {
+              "annotations": [],
+              "text": "224",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        }
+      },
+      "events": [
+        {
+          "seq": 0,
+          "type": "response.created",
+          "response_id": "resp_0919fa8f8355827be99a0567da0beeb0"
+        },
+        {
+          "seq": 1,
+          "type": "response.in_progress",
+          "response_id": "resp_0919fa8f8355827be99a0567da0beeb0"
+        },
+        {
+          "seq": 2,
+          "type": "response.output_item.added",
+          "output_index": 0,
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "item_type": "message",
+          "content": []
+        },
+        {
+          "seq": 3,
+          "type": "response.content_part.added",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 4,
+          "type": "response.output_text.delta",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "5"
+        },
+        {
+          "seq": 5,
+          "type": "response.output_text.delta",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "9"
+        },
+        {
+          "seq": 6,
+          "type": "response.output_text.delta",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "delta": "0"
+        },
+        {
+          "seq": 7,
+          "type": "response.output_text.done",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "text": "590"
+        },
+        {
+          "seq": 8,
+          "type": "response.content_part.done",
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "output_index": 0,
+          "content_index": 0,
+          "part": {
+            "annotations": [],
+            "text": "590",
+            "type": "output_text",
+            "logprobs": []
+          }
+        },
+        {
+          "seq": 9,
+          "type": "response.output_item.done",
+          "output_index": 0,
+          "item_id": "msg_0b5362fc512a687e3e303ebddcb612f1",
+          "item_type": "message",
+          "content": [
+            {
+              "annotations": [],
+              "text": "590",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ]
+        },
+        {
+          "seq": 10,
+          "type": "response.completed",
+          "response_id": "resp_0919fa8f8355827be99a0567da0beeb0",
+          "response": {
+            "id": "resp_0919fa8f8355827be99a0567da0beeb0",
+            "status": "completed",
+            "text": "590",
+            "metadata": {
+              "writer": "node-7.47.0"
+            },
+            "previous": null,
+            "messages": [
+              "msg_0b5362fc512a687e3e303ebddcb612f1"
+            ],
+            "message_parts": {
+              "0": [
+                {
+                  "annotations": [],
+                  "text": "590",
+                  "type": "output_text",
+                  "logprobs": []
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "writer": "node-7.47.0"
+      },
+      "input": [
+        {
+          "type": "message",
+          "role": "developer",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "For each question reply with only the requested integer from the project receipt."
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "role": "user",
+          "content": [
+            {
+              "type": "input_text",
+              "text": "What is the publication_revision in this q4t publication receipt?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 590,\n  \"version_revision\": 224,\n  \"profile_revision\": 109,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652\",\n  \"fallback\": \"eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9\",\n  \"engine\": \"aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+            }
+          ]
+        }
+      ]
+    },
+    "followup": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning": {
+        "effort": "none"
+      },
+      "max_output_tokens": 48,
+      "metadata": {
+        "reader": "python-2.8.1"
+      },
+      "input": "From that same receipt, what is the version_revision? Reply only with that integer."
+    },
+    "source": "serve-upload-completion-race-20261128/delivery.json"
+  }
+]

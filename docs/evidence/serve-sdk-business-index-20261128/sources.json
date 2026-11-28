@@ -36,14 +36,23 @@
       "receipt_sha256": "55fe21b9dbc8b7fde2b94f84ffbee71baf063f782f6d0b227ebaf2213d3681d5",
       "wire": "serve-stored-chat-sdk-20261128/requests.json",
       "wire_sha256": "6e5d8ef253c1e171b88ad43173c63c490858a036f2149831ffc882109dc31b94"
+    },
+    "responses": {
+      "revision": 594,
+      "transport": "issued model, verified native loopback TLS, two isolated clients",
+      "requests": 60,
+      "receipt": "serve-responses-sdk-business-20261128/business.json",
+      "receipt_sha256": "4bb4106e0625c3a949bd7010c634811f4c99f203b23ec30b36e469ddd948e65e",
+      "wire": "serve-responses-sdk-business-20261128/requests.json",
+      "wire_sha256": "3a59a33b6734389b8efcd11ca02ce390485a184adc9ab19e48cb42c23d297735"
     }
   },
   "methods": 231,
   "sdk_versions": 6,
-  "source_requests": 209,
-  "assigned_requests": 208,
-  "methods_with_success": 32,
-  "method_sdk_pairs_with_success": 126,
+  "source_requests": 269,
+  "assigned_requests": 268,
+  "methods_with_success": 41,
+  "method_sdk_pairs_with_success": 157,
   "unassigned": [
     {
       "suite": "uploads",

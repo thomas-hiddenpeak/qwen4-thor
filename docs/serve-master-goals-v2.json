@@ -3378,11 +3378,14 @@
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
       },
       "responses_sdk_handoff_20261128": {
-        "stage": "cpu_transport_checked",
+        "stage": "issued_engine_business_verified",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
-        "issued_business": false,
+        "issued_business": true,
         "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
-        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json"
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json",
+        "publication": 594,
+        "business": "evidence/serve-responses-sdk-business-20261128/business.json",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
       }
     },
     {
@@ -9824,11 +9827,14 @@
         "requests": 60
       },
       "responses_sdk_handoff_20261128": {
-        "stage": "cpu_transport_checked",
+        "stage": "issued_engine_business_verified",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
-        "issued_business": false,
+        "issued_business": true,
         "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
-        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json"
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json",
+        "publication": 594,
+        "business": "evidence/serve-responses-sdk-business-20261128/business.json",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
       }
     },
     {
@@ -13028,11 +13034,14 @@
         "requests": 60
       },
       "responses_sdk_handoff_20261128": {
-        "stage": "cpu_transport_checked",
+        "stage": "issued_engine_business_verified",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
-        "issued_business": false,
+        "issued_business": true,
         "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
-        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json"
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json",
+        "publication": 594,
+        "business": "evidence/serve-responses-sdk-business-20261128/business.json",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
       }
     },
     {
