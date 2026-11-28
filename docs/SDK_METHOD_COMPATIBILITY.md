@@ -81,3 +81,5 @@ if (!terminal) throw new Error("Response stream ended before a terminal event");
 ## 容器与文件生命周期
 
 四版 Python 与两版 Node 的容器及文件资源方法均支持创建、列表、查询、文件下载和删除。对文件分页使用 Python 的 `get_next_page()` 或 Node 的 `getNextPage()`。Thor CPU 验证使用原生 TLS、生产 C++ 处理器和持久对象存储。每版实际下载同一份 5,960 字节的项目发行回执，另一客户端访问容器及其文件内容均得到 404。 [逐请求记录](evidence/serve-container-sdk-lifecycle-20261128/requests.json)
+
+相同流程在 rev604 已发行引擎和网关上完成，66 次成功、24 次预期 404。 [发行包业务回执](evidence/serve-container-sdk-issued-20261128/business.json)
