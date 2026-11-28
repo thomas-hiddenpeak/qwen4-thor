@@ -273,12 +273,20 @@ class IsolationTests(unittest.TestCase):
             if len(seen) == 5:
                 pkg.save(self.root/'runtime/stop.request.json', {})
             return self.observation(pid)
+        # This test advances the sink retry clock after the fourth observation.
+        # Give the supervisor its own clock so startup fsync and scheduling
+        # cannot consume the fixture's 100 ms readiness deadline.
         with mock.patch.object(auxiliary, 'Observations', return_value=ledger), \
-             mock.patch.object(sup.RotatingLog, 'write', new=write):
+             mock.patch.object(sup.RotatingLog, 'write', new=write), \
+             mock.patch.object(sup, 'time', wraps=time) as supervisor_clock:
+            supervisor_clock.monotonic.side_effect = itertools.count(100.0, .001)
             rc, state = self.run_supervisor(observe, isolated=True,
                 patch=mock.patch.object(pkg, 'save', side_effect=save))
-        self.assertEqual((rc, state['attempts'], state['restarts']), (0, 1, 0))
+        self.assertEqual((rc, state['attempts'], state['restarts']), (0, 1, 0),
+                         state.get('error'))
+        self.assertEqual(len(seen), 5)
         self.assertEqual(len(set(seen)), 1)
+        self.assertTrue(state['cleanup_confirmed'])
         self.assertTrue(state['had_auxiliary_gaps'])
         self.assertEqual(state['auxiliary_io']['status']['state'], 'AVAILABLE')
         self.assertEqual(state['auxiliary_io']['events']['state'], 'UNAVAILABLE')

@@ -186,6 +186,9 @@ ObjectReply ChecksumError() {
   return Error(503, "upload_checksum_unavailable",
                "Requested MD5 checksum is unavailable; upload is unchanged");
 }
+ObjectReply PublishUpload(ObjectStore& objects, const BinaryAccess& access,
+                          const std::string& id, const Json& row,
+                          const Json& parts, const std::string& expected_md5);
 }  // namespace
 
 ObjectReply Uploads::Create(const BinaryAccess& access, const Json& body) {
@@ -437,28 +440,48 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
   }
   auto stored = Stored(objects_, access, id);
   if (!stored.ok()) return stored;
-  const auto& data = *stored.value.Find("data");
-  auto upload = Public(stored.value);
-  if (upload.GetString("status") == "completed") {
-    // Resolve the same complete operation without creating another File.
+  auto completed = [&](ObjectReply row) {
+    const auto& data = *row.value.Find("data");
     if (OutputJson(*data.GetArray("completed_parts")) != OutputJson(*parts) ||
         data.GetString("completed_md5") != expected_md5)
       return Error(409, "upload_already_completed",
                    "Upload was completed with different parameters");
-    stored.value = std::move(upload);
-    return stored;
-  }
+    row.value = Public(row.value);
+    return row;
+  };
+  if (Public(stored.value).GetString("status") == "completed")
+    return completed(std::move(stored));
   checked = Pending(stored.value);
   if (!checked.ok()) return checked;
+  auto result =
+      PublishUpload(objects_, access, id, stored.value, *parts, expected_md5);
+  // Another completion can retire the Part before we pin it, or win the
+  // final compare-and-swap. Only a matching durable receipt resolves either.
+  if (result.commit_unknown ||
+      (result.http_status != 404 && result.code != "object_revision_conflict"))
+    return result;
+  auto latest = Stored(objects_, access, id);
+  if (latest.ok() && Public(latest.value).GetString("status") == "completed")
+    return completed(std::move(latest));
+  return result;
+}
+
+namespace {
+ObjectReply PublishUpload(ObjectStore& objects, const BinaryAccess& access,
+                          const std::string& id, const Json& row,
+                          const Json& parts, const std::string& expected_md5) {
+  const auto& data = *row.Find("data");
+  auto upload = Public(row);
+  ObjectReply checked;
   std::unordered_set<std::string> owned;
   for (const auto& part : data.GetArray("parts")->array) owned.insert(part.str);
-  for (const auto& part : parts->array)
+  for (const auto& part : parts.array)
     if (!owned.contains(part.str))
       return Invalid("Part does not belong to this Upload", "part_ids");
   CryptoMd5 md5;
   if (!expected_md5.empty() && md5.Begin() != CryptoResult::kOk)
     return ChecksumError();
-  BinaryStore binary(objects_);
+  BinaryStore binary(objects);
   BinaryManifest assembled;
   BinaryStage copies;
   std::unordered_set<std::string> chunks;
@@ -474,8 +497,8 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
   });
   // The pending Upload protects all parts. Each read also pins exact chunks
   // while checking them; the final parent CAS defeats concurrent cancel/add.
-  for (const auto& part : parts->array) {
-    auto metadata = objects_.Execute(Request(access, part.str), access.deadline,
+  for (const auto& part : parts.array) {
+    auto metadata = objects.Execute(Request(access, part.str), access.deadline,
                                      access.cancelled);
     if (!metadata.ok()) return metadata;
     const auto* part_data = metadata.value.Find("data");
@@ -488,7 +511,14 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
             metadata.value.GetInt("created_at"))
       return Corrupt();
     BinaryRead read;
-    checked = binary.Open(access, ObjectKind::kToolRun, part.str, 3600, &read);
+    // Opening a read pin also checks the Part revision. Independent readers
+    // can race on that revision before either has published the parent.
+    for (int attempt = 0; attempt < 32; ++attempt) {
+      checked =
+          binary.Open(access, ObjectKind::kToolRun, part.str, 3600, &read);
+      if (checked.commit_unknown || checked.code != "object_revision_conflict")
+        break;
+    }
     if (!checked.ok()) {
       Identity(&checked, id);
       return checked;
@@ -541,7 +571,7 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
     if (actual != expected_md5)
       return Invalid("File MD5 does not match", "md5");
   }
-  auto parent = Update(access, stored.value);
+  auto parent = Update(access, row);
   const auto file_id = NewObjectId(ObjectKind::kFile);
   if (file_id.empty())
     return Error(503, "object_entropy_unavailable", "No secure File ID");
@@ -566,7 +596,7 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
   Set(&upload, "file", std::move(file));
   Set(&parent.data, "upload", upload);
   Set(&parent.data, "parts", Array());
-  Set(&parent.data, "completed_parts", *parts);
+  Set(&parent.data, "completed_parts", parts);
   Set(&parent.data, "completed_md5", String(expected_md5));
   std::vector requests{std::move(root), std::move(parent)};
   if (!copies.id.empty()) {
@@ -575,7 +605,7 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
     requests.push_back(std::move(erase));
   }
   auto result =
-      objects_.ExecuteBatch(requests, access.deadline, access.cancelled);
+      objects.ExecuteBatch(requests, access.deadline, access.cancelled);
   if (result.ok()) copies.closed = true;
   if (result.commit_unknown) copies.commit_unknown = true;
   if (result.ok())
@@ -584,4 +614,5 @@ ObjectReply Uploads::Complete(const BinaryAccess& access, const std::string& id,
     Identity(&result, id, file_id);
   return result;
 }
+}  // namespace
 }  // namespace q4t::server

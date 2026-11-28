@@ -1,0 +1,89 @@
+{
+  "stage": "targeted_cpu_qualification",
+  "device_default_revision": 588,
+  "issued": false,
+  "baseline_source": "8bb50b0be785a32bed9cc7383286daed4a2f9c7b",
+  "changed_source_sha256": "fb613555a81eefbeea0a7b0151208ee516e08eee27483b70c59df0619b6477f9",
+  "baseline_native_failure": "409 object_revision_conflict: Object revision changed\n  CHECK failed: Ok(reply) && OutputJson(reply.value) == OutputJson(replies.front().value) (line 326)\n[FAIL] uploads_concurrent_identical_completions_return_one_durable_file\n1 tests, 0 passed, 1 failed, 0 skipped",
+  "native_candidate_checks": [
+    "[PASS] uploads_ordered_parts_md5_atomic_file_and_receipt_reconciliation",
+    "[PASS] uploads_concurrent_identical_completions_return_one_durable_file",
+    "[PASS] uploads_subset_repeated_parts_preserve_exact_order_and_binary_bytes",
+    "[PASS] uploads_bad_md5_bytes_foreign_parts_and_crypto_failure_do_not_publish",
+    "[PASS] uploads_parallel_parts_then_complete_and_late_part_cancel",
+    "[PASS] uploads_mutation_cutoff_rejects_entire_publication_transaction",
+    "[PASS] uploads_lost_complete_receipt_recovers_original_file_atomically",
+    "[PASS] uploads_repeated_part_checksum_failure_reclaims_only_private_copies",
+    "[PASS] uploads_repeated_part_quota_failure_does_not_publish_or_drop_original",
+    "9 tests, 9 passed, 0 failed, 0 skipped"
+  ],
+  "http": {
+    "before": {
+      "status": [
+        409,
+        200
+      ],
+      "codes": [
+        "object_revision_conflict",
+        null
+      ],
+      "files": [
+        "file_9ba8875e092fbdfe67c1a9a816c0c77f"
+      ],
+      "returned_files": [
+        "file_9ba8875e092fbdfe67c1a9a816c0c77f"
+      ],
+      "bytes": 1009664,
+      "original_sha256": "c2adcb66b01ceea48f20165724156132ea73c2ea820591a94701868aba183e41"
+    },
+    "same": {
+      "status": [
+        200,
+        200
+      ],
+      "codes": [
+        null,
+        null
+      ],
+      "files": [
+        "file_4feec5c9204cb30a255cd40e59c70829"
+      ],
+      "returned_files": [
+        "file_4feec5c9204cb30a255cd40e59c70829",
+        "file_4feec5c9204cb30a255cd40e59c70829"
+      ],
+      "bytes": 1009664,
+      "original_sha256": "acc58d547c30f0aab83f2682489d470abd604cf2de47e4b980a048705c177f82"
+    },
+    "different": {
+      "status": [
+        409,
+        200
+      ],
+      "codes": [
+        "upload_already_completed",
+        null
+      ],
+      "files": [
+        "file_78101ae0f01e13c6fc138e97dfc787ff"
+      ],
+      "returned_files": [
+        "file_78101ae0f01e13c6fc138e97dfc787ff"
+      ],
+      "bytes": 1009664,
+      "original_sha256": "6c20065c0a0579ec46ac19792f8560d31193684deffde58c0770a84892f36cfe"
+    }
+  },
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1397,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "model_starts": 0
+}

@@ -4421,6 +4421,16 @@
         "registered_fallback_probes": 1,
         "completed_upload_replay": true,
         "pending_upload_resumed": true
+      },
+      "concurrent_upload_completion_20261128": {
+        "stage": "issued",
+        "device_short_run_pending": false,
+        "issued": true,
+        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json",
+        "device": "evidence/serve-upload-completion-race-20261128/device.json",
+        "capacity": "evidence/serve-upload-completion-race-20261128/profiles.json",
+        "managed": "evidence/serve-upload-completion-race-20261128/managed.json",
+        "delivery": "evidence/serve-upload-completion-race-20261128/delivery.json"
       }
     },
     {
@@ -9731,6 +9741,16 @@
         "registered_fallback_probes": 1,
         "completed_upload_replay": true,
         "pending_upload_resumed": true
+      },
+      "concurrent_upload_completion_20261128": {
+        "stage": "issued",
+        "device_short_run_pending": false,
+        "issued": true,
+        "evidence": "evidence/serve-upload-completion-race-20261128/cpu.json",
+        "device": "evidence/serve-upload-completion-race-20261128/device.json",
+        "capacity": "evidence/serve-upload-completion-race-20261128/profiles.json",
+        "managed": "evidence/serve-upload-completion-race-20261128/managed.json",
+        "delivery": "evidence/serve-upload-completion-race-20261128/delivery.json"
       }
     },
     {
@@ -12902,7 +12922,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev588_delivered_remaining_deliveries",
+      "state": "rev590_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12952,13 +12972,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 588,
+        "revision": 590,
         "state": "STOPPED",
-        "primary_manifest_sha256": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
-        "fallback_manifest_sha256": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
-        "binary_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+        "primary_manifest_sha256": "7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652",
+        "fallback_manifest_sha256": "eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9",
+        "binary_sha256": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-native-soak-retention-20261128/delivery.json"
+        "evidence": "evidence/serve-upload-completion-race-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14375,6 +14395,15 @@
         "binary_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
+      },
+      "release_revision_588": {
+        "revision": 588,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b",
+        "fallback_manifest_sha256": "105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266",
+        "binary_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-native-soak-retention-20261128/delivery.json"
       }
     },
     {

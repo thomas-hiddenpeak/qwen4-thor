@@ -1,0 +1,73 @@
+{
+  "stage": "managed_recovery_verified",
+  "issued": false,
+  "qualified_source": "c48b7aff90ceebd09d0aa064f7990c8d4acc7a97",
+  "roles": {
+    "fallback": {
+      "manifest": "eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9",
+      "origin_sha256": "501fe728e5c7d912b513b8a9a0101ccab8922cbc19d5bf4979cbaf561386a668",
+      "seconds": 210.73029142105952,
+      "model_starts": 2,
+      "monitor_samples_ok": 196,
+      "restored_file": "file_9a4f99d03645d961b048437acfa02c89",
+      "resumed_file": "file_ae789cb33d60e12c0a1837d7baf6b143",
+      "content_sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01",
+      "answer": "223",
+      "fresh_chat": "42",
+      "sdk_requests": 25,
+      "ports_free": true,
+      "remaining_children": 0,
+      "unchanged_default": true,
+      "guardian_survived": true,
+      "lease_sha256": "89eb2569135fa9d8bc8c0905e06f798bbe6e96e880ba0b4d0b432b942534dfec",
+      "generations": [
+        1,
+        2
+      ],
+      "fault": "owned model SIGKILL",
+      "raw_sha256": {
+        "requests.jsonl": "f3071650733d2a206474546697495af6c4877b7f07519328b4e0463379b351ec",
+        "prepare-run.json": "c1b5df62f0680384e35e3d996d3088fcbbf48efe2bd038fd40b6271a98e3dbea",
+        "restore-run.json": "d17df7baa09e3f7ce048622cfcbdb00bb387dcfc8a287d0b46d83397071d0822",
+        "interruption.json": "e68b58d37ef09d8226e1436f8af9afdb1503eef3bf3ee84577676a6cc255d779",
+        "result.json": "ae40e86d23228cb24b4f8b98d3a53dd43f98c46acf973b8ec585e4524f8ffda5",
+        "chat-after.wire": "059d54959fd4f5bc5d49de5a3bcff5b187fd8c6c78ef388ce92dea484d0de4aa"
+      }
+    },
+    "primary": {
+      "manifest": "7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652",
+      "origin_sha256": "1b45766be553f6e52211492d864f9a118c2792e8543fd3210cebd27d25464d01",
+      "seconds": 365.11756911315024,
+      "model_starts": 2,
+      "monitor_samples_ok": 338,
+      "restored_file": "file_fe9c0828176eba86605c7379ecbee4c5",
+      "resumed_file": "file_2512871410bd94cc7a180467244cf22e",
+      "content_sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01",
+      "answer": "223",
+      "fresh_chat": "42",
+      "sdk_requests": 25,
+      "ports_free": true,
+      "remaining_children": 0,
+      "unchanged_default": true,
+      "guardian_survived": true,
+      "lease_sha256": "497398fa93592142247bc6a7566b4b8db0807fa59f1ae6322194e9d40d4a66d9",
+      "generations": [
+        1,
+        2
+      ],
+      "fault": "owned primary gateway SIGABRT",
+      "probes": 1,
+      "selected": "registered fallback",
+      "raw_sha256": {
+        "requests.jsonl": "c61c7aebe6bd0f0bb80300b16dfdd291d2e9c7c8370ca87136c1493539283409",
+        "prepare-run.json": "0428e849aa5a04961fd27f769c4b9a7088505ca9a274a119ee230f3d1978d552",
+        "restore-run.json": "8c8bb99219953329e847534ad2031724096f0d4123ba2e003934337d05605d8a",
+        "interruption.json": "9cfae3442ae69a3c16d04c721c2e568b9368d31b65a69cce320593868c4f7340",
+        "result.json": "4d303a227d5208bfcc4c260a77f3b590577822f4fc27a58f2a2d6496b6b2d2d1",
+        "chat-after.wire": "bb5fe2985b3f0c5b26f875a4a2584f7f24892e0dd1949a7cfac9548d6d797eb4",
+        "takeover.json": "ee392a145f94f2d0828823a0aa9e3d1f7aa3a622a9c2c337bf6da04226e58349"
+      }
+    }
+  },
+  "engine": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9"
+}
