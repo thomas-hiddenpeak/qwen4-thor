@@ -1,0 +1,157 @@
+{
+  "scope": "CPU playback of recorded project events; original historical model output reused",
+  "frames": 11,
+  "fixture_sha256": "174ce8eab3d7b4f49f15f12f8ee39ccb2cc213c3abdcb527711461b728b78dfa",
+  "projections_equal": true,
+  "groups": {
+    "python-2.8.1-plain": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-1"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-2"
+      }
+    ],
+    "python-2.33.0-plain": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-3"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-4"
+      }
+    ],
+    "python-3.42.1-plain": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-5"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-6"
+      }
+    ],
+    "python-3.42.1-beta": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "beta=true",
+        "status": 200,
+        "trace": "req-fixture-7"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "beta=true",
+        "status": 200,
+        "trace": "req-fixture-8"
+      }
+    ],
+    "python-3.55.1-plain": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-9"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-10"
+      }
+    ],
+    "python-3.55.1-beta": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "beta=true",
+        "status": 200,
+        "trace": "req-fixture-11"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "beta=true",
+        "status": 200,
+        "trace": "req-fixture-12"
+      }
+    ],
+    "node-6.34.0-plain": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-13"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-14"
+      }
+    ],
+    "node-7.47.0-plain": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-15"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "",
+        "status": 200,
+        "trace": "req-fixture-16"
+      }
+    ],
+    "node-7.47.0-beta": [
+      {
+        "method": "POST",
+        "path": "/v1/responses/input_tokens",
+        "query": "beta=true",
+        "status": 200,
+        "trace": "req-fixture-17"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/responses",
+        "query": "beta=true",
+        "status": 200,
+        "trace": "req-fixture-18"
+      }
+    ]
+  },
+  "requests": 18,
+  "model_starts": 0,
+  "receipt_tests": 7,
+  "combined_tests": 14,
+  "tests_sha256": "5f23c44138bf0edb9d9c405be95355a3457b19ca867ed0ef8a172a3ce24286f0"
+}

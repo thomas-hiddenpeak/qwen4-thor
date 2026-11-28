@@ -12,10 +12,15 @@ class ResponseHandoffTest(unittest.TestCase):
             dict(role='developer',content=[dict(text='Use the receipt')]),
             dict(role='user',content=[dict(text=self.source.decode())])])
         self.followup = dict(metadata={'reader':'node'})
-        original = dict(id='resp_a',status='completed',metadata=self.request['metadata'],previous=None,text='580')
+        original = dict(id='resp_a',status='completed',metadata=self.request['metadata'],previous=None,text='580',messages=['msg_answer'])
         follow = dict(id='resp_b',status='completed',metadata=self.followup['metadata'],previous='resp_a',text='219')
-        events = [dict(seq=0,type='response.created'), dict(seq=1,type='response.output_text.delta',delta='580'),
-                  dict(seq=2,type='response.completed',response=original)]
+        location = dict(item_id='msg_answer', output_index=0)
+        events = [dict(seq=0,type='response.created'),
+                  dict(location,seq=1,type='response.output_item.added',item_type='message'),
+                  dict(location,seq=2,type='response.output_text.delta',content_index=0,delta='580'),
+                  dict(location,seq=3,type='response.output_text.done',content_index=0,text='580'),
+                  dict(location,seq=4,type='response.output_item.done',item_type='message'),
+                  dict(seq=5,type='response.completed',response=original)]
         root = '/v1/responses'
         target = root+'/resp_a'
         api = [('POST',root+'/input_tokens',''),('POST',root,'')]
@@ -46,7 +51,7 @@ class ResponseHandoffTest(unittest.TestCase):
             self.verify()
 
     def test_stream_must_replay_original_deltas(self):
-        self.reader['events'][1]['delta']='581'
+        self.reader['events'][2]['delta']='581'
         with self.assertRaisesRegex(ValueError,'replay'):
             self.verify()
 
@@ -63,4 +68,16 @@ class ResponseHandoffTest(unittest.TestCase):
     def test_cross_tenant_denial_needs_its_own_request(self):
         self.reader['requests'][1]['trace']=self.reader['requests'][0]['trace']
         with self.assertRaisesRegex(ValueError,'trace'):
+            self.verify()
+
+    def test_matching_bad_stream_item_identity_is_rejected(self):
+        for actor in (self.reader,self.writer):
+            actor['events'][2]['item_id'] = 'msg_other'
+        with self.assertRaisesRegex(ValueError,'wrong message'):
+            self.verify()
+
+    def test_matching_bad_done_text_is_rejected(self):
+        for actor in (self.reader,self.writer):
+            actor['events'][3]['text'] = '581'
+        with self.assertRaisesRegex(ValueError,'done text'):
             self.verify()

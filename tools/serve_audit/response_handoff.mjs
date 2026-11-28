@@ -35,13 +35,20 @@ function summary(response) {
   const text = response.output.filter(item => item.type === 'message')
     .flatMap(item => item.content.filter(p => p.type === 'output_text').map(p => p.text)).join('');
   return {id:response.id, status:response.status, text, metadata:response.metadata,
-    previous:response.previous_response_id ?? null};
+    previous:response.previous_response_id ?? null, messages:response.output.filter(x => x.type === 'message').map(x => x.id)};
 }
 async function capture(stream) {
   const events = [];
   for await (const e of stream) {
     const event = {seq:e.sequence_number, type:e.type};
-    if (e.type === 'response.output_text.delta') event.delta = e.delta;
+    if (e.type === 'response.output_item.added' || e.type === 'response.output_item.done') {
+      Object.assign(event, {output_index:e.output_index, item_id:e.item.id, item_type:e.item.type});
+    }
+    if (e.type === 'response.output_text.delta' || e.type === 'response.output_text.done') {
+      Object.assign(event, {item_id:e.item_id, output_index:e.output_index, content_index:e.content_index});
+      if (e.type === 'response.output_text.delta') event.delta = e.delta;
+      else event.text = e.text;
+    }
     if (e.type === 'response.completed') event.response = summary(e.response);
     events.push(event);
   }

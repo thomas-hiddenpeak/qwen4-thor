@@ -3368,7 +3368,8 @@
       "responses_sdk_handoff_20261128": {
         "stage": "cpu_transport_checked",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
-        "issued_business": false
+        "issued_business": false,
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json"
       }
     },
     {
@@ -9803,7 +9804,8 @@
       "responses_sdk_handoff_20261128": {
         "stage": "cpu_transport_checked",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
-        "issued_business": false
+        "issued_business": false,
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json"
       }
     },
     {
@@ -12991,7 +12993,8 @@
       "responses_sdk_handoff_20261128": {
         "stage": "cpu_transport_checked",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
-        "issued_business": false
+        "issued_business": false,
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json"
       }
     },
     {

@@ -24,6 +24,32 @@ def verify(writer, reader, request, followup, source):
     require(sum(e['type'] in ('response.failed', 'response.incomplete', 'response.completed') for e in events) == 1
             and ''.join(e['delta'] for e in events if e['type'] == 'response.output_text.delta') == original['text'],
             'live text or terminal count differs')
+    added = {}
+    closed = []
+    text = {}
+    completed = {}
+    for event in events:
+        kind = event['type']
+        if kind in ('response.output_item.added', 'response.output_item.done') and event['item_type'] == 'message':
+            index, item = event['output_index'], event['item_id']
+            if kind == 'response.output_item.added':
+                require(index not in added and item and item not in added.values(), 'duplicate message identity')
+                added[index] = item
+            else:
+                require(added.get(index) == item and item not in closed, 'wrong completed message identity')
+                closed.append(item)
+        if kind in ('response.output_text.delta', 'response.output_text.done'):
+            index, item = event['output_index'], event['item_id']
+            key = (index, event['content_index'])
+            require(index in added and added[index] == item and item not in closed
+                    and key not in completed, 'text event belongs to the wrong message or part')
+            if kind == 'response.output_text.delta':
+                text[key] = text.get(key, '') + event['delta']
+            else:
+                require(text.get(key, '') == event['text'], 'done text differs from its original part')
+                completed[key] = event['text']
+    require(bool(completed) and text.keys() <= completed.keys() and original['messages'] == closed
+            and set(closed) == set(added.values()), 'incomplete text or message identity')
     require(reader['before'] == original and reader['events'] == events, 'persisted response or replay differs')
     follow = reader['follow']
     require(follow['id'].startswith('resp_') and follow['id'] != ident and follow['previous'] == ident

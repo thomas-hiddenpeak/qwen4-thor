@@ -13,7 +13,8 @@ def summary(response):
     text = ''.join(part.text for item in response.output if item.type == 'message'
                    for part in item.content if part.type == 'output_text')
     return dict(id=response.id, status=response.status, text=text, metadata=response.metadata,
-                previous=response.previous_response_id)
+                previous=response.previous_response_id,
+                messages=[item.id for item in response.output if item.type == 'message'])
 
 
 def capture(stream):
@@ -21,8 +22,14 @@ def capture(stream):
         events = []
         for e in stream:
             event = dict(seq=e.sequence_number, type=e.type)
-            if e.type == 'response.output_text.delta':
-                event['delta'] = e.delta
+            if e.type in ('response.output_item.added', 'response.output_item.done'):
+                event.update(output_index=e.output_index, item_id=e.item.id, item_type=e.item.type)
+            if e.type in ('response.output_text.delta', 'response.output_text.done'):
+                event.update(item_id=e.item_id, output_index=e.output_index, content_index=e.content_index)
+                if e.type == 'response.output_text.delta':
+                    event['delta'] = e.delta
+                else:
+                    event['text'] = e.text
             if e.type == 'response.completed':
                 event['response'] = summary(e.response)
             events.append(event)

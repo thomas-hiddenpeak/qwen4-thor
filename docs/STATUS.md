@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+六版 SDK 通过九种资源调用方式读取了同一段历史实机输出的 11 个流事件。消息 ID、输出位置、文本片段和结束事件的内容一致；两项反例也验证了错误消息 ID 和错误结束文本会被拒绝。下一步在 rev594 上对照实时生成和原 ID 重放。 [历史流 CPU 复核](evidence/serve-responses-sdk-business-20261128/stream-cpu.json)
+
 四版 Python 和两版 Node 官方 SDK 已通过 Responses 请求路径和查询参数预检。九种资源调用方式在本机 TLS 夹具上发出 18 个请求，另有五项回执校验通过。下一步用已发行的模型验证原文流式答复、跨 SDK 续答、按游标读取输入和删除后的 404。 [CPU 回执](evidence/serve-responses-sdk-business-20261128/cpu.json)
 
 上传修复的主机 CI 中，辅助日志用例只启动了一次子进程，却返回了失败。延迟 180 毫秒读取子进程身份可复现同样结果，原因是夹具在首次健康观测前耗尽了 100 毫秒。现为这项日志用例独立控制监督时钟，仍要求同一 PID 完成五次观测、故障被记录、日志状态恢复并正常清理。实时时限反例和日志隔离组共 54 项通过；下一步复核两项远端检查。 [针对性复验](evidence/serve-upload-completion-race-20261128/auxiliary-fixture.json)
