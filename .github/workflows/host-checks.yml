@@ -181,6 +181,8 @@ jobs:
           tools.serve_audit.test_stored_chat_receipt
           tools.serve_audit.test_response_handoff_receipt
           tools.serve_audit.test_sdk_business_evidence
+          tools.serve_audit.test_release_handoff
+          tools.serve_audit.test_operator_handoff
       - name: Check native recovery wait and root migration preservation
         timeout-minutes: 2
         env:

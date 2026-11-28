@@ -11153,7 +11153,7 @@
         "preflight_evidence": "evidence/serve-cold-refresh-preflight-20261116/README.md",
         "owner_cpu_tests": 2
       },
-      "current_execution_prerequisite": "Use the verified plan for the currently issued package. Coordinate the active host camera and monitoring services before inducing a genuine cold NVML failure.",
+      "current_execution_prerequisite": "Use the plan for the currently issued package. Check current device owners at execution time before inducing a genuine cold NVML failure.",
       "managed_live_rev430": "evidence/serve-live-default-20261123/README.md",
       "rev484_cold_preflight_20261125": {
         "receipt": "evidence/serve-cold-driver-cpu-20261112/rev484-preflight.json",
@@ -11161,8 +11161,10 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 584,
-        "receipt": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json",
+        "revision": 596,
+        "receipt": "evidence/serve-web-provider-20261128/delivery.json",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src/.q4t-work/cold596-01/plan.json",
+        "plan_sha256": "41b0069ae1466908a0998a3d28072689dfeec64486f8da6a78a34ad614d95e89",
         "model_starts": 0,
         "executed": false
       },
@@ -14709,23 +14711,23 @@
         "audio_pairs": 25,
         "first_hour_business": 304,
         "business_requests": 7250,
-        "source_commit": "0d5a4ba7077c4aef880b3a1fd0e0d1ee68b76039",
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-soak-src",
-        "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-client-primary-01/bundle",
-          "manifest_sha256": "b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a"
-        },
-        "revision": 584,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-soak-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "df0f6e480e5e0b170047a9e1fc77ef99035137b6cb1efe0bbb787dc54a214aab",
-        "handoff_sha256": "2145afdf8e4791a00fc7055ca49076ceef82c03f03a4b10af08cc79c4bf702ee",
-        "checked": true,
-        "source_files": 702,
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "aee90296054bdb15b61a4d570ea3139612cdec89d317c6789b463037af05badb",
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "46aafd74417d32166eb1f59806f17d4854f795625e3309b3e92720a04c96aa77",
+        "checked_at": "2026-11-28T04:16:36.015766+00:00",
+        "minimum_evidence_free_bytes": 12884901888,
         "hours_executed": 0,
-        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/pending-browser-soak-src/.q4t-work/day-01/audio-day.sh",
-        "operator_sha256": "8a1d5dbf5c4d67e585f82fd8acbfcedb75bb3a88d4f1033cff8f37b946b6a3b4",
-        "checked_at": "2026-11-27T17:43:03.931093+00:00",
-        "minimum_evidence_free_bytes": 12884901888
+        "revision": 596,
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-day-src",
+        "package": {
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-client-primary-01/bundle",
+          "manifest_sha256": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3"
+        },
+        "source_commit": "091a392b524516670d865be22076c86d054e7914",
+        "handoff_sha256": "979c59660eefc2f58515ac9ead36054f02ef85d0405fc3c377e4aebceb618228",
+        "source_files": 704,
+        "checked": true
       },
       "video_affine_detail_20261117": {
         "state": "delivered_main_pending",
@@ -15133,9 +15135,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 584,
-        "receipt": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json",
-        "plan_sha256": "df0f6e480e5e0b170047a9e1fc77ef99035137b6cb1efe0bbb787dc54a214aab",
+        "revision": 596,
+        "receipt": "evidence/serve-web-provider-20261128/delivery.json",
+        "plan_sha256": "aee90296054bdb15b61a4d570ea3139612cdec89d317c6789b463037af05badb",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
