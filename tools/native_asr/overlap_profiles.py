@@ -31,6 +31,7 @@ def prepare(out, build, deployment, python, sample):
         path = out/name/'plan.json'
         plan = package.read(path)
         plan[KEY].update(python=str(python), audio=str(sample))
+        plan['limits']['overlap_transcriptions'] = 1
         package.save(path, plan)
 
 
@@ -58,6 +59,7 @@ def business(stage):
     args = dict(base=f"https://127.0.0.1:{plan['public_port']}/v1", ca=plan['tls']['certificate'],
                 key=stage.keys['alpha'], audio=options['audio'], request=request)
     stage.same_model()
+    stage.budget('overlap_transcriptions')
     run = subprocess.run([options['python'], '-I', '-B', ACTOR], input=json.dumps(args).encode(),
                          capture_output=True, timeout=110)
     package.require(run.returncode == 0, 'overlap SDK failed on '+plan['name'])
@@ -71,6 +73,9 @@ def business(stage):
 
 def verify(phase, plan, capabilities, current):
     proof, change = package.read(PROOF), plan[KEY]
+    package.require(plan['limits']['overlap_transcriptions'] == 1
+                    and package.read(phase/'result.json')['counts']['overlap_transcriptions'] == 1,
+                    'expected exactly one real transcription at this capacity')
     previous_file = phase/'previous-profile.json'
     previous = profile_record.read(previous_file)
     before = previous['capabilities']

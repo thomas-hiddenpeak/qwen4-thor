@@ -49,10 +49,18 @@
   "retained_replay": "fb3e3ae0d78ee4e86c2e9ba5704f879b21690c8f1311361f257f843b8bb8210c",
   "profile_checks": "1d3531bfb9efab731dabcdaa650f95357b14de50cc16558f97548fd97d7413d9",
   "actor": "b0ec08b560d8d1a006b710506930233aafaa6e89002f88d25b263bf4fca942b1",
-  "verifier": "86d40c63adc56075fa14a30937d3a337f365476a9b362976f0f9734ce1544fec",
+  "verifier": "cdf08f115ef814c237c721345c0602995bd354e130120038f0d3920ce6cdce54",
   "setup_failure": "Dedicated client initially imported httpx; the pinned SDK distribution uses httpx2. Qualification now uses openai.DefaultHttpxClient from that same distribution.",
   "scope": "Local TLS replay of captured responses, authentic SDK multipart encoding and typed parsing; historical source and per-capacity health with simulated stage identities for verifier controls.",
   "gpu_starts": 0,
   "candidate_device_http": false,
-  "issued": false
+  "issued": false,
+  "request_budget_check": {
+    "per_capacity": 1,
+    "zero_attempt_rejected_at": [
+      "primary",
+      "light"
+    ],
+    "output_sha256": "a1a755bd6ffdfd34f5247316b01c6d023e07fb75d9442d4b6b3bd8a0b57803aa"
+  }
 }

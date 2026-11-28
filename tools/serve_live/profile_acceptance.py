@@ -124,6 +124,11 @@ class Stage(workers.ice.Stage):
     limits = dict(starts=1, ingress_starts=1, sdk_posts=1, chats=1,
                   controls=2000, seconds=300)
 
+    def __init__(self, plan):
+        if 'overlap_transcription_handoff' in plan:
+            self.limits = dict(self.limits, overlap_transcriptions=1)
+        super().__init__(plan)
+
     def model_command(self):
         pkg.require(pkg.sha(Path(self.plan['binary']).parent/'client-policy.json') ==
                     self.plan['client_policy_sha256'] == self.plan['installed_policy_sha256'],
