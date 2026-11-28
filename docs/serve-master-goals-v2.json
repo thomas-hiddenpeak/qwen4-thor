@@ -1066,12 +1066,13 @@
         "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       },
       "completion_best_of_20261128": {
-        "status": "native_candidate_https_pass_release_pending",
+        "status": "two_capacity_https_pass_release_pending",
         "evidence": "evidence/serve-completion-best-of-20261128/cpu.json",
         "device": "evidence/serve-completion-best-of-20261128/device.json",
         "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
         "model_starts": 1,
-        "requests": 6
+        "requests": 6,
+        "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json"
       }
     },
     {
@@ -1862,12 +1863,13 @@
         "existing_evidence_reviewed": true
       },
       "completion_best_of_20261128": {
-        "status": "native_candidate_https_pass_release_pending",
+        "status": "two_capacity_https_pass_release_pending",
         "evidence": "evidence/serve-completion-best-of-20261128/cpu.json",
         "device": "evidence/serve-completion-best-of-20261128/device.json",
         "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
         "model_starts": 1,
-        "requests": 6
+        "requests": 6,
+        "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json"
       },
       "model_inference_sdk_20261128": {
         "status": "published_engine_native_tls_business_pass",
