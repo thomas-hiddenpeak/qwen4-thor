@@ -1,0 +1,102 @@
+{
+  "status": "SDK_REPLAY_PASS",
+  "transport": "in-process replay of original native response bytes",
+  "new_backend_requests": 0,
+  "model_starts": 0,
+  "capture_sha256": "1591d1eca9eb3ee8419971738559ca6dec13b5af6b35290b7f6478932f6ba482",
+  "wire_sha256": "707baa2c84031c846cde8a0b339c109bb638b15c28bffcf758f17a7406d1f553",
+  "sdk": {
+    "python-2.8.1": {
+      "wire_format": "base64",
+      "numeric_vectors": 11
+    },
+    "python-2.33.0": {
+      "wire_format": "base64",
+      "numeric_vectors": 11
+    },
+    "python-3.42.1": {
+      "wire_format": "base64",
+      "numeric_vectors": 11
+    },
+    "python-3.55.1": {
+      "wire_format": "base64",
+      "numeric_vectors": 11
+    },
+    "node-6.34.0": {
+      "wire_format": "base64",
+      "numeric_vectors": 11
+    },
+    "node-7.47.0": {
+      "wire_format": "base64",
+      "numeric_vectors": 11
+    }
+  },
+  "expected_rows": [
+    {
+      "index": 0,
+      "dimensions": 1024,
+      "sha256": "51fe588d23dbe68809a27736408a9e17f7e8d74ebc87a6333de7b5b51cb5ab48"
+    },
+    {
+      "index": 1,
+      "dimensions": 1024,
+      "sha256": "c8a201d96a221e102482daf75548aef4ce43dbcb5e4ef15275fcd7f03cb5c55a"
+    },
+    {
+      "index": 2,
+      "dimensions": 1024,
+      "sha256": "38a75a323fead922561f655baa4aa44d843efdc9ded22559a40c063a72ddb79b"
+    },
+    {
+      "index": 3,
+      "dimensions": 1024,
+      "sha256": "f156584704b56b128c694a7cce35103225b8038b7fba7308eb07748bfc6fa31b"
+    },
+    {
+      "index": 4,
+      "dimensions": 1024,
+      "sha256": "e6d1835bf69cda8ebff81d1a82e383e12ae03c2c0d0befb9255055e10d369c45"
+    },
+    {
+      "index": 5,
+      "dimensions": 1024,
+      "sha256": "fe7e229397feba64345f13c774fda726d69d3f089d079f32d2a37ac6554bc33d"
+    },
+    {
+      "index": 6,
+      "dimensions": 1024,
+      "sha256": "f35384690afa97441f0e0e2ed90943014161275924351147a492ba3330f10ba7"
+    },
+    {
+      "index": 7,
+      "dimensions": 1024,
+      "sha256": "2b8c5bb9b34adbcf620db17be4df39331abae6fd1f29fcbf64b6880913ee2e8b"
+    },
+    {
+      "index": 8,
+      "dimensions": 1024,
+      "sha256": "19c3ba21ddf406a307330cee0a439aeea4912d7c5af6214b6655f61396dd5d57"
+    },
+    {
+      "index": 9,
+      "dimensions": 1024,
+      "sha256": "6ba8baa3f52b36d5d0391194caa3e8e615e017e8750fad7124788cf68ff56103"
+    },
+    {
+      "index": 10,
+      "dimensions": 1024,
+      "sha256": "ce8e647464447eb36487960de7ee53cb3e1591ce77288ae9e67a535756a1e398"
+    }
+  ],
+  "historical_model": "qwen3-embedding-0.6b",
+  "capture": "evidence/serve-native-embedding-business-20261111/default.sdk.json",
+  "wire": "evidence/serve-native-embedding-business-20261111/default.wire",
+  "qualification": "evidence/serve-native-embedding-business-20261111/acceptance.json",
+  "qualification_sha256": "4126dbe92f59757cf36eb50dc610d9a443d29c60b2ce5464d4b8a8d42221fc3f",
+  "historical_lease_sha256": "6dbe295d3b428d8c0414b9a4cdf512241f8c2cd11f88fecbdc7a4f1d7bdb2f9f",
+  "rejected_controls": [
+    "substituted vector bytes",
+    "wrong row index",
+    "changed usage"
+  ]
+}

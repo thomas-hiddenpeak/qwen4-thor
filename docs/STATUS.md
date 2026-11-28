@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+六版正式客户端省略嵌入输出编码时，都会在线路请求中发送 `base64`，并为应用解码成数值向量。使用真实模型历史响应，各版均读回原始顺序的 11 行 1024 维向量，FP32 字节全部相同。 [复核记录](evidence/serve-model-inference-sdk-20261128/embedding-defaults.json)
+
 客户端复核现同时检查字符偏移和 token 对数概率的合法性。此前 JSON 与 SSE 同时出错时，逐项相等仍可能误判通过。复用 42 个正式 SDK 的夹具响应，六个成对错误均已检出。真机记录将用同一规则复核。 [反例回执](evidence/serve-model-inference-sdk-20261128/paired-validation.json)
 
 传统文本补全已在请求解析阶段拒绝显式 `best_of=21`，上限为 20。只传 `n` 时仍可请求最多 128 个结果。旧实现复现了越界接受；修复通过 11 项原生测试与 55 项合同对照。候选待 HTTP 短验和发行。 [CPU 回执](evidence/serve-completion-best-of-20261128/cpu.json)
