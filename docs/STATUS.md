@@ -21,6 +21,10 @@ rev592 已发行独立 serve 诊断日志隔离。日志读端停读和退出时
 
 已发行程序和上一候选在 stderr 管道读端退出后记录参数错误时均被 SIGPIPE 终止。修复限于 serve 入口；候选在日志读端正常或退出时都返回相同的参数错误码 2。构建无警告，编译协议清单只有 src/main.cpp 发生变化。下一步用真实模型验证运行中关闭读端后的错误响应和正常 Chat。 [CPU 对照](evidence/serve-diagnostic-pipe-20261128/cpu.json)
 
+上传修复的主机 CI 中，辅助日志用例只启动了一次子进程，却返回了失败。延迟 180 毫秒读取子进程身份可复现同样结果，原因是夹具在首次健康观测前耗尽了 100 毫秒。现为这项日志用例独立控制监督时钟，仍要求同一 PID 完成五次观测、故障被记录、日志状态恢复并正常清理。实时时限反例和日志隔离组共 54 项通过；下一步复核两项远端检查。 [针对性复验](evidence/serve-upload-completion-race-20261128/auxiliary-fixture.json)
+
+rev590 的原生 TLS、嵌入模型和文本模型已通过官方 SDK 批量上传与自动轮询验收。Python 2.8.1 和 Node 7.47.0 各上传两份真实发行记录，另一个版本的客户端通过游标逐页读回原文件、核对内容和过滤检索。Responses 的 file_search 命中 rev588 的原 File ID，模型回答中包含该发行号。两次跨客户访问均返回 404。共 50 个真实请求、一次模型启动。 [实机业务回执](evidence/serve-vector-batch-sdk-20261128/business.json)
+
 rev590 已发行并发上传修复。两个客户会话同时为同一所属者完成上传时，相同参数返回同一个 File ID，不同参数返回 409。模型退出和网关切换后均能按原 ID 重试并续传。设备默认状态为 STOPPED，回退包已登记，发布时模型启动为零。24 小时计划与 NVML 冷启动入口已预检。 [发行回执](evidence/serve-upload-completion-race-20261128/delivery.json)
 
 候选模型意外退出后，六版客户端取回了完成上传的原 File ID，按原分片续传第二份文件；主网关异常、独立回退包接手后重复验证通过。每种故障均有两代模型、25 个 SDK 请求和 1 个独立 Chat，两次均从原文件答出 223，Chat 答出 42。下一步登记已验证的包。 [恢复回执](evidence/serve-upload-completion-race-20261128/managed.json)

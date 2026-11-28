@@ -17,6 +17,8 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 ## 验证范围
 
+- rev590 的原生 TLS、嵌入模型和文本模型已通过官方 SDK 批量上传与自动轮询验收。Python 2.8.1 和 Node 7.47.0 各上传两份真实发行记录，另一个版本的客户端通过游标逐页读回原文件、核对内容和过滤检索。Responses 的 file_search 命中 rev588 的原 File ID，模型回答中包含该发行号。两次跨客户访问均返回 404。共 50 个真实请求、一次模型启动。 [实机业务回执](evidence/serve-vector-batch-sdk-20261128/business.json)
+
 - **Uploads 和 Files 接管。** 六版客户端共同操作同一批资源，覆盖四种 Uploads 和五种 Files 方法。主包接受乱序传输、按指定顺序完成；回退包沿用原分片和 File ID，核对下载、归属和删除，再由 Responses 读取实际文件。每版具体经手的方法、HTTP 状态及请求 ID 都在[逐次记录](evidence/serve-upload-sdk-recovery-20261128/requests.json)。
 
 - **Conversations 的八个方法。** 表中六个版本都通过原生 TLS 完成了会话和条目的创建、读取、更新或删除，SDK 自行生成第二页游标并读到了另一个条目。每版还检查了其他客户的密钥、已删条目和已删会话的 404。Python 3.55.1 与 Node 7.47.0 另经 Responses 读取自己的两条会话记录，答出设备实际的版本登记号 223。主包 rev588 的引擎和入口使用私有对象目录与本机测试准入控制器。 [74 个请求](evidence/serve-conversation-sdk-business-20261128/requests.json) · [包身份与验收范围](evidence/serve-conversation-sdk-business-20261128/business.json)
