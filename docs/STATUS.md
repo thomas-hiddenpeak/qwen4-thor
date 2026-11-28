@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+SDK 业务矩阵已计入 rev606 同一引擎的 30 次正式 Python 调用。其中 10 次来自 TLS 后台流与存储读回，另外 20 次来自模型恢复与网关回退的前后对照。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
+
 六版正式客户端省略嵌入输出编码时，都会在线路请求中发送 `base64`，并为应用解码成数值向量。使用真实模型历史响应，各版均读回原始顺序的 11 行 1024 维向量，FP32 字节全部相同。 [复核记录](evidence/serve-model-inference-sdk-20261128/embedding-defaults.json)
 
 客户端复核现同时检查字符偏移和 token 对数概率的合法性。此前 JSON 与 SSE 同时出错时，逐项相等仍可能误判通过。复用 42 个正式 SDK 的夹具响应，六个成对错误均已检出。真机记录将用同一规则复核。 [反例回执](evidence/serve-model-inference-sdk-20261128/paired-validation.json)
@@ -30,6 +32,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证与必要业务短验，长稳实跑与已延期听感由用户负责。
 
 ## 正在推进
+
+rev606 已登记主包与独立回退包。Responses 和 Conversations 接受重复的输出选择器，跨模型恢复及网关切换后可读回同一响应及 token 概率。发行过程启动模型零次，13 份受保护状态逐一核对。 [发行回执](evidence/serve-response-include-projection-20261128/delivery.json)
 
 主包网关退出和回退包模型退出后，客户端用十二个选择器读回同一响应的正文与 token 概率，跨客户读取返回 404。两次恢复均能生成新响应，独立 Chat 均答 42。 [托管恢复记录](evidence/serve-response-include-projection-20261128/managed.json)
 
@@ -1610,13 +1614,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev604**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev604 发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
+本机登记的发行版本为 **rev606**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev606 发行回执](evidence/serve-response-include-projection-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922` |
-| 回退服务包清单 | `e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd` |
-| 默认引擎 | `9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc` |
+| 主服务包清单 | `68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349` |
+| 回退服务包清单 | `2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967` |
+| 默认引擎 | `a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 
