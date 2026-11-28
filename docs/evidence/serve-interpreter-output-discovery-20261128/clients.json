@@ -1,0 +1,273 @@
+{
+  "status": "PASS",
+  "publication": 604,
+  "package": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922",
+  "engine": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "sdk": {
+    "python-2.8.1": {
+      "response": "resp_ed90859755817d22d149f930df9f6f70",
+      "container": "cntr_be87057c3a2b3e288644cacccfedfb24",
+      "item": "ci_382d4adb8f02345241e529cd1b5fd44c",
+      "events": 18,
+      "stdout": "603\n",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/containers",
+          "query": "",
+          "status": 200,
+          "trace": "req-717cd23e8c4437990040682b6baca4f4"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-97168368490f7a4d5821cd9aa49eb545"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_ed90859755817d22d149f930df9f6f70",
+          "query": "include%5B%5D=code_interpreter_call.outputs",
+          "status": 200,
+          "trace": "req-5539411fbf9728521576fb702c1b4c79"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_ed90859755817d22d149f930df9f6f70",
+          "query": "",
+          "status": 404,
+          "trace": "req-bbe059141d57326a4506315248b3acb1"
+        }
+      ],
+      "capture": "377e089e0e1893228bc15d97fd1ed538fb910e9b4a085a453ac42b4fd3317c8c"
+    },
+    "python-2.33.0": {
+      "response": "resp_48d59958197a0285763e54e15b58cc3e",
+      "container": "cntr_f60035a116dc4933777d267c9c9fb733",
+      "item": "ci_ec25e4cb120a0279d42186c1e8c4c1de",
+      "events": 18,
+      "stdout": "603\n",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/containers",
+          "query": "",
+          "status": 200,
+          "trace": "req-1177439e509cbfda25ac0102eca2a796"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-87517bb4dfa1cdc3b0750c0f0b39d786"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_48d59958197a0285763e54e15b58cc3e",
+          "query": "include%5B%5D=code_interpreter_call.outputs",
+          "status": 200,
+          "trace": "req-bdb60a0307ca17b4799f8bf040c7542a"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_48d59958197a0285763e54e15b58cc3e",
+          "query": "",
+          "status": 404,
+          "trace": "req-9cb31b2ec23dbd9468dd2b8400053e4b"
+        }
+      ],
+      "capture": "22bf67742976cc03271b22be335123f83ea89af090a1be1446355ccd2e700f39"
+    },
+    "python-3.42.1": {
+      "response": "resp_f6f488dc7169b56aba01dc87a8e227ee",
+      "container": "cntr_4be57030597e7f3b29a56dfe380f95af",
+      "item": "ci_307f19350741f60ef028e3b7cb1dfe7a",
+      "events": 18,
+      "stdout": "603\n",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/containers",
+          "query": "",
+          "status": 200,
+          "trace": "req-268c03a64ced8b79131ebf906885ab00"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-f9976d9eacd9eb77522bd9389861bba0"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_f6f488dc7169b56aba01dc87a8e227ee",
+          "query": "include%5B%5D=code_interpreter_call.outputs",
+          "status": 200,
+          "trace": "req-c68be8f44f8205ab969bce7a30272570"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_f6f488dc7169b56aba01dc87a8e227ee",
+          "query": "",
+          "status": 404,
+          "trace": "req-6750e9e55287e4ddfc8b22006048cc58"
+        }
+      ],
+      "capture": "fe71c055eb3c37517ca6a028af92bf8d22923d2db800f1ad752fca6478498da9"
+    },
+    "python-3.55.1": {
+      "response": "resp_e102f2ba6ed05c90136fe96b5a2080a9",
+      "container": "cntr_ef3ed74ed68cee6afb3e1009fc6c4bad",
+      "item": "ci_769602aeb38f12c12a279fa7acceb3c7",
+      "events": 18,
+      "stdout": "603\n",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/containers",
+          "query": "",
+          "status": 200,
+          "trace": "req-1eb79bdd31af59f9fb61a6d1e3fabc4a"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-faedcd11647bda22dadd3add124264eb"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_e102f2ba6ed05c90136fe96b5a2080a9",
+          "query": "include%5B%5D=code_interpreter_call.outputs",
+          "status": 200,
+          "trace": "req-765696c741971cba7a2a3d41914be965"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_e102f2ba6ed05c90136fe96b5a2080a9",
+          "query": "",
+          "status": 404,
+          "trace": "req-5f6bbd2bb249d3a2f74db60364f48dc5"
+        }
+      ],
+      "capture": "3188bb3bd70b936bfdacaf2484c4cbf76df16377a878118f94b5bdbc4811cf03"
+    },
+    "node-6.34.0": {
+      "response": "resp_9655bba892b1233c91aa44c1fd501019",
+      "container": "cntr_ef2a740ccbfbaded06fdb238798285bc",
+      "item": "ci_7f390e9c08cfaffe222e0a64d8ca85bb",
+      "events": 18,
+      "stdout": "603\n",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/containers",
+          "query": "",
+          "status": 200,
+          "trace": "req-28f7953b51e71cb7fbbdc2b5ae088f04"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-f6c2645413c09dee2e624d3e03dfb156"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9655bba892b1233c91aa44c1fd501019",
+          "query": "include%5B%5D=code_interpreter_call.outputs",
+          "status": 200,
+          "trace": "req-d0c046dd8040917d40be7bfe6835694e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_9655bba892b1233c91aa44c1fd501019",
+          "query": "",
+          "status": 404,
+          "trace": "req-f3ff0f6cf01f9a6be25c2469c41a4197"
+        }
+      ],
+      "capture": "27591e159dca807d9267c88af45f6bba18826e2ed7296fc2a53c84a52dd2475b"
+    },
+    "node-7.47.0": {
+      "response": "resp_20cbac16b300701e6f28c6b734f2046e",
+      "container": "cntr_b7998c2fa66218637b25928de181b49d",
+      "item": "ci_6ff78156a45b5cec22b86fc4cf397bef",
+      "events": 18,
+      "stdout": "603\n",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/containers",
+          "query": "",
+          "status": 200,
+          "trace": "req-669fb2a8c45d8c9fac53988cc5a2b3a6"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 200,
+          "trace": "req-84d63c0c573a952e7dbfec6ed5096807"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_20cbac16b300701e6f28c6b734f2046e",
+          "query": "include%5B%5D=code_interpreter_call.outputs",
+          "status": 200,
+          "trace": "req-ce6d943b6332a6ceb9fce969d9e5d5bc"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/responses/resp_20cbac16b300701e6f28c6b734f2046e",
+          "query": "",
+          "status": 404,
+          "trace": "req-5ed28d64a3b5d2e99cb7549109a2bbc0"
+        }
+      ],
+      "capture": "7e5a1993a94f8b6a15e27128e0483fc0be48f36c3a2f5b9e11181853386290c9"
+    }
+  },
+  "lease_sha256": "33b8bce04244f822efe79c3cb001701bace4e904f9707b924e8b589f0ea31fed",
+  "samples": 59,
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2366685,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 24,
+    "seconds": 61.358
+  },
+  "plan_sha256": "928c2021874bf31dd7bdcbeeab0f793fe194ec4fa1c60a6f36a01e629085697c",
+  "guard": {
+    "status": "COMPLETED",
+    "backend": "nvml",
+    "samples": 59,
+    "child_returncode": 0
+  },
+  "cpu_replay": {
+    "requests": 24,
+    "clients": [
+      "python-2.8.1",
+      "python-2.33.0",
+      "python-3.42.1",
+      "python-3.55.1",
+      "node-6.34.0",
+      "node-7.47.0"
+    ],
+    "model_starts": 0
+  },
+  "reader_sha256": {
+    "reader.py": "b466b80b21bb671d274a3b855ab6be4d7ac8e85626476f7b25633a0861bcf629",
+    "reader.mjs": "1f12b8c9599a20d92dcf162c9c5cf6810336328a50ec705e1e345af0483c1fc8"
+  }
+}

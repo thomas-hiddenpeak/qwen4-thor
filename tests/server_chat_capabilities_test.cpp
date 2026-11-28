@@ -117,7 +117,7 @@ Q4T_TEST(chat_capabilities_native_file_search_conditions_and_output_types) {
         "tool_search_call", "tool_search_output",
         "program",          "program_output",
         "mcp_list_tools",   "mcp_approval_request",
-        "mcp_call"};
+        "mcp_call",         "code_interpreter_call"};
     Q4T_CHECK(items && items->array.size() == std::size(expected));
     for (const auto* type : expected)
       Q4T_CHECK(std::count_if(items->array.begin(), items->array.end(),

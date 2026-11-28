@@ -121,6 +121,18 @@ class BusinessEvidenceTest(unittest.TestCase):
                                  (client, mode, before['manifest']))
                 self.assertTrue(all(label+'/200=' not in speech[other] for other in CLIENTS if other != client))
 
+    def test_issued_interpreter_containers_and_owned_reads_use_all_six_sdks(self):
+        table, manifest = render()
+        rows = {(r['method'], r['path']):r for r in csv.DictReader(io.StringIO(table))}
+        for client in CLIENTS:
+            suite = 'interpreter-issued-' + client
+            for method in [('POST', '/containers'), ('POST', '/responses'), ('GET', '/responses/{response_id}')]:
+                cell = rows[method][client]
+                self.assertIn(suite + '/200=1', cell.split())
+                self.assertEqual(suite + '/404=1' in cell.split(), method[0] == 'GET')
+            self.assertEqual(manifest['sources'][suite]['sdk'], client)
+            self.assertFalse(any(row['suite'] == suite for row in manifest['unassigned']))
+
     def test_published_matrix_matches_reconstruction(self):
         directory = Path(__file__).resolve().parents[2] / 'docs/evidence/serve-sdk-business-index-20261128'
         table, manifest = render()

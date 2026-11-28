@@ -125,6 +125,8 @@ class Stage(workers.ice.Stage):
                   controls=2000, seconds=300)
 
     def __init__(self, plan):
+        if 'responses_producer_handoff' in plan:
+            self.limits = dict(self.limits, producer_responses=2)
         if 'overlap_transcription_handoff' in plan:
             self.limits = dict(self.limits, overlap_transcriptions=1)
         super().__init__(plan)
@@ -166,6 +168,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'responses_producer_handoff' in self.plan:
+            from tools.serve_responses import producer_profiles
+            producer_profiles.business(self, capabilities)
         if 'overlap_transcription_handoff' in self.plan:
             from tools.native_asr import overlap_profiles
             overlap_profiles.business(self)
