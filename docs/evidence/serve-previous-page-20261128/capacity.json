@@ -1,0 +1,46 @@
+{
+  "status": "PASS_CAPACITY",
+  "history": "ACCEPT_VECTOR_STORE_VIEWS_PRIMARY_LIGHT",
+  "roles": {
+    "primary": {
+      "status": "PASS",
+      "model_starts": 1,
+      "calls": 18,
+      "core_chat": "42",
+      "seconds": 41.7315576300025,
+      "receipt": "7bde539a5be602463fdb4fd6ce04bcecea1053d2dbbd1495b7022a6217b336db",
+      "previous": "cc6c8ae39a35b95b579a4cca0d51f6b3cf64e7b2ed6da3da6668975387c08e06",
+      "profile": "ad5f17ca368cfe03b5cb3b7d5dd9aee393383d2de6ba6aea3f444972d12c1ef3"
+    },
+    "light": {
+      "status": "PASS",
+      "model_starts": 1,
+      "calls": 18,
+      "core_chat": "42",
+      "seconds": 37.01190451718867,
+      "receipt": "0f813b138925358bdda724c2c7d0061801c617b3d378fc78c265dc38db545afd",
+      "previous": "f328e66696cf7fe43b9ea793093b16f48440fb32982a9b35254004c8a6e2fe26",
+      "profile": "71ea1b4b877698aba1cd6d8a4d0fc3f7eb45cae068b54dd4066d3a59d11cd839"
+    }
+  },
+  "engine": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "previous_revision": 608,
+  "lease_sha256": "2c060824a8675817c0b236529987532f41fba245fb602e7156457fb99e9f36f2",
+  "observations_sha256": "c8d6c4123edff6122acaf98088bb739b38934bbe304b3dc91e6ae491b0bf4f19",
+  "accepted_sha256": "792f152e57a27d80c19c6973df14ca679de28f098a4f8fb5a259c629b3cfff51",
+  "capacity_business": "85a82089d96eca27f32ae4de547fbf5b3b4a6d6fb5f81a7043855766c604b565",
+  "invalid_history_controls": {
+    "primary": {
+      "prior": "cc6c8ae39a35b95b579a4cca0d51f6b3cf64e7b2ed6da3da6668975387c08e06",
+      "receipt": "7bde539a5be602463fdb4fd6ce04bcecea1053d2dbbd1495b7022a6217b336db",
+      "invalid_histories_denied": 2
+    },
+    "light": {
+      "prior": "f328e66696cf7fe43b9ea793093b16f48440fb32982a9b35254004c8a6e2fe26",
+      "receipt": "0f813b138925358bdda724c2c7d0061801c617b3d378fc78c265dc38db545afd",
+      "invalid_histories_denied": 2
+    }
+  },
+  "release": "candidate"
+}

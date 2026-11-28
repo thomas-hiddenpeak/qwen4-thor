@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+向量库候选的主包与轻量容量记录已登记。两份 v105 记录均可按字节摘要还原 rev608 对应的容量来源。 [登记回执](evidence/serve-previous-page-20261128/capacity.json)
+
 主、轻两档均通过相邻页与名称清空短验。每档 18 次向量库请求，独立 Chat 均回答 42。 [容量回执](evidence/serve-previous-page-20261128/capacity-business.json)
 
 已准备针对本次向量库改动的主、轻容量验收。原生 TLS 的 CPU 场景包含 18 次请求，覆盖相邻页、名称清空、跨客户端拒绝和删除，五种证据变更均被检出。 [容量回执](evidence/serve-previous-page-20261128/capacity-cpu.json)

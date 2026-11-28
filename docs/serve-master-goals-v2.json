@@ -1076,19 +1076,20 @@
         "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json"
       },
       "backward_pagination_20261128": {
-        "status": "two_capacity_accepted",
+        "status": "capacity_registered",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
         "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "capacity registration and sealed packages",
-          "managed recovery and publication"
+          "sealed packages and managed recovery",
+          "default publication and main integration"
         ],
         "device": "evidence/serve-previous-page-20261128/device.json",
         "sdk_reads": 72,
         "name_sdk_calls": 24,
-        "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json"
       }
     },
     {
@@ -4307,19 +4308,20 @@
         "authenticated_requests": 74
       },
       "backward_pagination_20261128": {
-        "status": "two_capacity_accepted",
+        "status": "capacity_registered",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
         "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "capacity registration and sealed packages",
-          "managed recovery and publication"
+          "sealed packages and managed recovery",
+          "default publication and main integration"
         ],
         "device": "evidence/serve-previous-page-20261128/device.json",
         "sdk_reads": 72,
         "name_sdk_calls": 24,
-        "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json"
       }
     },
     {
@@ -10120,19 +10122,20 @@
         "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       },
       "backward_pagination_20261128": {
-        "status": "two_capacity_accepted",
+        "status": "capacity_registered",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
         "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "capacity registration and sealed packages",
-          "managed recovery and publication"
+          "sealed packages and managed recovery",
+          "default publication and main integration"
         ],
         "device": "evidence/serve-previous-page-20261128/device.json",
         "sdk_reads": 72,
         "name_sdk_calls": 24,
-        "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json"
       }
     },
     {
