@@ -172,8 +172,14 @@ jobs:
           tools.serve_recovery.test_native_bundle.BundleTests.test_relocated_current_contains_complete_outer_resume_and_root_transfer_sources
       - name: Check serve surface inventory freshness
         run: python3 -B tools/serve_audit/check_inventory.py --self-check
-      - name: Verify released SDK file handoff evidence
-        run: python3 -B -m unittest tools.serve_audit.test_upload_receipt
+      - name: Verify recorded SDK business exchanges and published coverage
+        run: >-
+          python3 -B -m unittest
+          tools.serve_audit.test_upload_receipt
+          tools.serve_audit.test_conversation_receipt
+          tools.serve_audit.test_vector_batch_receipt
+          tools.serve_audit.test_stored_chat_receipt
+          tools.serve_audit.test_sdk_business_evidence
       - name: Check native recovery wait and root migration preservation
         timeout-minutes: 2
         env:

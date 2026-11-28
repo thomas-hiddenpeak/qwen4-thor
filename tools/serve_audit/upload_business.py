@@ -45,6 +45,7 @@ def run(request):
     def observe(reply):
         received = reply.request
         wire.append({'method': received.method, 'path': received.url.path,
+                     'query': received.url.query.decode('ascii'),
                      'status': reply.status_code, 'trace': reply.headers.get('x-request-id')})
 
     with openai.DefaultHttpxClient(trust_env=False, event_hooks={'response': [observe]}) as transport:
