@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "roles": {
+    "primary": {
+      "status": "PASS",
+      "model_starts": 1,
+      "calls": 18,
+      "core_chat": "42",
+      "seconds": 41.7315576300025,
+      "receipt": "7bde539a5be602463fdb4fd6ce04bcecea1053d2dbbd1495b7022a6217b336db",
+      "previous": "cc6c8ae39a35b95b579a4cca0d51f6b3cf64e7b2ed6da3da6668975387c08e06"
+    },
+    "light": {
+      "status": "PASS",
+      "model_starts": 1,
+      "calls": 18,
+      "core_chat": "42",
+      "seconds": 37.01190451718867,
+      "receipt": "0f813b138925358bdda724c2c7d0061801c617b3d378fc78c265dc38db545afd",
+      "previous": "f328e66696cf7fe43b9ea793093b16f48440fb32982a9b35254004c8a6e2fe26"
+    }
+  },
+  "registered_revision": 608,
+  "source": "4fc2b9095b7573690d043b5a1c15703267eff7a7",
+  "candidate": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "accepted": "d82f6ea6394f05685058bbe18a908d99cfab691c4cf4a8f1c77de22b4b2473d2",
+  "lease_sha256": "2c060824a8675817c0b236529987532f41fba245fb602e7156457fb99e9f36f2",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 75,
+    "cleanup_complete": true
+  }
+}

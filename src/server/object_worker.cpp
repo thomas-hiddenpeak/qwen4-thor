@@ -1973,14 +1973,17 @@ class DiskStore {
       if (entry.second.owner == request.GetString("owner") &&
           entry.second.kind == request.GetString("kind"))
         selected.push_back(entry);
-    const bool descending = request.GetBool("descending", true);
+    // Walk outwards from the cursor so both the row and byte limits select
+    // the adjacent page. Return backward reads in the requested list order.
+    const bool backward = !before.empty();
+    const bool descending = request.GetBool("descending", true) != backward;
     std::sort(selected.begin(), selected.end(),
               [&](const auto& a, const auto& b) {
                 const auto left = std::pair(a.second.created, a.second.id);
                 const auto right = std::pair(b.second.created, b.second.id);
                 return descending ? left > right : left < right;
               });
-    size_t begin = 0, end = selected.size();
+    size_t index = 0;
     if (!after.empty() || !before.empty()) {
       const auto& cursor = after.empty() ? before : after;
       auto position = std::find_if(
@@ -1989,16 +1992,12 @@ class DiskStore {
       if (position == selected.end())
         return Error(400, "invalid_object_cursor",
                      "Object cursor not found in this list");
-      const auto index = static_cast<size_t>(position - selected.begin());
-      if (!after.empty())
-        begin = index + 1;
-      else
-        end = index;
+      index = static_cast<size_t>(position - selected.begin()) + 1;
     }
     Json items = Array();
-    size_t index = begin;
     uint64_t bytes = 0;
-    for (; index < end && items.array.size() < static_cast<size_t>(limit);
+    for (; index < selected.size() &&
+           items.array.size() < static_cast<size_t>(limit);
          ++index) {
       const auto& [name, metadata] = selected[index];
       if (bytes + metadata.bytes > kMaxFrame / 2 && !items.array.empty()) break;
@@ -2053,6 +2052,7 @@ class DiskStore {
       }
       items.array.push_back(Public(record));
     }
+    if (backward) std::ranges::reverse(items.array);
     auto first = items.array.empty()
                      ? Json{}
                      : String(items.array.front().GetString("id"));
@@ -2064,7 +2064,7 @@ class DiskStore {
                            {"data", std::move(items)},
                            {"first_id", std::move(first)},
                            {"last_id", std::move(last)},
-                           {"has_more", Boolean(index < end)}});
+                           {"has_more", Boolean(index < selected.size())}});
     return result;
   }
   ObjectStoreOptions options_;

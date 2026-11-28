@@ -55,7 +55,7 @@ def definitions():
     error = nullable(obj(dict(code=dict(enum=['server_error', 'unsupported_file',
         'invalid_file']), message=dict(type='string')), ['code', 'message']))
     store_fields = dict(id=identity, object=dict(const='vector_store'),
-        created_at=timestamp, last_active_at=nullable(timestamp), name=nullable(text),
+        created_at=timestamp, last_active_at=nullable(timestamp), name=text,
         description=text, metadata=metadata, expires_after=policy,
         expires_at=nullable(timestamp), file_counts=counts,
         status=dict(enum=['in_progress', 'completed', 'expired']),

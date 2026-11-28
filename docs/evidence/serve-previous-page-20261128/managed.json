@@ -1,0 +1,2244 @@
+{
+  "status": "PASS",
+  "registered": false,
+  "stock_sdk": "python-3.55.1",
+  "actor_sha256": "9aa97daa0eec9c1f539cd2004754f6a64f21176b889e675cd10e105f40103ae1",
+  "roles": {
+    "fallback": {
+      "incident": "model_exit",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "d3548dea38880c6e20c48603bb424f1a2dc90b0a1ed4cbd809ca7d349a1a2e18",
+      "requests": {
+        "prepare": {
+          "ids": [
+            "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+            "vs_62ed27c08138ca85295c78dbd82d6884",
+            "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+            "vs_a208f9b25a8d673fd7e304fe8fbae540",
+            "vs_c6e72dcc0832ab8693f9b10ddd91f9c3"
+          ],
+          "records": {
+            "vs_62ed27c08138ca85295c78dbd82d6884": {
+              "name": "cpu.json",
+              "metadata": {
+                "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                "revision": "608"
+              }
+            },
+            "vs_0ba113bb0e4e4138495ac6ea0e25cafe": {
+              "name": "device.json",
+              "metadata": {
+                "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                "revision": "608"
+              }
+            },
+            "vs_c86fbbe5a388802cb9bcdd0e1615b860": {
+              "name": "",
+              "metadata": {
+                "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                "revision": "608"
+              }
+            },
+            "vs_c6e72dcc0832ab8693f9b10ddd91f9c3": {
+              "name": "capacity.json",
+              "metadata": {
+                "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                "revision": "608"
+              }
+            },
+            "vs_a208f9b25a8d673fd7e304fe8fbae540": {
+              "name": "managed.json",
+              "metadata": {
+                "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                "revision": "608"
+              }
+            }
+          },
+          "traces": [
+            "req-d4a553e37c3c790bfac052ce838fafc9",
+            "req-ec4cd07589669ae26f61a4ea78f574e2",
+            "req-42e3683f002422f4f61632cb5d9936c3",
+            "req-085237fce62d630753a60c4fc2dd2382",
+            "req-bb6dc85eb149077df3cdce9e9084e0cb",
+            "req-b8fac9ba429da0fd192f40b80d9810b9",
+            "req-f243b71176ecc26346318f6304f696ac",
+            "req-222f41a9290f8dc4fa2d25674d04e686",
+            "req-ec4e3687d631ac657ede0907f3fca6b6",
+            "req-c227b1ca19f6b64324f5b83d7580f819",
+            "req-ca3fbef02f1531c5cbf4b331ec452939",
+            "req-20b0885a7a9ba1ab756704cf52af7d03",
+            "req-8312f43a9a7b373ea995d1673c77ba56"
+          ],
+          "sdk": "python-3.55.1",
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/capabilities",
+              "query": "",
+              "status": 200,
+              "trace": "req-d4a553e37c3c790bfac052ce838fafc9",
+              "sdk": false
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                  "revision": "608"
+                },
+                "name": "cpu.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-ec4cd07589669ae26f61a4ea78f574e2",
+              "response": {
+                "id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                "object": "vector_store",
+                "created_at": 1795878402,
+                "last_active_at": 1795878402,
+                "name": "cpu.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                  "revision": "608"
+                },
+                "name": "device.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-42e3683f002422f4f61632cb5d9936c3",
+              "response": {
+                "id": "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+                "object": "vector_store",
+                "created_at": 1795878402,
+                "last_active_at": 1795878402,
+                "name": "device.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                  "revision": "608"
+                },
+                "name": "capacity-business.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-085237fce62d630753a60c4fc2dd2382",
+              "response": {
+                "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "object": "vector_store",
+                "created_at": 1795878402,
+                "last_active_at": 1795878402,
+                "name": "capacity-business.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                  "revision": "608"
+                },
+                "name": "capacity.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-bb6dc85eb149077df3cdce9e9084e0cb",
+              "response": {
+                "id": "vs_c6e72dcc0832ab8693f9b10ddd91f9c3",
+                "object": "vector_store",
+                "created_at": 1795878403,
+                "last_active_at": 1795878403,
+                "name": "capacity.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                  "revision": "608"
+                },
+                "name": "managed.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-b8fac9ba429da0fd192f40b80d9810b9",
+              "response": {
+                "id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                "object": "vector_store",
+                "created_at": 1795878403,
+                "last_active_at": 1795878403,
+                "name": "managed.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores/vs_c86fbbe5a388802cb9bcdd0e1615b860",
+              "query": "",
+              "body": {
+                "name": null
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-f243b71176ecc26346318f6304f696ac",
+              "response": {
+                "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "object": "vector_store",
+                "created_at": 1795878402,
+                "last_active_at": 1795878402,
+                "name": "",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_c86fbbe5a388802cb9bcdd0e1615b860",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-222f41a9290f8dc4fa2d25674d04e686",
+              "response": {
+                "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "object": "vector_store",
+                "created_at": 1795878402,
+                "last_active_at": 1795878402,
+                "name": "",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_c6e72dcc0832ab8693f9b10ddd91f9c3&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-ec4e3687d631ac657ede0907f3fca6b6",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                    "object": "vector_store",
+                    "created_at": 1795878403,
+                    "last_active_at": 1795878403,
+                    "name": "managed.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "last_id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_c86fbbe5a388802cb9bcdd0e1615b860&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-c227b1ca19f6b64324f5b83d7580f819",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "device.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "cpu.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+                "last_id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_0ba113bb0e4e4138495ac6ea0e25cafe&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-ca3fbef02f1531c5cbf4b331ec452939",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "cpu.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "last_id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_c86fbbe5a388802cb9bcdd0e1615b860&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-20b0885a7a9ba1ab756704cf52af7d03",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_c6e72dcc0832ab8693f9b10ddd91f9c3",
+                    "object": "vector_store",
+                    "created_at": 1795878403,
+                    "last_active_at": 1795878403,
+                    "name": "capacity.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                    "object": "vector_store",
+                    "created_at": 1795878403,
+                    "last_active_at": 1795878403,
+                    "name": "managed.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_c6e72dcc0832ab8693f9b10ddd91f9c3",
+                "last_id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_c86fbbe5a388802cb9bcdd0e1615b860",
+              "query": "",
+              "body": null,
+              "scope": "foreign",
+              "status": 404,
+              "trace": "req-8312f43a9a7b373ea995d1673c77ba56",
+              "response": {
+                "error": {
+                  "message": "Object not found",
+                  "type": "invalid_request_error",
+                  "code": "object_not_found",
+                  "param": null
+                }
+              }
+            }
+          ],
+          "source_sha256": {
+            "prepare-control.json": "92d1e3027b6fc27e6f624d5c6ed859c797387b0a97b04bd8bfb3fa7ca6c1e597",
+            "prepare-capabilities.json": "806cf7e75c5eef06340f15b34cd43e1b2bf05cfec32ce4947c35db86ddbfca24",
+            "prepare-requests.json": "e4b745da4aa54b69653b3c5bf8bef3b7030531881701726863ef3556f1717802",
+            "prepare-actor.json": "f6e12d6637335be1d6a84e271b9232eb00e678a9e678ea812145b87f8a08714c"
+          }
+        },
+        "restore": {
+          "ids": [
+            "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+            "vs_62ed27c08138ca85295c78dbd82d6884",
+            "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+            "vs_a208f9b25a8d673fd7e304fe8fbae540",
+            "vs_c6e72dcc0832ab8693f9b10ddd91f9c3"
+          ],
+          "records": {
+            "vs_62ed27c08138ca85295c78dbd82d6884": {
+              "name": "cpu.json",
+              "metadata": {
+                "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                "revision": "608"
+              }
+            },
+            "vs_0ba113bb0e4e4138495ac6ea0e25cafe": {
+              "name": "device.json",
+              "metadata": {
+                "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                "revision": "608"
+              }
+            },
+            "vs_c86fbbe5a388802cb9bcdd0e1615b860": {
+              "name": "",
+              "metadata": {
+                "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                "revision": "608"
+              }
+            },
+            "vs_c6e72dcc0832ab8693f9b10ddd91f9c3": {
+              "name": "capacity.json",
+              "metadata": {
+                "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                "revision": "608"
+              }
+            },
+            "vs_a208f9b25a8d673fd7e304fe8fbae540": {
+              "name": "managed.json",
+              "metadata": {
+                "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                "revision": "608"
+              }
+            }
+          },
+          "traces": [
+            "req-5cb4ada1414f0fa3c4a76b7887bfa686",
+            "req-a86386bb39491377cdcb94165881c462",
+            "req-3fa6a4f2ca6bdf0fc47d86ed66829a4b",
+            "req-9313fc12c0d2f577029b5a5929e2514d",
+            "req-d1e60ed8fc2d9705273b68f21dc65a0f",
+            "req-c395139772aed5b113c83ceb37069ca8",
+            "req-67923b7b284acd949ac2d03566ec00e2",
+            "req-e43bdc773ba02a7fd61d78595282f36d",
+            "req-a05bb64114780ee3fe60e9c379ebe37d",
+            "req-5e1f017681997c8233dd5afa8f375247",
+            "req-ec7ebbadaf8ccac817fe3b4d79fa14d8",
+            "req-f2cf649c21fe0a7daa2d1d43c0a1f3c9",
+            "req-494720feb6437468c66e0ef543262984"
+          ],
+          "sdk": "python-3.55.1",
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/capabilities",
+              "query": "",
+              "status": 200,
+              "trace": "req-5cb4ada1414f0fa3c4a76b7887bfa686",
+              "sdk": false
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_c86fbbe5a388802cb9bcdd0e1615b860",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-a86386bb39491377cdcb94165881c462",
+              "response": {
+                "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "object": "vector_store",
+                "created_at": 1795878402,
+                "last_active_at": 1795878402,
+                "name": "",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_c6e72dcc0832ab8693f9b10ddd91f9c3&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-3fa6a4f2ca6bdf0fc47d86ed66829a4b",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                    "object": "vector_store",
+                    "created_at": 1795878403,
+                    "last_active_at": 1795878403,
+                    "name": "managed.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "last_id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_c86fbbe5a388802cb9bcdd0e1615b860&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-9313fc12c0d2f577029b5a5929e2514d",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "device.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "cpu.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+                "last_id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_0ba113bb0e4e4138495ac6ea0e25cafe&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-d1e60ed8fc2d9705273b68f21dc65a0f",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                    "object": "vector_store",
+                    "created_at": 1795878402,
+                    "last_active_at": 1795878402,
+                    "name": "cpu.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "last_id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_c86fbbe5a388802cb9bcdd0e1615b860&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-c395139772aed5b113c83ceb37069ca8",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_c6e72dcc0832ab8693f9b10ddd91f9c3",
+                    "object": "vector_store",
+                    "created_at": 1795878403,
+                    "last_active_at": 1795878403,
+                    "name": "capacity.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                    "object": "vector_store",
+                    "created_at": 1795878403,
+                    "last_active_at": 1795878403,
+                    "name": "managed.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_c6e72dcc0832ab8693f9b10ddd91f9c3",
+                "last_id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_c86fbbe5a388802cb9bcdd0e1615b860",
+              "query": "",
+              "body": null,
+              "scope": "foreign",
+              "status": 404,
+              "trace": "req-67923b7b284acd949ac2d03566ec00e2",
+              "response": {
+                "error": {
+                  "message": "Object not found",
+                  "type": "invalid_request_error",
+                  "code": "object_not_found",
+                  "param": null
+                }
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-e43bdc773ba02a7fd61d78595282f36d",
+              "response": {
+                "id": "vs_0ba113bb0e4e4138495ac6ea0e25cafe",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_62ed27c08138ca85295c78dbd82d6884",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-a05bb64114780ee3fe60e9c379ebe37d",
+              "response": {
+                "id": "vs_62ed27c08138ca85295c78dbd82d6884",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_c86fbbe5a388802cb9bcdd0e1615b860",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-5e1f017681997c8233dd5afa8f375247",
+              "response": {
+                "id": "vs_c86fbbe5a388802cb9bcdd0e1615b860",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_a208f9b25a8d673fd7e304fe8fbae540",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-ec7ebbadaf8ccac817fe3b4d79fa14d8",
+              "response": {
+                "id": "vs_a208f9b25a8d673fd7e304fe8fbae540",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_c6e72dcc0832ab8693f9b10ddd91f9c3",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-f2cf649c21fe0a7daa2d1d43c0a1f3c9",
+              "response": {
+                "id": "vs_c6e72dcc0832ab8693f9b10ddd91f9c3",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "limit=1",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-494720feb6437468c66e0ef543262984",
+              "response": {
+                "object": "list",
+                "data": [],
+                "first_id": "",
+                "last_id": "",
+                "has_more": false
+              }
+            }
+          ],
+          "source_sha256": {
+            "restore-control.json": "2274018839d8015283d883a81113c3ad619476f4cc6b9882c1a9477cbae4a5eb",
+            "restore-capabilities.json": "806cf7e75c5eef06340f15b34cd43e1b2bf05cfec32ce4947c35db86ddbfca24",
+            "restore-requests.json": "b51214a8f3e6a3926b1780d510685ed46c8417375c65b3fba31749ba38aff91c",
+            "restore-actor.json": "f6e12d6637335be1d6a84e271b9232eb00e678a9e678ea812145b87f8a08714c"
+          }
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 217.15551431989297,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 203,
+      "lease_sha256": "c5b95f4aaa0e5faeb9aca2e5e40179e223496c2790e8c3383ec90492b1a244f1",
+      "decision_sha256": "5135931cf4483cf68a7afff264a179db748fffd296bbc6378a732767e53985c1",
+      "result_sha256": "be26ab6bd1ceb2b5b66a49553fc8563c2b66458beb1fb53394ffc1b18ea239ca"
+    },
+    "primary": {
+      "incident": "primary_gateway_SIGABRT",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "9429e5d9630c8cf0d15ddd2996ef1238ebe1817ca84fc3120d80b988034f7c3c",
+      "requests": {
+        "prepare": {
+          "ids": [
+            "vs_1684d62eea216c8a8c9779c350485352",
+            "vs_2b55468f2e11104177be0dc08f016835",
+            "vs_a46862c17834c7260130cfc94a312916",
+            "vs_aaa72c68e87a391460155ff5b0c79baf",
+            "vs_e14257506fcf31593353dacc7c981cf5"
+          ],
+          "records": {
+            "vs_1684d62eea216c8a8c9779c350485352": {
+              "name": "cpu.json",
+              "metadata": {
+                "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                "revision": "608"
+              }
+            },
+            "vs_a46862c17834c7260130cfc94a312916": {
+              "name": "",
+              "metadata": {
+                "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                "revision": "608"
+              }
+            },
+            "vs_2b55468f2e11104177be0dc08f016835": {
+              "name": "capacity-business.json",
+              "metadata": {
+                "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                "revision": "608"
+              }
+            },
+            "vs_aaa72c68e87a391460155ff5b0c79baf": {
+              "name": "capacity.json",
+              "metadata": {
+                "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                "revision": "608"
+              }
+            },
+            "vs_e14257506fcf31593353dacc7c981cf5": {
+              "name": "managed.json",
+              "metadata": {
+                "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                "revision": "608"
+              }
+            }
+          },
+          "traces": [
+            "req-c3524f2e5692fb2654942e83992e2866",
+            "req-072b9644436d7aa1f2f93f2bc0e0bd10",
+            "req-0b98edfe4d02feb488c346e416b42b28",
+            "req-33156f8b3d0c0a3ab02b8907d37465f0",
+            "req-07b1aa22b51ec15502e901d0e7c35ff2",
+            "req-230a5b6d61440750a1a39a43f2e1121d",
+            "req-b7ed07a505cf997a97655f1b9bb67fc6",
+            "req-e1a36003183d864fbfc695c8387d6adf",
+            "req-d4f15f1428519026b9e2cc6f2bb87982",
+            "req-824028c0f80ffb97a1057ed3f69321b7",
+            "req-7df09e749ca0bcdb8114f961f59d299c",
+            "req-94907b5d148e940374004100f657d888",
+            "req-794e435703ee582d00e49ac3ee7030e7"
+          ],
+          "sdk": "python-3.55.1",
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/capabilities",
+              "query": "",
+              "status": 200,
+              "trace": "req-c3524f2e5692fb2654942e83992e2866",
+              "sdk": false
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                  "revision": "608"
+                },
+                "name": "cpu.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-072b9644436d7aa1f2f93f2bc0e0bd10",
+              "response": {
+                "id": "vs_1684d62eea216c8a8c9779c350485352",
+                "object": "vector_store",
+                "created_at": 1795878859,
+                "last_active_at": 1795878859,
+                "name": "cpu.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                  "revision": "608"
+                },
+                "name": "device.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-0b98edfe4d02feb488c346e416b42b28",
+              "response": {
+                "id": "vs_a46862c17834c7260130cfc94a312916",
+                "object": "vector_store",
+                "created_at": 1795878859,
+                "last_active_at": 1795878859,
+                "name": "device.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                  "revision": "608"
+                },
+                "name": "capacity-business.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-33156f8b3d0c0a3ab02b8907d37465f0",
+              "response": {
+                "id": "vs_2b55468f2e11104177be0dc08f016835",
+                "object": "vector_store",
+                "created_at": 1795878859,
+                "last_active_at": 1795878859,
+                "name": "capacity-business.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                  "revision": "608"
+                },
+                "name": "capacity.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-07b1aa22b51ec15502e901d0e7c35ff2",
+              "response": {
+                "id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                "object": "vector_store",
+                "created_at": 1795878859,
+                "last_active_at": 1795878859,
+                "name": "capacity.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "query": "",
+              "body": {
+                "metadata": {
+                  "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                  "revision": "608"
+                },
+                "name": "managed.json"
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-230a5b6d61440750a1a39a43f2e1121d",
+              "response": {
+                "id": "vs_e14257506fcf31593353dacc7c981cf5",
+                "object": "vector_store",
+                "created_at": 1795878860,
+                "last_active_at": 1795878860,
+                "name": "managed.json",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores/vs_a46862c17834c7260130cfc94a312916",
+              "query": "",
+              "body": {
+                "name": null
+              },
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-b7ed07a505cf997a97655f1b9bb67fc6",
+              "response": {
+                "id": "vs_a46862c17834c7260130cfc94a312916",
+                "object": "vector_store",
+                "created_at": 1795878859,
+                "last_active_at": 1795878859,
+                "name": "",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_a46862c17834c7260130cfc94a312916",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-e1a36003183d864fbfc695c8387d6adf",
+              "response": {
+                "id": "vs_a46862c17834c7260130cfc94a312916",
+                "object": "vector_store",
+                "created_at": 1795878859,
+                "last_active_at": 1795878859,
+                "name": "",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_e14257506fcf31593353dacc7c981cf5&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-d4f15f1428519026b9e2cc6f2bb87982",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_a46862c17834c7260130cfc94a312916",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_a46862c17834c7260130cfc94a312916",
+                "last_id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_a46862c17834c7260130cfc94a312916&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-824028c0f80ffb97a1057ed3f69321b7",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_1684d62eea216c8a8c9779c350485352",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "cpu.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_2b55468f2e11104177be0dc08f016835",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity-business.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_1684d62eea216c8a8c9779c350485352",
+                "last_id": "vs_2b55468f2e11104177be0dc08f016835",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_1684d62eea216c8a8c9779c350485352&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-7df09e749ca0bcdb8114f961f59d299c",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_a46862c17834c7260130cfc94a312916",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_2b55468f2e11104177be0dc08f016835",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity-business.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_a46862c17834c7260130cfc94a312916",
+                "last_id": "vs_2b55468f2e11104177be0dc08f016835",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_a46862c17834c7260130cfc94a312916&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-94907b5d148e940374004100f657d888",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_e14257506fcf31593353dacc7c981cf5",
+                    "object": "vector_store",
+                    "created_at": 1795878860,
+                    "last_active_at": 1795878860,
+                    "name": "managed.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_e14257506fcf31593353dacc7c981cf5",
+                "last_id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_a46862c17834c7260130cfc94a312916",
+              "query": "",
+              "body": null,
+              "scope": "foreign",
+              "status": 404,
+              "trace": "req-794e435703ee582d00e49ac3ee7030e7",
+              "response": {
+                "error": {
+                  "message": "Object not found",
+                  "type": "invalid_request_error",
+                  "code": "object_not_found",
+                  "param": null
+                }
+              }
+            }
+          ],
+          "source_sha256": {
+            "prepare-control.json": "3668bc3b7f563ff7d8ceaa788ac33aa03e4b7b2cc0eb0e51b18a2a341f594d58",
+            "prepare-capabilities.json": "806cf7e75c5eef06340f15b34cd43e1b2bf05cfec32ce4947c35db86ddbfca24",
+            "prepare-requests.json": "e0ebd6a5b0095ba304a2915fc2fff5f8cc3ae97a0525074ad95ee7d8fbf4a4f4",
+            "prepare-actor.json": "e9a88e5d07f0ddfcd3530f16fcf46f2aaee32c0f2d4b97958e1e2e8e188a436b"
+          }
+        },
+        "restore": {
+          "ids": [
+            "vs_1684d62eea216c8a8c9779c350485352",
+            "vs_2b55468f2e11104177be0dc08f016835",
+            "vs_a46862c17834c7260130cfc94a312916",
+            "vs_aaa72c68e87a391460155ff5b0c79baf",
+            "vs_e14257506fcf31593353dacc7c981cf5"
+          ],
+          "records": {
+            "vs_1684d62eea216c8a8c9779c350485352": {
+              "name": "cpu.json",
+              "metadata": {
+                "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                "revision": "608"
+              }
+            },
+            "vs_a46862c17834c7260130cfc94a312916": {
+              "name": "",
+              "metadata": {
+                "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                "revision": "608"
+              }
+            },
+            "vs_2b55468f2e11104177be0dc08f016835": {
+              "name": "capacity-business.json",
+              "metadata": {
+                "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                "revision": "608"
+              }
+            },
+            "vs_aaa72c68e87a391460155ff5b0c79baf": {
+              "name": "capacity.json",
+              "metadata": {
+                "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                "revision": "608"
+              }
+            },
+            "vs_e14257506fcf31593353dacc7c981cf5": {
+              "name": "managed.json",
+              "metadata": {
+                "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                "revision": "608"
+              }
+            }
+          },
+          "traces": [
+            "req-52aa35b7ebbd44df138433b62c0f0bbc",
+            "req-70ddc883a7f46e36b9dea10f7c97f7a6",
+            "req-cfc771c304660c3f470845148f43634e",
+            "req-afa9b37178c7bfc4f1de2fb24cb0a3cb",
+            "req-70d49d1f549948b54ced87b8d39e94da",
+            "req-12e6cd138c37a55c225dc3b2b601eaa5",
+            "req-5de47e0fec0b365bec62665092f6d9c8",
+            "req-40a5d4b14a7652b0548ba5a8f02087b2",
+            "req-12d17bd52a168a96b28ab4afa52de9d7",
+            "req-be2facc4b55ed1b4ea58b8f6324661e9",
+            "req-d41879224d97a77a58850463c56bd384",
+            "req-5c03220da271122d959fc427bea4b287",
+            "req-8fc9fe8d917603f9657e03a44206dbae"
+          ],
+          "sdk": "python-3.55.1",
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/capabilities",
+              "query": "",
+              "status": 200,
+              "trace": "req-52aa35b7ebbd44df138433b62c0f0bbc",
+              "sdk": false
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_a46862c17834c7260130cfc94a312916",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-70ddc883a7f46e36b9dea10f7c97f7a6",
+              "response": {
+                "id": "vs_a46862c17834c7260130cfc94a312916",
+                "object": "vector_store",
+                "created_at": 1795878859,
+                "last_active_at": 1795878859,
+                "name": "",
+                "description": "",
+                "metadata": {
+                  "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                  "revision": "608"
+                },
+                "expires_after": null,
+                "expires_at": null,
+                "status": "completed",
+                "file_counts": {
+                  "in_progress": 0,
+                  "completed": 0,
+                  "failed": 0,
+                  "cancelled": 0,
+                  "total": 0
+                },
+                "usage_bytes": 0
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_e14257506fcf31593353dacc7c981cf5&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-cfc771c304660c3f470845148f43634e",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_a46862c17834c7260130cfc94a312916",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_a46862c17834c7260130cfc94a312916",
+                "last_id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_a46862c17834c7260130cfc94a312916&limit=2&order=asc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-afa9b37178c7bfc4f1de2fb24cb0a3cb",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_1684d62eea216c8a8c9779c350485352",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "cpu.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "dfee42613b5752925bcc166c3b81b510c308d8dca1185f7a23b8e8168f3d912b",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_2b55468f2e11104177be0dc08f016835",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity-business.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_1684d62eea216c8a8c9779c350485352",
+                "last_id": "vs_2b55468f2e11104177be0dc08f016835",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_1684d62eea216c8a8c9779c350485352&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-70d49d1f549948b54ced87b8d39e94da",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_a46862c17834c7260130cfc94a312916",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "41a07aa78bbb2a0e5a58fa99c5b48a44105d2127a5057e7043d2e5c8f48fbbe9",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_2b55468f2e11104177be0dc08f016835",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity-business.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "1cf7bdf2f9a2106cb97216b0e62e93903f268182173a3afd8d6e574441bb1c48",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_a46862c17834c7260130cfc94a312916",
+                "last_id": "vs_2b55468f2e11104177be0dc08f016835",
+                "has_more": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "before=vs_a46862c17834c7260130cfc94a312916&limit=2&order=desc",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-12e6cd138c37a55c225dc3b2b601eaa5",
+              "response": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "vs_e14257506fcf31593353dacc7c981cf5",
+                    "object": "vector_store",
+                    "created_at": 1795878860,
+                    "last_active_at": 1795878860,
+                    "name": "managed.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "a0521f01c7d4c86e09ec4200693804195a1bc303f15726cc0862614175b55533",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  },
+                  {
+                    "id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                    "object": "vector_store",
+                    "created_at": 1795878859,
+                    "last_active_at": 1795878859,
+                    "name": "capacity.json",
+                    "description": "",
+                    "metadata": {
+                      "record_sha256": "e784461f708787c5c079c403faac067cba502a9c4b8cd4fa4c52833700a7afbf",
+                      "revision": "608"
+                    },
+                    "expires_after": null,
+                    "expires_at": null,
+                    "status": "completed",
+                    "file_counts": {
+                      "in_progress": 0,
+                      "completed": 0,
+                      "failed": 0,
+                      "cancelled": 0,
+                      "total": 0
+                    },
+                    "usage_bytes": 0
+                  }
+                ],
+                "first_id": "vs_e14257506fcf31593353dacc7c981cf5",
+                "last_id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                "has_more": false
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_a46862c17834c7260130cfc94a312916",
+              "query": "",
+              "body": null,
+              "scope": "foreign",
+              "status": 404,
+              "trace": "req-5de47e0fec0b365bec62665092f6d9c8",
+              "response": {
+                "error": {
+                  "message": "Object not found",
+                  "type": "invalid_request_error",
+                  "code": "object_not_found",
+                  "param": null
+                }
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_1684d62eea216c8a8c9779c350485352",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-40a5d4b14a7652b0548ba5a8f02087b2",
+              "response": {
+                "id": "vs_1684d62eea216c8a8c9779c350485352",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_2b55468f2e11104177be0dc08f016835",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-12d17bd52a168a96b28ab4afa52de9d7",
+              "response": {
+                "id": "vs_2b55468f2e11104177be0dc08f016835",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_a46862c17834c7260130cfc94a312916",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-be2facc4b55ed1b4ea58b8f6324661e9",
+              "response": {
+                "id": "vs_a46862c17834c7260130cfc94a312916",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_aaa72c68e87a391460155ff5b0c79baf",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-d41879224d97a77a58850463c56bd384",
+              "response": {
+                "id": "vs_aaa72c68e87a391460155ff5b0c79baf",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_e14257506fcf31593353dacc7c981cf5",
+              "query": "",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-5c03220da271122d959fc427bea4b287",
+              "response": {
+                "id": "vs_e14257506fcf31593353dacc7c981cf5",
+                "object": "vector_store.deleted",
+                "deleted": true
+              }
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores",
+              "query": "limit=1",
+              "body": null,
+              "scope": "owner",
+              "status": 200,
+              "trace": "req-8fc9fe8d917603f9657e03a44206dbae",
+              "response": {
+                "object": "list",
+                "data": [],
+                "first_id": "",
+                "last_id": "",
+                "has_more": false
+              }
+            }
+          ],
+          "source_sha256": {
+            "restore-control.json": "08c4cbcff35c5f7c4da5486378d490b015de421bc69a18273f168f9d0631656d",
+            "restore-capabilities.json": "806cf7e75c5eef06340f15b34cd43e1b2bf05cfec32ce4947c35db86ddbfca24",
+            "restore-requests.json": "efa48d57fc2e8900abb00f480e087cb357242524b226a06c8ebf60047f9d5123",
+            "restore-actor.json": "e9a88e5d07f0ddfcd3530f16fcf46f2aaee32c0f2d4b97958e1e2e8e188a436b"
+          }
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 396.13350339233875,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 367,
+      "lease_sha256": "48c0b78f5b6e50d935c2d8c429aec5772b71f8e381844f8749b463c041d67cd5",
+      "decision_sha256": "2ac41e8fdebc1c2db175a032cb5b40f8f06b888e1efb532b8153378f020b3da2",
+      "result_sha256": "337108b975147201cfbbc729453beb083dd63ac62ea00470279e333a9f3dde6f",
+      "registered_fallback": "d3548dea38880c6e20c48603bb424f1a2dc90b0a1ed4cbd809ca7d349a1a2e18"
+    }
+  },
+  "engine": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
+  "package_source": "9a13279e668c858bcad988a3bf0e3e4e3f1510ee",
+  "model_starts": 4
+}

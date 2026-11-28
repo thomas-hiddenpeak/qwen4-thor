@@ -1,0 +1,2032 @@
+{
+  "setup": {
+    "revision": 606,
+    "store": "vs_fd47e90929be94d478ca88fcea38d09f",
+    "batch": "vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+    "stores": [
+      "vs_2732a421820bdc65d5d45802e777df1b",
+      "vs_5a044c86fbb5f50f274435b89ed748ed",
+      "vs_df4410be8530eabbd606a0e5375b53db",
+      "vs_fd47e90929be94d478ca88fcea38d09f",
+      "vs_282df43c2d8b316c7e8ec02a90cf14c9"
+    ],
+    "files": [
+      "file_04cc47f2577f69c05621bd807644737c",
+      "file_26651130f1cac95750744c48f847437a",
+      "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+      "file_a3ae7b2cd244038cb81bf939c7930903",
+      "file_fcd2b4f9de37ebfc84593cc02714fac7"
+    ],
+    "download_sha256": "e2d764f57e207687f5c4dbaa7a4828c6131d5f46c53418dc1f234161f7765ed7",
+    "records": {
+      "cpu.json": "3c84be19ac05ae9b94fbf15fc49d0b44d074b07f459407ffe1f8c0e0508f30e1",
+      "device.json": "8b61e8cecb7e7083483a9b9919ec4b4a9bab74f8a589fded33e8d9a351711b11",
+      "capacity-business.json": "80499d98cd894b727144dc4e72312a32a08433e9f66d69b22535823a9db90e11",
+      "capacity.json": "8c92c65656e484a0a655697ad34b08fff314768a5373e86194e2adb12ab8a4f5",
+      "delivery.json": "e2d764f57e207687f5c4dbaa7a4828c6131d5f46c53418dc1f234161f7765ed7"
+    },
+    "requests": [
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores",
+        "query": "",
+        "status": 200,
+        "trace": "req-64fbd56104230bfbee8a7f66be8e11ad"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-3fa7944e06e7fb343ddf3c62af02215e"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores",
+        "query": "",
+        "status": 200,
+        "trace": "req-6fd3fb08f1b2b24ccb0cb76b27fcdb85"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-7b89e07fa5737f3800ff8087c231ea79"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores",
+        "query": "",
+        "status": 200,
+        "trace": "req-f02ea39aa667dd3f7e4ed17d88d41958"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-05eb2bb0a2672263873065166358545b"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores",
+        "query": "",
+        "status": 200,
+        "trace": "req-f7e45829f7df9aa7a5f1b50a8ddb41ef"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-36abdb4aa9a1801bd7f1775928a11533"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores",
+        "query": "",
+        "status": 200,
+        "trace": "req-6456692a3532600b7555eff14a2f53cd"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-b58eb26ea156b5a0886345fa4e7d6989"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches",
+        "query": "",
+        "status": 200,
+        "trace": "req-a8e9b207e78b97f3ed1266f8df47afc5"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-e62e0636e02bde676f13fa50cc3ec36b"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-18a0988dc2cf92092be0ef3068d05d72"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-c2d7c01a5b198bd689d1963b6be470f1"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-d410d97e45c94759882ddccb9d2c4431"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-40352539b13708602ba81035d5c93b45"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-0b10e64628afb0d1908525d0dbee9bdd"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-5960349ca8765713a2714ff99c8440eb"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19",
+        "query": "",
+        "status": 200,
+        "trace": "req-6b5f17be873cca38ad62ce391eebf308"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores",
+        "query": "limit=100&order=asc",
+        "status": 200,
+        "trace": "req-9d520fc291ec71abaccbffb239423dac"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+        "query": "filter=completed&limit=100&order=asc",
+        "status": 200,
+        "trace": "req-50fcc2dcef25c02694186dbe84fdfc49"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+        "query": "filter=completed&limit=100&order=asc",
+        "status": 200,
+        "trace": "req-93d09bb2ed7401785b76777565abb3e9"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/files/file_fcd2b4f9de37ebfc84593cc02714fac7/content",
+        "query": "",
+        "status": 200,
+        "trace": "req-0a28719c17619a15d87e6f3a33eea9ed"
+      }
+    ],
+    "sdk": "python-3.55.1"
+  },
+  "clients": {
+    "python-2.8.1": {
+      "sdk": "python-2.8.1",
+      "pages": [
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_2732a421820bdc65d5d45802e777df1b",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_2732a421820bdc65d5d45802e777df1b",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": false
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_2732a421820bdc65d5d45802e777df1b",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        }
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_282df43c2d8b316c7e8ec02a90cf14c9&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-da73aa6751fc804e909e104d84fc28ea"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-d5b45276c3164108705451509513f7dc"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_2732a421820bdc65d5d45802e777df1b&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-5b3588ebc0094ef3faf8b04997615d94"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-9c567b9862c021df08d6f8922b48f6b5"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-caf000d867a68618716baa6ab174dcd5"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-fba738ff3b44a7d82ddc0a3b5d68d56f"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-775bace8c6a1eb071fc7ed41ae4892aa"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-a2637a343100dab2bf123f7675c62d00"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-acb3dd9b3f831b7a902bec072085c4c4"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-b3edc96bb37b7836cc73b70f3f458847"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-b4674fd61aeb29456ba9f44681efc938"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-d20f2c30b9a04f66fc5104e80052f917"
+        }
+      ]
+    },
+    "python-2.33.0": {
+      "sdk": "python-2.33.0",
+      "pages": [
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_2732a421820bdc65d5d45802e777df1b",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_2732a421820bdc65d5d45802e777df1b",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": false
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_2732a421820bdc65d5d45802e777df1b",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        }
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_282df43c2d8b316c7e8ec02a90cf14c9&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-81c7ba0e34af6c9a011044ea05b0a740"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-27187d41a8a7ec2a319b4c4020102702"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_2732a421820bdc65d5d45802e777df1b&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-5dfec421b72caf7de4ec9de77ac42176"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-46c2f44a736cef2fd41ee1f495dd44a7"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-6fe98adba4729de10cd88530d9022e16"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-7f5756dd96569dd23c4df21c067bac65"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-f0e87e549926867804f92e1846600a63"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-1e22e08e9d4fd6619a4703158a4a6350"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-f3bad5e8c354082e8307addb49303553"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-e0a623e71efe74ec025eafa1faa4020c"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-e60fdc9a9d49f2ede85b370982287e7b"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-4191b676c847f8e57fb449554b3fb4b9"
+        }
+      ]
+    },
+    "python-3.42.1": {
+      "sdk": "python-3.42.1",
+      "pages": [
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_2732a421820bdc65d5d45802e777df1b",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_2732a421820bdc65d5d45802e777df1b",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": false
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_2732a421820bdc65d5d45802e777df1b",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        }
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_282df43c2d8b316c7e8ec02a90cf14c9&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-d811e69f892fffe572981ef48189f15d"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-1a8a493b8cc9f36363d5193427605795"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_2732a421820bdc65d5d45802e777df1b&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-095d3e395409b1b9e064f0999780a7e6"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-36353072f5c53f53bba0f3f1ae9fba79"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-5d740026a5e4dc2189382b80e8b2ea7f"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-f8b4f11270845a15997901785cfec73b"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-f69c355cf83913efa05ad022f0fde710"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-8d20ec990cda93c9f8894fa96fd67947"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-78232dab79e5fd5cd28c0bd7d1e03003"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-a02708ddcdee88cfa1bffe677cfc661e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-5b27a94231d365ec552e252610c04868"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-050652fef95f2e65d6506933aa351b4f"
+        }
+      ]
+    },
+    "python-3.55.1": {
+      "sdk": "python-3.55.1",
+      "pages": [
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_2732a421820bdc65d5d45802e777df1b",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_2732a421820bdc65d5d45802e777df1b",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": false
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_2732a421820bdc65d5d45802e777df1b",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        }
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_282df43c2d8b316c7e8ec02a90cf14c9&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-6174a4d07716860d2908f0ebd2d5c2b9"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-67c4ec720a58c7837f5d39513105b7a3"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_2732a421820bdc65d5d45802e777df1b&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-707ab450b73b9415151b2d9d2541d8fe"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "before=vs_df4410be8530eabbd606a0e5375b53db&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-89410dbb41c56f8494a7a6c542f0ff05"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-804fcd201d6d651731f13570fb2231ed"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-cea40cf442c0bcf2801e669363a9fa55"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-f39c6b65ab507b5ad6d9f9e2fb1a3c8f"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-eecfd07bc5b5acbfdb46831786cf8c1e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_fcd2b4f9de37ebfc84593cc02714fac7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-e22094f9d287ffb3b5cb650c324468c3"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=asc",
+          "status": 200,
+          "trace": "req-7eec976e2d195747a1cfca7a182b48e4"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_04cc47f2577f69c05621bd807644737c&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-109be1c5397519fe0110e03c3dde9d2e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&filter=completed&limit=2&order=desc",
+          "status": 200,
+          "trace": "req-2367fab21551a2f6981bff1b8bdb0880"
+        }
+      ]
+    },
+    "node-6.34.0": {
+      "sdk": "node-6.34.0",
+      "pages": [
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_2732a421820bdc65d5d45802e777df1b",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_2732a421820bdc65d5d45802e777df1b",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": false
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_2732a421820bdc65d5d45802e777df1b",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        }
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=asc&before=vs_282df43c2d8b316c7e8ec02a90cf14c9&limit=2",
+          "status": 200,
+          "trace": "req-b5cbe7a43e2796c9a5b4f4c537c762e1"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=asc&before=vs_df4410be8530eabbd606a0e5375b53db&limit=2",
+          "status": 200,
+          "trace": "req-c2ab4fcae3f83561c3063648bfc99ff8"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=desc&before=vs_2732a421820bdc65d5d45802e777df1b&limit=2",
+          "status": 200,
+          "trace": "req-ec2be59585ee847bfb6eeb9f9eb3e48f"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=desc&before=vs_df4410be8530eabbd606a0e5375b53db&limit=2",
+          "status": 200,
+          "trace": "req-8c24549cf08c9b619e6fc42487cdc886"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=asc&before=file_fcd2b4f9de37ebfc84593cc02714fac7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-e1a4ddb4703720b7105fbdcb2c0776d9"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=asc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-fa4410bd6b18c0beb3f77e487e45b68a"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=desc&before=file_04cc47f2577f69c05621bd807644737c&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-016f89676dd5d2d87b6a79d012d25ce6"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=desc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-74742fc27bda070b5e0775f0b9bfcaca"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=asc&before=file_fcd2b4f9de37ebfc84593cc02714fac7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-1422bf31131d02dc3e01f6460805a175"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=asc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-c8eaea70c6eb19a45d6d061806281c69"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=desc&before=file_04cc47f2577f69c05621bd807644737c&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-b6b73a306b795781374228158d873d57"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=desc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-cc900f13229157c28674c613fe41893a"
+        }
+      ]
+    },
+    "node-7.47.0": {
+      "sdk": "node-7.47.0",
+      "pages": [
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "asc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_2732a421820bdc65d5d45802e777df1b",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_2732a421820bdc65d5d45802e777df1b",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": false
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_2732a421820bdc65d5d45802e777df1b",
+          "ids": [
+            "vs_df4410be8530eabbd606a0e5375b53db",
+            "vs_5a044c86fbb5f50f274435b89ed748ed"
+          ],
+          "first": "vs_df4410be8530eabbd606a0e5375b53db",
+          "last": "vs_5a044c86fbb5f50f274435b89ed748ed",
+          "more": true
+        },
+        {
+          "resource": "stores",
+          "order": "desc",
+          "before": "vs_df4410be8530eabbd606a0e5375b53db",
+          "ids": [
+            "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+            "vs_fd47e90929be94d478ca88fcea38d09f"
+          ],
+          "first": "vs_282df43c2d8b316c7e8ec02a90cf14c9",
+          "last": "vs_fd47e90929be94d478ca88fcea38d09f",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "asc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_04cc47f2577f69c05621bd807644737c",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_04cc47f2577f69c05621bd807644737c",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": false
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_04cc47f2577f69c05621bd807644737c",
+          "ids": [
+            "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+            "file_26651130f1cac95750744c48f847437a"
+          ],
+          "first": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "last": "file_26651130f1cac95750744c48f847437a",
+          "more": true
+        },
+        {
+          "resource": "batch_files",
+          "order": "desc",
+          "before": "file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+          "ids": [
+            "file_fcd2b4f9de37ebfc84593cc02714fac7",
+            "file_a3ae7b2cd244038cb81bf939c7930903"
+          ],
+          "first": "file_fcd2b4f9de37ebfc84593cc02714fac7",
+          "last": "file_a3ae7b2cd244038cb81bf939c7930903",
+          "more": false
+        }
+      ],
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=asc&before=vs_282df43c2d8b316c7e8ec02a90cf14c9&limit=2",
+          "status": 200,
+          "trace": "req-b0ff5ecd3e5bae8f95e959731c547a40"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=asc&before=vs_df4410be8530eabbd606a0e5375b53db&limit=2",
+          "status": 200,
+          "trace": "req-7dd0ae7708d2b4a087167cd1984b3dc5"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=desc&before=vs_2732a421820bdc65d5d45802e777df1b&limit=2",
+          "status": 200,
+          "trace": "req-20826378c98bea5924809c8962c487d4"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "order=desc&before=vs_df4410be8530eabbd606a0e5375b53db&limit=2",
+          "status": 200,
+          "trace": "req-ff9adf8489bdc7bb2cee61fab58f8ff1"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=asc&before=file_fcd2b4f9de37ebfc84593cc02714fac7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-643aff1e7ac231cfb731652238fab767"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=asc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-2da276510067304ab3ff264067f127aa"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=desc&before=file_04cc47f2577f69c05621bd807644737c&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-84a41ed95c9d8c2190b6dcb4a417cec1"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/files",
+          "query": "order=desc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-f775e27de20f47e5ddc033f56a24cb35"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=asc&before=file_fcd2b4f9de37ebfc84593cc02714fac7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-97c6b13992989ee4f183dc6cdafc2fe7"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=asc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-539f43296fe51ca4467b01458db2d5be"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=desc&before=file_04cc47f2577f69c05621bd807644737c&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-ccf772ca9535e422edeedef1224bacae"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f/file_batches/vsfb_ef2d353076a65e1c53a745a5ec50ac19/files",
+          "query": "order=desc&before=file_8c05fd5c734ecbd3bf37ddc63434a4b7&limit=2&filter=completed",
+          "status": 200,
+          "trace": "req-8c8491ac7f94e51033f8e89ccd156d55"
+        }
+      ]
+    }
+  },
+  "name_updates": {
+    "python-2.8.1": {
+      "sdk": "python-2.8.1",
+      "store": "vs_fd47e90929be94d478ca88fcea38d09f",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-3a0172da624d67dddb614dc925526a08",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-fbab3a9e2778a556ae3242cf4bb4c0d4",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-fc3d89ccdf0b3aec1e231fa3d4d67f19",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-d0b15ecba6c6569d7157c51c75dde519",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "python-2.33.0": {
+      "sdk": "python-2.33.0",
+      "store": "vs_fd47e90929be94d478ca88fcea38d09f",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-1426c8e078c6954621430aa7e5eb9cd2",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-01194a9b0ad20c983d209d01f0a74ddc",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-136373e992a5199bdc612db90e884cb3",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-678971c9c383ce3b03bcf3eb37f0762a",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "python-3.42.1": {
+      "sdk": "python-3.42.1",
+      "store": "vs_fd47e90929be94d478ca88fcea38d09f",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-dde33685a1a397b2584d1ff60dff70f5",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-93acd450515aa884ceffc11aecb0883a",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-6ff32c76dab2e9c04d1df21101053622",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-656f874528aefe49ef2f0b535874d4f7",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "python-3.55.1": {
+      "sdk": "python-3.55.1",
+      "store": "vs_fd47e90929be94d478ca88fcea38d09f",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-6eea129460c16c501957e8b77d634a29",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-3caefd836e206dcbddc8b9197482570d",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "status": 200,
+          "trace": "req-c8fd932e1c12292f4d21a4e8ffab2a1e",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-569df628c651f70c8f4201b70743c66d",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "node-6.34.0": {
+      "sdk": "node-6.34.0",
+      "store": "vs_fd47e90929be94d478ca88fcea38d09f",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "status": 200,
+          "trace": "req-eb73462e5ecadb3fb17614ee0e6e1577",
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "body": {
+            "name": null
+          },
+          "status": 200,
+          "trace": "req-028a09cb33843a8a594ea0787d20596c",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "body": null,
+          "status": 200,
+          "trace": "req-018bdfae1aff7e757d416d5b76fd1d20",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "body": null,
+          "status": 200,
+          "trace": "req-bd4f9d1866b5fd81ae6bdd99fc8be0e1",
+          "name": ""
+        }
+      ],
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ]
+    },
+    "node-7.47.0": {
+      "sdk": "node-7.47.0",
+      "store": "vs_fd47e90929be94d478ca88fcea38d09f",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "status": 200,
+          "trace": "req-6d05126fd7e2cd0882d918ccbcf63771",
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "body": {
+            "name": null
+          },
+          "status": 200,
+          "trace": "req-83f3903a623e193ee4e2911c86be5ff6",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+          "query": "",
+          "body": null,
+          "status": 200,
+          "trace": "req-6f078c59f62ba844040b75b78b4335d8",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "body": null,
+          "status": 200,
+          "trace": "req-801fa5f3780f170761045d0219f42385",
+          "name": ""
+        }
+      ],
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ]
+    }
+  },
+  "chat": {
+    "answer": "606",
+    "source_revision": 606,
+    "usage": {
+      "completion_tokens": 4,
+      "prompt_tokens": 107,
+      "total_tokens": 111,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null
+    },
+    "finish_reason": "stop",
+    "requests": [
+      {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "query": "",
+        "status": 200,
+        "trace": "req-965874d394ad9e100c444444a9b94aa1"
+      }
+    ],
+    "sdk": "python-3.55.1"
+  },
+  "cleanup": {
+    "deleted_stores": 5,
+    "deleted_files": 5,
+    "requests": [
+      {
+        "method": "DELETE",
+        "path": "/v1/vector_stores/vs_2732a421820bdc65d5d45802e777df1b",
+        "query": "",
+        "status": 200,
+        "trace": "req-aca83d15e69a5f8d1163445193de82ee"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/vector_stores/vs_5a044c86fbb5f50f274435b89ed748ed",
+        "query": "",
+        "status": 200,
+        "trace": "req-5092d564318da6aa345e67b6eeb9069e"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/vector_stores/vs_df4410be8530eabbd606a0e5375b53db",
+        "query": "",
+        "status": 200,
+        "trace": "req-8c2f4060a0518247d60b339d97dbf447"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/vector_stores/vs_fd47e90929be94d478ca88fcea38d09f",
+        "query": "",
+        "status": 200,
+        "trace": "req-0de8d704f8f9cf8f08ca633af680c5fd"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/vector_stores/vs_282df43c2d8b316c7e8ec02a90cf14c9",
+        "query": "",
+        "status": 200,
+        "trace": "req-1825de6a76dc1072b66dd6f4a0201a27"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_04cc47f2577f69c05621bd807644737c",
+        "query": "",
+        "status": 200,
+        "trace": "req-4ea6b65dbbbe6b25423d81944aa9b5da"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_26651130f1cac95750744c48f847437a",
+        "query": "",
+        "status": 200,
+        "trace": "req-5eeeee9ea5d202ba911d07b04486c4d1"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_8c05fd5c734ecbd3bf37ddc63434a4b7",
+        "query": "",
+        "status": 200,
+        "trace": "req-abc22df0c26f32c843ecd4e6b855fd57"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_a3ae7b2cd244038cb81bf939c7930903",
+        "query": "",
+        "status": 200,
+        "trace": "req-fa9d45d00d57417da01e3466b52a1aba"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_fcd2b4f9de37ebfc84593cc02714fac7",
+        "query": "",
+        "status": 200,
+        "trace": "req-ba5c288c0743ddb5ac64a675c4d798f6"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores",
+        "query": "limit=1",
+        "status": 200,
+        "trace": "req-ffab8555559902e5730054de6db829ea"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/files",
+        "query": "limit=1",
+        "status": 200,
+        "trace": "req-654482eb261b74dfe1ce1510576267b2"
+      }
+    ],
+    "sdk": "python-3.55.1"
+  }
+}

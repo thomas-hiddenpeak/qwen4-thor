@@ -26,12 +26,14 @@ ObjectReply SelectFilePage(std::vector<Json> rows, const Json& page,
       (!filter.empty() && filter != "in_progress" && filter != "completed" &&
        filter != "failed" && filter != "cancelled"))
     return Invalid("Invalid file pagination", "query");
+  const bool backward = !before.empty();
+  const bool descending = (order == "desc") != backward;
   std::sort(rows.begin(), rows.end(), [&](const auto& a, const auto& b) {
     const auto x = std::pair(a.GetInt("created_at"), a.GetString("file_id"));
     const auto y = std::pair(b.GetInt("created_at"), b.GetString("file_id"));
-    return order == "desc" ? x > y : x < y;
+    return descending ? x > y : x < y;
   });
-  size_t begin = 0, end = rows.size();
+  size_t begin = 0;
   if (!after.empty() || !before.empty()) {
     const auto cursor = after.empty() ? before : after;
     const auto found = std::find_if(
@@ -39,13 +41,9 @@ ObjectReply SelectFilePage(std::vector<Json> rows, const Json& page,
         [&](const auto& r) { return r.GetString("file_id") == cursor; });
     if (found == rows.end())
       return Invalid("Cursor is not in this list", "query");
-    const auto position = static_cast<size_t>(found - rows.begin());
-    if (after.empty())
-      end = position;
-    else
-      begin = position + 1;
+    begin = static_cast<size_t>(found - rows.begin()) + 1;
   }
-  for (size_t i = begin; i < end; ++i) {
+  for (size_t i = begin; i < rows.size(); ++i) {
     if (rows[i].GetBool("detached") ||
         (!filter.empty() && rows[i].GetString("status") != filter))
       continue;
@@ -55,6 +53,7 @@ ObjectReply SelectFilePage(std::vector<Json> rows, const Json& page,
     }
     selected->push_back(std::move(rows[i]));
   }
+  if (backward) std::ranges::reverse(*selected);
   return {};
 }
 ObjectReply FilePage(Json items, bool more) {

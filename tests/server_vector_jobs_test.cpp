@@ -512,6 +512,52 @@ ObjectReply Raw(ObjectStore& objects, ObjectKind kind, const std::string& id) {
 }
 }  // namespace
 
+Q4T_TEST(vector_store_and_batch_before_skip_filtered_files_in_both_orders) {
+  Fixture fixture(10000, 100);
+  ObjectStore objects(fixture.objects);
+  VectorStores stores(objects);
+  auto seed = BatchSources(objects, 6);
+  CreateBatch(objects, &seed);
+  const auto full = stores.ListFiles(Access(), seed.store,
+                                     Object({{"order", String("asc")}}));
+  Q4T_CHECK(Ok(full) && full.value.GetArray("data")->array.size() == 6);
+  const auto hidden = full.value.GetArray("data")->array[3].GetString("id");
+  VectorIngestionClaim claim;
+  Q4T_CHECK(
+      Ok(stores.Claim(Access(), seed.store, hidden, "reader", 60, &claim)));
+  Q4T_CHECK(Ok(stores.Fail(Access(), claim, "invalid_file", "fixture")));
+  for (const auto* order : {"asc", "desc"}) {
+    for (const bool batch : {false, true}) {
+      const auto list = [&](const Json& query) {
+        return batch
+                   ? stores.ListBatchFiles(Access(), seed.store, seed.id, query)
+                   : stores.ListFiles(Access(), seed.store, query);
+      };
+      auto query =
+          Object({{"order", String(order)}, {"filter", String("in_progress")}});
+      const auto eligible = list(query);
+      Q4T_CHECK(Ok(eligible) &&
+                eligible.value.GetArray("data")->array.size() == 5);
+      const auto& rows = eligible.value.GetArray("data")->array;
+      Set(&query, "limit", Number(2));
+      Set(&query, "before", *rows.back().Find("id"));
+      for (int end : {4, 2}) {
+        const auto page = list(query);
+        Q4T_CHECK(
+            Ok(page) && page.value.GetArray("data")->array.size() == 2 &&
+            page.value.GetString("first_id") == rows[end - 2].GetString("id") &&
+            page.value.GetString("last_id") == rows[end - 1].GetString("id") &&
+            page.value.GetBool("has_more") == (end > 2));
+        Set(&query, "before", *page.value.Find("first_id"));
+      }
+      const auto empty = list(query);
+      Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+                !empty.value.GetBool("has_more"));
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(vector_batches_options_pagination_and_atomic_membership) {
   Fixture f;
   ObjectStore objects(f.objects);
@@ -861,6 +907,36 @@ Q4T_TEST(vector_api_exact_routes_and_reserved_client_lanes) {
   return true;
 }
 
+Q4T_TEST(vector_store_list_before_returns_nearest_page_in_both_orders) {
+  Fixture fixture(10000, 100);
+  ObjectStore objects(fixture.objects);
+  const std::string path = "/v1/vector_stores";
+  for (int i = 0; i < 6; ++i)
+    Q4T_CHECK(Ok(Api(fixture, objects, "POST", path, "{}")));
+  for (const std::string order : {"asc", "desc"}) {
+    const auto list = path + "?order=" + order;
+    const auto all = Api(fixture, objects, "GET", list);
+    Q4T_CHECK(Ok(all) && all.value.GetArray("data")->array.size() == 6);
+    const auto& rows = all.value.GetArray("data")->array;
+    auto cursor = rows.back().GetString("id");
+    for (int end : {5, 3, 1}) {
+      const auto page =
+          Api(fixture, objects, "GET", list + "&limit=2&before=" + cursor);
+      const int first = end > 2 ? end - 2 : 0;
+      Q4T_CHECK(
+          Ok(page) &&
+          page.value.GetString("first_id") == rows[first].GetString("id") &&
+          page.value.GetString("last_id") == rows[end - 1].GetString("id") &&
+          page.value.GetBool("has_more") == (first > 0));
+      cursor = page.value.GetString("first_id");
+    }
+    const auto empty = Api(fixture, objects, "GET", list + "&before=" + cursor);
+    Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+              !empty.value.GetBool("has_more"));
+  }
+  return true;
+}
+
 Q4T_TEST(vector_api_store_crud_and_bidirectional_pagination) {
   Fixture f(10000, 100);
   std::vector<std::string> ids;
@@ -887,10 +963,44 @@ Q4T_TEST(vector_api_store_crud_and_bidirectional_pagination) {
   Q4T_CHECK(before.value.GetString("first_id") == first_id);
   auto updated = Api(f, objects, "POST", StorePath(ids[0]),
                       R"({"name":null,"metadata":null,"expires_after":null})");
-  Q4T_CHECK(Ok(updated) && updated.value.Find("name")->IsNull());
+  Q4T_CHECK(Ok(updated) && updated.value.GetString("name", "missing").empty());
   auto removed = Api(f, objects, "DELETE", StorePath(ids[0]));
   Q4T_CHECK(Ok(removed) && removed.value.GetBool("deleted"));
   Q4T_CHECK(Api(f, objects, "GET", StorePath(ids[0])).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(vector_api_legacy_null_name_is_a_string_on_retrieve_and_list) {
+  Fixture fixture(10000, 100);
+  std::string id;
+  {
+    ObjectStore objects(fixture.objects);
+    const auto created = Api(fixture, objects, "POST", "/v1/vector_stores",
+                             R"({"name":"older store"})");
+    Q4T_CHECK(Ok(created));
+    id = created.value.GetString("id");
+    auto old = Raw(objects, ObjectKind::kVectorStore, id);
+    Q4T_CHECK(Ok(old));
+    ObjectRequest write;
+    write.operation = ObjectOperation::kPut;
+    write.kind = ObjectKind::kVectorStore;
+    write.scope = Access().scope;
+    write.id = id;
+    write.ttl_seconds = 0;
+    write.created_at = old.value.GetInt("created_at");
+    write.expected_revision = old.value.GetInt("revision");
+    write.data = *old.value.Find("data");
+    Set(&Field(write.data, "vector_store"), "name", Json());
+    Q4T_CHECK(Ok(objects.Execute(write, Access().deadline)));
+  }
+  ObjectStore objects(fixture.objects);
+  auto item = Api(fixture, objects, "GET", StorePath(id));
+  Q4T_CHECK(Ok(item) && item.value.GetString("name", "missing").empty());
+  auto list = Api(fixture, objects, "GET", "/v1/vector_stores");
+  Q4T_CHECK(Ok(list) && list.value.GetArray("data")->array.size() == 1);
+  const auto& row = list.value.GetArray("data")->array[0];
+  Q4T_CHECK(row.GetString("id") == id &&
+            row.GetString("name", "missing").empty());
   return true;
 }
 

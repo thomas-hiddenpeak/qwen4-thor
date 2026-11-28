@@ -66,7 +66,7 @@ GET,/batches,,,,,,batch-gateway-restore/200=2 batch-model-restore/200=2
 GET,/batches/{batch_id},,,,batch-gateway-checkpoint/200=2 batch-model-checkpoint/200=2,,batch-gateway-restore/200=2 batch-gateway-restore/404=1 batch-model-restore/200=2 batch-model-restore/404=1
 POST,/batches/{batch_id}/cancel,,,,batch-gateway-submit/200=2 batch-gateway-submit/404=1 batch-gateway-submit/429=1 batch-model-submit/200=2 batch-model-submit/404=1 batch-model-submit/429=1,,batch-gateway-restore/200=1 batch-gateway-restore/409=1 batch-model-restore/200=1 batch-model-restore/409=1
 GET,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
-POST,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1 speech-tls/200=1,chats/200=1,batch-gateway-restore/200=1 batch-model-restore/200=1 chats/200=1
+POST,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1 speech-tls/200=1 vector-store-lifecycle/200=1,chats/200=1,batch-gateway-restore/200=1 batch-model-restore/200=1 chats/200=1
 GET,/chat/completions/{completion_id},chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2
 POST,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
 DELETE,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
@@ -110,11 +110,11 @@ DELETE,/evals/{eval_id}/runs/{run_id},,,,,,
 POST,/evals/{eval_id}/runs/{run_id}/cancel,,,,,,
 GET,/evals/{eval_id}/runs/{run_id}/output_items,,,,,,
 GET,/evals/{eval_id}/runs/{run_id}/output_items/{output_item_id},,,,,,
-GET,/files,,uploads/200=1 vectors/200=1,,uploads/200=1 vectors/200=1,,
-POST,/files,uploads/200=1 vectors/200=2,,,batch-gateway-submit/200=2 batch-model-submit/200=2,,vectors/200=2
-DELETE,/files/{file_id},uploads/200=1,uploads/200=1 vectors/200=2,uploads/200=1,vectors/200=2,,batch-gateway-restore/200=3 batch-model-restore/200=3
+GET,/files,,uploads/200=1 vectors/200=1,,uploads/200=1 vector-store-lifecycle/200=1 vectors/200=1,,
+POST,/files,uploads/200=1 vectors/200=2,,,batch-gateway-submit/200=2 batch-model-submit/200=2 vector-store-lifecycle/200=5,,vectors/200=2
+DELETE,/files/{file_id},uploads/200=1,uploads/200=1 vectors/200=2,uploads/200=1,vector-store-lifecycle/200=5 vectors/200=2,,batch-gateway-restore/200=3 batch-model-restore/200=3
 GET,/files/{file_id},,uploads/404=1 vectors/200=2,,uploads/200=1 uploads/404=1 vectors/200=2,,
-GET,/files/{file_id}/content,uploads/200=1,uploads/200=1,,batch-gateway-checkpoint/200=1 batch-model-checkpoint/200=1,,batch-gateway-restore/200=1 batch-model-restore/200=1
+GET,/files/{file_id}/content,uploads/200=1,uploads/200=1,,batch-gateway-checkpoint/200=1 batch-model-checkpoint/200=1 vector-store-lifecycle/200=1,,batch-gateway-restore/200=1 batch-model-restore/200=1
 POST,/images/edits,,,,,,
 POST,/images/generations,,,,,,
 POST,/images/variations,,,,,,
@@ -196,16 +196,16 @@ POST,/vaults/{vault_id}/credentials,,,,,,
 GET,/vaults/{vault_id}/credentials/{credential_id},,,,,,
 POST,/vaults/{vault_id}/credentials/{credential_id},,,,,,
 DELETE,/vaults/{vault_id}/credentials/{credential_id},,,,,,
-GET,/vector_stores,,,,,,
-POST,/vector_stores,vectors/200=1,,,,,vectors/200=1
-GET,/vector_stores/{vector_store_id},,,,,,
-POST,/vector_stores/{vector_store_id},,,,,,
-DELETE,/vector_stores/{vector_store_id},,vectors/200=1,,vectors/200=1,,
-POST,/vector_stores/{vector_store_id}/file_batches,vectors/200=1,,,,,vectors/200=1
-GET,/vector_stores/{vector_store_id}/file_batches/{batch_id},vectors/200=8,vectors/200=1 vectors/404=1,,vectors/200=1 vectors/404=1,,vectors/200=3
+GET,/vector_stores,vector-store-pages-and-name-python-2.8.1/200=5,vector-store-pages-and-name-python-2.33.0/200=5,vector-store-pages-and-name-python-3.42.1/200=5,vector-store-fallback-prepare/200=4 vector-store-fallback-restore/200=5 vector-store-lifecycle/200=2 vector-store-pages-and-name-python-3.55.1/200=5 vector-store-primary-prepare/200=4 vector-store-primary-restore/200=5,vector-store-pages-and-name-node-6.34.0/200=5,vector-store-pages-and-name-node-7.47.0/200=5
+POST,/vector_stores,vectors/200=1,,,vector-store-fallback-prepare/200=5 vector-store-lifecycle/200=5 vector-store-primary-prepare/200=5,,vectors/200=1
+GET,/vector_stores/{vector_store_id},vector-store-pages-and-name-python-2.8.1/200=1,vector-store-pages-and-name-python-2.33.0/200=1,vector-store-pages-and-name-python-3.42.1/200=1,vector-store-fallback-prepare/200=1 vector-store-fallback-prepare/404=1 vector-store-fallback-restore/200=1 vector-store-fallback-restore/404=1 vector-store-pages-and-name-python-3.55.1/200=1 vector-store-primary-prepare/200=1 vector-store-primary-prepare/404=1 vector-store-primary-restore/200=1 vector-store-primary-restore/404=1,vector-store-pages-and-name-node-6.34.0/200=1,vector-store-pages-and-name-node-7.47.0/200=1
+POST,/vector_stores/{vector_store_id},vector-store-pages-and-name-python-2.8.1/200=2,vector-store-pages-and-name-python-2.33.0/200=2,vector-store-pages-and-name-python-3.42.1/200=2,vector-store-fallback-prepare/200=1 vector-store-pages-and-name-python-3.55.1/200=2 vector-store-primary-prepare/200=1,vector-store-pages-and-name-node-6.34.0/200=2,vector-store-pages-and-name-node-7.47.0/200=2
+DELETE,/vector_stores/{vector_store_id},,vectors/200=1,,vector-store-fallback-restore/200=5 vector-store-lifecycle/200=5 vector-store-primary-restore/200=5 vectors/200=1,,
+POST,/vector_stores/{vector_store_id}/file_batches,vectors/200=1,,,vector-store-lifecycle/200=1,,vectors/200=1
+GET,/vector_stores/{vector_store_id}/file_batches/{batch_id},vectors/200=8,vectors/200=1 vectors/404=1,,vector-store-lifecycle/200=8 vectors/200=1 vectors/404=1,,vectors/200=3
 POST,/vector_stores/{vector_store_id}/file_batches/{batch_id}/cancel,,,,,,
-GET,/vector_stores/{vector_store_id}/file_batches/{batch_id}/files,,vectors/200=2,,vectors/200=2,,
-GET,/vector_stores/{vector_store_id}/files,,,,,,
+GET,/vector_stores/{vector_store_id}/file_batches/{batch_id}/files,vector-store-pages-and-name-python-2.8.1/200=4,vector-store-pages-and-name-python-2.33.0/200=4 vectors/200=2,vector-store-pages-and-name-python-3.42.1/200=4,vector-store-lifecycle/200=1 vector-store-pages-and-name-python-3.55.1/200=4 vectors/200=2,vector-store-pages-and-name-node-6.34.0/200=4,vector-store-pages-and-name-node-7.47.0/200=4
+GET,/vector_stores/{vector_store_id}/files,vector-store-pages-and-name-python-2.8.1/200=4,vector-store-pages-and-name-python-2.33.0/200=4,vector-store-pages-and-name-python-3.42.1/200=4,vector-store-lifecycle/200=1 vector-store-pages-and-name-python-3.55.1/200=4,vector-store-pages-and-name-node-6.34.0/200=4,vector-store-pages-and-name-node-7.47.0/200=4
 POST,/vector_stores/{vector_store_id}/files,,,,,,
 GET,/vector_stores/{vector_store_id}/files/{file_id},,,,,,
 DELETE,/vector_stores/{vector_store_id}/files/{file_id},,,,,,
