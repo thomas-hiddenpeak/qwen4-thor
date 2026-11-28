@@ -1,0 +1,138 @@
+{
+  "stage": "candidate_stalled_and_closed_diagnostic_http_verified",
+  "issued": false,
+  "predecessor_revision": 590,
+  "predecessor_manifest": "7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652",
+  "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
+  "cpu_source": "53a0446624f39301f9f299d0d3698ded702cf7de",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "serve_option_cases": [
+      "readable",
+      "full_pipe",
+      "closed_pipe",
+      "full_socket"
+    ],
+    "model_pid": 1967386,
+    "start_ticks": 400997959,
+    "stalled_worker_tid": 1967388,
+    "stalled_wchan": "pipe_write",
+    "filled_bytes": 65536,
+    "resumed_log_trace": "req-089386af919a93c3e7b14d793a56e596",
+    "answer_while_full": "42",
+    "original_flags_preserved": true,
+    "answer": "42",
+    "error_before": 400,
+    "error_after": 400,
+    "reader_closed": true,
+    "backend_diagnostic_observed": true,
+    "same_process_ready": true,
+    "model_exit": 0,
+    "clients": {},
+    "requests": 5,
+    "seconds": 35.279
+  },
+  "requests": [
+    {
+      "status": 400,
+      "trace": "req-7af6adaffea5ae896e70fbab7ee2eac6",
+      "body": {
+        "error": {
+          "message": "temperature must be in [0,2] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    {
+      "status": 400,
+      "trace": "req-089386af919a93c3e7b14d793a56e596",
+      "body": {
+        "error": {
+          "message": "temperature must be in [0,2] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    {
+      "status": 200,
+      "trace": "req-994b2e4a1b0f85a0bbc972520d669c5d",
+      "body": {
+        "id": "chatcmpl-auto-bbd20ce24b66b50903fa13be2e4b13cf",
+        "object": "chat.completion",
+        "created": 1795819930,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "42"
+            },
+            "finish_reason": "stop",
+            "logprobs": null
+          }
+        ],
+        "service_tier": "default",
+        "usage": {
+          "prompt_tokens": 98,
+          "completion_tokens": 3,
+          "total_tokens": 101
+        }
+      }
+    },
+    {
+      "status": 400,
+      "trace": "req-465af4f541b75c588931392f4167879b",
+      "body": {
+        "error": {
+          "message": "temperature must be in [0,2] or null",
+          "type": "invalid_request_error",
+          "code": "invalid_request",
+          "param": "temperature"
+        }
+      }
+    },
+    {
+      "status": 200,
+      "trace": "req-6dcc9c41e0c37aa875c02b0814944d04",
+      "body": {
+        "id": "chatcmpl-auto-b7d41cc4bf6d3e270be9fe8b8130a7d8",
+        "object": "chat.completion",
+        "created": 1795819930,
+        "model": "qwen3.8-flash-next",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "42"
+            },
+            "finish_reason": "stop",
+            "logprobs": null
+          }
+        ],
+        "service_tier": "default",
+        "usage": {
+          "prompt_tokens": 98,
+          "completion_tokens": 3,
+          "total_tokens": 101
+        }
+      }
+    }
+  ],
+  "before_log_confirmed": "req-7af6adaffea5ae896e70fbab7ee2eac6",
+  "first_request_log_sha256": "3497633eac5d84130d3c3fc8090b501bed1759a15bd9f2e31b0626d51c7e55f8",
+  "resource_protection_count": 20,
+  "lease_sha256": "180f353e9989a72885a35d49914169c83d7642b8a179c22ff412fc5caa455eab",
+  "nvml_samples": 35,
+  "plan_sha256": "0159c2b4f9eb5a139635b0f14e12cb2ea7aa5396e5550d225e6ee482d9366528",
+  "driver_sha256": "744be747d03e6f5574a474e94df6edb756aadd879a9ceb4d88c15159c28c9314",
+  "descriptor_exhaustion_cpu_sha256": "ef9b0d76904a0fbe0d437ea0d652bfda643f01c2243255c0460a4e66e087a1e6"
+}

@@ -1,0 +1,91 @@
+{
+  "stage": "diagnostic_output_primary_light",
+  "issued": false,
+  "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "roles": {
+    "primary": {
+      "sha256": "5a5879ea1de47cf1305740fb77325db186fea07f4ee128cb22c610f20843260d",
+      "diagnostic": {
+        "pid": 1969213,
+        "start_ticks": 401003860,
+        "stderr": "socket:[83556507]",
+        "producer_nonblocking": true,
+        "status": 400,
+        "trace": "req-82ae5dd78f4641e45b221eff3df90c9a",
+        "body": {
+          "error": {
+            "message": "temperature must be in [0,2] or null",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": "temperature"
+          }
+        },
+        "log_offset": 3592
+      },
+      "seconds": 36.731264642905444,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 70
+      },
+      "mtp": true,
+      "returned_chat": "42",
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      }
+    },
+    "light": {
+      "sha256": "cad2a869b6c8dd5f0ff443ae861088a285e62129f269d2c966a789f27fb2fbe7",
+      "diagnostic": {
+        "pid": 1970296,
+        "start_ticks": 401007532,
+        "stderr": "socket:[83550100]",
+        "producer_nonblocking": true,
+        "status": 400,
+        "trace": "req-61b06a08c8f83d8428b8e347d42feae9",
+        "body": {
+          "error": {
+            "message": "temperature must be in [0,2] or null",
+            "type": "invalid_request_error",
+            "code": "invalid_request",
+            "param": "temperature"
+          }
+        },
+        "log_offset": 5086
+      },
+      "seconds": 33.66705633606762,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 68
+      },
+      "mtp": false,
+      "returned_chat": "42",
+      "cleanup": {
+        "model_exit": 0,
+        "ports_released": true,
+        "remaining": []
+      }
+    }
+  },
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 68,
+    "cleanup_complete": true
+  },
+  "registry_acceptance_sha256": "b2fc75e25e44b1a0fff0f577201cfca1108c46df462a02b88f92be1d60e1b6e7",
+  "lease_sha256": "7a05837691a1019f0df76e697a772bee8b31fd5b368fb598f600283ecc5c2934",
+  "lifecycle_sha256": "990066fefa85e77f4a4fb2c60b423fbed79a4bd4cf2c7d15af82e19974740066",
+  "previous_profiles_reconstruct_exactly": true,
+  "cpu_log_sha256": "219207e4966e1d8ba5bb06afff025ae84dc19b227d14b31245a99e7ea188a6fa",
+  "inventory_log_sha256": "c8c785be8d5ec9d9341a0ae752fed390d630ea0b6818327fba640e775deeb748"
+}

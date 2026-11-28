@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'standalone_diagnostic_output' in plan:
+            from tools.serve_audit import diagnostic_profiles
+            current = profiles[name]['evidence_sha256']
+            current.update(diagnostic_profiles.verify(phase, plan, declared, current))
+            continue
         if 'concurrent_upload_completion' in plan:
             from tools.serve_responses import upload_completion_profiles
             current = profiles[name]['evidence_sha256']

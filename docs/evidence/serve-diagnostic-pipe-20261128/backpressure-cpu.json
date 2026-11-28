@@ -1,0 +1,53 @@
+{
+  "stage": "native_diagnostic_forwarder_verified",
+  "model_starts": 0,
+  "issued": false,
+  "previous_real_cli": {
+    "engine": "6a05aaa97005a100add60e06fbc1241e779b3771c72e31aa422b28eb5241c6eb",
+    "seconds_before_drain": 2,
+    "pre_drain_exit": null,
+    "wait_channel": "pipe_write",
+    "exit_after_drain": 2,
+    "pipe_size": 65536,
+    "model_starts": 0
+  },
+  "candidate_engine": "74d8c09fe61f86a19ef03a509ffad5a3a6186aafcca7904859c8aba09c99bd49",
+  "protocol_files": 1106,
+  "changed_runtime_sources": {
+    "include/q4t/server/serve_diagnostics.h": "000f3beb900d8df599605489cf5e4d5ddb848fccea1fbb28077b8c578e29a606",
+    "src/main.cpp": "ccb2b3b30a64ad924c6ccb681e9f78d42ba5bd419f93130a653a07bcf0684bb7",
+    "src/server/serve_diagnostics.cpp": "18ce6a8664c1a8114519b8e41b8208658f64edceb0855b8c63fe07ef36b19bd7"
+  },
+  "build_warnings": 0,
+  "mutation_checks": 40,
+  "reviewed_source_anchors": 1399,
+  "fixture": {
+    "model_starts": 0,
+    "fixture": "10644322267c22425153e7643a14f85d50c8fa77b6812ac7950ae40cda990dab",
+    "implementation": "18ce6a8664c1a8114519b8e41b8208658f64edceb0855b8c63fe07ef36b19bd7",
+    "regular_diagnostic": true,
+    "closed_reader": true,
+    "full_pipe": true,
+    "full_unix_socket": true,
+    "parent_blocking_flags_preserved": true,
+    "burst_writes": 8192,
+    "bytes_per_burst_write": 4096,
+    "writes_shed": 8131,
+    "burst_seconds": 0.001676,
+    "bytes_drained": 249856,
+    "marker_after_resuming_reader": true,
+    "continued_after_reader_exit": true,
+    "worker_count": 1,
+    "exit_code": 0
+  },
+  "regressions": [
+    "stalled pipe resumes its marker and stays live after closure",
+    "ENOSPC leaves the normal command loop and shutdown available"
+  ],
+  "targeted_sources": {
+    "tools/serve_audit/diagnostic_sink_probe.cpp": "7d714df1957cc3a01987d3754b9525c133a6120ec7ac1117f4a41d0660194bcb",
+    "tools/serve_audit/test_serve_log_pipe.py": "f32b35677c190d027e526f96d70326b0ed9d7c95238176acf73859ccf076697a",
+    "tools/serve_audit/serve_log_pipe.py": "fd265cd13a97fe4c6c1168f92075c1fcfb3af427a052c103aa91bf1080d293ff"
+  },
+  "pending": "direct candidate CLI and real native TLS Chat on occupied/disconnected sink"
+}

@@ -99,3 +99,22 @@ Node 路径指向含 `package.json` 的 openai 目录。调用同一实例的 `p
 ```bash
 python3 -B -m unittest tools.serve_audit.test_upload_receipt
 ```
+
+## 独立 serve 的诊断输出
+
+原生转发器的 CPU 回归可直接运行。用例通过真实管道制造背压，恢复读端后
+核对新日志，并检查日志目的地返回 ENOSPC 时业务能够继续。
+
+```bash
+python3 -B -m unittest tools.serve_audit.test_serve_log_pipe
+```
+
+实际可执行文件的参数校验在加载模型前结束。租约守护器会识别运行中的
+`q4t serve` 命令，因此用同一把设备锁运行实程序检查。输出路径选用
+本次专用的新目录。
+
+```bash
+python3 tools/evalscope/gpu_exclusive.py --compute-backend nvml \
+  --output .q4t-work/serve-log-pipe-cli/lease -- \
+  python3 -B tools/serve_audit/serve_log_pipe.py build/q4t
+```
