@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "scope": "primary and light capacity business",
+  "registered_revision": 604,
+  "candidate": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "acceptance_sha256": "89df3c594a3d596b0cefff5c4a768880b1601d7cd797c7cda707ee178e0ac5de",
+  "lease_sha256": "604fae8c8c9914ff9bfa6ab4e2d8ea9d3ef3920575cfce11c74f78dbcf3f6b12",
+  "roles": {
+    "primary": {
+      "model_starts": 1,
+      "mtp": true,
+      "time_seconds": 48.343091069255024,
+      "response_id": "resp_307e5fdfeba6ca0506f996f1ba31456d",
+      "answer": "604",
+      "token_count": 3,
+      "peer_status": 404,
+      "observed_sdk_posts": 1,
+      "observed_chats": 1,
+      "receipt_sha256": "2d9f28686e3a244e11a29dc1802b8f39d7aedb7ef0a61677d7ddb3dc05772925"
+    },
+    "light": {
+      "model_starts": 1,
+      "mtp": false,
+      "time_seconds": 35.796370070427656,
+      "response_id": "resp_3ea1b0e8c17341c411effdbcdfcec203",
+      "answer": "604",
+      "token_count": 3,
+      "peer_status": 404,
+      "observed_sdk_posts": 1,
+      "observed_chats": 1,
+      "receipt_sha256": "7d750b38a64fff1af1a4894123d715d1df7644cec0091a2ad539251d8516d7ec"
+    }
+  },
+  "qualification": "capacity business observations; package registration is separate"
+}

@@ -454,13 +454,18 @@ Q4T_TEST(conversation_state_metadata_and_query_contract) {
       &options, &error));
   Q4T_CHECK(options.limit == 2 && !options.descending &&
             options.include.size() == 1);
-  for (
-      const auto* text :
-      {R"({"limit":0})", R"({"limit":101})", R"({"limit":2.5})",
-       R"({"limit":"2"})", R"({"order":"wrong"})", R"({"after":"../x"})",
-       R"({"include":["wrong"]})",
-       R"({"include":["reasoning.encrypted_content","reasoning.encrypted_content"]})",
-       R"({"before":"msg_1"})"})
+  Q4T_CHECK(
+      ParseItemViewOptions(Parse(R"({"include":["reasoning.encrypted_content",
+                           "reasoning.encrypted_content"]})"),
+                           &options, &error));
+  Q4T_CHECK(options.include.size() == 1 &&
+            options.include[0] == "reasoning.encrypted_content");
+  for (const auto* text :
+       {R"({"limit":0})", R"({"limit":101})", R"({"limit":2.5})",
+        R"({"limit":"2"})", R"({"order":"wrong"})", R"({"after":"../x"})",
+        R"({"include":["wrong"]})",
+        R"({"include":["reasoning.encrypted_content",null]})",
+        R"({"before":"msg_1"})"})
     Q4T_CHECK(!ParseItemViewOptions(Parse(text), &options, &error));
   Q4T_CHECK(
       !ParseItemViewOptions(Parse(R"({"limit":2})"), &options, &error, false));

@@ -1,0 +1,52 @@
+{
+  "status": "PASS_CAPACITY",
+  "history": "ACCEPT_RESPONSE_PROJECTIONS_PRIMARY_LIGHT",
+  "roles": {
+    "primary": {
+      "model_starts": 1,
+      "mtp": true,
+      "time_seconds": 48.343091069255024,
+      "response_id": "resp_307e5fdfeba6ca0506f996f1ba31456d",
+      "answer": "604",
+      "token_count": 3,
+      "peer_status": 404,
+      "observed_sdk_posts": 1,
+      "observed_chats": 1,
+      "receipt_sha256": "2d9f28686e3a244e11a29dc1802b8f39d7aedb7ef0a61677d7ddb3dc05772925",
+      "profile": "31fbe427aba04806de3fbba73d1791fa978971abcd9673eb5f3ff5afb55659a1"
+    },
+    "light": {
+      "model_starts": 1,
+      "mtp": false,
+      "time_seconds": 35.796370070427656,
+      "response_id": "resp_3ea1b0e8c17341c411effdbcdfcec203",
+      "answer": "604",
+      "token_count": 3,
+      "peer_status": 404,
+      "observed_sdk_posts": 1,
+      "observed_chats": 1,
+      "receipt_sha256": "7d750b38a64fff1af1a4894123d715d1df7644cec0091a2ad539251d8516d7ec",
+      "profile": "42cd56e78f9a7128c4a77ba3e3a8e6f510896eacf09f4e317f5cc95d2b7e94d6"
+    }
+  },
+  "engine": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "lease_sha256": "604fae8c8c9914ff9bfa6ab4e2d8ea9d3ef3920575cfce11c74f78dbcf3f6b12",
+  "previous_revision": 604,
+  "observations_sha256": "661e7086f42cd4464711c2e721189ac43ec45901ac328f070b96de512ae1092b",
+  "accepted_sha256": "98361ca69833363e37605e72c472ac0b97bc8273979cb375778e7943722d2cbf",
+  "capacity_business": "80499d98cd894b727144dc4e72312a32a08433e9f66d69b22535823a9db90e11",
+  "invalid_history_controls": {
+    "primary": {
+      "prior": "2aff60937a1f930e7f825cddf32f2a4a2fa1e2d9cee3764829e9394237c1a1f1",
+      "receipt": "2d9f28686e3a244e11a29dc1802b8f39d7aedb7ef0a61677d7ddb3dc05772925",
+      "invalid_histories_denied": 2
+    },
+    "light": {
+      "prior": "8e4b624d76b8be197dc2d7e2044f9e2cd19b92339f72bdda60125f82bc00c37e",
+      "receipt": "7d750b38a64fff1af1a4894123d715d1df7644cec0091a2ad539251d8516d7ec",
+      "invalid_histories_denied": 2
+    }
+  },
+  "release": "candidate"
+}

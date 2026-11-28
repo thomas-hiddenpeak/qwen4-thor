@@ -9,6 +9,7 @@ import re
 from urllib.parse import parse_qsl
 
 from .producer_sdk_evidence import issued_producer_campaigns
+from .projection_sdk_evidence import projection_campaigns
 from .container_receipt import verify as verify_container
 from .render_sdk_matrix import CATALOG, VERSIONS, sha
 from .response_handoff_receipt import verify as verify_response_handoff
@@ -300,6 +301,10 @@ def render():
     for name, packets, source in issued_producer_campaigns(producers, CLIENTS):
         sources[name] = source
         suites.append((name, (source['revision'], packets, {'200': 3, '404': 1})))
+    for name, packets, statuses, source in projection_campaigns(
+            EVIDENCE / 'serve-response-include-projection-20261128'):
+        sources[name] = source
+        suites.append((name, (source['revision'], packets, statuses)))
     counts, unassigned = index(catalog, suites)
     buffer = io.StringIO(newline='')
     writer = csv.writer(buffer, lineterminator='\n')

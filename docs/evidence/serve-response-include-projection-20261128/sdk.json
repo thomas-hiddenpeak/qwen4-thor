@@ -1,0 +1,466 @@
+{
+  "rejected_before": {
+    "python-2.8.1": {
+      "version": "2.8.1",
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/conversations",
+          "query": "",
+          "status": 200,
+          "trace": "req-fb55e1df34286601edc4e470d58f15cf"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/conversations/conv_190344be154439d377a2b605943209f4/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 400,
+          "trace": "req-d54ed5fc9e4fa805aa7d8ed4af3cfa93"
+        }
+      ],
+      "result": {
+        "rejected": true
+      }
+    }
+  },
+  "accepted_after": {
+    "python-2.8.1": {
+      "version": "2.8.1",
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/conversations",
+          "query": "",
+          "status": 200,
+          "trace": "req-0e0b7b0b53c195533a26fd2830221948"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-ddeb1f3fdf3305be881123e4a6d9523c"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c/items/item_e255fa847e9e7c46a374fbcfda41fb1a",
+          "query": "",
+          "status": 200,
+          "trace": "req-bfbfe4e442b818551eee33da00d7ff02"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c/items/item_e255fa847e9e7c46a374fbcfda41fb1a",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-eaa138bee411b772d22ba92a32ecc1ca"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c/items",
+          "query": "include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-b69b98113b5395fd0ac9702d07de5f65"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-8303810302024cff43d1a3d1df998c3d"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=invalid",
+          "status": 400,
+          "trace": "req-9d43a42bebff6d3d7e5389f3f1b7f364"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c/items/item_e255fa847e9e7c46a374fbcfda41fb1a",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 404,
+          "trace": "req-9097b3d669f3663a4ba7d78c95e1b4ef"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/conversations/conv_fb5c1ccde9d236907885449339572b2c",
+          "query": "",
+          "status": 200,
+          "trace": "req-061107ae31daa6e2701c6fbad47ff084"
+        }
+      ],
+      "result": {
+        "container": "conv_fb5c1ccde9d236907885449339572b2c",
+        "item": "item_e255fa847e9e7c46a374fbcfda41fb1a",
+        "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+      }
+    },
+    "python-2.33.0": {
+      "version": "2.33.0",
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/conversations",
+          "query": "",
+          "status": 200,
+          "trace": "req-c075143fd29736c45885815e45d32dfa"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-31d08201754000fc230c3b3be824e6bb"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b/items/item_9d8684bd29cca1d2f05490909f4a38cd",
+          "query": "",
+          "status": 200,
+          "trace": "req-33a38ee2db57bf169247b0f2675cd994"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b/items/item_9d8684bd29cca1d2f05490909f4a38cd",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-5fbfb8d4147712cdd5856990b76e427d"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b/items",
+          "query": "include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-98243756553696c8159eb5e5f4473b76"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-6cfc5b2877dd4c7f6d2b24b4166559c0"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=invalid",
+          "status": 400,
+          "trace": "req-6557fd0d4a9e667d9c433583e41ca62f"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b/items/item_9d8684bd29cca1d2f05490909f4a38cd",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 404,
+          "trace": "req-b1f1bc1561b887f8f1ec290cfdabfa8e"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/conversations/conv_6519dad155bddc8d4b2fa9d5e29ebf0b",
+          "query": "",
+          "status": 200,
+          "trace": "req-6d1f70f1f96bbc78232a3e722fbde172"
+        }
+      ],
+      "result": {
+        "container": "conv_6519dad155bddc8d4b2fa9d5e29ebf0b",
+        "item": "item_9d8684bd29cca1d2f05490909f4a38cd",
+        "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+      }
+    },
+    "python-3.42.1": {
+      "version": "3.42.1",
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/conversations",
+          "query": "",
+          "status": 200,
+          "trace": "req-99bf0bcfa80f683c1a84a5cd55f3515b"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-7fc45736639c626f5832bcbe0db92e92"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753/items/item_a67bde06413af9effb2327b68874e283",
+          "query": "",
+          "status": 200,
+          "trace": "req-c540750d655bed475c1a078642265d6a"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753/items/item_a67bde06413af9effb2327b68874e283",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-e079cfb148f793ab0111f4492579d2e7"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753/items",
+          "query": "include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-327efa60bb2c945384c830b2375b1ced"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-60fecbc1ee892f09db09099c60223dba"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=invalid",
+          "status": 400,
+          "trace": "req-efc8cde575ad24145f0904c10cc8221e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753/items/item_a67bde06413af9effb2327b68874e283",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 404,
+          "trace": "req-d882c244924324fbacdf06a6be209277"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/conversations/conv_5f5848b81f84cdf7f683cdca490c0753",
+          "query": "",
+          "status": 200,
+          "trace": "req-868924f6feb384daa9926d95500c7eb1"
+        }
+      ],
+      "result": {
+        "container": "conv_5f5848b81f84cdf7f683cdca490c0753",
+        "item": "item_a67bde06413af9effb2327b68874e283",
+        "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+      }
+    },
+    "python-3.55.1": {
+      "version": "3.55.1",
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/conversations",
+          "query": "",
+          "status": 200,
+          "trace": "req-143e747bc1404ee54822b96f1ba08072"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-d422c9fb7ab070f39d71216034bb80ce"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34/items/item_9cc943761e9592a6be414130f203948e",
+          "query": "",
+          "status": 200,
+          "trace": "req-1fb8945fa9b84305a5359216574f5471"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34/items/item_9cc943761e9592a6be414130f203948e",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-4e40643cc9efd2df0a3d33dab668b8d0"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34/items",
+          "query": "include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-6f1e05706341c7061d9d46a8221f123c"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-675974a5df21f7dfd87cc2ba51fb4a47"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=invalid",
+          "status": 400,
+          "trace": "req-6924809c62a624bbfbe4b49eabcaccf6"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34/items/item_9cc943761e9592a6be414130f203948e",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 404,
+          "trace": "req-e01c8416f0f7eba402fa7d2b2ad76457"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/conversations/conv_2855162c3dd501e57fc496550b0c9d34",
+          "query": "",
+          "status": 200,
+          "trace": "req-1bf2a2e9a41b97a1bcbb5c8635f8c26f"
+        }
+      ],
+      "result": {
+        "container": "conv_2855162c3dd501e57fc496550b0c9d34",
+        "item": "item_9cc943761e9592a6be414130f203948e",
+        "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+      }
+    },
+    "node-6.34.0": {
+      "version": "6.34.0",
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/conversations",
+          "query": "",
+          "status": 200,
+          "trace": "req-746cb635d7dd436471ecac33d5d2dc78"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-7a914a13c91fb023758248925773eb44"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e/items/item_916661ea9b2b50cb354b47a6edb288cf",
+          "query": "",
+          "status": 200,
+          "trace": "req-d82c0409c1e027e44c8de0cbe1821460"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e/items/item_916661ea9b2b50cb354b47a6edb288cf",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-4a2fc8ddc9b77472a8309aea6ab8ecd7"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e/items",
+          "query": "include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-009dcf5117467755cf3f0faacb1f90d9"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-ca761a9f05b89b66375e04d911511d5e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=invalid",
+          "status": 400,
+          "trace": "req-6d527453a1a8157620da83b7ecca89b5"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e/items/item_916661ea9b2b50cb354b47a6edb288cf",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 404,
+          "trace": "req-79c05cdd24f5c5dda12eeb7b7c9c9687"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/conversations/conv_3af7028cf3d28d8f1e39fcec54a7bc7e",
+          "query": "",
+          "status": 200,
+          "trace": "req-74b24efcc6254d9675f57b1c0ddc8bd4"
+        }
+      ],
+      "result": {
+        "container": "conv_3af7028cf3d28d8f1e39fcec54a7bc7e",
+        "item": "item_916661ea9b2b50cb354b47a6edb288cf",
+        "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+      }
+    },
+    "node-7.47.0": {
+      "version": "7.47.0",
+      "calls": [
+        {
+          "method": "POST",
+          "path": "/v1/conversations",
+          "query": "",
+          "status": 200,
+          "trace": "req-b67907ba47831e5b748861db9bdf6c9b"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-634c59163a4d4d059ba7a03748c56e85"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a/items/item_2d0470ea24232cffeaf30aafeb03333e",
+          "query": "",
+          "status": 200,
+          "trace": "req-0693c44c97bec3b801787c0bcdff8e82"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a/items/item_2d0470ea24232cffeaf30aafeb03333e",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-b25b8bd34d90c54e6885a7ba934f2525"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a/items",
+          "query": "include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-21166aaa7efa93332d8b2479e5178e1a"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 200,
+          "trace": "req-e4bf6e1fba0c2f9c30c2f447eb1f7f0c"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a/items",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=invalid",
+          "status": 400,
+          "trace": "req-993d9cef42ba15df8866a2a090a1bedc"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a/items/item_2d0470ea24232cffeaf30aafeb03333e",
+          "query": "include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url&include%5B%5D=message.input_image.image_url",
+          "status": 404,
+          "trace": "req-bb71450bb06591a48f5e7cf38bcef197"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/conversations/conv_b680f3e9d1eec4be44f5271c8f9f119a",
+          "query": "",
+          "status": 200,
+          "trace": "req-9cbb29d4a7438aac59c4baea6f526fe9"
+        }
+      ],
+      "result": {
+        "container": "conv_b680f3e9d1eec4be44f5271c8f9f119a",
+        "item": "item_2d0470ea24232cffeaf30aafeb03333e",
+        "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+      }
+    }
+  }
+}

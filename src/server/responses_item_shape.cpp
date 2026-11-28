@@ -520,6 +520,35 @@ Status ValidateMultiAgentShape(const Json& value, MultiAgentShape shape,
   return Validate(graph, value, root, error, path);
 }
 
+Status ParseResponseIncludes(const Json& values,
+                             std::vector<std::string>* selections,
+                             ChatPlanError* error) {
+  constexpr std::string_view allowed[] = {
+      "file_search_call.results",
+      "web_search_call.results",
+      "web_search_call.action.sources",
+      "message.input_image.image_url",
+      "computer_call_output.output.image_url",
+      "code_interpreter_call.outputs",
+      "reasoning.encrypted_content",
+      "message.output_text.logprobs"};
+  if (!values.IsArray()) {
+    *error = {"invalid_request", "include", 400};
+    return Status::Fail("include requires an array");
+  }
+  std::vector<std::string> unique;
+  for (size_t i = 0; i < values.array.size(); ++i) {
+    const auto& item = values.array[i];
+    if (!item.IsString() || !std::ranges::contains(allowed, item.str)) {
+      *error = {"invalid_request", "include[" + std::to_string(i) + "]", 400};
+      return Status::Fail("Invalid include option");
+    }
+    if (!std::ranges::contains(unique, item.str)) unique.push_back(item.str);
+  }
+  *selections = std::move(unique);
+  return {};
+}
+
 Status ValidateResponsesItemShape(const Json& item, ResponsesItemShape shape,
                                   ChatPlanError* error, std::string_view path,
                                   bool multi_agent) {

@@ -1,6 +1,8 @@
 #pragma once
 
+#include <string>
 #include <string_view>
+#include <vector>
 
 #include "q4t/server/chat_plan.h"
 
@@ -11,6 +13,11 @@ enum class MultiAgentShape {
 };
 Status ValidateMultiAgentShape(const io::Json& value, MultiAgentShape shape,
                                ChatPlanError* error, std::string_view path);
+
+// Preserve first-seen order for projection and background stream replay.
+Status ParseResponseIncludes(const io::Json& values,
+                             std::vector<std::string>* selections,
+                             ChatPlanError* error);
 
 // SDK data shapes, including open maps and partial tool history. This performs
 // no model/tool/media execution, and does not replace endpoint limits, resource

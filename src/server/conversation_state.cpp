@@ -143,25 +143,10 @@ Status ParseItemViewOptions(const Json& query, ItemViewOptions* options,
     options->descending = order->str == "desc";
   }
   if (const auto* include = query.Find("include")) {
-    constexpr std::string_view allowed[] = {
-        "file_search_call.results",
-        "web_search_call.results",
-        "web_search_call.action.sources",
-        "message.input_image.image_url",
-        "computer_call_output.output.image_url",
-        "code_interpreter_call.outputs",
-        "reasoning.encrypted_content",
-        "message.output_text.logprobs"};
-    if (!include->IsArray() || include->array.size() > std::size(allowed))
-      return fail("include", "Invalid include list");
-    std::unordered_set<std::string> seen;
-    for (const auto& item : include->array) {
-      if (!item.IsString() ||
-          std::find(std::begin(allowed), std::end(allowed), item.str) ==
-              std::end(allowed) ||
-          !seen.insert(item.str).second)
-        return fail("include", "Invalid or duplicate include option");
-      options->include.push_back(item.str);
+    auto parsed = ParseResponseIncludes(*include, &options->include, error);
+    if (!parsed) {
+      error->param = "include";
+      return parsed;
     }
   }
   return {};

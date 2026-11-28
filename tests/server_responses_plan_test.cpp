@@ -619,3 +619,25 @@ Q4T_TEST(responses_effort_defaults_and_safety_identifier_boundary) {
                      &envelope, &error));
   return true;
 }
+
+Q4T_TEST(responses_plan_repeated_include_selects_each_projection_once) {
+  std::string repeated;
+  for (int i = 0; i < 12; ++i) repeated += R"("message.output_text.logprobs",)";
+  const std::string start =
+      R"({"input":"x","background":true,"stream":true,"include":[)" + repeated;
+  ResponsesEnvelope plan;
+  ChatPlanError error;
+  Q4T_CHECK(
+      Envelope(start + R"("reasoning.encrypted_content"]})", &plan, &error));
+  Q4T_CHECK(plan.logprobs && plan.encrypted_reasoning);
+  // Background SSE uses this retained selection to open its replay reader.
+  const auto* include = plan.request.GetArray("include");
+  Q4T_CHECK(include && include->array.size() == 2);
+  Q4T_CHECK(include->array[0].str == "message.output_text.logprobs");
+  Q4T_CHECK(include->array[1].str == "reasoning.encrypted_content");
+  Q4T_CHECK(!Envelope(start + R"("unknown"]})", &plan, &error));
+  Q4T_CHECK(error.param == "include[12]");
+  Q4T_CHECK(!Envelope(start + R"(null]})", &plan, &error));
+  Q4T_CHECK(error.param == "include[12]");
+  return true;
+}

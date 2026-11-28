@@ -1,0 +1,120 @@
+{
+  "status": "PASS_CPU",
+  "model_starts": 0,
+  "source_base": "ade75d59ff9e58896408970d1d03c6ded1016687",
+  "official_revision": {
+    "date": "2026-11-07T19:24:53Z",
+    "sha": "926a7b8133226630bac025350e84b0ca5c31d45a"
+  },
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "contract": {
+    "CreateResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IncludeEnum"
+      }
+    },
+    "BetaCreateResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/BetaIncludeEnum"
+      }
+    },
+    "GET /responses/{response_id}": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IncludeEnum"
+      }
+    },
+    "GET /responses/{response_id}/input_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IncludeEnum"
+      }
+    },
+    "POST /conversations/{conversation_id}/items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IncludeEnum"
+      }
+    },
+    "GET /conversations/{conversation_id}/items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IncludeEnum"
+      }
+    },
+    "GET /conversations/{conversation_id}/items/{item_id}": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/IncludeEnum"
+      }
+    }
+  },
+  "local_schema": "Both response_create and agent_history_response_create declare a nullable array of selectors without maxItems or uniqueItems.",
+  "old_native_failures": [
+    {
+      "name": "responses_plan_repeated_include_selects_each_projection_once",
+      "sha256": "e24db6670bcdcb884e7f920662c9206fd7c7bbd45a18a0b4ac47a023ab336a69"
+    },
+    {
+      "name": "responses_read_repeated_include_projects_once_on_stored_routes",
+      "sha256": "02c645f43efd15594951e51aa91958e7607daa2644a61387f87276a4ff80a01e"
+    }
+  ],
+  "native_tests": [
+    "responses_plan_null_defaults_and_explicit_sampling",
+    "responses_plan_rejects_invalid_public_types_and_exact_numbers",
+    "responses_plan_repeated_include_selects_each_projection_once",
+    "responses_api_query_contract_and_routes_before_storage",
+    "responses_beta_selector_preserves_commands_and_read_options",
+    "responses_api_history_pagination_and_scope_survive_worker_restart",
+    "responses_api_replay_uses_original_sequence_and_obfuscation_choice",
+    "responses_read_repeated_include_projects_once_on_stored_routes",
+    "conversation_api_rejects_invalid_wire_contract_before_storage",
+    "conversation_state_metadata_and_query_contract"
+  ],
+  "sdk_wire": "sdk.json",
+  "sdk_sha256": "b0316abc3ebf9da97ac5116ba33667459f75ef38108b01fcfb57531fd2f34284",
+  "initial_wire_count": 2,
+  "native_scope": "Stock official SDKs using loopback HTTP, real C++ conversation handler and persistent object worker. Fixture maps two synthetic bearer values to different owners.",
+  "request_count": 54,
+  "statuses": {
+    "200": 42,
+    "400": 6,
+    "404": 6
+  },
+  "clients": [
+    "python-2.8.1",
+    "python-2.33.0",
+    "python-3.42.1",
+    "python-3.55.1",
+    "node-6.34.0",
+    "node-7.47.0"
+  ],
+  "image": {
+    "path": "tests/fixtures/file_images/original.png",
+    "bytes": 123,
+    "sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57"
+  },
+  "actual_native_wire_sha256": {
+    "sdk-red-01": "e5c16ebbcceb14148738a13bb1e4c495629259d506372f1b16eee68177a3dda6",
+    "sdk-green-01": "b88528459ed6aa95b7aca9f320958d601ecba6e062e0ae00154c79b337d43411",
+    "sdk-green-02": "1651141d228f40ed123dbccfe6b8a5fab3de1235a3ce5ffa7d7aaa92b51f2168"
+  },
+  "validation_corrections": [
+    "The initial native driver used test-name prefixes. Only full registered names and assertion failures were counted.",
+    "The Node fixture first expected an omitted image URL on the default view. The existing endpoint contract explicitly returns null; the original assertion and fail log were retained. Python records passed before this correction."
+  ],
+  "inventory": {
+    "anchors": 1401,
+    "controls": 40
+  },
+  "runtime_business": "pending",
+  "permanent_sdk_regression": {
+    "official_node": "7.47.0",
+    "passed": 1,
+    "failed": 0,
+    "sha256": "edf059b6c7f01669d7d87490a17dad4251cc4515dafaaf1bd23ee6ff26c95d0d"
+  }
+}

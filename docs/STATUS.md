@@ -1,5 +1,17 @@
 # 当前状态（2026-11-28）
 
+SDK 业务矩阵已计入 rev606 同一引擎的 30 次正式 Python 调用。其中 10 次来自 TLS 后台流与存储读回，另外 20 次来自模型恢复与网关回退的前后对照。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
+
+输入语义清单的三个源码摘要已随重复选择器修复同步；完整生成合同核对通过。
+
+重复选择器候选的两份容量记录已登记。主容量和轻量容量均可逐字节还原各自 rev604 的发行证据。下一步准备独立主包与回退包。 [登记回执](evidence/serve-response-include-projection-20261128/capacity.json)
+
+重复 include 候选已在 Thor 的主容量和轻量容量各完成一次真实生成。两档均返回 604，单个和重复选择器读回相同 token 概率，另一客户均收到 404。下一步登记两份容量证明，再进行可回退发行。 [容量业务回执](evidence/serve-response-include-projection-20261128/capacity-business.json)
+
+候选已在 Thor 通过原生 TLS 和正式 SDK 的后台流式续读验证。一次模型启动、10 个请求，首次响应与按游标重放的 token 概率和正文一致，答案为实际登记号 604。容量与发行另行验收。 [设备回执](evidence/serve-response-include-projection-20261128/device.json)
+
+Responses 与 Conversations 已修复重复 `include` 导致的 400。修复前正式客户端追加条目收到 400。修复后六版 SDK 对同一张 PNG 验证了追加、默认视图、重复选择、错误选项及跨客户拒绝，共 54 个响应。后台流式请求保留去重后的选择器；真实模型续读待短验。 [CPU 与 SDK 回执](evidence/serve-response-include-projection-20261128/cpu.json)
+
 发行包的客户端矩阵已收录六版 SDK 的 90 个容器业务响应，9 个方法均有逐版本成功记录。 [矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
 
 rev604 已发行引擎和原生 TLS 网关上，六版官方 SDK 均已完成容器与文件 9 个方法的短验。一次独占模型启动，90 个业务响应，默认实例维持 STOPPED。 [实机验收](evidence/serve-container-sdk-issued-20261128/business.json)
@@ -12,6 +24,10 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证与必要业务短验，长稳实跑与已延期听感由用户负责。
 
 ## 正在推进
+
+rev606 已登记主包与独立回退包。Responses 和 Conversations 接受重复的输出选择器，跨模型恢复及网关切换后可读回同一响应及 token 概率。发行过程启动模型零次，13 份受保护状态逐一核对。 [发行回执](evidence/serve-response-include-projection-20261128/delivery.json)
+
+主包网关退出和回退包模型退出后，客户端用十二个选择器读回同一响应的正文与 token 概率，跨客户读取返回 404。两次恢复均能生成新响应，独立 Chat 均答 42。 [托管恢复记录](evidence/serve-response-include-projection-20261128/managed.json)
 
 rev604 已登记主包与独立回退包。普通 Responses 声明解释器输出，Beta 选择器声明两种多代理输出；两次托管故障恢复后原结果可读，新调用与 Chat 均成功。两档容量的前序记录和 13 份运行状态已核对。 [发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
 
@@ -1590,13 +1606,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev604**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev604 发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
+本机登记的发行版本为 **rev606**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev606 发行回执](evidence/serve-response-include-projection-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922` |
-| 回退服务包清单 | `e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd` |
-| 默认引擎 | `9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc` |
+| 主服务包清单 | `68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349` |
+| 回退服务包清单 | `2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967` |
+| 默认引擎 | `a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 
