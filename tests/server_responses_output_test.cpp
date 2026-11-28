@@ -1,5 +1,6 @@
 #include "q4t/server/responses_output.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -8,6 +9,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "q4t/server/chat_capabilities.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/output_schema.h"
@@ -28,7 +30,29 @@ Json Options() {
   if (!status) throw std::runtime_error(status.message());
   return options;
 }
-bool Events(const std::string& wire, std::vector<Json>* out) {
+bool AdvertisesOutputItem(const Json& item, bool multi_agent = false) {
+  static const Json discovery = [] {
+    Json value;
+    if (!q4t::io::ParseJson(ChatCapabilitiesJson("q4t", false, true), &value))
+      throw std::runtime_error("Invalid capabilities document");
+    return value;
+  }();
+  const auto* responses = discovery.Find("responses");
+  const auto type = item.GetString("type");
+  const auto declares = [&](const Json* profile) {
+    const auto* types = profile ? profile->GetArray("output_items") : nullptr;
+    if (!types) return false;
+    const auto matches = [&](const Json& entry) {
+      return entry.IsString() && entry.str == type;
+    };
+    return std::count_if(types->array.begin(), types->array.end(), matches) == 1;
+  };
+  return declares(responses) ||
+         (multi_agent && responses && declares(responses->Find("multi_agent")));
+}
+
+bool Events(const std::string& wire, std::vector<Json>* out,
+            bool multi_agent = false) {
   size_t begin = 0;
   while (begin < wire.size()) {
     const auto end = wire.find("\r\n\r\n", begin);
@@ -44,6 +68,19 @@ bool Events(const std::string& wire, std::vector<Json>* out) {
         event.GetInt("sequence_number", -1) !=
             static_cast<int64_t>(out->size()))
       return false;
+    const auto type = event.GetString("type");
+    if (type == "response.output_item.added" ||
+        type == "response.output_item.done") {
+      const auto* item = event.Find("item");
+      Q4T_CHECK(item && AdvertisesOutputItem(*item, multi_agent));
+    }
+    if (const auto* response = event.Find("response")) {
+      if (const auto* items = response->GetArray("output"))
+        Q4T_CHECK(std::all_of(items->array.begin(), items->array.end(),
+                             [&](const auto& item) {
+                               return AdvertisesOutputItem(item, multi_agent);
+                             }));
+    }
     out->push_back(std::move(event));
     begin = end + 4;
   }
@@ -434,7 +471,8 @@ Q4T_TEST(responses_beta_agent_result_preserves_scores_and_projects_history) {
   Q4T_CHECK(output.Fail("explicit_cancel", "stopped", &part));
   wire += part;
   std::vector<Json> events;
-  Q4T_CHECK(Events(wire, &events));
+  Q4T_CHECK(!AdvertisesOutputItem(item));
+  Q4T_CHECK(Events(wire, &events, true));
   const auto projected = ResponsesWireValue(item);
   const auto* scores =
       projected.GetArray("output")->array[0].GetArray("logprobs");
@@ -1154,6 +1192,30 @@ Q4T_TEST(agent_session_delta_padding_is_per_subscription) {
       R"({"type":"agent.session.turn.item.done","obfuscation":"old"})", &done));
   q4t::server::ApplyDeltaObfuscation(&done, true);
   Q4T_CHECK(!done.Has("obfuscation"));
+  return true;
+}
+
+Q4T_TEST(hosted_python_terminal_item_is_advertised_by_capabilities) {
+  ResponsesOutput output;
+  size_t index;
+  std::string part;
+  std::vector<Json> events;
+  Q4T_CHECK(output.Init(Options(), "resp_discovery", 42, false));
+  Q4T_CHECK(output.Start(&part) && Events(part, &events));
+  Q4T_CHECK(output.StartPython("cntr_a", "print(42)", &index, &part) &&
+            Events(part, &events));
+  Q4T_CHECK(output.EndPython(index, "42", false, nullptr, &part) &&
+            Events(part, &events));
+  Q4T_CHECK(output.Finish(false, 0, {}, 43, &part) && Events(part, &events));
+  Q4T_CHECK(!events.empty() &&
+            events.back().GetString("type") == "response.completed");
+  const auto* response = events.back().Find("response");
+  const auto* items = response ? response->GetArray("output") : nullptr;
+  Q4T_CHECK(items && index < items->array.size());
+  const auto& item = items->array[index];
+  Q4T_CHECK(item.GetString("status") == "completed");
+  Q4T_CHECK(item.GetString("type") == "code_interpreter_call" &&
+            AdvertisesOutputItem(item));
   return true;
 }
 

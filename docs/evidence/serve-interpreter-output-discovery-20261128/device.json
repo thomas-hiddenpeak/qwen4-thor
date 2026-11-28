@@ -1,0 +1,150 @@
+{
+  "status": "PASS",
+  "engine": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "protocol": "8e6af6d0ee6b894c4216361b354711cfd8a39206590bb08d5068b12d70c86358",
+  "predecessor_manifest": "d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66",
+  "predecessor_revision": 602,
+  "source": "aeb48fa9cdf4403641f5e189d860f36b2f92bcf8",
+  "guard": {
+    "status": "COMPLETED",
+    "scope": "supplemental beta and chat",
+    "attempts": [
+      {
+        "status": "COMMAND_FAILED",
+        "samples": 42,
+        "sha256": "1a14b1bea73257716038597026541f70f73746693e43e622401d3a2a38a119d0"
+      },
+      {
+        "status": "COMPLETED",
+        "samples": 36,
+        "sha256": "5742f73862c28c7becf297cfa42e0f005ab8e1dc72659c9be6d3e49d03b8b710"
+      }
+    ]
+  },
+  "model_starts": 2,
+  "public_requests": 9,
+  "distinct_contract_steps": 8,
+  "full_model_quality": false,
+  "performance": false,
+  "attempts": [
+    {
+      "outcome": "original validator failure",
+      "transport_requests": 7,
+      "runtime": {
+        "status": "FAIL",
+        "starts": 1,
+        "ports_free": true,
+        "unchanged_default": true,
+        "model_pid": 2283343,
+        "model_exit": 0,
+        "private_config_reads": 0,
+        "requests": 0,
+        "seconds": 43.436
+      },
+      "actor_sha256": "3c921c25d380ca69fa2657e517e2f6a982389f808000d17f6c802075da5d2f68"
+    },
+    {
+      "outcome": "corrected beta assertion and previously unexecuted chat",
+      "runtime": {
+        "status": "PASS",
+        "starts": 1,
+        "ports_free": true,
+        "unchanged_default": true,
+        "model_pid": 2286310,
+        "model_exit": 0,
+        "private_config_reads": 0,
+        "requests": 2,
+        "seconds": 36.664
+      },
+      "actor_sha256": "ced26dae98b4228f16a8dd4ecacf01fc44fa4b46738e06f972e045eca2aafb2e"
+    }
+  ],
+  "sdk": "3.55.1",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/capabilities",
+      "status": 200,
+      "id": "req-ae3b51b018104dcb9d8f9f0194955b79"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/containers",
+      "status": 200,
+      "id": "req-9c4e161bb185992e80c7fbe526c4af39"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "id": "req-b566bfd56ed8e19444ed1652a1a23358"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/responses/resp_9cb319329324d702994e199c00db6602",
+      "status": 200,
+      "id": "req-788f18de5d7144cc0ed94f86bc5e6e10"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/responses/resp_9cb319329324d702994e199c00db6602",
+      "status": 404,
+      "id": "req-0d13b9d344242976274a52c83b408664"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 400,
+      "id": "req-e87a124c168a60633a91b532fb408ac2"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "id": "req-1edac6bfbead3022b31a130cc63c8a45"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "id": "req-625f2b2ad7a4b8bd64655d613d6ba9ab"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "status": 200,
+      "id": "req-8d25ceb3d7c7749a239da5ceac25a8df"
+    }
+  ],
+  "interpreter": {
+    "id": "resp_9cb319329324d702994e199c00db6602",
+    "item": "ci_29988cefdb26eaf4e0186572c002e3d9",
+    "container": "cntr_2a4f2ee0cce121907533bdfc5720d78a",
+    "stdout": "603\n",
+    "original_stream_sha256": "a4aa1ae5f5b02410ba6c0745b6a5a92bbfbb86d17c83ed638bcc69a44097bc0a",
+    "stored_equal_evidence": "original executed SDK assertion",
+    "foreign_status": 404
+  },
+  "no_selector_status": 400,
+  "agents": [
+    {
+      "response": "resp_a91d31d15e9b510d6e9fa6dd1b444dd0",
+      "call": "call_resp_a91d31d15e9b510d6e9fa6dd1b444dd0_0",
+      "caller": "root",
+      "children": [],
+      "events": 13,
+      "wire_sha256": "98ecc1acfe1f8a45c634e997b7c6326bc72a0e674ae2d5a1cb059862c33da49e"
+    },
+    {
+      "response": "resp_a893f99fedaa375e54d539a6c3abd1cd",
+      "call": "call_resp_a893f99fedaa375e54d539a6c3abd1cd_0",
+      "caller": "root",
+      "children": [],
+      "events": 13,
+      "wire_sha256": "12cc0afc39310f2fc03dad55c3e855d99bebdc42434add7a92a8bde28e0ace64"
+    }
+  ],
+  "chat": "42",
+  "public_discovery_sha256": "d4e9b89ea807c38a10aaf2c83efbee90e2af6b6208601ead7a1f0c1a4fd16eda"
+}

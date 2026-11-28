@@ -52,7 +52,7 @@ GET,/assistants/{assistant_id},,,,,,
 POST,/assistants/{assistant_id},,,,,,
 DELETE,/assistants/{assistant_id},,,,,,
 POST,/audio/speech,,,,,,
-POST,/audio/transcriptions,,,,,,
+POST,/audio/transcriptions,speech-issued-python-2.8.1-json/200=1 speech-issued-python-2.8.1-sse/200=1,speech-issued-python-2.33.0-json/200=1 speech-issued-python-2.33.0-sse/200=1,speech-issued-python-3.42.1-json/200=1 speech-issued-python-3.42.1-sse/200=1,speech-capacity-light/200=1 speech-capacity-primary/200=1 speech-gateway-prepare/200=1 speech-gateway-restore/200=1 speech-issued-python-3.55.1-json/200=1 speech-issued-python-3.55.1-sse/200=1 speech-model-prepare/200=1 speech-model-restore/200=1 speech-tls/200=1,speech-issued-node-6.34.0-json/200=1 speech-issued-node-6.34.0-sse/200=1,speech-issued-node-7.47.0-json/200=1 speech-issued-node-7.47.0-sse/200=1
 POST,/audio/translations,,,,,,
 POST,/audio/voice_consents,,,,,,
 GET,/audio/voice_consents,,,,,,
@@ -66,7 +66,7 @@ GET,/batches,,,,,,batch-gateway-restore/200=2 batch-model-restore/200=2
 GET,/batches/{batch_id},,,,batch-gateway-checkpoint/200=2 batch-model-checkpoint/200=2,,batch-gateway-restore/200=2 batch-gateway-restore/404=1 batch-model-restore/200=2 batch-model-restore/404=1
 POST,/batches/{batch_id}/cancel,,,,batch-gateway-submit/200=2 batch-gateway-submit/404=1 batch-gateway-submit/429=1 batch-model-submit/200=2 batch-model-submit/404=1 batch-model-submit/429=1,,batch-gateway-restore/200=1 batch-gateway-restore/409=1 batch-model-restore/200=1 batch-model-restore/409=1
 GET,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
-POST,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,batch-gateway-restore/200=1 batch-model-restore/200=1 chats/200=1
+POST,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1 speech-tls/200=1,chats/200=1,batch-gateway-restore/200=1 batch-model-restore/200=1 chats/200=1
 GET,/chat/completions/{completion_id},chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2
 POST,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
 DELETE,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
@@ -79,7 +79,7 @@ DELETE,/chatkit/threads/{thread_id},,,,,,
 GET,/chatkit/threads/{thread_id}/items,,,,,,
 POST,/completions,,,,,,
 GET,/containers,,,,,,
-POST,/containers,,,,,,
+POST,/containers,interpreter-issued-python-2.8.1/200=1,interpreter-issued-python-2.33.0/200=1,interpreter-issued-python-3.42.1/200=1,interpreter-issued-python-3.55.1/200=1,interpreter-issued-node-6.34.0/200=1,interpreter-issued-node-7.47.0/200=1
 GET,/containers/{container_id},,,,,,
 DELETE,/containers/{container_id},,,,,,
 POST,/containers/{container_id}/files,,,,,,
@@ -137,12 +137,12 @@ POST,/realtime/client_secrets,,,,,,
 POST,/realtime/sessions,,,,,,
 POST,/realtime/transcription_sessions,,,,,,
 POST,/realtime/translations/client_secrets,,,,,,
-POST,/responses,responses/200=2,responses/200=2,responses/200=1,conversations/200=1 vectors/200=1,responses/200=2 stream-gateway-prepare/200=1 stream-model-prepare/200=1 stream-tls/200=1,conversations/200=1
+POST,/responses,interpreter-issued-python-2.8.1/200=1 responses/200=2,interpreter-issued-python-2.33.0/200=1 responses/200=2,interpreter-issued-python-3.42.1/200=1 responses/200=1,conversations/200=1 interpreter-issued-python-3.55.1/200=1 vectors/200=1,interpreter-issued-node-6.34.0/200=1 responses/200=2 stream-gateway-prepare/200=1 stream-model-prepare/200=1 stream-tls/200=1,conversations/200=1 interpreter-issued-node-7.47.0/200=1
 POST,/responses/compact,,,,,,
 POST,/responses/compact?beta=true,,,,,,
 POST,/responses/input_tokens,responses/200=1,responses/200=1,responses/200=1,,responses/200=1,
 POST,/responses/input_tokens?beta=true,,,,responses/200=1,,responses/200=1
-GET,/responses/{response_id},responses/200=2 responses/404=2 stream-tls/200=1,responses/200=2 responses/404=2 stream-tls/200=1,stream-tls/200=1,stream-tls/200=1,responses/200=2 responses/404=2 stream-gateway-restore/200=1 stream-model-restore/200=1 stream-tls/200=1,stream-gateway-restore/200=1 stream-model-restore/200=1 stream-tls/200=1
+GET,/responses/{response_id},interpreter-issued-python-2.8.1/200=1 interpreter-issued-python-2.8.1/404=1 responses/200=2 responses/404=2 stream-tls/200=1,interpreter-issued-python-2.33.0/200=1 interpreter-issued-python-2.33.0/404=1 responses/200=2 responses/404=2 stream-tls/200=1,interpreter-issued-python-3.42.1/200=1 interpreter-issued-python-3.42.1/404=1 stream-tls/200=1,interpreter-issued-python-3.55.1/200=1 interpreter-issued-python-3.55.1/404=1 stream-tls/200=1,interpreter-issued-node-6.34.0/200=1 interpreter-issued-node-6.34.0/404=1 responses/200=2 responses/404=2 stream-gateway-restore/200=1 stream-model-restore/200=1 stream-tls/200=1,interpreter-issued-node-7.47.0/200=1 interpreter-issued-node-7.47.0/404=1 stream-gateway-restore/200=1 stream-model-restore/200=1 stream-tls/200=1
 DELETE,/responses/{response_id},responses/200=1,responses/200=1,,,responses/200=1,
 POST,/responses/{response_id}/cancel,,,,,,
 POST,/responses/{response_id}/cancel?beta=true,,,,,,

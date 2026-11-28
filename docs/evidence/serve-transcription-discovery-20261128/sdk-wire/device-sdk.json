@@ -1,0 +1,28 @@
+{
+  "version": "3.55.1",
+  "chat": "42",
+  "typed_speakers": [
+    "B",
+    "A"
+  ],
+  "exchanges": [
+    {
+      "method": "GET",
+      "path": "/v1/capabilities",
+      "status": 200,
+      "trace": "req-d827439c423aeb368767894c5c3ad058"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/audio/transcriptions",
+      "status": 200,
+      "trace": "req-b9217e98eda4bbdf2d7d1e9e0348eaa7"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "status": 200,
+      "trace": "req-7e4980be5a0f0b4b79ab71a4f856cfa2"
+    }
+  ]
+}

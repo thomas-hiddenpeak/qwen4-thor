@@ -1,0 +1,76 @@
+{
+  "status": "ORIGINAL_VALIDATOR_FAILURE",
+  "starts": 1,
+  "actual_public_requests": 7,
+  "requests_from_transport": [
+    {
+      "method": "GET",
+      "path": "/v1/capabilities",
+      "status": 200,
+      "id": "req-ae3b51b018104dcb9d8f9f0194955b79"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/containers",
+      "status": 200,
+      "id": "req-9c4e161bb185992e80c7fbe526c4af39"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "id": "req-b566bfd56ed8e19444ed1652a1a23358"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/responses/resp_9cb319329324d702994e199c00db6602",
+      "status": 200,
+      "id": "req-788f18de5d7144cc0ed94f86bc5e6e10"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/responses/resp_9cb319329324d702994e199c00db6602",
+      "status": 404,
+      "id": "req-0d13b9d344242976274a52c83b408664"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 400,
+      "id": "req-e87a124c168a60633a91b532fb408ac2"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "status": 200,
+      "id": "req-1edac6bfbead3022b31a130cc63c8a45"
+    }
+  ],
+  "runtime": {
+    "status": "FAIL",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2283343,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 0,
+    "seconds": 43.436
+  },
+  "monitor_status": "COMMAND_FAILED",
+  "original_assertion": "validator expected root in the child list",
+  "observed": {
+    "caller": "root",
+    "children": [],
+    "interpreter_stdout": "603\n",
+    "chat_attempted": false
+  },
+  "sources": {
+    "requests.json": "2f0638d847c3ecaab812bb03330e7516f18ab48bfea817371e724fbd25da8807",
+    "sdk-events.json": "a4aa1ae5f5b02410ba6c0745b6a5a92bbfbb86d17c83ed638bcc69a44097bc0a",
+    "beta-agent.wire": "98ecc1acfe1f8a45c634e997b7c6326bc72a0e674ae2d5a1cb059862c33da49e",
+    "sdk.stderr": "44b9d94cab2fab346b00a432e69833958e6b08a444160d1d6ce45384ef1a7c71",
+    "result.json": "26c4b7ec9349872e9efe8307ea8336bddee222da933b182e419e7f702d5ff89a"
+  },
+  "actor_sha256": "3c921c25d380ca69fa2657e517e2f6a982389f808000d17f6c802075da5d2f68"
+}

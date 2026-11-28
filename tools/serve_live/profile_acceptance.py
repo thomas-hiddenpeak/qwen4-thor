@@ -124,6 +124,13 @@ class Stage(workers.ice.Stage):
     limits = dict(starts=1, ingress_starts=1, sdk_posts=1, chats=1,
                   controls=2000, seconds=300)
 
+    def __init__(self, plan):
+        if 'responses_producer_handoff' in plan:
+            self.limits = dict(self.limits, producer_responses=2)
+        if 'overlap_transcription_handoff' in plan:
+            self.limits = dict(self.limits, overlap_transcriptions=1)
+        super().__init__(plan)
+
     def model_command(self):
         pkg.require(pkg.sha(Path(self.plan['binary']).parent/'client-policy.json') ==
                     self.plan['client_policy_sha256'] == self.plan['installed_policy_sha256'],
@@ -161,6 +168,12 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'responses_producer_handoff' in self.plan:
+            from tools.serve_responses import producer_profiles
+            producer_profiles.business(self, capabilities)
+        if 'overlap_transcription_handoff' in self.plan:
+            from tools.native_asr import overlap_profiles
+            overlap_profiles.business(self)
         if 'responses_stream_text_handoff' in self.plan:
             from tools.serve_audit import stream_text_profiles
             stream_text_profiles.business(self)

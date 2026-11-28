@@ -1,0 +1,77 @@
+{
+  "stage": "cpu_sdk_replay_and_capacity_verifier",
+  "sdk": "3.55.1",
+  "method_paths": [
+    "/v1/capabilities",
+    "/v1/audio/transcriptions",
+    "/v1/chat/completions"
+  ],
+  "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+  "primary_and_light": {
+    "primary": {
+      "previous": "6c2a27d94d194293ea4b612e2359b520d86c4045e4aa18b35481fbd11553268f",
+      "historical_health": "713e0a72bb888e0c685aab0e25339ad7ca6c67c02d38ac8be519095c58a3772b",
+      "source": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+      "model_quality_limitation": true
+    },
+    "light": {
+      "previous": "3bc537a542d56187161ebe46134d260b670b01b9c24dca1ad1e07c96ab31ba3c",
+      "historical_health": "898d9cbf8a2a123e3c651625c180dc900f68700c513449161692c19b26d47a18",
+      "source": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+      "model_quality_limitation": true
+    }
+  },
+  "negative_cases": [
+    "primary/wrong-client",
+    "primary/wrong-route",
+    "primary/wrong-upload",
+    "primary/missing-trace",
+    "primary/wire-edited",
+    "primary/typed-labels-lost",
+    "primary/wrong-fields",
+    "primary/unloaded-separator",
+    "primary/asr-limit-drift",
+    "primary/unconfigured-declaration",
+    "primary/capacity-change",
+    "light/wrong-client",
+    "light/wrong-route",
+    "light/wrong-upload",
+    "light/missing-trace",
+    "light/wire-edited",
+    "light/typed-labels-lost",
+    "light/wrong-fields",
+    "light/unloaded-separator",
+    "light/asr-limit-drift",
+    "light/unconfigured-declaration",
+    "light/capacity-change",
+    "light/primary-trace-replay"
+  ],
+  "retained_replay": "fb3e3ae0d78ee4e86c2e9ba5704f879b21690c8f1311361f257f843b8bb8210c",
+  "profile_checks": "1d3531bfb9efab731dabcdaa650f95357b14de50cc16558f97548fd97d7413d9",
+  "actor": "b0ec08b560d8d1a006b710506930233aafaa6e89002f88d25b263bf4fca942b1",
+  "verifier": "cdf08f115ef814c237c721345c0602995bd354e130120038f0d3920ce6cdce54",
+  "setup_failure": "Dedicated client initially imported httpx; the pinned SDK distribution uses httpx2. Qualification now uses openai.DefaultHttpxClient from that same distribution.",
+  "scope": "Local TLS replay of captured responses, authentic SDK multipart encoding and typed parsing; historical source and per-capacity health with simulated stage identities for verifier controls.",
+  "gpu_starts": 0,
+  "candidate_device_http": false,
+  "issued": false,
+  "request_budget_check": {
+    "per_capacity": 1,
+    "zero_attempt_rejected_at": [
+      "primary",
+      "light"
+    ],
+    "output_sha256": "a1a755bd6ffdfd34f5247316b01c6d023e07fb75d9442d4b6b3bd8a0b57803aa"
+  },
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1401,
+    "mutation_checks": 40,
+    "errors": []
+  }
+}

@@ -11,6 +11,40 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev604 已登记主包与独立回退包。普通 Responses 声明解释器输出，Beta 选择器声明两种多代理输出；两次托管故障恢复后原结果可读，新调用与 Chat 均成功。两档容量的前序记录和 13 份运行状态已核对。 [发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
+
+回退包模型退出和主网关切换两组实机验收均已通过。恢复后，原解释器和 Beta 多代理响应按 ID 读回，输出逐项一致，第二个客户端查询均为 404。两个新模型实例继续执行解释器与多代理，各自的独立 Chat 均答 42。 [托管恢复记录](evidence/serve-interpreter-output-discovery-20261128/managed.json)
+
+主档 MTP 开启与轻量档 MTP 关闭，各自用一次模型启动完成解释器和 Beta 多代理调用，独立容器的 stdout 均为 603，调用者和空子代理表与实际新树一致。两个新容量记录可逐字节还原各自的 rev602 历史，下一步验证主包和回退包的托管恢复。[容量回执](evidence/serve-interpreter-output-discovery-20261128/capacity.json)
+
+首次 7 个请求保留原断言失败；只补跑多代理请求和独立 Chat。两次 TLS 短验累计 2 次模型启动、9 个请求，覆盖原定 8 项行为。解释器输出 603，官方 SDK 存储读回一致。多代理两次都以 root 为调用者，空子代理表与新树一致。独立 Chat 答 42，两次清理均完成。下一步验证主档与轻量档。[业务回执](evidence/serve-interpreter-output-discovery-20261128/device.json)
+
+候选首次短验发出 7 个真实请求。解释器与公开、存储结果一致，Beta 调用者为 root，新树尚无下属代理，原断言却要求下属清单包含 root。已保留原失败并修正核对逻辑，补验仅覆盖多代理请求与尚未执行的 Chat。[原始记录](evidence/serve-interpreter-output-discovery-20261128/initial-device.json)
+
+已接入两档容量的 Responses 输出合同校验，要求同一请求的解释器容器、stdout 和回答对应，多代理结果与调用 ID 相同，轻量档必须返回独立响应。用两份已登记的前序档案及合成新响应完成 CPU 反例检查；新候选的真实 HTTP 与两档业务结果待验。[验收边界](evidence/serve-interpreter-output-discovery-20261128/capacity-controls.json)
+
+多代理 Beta 的调用和结果类型已在各自选择器下声明。普通客户端仍看到 18 个通用输出类型，启用 `responses_multi_agent=v1` 时可另外发现两个类型。两个历史已验收容量均实际发出这两种条目。34 项原生合同与 52 项迁移 CPU 测试通过，联合候选已构建，真实 HTTP 短验待完成。[分协议验收](evidence/serve-interpreter-output-discovery-20261128/beta-contract.json)
+
+Responses 的能力发现候选已补上原生解释器实际返回的 `code_interpreter_call`。已回查主包和回退包的四份真实 SSE 与四份后续能力快照，新增回归覆盖从原生终态到公开声明及恢复合同的匹配。18 项原生和 51 项迁移 CPU 测试通过；候选 HTTP 短验与发行待完成。[合同与原始数据摘要](evidence/serve-interpreter-output-discovery-20261128/contract.json)
+
+PR #208 的公开主机检查中，4013 项原生测试有 1 项在首次写入时已过期。现将未完成上传与读句柄的短有效期放到数据准备后的同一笔事务中，启动新存储进程前仍等待两者到期。插入 1150 毫秒准备延迟时原测试失败，修复后通过；二进制存储组 13 项全过。 下一步复核 GitHub 合并检查。[复现与验证](evidence/serve-transcription-discovery-20261128/binary-expiry-fixture.json)
+
+rev602 已登记双人重叠转录的主包和回退包。官方 SDK 在两档容量和两种托管恢复场景中均识别出两位说话人；原录音的 1.68 秒重叠与首句词形误差已记录。登记期间服务为 STOPPED，13 份运行状态通过复核。 [发行回执](evidence/serve-transcription-discovery-20261128/delivery.json)
+
+已验收两个托管恢复场景：回退包的模型退出后恢复，主包的网关故障后切换到已登记的独立回退包。每个场景在故障前后各完成一次真实 SDK 转录，四条请求 ID 独立，均识别出两位说话人。两次后续 Chat 均答 42。正式发行登记待完成。 [托管恢复记录](evidence/serve-transcription-discovery-20261128/managed.json)
+
+候选主容量（MTP 开）和轻量容量（MTP 关）各用 1 次模型启动和 1 次官方 SDK 转录请求验证同一段混合语音，两条请求 ID 独立，两档后续 Chat 都答 42。新容量记录已还原两份上一版完整记录；正式主包和回退包的业务验收仍待完成。 [容量回执](evidence/serve-transcription-discovery-20261128/capacity.json)
+
+候选已在 Thor 通过原生 TLS 短验。1 次模型启动、3 条公开请求和 1 次私有配置读取。官方 Python SDK 3.55.1 为同一段四秒录音返回两位说话人，重叠 1.68 秒，后续 Chat 回答 42。默认包与服务状态的 20 份文件通过复核。两档容量和回退包仍需单独验收。 [实机回执](evidence/serve-transcription-discovery-20261128/device.json)
+
+转录声明的源码摘要已同步到 Serve 审计清单。重新核对 1,401 个源码锚点和 40 个清单反例，设备业务验收仍单列。
+
+每档额外转录现在都有单独的一次请求预算；离线复核会拒绝主容量或轻量容量零次请求的回执。两档共 25 个反例通过。
+
+双人重叠转录的验收已接入主容量和轻量容量。固定的 Python SDK 3.55.1 通过 TLS 回放读出两位说话人；夹具收到完整 WAV、标准 multipart 参数及其嵌套 VAD 字段。用两档原始健康记录核对了 1.68 秒重叠，并拒绝 23 个错误输入，涵盖未加载分离器、ASR 预算漂移和跨容量复用请求。候选设备 HTTP 和容量切换仍待实测。 [CPU 回执](evidence/serve-transcription-discovery-20261128/sdk-cpu.json)
+
+rev598 主包和回退包均保留了主、轻两档的双人转录记录，但能力接口和 OpenAPI 仍将重叠说话人分离列为待实现。候选已统一声明，并列出启用分离所需后端。6 项原生测试与 5 项 Python 检查通过；原录音的 1.68 秒交叠和首句 1/7 词错误率均已复核。下一步核对候选的实际 HTTP 发现入口与发行交接。 [声明与复核记录](evidence/serve-transcription-discovery-20261128/cpu.json)
+
 rev600 的 PR 检查中，终态日志写满用例在注入故障前返回 FAILED。Thor 上为内存读取注入 80 毫秒延迟，复现了相同返回；该用例的独立等待预算已修正。16 项辅助依赖隔离检查通过，原始远端失败原因未写入状态，复跑将附状态详情。[针对性复核](evidence/serve-memory-watchdog-stall-20261128/terminal-event-fixture.json)
 
 远端清单检查发现 Guardian 的 7 个源码摘要仍指向旧版，涉及内存采样通道、启动准入和 CPU 夹具。已逐文件与 rev600 及原基线对照，Thor 本机通过 1,401 个源码锚点和 40 个反例检查。发行包沿用先前的真实恢复回执。 [清单校验记录](evidence/serve-memory-watchdog-stall-20261128/inventory-review.json)
@@ -1554,13 +1588,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev600**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev600 发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
+本机登记的发行版本为 **rev604**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev604 发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1` |
-| 回退服务包清单 | `8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61` |
-| 默认引擎 | `5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113` |
+| 主服务包清单 | `77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922` |
+| 回退服务包清单 | `e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd` |
+| 默认引擎 | `9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

@@ -8,10 +8,12 @@ from pathlib import Path
 import re
 from urllib.parse import parse_qsl
 
+from .producer_sdk_evidence import issued_producer_campaigns
 from .render_sdk_matrix import CATALOG, VERSIONS, sha
 from .response_handoff_receipt import verify as verify_response_handoff
 from .stored_chat_receipt import verify as verify_stored_chat
 from .stream_sdk_evidence import stream_campaigns
+from .transcription_sdk_evidence import issued_transcription_campaigns, transcription_campaigns
 
 EVIDENCE = CATALOG.parents[1]
 CLIENTS = tuple(f'{language}-{version}' for language, version in VERSIONS)
@@ -261,6 +263,15 @@ def render():
             EVIDENCE / 'serve-responses-search-stream-sdk-20261128', CLIENTS):
         sources[name] = source
         suites.append((name, (source['revision'], packets, {'200': source['requests']})))
+    speech = EVIDENCE / 'serve-transcription-discovery-20261128'
+    for campaigns in (transcription_campaigns(speech), issued_transcription_campaigns(speech, CLIENTS)):
+        for name, packets, source in campaigns:
+            sources[name] = source
+            suites.append((name, (source['revision'], packets, {'200': source['requests']})))
+    producers = EVIDENCE / 'serve-interpreter-output-discovery-20261128'
+    for name, packets, source in issued_producer_campaigns(producers, CLIENTS):
+        sources[name] = source
+        suites.append((name, (source['revision'], packets, {'200': 3, '404': 1})))
     counts, unassigned = index(catalog, suites)
     buffer = io.StringIO(newline='')
     writer = csv.writer(buffer, lineterminator='\n')

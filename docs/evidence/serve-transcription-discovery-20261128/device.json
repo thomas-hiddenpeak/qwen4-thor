@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "source_head": "40be92016f46d4a6f504916eb768ec13d5e79643",
+  "predecessor_manifest": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1",
+  "predecessor_revision": 600,
+  "engine": "c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "protocol": "a6d28cd72863a52f5006b2b26314ea3b9db68b542fe74ec2827db13359555b60",
+  "protocol_sources": "29234976393e7339c5142d1c5131932242983b8b79fc23833f99ad0f97bac4a8",
+  "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+  "sdk": "3.55.1",
+  "typed_speakers": [
+    "B",
+    "A"
+  ],
+  "authenticated_requests": [
+    {
+      "method": "GET",
+      "path": "/v1/capabilities",
+      "status": 200,
+      "trace": "req-d827439c423aeb368767894c5c3ad058"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/audio/transcriptions",
+      "status": 200,
+      "trace": "req-b9217e98eda4bbdf2d7d1e9e0348eaa7"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/chat/completions",
+      "status": 200,
+      "trace": "req-7e4980be5a0f0b4b79ab71a4f856cfa2"
+    }
+  ],
+  "private_config_reads": 1,
+  "result": {
+    "actual_audio_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+    "auxiliaries": [
+      "alignment",
+      "vad",
+      "speaker",
+      "separator"
+    ],
+    "stream": false,
+    "quality": {
+      "policy": "source-specific-owner-inflection-20261118",
+      "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+      "voices": [
+        {
+          "reference": "The child almost hurt the small dog.",
+          "observed": "The child almost hurts the small dog.",
+          "wer": 0.14285714285714285,
+          "threshold": 0.125,
+          "accepted_inflection": true
+        },
+        {
+          "reference": "We are sure that one war is enough.",
+          "observed": "We are sure that one war is enough.",
+          "wer": 0.0,
+          "threshold": 0.125,
+          "accepted_inflection": false
+        }
+      ],
+      "overlap_seconds": 1.68,
+      "model_quality_limitation": true
+    },
+    "text": "We are sure that one war is enough. The child almost hurts the small dog.",
+    "segments": 2,
+    "labels": [
+      "B",
+      "A"
+    ]
+  },
+  "wire_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+  "config_sha256": "5689c31a31b4389bbcbc3783affabeab3c7f3935a0458f1c990817040e983714",
+  "capabilities_sha256": "1c75cd0f6ac576653a3ced9ddbb45bf68dbc466977ed232a49a775ed7455267f",
+  "core_answer": "42",
+  "guard": {
+    "status": "COMPLETED",
+    "backend": "nvml",
+    "exit_sha256": "178c761118cd12c810ff153630ef757d78ae9f64a4030704b6626eb03f1e9fdb",
+    "samples": 44,
+    "all_queries_ok": true,
+    "child_returncode": 0
+  },
+  "model_starts": 1,
+  "seconds": 45.541,
+  "ports_released": true,
+  "protected_files": 20,
+  "capacity_qualification": false,
+  "issued": false
+}

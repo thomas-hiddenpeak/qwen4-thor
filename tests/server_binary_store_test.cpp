@@ -2,6 +2,7 @@
 
 #include <sys/stat.h>
 
+#include <array>
 #include <cstdlib>
 #include <ctime>
 #include <filesystem>
@@ -264,17 +265,36 @@ Q4T_TEST(binary_abandoned_upload_and_reader_expire_after_restart) {
     ObjectStore objects(fixture.options);
     BinaryStore binary(objects);
     BinaryStage stage, file;
-    Q4T_CHECK(Ok(binary.Begin(Access(), 100, 1, &stage)) &&
+    Q4T_CHECK(Ok(binary.Begin(Access(), 100, 60, &stage)) &&
               Ok(binary.Append(Access(), &stage, "unfinished")));
     Q4T_CHECK(Ok(binary.Begin(Access(), 100, 60, &file)) &&
               Ok(binary.Append(Access(), &file, "read later")) &&
               Ok(binary.Publish(Access(), &file, File())));
     BinaryRead read;
     Q4T_CHECK(
-        Ok(binary.Open(Access(), ObjectKind::kFile, "file_binary", 1, &read)));
+        Ok(binary.Open(Access(), ObjectKind::kFile, "file_binary", 60, &read)));
     Q4T_CHECK(Ok(Run(objects, Request("file_binary", ObjectKind::kFile,
                                       ObjectOperation::kErase))));
-    expires = std::max(stage.expires, read.expires);
+    Q4T_CHECK(Count(objects) == 4);  // Two handles and their two chunks.
+    // Arm both expirations after staging and unlinking the published file.
+    // The worker starts their short TTL in a single durable transaction.
+    std::array roots{Request(stage.id, ObjectKind::kToolRun),
+                     Request(read.id, ObjectKind::kToolRun)};
+    for (auto& root : roots) {
+      const auto stored = Run(objects, root);
+      Q4T_CHECK(Ok(stored) && stored.value.Find("data"));
+      root.operation = ObjectOperation::kPut;
+      root.data = *stored.value.Find("data");
+      root.expected_revision = stored.value.GetInt("revision");
+      root.ttl_seconds = 1;
+    }
+    const auto armed = objects.ExecuteBatch(roots, Clock::now() + 10s);
+    Q4T_CHECK(Ok(armed));
+    const auto* records = armed.value.GetArray("data");
+    Q4T_CHECK(records && records->array.size() == roots.size());
+    expires = records->array.front().GetInt("expires_at");
+    Q4T_CHECK(expires > 0 &&
+              records->array.back().GetInt("expires_at") == expires);
   }
   Expired(expires);
   ObjectStore objects(fixture.options);

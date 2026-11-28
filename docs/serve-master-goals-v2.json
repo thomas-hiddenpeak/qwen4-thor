@@ -1020,6 +1020,25 @@
         "evidence": "evidence/serve-responses-sdk-business-20261128/chat-output-wire.json",
         "sources": 24,
         "new_model_starts": 0
+      },
+      "transcription_discovery_20261128": {
+        "state": "targeted_cpu_verified",
+        "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
+        "issued": false
+      },
+      "overlap_discovery_http_20261128": {
+        "status": "targeted_http_passed",
+        "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
+        "issued": true,
+        "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
+        "capacity": "primary_and_light_passed",
+        "managed_receipt": "evidence/serve-transcription-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "delivery": "evidence/serve-transcription-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -3400,6 +3419,19 @@
         "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json",
         "issued": true,
         "delivery": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -7217,6 +7249,25 @@
         "managed": "evidence/serve-asset-admission-20261127/managed.json",
         "revision": 582,
         "delivery": "evidence/serve-asset-admission-20261127/delivery.json"
+      },
+      "transcription_discovery_20261128": {
+        "state": "targeted_cpu_verified",
+        "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
+        "issued": false
+      },
+      "overlap_discovery_http_20261128": {
+        "status": "targeted_http_passed",
+        "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
+        "issued": true,
+        "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
+        "capacity": "primary_and_light_passed",
+        "managed_receipt": "evidence/serve-transcription-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "delivery": "evidence/serve-transcription-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -8273,6 +8324,19 @@
         "managed": "evidence/serve-web-provider-20261128/managed.json",
         "issued": true,
         "delivery": "evidence/serve-web-provider-20261128/delivery.json"
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -9834,12 +9898,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 328,
+        "source_requests": 372,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 170,
-        "methods_with_success": 45,
-        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery.",
-        "assigned_requests": 327
+        "method_sdk_pairs_with_success": 182,
+        "methods_with_success": 47,
+        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients.",
+        "assigned_requests": 371
       },
       "stored_chat_sdk_handoff_20261128": {
         "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
@@ -9885,6 +9949,38 @@
         "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json",
         "issued": true,
         "delivery": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
+      },
+      "transcription_discovery_20261128": {
+        "state": "targeted_cpu_verified",
+        "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
+        "issued": false
+      },
+      "overlap_discovery_http_20261128": {
+        "status": "targeted_http_passed",
+        "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
+        "issued": true,
+        "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
+        "capacity": "primary_and_light_passed",
+        "managed_receipt": "evidence/serve-transcription-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "delivery": "evidence/serve-transcription-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       },
       "container_sdk_lifecycle_20261128": {
         "cpu": "evidence/serve-container-sdk-lifecycle-20261128/cpu.json",
@@ -11198,10 +11294,10 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 600,
-        "receipt": "evidence/serve-memory-watchdog-stall-20261128/delivery.json",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/cold600-01/plan.json",
-        "plan_sha256": "0da61b02a3fe6cb44c48e4c93e9e6806159805015ee7144fa6807d45da60b2c4",
+        "revision": 604,
+        "receipt": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/cold604-01/plan.json",
+        "plan_sha256": "593c2b71ca94aa55a2787e62163a173b163cccc113c603193448e06a7d709cd1",
         "model_starts": 0,
         "executed": false
       },
@@ -13169,7 +13265,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev600_delivered_remaining_deliveries",
+      "state": "rev604_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13219,13 +13315,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 600,
+        "revision": 604,
         "state": "STOPPED",
-        "primary_manifest_sha256": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1",
-        "fallback_manifest_sha256": "8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61",
-        "binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+        "primary_manifest_sha256": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922",
+        "fallback_manifest_sha256": "e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd",
+        "binary_sha256": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
+        "evidence": "evidence/serve-interpreter-output-discovery-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14696,6 +14792,37 @@
         "binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
+      },
+      "release_revision_600": {
+        "revision": 600,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1",
+        "fallback_manifest_sha256": "8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61",
+        "binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate",
+        "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
+      },
+      "release_revision_602": {
+        "revision": 602,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66",
+        "fallback_manifest_sha256": "13f7ef77d9abe8e1591df9fccfafb5af70a43f654992d6d943da0ed015a141bd",
+        "binary_sha256": "c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-transcription-discovery-20261128/delivery.json"
       }
     },
     {
@@ -14804,21 +14931,21 @@
         "audio_pairs": 25,
         "first_hour_business": 304,
         "business_requests": 7250,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "8a3fcb56bee493ad1c8aa522162aae7959319d48311880b7512e9343de1aee69",
-        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src/.q4t-work/day-01/audio-day.sh",
-        "operator_sha256": "d97a0b98ea7c0932af67bc8223ee8c6935a9c70d7cf5c460ec050f847ad38f73",
-        "checked_at": "2026-11-28T07:39:24.382010+00:00",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "4a4b826119614b6c7dfebbc2f9d7ac23b9413c0703ebe1f8316a9afb76d4206b",
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "8cbcfe7a506b5361791a513d9dc2e0ec716ffb4a6dc965d9cd41f9c31ffc5884",
+        "checked_at": "2026-11-28T11:13:53.722875+00:00",
         "minimum_evidence_free_bytes": 12884901888,
         "hours_executed": 0,
-        "revision": 600,
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/watchdog-day-src",
+        "revision": 604,
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/memory-watchdog-src/.q4t-work/memory-watchdog-candidates-03/primary",
-          "manifest_sha256": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-client-primary-01/bundle",
+          "manifest_sha256": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922"
         },
-        "source_commit": "e81696920420f6aa46061fe08254e4e70f1ea955",
-        "handoff_sha256": "a67170c2a8328bc6da098c5dc4e23084d0dbf7a4dc6eabf7493a2a0d3bd27d0f",
+        "source_commit": "fa333081a36c7d4cf670ed2a2fd815254485d011",
+        "handoff_sha256": "bcda94139bf5a4d2293ce2ede3b836e8b372a8edd3908f0448719f32eed1236c",
         "source_files": 705,
         "checked": true
       },
@@ -15228,9 +15355,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 600,
-        "receipt": "evidence/serve-memory-watchdog-stall-20261128/delivery.json",
-        "plan_sha256": "8a3fcb56bee493ad1c8aa522162aae7959319d48311880b7512e9343de1aee69",
+        "revision": 604,
+        "receipt": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "plan_sha256": "4a4b826119614b6c7dfebbc2f9d7ac23b9413c0703ebe1f8316a9afb76d4206b",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,

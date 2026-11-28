@@ -21,7 +21,11 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 来源清单的 `methods_with_success` 和 `method_sdk_pairs_with_success` 分别给出有成功回包的方法数、方法与版本组合数。每组请求数记录在 `sources` 下。旧上传记录中缺少查询串的请求保留在 `unassigned`。Responses 流式短验的七次原生 TLS SDK 请求和六次托管恢复 SDK 请求均可追溯到原始请求 ID；两次直接 HTTP 对照单独记录。可以用 `python3 -B -m tools.serve_audit.sdk_business_evidence build/sdk-business` 重建清单。
 
+双人转录的实机记录覆盖原生 TLS、主轻两档容量、模型重启和主网关切换。候选的七次转录和一次 Chat 以及发行后六版官方 SDK 的十二次转录均可追溯至原始请求 ID。发行后每版各读取一次 JSON 与 SSE，核对两位说话人、结束事件和计量。 [转录验收](evidence/serve-transcription-discovery-20261128/delivery.json)
+
 ## 验证范围
+
+六版官方 SDK 在 rev604 原生 TLS 上各自创建容器、用解释器计算 603、按原 ID 读回同一组输出，并验证另一个客户端收到 404。矩阵收录了 24 个带请求 ID 和实际查询参数的调用。模型恢复与网关切换的记录另见[托管验收](evidence/serve-interpreter-output-discovery-20261128/managed.json)。
 
 - **已存 Chat。** 四版 Python 和两版 Node 各将一份真实发行记录存为 Chat，由另一版 SDK 读取同一 ID、更新并按元数据筛选、分页读回原始消息和删除。六个方法在六个版本上都有成功回包。六次跨客户读取和六次删除后读取都返回 404。[实机回执](evidence/serve-stored-chat-sdk-20261128/business.json) · [请求与回包](evidence/serve-stored-chat-sdk-20261128/requests.json)
 - rev590 的原生 TLS、嵌入模型和文本模型已通过官方 SDK 批量上传与自动轮询验收。Python 2.8.1 和 Node 7.47.0 各上传两份真实发行记录，另一个版本的客户端通过游标逐页读回原文件、核对内容和过滤检索。Responses 的 file_search 命中 rev588 的原 File ID，模型回答中包含该发行号。两次跨客户访问均返回 404。共 50 个真实请求、一次模型启动。 [实机业务回执](evidence/serve-vector-batch-sdk-20261128/business.json)

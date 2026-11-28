@@ -348,6 +348,47 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 live.format_for(altered)
 
+    def test_interpreter_output_discovery_requires_qualified_hosted_python(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(hosted_python=dict(live.CODE_CAPABILITY),
+                   responses=dict(output_items=['message']))
+        target = dict(old, responses=dict(output_items=['message', 'code_interpreter_call']))
+        before = migration.semantic_capabilities(old)
+        after = migration.semantic_capabilities(target)
+        self.assertTrue(migration.explicit_extension(before, after))
+        self.assertFalse(migration.explicit_extension(after, before))
+        for invalid in (None, {}, dict(live.CODE_CAPABILITY, network='enabled'),
+                        dict(live.CODE_CAPABILITY, responses_citations=1)):
+            with self.subTest(invalid=invalid):
+                bad = dict(target, hosted_python=invalid)
+                if invalid is None:
+                    del bad['hosted_python']
+                with self.assertRaisesRegex(ValueError, 'qualified hosted Python contract'):
+                    migration.semantic_capabilities(bad)
+
+    def test_multi_agent_output_discovery_is_scoped_to_the_beta_selector(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        legacy = dict(selector='responses_multi_agent=v1', default_max_concurrent_subagents=3,
+                      shared_output_budget=True, agent_events=True, actions=['spawn_agent',
+                      'interrupt_agent', 'list_agents', 'send_message', 'followup_task', 'wait_agent'])
+        items = ['multi_agent_call', 'multi_agent_call_output']
+        old = dict(beta_query_selector='beta=true', multi_agent=legacy, output_items=['message'])
+        new = dict(old, multi_agent=dict(legacy, output_items=items))
+        before = migration.semantic_capabilities(dict(responses=old))
+        after = migration.semantic_capabilities(dict(responses=new))
+        self.assertEqual(live.format_for(dict(responses=old)), live.AGENT_RECORD_FORMAT)
+        self.assertEqual(live.format_for(dict(responses=new)), live.AGENT_RECORD_FORMAT)
+        self.assertTrue(migration.explicit_extension(before, after))
+        self.assertFalse(migration.explicit_extension(after, before))
+        self.assertTrue(live.valid_multi_agent(legacy))
+        self.assertTrue(live.valid_multi_agent(dict(legacy, output_items=items[::-1])))
+        for response in (dict(new, beta_query_selector=''), dict(new, output_items=items),
+                         dict(new, multi_agent=dict(legacy, output_items=items*2)),
+                         dict(new, multi_agent=dict(legacy, output_items=items[:1])),
+                         dict(new, multi_agent=dict(new['multi_agent'], agent_events=1))):
+            with self.subTest(response=response), self.assertRaises(ValueError):
+                migration.semantic_capabilities(dict(responses=response))
+
     def test_interpreter_extension_preserves_workspace_and_runtime_limits(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(container_workspaces=live.SKILLS_CAPABILITY)

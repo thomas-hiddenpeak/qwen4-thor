@@ -1,0 +1,54 @@
+{
+  "status": "ACCEPT_OVERLAP_DISCOVERY_PRIMARY_LIGHT",
+  "predecessor_manifest": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1",
+  "capacity": {
+    "primary": {
+      "typed_speakers": [
+        "B",
+        "A"
+      ],
+      "wire_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+      "trace": "req-e058fda740c5ee56987565a3eedd19c4",
+      "health_sha256": "90c9e0d9d7764c394df80b273f0f7e00f40d7f0453b46a8477f02ef8ab943ee6",
+      "record_sha256": "251f4fa11724a614834663421b527250ca83133a73668d2927b23d1f589c1d3d",
+      "mtp": true,
+      "transcription_attempts": 1,
+      "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+      "returned_chat": "42"
+    },
+    "light": {
+      "typed_speakers": [
+        "B",
+        "A"
+      ],
+      "wire_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+      "trace": "req-598994eb4a23b15599c5069a82b0aa49",
+      "health_sha256": "51c7cd0258ac54cb6b74085b41304dc8c90fab4517364802c3c3d41807992ccb",
+      "record_sha256": "c696545ba4385e64e9d921a6cda15d9d7f3bbecb9a53f90f9309f1e66c4fdfbf",
+      "mtp": false,
+      "transcription_attempts": 1,
+      "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+      "returned_chat": "42"
+    }
+  },
+  "engine": "c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "lease": "9a56fe6678b569a9ca344402c05c4283f578c72b0bcf756c0319032ea00df52e",
+  "observations": "9875718f8da0ca3ec71b02c2b8f0af394ba007135439aeae62d1ee870c9e9fcb",
+  "registered_profiles": "6abaf47af13af0d08086b30aace9b54443b98aff3d5ecc4679819d07bb2526d8",
+  "lifecycle": "0060462885e8850459e0b57dedd42794077439a111d515e1f8a8b63b6dd83d03",
+  "inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1401,
+    "mutation_checks": 40,
+    "errors": []
+  },
+  "exact_source_reconstructed": true,
+  "model_starts": 2,
+  "isolated_deployment_issued": false
+}
