@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev608 已登记主包与独立回退包。传统补全执行显式 best_of 上限 20，独立 n=21 逐项返回。模型重建和主网关回退后仍可按相同输入生成 606，独立 Chat 均答 42。发行期间启动模型零次，13 份受保护状态的摘要一致。客户端矩阵收录了恢复前后的 16 次 SDK 补全，4 次普通 HTTP 能力查询单独计数。 [发行回执](evidence/serve-completion-best-of-20261128/delivery.json)
+
 rev606 已登记主包与独立回退包。Responses 和 Conversations 接受重复的输出选择器，跨模型恢复及网关切换后可读回同一响应及 token 概率。发行过程启动模型零次，13 份受保护状态逐一核对。 [发行回执](evidence/serve-response-include-projection-20261128/delivery.json)
 
 rev604 已登记主包与独立回退包。普通 Responses 声明解释器输出，Beta 选择器声明两种多代理输出；两次托管故障恢复后原结果可读，新调用与 Chat 均成功。两档容量的前序记录和 13 份运行状态已核对。 [发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)

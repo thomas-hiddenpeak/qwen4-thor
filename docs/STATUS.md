@@ -14,6 +14,10 @@
 
 翻到第三页后，存储对象和向量文件列表原先会跳过游标旁边的数据。两处读取路径现从游标向前取相邻项，再按请求顺序返回。六版正式 SDK 已在原生 TLS 与真实存储上完成 72 次分页请求；嵌入使用 CPU 夹具，尚待候选引擎验收。 [分页回执](evidence/serve-previous-page-20261128/cpu.json)
 
+rev608 已登记主包与独立回退包。传统补全执行显式 best_of 上限 20，独立 n=21 逐项返回。模型重建和主网关回退后仍可按相同输入生成 606，独立 Chat 均答 42。发行期间启动模型零次，13 份受保护状态的摘要一致。客户端矩阵收录了恢复前后的 16 次 SDK 补全，4 次普通 HTTP 能力查询单独计数。 [发行回执](evidence/serve-completion-best-of-20261128/delivery.json)
+
+模型退出重建和主网关故障接管后，正式客户端均观察到 best_of=21 返回 400、20 成功、独立 n=21 返回 21 项。前后四次种子补全均读回实际发行号 606，两个独立 Chat 均答 42。 [托管恢复记录](evidence/serve-completion-best-of-20261128/managed.json)
+
 传统补全上限修复的主、轻容量记录均已登记，可逐字节还原 rev606 的前驱记录。下一步生成主包与独立回退包。 [登记回执](evidence/serve-completion-best-of-20261128/capacity.json)
 
 传统补全候选在主、轻两档容量均已通过。两档分别拒绝 best_of=21、接受 20，只给 n=21 时逐项返回 21 个有序结果，独立 Chat 均回答 42。候选待独立封包和登记。 [实机容量回执](evidence/serve-completion-best-of-20261128/capacity-business.json)
@@ -1640,13 +1644,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev606**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev606 发行回执](evidence/serve-response-include-projection-20261128/delivery.json)
+本机登记的发行版本为 **rev608**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev608 发行回执](evidence/serve-completion-best-of-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349` |
-| 回退服务包清单 | `2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967` |
-| 默认引擎 | `a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0` |
+| 主服务包清单 | `0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245` |
+| 回退服务包清单 | `d9c93f4f3885b38125703ce3ab8bc273adce9ef1febc9af7bf2f18fc3fb63f4c` |
+| 默认引擎 | `c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 
