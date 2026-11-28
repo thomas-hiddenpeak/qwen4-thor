@@ -9,6 +9,7 @@ import re
 from urllib.parse import parse_qsl
 
 from .producer_sdk_evidence import issued_producer_campaigns
+from .model_inference_evidence import model_inference_campaigns
 from .projection_sdk_evidence import projection_campaigns
 from .container_receipt import verify as verify_container
 from .render_sdk_matrix import CATALOG, VERSIONS, sha
@@ -303,6 +304,10 @@ def render():
         suites.append((name, (source['revision'], packets, {'200': 3, '404': 1})))
     for name, packets, statuses, source in projection_campaigns(
             EVIDENCE / 'serve-response-include-projection-20261128'):
+        sources[name] = source
+        suites.append((name, (source['revision'], packets, statuses)))
+    for name, packets, statuses, source in model_inference_campaigns(
+            EVIDENCE / 'serve-model-inference-sdk-20261128', CLIENTS):
         sources[name] = source
         suites.append((name, (source['revision'], packets, statuses)))
     counts, unassigned = index(catalog, suites)

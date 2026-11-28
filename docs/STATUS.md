@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+rev606 已用六版正式客户端在 Thor 通过模型发现、传统补全和嵌入的原生 HTTPS 短验。42 次请求中 36 次成功，6 次查询不存在的模型均返回 404。六版回答均为 606，JSON 与流式正文、token 概率和用量相符，批量向量两种编码逐行相同。SDK 成功业务覆盖现为 59 个方法和 255 个方法与版本组合。 [实机回执](evidence/serve-model-inference-sdk-20261128/business.json)
+
 SDK 业务矩阵已计入 rev606 同一引擎的 30 次正式 Python 调用。其中 10 次来自 TLS 后台流与存储读回，另外 20 次来自模型恢复与网关回退的前后对照。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
 
 六版正式客户端省略嵌入输出编码时，都会在线路请求中发送 `base64`，并为应用解码成数值向量。使用真实模型历史响应，各版均读回原始顺序的 11 行 1024 维向量，FP32 字节全部相同。 [复核记录](evidence/serve-model-inference-sdk-20261128/embedding-defaults.json)

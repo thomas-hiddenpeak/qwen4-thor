@@ -1,0 +1,19 @@
+{
+  "model": "qwen3.8-flash-next",
+  "completion": {
+    "prompt": "q4t release record\npublication_revision: 606\nCopy the publication_revision value.\npublication_revision:",
+    "echo": true,
+    "temperature": 0,
+    "seed": 17,
+    "max_tokens": 8,
+    "logprobs": 1,
+    "stop": [
+      "\n"
+    ]
+  },
+  "documents": [
+    "The q4t primary package has publication revision 606.",
+    "The independent fallback package manifest is 2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967."
+  ],
+  "dimensions": 32
+}

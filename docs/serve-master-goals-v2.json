@@ -1057,7 +1057,13 @@
       "model_inference_sdk_20261128": {
         "scope": "model catalogue, legacy completions and embeddings",
         "cpu": "evidence/serve-model-inference-sdk-20261128/cpu.json",
-        "state": "six stock clients on synthetic CPU fixture; device pending"
+        "state": "six stock clients on synthetic CPU fixture; device pending",
+        "status": "published_engine_native_tls_business_pass",
+        "revision": 606,
+        "device_receipt": "evidence/serve-model-inference-sdk-20261128/business.json",
+        "requests": 42,
+        "sdk_versions": 6,
+        "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       },
       "completion_best_of_20261128": {
         "status": "candidate_cpu_pass_http_pending",
@@ -1854,6 +1860,14 @@
       "completion_best_of_20261128": {
         "status": "candidate_cpu_pass_http_pending",
         "evidence": "evidence/serve-completion-best-of-20261128/cpu.json"
+      },
+      "model_inference_sdk_20261128": {
+        "status": "published_engine_native_tls_business_pass",
+        "revision": 606,
+        "device_receipt": "evidence/serve-model-inference-sdk-20261128/business.json",
+        "requests": 42,
+        "sdk_versions": 6,
+        "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       }
     },
     {
@@ -7309,6 +7323,14 @@
         "remaining": [
           "main integration"
         ]
+      },
+      "model_inference_sdk_20261128": {
+        "status": "published_engine_native_tls_business_pass",
+        "revision": 606,
+        "device_receipt": "evidence/serve-model-inference-sdk-20261128/business.json",
+        "requests": 42,
+        "sdk_versions": 6,
+        "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       }
     },
     {
@@ -9939,12 +9961,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 492,
+        "source_requests": 534,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 231,
-        "methods_with_success": 55,
-        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations. The short projection and both recovery scenarios contribute 30 stock Python requests from the engine subsequently registered as rev606.",
-        "assigned_requests": 491
+        "method_sdk_pairs_with_success": 255,
+        "methods_with_success": 59,
+        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations. The short projection and both recovery scenarios contribute 30 stock Python requests from the engine subsequently registered as rev606. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs.",
+        "assigned_requests": 533
       },
       "stored_chat_sdk_handoff_20261128": {
         "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
@@ -10047,7 +10069,13 @@
       "model_inference_sdk_20261128": {
         "scope": "model catalogue, legacy completions and embeddings",
         "cpu": "evidence/serve-model-inference-sdk-20261128/cpu.json",
-        "state": "six stock clients on synthetic CPU fixture; device pending"
+        "state": "six stock clients on synthetic CPU fixture; device pending",
+        "status": "published_engine_native_tls_business_pass",
+        "revision": 606,
+        "device_receipt": "evidence/serve-model-inference-sdk-20261128/business.json",
+        "requests": 42,
+        "sdk_versions": 6,
+        "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       }
     },
     {
@@ -13320,6 +13348,14 @@
         "publication": 594,
         "business": "evidence/serve-responses-sdk-business-20261128/business.json",
         "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
+      },
+      "model_inference_sdk_20261128": {
+        "status": "published_engine_native_tls_business_pass",
+        "revision": 606,
+        "device_receipt": "evidence/serve-model-inference-sdk-20261128/business.json",
+        "requests": 42,
+        "sdk_versions": 6,
+        "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       }
     },
     {
@@ -15476,11 +15512,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 209,
+        "source_requests": 534,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 126,
-        "methods_with_success": 32,
-        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590."
+        "method_sdk_pairs_with_success": 255,
+        "methods_with_success": 59,
+        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs.",
+        "assigned_requests": 533
       }
     }
   ],

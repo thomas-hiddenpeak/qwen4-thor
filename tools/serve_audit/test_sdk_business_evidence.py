@@ -74,6 +74,21 @@ class BusinessEvidenceTest(unittest.TestCase):
         self.assertIn("stream-gateway-restore/200=1", read["node-7.47.0"])
         self.assertNotIn("stream-gateway-restore", read["python-3.55.1"])
 
+    def test_issued_inference_outcomes_belong_to_the_client_that_sent_them(self):
+        table, manifest = render()
+        rows = {(r['method'], r['path']): r for r in csv.DictReader(io.StringIO(table))}
+        for sdk in CLIENTS:
+            label = 'inference-issued-' + sdk
+            source = manifest['sources'][label]
+            self.assertEqual((source['sdk'], source['revision'], source['requests']), (sdk, 606, 7))
+            for method, path, statuses in [('GET', '/models', ('200=1',)),
+                    ('GET', '/models/{model}', ('200=1', '404=1')),
+                    ('POST', '/completions', ('200=2',)), ('POST', '/embeddings', ('200=2',))]:
+                row = rows[method, path]
+                for status in statuses:
+                    self.assertIn(label + '/' + status, row[sdk].split())
+                self.assertTrue(all(label + '/' not in row[other] for other in CLIENTS if other != sdk))
+
     def test_duplicate_trace_unknown_sdk_and_bad_total_rejected(self):
         packet = self.wire(query='')
         bad = [([(CLIENTS[0], packet)] * 2, {'200': 2}),
