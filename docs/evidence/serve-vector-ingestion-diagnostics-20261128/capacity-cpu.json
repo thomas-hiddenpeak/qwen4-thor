@@ -1,0 +1,116 @@
+{
+  "status": "PASS_CPU_NATIVE_STORAGE",
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores",
+      "status": 200,
+      "trace": "req-0ac6152fae4dbaa195206572a7c38049",
+      "client": "alpha"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "status": 200,
+      "trace": "req-7954ece864a975afed2effccff139776",
+      "client": "alpha"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/vector_stores/vs_389d121bef5452c054309957bf94e42e/files",
+      "status": 200,
+      "trace": "req-6f4e200ffde1e0e9f3ce35aab11aa216",
+      "client": "alpha"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_389d121bef5452c054309957bf94e42e/files/file_6b693ff77ec6e5811b91bdc92b770236",
+      "status": 200,
+      "trace": "req-deb9aa5dac01e9434013815fe1fea5cb",
+      "client": "alpha"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_389d121bef5452c054309957bf94e42e/files/file_6b693ff77ec6e5811b91bdc92b770236",
+      "status": 200,
+      "trace": "req-5e58295ba7a2c4ee7da07a0f6068f1c1",
+      "client": "alpha"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_389d121bef5452c054309957bf94e42e",
+      "status": 404,
+      "trace": "req-0cf532d99fe15313194e5cb31dc019a6",
+      "client": "beta"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_6b693ff77ec6e5811b91bdc92b770236/content",
+      "status": 200,
+      "trace": "req-8bcc1bf65acb6b38ab5a28788fc19cb2",
+      "client": "alpha"
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/vector_stores/vs_389d121bef5452c054309957bf94e42e",
+      "status": 200,
+      "trace": "req-518cff6b933bb61a02d47d819aaff095",
+      "client": "alpha"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/vector_stores/vs_389d121bef5452c054309957bf94e42e",
+      "status": 404,
+      "trace": "req-22e62059cb403a091fb93952a7e98a13",
+      "client": "alpha"
+    },
+    {
+      "method": "DELETE",
+      "path": "/v1/files/file_6b693ff77ec6e5811b91bdc92b770236",
+      "status": 200,
+      "trace": "req-ce2930352e1316dcfc11f2466a38c152",
+      "client": "alpha"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files/file_6b693ff77ec6e5811b91bdc92b770236",
+      "status": 404,
+      "trace": "req-c7c83a29a2dd1f26c27feecac3bc8d7a",
+      "client": "alpha"
+    }
+  ],
+  "index": {
+    "job": "tool_run_60153b003b6bf67d631d9462dce9ccc2",
+    "store": "vs_389d121bef5452c054309957bf94e42e",
+    "file": "file_6b693ff77ec6e5811b91bdc92b770236",
+    "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+    "dimensions": 1024,
+    "vectors_bytes": 40960,
+    "chunks": 10,
+    "binding": "e71363bd67c0f072e4c4a8e813a4922fd67c03898dc4e3b4d2e94bbe85dac63d",
+    "usage_bytes": 43187
+  },
+  "model_starts": 0,
+  "embedding_backend": "CPU fixture",
+  "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+  "code_sha256": "a2d395bd5a8b7be8bd7c5c13b712aec2f589ad3d70e05be010ccaf23aff010ce",
+  "old_gpu_log_sha256": "ee978a409c04b71f6a07139dd43b4e674c07bfbc0702fb397a0f414c1288f049",
+  "previous_real_jobs": 5,
+  "previous_real_chunks": 15,
+  "previous_real_outcomes": [
+    "error/handler_error"
+  ],
+  "negative_controls": [
+    "unreleased",
+    "wrong claim",
+    "reused instance",
+    "wrong diagnostic",
+    "wrong outcome",
+    "missing terminal",
+    "partial vector charge",
+    "foreign relabeled",
+    "duplicate HTTP trace"
+  ],
+  "positive_terminal_fixture": "synthetic shape only",
+  "candidate_gpu_qualification": "pending"
+}

@@ -1,5 +1,7 @@
 # 当前状态（2026-11-29）
 
+原生 TLS 与磁盘对象存储完成文件上传、入库、来源回读、跨客户拒绝和删除。CPU 夹具保存了 10 个分块。校验器从真实前序日志检出 15 个误报，并拒绝 9 种损坏证据。下一步在主、轻两档使用原生模型复验。 [回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity-cpu.json)
+
 两份真实发行记录建索引后，磁盘索引中 23 个分块与两个作业的成功结束日志逐项相符。正式 Python SDK 下载原记录后，独立 Chat 回答 610。单次候选模型退出后端口已释放，下一步完成发行登记。 [实机证据](evidence/serve-vector-ingestion-diagnostics-20261128/device.json)
 
 实测了两条直接到达原生嵌入准入层的路径。显式取消保留 409 和 explicit_cancel，共享设备标记故障时返回 503 和 gpu_unhealthy。旧版在这两条路径的日志原因均错误，候选的结果、原因及未分配槽位均正确。两个回归用例已接入原生测试目标，候选引擎字节摘要保持一致。下一步核对真实索引分块日志。 [回执](evidence/serve-vector-ingestion-diagnostics-20261128/admission.json)

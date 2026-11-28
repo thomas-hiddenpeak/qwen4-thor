@@ -125,6 +125,8 @@ class Stage(workers.ice.Stage):
                   controls=2000, seconds=300)
 
     def __init__(self, plan):
+        if 'vector_ingestion_outcomes' in plan:
+            self.limits = dict(self.limits, vector_ingestion_outcomes=1)
         if 'vector_store_views' in plan:
             from tools.serve_audit import vector_store_view_profiles as views
             self.limits = dict(self.limits, vector_store_views=views.CALLS)
@@ -175,6 +177,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'vector_ingestion_outcomes' in self.plan:
+            from tools.serve_audit import vector_ingestion_profiles
+            vector_ingestion_profiles.business(self)
         if 'vector_store_views' in self.plan:
             from tools.serve_audit import vector_store_view_profiles as views
             views.business(self)

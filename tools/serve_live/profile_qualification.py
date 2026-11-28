@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'vector_ingestion_outcomes' in plan:
+            from tools.serve_audit import vector_ingestion_profiles
+            current = profiles[name]['evidence_sha256']
+            current.update(vector_ingestion_profiles.verify(phase, plan, declared, current))
+            continue
         if 'vector_store_views' in plan:
             from tools.serve_audit import vector_store_view_profiles as views
             current = profiles[name]['evidence_sha256']
