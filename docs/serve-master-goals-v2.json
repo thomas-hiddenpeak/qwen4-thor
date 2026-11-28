@@ -1046,6 +1046,11 @@
         "device": "evidence/serve-response-include-projection-20261128/device.json",
         "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
         "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
+      },
+      "model_inference_sdk_20261128": {
+        "scope": "model catalogue, legacy completions and embeddings",
+        "cpu": "evidence/serve-model-inference-sdk-20261128/cpu.json",
+        "state": "six stock clients on synthetic CPU fixture; device pending"
       }
     },
     {
@@ -10009,6 +10014,11 @@
         "device": "evidence/serve-response-include-projection-20261128/device.json",
         "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
         "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
+      },
+      "model_inference_sdk_20261128": {
+        "scope": "model catalogue, legacy completions and embeddings",
+        "cpu": "evidence/serve-model-inference-sdk-20261128/cpu.json",
+        "state": "six stock clients on synthetic CPU fixture; device pending"
       }
     },
     {
