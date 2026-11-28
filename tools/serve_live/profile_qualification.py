@@ -70,7 +70,9 @@ def observations(directory, accepted):
         if 'completion_candidate_limit' in plan:
             from tools.serve_completions import boundary_profiles
 
+            current = profiles[name]['evidence_sha256']
             current.update(boundary_profiles.verify(phase, plan, declared, current))
+            continue
         if 'responses_include_projection' in plan:
             from tools.serve_responses import include_projection_profiles
             current = profiles[name]['evidence_sha256']
