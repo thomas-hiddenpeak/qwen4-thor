@@ -21,15 +21,22 @@ Json Strings(const std::vector<std::string>& values) {
   return result;
 }
 Json Policy(const WebDeploymentPolicy& value) {
-  return Object({{"format", String("q4t.web.policy.v1")},
-                 {"fetch", file_detail::OptionsJson(value.fetch)},
-                 {"seeds", Strings(value.seeds)},
-                 {"scopes", Strings(value.scopes)},
-                 {"max_pages", Number(value.max_pages)},
-                 {"max_depth", Number(value.max_depth)},
-                 {"max_download_bytes", Number(value.max_download_bytes)},
-                 {"refresh_seconds", Number(value.refresh_seconds)},
-                 {"retention_seconds", Number(value.retention_seconds)}});
+  auto policy =
+      Object({{"format", String("q4t.web.policy.v1")},
+              {"fetch", file_detail::OptionsJson(value.fetch)},
+              {"seeds", Strings(value.seeds)},
+              {"scopes", Strings(value.scopes)},
+              {"max_pages", Number(value.max_pages)},
+              {"max_depth", Number(value.max_depth)},
+              {"max_download_bytes", Number(value.max_download_bytes)},
+              {"refresh_seconds", Number(value.refresh_seconds)},
+              {"retention_seconds", Number(value.retention_seconds)}});
+  if (value.provider)
+    Set(&policy, "provider",
+        Object({{"type", String("mwmbl_v2")},
+                {"endpoint", String(value.provider->endpoint)},
+                {"fetch", file_detail::OptionsJson(value.provider->fetch)}}));
+  return policy;
 }
 }  // namespace
 
@@ -43,20 +50,42 @@ Status ParseWebDeploymentPolicy(std::string_view raw,
                       .max_values = 16384,
                       .max_string_bytes = 65536,
                       .reject_duplicate_keys = true}) ||
-      !InputFields(
-          value,
-          {"version", "fetch", "seeds", "scopes", "max_pages", "max_depth",
-           "max_download_bytes", "refresh_seconds", "retention_seconds"},
-          &field) ||
+      !InputFields(value,
+                   {"version", "fetch", "seeds", "scopes", "provider",
+                    "max_pages", "max_depth", "max_download_bytes",
+                    "refresh_seconds", "retention_seconds"},
+                   &field) ||
       !value.Find("version") || !value.Find("version")->IsNumber() ||
       value.Find("version")->str != "1")
     return Invalid();
   WebDeploymentPolicy next;
   if (const auto* fetch = value.Find("fetch"))
     if (!ParseFileFetchOptions(*fetch, &next.fetch).ok()) return Invalid();
+  if (const auto* value_provider = value.Find("provider")) {
+    if (!InputFields(*value_provider, {"type", "endpoint", "fetch"}, &field) ||
+        value_provider->GetString("type") != "mwmbl_v2" || value.Has("seeds"))
+      return Invalid();
+    auto& provider = next.provider.emplace();
+    const auto* fetch = value_provider->Find("fetch");
+    if (fetch && !ParseFileFetchOptions(*fetch, &provider.fetch).ok())
+      return Invalid();
+    if (!fetch || !fetch->Has("allow_http")) provider.fetch.allow_http = false;
+    if (fetch && fetch->Has("max_redirects") && provider.fetch.max_redirects)
+      return Invalid();
+    provider.fetch.max_redirects = 0;
+    auto endpoint = value_provider->GetString("endpoint");
+    file_detail::Url url;
+    if (endpoint.find_first_of("?#") != endpoint.npos ||
+        !file_detail::ParseUrl(endpoint, &url) ||
+        !file_detail::AllowedUrl(url, provider.fetch))
+      return Invalid();
+    provider.endpoint = url.Text();
+    next.max_depth = 0;
+  }
   for (const auto* name : {"seeds", "scopes"}) {
     const auto* items = value.GetArray(name);
     const bool seed = std::string_view(name) == "seeds";
+    if (seed && next.provider) continue;
     if (!items || items->array.empty() ||
         items->array.size() > (seed ? 32U : 128U))
       return Invalid();
@@ -93,6 +122,7 @@ Status ParseWebDeploymentPolicy(std::string_view raw,
                &next.max_download_bytes) ||
       !integer("refresh_seconds", 0, 86400, &next.refresh_seconds) ||
       !integer("retention_seconds", 1, 30 * 86400, &next.retention_seconds) ||
+      (next.provider && next.max_depth != 0) ||
       next.max_pages < next.seeds.size() ||
       next.refresh_seconds > next.retention_seconds)
     return Invalid();
@@ -112,7 +142,9 @@ Json WebDeploymentPolicyDescription(const WebDeploymentPolicy* policy) {
       {{"profile", String("q4t-web-deployment-policy-v1")},
        {"configured", Boolean(policy && !policy->sha256.empty())},
        {"sha256", policy ? String(policy->sha256) : Json()},
-       {"backend", String("native_configured_sites")},
+       {"backend",
+        String(policy && policy->provider ? "mwmbl_v2"
+                                          : "native_configured_sites")},
        {"seed_count", Number(policy ? policy->seeds.size() : 0)},
        {"scope_count", Number(policy ? policy->scopes.size() : 0)},
        {"max_pages", Number(policy ? policy->max_pages : 0)},

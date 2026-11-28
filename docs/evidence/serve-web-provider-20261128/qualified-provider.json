@@ -1,0 +1,15 @@
+{
+  "model_starts": 0,
+  "package_tests": 8,
+  "unavailable_provider_tests": 1,
+  "observations": [
+    "explicit Chat and Responses provider capabilities are required before sealing and when verifying a package",
+    "web-policy-check output redacts provider endpoint and retains source SHA",
+    "HTTP 503 and refused transport both leave search unavailable; offline miss remains distinguishable from zero results"
+  ],
+  "files": {
+    "package-01.log": "881e3d9659094c67b3905a65cda245e81e8c6c5e793b7d44f02ae4df7a2b22b4",
+    "availability-cpu.log": "355d2e170b3f5c05081c139018f0bfff2a8e2e20cccb49dec33bbc62e42d1925",
+    "inventory-final.json": "103b1d6d723bfdfa9120e4a24b687d01a2eb9fb34ae5458463a50810d2ee50f4"
+  }
+}

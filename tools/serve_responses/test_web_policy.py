@@ -51,6 +51,33 @@ class WebPolicyPackage(unittest.TestCase):
         for secret in ('private.example', '/private/', '10.2.0.0', 'private-owner'):
             self.assertNotIn(secret, result.stdout.decode())
 
+    def test_provider_seals_private_endpoint_only_with_matching_capabilities(self):
+        path = self.policy()
+        value = pkg.read(path)
+        del value['seeds']
+        value['provider'] = dict(type='mwmbl_v2', endpoint='https://private.example/search')
+        pkg.save(path, value)
+        binary, release, model = self.native_fixture()
+        target = self.root/'package'
+        with self.assertRaisesRegex(RuntimeError, 'lacks both Chat and Responses'):
+            pkg.prepare(binary, release, model, target, web_policy=path)
+        meta = pkg.read(release)
+        caps_path = Path(meta['release_declarations']['directory'])/'capabilities.json'
+        caps = pkg.read(caps_path)
+        caps['web_search']['optional_providers'] = {'mwmbl_v2': True}
+        caps.setdefault('responses', {})['web_search'] = dict(optional_providers={'mwmbl_v2': True})
+        pkg.save(caps_path, caps)
+        meta['release_declarations']['files']['capabilities.json'] = pkg.sha(caps_path)
+        pkg.save(release, meta)
+        receipt = pkg.prepare(binary, release, model, target, web_policy=path)
+        path.unlink()
+        manifest = pkg.verify(target, receipt['manifest_sha256'])
+        binding = manifest['web_policy']
+        self.assertEqual(binding['backend'], 'mwmbl_v2')
+        self.assertEqual(binding['source_sha256'], pkg.sha(target/'web-policy.json'))
+        self.assertNotIn('private.example', json.dumps(manifest))
+        self.assertIn(str(target/'web-policy.json'), pkg.command(target, manifest))
+
     def test_semantic_index_identity_does_not_weaken_source_binding(self):
         path = self.policy()
         original = path.read_bytes()

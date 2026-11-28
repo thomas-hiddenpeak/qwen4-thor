@@ -782,6 +782,21 @@ def web_policy_binding(binary, path, raw):
         digest_field='source_sha256')
 
 
+def qualified_web_policy(binary, path, raw, declarations):
+    caps = read(declarations/'capabilities.json')
+    chat = caps.get('web_search', {})
+    require(chat.get('policy_profile') == 'q4t-web-deployment-policy-v1',
+            'accepted engine lacks native web search deployment policy')
+    binding = web_policy_binding(binary, path, raw)
+    backend = binding['backend']
+    if backend != 'native_configured_sites':
+        responses = caps.get('responses', {}).get('web_search', {})
+        require(all(owner.get('optional_providers', {}).get(backend) is True
+                    for owner in (chat, responses)),
+                'selected web provider lacks both Chat and Responses declarations')
+    return binding
+
+
 def response_reader_paths(metadata):
     responses = metadata.get('chat_protocol', {}).get('responses', {})
     return [path for feature, path in RESPONSE_READERS.items()
@@ -935,10 +950,7 @@ def prepare(binary, release, model, output, port=8080, restart_limit=0,
                 'accepted engine lacks native MCP deployment policy')
         mcp_binding = mcp_policy_binding(binary, mcp_policy, mcp_raw)
     if web_raw is not None:
-        require(read(declarations/'capabilities.json').get('web_search', {})
-                .get('policy_profile') == 'q4t-web-deployment-policy-v1',
-                'accepted engine lacks native web search deployment policy')
-        web_binding = web_policy_binding(binary, web_policy, web_raw)
+        web_binding = qualified_web_policy(binary, web_policy, web_raw, declarations)
     if webhook_raw is not None:
         require(read(declarations/'capabilities.json').get('webhooks', {})
                 .get('policy_profile') == 'q4t-webhook-delivery-policy-v1',
@@ -1222,12 +1234,9 @@ def verify(package, digest):
             'MCP deployment policy binding differs')
     if 'web_policy' in manifest:
         from tools.serve_gateway import client_policy as cp
-        require(read(package/'declarations/capabilities.json').get('web_search', {})
-                .get('policy_profile') == 'q4t-web-deployment-policy-v1',
-                'engine web search deployment policy declaration absent')
         web_path = package/'web-policy.json'
-        require(manifest['web_policy'] == web_policy_binding(
-            package/'q4t', web_path, cp.read_private(web_path)),
+        require(manifest['web_policy'] == qualified_web_policy(
+            package/'q4t', web_path, cp.read_private(web_path), package/'declarations'),
             'web search deployment policy binding differs')
     if 'webhook_policy' in manifest:
         from tools.serve_gateway import client_policy as cp

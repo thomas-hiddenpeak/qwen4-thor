@@ -662,7 +662,7 @@
     "src/server/batch_preparation.cpp": "ed88190b17068a6dfe0f74338bb0d22a8154946774be384c90fa2672cf882e3a",
     "src/server/batch_response_link.cpp": "c2d65ad35c20f7ed2ee20eaf35b431d2c6c7899f4ac9bc819cf52981d99d50e2",
     "src/server/batch_results.cpp": "1d287f3210dd8fa8d02044a4cfddefb6d5c66a4e4f832eb57d33650d34c10b1b",
-    "src/server/batch_state.cpp": "00b48713bab250cd7b3bc4851c0288da2bdde18345d01b0f872de33e6013281f",
+    "src/server/batch_state.cpp": "5ac0f9d975cb54761f0283ed4e10cbdf2921a25bdbe42da3c74c015847003d59",
     "src/server/batch_usage.cpp": "abf218b785045fe0116bc88ba22fd21087db0989b7a4b50011b1d35d5abbebca",
     "src/server/batch_validation.cpp": "670542f022f7e4b8d10a28ef80941170925f41e1c9e5ef1507705d545dfff394",
     "src/server/cache_io.cpp": "96d9d7315eb8a7a90905d718528fd624aa5caec3a9830568afaddacbb9e19fa9",

@@ -7,6 +7,24 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev596 已发行可选的网页搜索提供方。主、轻容量验证了真实查询的引用与同客户离线交接。发行配置默认关闭外部搜索，在模型退出和网关切换后均能按原 ID 取回项目答复。主包和回退包已经登记，发行时意图为 STOPPED。 [发行回执](evidence/serve-web-provider-20261128/delivery.json)
+
+公共 CPU 检查链接失败，独立测试目标遗漏了网页索引实现。已补齐源文件并用 CI 的独立 CMake 入口重新链接；同一可执行文件的 25 项网页合同通过。下一步复核 GitHub 检查及发行登记。 [链接回执](evidence/serve-web-provider-20261128/host-link.json)
+
+模型退出和主网关切换后均按原 ID 读回项目发行答复，另一客户读取返回 404。未配置网页策略的搜索请求在故障前后均返回明确的 503，两个恢复后的独立 Chat 均答 42。下一步登记经过短验的主包与回退包。 [托管恢复回执](evidence/serve-web-provider-20261128/managed.json)
+
+主容量通过原生 TLS 检索并存储 RFC 2606 答复。轻容量按原 ID 读回相同输出，再以离线模式从同一来源生成带引用的答复。跨客户读取在两档都返回与未知 ID 相同的 404，两次独立 Chat 均答 42。下一步验证发行包的托管恢复。 [容量回执](evidence/serve-web-provider-20261128/profiles.json)
+
+已使独立 OpenAPI 包和配置 schema 都能验证提供方启用时的真实配置，生成校验还同步了 PR203 的 Batch 源码摘要。主、轻容量交接使用原 RFC 问题、同客户存储和独立 TLS 客户，回执校验通过 7 个反例。 [准备回执](evidence/serve-web-provider-20261128/profile-preparation.json)
+
+原问题与低预算实机复验通过。Chat、Responses 和离线 Responses 流均给出 RFC 2606 的三个示例域名，引用指向实际取得的网页，字符偏移逐条吻合。实机查询按配置刷新，离线流只使用之前保留的同客户查询。候选进程和端口已释放，安装仍为 rev594。下一步完成主轻容量及可回退发行。 [模型 HTTP 回执](evidence/serve-web-provider-20261128/device.json)
+
+实机搜索端点拒绝连接时返回 503，同一模型仍 ready 并答出 42。另一启动取得真实网页，但低预算的 8,192 字节开头遗漏位于第 8,854 字节的答案。已修正搜索上下文，在同一预算内保留开头及相关的后续段落，各自携带原文字符位置。原网页和多字节夹具通过 CPU 复核。下一步在相同低预算下重跑原 HTTP 问题。 [故障与段落回执](evidence/serve-web-provider-20261128/outage-and-passages.json)
+
+选用外部网页索引时，发行包在准备与复核两处都要求 Chat 和 Responses 声明该提供方。8 项封包测试和 1 项分别制造 HTTP 503、连接被拒的原生检查通过，服务端统一返回提供方不可用。 [封包与故障回执](evidence/serve-web-provider-20261128/qualified-provider.json)
+
+可选的 Mwmbl v2 网页索引已在 Thor 上取回真实搜索结果和 RFC 2606 来源。32,453 字节正文与独立下载的 SHA-256 一致，重开存储后可离线搜索和打开原 URL。17 项原有网页检查、6 项新增用例及 5 项迁移检查通过。IANA 降级跳转和 IETF 动态页面的原失败已保留。下一步验收模型 HTTP 回答、引用和失败隔离。 [原生回执](evidence/serve-web-provider-20261128/cpu.json)
+
 已按请求 ID 将两次 Batch 故障恢复的 46 条官方 SDK 请求并入兼容矩阵。Python 在故障前提交和记录终态，Node 在恢复后用原 ID 读取、重复取消并下载原文件。模型退出和主网关切换分别保留，38 次成功、4 次 404、2 次 409 和 2 次 429 均可追溯至设备原始记录。 下一步补齐其他应用接口的跨版本记录。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
 
 rev594 的 HTTP 实机短验已通过。六版官方 SDK 交接六份真实发行记录。原始和重放流的事件序号、增量及终态相符，按原响应 ID 续答取得另一项发行数据。两页输入、跨客户隔离与删除后的 404 也已核对。共 60 个 HTTP 请求，新增 31 个有成功请求的接口与 SDK 版本组合。 [实机回执](evidence/serve-responses-sdk-business-20261128/business.json)
@@ -1496,13 +1514,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev594**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev594 发行回执](evidence/serve-batch-cancel-20261128/delivery.json)
+本机登记的发行版本为 **rev596**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev596 发行回执](evidence/serve-web-provider-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed` |
-| 回退服务包清单 | `202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc` |
-| 默认引擎 | `e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34` |
+| 主服务包清单 | `a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3` |
+| 回退服务包清单 | `f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5` |
+| 默认引擎 | `8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

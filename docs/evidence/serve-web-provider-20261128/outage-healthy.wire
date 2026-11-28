@@ -1,0 +1,1 @@
+{"id":"chatcmpl-auto-2cac879bc15f114c2b4bc255a7986d5a","object":"chat.completion","created":1795832653,"model":"qwen3.8-flash-next","choices":[{"index":0,"message":{"role":"assistant","content":"42"},"finish_reason":"stop","logprobs":null}],"service_tier":"default","usage":{"prompt_tokens":99,"completion_tokens":3,"total_tokens":102}}

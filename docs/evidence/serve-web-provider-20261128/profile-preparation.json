@@ -1,0 +1,14 @@
+{
+  "candidate_http_receipt": "device.json",
+  "schemas": [
+    "docs/serve-config-v1.schema.json",
+    "docs/serve-openapi-bundle-v1.json"
+  ],
+  "both_accept_live_configuration": true,
+  "all_generated_contracts_current": true,
+  "source_digest_reconciled": "src/server/batch_state.cpp (PR203)",
+  "capacity_receipt_cpu_cases": 2,
+  "negative_controls": 7,
+  "pinned_request": "responses.request.json",
+  "status": "primary/light device succession pending"
+}

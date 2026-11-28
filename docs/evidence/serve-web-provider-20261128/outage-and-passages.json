@@ -1,0 +1,102 @@
+{
+  "first_campaign": {
+    "status": "FAIL",
+    "generations": [
+      {
+        "name": "live",
+        "passed": false,
+        "pid": 2081824,
+        "start_tick": 402266598,
+        "error": "preflight lacks actual acquired source bytes or relevant passage",
+        "requests": [
+          {
+            "label": "configuration",
+            "path": "/v1/config",
+            "status": 200,
+            "mime": "application/json"
+          },
+          {
+            "label": "preflight",
+            "path": "/v1/chat/preflight",
+            "status": 200,
+            "mime": "application/json"
+          }
+        ],
+        "exit_code": 0
+      },
+      {
+        "name": "outage",
+        "passed": true,
+        "pid": 2082731,
+        "start_tick": 402270241,
+        "requests": [
+          {
+            "label": "configuration",
+            "path": "/v1/config",
+            "status": 200,
+            "mime": "application/json"
+          },
+          {
+            "label": "provider-unavailable",
+            "path": "/v1/chat/completions",
+            "status": 503,
+            "mime": "application/json"
+          },
+          {
+            "label": "state-after-error",
+            "path": "/readyz",
+            "status": 200,
+            "mime": "application/json"
+          },
+          {
+            "label": "healthy",
+            "path": "/v1/chat/completions",
+            "status": 200,
+            "mime": "application/json"
+          }
+        ],
+        "exit_code": 0
+      }
+    ],
+    "ports_free": true,
+    "elapsed": 70.834,
+    "unchanged_default": true
+  },
+  "gpu_guard": "COMMAND_FAILED",
+  "nvml_samples": 68,
+  "nvml_ok": 68,
+  "preflight": {
+    "real_source": "https://tex2e.github.io/rfc-translater/html/rfc2606.html",
+    "sha256": "7dcac3c4800a70e14f764e09704a786ef91e7df41fdcaac0a05fb138cab1b253",
+    "wire_sha256": "5961201f9889d4bdd864128e212fa69b61f4fb305dcf9d134c52a23dfaff341e",
+    "acquired_text_bytes": 15438,
+    "low_budget": 8192,
+    "required_late_term_byte_offset": 8854
+  },
+  "repair": {
+    "method": "opening context plus a separately ranked UTF-8 passage under the original byte budget; independent Unicode offsets",
+    "synthetic_and_default_regressions": "a7d98977c3efad02a791970c3edfc9bf20c1e0ff0427187996dd980f6d28193c",
+    "real_page_regression": "dab6297527428efa20983ce2dec80ec3cb70705faa3a8f08c64955219025bdc0"
+  },
+  "compatibility": {
+    "legacy_equal": true,
+    "old_engine_sha256": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+    "legacy_binding": {
+      "profile": "q4t-web-deployment-policy-v1",
+      "configured": true,
+      "sha256": "27f3cd89595c74534407036667a673b51b128f9322f16c0d370fe1aefdaad941",
+      "backend": "native_configured_sites",
+      "seed_count": 1,
+      "scope_count": 1,
+      "max_pages": 16,
+      "max_download_bytes": 16777216,
+      "request_override": false,
+      "core_readiness_dependency": false,
+      "model_restart_on_error": false,
+      "source_sha256": "c409dbfc04d60f4bc55897110fed6ec55636f8a5a0ec8dec9c0a89a44a3b3719"
+    },
+    "valid_backends": 2,
+    "rejected_mutations": 2
+  },
+  "remaining": "repeat unchanged low-budget live HTTP flows only; outage isolation already passed"
+}

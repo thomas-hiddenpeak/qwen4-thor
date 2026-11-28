@@ -8249,6 +8249,16 @@
         "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
         "revision": 568,
         "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
+      },
+      "optional_web_provider_20261128": {
+        "state": "issued",
+        "evidence": "evidence/serve-web-provider-20261128/cpu.json",
+        "remaining": [],
+        "device": "evidence/serve-web-provider-20261128/device.json",
+        "capacity": "evidence/serve-web-provider-20261128/profiles.json",
+        "managed": "evidence/serve-web-provider-20261128/managed.json",
+        "issued": true,
+        "delivery": "evidence/serve-web-provider-20261128/delivery.json"
       }
     },
     {
@@ -13058,7 +13068,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev594_delivered_remaining_deliveries",
+      "state": "rev596_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13108,13 +13118,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 594,
+        "revision": 596,
         "state": "STOPPED",
-        "primary_manifest_sha256": "96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed",
-        "fallback_manifest_sha256": "202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc",
-        "binary_sha256": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+        "primary_manifest_sha256": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3",
+        "fallback_manifest_sha256": "f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5",
+        "binary_sha256": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-batch-cancel-20261128/delivery.json"
+        "evidence": "evidence/serve-web-provider-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14558,6 +14568,15 @@
         "binary_sha256": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-diagnostic-pipe-20261128/delivery.json"
+      },
+      "release_revision_594": {
+        "revision": 594,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed",
+        "fallback_manifest_sha256": "202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc",
+        "binary_sha256": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-batch-cancel-20261128/delivery.json"
       }
     },
     {

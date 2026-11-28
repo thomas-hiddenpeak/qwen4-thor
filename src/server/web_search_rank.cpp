@@ -6,6 +6,7 @@
 #include <set>
 
 #include "file_fetch_internal.h"
+#include "web_page_internal.h"
 #include "object_protocol.h"
 #include "q4t/server/http_response.h"
 
@@ -65,6 +66,44 @@ ObjectReply Tokenize(std::string_view text, size_t* remaining,
   return add(word) ? ObjectReply{} : Capacity();
 }
 }  // namespace
+
+ObjectReply web_detail::SelectSearchPassage(
+    std::string_view text, size_t budget, std::span<const std::string> queries,
+    const BinaryAccess& access, size_t& second) {
+  second = 0;
+  if (text.size() <= budget || budget < 8) return {};
+  Terms wanted;
+  size_t remaining = 1U << 20;
+  for (const auto& query : queries) {
+    auto reply = Tokenize(query, &remaining, access, &wanted);
+    if (!reply.ok()) return reply;
+  }
+  const size_t width = budget / 2;
+  size_t best = 0;
+  double highest = 0;
+  for (size_t begin = 0; begin < text.size();) {
+    size_t end = std::min(begin + width, text.size());
+    while (end < text.size() &&
+           (static_cast<unsigned char>(text[end]) & 0xc0) == 0x80)
+      --end;
+    if (begin) {
+      Terms terms;
+      auto reply =
+          Tokenize(text.substr(begin, end - begin), &remaining, access, &terms);
+      if (!reply.ok()) return reply;
+      double score = 0;
+      for (const auto& [term, count] : terms)
+        if (wanted.contains(term)) score += 1.0 + std::log(count);
+      if (score > highest) {
+        highest = score;
+        best = begin;
+      }
+    }
+    begin = end;
+  }
+  if (best > width) second = best;
+  return {};
+}
 
 ObjectReply SearchWebPages(std::span<const WebPage> pages,
                            std::span<const std::string> queries,

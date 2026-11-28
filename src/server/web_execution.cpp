@@ -7,6 +7,8 @@
 
 #include "file_fetch_internal.h"
 #include "object_protocol.h"
+#include "web_provider.h"
+#include "web_page_internal.h"
 #include "q4t/server/completion_response.h"
 #include "q4t/server/http_response.h"
 
@@ -47,15 +49,50 @@ ObjectReply Acquire(const std::string& url, const BinaryAccess& access,
   return FetchWebPage(url, options, policy.fetch, {}, access,
                       &budget->acquisition, receipt, std::move(control));
 }
+std::string PageIdentity(const std::string& policy, const std::string& url) {
+  return Digest(
+      OutputJson(Array({String("page"), String(policy), String(url)})));
+}
+ObjectReply RetainPage(WebIndexStore& index, const BinaryAccess& access,
+                       const std::string& policy, const WebPageReceipt& receipt,
+                       int ttl_seconds) {
+  WebIndexSnapshot prior;
+  const auto id = PageIdentity(policy, receipt.page.url);
+  auto result = index.Read(access, id, &prior);
+  if (!result.ok() && result.code != "web_index_unavailable") return result;
+  // A concurrent complete acquisition of the same URL is a valid URL cache.
+  // The query snapshot always stores its own exact page bytes and digest.
+  result = index.Publish(access, id, {&receipt, 1}, prior.revision, ttl_seconds,
+                         &prior);
+  if (result.code == "object_revision_conflict")
+    return index.Read(access, id, &prior);
+  return result;
+}
+bool SkippableSource(const ObjectReply& result) {
+  return result.code == "file_fetch_http_error" ||
+         result.code == "file_fetch_target_denied" ||
+         result.code == "file_fetch_transport_failed" ||
+         result.code == "file_fetch_redirect_limit" ||
+         result.code == "file_fetch_redirect_invalid" ||
+         result.code == "web_page_media_type" ||
+         result.code == "web_page_invalid";
+}
 ObjectReply Index(ObjectStore& objects, const BinaryAccess& access,
                   const WebDeploymentPolicy& policy,
                   const WebSearchOptions& options, WebExecutionBudget* budget,
-                  WebIndexSnapshot* snapshot, bool* cached,
+                  std::span<const std::string> queries,
+                  WebIndexSnapshot* snapshot, bool* cached, size_t* skipped,
                   GrammarControl control) {
   // With no permitted sources there is nothing to fetch or read from cache.
   if (options.empty_domain_allowlist) return {};
   WebIndexStore index(objects);
-  const auto identity = WebIndexIdentity(policy, options);
+  const auto base = WebIndexIdentity(policy, options);
+  auto identity = base;
+  if (policy.provider) {
+    auto key = Array({String("search"), String(base)});
+    for (const auto& query : queries) key.array.push_back(String(query));
+    identity = Digest(OutputJson(key));
+  }
   auto result = index.Read(access, identity, snapshot);
   if (!result.ok() && result.code != "web_index_unavailable") return result;
   if (!options.external_web_access) {
@@ -72,10 +109,17 @@ ObjectReply Index(ObjectStore& objects, const BinaryAccess& access,
   // not enlarge it. Every redirect still obeys request AND deployment policy.
   std::deque<std::pair<std::string, size_t>> queue;
   std::set<std::string> queued, acquired;
-  for (const auto& seed : policy.seeds)
+  auto seeds = policy.seeds;
+  if (policy.provider) {
+    result = DiscoverWebUrls(policy, options, queries, access,
+                             &budget->acquisition, &seeds, control);
+    if (!result.ok()) return result;
+  }
+  for (const auto& seed : seeds)
     if (WebSearchUrlAllowed(seed, options) && queued.insert(seed).second)
       queue.emplace_back(seed, 0);
   std::vector<WebPageReceipt> pages;
+  ObjectReply failed_source;
   size_t attempts = 0;
   while (!queue.empty() && attempts < policy.max_pages) {
     auto [url, depth] = std::move(queue.front());
@@ -84,7 +128,12 @@ ObjectReply Index(ObjectStore& objects, const BinaryAccess& access,
     WebPageReceipt receipt;
     ++attempts;
     result = Acquire(url, access, policy, options, budget, &receipt, control);
-    if (!result.ok()) return result;
+    if (!result.ok()) {
+      if (!policy.provider || !SkippableSource(result)) return result;
+      failed_source = std::move(result);
+      ++*skipped;
+      continue;
+    }
     if (!acquired.insert(receipt.page.url).second) continue;
     if (depth < policy.max_depth)
       for (const auto& link : receipt.page.links) {
@@ -97,6 +146,21 @@ ObjectReply Index(ObjectStore& objects, const BinaryAccess& access,
           queue.emplace_back(link, depth + 1);
       }
     pages.push_back(std::move(receipt));
+  }
+  if (policy.provider) {
+    if (pages.empty() && *skipped) return failed_source;
+    for (const auto& page : pages) {
+      result = RetainPage(index, access, base, page, policy.retention_seconds);
+      if (!result.ok()) return result;
+    }
+    // A dead result must not hide independently verified sources or replace
+    // the last complete search. URL snapshots contain only complete pages.
+    if (*skipped) {
+      *snapshot = {};
+      for (auto& receipt : pages)
+        snapshot->pages.push_back(std::move(receipt.page));
+      return {};
+    }
   }
   // Failures above never publish a partial crawl or replace the prior index.
   // A lost publication receipt is returned unchanged: no fetch/write replay.
@@ -112,13 +176,14 @@ size_t Boundary(std::string_view text, size_t end) {
 }
 Json PageContext(const WebPage& page, const WebSearchOptions& options,
                  size_t text_budget, std::string_view pattern,
-                 size_t* image_budget) {
+                 size_t* image_budget, size_t second = 0) {
   size_t begin = 0;
   const size_t match =
       pattern.empty() ? std::string::npos : page.text.find(pattern);
   if (match != std::string::npos && match > text_budget / 3)
     begin = Boundary(page.text, match - text_budget / 3);
-  const auto end = Boundary(page.text, begin + text_budget);
+  const auto end =
+      Boundary(page.text, begin + (second ? text_budget / 2 : text_budget));
   auto images = Array(), matches = Array();
   if (options.images)
     for (const auto& image : page.images) {
@@ -154,6 +219,15 @@ Json PageContext(const WebPage& page, const WebSearchOptions& options,
     Set(&item, "start_index",
         Number(Utf8Characters(std::string_view(page.text).substr(0, begin))));
     Set(&item, "text_truncated", Boolean(begin > 0 || end < page.text.size()));
+    if (second) {
+      const auto tail = Boundary(page.text, second + text_budget / 2);
+      Set(&item, "additional_passages",
+          Array({Object(
+              {{"text", String(page.text.substr(second, tail - second))},
+               {"start_index",
+                Number(Utf8Characters(
+                    std::string_view(page.text).substr(0, second)))}})}));
+    }
   }
   if (!pattern.empty()) {
     Set(&item, "matches", std::move(matches));
@@ -180,7 +254,9 @@ ObjectReply ExecuteWebAction(ObjectStore& objects, const BinaryAccess& access,
                 access.scope) == deployment.scopes.end())
     return Error(403, "web_search_not_configured",
                  "No authorized search source");
-  if (deployment.seeds.empty() ||
+  if ((!deployment.provider && deployment.seeds.empty()) ||
+      (deployment.provider &&
+       (!deployment.seeds.empty() || deployment.max_depth)) ||
       deployment.seeds.size() > deployment.max_pages ||
       deployment.max_pages > 32 || deployment.max_depth > 2 ||
       !deployment.max_download_bytes ||
@@ -198,6 +274,7 @@ ObjectReply ExecuteWebAction(ObjectStore& objects, const BinaryAccess& access,
   ++budget->actions;
   WebExecutionResult next;
   auto results = Array();
+  size_t skipped = 0;
   size_t image_budget = options.max_images;
   const size_t context_bytes = options.unlimited_return_tokens    ? 262144
                                : options.context_size == "low"    ? 8192
@@ -216,14 +293,20 @@ ObjectReply ExecuteWebAction(ObjectStore& objects, const BinaryAccess& access,
       remaining -= query.size();
     }
     WebIndexSnapshot snapshot;
-    auto result = Index(objects, access, deployment, options, budget, &snapshot,
-                        &next.cached, control);
+    auto result =
+        Index(objects, access, deployment, options, budget, action.queries,
+              &snapshot, &next.cached, &skipped, control);
     if (!result.ok()) return result;
     std::vector<WebSearchHit> hits;
-    result = SearchWebPages(snapshot.pages, action.queries, options, access,
-                            snapshot.pages.empty() ? 1 : snapshot.pages.size(),
-                            &hits);
-    if (!result.ok()) return result;
+    if (deployment.provider) {
+      for (size_t i = 0; i < snapshot.pages.size(); ++i)
+        hits.push_back({i, 1.0});
+    } else {
+      result = SearchWebPages(
+          snapshot.pages, action.queries, options, access,
+          snapshot.pages.empty() ? 1 : snapshot.pages.size(), &hits);
+      if (!result.ok()) return result;
+    }
     // Location refines relevance only among actual query matches. It cannot
     // create matches, authorize a source, or infer the user's IP/location.
     std::string location;
@@ -248,8 +331,14 @@ ObjectReply ExecuteWebAction(ObjectStore& objects, const BinaryAccess& access,
     const auto per_page = context_bytes / std::max<size_t>(1, hits.size());
     for (const auto& hit : hits) {
       next.sources.push_back(std::move(snapshot.pages[hit.page]));
+      size_t second = 0;
+      if (options.text) {
+        result = web_detail::SelectSearchPassage(
+            next.sources.back().text, per_page, action.queries, access, second);
+        if (!result.ok()) return result;
+      }
       results.array.push_back(PageContext(next.sources.back(), options,
-                                          per_page, {}, &image_budget));
+                                          per_page, {}, &image_budget, second));
     }
   } else {
     if (!action.queries.empty() ||
@@ -272,8 +361,11 @@ ObjectReply ExecuteWebAction(ObjectStore& objects, const BinaryAccess& access,
       next.cached = true;
     } else {
       WebIndexSnapshot snapshot;
-      auto result = WebIndexStore(objects).Read(
-          access, WebIndexIdentity(deployment, options), &snapshot);
+      WebIndexStore index(objects);
+      const auto base = WebIndexIdentity(deployment, options);
+      auto result = index.Read(
+          access, deployment.provider ? PageIdentity(base, url) : base,
+          &snapshot);
       if (!result.ok() && result.code != "web_index_unavailable") return result;
       const auto page =
           std::find_if(snapshot.pages.begin(), snapshot.pages.end(),
@@ -289,16 +381,24 @@ ObjectReply ExecuteWebAction(ObjectStore& objects, const BinaryAccess& access,
         result = Acquire(url, access, deployment, options, budget, &receipt,
                          control);
         if (!result.ok()) return result;
+        if (deployment.provider) {
+          result = RetainPage(index, access, base, receipt,
+                              deployment.retention_seconds);
+          if (!result.ok()) return result;
+        }
         next.sources.push_back(std::move(receipt.page));
       }
     }
     results.array.push_back(PageContext(next.sources[0], options, context_bytes,
                                         action.pattern, &image_budget));
   }
-  next.context = Object({{"coverage", String("configured_sites")},
-                         {"cached", Boolean(next.cached)},
-                         {"user_location", options.location},
-                         {"results", std::move(results)}});
+  next.context =
+      Object({{"coverage",
+               String(deployment.provider ? "mwmbl_v2" : "configured_sites")},
+              {"cached", Boolean(next.cached)},
+              {"user_location", options.location},
+              {"results", std::move(results)}});
+  if (skipped) Set(&next.context, "unavailable_sources", Number(skipped));
   if (OutputJson(next.context).size() > (1U << 20)) return Capacity();
   if (auto active = Active(access); !active.ok()) return active;
   *output = std::move(next);

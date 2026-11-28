@@ -509,6 +509,8 @@ set(protocol_inputs
   src/server/web_page_record.cpp
   src/server/web_index.cpp
   src/server/web_policy.cpp
+  src/server/web_provider.h
+  src/server/web_provider.cpp
   src/server/web_execution.cpp
   src/server/file_fetch_internal.h
   src/server/file_fetch.cpp
