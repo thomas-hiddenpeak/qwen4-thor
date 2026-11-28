@@ -1045,7 +1045,9 @@
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
         "device": "evidence/serve-response-include-projection-20261128/device.json",
         "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-response-include-projection-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       },
       "model_inference_sdk_20261128": {
         "scope": "model catalogue, legacy completions and embeddings",
@@ -3458,7 +3460,9 @@
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
         "device": "evidence/serve-response-include-projection-20261128/device.json",
         "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-response-include-projection-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -10021,7 +10025,9 @@
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
         "device": "evidence/serve-response-include-projection-20261128/device.json",
         "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-response-include-projection-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       },
       "model_inference_sdk_20261128": {
         "scope": "model catalogue, legacy completions and embeddings",

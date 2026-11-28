@@ -4,6 +4,8 @@
 
 传统文本补全已在请求解析阶段拒绝显式 `best_of=21`，上限为 20。只传 `n` 时仍可请求最多 128 个结果。旧实现复现了越界接受；修复通过 11 项原生测试与 55 项合同对照。候选待 HTTP 短验和发行。 [CPU 回执](evidence/serve-completion-best-of-20261128/cpu.json)
 
+输入语义清单的三个源码摘要已随重复选择器修复同步；完整生成合同核对通过。
+
 六版正式 SDK 已在 CPU 夹具完成模型发现、传统文本补全和两种编码的嵌入读取，共 42 个请求。发行包实机验证待执行。 [CPU 回执](evidence/serve-model-inference-sdk-20261128/cpu.json)
 
 重复选择器候选的两份容量记录已登记。主容量和轻量容量均可逐字节还原各自 rev604 的发行证据。下一步准备独立主包与回退包。 [登记回执](evidence/serve-response-include-projection-20261128/capacity.json)
@@ -26,6 +28,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 验证与必要业务短验，长稳实跑与已延期听感由用户负责。
 
 ## 正在推进
+
+主包网关退出和回退包模型退出后，客户端用十二个选择器读回同一响应的正文与 token 概率，跨客户读取返回 404。两次恢复均能生成新响应，独立 Chat 均答 42。 [托管恢复记录](evidence/serve-response-include-projection-20261128/managed.json)
 
 rev604 已登记主包与独立回退包。普通 Responses 声明解释器输出，Beta 选择器声明两种多代理输出；两次托管故障恢复后原结果可读，新调用与 Chat 均成功。两档容量的前序记录和 13 份运行状态已核对。 [发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
 
