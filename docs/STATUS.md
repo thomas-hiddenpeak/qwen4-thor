@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev604 已登记主包与独立回退包。普通 Responses 声明解释器输出，Beta 选择器声明两种多代理输出；两次托管故障恢复后原结果可读，新调用与 Chat 均成功。两档容量的前序记录和 13 份运行状态已核对。 [发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
+
 回退包模型退出和主网关切换两组实机验收均已通过。恢复后，原解释器和 Beta 多代理响应按 ID 读回，输出逐项一致，第二个客户端查询均为 404。两个新模型实例继续执行解释器与多代理，各自的独立 Chat 均答 42。 [托管恢复记录](evidence/serve-interpreter-output-discovery-20261128/managed.json)
 
 主档 MTP 开启与轻量档 MTP 关闭，各自用一次模型启动完成解释器和 Beta 多代理调用，独立容器的 stdout 均为 603，调用者和空子代理表与实际新树一致。两个新容量记录可逐字节还原各自的 rev602 历史，下一步验证主包和回退包的托管恢复。[容量回执](evidence/serve-interpreter-output-discovery-20261128/capacity.json)
@@ -1580,13 +1582,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev602**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev602 发行回执](evidence/serve-transcription-discovery-20261128/delivery.json)
+本机登记的发行版本为 **rev604**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev604 发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66` |
-| 回退服务包清单 | `13f7ef77d9abe8e1591df9fccfafb5af70a43f654992d6d943da0ed015a141bd` |
-| 默认引擎 | `c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c` |
+| 主服务包清单 | `77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922` |
+| 回退服务包清单 | `e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd` |
+| 默认引擎 | `9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

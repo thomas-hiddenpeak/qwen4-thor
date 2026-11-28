@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev604 已登记主包与独立回退包。普通 Responses 声明解释器输出，Beta 选择器声明两种多代理输出；两次托管故障恢复后原结果可读，新调用与 Chat 均成功。两档容量的前序记录和 13 份运行状态已核对。 [发行回执](evidence/serve-interpreter-output-discovery-20261128/delivery.json)
+
 rev602 已登记双人重叠转录的主包和回退包。官方 SDK 在两档容量和两种托管恢复场景中均识别出两位说话人；原录音的 1.68 秒重叠与首句词形误差已记录。登记期间服务为 STOPPED，13 份运行状态通过复核。 [发行回执](evidence/serve-transcription-discovery-20261128/delivery.json)
 
 rev600 已登记主包和回退包。Guardian 的内存采集卡住期间，同一模型与管理入口继续响应。采集恢复后，主网关故障触发回退接管。登记期间服务处于 STOPPED，模型启动次数为零，13 份运行状态和既有容量策略通过复核。长稳及冷启动交接入口已更新。 [发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)

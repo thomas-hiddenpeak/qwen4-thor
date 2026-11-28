@@ -3425,7 +3425,13 @@
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
         "release": "candidate",
         "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -8324,7 +8330,13 @@
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
         "release": "candidate",
         "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -9886,12 +9898,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 348,
+        "source_requests": 372,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 176,
-        "methods_with_success": 46,
-        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover.",
-        "assigned_requests": 347
+        "method_sdk_pairs_with_success": 182,
+        "methods_with_success": 47,
+        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients.",
+        "assigned_requests": 371
       },
       "stored_chat_sdk_handoff_20261128": {
         "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
@@ -9962,7 +9974,13 @@
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
         "release": "candidate",
         "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -11269,10 +11287,10 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 602,
-        "receipt": "evidence/serve-transcription-discovery-20261128/delivery.json",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/overlap-discovery-day-src/.q4t-work/cold602-01/plan.json",
-        "plan_sha256": "d58392d75730c3d7438d0b86772f81429848552982d73de76daa6a8373d40194",
+        "revision": 604,
+        "receipt": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/cold604-01/plan.json",
+        "plan_sha256": "593c2b71ca94aa55a2787e62163a173b163cccc113c603193448e06a7d709cd1",
         "model_starts": 0,
         "executed": false
       },
@@ -13240,7 +13258,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev602_delivered_remaining_deliveries",
+      "state": "rev604_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13290,13 +13308,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 602,
+        "revision": 604,
         "state": "STOPPED",
-        "primary_manifest_sha256": "d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66",
-        "fallback_manifest_sha256": "13f7ef77d9abe8e1591df9fccfafb5af70a43f654992d6d943da0ed015a141bd",
-        "binary_sha256": "c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c",
+        "primary_manifest_sha256": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922",
+        "fallback_manifest_sha256": "e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd",
+        "binary_sha256": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-transcription-discovery-20261128/delivery.json"
+        "evidence": "evidence/serve-interpreter-output-discovery-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14782,7 +14800,22 @@
         "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
         "release": "candidate",
         "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "state": "issued",
+        "issued": true,
+        "delivery": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
+      },
+      "release_revision_602": {
+        "revision": 602,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66",
+        "fallback_manifest_sha256": "13f7ef77d9abe8e1591df9fccfafb5af70a43f654992d6d943da0ed015a141bd",
+        "binary_sha256": "c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-transcription-discovery-20261128/delivery.json"
       }
     },
     {
@@ -14891,21 +14924,21 @@
         "audio_pairs": 25,
         "first_hour_business": 304,
         "business_requests": 7250,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/overlap-discovery-day-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "0ad4113a6fc538f64f1fd4b7a916472ac9dc90d8da5163d2d51cea908e6e3ce3",
-        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/overlap-discovery-day-src/.q4t-work/day-01/audio-day.sh",
-        "operator_sha256": "33295d0574ed9c526452f6f8772a425a5e171015d4ebf7816f17c38484c4c6dd",
-        "checked_at": "2026-11-28T09:22:30.062416+00:00",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "4a4b826119614b6c7dfebbc2f9d7ac23b9413c0703ebe1f8316a9afb76d4206b",
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "8cbcfe7a506b5361791a513d9dc2e0ec716ffb4a6dc965d9cd41f9c31ffc5884",
+        "checked_at": "2026-11-28T11:13:53.722875+00:00",
         "minimum_evidence_free_bytes": 12884901888,
         "hours_executed": 0,
-        "revision": 602,
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/overlap-discovery-day-src",
+        "revision": 604,
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/transcription-discovery-client-primary-02/bundle",
-          "manifest_sha256": "d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-client-primary-01/bundle",
+          "manifest_sha256": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922"
         },
-        "source_commit": "03b6dbcb609e1dc6717bfa8e31b544c4137337c3",
-        "handoff_sha256": "753d6b904cbe464dc90c8a9abc74d0cca68952762761636982e7a5b4a7291e62",
+        "source_commit": "fa333081a36c7d4cf670ed2a2fd815254485d011",
+        "handoff_sha256": "bcda94139bf5a4d2293ce2ede3b836e8b372a8edd3908f0448719f32eed1236c",
         "source_files": 705,
         "checked": true
       },
@@ -15315,9 +15348,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 602,
-        "receipt": "evidence/serve-transcription-discovery-20261128/delivery.json",
-        "plan_sha256": "0ad4113a6fc538f64f1fd4b7a916472ac9dc90d8da5163d2d51cea908e6e3ce3",
+        "revision": 604,
+        "receipt": "evidence/serve-interpreter-output-discovery-20261128/delivery.json",
+        "plan_sha256": "4a4b826119614b6c7dfebbc2f9d7ac23b9413c0703ebe1f8316a9afb76d4206b",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
