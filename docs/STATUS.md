@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+在原生 Guardian 的内存读取点加入 CPU 等待，版本恢复已启用、CPU 后端已就绪时，状态请求 300 ms 超时。解除等待后同一后端继续就绪，正常停止并释放锁。下一步隔离 Guardian 自身的读取，保留发放许可及版本切换所需的独立内存证据。 [复现记录](evidence/serve-memory-watchdog-stall-20261128/guardian-before.json)
+
 独立监督器的内存采集卡住后，同一 GPU 模型保持 READY 并回答第二个 Chat，读端仍阻塞时完成停机。原生主包和回退包各从发行入口启动、完成 Chat 并清理，合计 3 次启动、4 条真实 Chat，13 份受保护状态一致。待发行。另在 Guardian 的版本恢复与授权路径发现同步内存读取，需要独立定位。 [实机回执](evidence/serve-memory-watchdog-stall-20261128/business.json)
 
 原生控制器在内存采集阻塞期间持续发送心跳。发放新模型许可前会重新核对物理内存和容量门槛，已取得许可的进程在观测中断时可继续就绪，状态报告观测降级。28 项针对性 CPU 用例通过，含真实 Guardian、CPU 后端、运行期恢复及启动压力保护。GPU 业务和发行待验。 [托管 CPU 回执](evidence/serve-memory-watchdog-stall-20261128/native-controller.json)
