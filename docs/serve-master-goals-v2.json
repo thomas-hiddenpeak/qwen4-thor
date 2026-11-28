@@ -10868,14 +10868,16 @@
         "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
       },
       "vector_ingestion_diagnostics_20261128": {
-        "status": "device_pass",
+        "status": "two_capacity_accepted",
         "receipt": "evidence/serve-vector-ingestion-diagnostics-20261128/cpu.json",
         "observed_successful_chunks_mislabeled": 15,
         "distinct_jobs": 5,
         "remaining": [
-          "issued package and main integration"
+          "capacity registration and sealed packages",
+          "managed recovery and publication"
         ],
-        "device": "evidence/serve-vector-ingestion-diagnostics-20261128/device.json"
+        "device": "evidence/serve-vector-ingestion-diagnostics-20261128/device.json",
+        "capacity_business": "evidence/serve-vector-ingestion-diagnostics-20261128/capacity-business.json"
       }
     },
     {

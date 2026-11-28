@@ -1,5 +1,7 @@
 # 当前状态（2026-11-29）
 
+主、轻两档各用一次真实模型启动，完成项目文档索引。持久化向量的分块数与成功释放槽位的结束事件逐项吻合，跨客户读取返回 404，独立 Chat 均回答 42。下一步登记容量与回退包。 [回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity-business.json)
+
 原生 TLS 与磁盘对象存储完成文件上传、入库、来源回读、跨客户拒绝和删除。CPU 夹具保存了 10 个分块。校验器从真实前序日志检出 15 个误报，并拒绝 9 种损坏证据。下一步在主、轻两档使用原生模型复验。 [回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity-cpu.json)
 
 两份真实发行记录建索引后，磁盘索引中 23 个分块与两个作业的成功结束日志逐项相符。正式 Python SDK 下载原记录后，独立 Chat 回答 610。单次候选模型退出后端口已释放，下一步完成发行登记。 [实机证据](evidence/serve-vector-ingestion-diagnostics-20261128/device.json)

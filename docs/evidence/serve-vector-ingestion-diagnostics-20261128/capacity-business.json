@@ -1,0 +1,379 @@
+{
+  "status": "PASS",
+  "source": "e031c690dcbf1e466f3d18cde40feb820271de87",
+  "candidate": "8a430b251c7a4a23aec01302750a06d08a0b1e6edfed635e8e26b2bf61250906",
+  "registered_revision": 610,
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "lease_sha256": "7596cc1dd8d21d7d8be2fe84f37b1a6a113b2fca2cba0a29020b970b054c512b",
+  "accepted": "764ea854c7508d3a927ae2a0825de0667902e1415608bbbbd817fca6a6fc134c",
+  "environment": {
+    "status": "PASS",
+    "env_abort": false,
+    "all_queries_ok": true,
+    "nvml_queries": 85,
+    "cleanup_complete": true
+  },
+  "roles": {
+    "primary": {
+      "phase": {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 72,
+          "vector_ingestion_outcomes": 1
+        },
+        "seconds": 43.97341606160626,
+        "binary_sha256": "8a430b251c7a4a23aec01302750a06d08a0b1e6edfed635e8e26b2bf61250906"
+      },
+      "workload": {
+        "index": {
+          "job": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+          "store": "vs_35b3e014c404f4d40f4442a9faaa69f6",
+          "file": "file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+          "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+          "dimensions": 1024,
+          "vectors_bytes": 16384,
+          "chunks": 4,
+          "binding": "5e96b3ff86c9e3affbbaa00aa2dc14fc44796b0ec5923328cb663332020b3a05",
+          "usage_bytes": 18611
+        },
+        "requests": [
+          {
+            "method": "POST",
+            "path": "/v1/vector_stores",
+            "status": 200,
+            "trace": "req-12879912785be62fe0f95c5fdfc98fb8",
+            "client": "alpha"
+          },
+          {
+            "method": "POST",
+            "path": "/v1/files",
+            "status": 200,
+            "trace": "req-50c04c5a8d339e3d3d9f4944ba12a9d1",
+            "client": "alpha"
+          },
+          {
+            "method": "POST",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files",
+            "status": 200,
+            "trace": "req-15b90b82bbbf7dfc96b90409e1f0b38a",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-02a4976dc98ce32aff748a2dd73aa131",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-baa821a792a4d3074c5e78a77f130f8e",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-a3b978b6759a42ab7269e6bf883b2580",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-e9178e2ee706aa8027617f7a5258ec81",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-1f28738830d682bead652c79c68e8172",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-2e878bf734f9de76145f438fe1647390",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-600104c880c003fdc2ff25c4407fdab2",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6",
+            "status": 404,
+            "trace": "req-2db4cd9b7f0b3878022357f7b9d2da77",
+            "client": "beta"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1/content",
+            "status": 200,
+            "trace": "req-2b44356711979aaf0fa42152e92bab37",
+            "client": "alpha"
+          },
+          {
+            "method": "DELETE",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6",
+            "status": 200,
+            "trace": "req-02088c9390136a05193be1943c88dbf8",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_35b3e014c404f4d40f4442a9faaa69f6",
+            "status": 404,
+            "trace": "req-9e7f31d1f54ed1c0175ad5a0d60b27f7",
+            "client": "alpha"
+          },
+          {
+            "method": "DELETE",
+            "path": "/v1/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 200,
+            "trace": "req-3fcb15442fc5d6db57c6e1f9b98c63c2",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/files/file_e6ceb75c2d23a9fbb26e3d49ee288ad1",
+            "status": 404,
+            "trace": "req-62c113f51f6bb7229a7f7b987cb77394",
+            "client": "alpha"
+          }
+        ],
+        "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+        "terminals": [
+          {
+            "instance": "0",
+            "id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "trace_id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          },
+          {
+            "instance": "1",
+            "id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "trace_id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          },
+          {
+            "instance": "2",
+            "id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "trace_id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          },
+          {
+            "instance": "3",
+            "id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "trace_id": "tool_run_6f21b0ffb4a1a2d7836aefbc45df5717",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          }
+        ]
+      },
+      "wire_sha256": "f22e014656b5ee18446006a5dab7000896d0785172d935db916f493b8f137264",
+      "chat": "42"
+    },
+    "light": {
+      "phase": {
+        "status": "PASS",
+        "default_unchanged": true,
+        "counts": {
+          "starts": 1,
+          "ingress_starts": 1,
+          "sdk_posts": 1,
+          "chats": 1,
+          "controls": 76,
+          "vector_ingestion_outcomes": 1
+        },
+        "seconds": 45.32899828301743,
+        "binary_sha256": "8a430b251c7a4a23aec01302750a06d08a0b1e6edfed635e8e26b2bf61250906"
+      },
+      "workload": {
+        "index": {
+          "job": "tool_run_202a6db3aa742a980984af04a609642c",
+          "store": "vs_7503af03a008745a3d91e679520a80d8",
+          "file": "file_72b76e2c278a58027393ccfdb2094800",
+          "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+          "dimensions": 1024,
+          "vectors_bytes": 16384,
+          "chunks": 4,
+          "binding": "16ad6779ddc433c66e3f4ab65c6689f16edcfd0a1838b31a28cdc1bd5f8697c9",
+          "usage_bytes": 18611
+        },
+        "requests": [
+          {
+            "method": "POST",
+            "path": "/v1/vector_stores",
+            "status": 200,
+            "trace": "req-a682e2d53425566157227d1c28418f32",
+            "client": "alpha"
+          },
+          {
+            "method": "POST",
+            "path": "/v1/files",
+            "status": 200,
+            "trace": "req-5ae61574a8c36646d7322644b12c7d59",
+            "client": "alpha"
+          },
+          {
+            "method": "POST",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8/files",
+            "status": 200,
+            "trace": "req-689ab697f54118d934ed6cc054fb3ada",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 200,
+            "trace": "req-9eb1085ff9cf8a180a8c7f8ba6fd0cf5",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 200,
+            "trace": "req-f00e2841877ccfbc5ccf62fea239b8be",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 200,
+            "trace": "req-b90d193e4acc1b0b7ee87c0f26ac60bb",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 200,
+            "trace": "req-802e87507ea546d596c850aab3a1c050",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 200,
+            "trace": "req-ac722dd26c02664ea371c515567b8ea6",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 200,
+            "trace": "req-c216e5cb08ca057da1ab8520659b1621",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8",
+            "status": 404,
+            "trace": "req-13886ae440e50d6efab5690526eae14a",
+            "client": "beta"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/files/file_72b76e2c278a58027393ccfdb2094800/content",
+            "status": 200,
+            "trace": "req-241582af83fea36117c9f9401aedda22",
+            "client": "alpha"
+          },
+          {
+            "method": "DELETE",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8",
+            "status": 200,
+            "trace": "req-1c4dd3425a9bd81f92a204c07756ca27",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/vector_stores/vs_7503af03a008745a3d91e679520a80d8",
+            "status": 404,
+            "trace": "req-14194f15265b6fa8e0b0876273139da1",
+            "client": "alpha"
+          },
+          {
+            "method": "DELETE",
+            "path": "/v1/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 200,
+            "trace": "req-84abf41a41209235baa6a2358e9996fa",
+            "client": "alpha"
+          },
+          {
+            "method": "GET",
+            "path": "/v1/files/file_72b76e2c278a58027393ccfdb2094800",
+            "status": 404,
+            "trace": "req-77ae954da3f2357d31450f1b837b6052",
+            "client": "alpha"
+          }
+        ],
+        "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+        "terminals": [
+          {
+            "instance": "0",
+            "id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "trace_id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          },
+          {
+            "instance": "1",
+            "id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "trace_id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          },
+          {
+            "instance": "2",
+            "id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "trace_id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          },
+          {
+            "instance": "3",
+            "id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "trace_id": "tool_run_202a6db3aa742a980984af04a609642c",
+            "outcome": "success",
+            "reason": "execution_complete",
+            "released": "1",
+            "seq": "0"
+          }
+        ]
+      },
+      "wire_sha256": "df864786fd9f7a84c30c6060f4d1ad331dc9317d2df78e17736408f0e723c366",
+      "chat": "42"
+    }
+  }
+}
