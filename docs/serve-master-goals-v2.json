@@ -1076,14 +1076,18 @@
         "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json"
       },
       "backward_pagination_20261128": {
-        "status": "cpu_pass",
+        "status": "candidate_device_pass",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
-        "model_starts": 0,
+        "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "combined real-model qualification and release"
-        ]
+          "primary and lightweight capacity and sealed packages",
+          "managed recovery and default publication"
+        ],
+        "device": "evidence/serve-previous-page-20261128/device.json",
+        "sdk_reads": 72,
+        "name_sdk_calls": 24
       }
     },
     {
@@ -4302,14 +4306,18 @@
         "authenticated_requests": 74
       },
       "backward_pagination_20261128": {
-        "status": "cpu_pass",
+        "status": "candidate_device_pass",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
-        "model_starts": 0,
+        "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "combined real-model qualification and release"
-        ]
+          "primary and lightweight capacity and sealed packages",
+          "managed recovery and default publication"
+        ],
+        "device": "evidence/serve-previous-page-20261128/device.json",
+        "sdk_reads": 72,
+        "name_sdk_calls": 24
       }
     },
     {
@@ -10110,14 +10118,18 @@
         "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       },
       "backward_pagination_20261128": {
-        "status": "cpu_pass",
+        "status": "candidate_device_pass",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
-        "model_starts": 0,
+        "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "combined real-model qualification and release"
-        ]
+          "primary and lightweight capacity and sealed packages",
+          "managed recovery and default publication"
+        ],
+        "device": "evidence/serve-previous-page-20261128/device.json",
+        "sdk_reads": 72,
+        "name_sdk_calls": 24
       }
     },
     {
