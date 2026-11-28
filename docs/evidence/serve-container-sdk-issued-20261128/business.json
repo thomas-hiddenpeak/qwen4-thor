@@ -1,0 +1,61 @@
+{
+  "transport": "native TLS, issued engine and ingress, two private tenants",
+  "publication": 604,
+  "primary": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922",
+  "engine": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "registration": {
+    "status": "PASS",
+    "publication_revision": 604,
+    "version_revision": 231,
+    "profile_revision": 115,
+    "previous_profile_revision": 114,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922",
+    "fallback": "e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd",
+    "engine": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "strict_lease": {
+    "status": "COMPLETED",
+    "inherited": true,
+    "backend": "nvml",
+    "returncode": 0,
+    "samples": 44,
+    "sha256": "1ab0e23d689a41ef2b0b9aa71a88e62a4c3b4f80c421d094aef6516f70f2c261"
+  },
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2367697,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 90,
+    "seconds": 45.542
+  },
+  "document": {
+    "path": "docs/evidence/serve-memory-watchdog-stall-20261128/delivery.json",
+    "sha256": "4dc1bcbf03cfd5797c9cc5a8c6f3c79470d87a138a79bd897a55b0a842b85ce8",
+    "bytes": 5960
+  },
+  "requests": 90,
+  "statuses": {
+    "200": 66,
+    "404": 24
+  },
+  "sdk_versions": [
+    "python-2.8.1",
+    "python-2.33.0",
+    "python-3.42.1",
+    "python-3.55.1",
+    "node-6.34.0",
+    "node-7.47.0"
+  ],
+  "request_evidence_sha256": "0af6792cf8b0fa97575b64ff6b70a642dda6375f5208b9bf072e83bbaa802bca",
+  "plan_sha256": "f490bf30a5b6a58d1aa484a7000aab99e18a85e60471b7fc5ed6fdce1b65cde1",
+  "actor_commit": "6e20506f945c54e4aa65b0aceab0e51c10357ed5"
+}

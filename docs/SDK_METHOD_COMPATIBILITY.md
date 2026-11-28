@@ -25,6 +25,8 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 ## 验证范围
 
+六版官方 SDK 在 rev604 原生 TLS 上各自创建容器、用解释器计算 603、按原 ID 读回同一组输出，并验证另一个客户端收到 404。矩阵收录了 24 个带请求 ID 和实际查询参数的调用。模型恢复与网关切换的记录另见[托管验收](evidence/serve-interpreter-output-discovery-20261128/managed.json)。
+
 - **已存 Chat。** 四版 Python 和两版 Node 各将一份真实发行记录存为 Chat，由另一版 SDK 读取同一 ID、更新并按元数据筛选、分页读回原始消息和删除。六个方法在六个版本上都有成功回包。六次跨客户读取和六次删除后读取都返回 404。[实机回执](evidence/serve-stored-chat-sdk-20261128/business.json) · [请求与回包](evidence/serve-stored-chat-sdk-20261128/requests.json)
 - rev590 的原生 TLS、嵌入模型和文本模型已通过官方 SDK 批量上传与自动轮询验收。Python 2.8.1 和 Node 7.47.0 各上传两份真实发行记录，另一个版本的客户端通过游标逐页读回原文件、核对内容和过滤检索。Responses 的 file_search 命中 rev588 的原 File ID，模型回答中包含该发行号。两次跨客户访问均返回 404。共 50 个真实请求、一次模型启动。 [实机业务回执](evidence/serve-vector-batch-sdk-20261128/business.json)
 
@@ -78,3 +80,10 @@ if (!terminal) throw new Error("Response stream ended before a terminal event");
 在对应的 Python SDK 环境执行 `python -m tools.serve_audit.recording_download_retry`，或执行 `node tools/serve_audit/recording_download_retry.mjs /path/to/openai`，可离线复核该版本的等待时间、请求次数、请求 ID 和音频摘要。
 
 主、轻配置均已通过六版客户端的真实 TLS 下载。每个客户端取回同一份 2,620,472 字节的录音，两个配置均按客户身份隔离。[设备回执](evidence/serve-sdk-method-matrix-20261127/recording-device.json)
+
+
+## 容器与文件生命周期
+
+四版 Python 与两版 Node 的容器及文件资源方法均支持创建、列表、查询、文件下载和删除。对文件分页使用 Python 的 `get_next_page()` 或 Node 的 `getNextPage()`。Thor CPU 验证使用原生 TLS、生产 C++ 处理器和持久对象存储。每版实际下载同一份 5,960 字节的项目发行回执，另一客户端访问容器及其文件内容均得到 404。 [逐请求记录](evidence/serve-container-sdk-lifecycle-20261128/requests.json)
+
+相同流程在 rev604 已发行引擎和网关上完成，66 次成功、24 次预期 404。 [发行包业务回执](evidence/serve-container-sdk-issued-20261128/business.json)

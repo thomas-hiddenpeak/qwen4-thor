@@ -1,0 +1,142 @@
+{
+  "stage": "stopped_default_and_operator_handoff",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 604,
+    "version_revision": 231,
+    "profile_revision": 115,
+    "previous_profile_revision": 114,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922",
+    "fallback": "e09572bb2c5214eab516798d86a0431bce92a8c12beabeec41e97a8d720dfffd",
+    "engine": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 602,
+  "short_receipt_sha256": "8a9b75b5a4e9999fd869c5deaf02a5f41b7c81d45a1259daffa1dba5422ac789",
+  "capacity_receipt_sha256": "7e2c1a926c6e40bd0f80b2741a8ca357fc99c971dd9524bf948696d06351065c",
+  "profile_transition": {
+    "from_revision": 114,
+    "to_revision": 115,
+    "request": "f63a63e1-b2bb-4211-a1b8-be3a791fbd22",
+    "migration_request": "5d940175-f5dd-5e28-b351-fc6eeed9626c",
+    "bound_registry": "4496123122211fa864ab0a432cb9f9d5183d07726eb93056a9868b16f66ce332",
+    "policy": "0a9e2ddf72590ef43ef144612717403a7cf0376d9c5c7a98de94758c84dfb930",
+    "capacities_unchanged": true,
+    "thresholds_and_budgets_unchanged": true,
+    "protected_runtime_fields": [
+      "selected",
+      "clock",
+      "pending",
+      "not_before_ns",
+      "light_since_ns",
+      "history"
+    ],
+    "protected_file_count": 13,
+    "model_starts": 0
+  },
+  "day": {
+    "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/day-01/audio-day.sh",
+    "operator_sha256": "8cbcfe7a506b5361791a513d9dc2e0ec716ffb4a6dc965d9cd41f9c31ffc5884",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "4a4b826119614b6c7dfebbc2f9d7ac23b9413c0703ebe1f8316a9afb76d4206b",
+    "business_requests": 7250,
+    "first_hour_business": 304,
+    "checked_at": "2026-11-28T11:13:53.722875+00:00",
+    "minimum_evidence_free_bytes": 12884901888,
+    "source": "fa333081a36c7d4cf670ed2a2fd815254485d011",
+    "audio_pairs": 25,
+    "hours_executed": 0
+  },
+  "cold": {
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/producer-discovery-day-src/.q4t-work/cold604-01/plan.json",
+    "plan_sha256": "593c2b71ca94aa55a2787e62163a173b163cccc113c603193448e06a7d709cd1",
+    "model_actions": 0,
+    "host_units_modified": false
+  },
+  "maintenance_lease_sha256": "4c77fab8a1227a3c280f3a169e29147a90063ffd30f809c80adb8734a0112261",
+  "publish_lease_sha256": "d488b7c22121d3fb8f442a9dd31a5802ff79cfc146af91fe7284e170f9179049",
+  "retention_maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "76c00695735f62dfd62f3b12284742b7b021ec875f2e170c0a6800acb9fb3f8a"
+        ],
+        "sha256": "cee77ef0da0c81305f589645a06c3ffe8c92c229245b17cdaa33a13dd944d990",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "a13414cc-8cea-4105-bc2a-c31bf1198d84"
+        ],
+        "sha256": "ff2f3a428bb2eaadee8b851a862645f8a31084cabc245e5de1bbdfa0a21d003e",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "861e69c7-d216-43da-9e81-cc8ea4fa462c"
+        ],
+        "sha256": "1cf29662e3f4293e18374f9a529acd3e1ff427c6b40d262443343e1db46b47d6",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "sdk_evidence": {
+    "contract.json": "df18b2d9f8c6e8bf75171e381daa5f956afb20f66ea695b8b4c9a8a137f1426e",
+    "beta-contract.json": "35d9a9bf4895e0b0327575346303ccff64b6b300c239d174af394dee8f18a8bc",
+    "device.json": "a6c7a31702ae204db91fa20b6fa91da2b299172a788f3b12432ec42e385be39c",
+    "capacity-controls.json": "9b8a26e01964e54764fadd0cd9371b0727d1ebf673cac94d84e806afba2bc33f",
+    "capacity.json": "7e2c1a926c6e40bd0f80b2741a8ca357fc99c971dd9524bf948696d06351065c",
+    "managed.json": "8a9b75b5a4e9999fd869c5deaf02a5f41b7c81d45a1259daffa1dba5422ac789",
+    "clients.json": "cd8756a78c824ebfc172960c993aad8c16cf51b15af33abbbe0df73aec768736"
+  },
+  "input_recheck": {
+    "frozen_files": 64,
+    "frozen_sha256": "765b0f6550d5fa9c86d1f04d335459c9c55c5754bc695abb8fcf113071d2a7ab"
+  },
+  "signed_source": {
+    "head": "fa333081a36c7d4cf670ed2a2fd815254485d011",
+    "parents": [
+      "d34990cfbe6474713fde33beddbb5ea54256d46b",
+      "c4041fc61917e1a652bdd3f0dd0d955c8a2fd134"
+    ],
+    "inventory": "103b1d6d723bfdfa9120e4a24b687d01a2eb9fb34ae5458463a50810d2ee50f4"
+  },
+  "operator_handoff_check_sha256": "058dc8acb04e8543dab6b62a9fad7fb68aa233678059b07d53f63b8ffc3cf38b",
+  "required_methods": 231,
+  "declared_methods": 219,
+  "method_coverage": {
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "openapi_sha256": {
+      "fallback": "88de9514167ce17e6101728c604aec6a4ab69aae137aff18698ef96327272841",
+      "primary": "88de9514167ce17e6101728c604aec6a4ab69aae137aff18698ef96327272841"
+    },
+    "remaining_declarations": [
+      "DELETE /videos/{video_id}",
+      "GET /videos",
+      "GET /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "POST /videos/{video_id}/remix"
+    ]
+  },
+  "previous_delivery": "../serve-transcription-discovery-20261128/delivery.json"
+}
