@@ -315,6 +315,7 @@ set(Q4T_HOST_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_page_record.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_index.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_policy.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_provider.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/web_execution.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_policy.cpp
   ${CMAKE_CURRENT_LIST_DIR}/../src/server/file_fetch_http.cpp

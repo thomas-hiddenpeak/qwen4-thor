@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+公共 CPU 检查链接失败，独立测试目标遗漏了网页索引实现。已补齐源文件并用 CI 的独立 CMake 入口重新链接；同一可执行文件的 25 项网页合同通过。下一步复核 GitHub 检查及发行登记。 [链接回执](evidence/serve-web-provider-20261128/host-link.json)
+
 模型退出和主网关切换后均按原 ID 读回项目发行答复，另一客户读取返回 404。未配置网页策略的搜索请求在故障前后均返回明确的 503，两个恢复后的独立 Chat 均答 42。下一步登记经过短验的主包与回退包。 [托管恢复回执](evidence/serve-web-provider-20261128/managed.json)
 
 主容量通过原生 TLS 检索并存储 RFC 2606 答复。轻容量按原 ID 读回相同输出，再以离线模式从同一来源生成带引用的答复。跨客户读取在两档都返回与未知 ID 相同的 404，两次独立 Chat 均答 42。下一步验证发行包的托管恢复。 [容量回执](evidence/serve-web-provider-20261128/profiles.json)
