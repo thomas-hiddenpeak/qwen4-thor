@@ -1,0 +1,66 @@
+{
+  "stage": "issued_engine_and_native_embedding_verified",
+  "publication": 590,
+  "primary": "7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652",
+  "engine": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9",
+  "engine_manifest": "7952c9bdce81f49eac94fcff26f91fb2f3008cc82d49967f19454546bdcd6ad1",
+  "ingress": "459616cc405759b4e63fdad35a764e518c600b3e03b73a2dac6d2044db4af69a",
+  "transport": "native TLS with isolated admission, issued engine and real embedding model",
+  "embedding": {
+    "profile": "q4t-native-embedding-v1",
+    "model": "qwen3-embedding-0.6b",
+    "revision": "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+    "weight_sha256": "0437e45c94563b09e13cb7a64478fc406947a93cb34a7e05870fc8dcd48e23fd",
+    "directory": "/home/rm01/models/dev/qwen4-thor/.q4t-work/native-embedding-20261111/assets"
+  },
+  "original_documents": {
+    "release-586.txt": "18bf32fc13a366b60f9e0f2366d5f11f583f20594a861b0f4f952fcf8a1e701b",
+    "release-588.txt": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01"
+  },
+  "scenarios": [
+    {
+      "writer": "python-2.8.1",
+      "reader": "python-3.55.1",
+      "store": "vs_43731d1a873c7f9306e2843ce325ba3b",
+      "batch": "vsfb_e89dc419141755fc6f602c821021cade",
+      "polls": 8,
+      "files": {
+        "release-586.txt": "file_22182adc9d81f9e7a5bb371f6440d868",
+        "release-588.txt": "file_a907fd88b316dd5a55689d351230ff35"
+      },
+      "selected": "file_a907fd88b316dd5a55689d351230ff35",
+      "answer": "588"
+    },
+    {
+      "writer": "node-7.47.0",
+      "reader": "python-2.33.0",
+      "store": "vs_f198b9ec2c304e54e28f55e6f91bdc02",
+      "batch": "vsfb_8a3bddc1e2a2c6424a018722bcb5d876",
+      "polls": 3,
+      "files": {
+        "release-588.txt": "file_43aebcdc1dff207bd3e169d402b4441c",
+        "release-586.txt": "file_c462d4afebcc26071b62954662ef9a85"
+      },
+      "selected": "file_43aebcdc1dff207bd3e169d402b4441c",
+      "answer": null
+    }
+  ],
+  "model_starts": 1,
+  "requests": 50,
+  "statuses": {
+    "200": 48,
+    "404": 2
+  },
+  "seconds": 47.596,
+  "model_exit": 0,
+  "ports_free": true,
+  "monitor_samples_ok": 46,
+  "protected_files_verified": 20,
+  "registration_state": "STOPPED",
+  "lease_sha256": "3ca1d47b7881fc4db2cb0001acfce67eedf3c3f06a490fe9c36d4b160445818b",
+  "request_evidence_sha256": "55f846aedf7417f10c4ffeb9f2591c69f7082af2466457f7418baed949e7a74b",
+  "cpu_receipt_sha256": "56f30a9d20450d81f08dd4309a383cfb7e0e3799e7d69d0a7a5f12a18658b130",
+  "targeted_receipt_tests": 6,
+  "driver_sha256": "45afd1cff133145c2668bc2c54561bfffc1ffac948a54148f4632f23093be8f1",
+  "plan_sha256": "9a5206e0eb300cbfcddf43ea79ccf2dbc29ff65aa931aa2366a2ce874d9388c1"
+}

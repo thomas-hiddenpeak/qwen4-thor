@@ -4431,6 +4431,13 @@
         "capacity": "evidence/serve-upload-completion-race-20261128/profiles.json",
         "managed": "evidence/serve-upload-completion-race-20261128/managed.json",
         "delivery": "evidence/serve-upload-completion-race-20261128/delivery.json"
+      },
+      "vector_batch_sdk_20261128": {
+        "evidence": "evidence/serve-vector-batch-sdk-20261128/business.json",
+        "wire": "evidence/serve-vector-batch-sdk-20261128/requests.json",
+        "release": 590,
+        "model_starts": 1,
+        "stage": "issued_engine_and_native_embedding_verified"
       }
     },
     {
@@ -9751,6 +9758,13 @@
         "capacity": "evidence/serve-upload-completion-race-20261128/profiles.json",
         "managed": "evidence/serve-upload-completion-race-20261128/managed.json",
         "delivery": "evidence/serve-upload-completion-race-20261128/delivery.json"
+      },
+      "vector_batch_sdk_20261128": {
+        "evidence": "evidence/serve-vector-batch-sdk-20261128/business.json",
+        "wire": "evidence/serve-vector-batch-sdk-20261128/requests.json",
+        "release": 590,
+        "model_starts": 1,
+        "stage": "issued_engine_and_native_embedding_verified"
       }
     },
     {
@@ -12917,6 +12931,13 @@
         "registered_fallback_probes": 1,
         "completed_upload_replay": true,
         "pending_upload_resumed": true
+      },
+      "vector_batch_sdk_20261128": {
+        "evidence": "evidence/serve-vector-batch-sdk-20261128/business.json",
+        "wire": "evidence/serve-vector-batch-sdk-20261128/requests.json",
+        "release": 590,
+        "model_starts": 1,
+        "stage": "issued_engine_and_native_embedding_verified"
       }
     },
     {
