@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "candidate": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+  "registered_predecessor": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+  "source": "2c2644844546f00ba3f8f59ae25604ec0757f24a",
+  "revision": 604,
+  "primary": "77ac464f7269b03bd5de19b98354126bfa496bd37fe3070b390631d4361bc922",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2368870,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 10,
+    "seconds": 35.982
+  },
+  "samples": 36,
+  "lease_sha256": "1a0626d296cca5fada2444baceba1f657dfd349609c03af7471f2f23093d37f6",
+  "reader_sha256": "bbb02368a2276375d9810d2b53557929a41da79925f3b4270ed3ad41f75b8a50",
+  "plan_sha256": "0198a4c01f0f3b2e69d11b4092f9cfefc8664e5183d5aae6022dd982eab98fa6",
+  "sdk": "device-sdk.json",
+  "http_counts": {
+    "200": 8,
+    "404": 1,
+    "400": 1
+  },
+  "candidate_deployed": false,
+  "default_desired": "STOPPED",
+  "gpu_starts": 1,
+  "stock_sdk": "3.55.1",
+  "strict_monitor": "nvml",
+  "document_sha256": "21ab0d7b6f3967f4f2f6baccbdafdaeee667b97d8dfcc027b71b0fa6a9af8c57",
+  "reference": "existing publication revision 604 and known PNG fixture"
+}

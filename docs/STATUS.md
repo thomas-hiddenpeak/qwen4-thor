@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+候选已在 Thor 通过原生 TLS 和正式 SDK 的后台流式续读验证。一次模型启动、10 个请求，首次响应与按游标重放的 token 概率和正文一致，答案为实际登记号 604。容量与发行另行验收。 [设备回执](evidence/serve-response-include-projection-20261128/device.json)
+
 Responses 与 Conversations 已修复重复 `include` 导致的 400。修复前正式客户端追加条目收到 400。修复后六版 SDK 对同一张 PNG 验证了追加、默认视图、重复选择、错误选项及跨客户拒绝，共 54 个响应。后台流式请求保留去重后的选择器；真实模型续读待短验。 [CPU 与 SDK 回执](evidence/serve-response-include-projection-20261128/cpu.json)
 
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)

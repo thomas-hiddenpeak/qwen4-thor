@@ -1041,9 +1041,9 @@
         ]
       },
       "include_projection_20261128": {
-        "state": "cpu_verified",
+        "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
-        "device": "pending"
+        "device": "evidence/serve-response-include-projection-20261128/device.json"
       }
     },
     {
@@ -3433,9 +3433,9 @@
         "managed": "real_model_restart_and_gateway_takeover_passed"
       },
       "include_projection_20261128": {
-        "state": "cpu_verified",
+        "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
-        "device": "pending"
+        "device": "evidence/serve-response-include-projection-20261128/device.json"
       }
     },
     {
@@ -9975,9 +9975,9 @@
         "managed": "real_model_restart_and_gateway_takeover_passed"
       },
       "include_projection_20261128": {
-        "state": "cpu_verified",
+        "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
-        "device": "pending"
+        "device": "evidence/serve-response-include-projection-20261128/device.json"
       }
     },
     {
