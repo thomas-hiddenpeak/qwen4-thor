@@ -3388,15 +3388,15 @@
         "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
       },
       "sdk_stream_text_20261128": {
-        "state": "native_candidate_device_verified",
+        "state": "primary_light_and_gateway_verified",
         "cpu": "evidence/serve-responses-search-stream-sdk-20261128/cpu.json",
         "remaining": [
-          "primary and light profile handoff",
           "reversible issuance and main"
         ],
         "retained_sdk_get": "evidence/serve-responses-search-stream-sdk-20261128/retained.json",
         "failed_and_incomplete_sdk_readers": "evidence/serve-responses-search-stream-sdk-20261128/terminal-clients.json",
-        "device": "evidence/serve-responses-search-stream-sdk-20261128/device.json"
+        "device": "evidence/serve-responses-search-stream-sdk-20261128/device.json",
+        "profiles": "evidence/serve-responses-search-stream-sdk-20261128/profiles.json"
       }
     },
     {
@@ -9869,15 +9869,15 @@
         ]
       },
       "sdk_stream_text_20261128": {
-        "state": "native_candidate_device_verified",
+        "state": "primary_light_and_gateway_verified",
         "cpu": "evidence/serve-responses-search-stream-sdk-20261128/cpu.json",
         "remaining": [
-          "primary and light profile handoff",
           "reversible issuance and main"
         ],
         "retained_sdk_get": "evidence/serve-responses-search-stream-sdk-20261128/retained.json",
         "failed_and_incomplete_sdk_readers": "evidence/serve-responses-search-stream-sdk-20261128/terminal-clients.json",
-        "device": "evidence/serve-responses-search-stream-sdk-20261128/device.json"
+        "device": "evidence/serve-responses-search-stream-sdk-20261128/device.json",
+        "profiles": "evidence/serve-responses-search-stream-sdk-20261128/profiles.json"
       }
     },
     {
