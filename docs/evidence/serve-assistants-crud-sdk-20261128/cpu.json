@@ -1,0 +1,24 @@
+{
+  "sdk_wire_sha256": {
+    "python-2.8.1": "2fc220717bd363cfa1e03658eda3a155ddf724da106dfa35a41803f325145a8f",
+    "python-2.33.0": "542f90dce2cba9c45a0ac8597b20239c458b1ec70df569dbd3e4a9125d2f1355",
+    "python-3.42.1": "bf79bbcb097569a8d22cd9f68405493f943bb853613102ad391b9554bed08658",
+    "python-3.55.1": "b978e477c0ddf14eccdc801e6635bc4b8e3f6b89dd17c32336d788f2cfd2db09",
+    "node-6.34.0": "a2a53d8503211bc2387110791ae1539c65f7990fdd740db1d203b50c00c782ea",
+    "node-7.47.0": "a1944cbb2e85b416586e44ba97dab12cddc23de179b794ce5035c269271ad2c2"
+  },
+  "requests": 120,
+  "source_sha256": "9f784a55711ceaabb8971e3e08780f325a0dce90b559f37b7113609bf9b66140",
+  "per_sdk_requests": 20,
+  "verified_objects": 18,
+  "status": "PASS_CPU_NATIVE_TLS",
+  "origin": "native ingress, production Assistants handlers and object store on the development host; CPU test parent supplies admission",
+  "successful_exchanges": 84,
+  "expected_not_found": 36,
+  "methods": 14,
+  "counterexamples": 12,
+  "source": "../serve-completion-best-of-20261128/delivery.json",
+  "fixture_sha256": "c70d454458dcf3447c3204c4268a0541d837ccccbc1d972d33ced98fe2685863",
+  "engine_execution": false,
+  "release_matrix_credit": false
+}

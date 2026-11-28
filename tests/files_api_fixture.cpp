@@ -12,6 +12,7 @@
 
 #include "q4t/server/client_request.h"
 #include "q4t/server/application_routes.h"
+#include "q4t/server/assistant_registry.h"
 #include "q4t/server/files_http.h"
 #include "q4t/server/batch_api.h"
 #include "q4t/server/vector_store_api.h"
@@ -38,8 +39,11 @@ std::string Read(const fs::path& path) {
 int FilesApiFixture(int argc, char** argv) {
   if (argc != 3 || (std::string_view(argv[1]) != "--files-api-fixture" &&
                     std::string_view(argv[1]) != "--batch-api-fixture" &&
+                    std::string_view(argv[1]) != "--assistant-api-fixture" &&
                     std::string_view(argv[1]) != "--vector-api-fixture"))
     return -1;
+  const bool assistant_fixture =
+      std::string_view(argv[1]) == "--assistant-api-fixture";
   const bool batch_fixture = std::string_view(argv[1]) == "--batch-api-fixture";
   const bool vector_fixture = std::string_view(argv[1]) == "--vector-api-fixture";
   try {
@@ -222,6 +226,7 @@ int FilesApiFixture(int argc, char** argv) {
               }
               if (operations && !IsFileMetadata(method, target) &&
                   !IsContainerObservation(method, target) &&
+                  !(assistant_fixture && IsAssistantObservation(method, target)) &&
                   !IsUploadCancellation(method, target) &&
                   !(vector_fixture &&
                     (IsVectorStoreObservation(method, target) ||
@@ -236,6 +241,11 @@ int FilesApiFixture(int argc, char** argv) {
                 return false;
               if (IsCancellationRequest(method, target))
                 body_lease.SelectBudget(cancel_budget);
+              if (assistant_fixture &&
+                  (IsAssistantTarget(target) ||
+                   ParseAssistantThreadRoute(target).kind !=
+                       AssistantThreadRouteKind::kNone))
+                return true;
               if (batch_fixture && IsBatchTarget(target)) return true;
               if (vector_fixture && IsVectorStoreTarget(target)) return true;
               BinaryAccess access{"client:" + std::string(identity.Id()),
@@ -272,7 +282,24 @@ int FilesApiFixture(int argc, char** argv) {
               file->Serve(fd);
             } else {
               ObjectReply reply;
-              if (vector_fixture && ParseVectorStoreRoute(target).kind ==
+              if (assistant_fixture) {
+                if (!headers.assistants_beta) {
+                  detail::SendError(fd, 400,
+                                    "Assistants require OpenAI-Beta assistants=v2",
+                                    {}, "beta_required", "OpenAI-Beta");
+                  return;
+                }
+                StateAccess access{"client:" + std::string(identity.Id()),
+                                   Clock::now() + 30s,
+                                   [&] { return stopping.load(); }};
+                ChatPlanConfig config;
+                config.model = "qwen3.8-flash-next";
+                reply = IsAssistantTarget(target)
+                            ? HandleAssistantRegistry(objects, method, target,
+                                                      body, config, access, false)
+                            : HandleAssistantThreads(objects, method, target,
+                                                     body, access, false);
+              } else if (vector_fixture && ParseVectorStoreRoute(target).kind ==
                                         VectorStoreRouteKind::kSearch) {
                 ClientRateLease rate;
                 ActualUsageCounter usage;
