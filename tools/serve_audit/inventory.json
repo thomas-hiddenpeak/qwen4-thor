@@ -4444,7 +4444,7 @@
     "src/server/chat_audio_output.cpp": "f4d95b035c6de23d71fbe084a0d38ebb39a01d9fd5f12a52e6acc4e0b3012390",
     "src/server/chat_audio_synthesis.cpp": "b5e255f818df3982225fb190e4e2e7be48fed4f2c0dbc86b6a91ec4ba122d57f",
     "src/server/chat_audio_translation.cpp": "e0853dba46a7af885bd31863f5bcc1e6cb9b44af3d69aba8bea8af372ed5d6ce",
-    "src/server/chat_capabilities.cpp": "5e7d5b8d1403d0283adc0e4c5f685ee19025fc125a998c2c9c1e13ce6f70ae9e",
+    "src/server/chat_capabilities.cpp": "a99b3470901d7a50a8cca5f8d2f107a15e46994284323ae79e5c9f7dab322454",
     "src/server/chat_choices.cpp": "2c8a2e771a9426693917f8bb90fe553a1e73cdf9a8c9daf646c44b73e0fb5df6",
     "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
     "src/server/chat_decisions.cpp": "0cc2556941c71dbcd5453e11f4390c0e7080ff33546d0e3c3b3226f1f7cce8b0",

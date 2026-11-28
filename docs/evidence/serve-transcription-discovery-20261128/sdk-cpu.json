@@ -62,5 +62,16 @@
       "light"
     ],
     "output_sha256": "a1a755bd6ffdfd34f5247316b01c6d023e07fb75d9442d4b6b3bd8a0b57803aa"
+  },
+  "source_inventory": {
+    "inventory_current": true,
+    "semantics_certified": false,
+    "fields": 53,
+    "completion_fields": 21,
+    "routes": 247,
+    "native_routes": 409,
+    "reviewed_source_anchors": 1401,
+    "mutation_checks": 40,
+    "errors": []
   }
 }
