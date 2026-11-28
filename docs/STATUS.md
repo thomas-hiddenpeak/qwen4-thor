@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+六版官方 SDK 的九种调用方式通过本机 TLS 重放同一段真实 Responses 流。现在逐项核对 content_part 的消息 ID、输出位置、片段位置及完整载荷，并把它与输出项和最终响应对照。错误归属、缺失结束事件和终态片段错序均有反例。18 个夹具请求和 23 项相关 CPU 检查通过，下一步用 rev594 验证实时流与按原 ID 重放。 [片段校验回执](evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json)
+
 按冻结 OpenAPI 逐项核对了 Chat 的 26 个顶层可空参数，另覆盖四版 Python SDK 接受的 top_logprobs:null。原生请求规划器在逐项和同时传空时生成相同的文本提示、输出预算及采样配置。metadata 显式传空可与省略区分，两者均保持 store=false。该回归已加入原生 Chat 规划测试。 [输入合同回执](evidence/serve-responses-sdk-business-20261128/chat-null-input.json)
 
 六版 SDK 通过九种资源调用方式读取了同一段历史实机输出的 11 个流事件。消息 ID、输出位置、文本片段和结束事件的内容一致；两项反例也验证了错误消息 ID 和错误结束文本会被拒绝。下一步在 rev594 上对照实时生成和原 ID 重放。 [历史流 CPU 复核](evidence/serve-responses-sdk-business-20261128/stream-cpu.json)

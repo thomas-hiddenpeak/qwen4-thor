@@ -3375,7 +3375,8 @@
         "stage": "cpu_transport_checked",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
         "issued_business": false,
-        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json"
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json"
       }
     },
     {
@@ -9811,7 +9812,8 @@
         "stage": "cpu_transport_checked",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
         "issued_business": false,
-        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json"
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json"
       }
     },
     {
@@ -13000,7 +13002,8 @@
         "stage": "cpu_transport_checked",
         "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
         "issued_business": false,
-        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json"
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json"
       }
     },
     {

@@ -14,7 +14,13 @@ def summary(response):
                    for part in item.content if part.type == 'output_text')
     return dict(id=response.id, status=response.status, text=text, metadata=response.metadata,
                 previous=response.previous_response_id,
-                messages=[item.id for item in response.output if item.type == 'message'])
+                messages=[item.id for item in response.output if item.type == 'message'],
+                message_parts={str(i): [wire_part(part) for part in item.content]
+                               for i, item in enumerate(response.output) if item.type == 'message'})
+
+
+def wire_part(part):
+    return part.model_dump(mode='json', exclude_unset=True)
 
 
 def capture(stream):
@@ -22,8 +28,15 @@ def capture(stream):
         events = []
         for e in stream:
             event = dict(seq=e.sequence_number, type=e.type)
+            if e.type in ('response.created', 'response.in_progress', 'response.completed'):
+                event['response_id'] = e.response.id
             if e.type in ('response.output_item.added', 'response.output_item.done'):
                 event.update(output_index=e.output_index, item_id=e.item.id, item_type=e.item.type)
+                if e.item.type == 'message':
+                    event['content'] = [wire_part(part) for part in e.item.content]
+            if e.type in ('response.content_part.added', 'response.content_part.done'):
+                event.update(item_id=e.item_id, output_index=e.output_index,
+                             content_index=e.content_index, part=wire_part(e.part))
             if e.type in ('response.output_text.delta', 'response.output_text.done'):
                 event.update(item_id=e.item_id, output_index=e.output_index, content_index=e.content_index)
                 if e.type == 'response.output_text.delta':

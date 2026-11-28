@@ -35,14 +35,22 @@ function summary(response) {
   const text = response.output.filter(item => item.type === 'message')
     .flatMap(item => item.content.filter(p => p.type === 'output_text').map(p => p.text)).join('');
   return {id:response.id, status:response.status, text, metadata:response.metadata,
-    previous:response.previous_response_id ?? null, messages:response.output.filter(x => x.type === 'message').map(x => x.id)};
+    previous:response.previous_response_id ?? null, messages:response.output.filter(x => x.type === 'message').map(x => x.id),
+    message_parts:Object.fromEntries(response.output.flatMap((item, i) => item.type === 'message' ? [[i, item.content]] : []))};
 }
 async function capture(stream) {
   const events = [];
   for await (const e of stream) {
     const event = {seq:e.sequence_number, type:e.type};
+    if (['response.created', 'response.in_progress', 'response.completed'].includes(e.type)) {
+      event.response_id = e.response.id;
+    }
     if (e.type === 'response.output_item.added' || e.type === 'response.output_item.done') {
       Object.assign(event, {output_index:e.output_index, item_id:e.item.id, item_type:e.item.type});
+      if (e.item.type === 'message') event.content = e.item.content;
+    }
+    if (e.type === 'response.content_part.added' || e.type === 'response.content_part.done') {
+      Object.assign(event, {item_id:e.item_id, output_index:e.output_index, content_index:e.content_index, part:e.part});
     }
     if (e.type === 'response.output_text.delta' || e.type === 'response.output_text.done') {
       Object.assign(event, {item_id:e.item_id, output_index:e.output_index, content_index:e.content_index});

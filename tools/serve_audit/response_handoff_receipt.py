@@ -3,11 +3,77 @@ import json
 from urllib.parse import parse_qsl
 
 
-def verify(writer, reader, request, followup, source):
-    def require(condition, message):
-        if not condition:
-            raise ValueError(message)
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
 
+
+def verify_text_lifecycle(events, original):
+    """Reconstruct the messages and their text parts from the ordered events."""
+    messages = {}
+    parts = {}
+    closed = set()
+    text_done = set()
+    part_done = set()
+    for event in events:
+        kind = event['type']
+        if kind in ('response.created', 'response.in_progress', 'response.completed'):
+            require(event['response_id'] == original['id'], 'wrong response identity')
+        if kind in ('response.output_item.added', 'response.output_item.done'):
+            if event['item_type'] != 'message':
+                continue
+            index, item = event['output_index'], event['item_id']
+            if kind == 'response.output_item.added':
+                require(type(index) is int and index >= 0 and index not in messages
+                        and item and item not in messages.values(), 'duplicate or invalid message identity')
+                require(event['content'] == [], 'new message already contains text parts')
+                messages[index] = item
+                parts[index] = []
+            else:
+                require(index in messages and messages[index] == item and index not in closed,
+                        'wrong completed message identity')
+                require(all((index, j) in part_done for j in range(len(parts[index])))
+                        and event['content'] == parts[index], 'completed message parts differ')
+                closed.add(index)
+            continue
+        if kind not in ('response.content_part.added', 'response.content_part.done',
+                        'response.output_text.delta', 'response.output_text.done'):
+            continue
+        index, part_index = event['output_index'], event['content_index']
+        require(index in messages and messages[index] == event['item_id'] and index not in closed,
+                'content belongs to the wrong message')
+        require(type(part_index) is int and part_index >= 0, 'invalid content index')
+        key = (index, part_index)
+        content = parts[index]
+        if kind == 'response.content_part.added':
+            part = event['part']
+            require(part_index == len(content) and part['type'] == 'output_text'
+                    and part['text'] == '', 'wrong new text part')
+            content.append(dict(part))
+            continue
+        require(part_index < len(content) and key not in part_done, 'text part is missing or closed')
+        part = content[part_index]
+        if kind == 'response.output_text.delta':
+            require(key not in text_done, 'delta follows done text')
+            part['text'] += event['delta']
+        elif kind == 'response.output_text.done':
+            require(key not in text_done and part['text'] == event['text'], 'done text differs from its deltas')
+            text_done.add(key)
+        else:
+            final = event['part']
+            require(key in text_done and final['type'] == part['type'] and final['text'] == part['text'],
+                    'completed part differs from done text')
+            content[part_index] = final
+            part_done.add(key)
+    require(part_done and closed == messages.keys() and
+            original['messages'] == [messages[i] for i in sorted(messages)] and
+            original['message_parts'] == {str(i): content for i, content in parts.items()},
+            'terminal message identity or content differs')
+    require(''.join(part['text'] for i in sorted(parts) for part in parts[i]) == original['text'],
+            'terminal response text differs from its parts')
+
+
+def verify(writer, reader, request, followup, source):
     published = json.loads(source)
     require(source.decode() in request['input'][-1]['content'][0]['text'], 'missing source receipt')
     require(writer['sdk'] != reader['sdk'], 'handoff needs two SDKs')
@@ -21,35 +87,9 @@ def verify(writer, reader, request, followup, source):
     require(events and [e['seq'] for e in events] == list(range(len(events))), 'event sequence has a gap')
     require(events[0]['type'] == 'response.created' and events[-1]['type'] == 'response.completed'
             and events[-1]['response'] == original, 'stream terminal differs')
-    require(sum(e['type'] in ('response.failed', 'response.incomplete', 'response.completed') for e in events) == 1
-            and ''.join(e['delta'] for e in events if e['type'] == 'response.output_text.delta') == original['text'],
-            'live text or terminal count differs')
-    added = {}
-    closed = []
-    text = {}
-    completed = {}
-    for event in events:
-        kind = event['type']
-        if kind in ('response.output_item.added', 'response.output_item.done') and event['item_type'] == 'message':
-            index, item = event['output_index'], event['item_id']
-            if kind == 'response.output_item.added':
-                require(index not in added and item and item not in added.values(), 'duplicate message identity')
-                added[index] = item
-            else:
-                require(added.get(index) == item and item not in closed, 'wrong completed message identity')
-                closed.append(item)
-        if kind in ('response.output_text.delta', 'response.output_text.done'):
-            index, item = event['output_index'], event['item_id']
-            key = (index, event['content_index'])
-            require(index in added and added[index] == item and item not in closed
-                    and key not in completed, 'text event belongs to the wrong message or part')
-            if kind == 'response.output_text.delta':
-                text[key] = text.get(key, '') + event['delta']
-            else:
-                require(text.get(key, '') == event['text'], 'done text differs from its original part')
-                completed[key] = event['text']
-    require(bool(completed) and text.keys() <= completed.keys() and original['messages'] == closed
-            and set(closed) == set(added.values()), 'incomplete text or message identity')
+    require(sum(e['type'] in ('response.failed', 'response.incomplete', 'response.completed') for e in events) == 1,
+            'stream terminal count differs')
+    verify_text_lifecycle(events, original)
     require(reader['before'] == original and reader['events'] == events, 'persisted response or replay differs')
     follow = reader['follow']
     require(follow['id'].startswith('resp_') and follow['id'] != ident and follow['previous'] == ident
