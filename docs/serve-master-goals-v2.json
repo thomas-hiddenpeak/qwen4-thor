@@ -10565,9 +10565,10 @@
       "memory_watchdog_stall_20261128": {
         "stage": "targeted_cpu_passed",
         "evidence": "evidence/serve-memory-watchdog-stall-20261128/cpu.json",
-        "cpu_checks": 23,
+        "cpu_checks": 28,
         "model_business": "pending",
-        "issued": false
+        "issued": false,
+        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json"
       }
     },
     {
@@ -11323,9 +11324,10 @@
       "memory_watchdog_stall_20261128": {
         "stage": "targeted_cpu_passed",
         "evidence": "evidence/serve-memory-watchdog-stall-20261128/cpu.json",
-        "cpu_checks": 23,
+        "cpu_checks": 28,
         "model_business": "pending",
-        "issued": false
+        "issued": false,
+        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json"
       }
     },
     {

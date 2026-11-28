@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+原生控制器在内存采集阻塞期间持续发送心跳。发放新模型许可前会重新核对物理内存和容量门槛，已取得许可的进程在观测中断时可继续就绪，状态报告观测降级。28 项针对性 CPU 用例通过，含真实 Guardian、CPU 后端、运行期恢复及启动压力保护。GPU 业务和发行待验。 [托管 CPU 回执](evidence/serve-memory-watchdog-stall-20261128/native-controller.json)
+
 内存采集曾在持锁时读取内核，读阻塞会卡住健康快照。实机旧包另在相隔 300 秒的两次低读数后错误触发停模回调。候选隔离了采集线程，拒用超时结果并重置中断的低内存计时；23 项 CPU 检查通过，含持续压力下的真实子进程保护。GPU 业务与发行待验，Thor 的 CUDA 物理硬限额仍待证实。 [CPU 回执](evidence/serve-memory-watchdog-stall-20261128/cpu.json)
 
 rev596 已发行可选的网页搜索提供方。主、轻容量验证了真实查询的引用与同客户离线交接。发行配置默认关闭外部搜索，在模型退出和网关切换后均能按原 ID 取回项目答复。主包和回退包已经登记，发行时意图为 STOPPED。 [发行回执](evidence/serve-web-provider-20261128/delivery.json)

@@ -39,8 +39,7 @@ class _MemoryReader:
         self.request = None
         self.thread = None
 
-    def read(self, reader, timeout):
-        until = time.monotonic() + timeout
+    def submit(self, reader, timeout):
         with self.condition:
             if not self.condition.wait_for(lambda: self.request is None, timeout):
                 raise TimeoutError('memory reader still occupied')
@@ -51,6 +50,11 @@ class _MemoryReader:
             result = Future()
             self.request = (reader, result)
             self.condition.notify_all()
+            return result
+
+    def read(self, reader, timeout):
+        until = time.monotonic() + timeout
+        result = self.submit(reader, timeout)
         return result.result(timeout=max(0, until - time.monotonic()))
 
     def _run(self):
@@ -81,6 +85,40 @@ def _after_fork():
 
 
 os.register_at_fork(after_in_child=_after_fork)
+
+
+def _observation(value):
+    if not isinstance(value, dict):
+        raise ValueError('missing memory observation')
+    total, available = value.get('total_bytes'), value.get('available_bytes')
+    if (type(total) is not int or type(available) is not int or
+            total <= 0 or not 0 <= available <= total):
+        raise ValueError('invalid memory observation')
+    return dict(total_bytes=total, available_bytes=available)
+
+
+def read_for_launch(timeout, tick):
+    """Read within the launch budget while the owning controller stays responsive."""
+    end = time.monotonic() + timeout
+    try:
+        result = _reader.submit(read, 0)
+    except (OSError, RuntimeError, TimeoutError):
+        return None
+    while not tick():
+        remaining = end - time.monotonic()
+        if remaining <= 0:
+            break
+        try:
+            value = result.result(timeout=min(.1, remaining))
+        except TimeoutError:
+            continue
+        if time.monotonic() <= end:
+            try:
+                return _observation(value)
+            except ValueError:
+                pass
+        break
+    return None
 
 
 class Watchdog:
@@ -136,12 +174,7 @@ class Watchdog:
             start = self.now()
             timeout = self.cfg['memory_unknown_seconds' if startup else 'memory_poll_seconds']
             try:
-                value = _reader.read(self.reader, timeout)
-                total, available = value['total_bytes'], value['available_bytes']
-                if (type(total) is not int or type(available) is not int or
-                        total <= 0 or not 0 <= available <= total):
-                    raise ValueError('invalid memory observation')
-                value = dict(total_bytes=total, available_bytes=available)
+                value = _observation(_reader.read(self.reader, timeout))
             except Exception:
                 value = None
             now = self.now()
@@ -195,6 +228,10 @@ class Watchdog:
     def start(self):
         self.sample(startup=True)
         self.check()
+        self.start_monitoring()
+
+    def start_monitoring(self):
+        """Monitor an admitted process; gaps alone cannot retire its generation."""
         def poll():
             while not self.done.wait(self.cfg['memory_poll_seconds']):
                 self.sample()
