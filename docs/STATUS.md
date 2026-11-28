@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+按冻结 OpenAPI 逐项核对了 Chat 的 26 个顶层可空参数，另覆盖四版 Python SDK 接受的 top_logprobs:null。原生请求规划器在逐项和同时传空时生成相同的文本提示、输出预算及采样配置。metadata 显式传空可与省略区分，两者均保持 store=false。该回归已加入原生 Chat 规划测试。 [输入合同回执](evidence/serve-responses-sdk-business-20261128/chat-null-input.json)
+
 六版 SDK 通过九种资源调用方式读取了同一段历史实机输出的 11 个流事件。消息 ID、输出位置、文本片段和结束事件的内容一致；两项反例也验证了错误消息 ID 和错误结束文本会被拒绝。下一步在 rev594 上对照实时生成和原 ID 重放。 [历史流 CPU 复核](evidence/serve-responses-sdk-business-20261128/stream-cpu.json)
 
 四版 Python 和两版 Node 官方 SDK 已通过 Responses 请求路径和查询参数预检。九种资源调用方式在本机 TLS 夹具上发出 18 个请求，另有五项回执校验通过。下一步用已发行的模型验证原文流式答复、跨 SDK 续答、按游标读取输入和删除后的 404。 [CPU 回执](evidence/serve-responses-sdk-business-20261128/cpu.json)

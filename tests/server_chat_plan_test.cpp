@@ -5,6 +5,8 @@
 #include <fstream>
 
 #include "q4t/server/chat_prompt.h"
+#include "q4t/server/chat_storage.h"
+#include "q4t/server/chat_template.h"
 #include "q4t/server/request_json.h"
 #include "q4t/server/refusal_frame.h"
 #include "q4t/server/structured_decoder.h"
@@ -24,6 +26,85 @@ ChatPlanConfig Config() {
   return config;
 }
 }  // namespace
+
+Q4T_TEST(chat_plan_nullable_options_preserve_text_and_generation_defaults) {
+  // The full frozen Chat schema allows null on 26 fields. The four pinned
+  // Python SDKs additionally type top_logprobs as nullable.
+  constexpr const char* fields[] = {"audio",
+                                    "frequency_penalty",
+                                    "logit_bias",
+                                    "logprobs",
+                                    "max_completion_tokens",
+                                    "max_tokens",
+                                    "metadata",
+                                    "modalities",
+                                    "moderation",
+                                    "n",
+                                    "prediction",
+                                    "presence_penalty",
+                                    "prompt_cache_key",
+                                    "prompt_cache_retention",
+                                    "reasoning_effort",
+                                    "safety_identifier",
+                                    "seed",
+                                    "service_tier",
+                                    "stop",
+                                    "store",
+                                    "stream",
+                                    "stream_options",
+                                    "temperature",
+                                    "top_logprobs",
+                                    "top_p",
+                                    "user",
+                                    "verbosity"};
+  Json original;
+  Q4T_CHECK(Parse(R"({"model":"m","messages":[{"role":"user","content":"q"}]})",
+                  &original));
+  auto config = Config();
+  ChatRequestPlan defaults;
+  ChatPlanError error;
+  Q4T_CHECK(PlanChatRequest(original, config, &defaults, &error));
+  std::string default_prompt;
+  Q4T_CHECK(RenderChatPrompt(original, {"q"}, &default_prompt));
+  const auto matches = [&](const Json& request) {
+    ChatRequestPlan plan;
+    ChatStorageOptions storage;
+    std::string prompt;
+    Q4T_CHECK(PlanChatRequest(request, config, &plan, &error));
+    Q4T_CHECK(RenderChatPrompt(request, {"q"}, &prompt));
+    Q4T_CHECK(ParseChatStorageOptions(request, &storage));
+    Q4T_CHECK(prompt == default_prompt);
+    Q4T_CHECK(ChatOutputLimit(request, config) ==
+              ChatOutputLimit(original, config));
+    Q4T_CHECK(plan.sampling.temperature == defaults.sampling.temperature &&
+              plan.sampling.top_p == defaults.sampling.top_p &&
+              plan.sampling.choices == defaults.sampling.choices &&
+              plan.sampling.seed == defaults.sampling.seed &&
+              plan.sampling.logprobs == defaults.sampling.logprobs &&
+              plan.sampling.top_logprobs == defaults.sampling.top_logprobs &&
+              plan.sampling.frequency_penalty ==
+                  defaults.sampling.frequency_penalty &&
+              plan.sampling.presence_penalty ==
+                  defaults.sampling.presence_penalty &&
+              plan.sampling.logit_bias == defaults.sampling.logit_bias);
+    Q4T_CHECK(plan.stops == defaults.stops &&
+              plan.cache.requested == defaults.cache.requested &&
+              plan.audio_output.enabled == defaults.audio_output.enabled);
+    Q4T_CHECK(!storage.store &&
+              storage.has_metadata == request.Has("metadata"));
+    if (storage.has_metadata) Q4T_CHECK(storage.metadata.IsNull());
+    return true;
+  };
+  Json together = original;
+  for (const auto* field : fields) {
+    Json request = original;
+    request.object.emplace_back(field, Json{});
+    together.object.emplace_back(field, Json{});
+    Q4T_CHECK(matches(request));
+  }
+  Q4T_CHECK(matches(together));
+  return true;
+}
 
 Q4T_TEST(chat_plan_schema_resource_errors_keep_status_and_parameter) {
   for (const auto* bound : {"1e400", "-1"}) {

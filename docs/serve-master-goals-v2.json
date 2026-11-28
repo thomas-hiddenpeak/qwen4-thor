@@ -1008,6 +1008,12 @@
         "success_pairs": 36,
         "starts": 1,
         "requests": 60
+      },
+      "chat_top_level_null_20261128": {
+        "stage": "targeted_cpu_verified",
+        "fields": 26,
+        "evidence": "evidence/serve-responses-sdk-business-20261128/chat-null-input.json",
+        "nested_contracts": "Tracked separately"
       }
     },
     {
