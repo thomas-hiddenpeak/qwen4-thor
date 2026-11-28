@@ -1,0 +1,386 @@
+{
+  "writer": {
+    "sdk": "python-3.55.1",
+    "completed": {
+      "id": "batch_da3c8ad71c5a534938565735e7c8ae90",
+      "input": "file_95baa625b1464a7abbb32471c71f7b2a",
+      "source_sha256": "fd95463523431e1e40e27a3f44d592e9f79ca91871c066d20768f52ce899e819",
+      "rows": 1,
+      "metadata": {
+        "project": "q4t",
+        "scenario": "publication",
+        "revision": "592"
+      }
+    },
+    "pending": {
+      "id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+      "input": "file_20737c6d02d9456c6add8b22f20d94ac",
+      "source_sha256": "4a3f425cb7c7553fc4621b8d5d924ca7a334bc8106cbb55b5cf1c97496fe9d9a",
+      "rows": 12,
+      "metadata": {
+        "project": "q4t",
+        "scenario": "cancel",
+        "revision": "592"
+      }
+    },
+    "cancel": [
+      {
+        "client": 0,
+        "id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+        "status": "cancelled",
+        "cancelling_at": 1795825252
+      },
+      {
+        "client": 1,
+        "id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+        "status": "cancelling",
+        "cancelling_at": 1795825252
+      },
+      {
+        "client": 2,
+        "id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+        "status": "cancelled",
+        "cancelling_at": 1795825252
+      },
+      {
+        "client": 3,
+        "id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+        "status": "cancelled",
+        "cancelling_at": 1795825252
+      }
+    ],
+    "revision": 592,
+    "requests": [
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-79790d882f093c666737212aedc012cc",
+        "start_ns": 4015335173477919,
+        "headers_ns": 4015335181882888
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches",
+        "query": "",
+        "status": 200,
+        "trace": "req-f99658d3254c2a5559602d5c74649158",
+        "start_ns": 4015335225631519,
+        "headers_ns": 4015335231364784
+      },
+      {
+        "method": "POST",
+        "path": "/v1/files",
+        "query": "",
+        "status": 200,
+        "trace": "req-4eca3aaa82042bf06dd785deab1f940b",
+        "start_ns": 4015335274410742,
+        "headers_ns": 4015335284252779
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches",
+        "query": "",
+        "status": 200,
+        "trace": "req-4f90674911069564ea4e7c4f1ea90e3f",
+        "start_ns": 4015335328973630,
+        "headers_ns": 4015335335220617
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 429,
+        "trace": "req-74ca278df4640edc4d88382b78de3809",
+        "start_ns": 4015335384063331,
+        "headers_ns": 4015335387379060,
+        "client": 2,
+        "attempt": 1,
+        "error": "gateway_rate_limit",
+        "retry_after": "1"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 429,
+        "trace": "req-686f04099f641e74bdc7733588ada6fd",
+        "start_ns": 4015335383589667,
+        "headers_ns": 4015335387910919,
+        "client": 3,
+        "attempt": 1,
+        "error": "gateway_rate_limit",
+        "retry_after": "1"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 429,
+        "trace": "req-d7dcc6ce669824e341aaffe46184c2de",
+        "start_ns": 4015335383752666,
+        "headers_ns": 4015335388564213,
+        "client": 0,
+        "attempt": 1,
+        "error": "gateway_rate_limit",
+        "retry_after": "1"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 200,
+        "trace": "req-51991eee418de7ca95ea1d02f1152e47",
+        "start_ns": 4015335383856166,
+        "headers_ns": 4015335428161547,
+        "client": 1,
+        "attempt": 1
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 200,
+        "trace": "req-49a4baa5237df46356b2b3f48f1d2f8e",
+        "start_ns": 4015336389803570,
+        "headers_ns": 4015336432153281,
+        "client": 0,
+        "attempt": 2
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 200,
+        "trace": "req-7ce2018839674e5d787539eb8d985dfd",
+        "start_ns": 4015336689259254,
+        "headers_ns": 4015336732899275,
+        "client": 2,
+        "attempt": 2
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 200,
+        "trace": "req-4fee0dc008eddde82ad52411f0b1559b",
+        "start_ns": 4015336839341673,
+        "headers_ns": 4015336884119117,
+        "client": 3,
+        "attempt": 2
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 404,
+        "trace": "req-06100fad23bc9cfeb29f15c2d31ee995",
+        "start_ns": 4015336885096928,
+        "headers_ns": 4015336928181044
+      }
+    ]
+  },
+  "reader": {
+    "sdk": "node-7.47.0",
+    "stopped": {
+      "id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+      "object": "batch",
+      "status": "cancelled",
+      "endpoint": "/v1/chat/completions",
+      "input_file_id": "file_20737c6d02d9456c6add8b22f20d94ac",
+      "completion_window": "24h",
+      "created_at": 1795825252,
+      "expires_at": 1795911652,
+      "metadata": {
+        "project": "q4t",
+        "scenario": "cancel",
+        "revision": "592"
+      },
+      "output_file_id": null,
+      "error_file_id": null,
+      "errors": null,
+      "request_counts": {
+        "total": 0,
+        "completed": 0,
+        "failed": 0
+      },
+      "cancelling_at": 1795825252,
+      "cancelled_at": 1795825253
+    },
+    "finished": {
+      "id": "batch_da3c8ad71c5a534938565735e7c8ae90",
+      "object": "batch",
+      "status": "completed",
+      "endpoint": "/v1/chat/completions",
+      "input_file_id": "file_95baa625b1464a7abbb32471c71f7b2a",
+      "completion_window": "24h",
+      "created_at": 1795825252,
+      "expires_at": 1795911652,
+      "metadata": {
+        "project": "q4t",
+        "scenario": "publication",
+        "revision": "592"
+      },
+      "output_file_id": "file_cce5c21738dfde5350b22a9c6f5885ad",
+      "error_file_id": null,
+      "errors": null,
+      "request_counts": {
+        "total": 1,
+        "completed": 1,
+        "failed": 0
+      },
+      "model": "qwen3.8-flash-next",
+      "in_progress_at": 1795825252,
+      "usage": {
+        "input_tokens": 390,
+        "output_tokens": 4,
+        "total_tokens": 394,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        }
+      },
+      "finalizing_at": 1795825253,
+      "completed_at": 1795825253
+    },
+    "result": {
+      "id": "batch_req_tool_run_9139ec7bafa7f241577de50cb0613be4",
+      "custom_id": "publication-0",
+      "response": {
+        "status_code": 200,
+        "request_id": "req_tool_run_eb17a06b64e9751a5cb952be9f7f42a3",
+        "body": {
+          "id": "chatcmpl-auto-c189ad76906e57bf7848ecbff9ffb0f1",
+          "object": "chat.completion",
+          "created": 1795825252,
+          "model": "qwen3.8-flash-next",
+          "choices": [
+            {
+              "index": 0,
+              "message": {
+                "role": "assistant",
+                "content": "592"
+              },
+              "finish_reason": "stop",
+              "logprobs": null
+            }
+          ],
+          "service_tier": "default",
+          "usage": {
+            "prompt_tokens": 390,
+            "completion_tokens": 4,
+            "total_tokens": 394,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            },
+            "completion_tokens_details": {
+              "reasoning_tokens": 0
+            }
+          }
+        }
+      },
+      "error": null
+    },
+    "output_text": "{\"id\":\"batch_req_tool_run_9139ec7bafa7f241577de50cb0613be4\",\"custom_id\":\"publication-0\",\"response\":{\"status_code\":200,\"request_id\":\"req_tool_run_eb17a06b64e9751a5cb952be9f7f42a3\",\"body\":{\"id\":\"chatcmpl-auto-c189ad76906e57bf7848ecbff9ffb0f1\",\"object\":\"chat.completion\",\"created\":1795825252,\"model\":\"qwen3.8-flash-next\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"592\"},\"finish_reason\":\"stop\",\"logprobs\":null}],\"service_tier\":\"default\",\"usage\":{\"prompt_tokens\":390,\"completion_tokens\":4,\"total_tokens\":394,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0}}}},\"error\":null}\n",
+    "repeated": {
+      "id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+      "status": "cancelled",
+      "cancelled_at": 1795825253,
+      "cancelling_at": 1795825252
+    },
+    "page_ids": [
+      "batch_da3c8ad71c5a534938565735e7c8ae90",
+      "batch_b824bf9504f284c2dfb8d8cff1eb5441"
+    ],
+    "independent_chat": "42",
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441",
+        "query": "",
+        "status": 200,
+        "trace": "req-d736c9426aee91d4a99f23013f80fad7"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_b824bf9504f284c2dfb8d8cff1eb5441/cancel",
+        "query": "",
+        "status": 200,
+        "trace": "req-420ef165b62282975e64315d7c6044d8"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/batches/batch_da3c8ad71c5a534938565735e7c8ae90",
+        "query": "",
+        "status": 200,
+        "trace": "req-03f9a1f847f0988ee901b72232082a38"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/batches/batch_da3c8ad71c5a534938565735e7c8ae90/cancel",
+        "query": "",
+        "status": 409,
+        "trace": "req-ebb484916e2fbbbb8e12fd8483b26882"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/batches/batch_da3c8ad71c5a534938565735e7c8ae90",
+        "query": "",
+        "status": 404,
+        "trace": "req-acca4d744edadf9e629103a702074a0f"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/batches",
+        "query": "limit=1",
+        "status": 200,
+        "trace": "req-46c544b92df187bb217ea2408278f0b5"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/batches",
+        "query": "limit=1&after=batch_da3c8ad71c5a534938565735e7c8ae90",
+        "status": 200,
+        "trace": "req-45e0545acbe90b1edc9c868929085fd9"
+      },
+      {
+        "method": "GET",
+        "path": "/v1/files/file_cce5c21738dfde5350b22a9c6f5885ad/content",
+        "query": "",
+        "status": 200,
+        "trace": "req-c64dfdbac4858c1287a31cb73e6aa6f2"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/chat/completions",
+        "query": "",
+        "status": 200,
+        "trace": "req-55e74560e8b20e8d95408440a5cda7b9"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_20737c6d02d9456c6add8b22f20d94ac",
+        "query": "",
+        "status": 200,
+        "trace": "req-9f5740f101b4181b738aff4161b15637"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_95baa625b1464a7abbb32471c71f7b2a",
+        "query": "",
+        "status": 200,
+        "trace": "req-9ab13e5b85c7c339b36771252e4cdfc5"
+      },
+      {
+        "method": "DELETE",
+        "path": "/v1/files/file_cce5c21738dfde5350b22a9c6f5885ad",
+        "query": "",
+        "status": 200,
+        "trace": "req-9d5bfdc587d4b2a79b4864771cef9308"
+      }
+    ]
+  }
+}

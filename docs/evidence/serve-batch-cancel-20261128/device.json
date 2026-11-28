@@ -1,0 +1,55 @@
+{
+  "stage": "candidate_native_tls_business",
+  "issued": false,
+  "engine": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+  "candidate_source": "7434303c06223e1b7cd06061f256e6c52325f880",
+  "predecessor_manifest": "a4190f48718b1bd1b5e516a74861c5ad0a34d0d3d1f4e61f206ab85498647600",
+  "protocol_sources": "805ffb2b4e37166bdee2822f3ad5aec2bdd60b6a9ba6af6b8d3417c9d13df7c9",
+  "changed_protocol_sources": [
+    "src/server/batch_state.cpp"
+  ],
+  "source_sha256": "5ac0f9d975cb54761f0283ed4e10cbdf2921a25bdbe42da3c74c015847003d59",
+  "request_evidence_sha256": "d666938056a3ae781baee4f01621d5739981268d7e3e4c8745564941e03727dd",
+  "document_sha256": "d00c6cfb604d4a947274617bb373aab47bee4ef58129d9cd4e69b7b571785016",
+  "document_publication": 592,
+  "document_source": "../serve-diagnostic-pipe-20261128/delivery.json",
+  "model": "qwen3.8-flash-next",
+  "sdk": [
+    "python-3.55.1",
+    "node-7.47.0"
+  ],
+  "callers": 4,
+  "cancel_id": "batch_b824bf9504f284c2dfb8d8cff1eb5441",
+  "cancelled_at": 1795825253,
+  "cancelling_at": 1795825252,
+  "completed_id": "batch_da3c8ad71c5a534938565735e7c8ae90",
+  "row_answer": "592",
+  "independent_chat": "42",
+  "status_counts": {
+    "200": 18,
+    "429": 3,
+    "404": 2,
+    "409": 1
+  },
+  "requests": 24,
+  "elapsed_seconds": 35.968,
+  "model_starts": 1,
+  "model_exit": 0,
+  "ports_free": true,
+  "model_gone": true,
+  "protected_files": 20,
+  "guard": {
+    "status": "COMPLETED",
+    "backend": "nvml",
+    "receipt_sha256": "c0ebfa21d6d83dcca8af025862bc6b321c0e2e41bdd714fc56897389c5942b45"
+  },
+  "transport": "native TLS on loopback with a PID-bound admission fixture and two independent client keys",
+  "build_warnings": 0,
+  "initial_failed_attempt": "initial-admission.json",
+  "original_failure_sha256": "22cb310612c210e5c166e6047648f0930ca85d11edb5d14f4961069731d89366",
+  "gateway_denials": 3,
+  "cumulative_requests": 32,
+  "cumulative_model_starts": 2,
+  "first_attempts_overlapped": true,
+  "cancellation_lane_per_client": 1
+}

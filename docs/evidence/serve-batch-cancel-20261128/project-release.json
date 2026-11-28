@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "publication_revision": 592,
+  "version_revision": 225,
+  "profile_revision": 110,
+  "previous_profile_revision": 109,
+  "desired": "STOPPED",
+  "model_starts": 0,
+  "primary": "a4190f48718b1bd1b5e516a74861c5ad0a34d0d3d1f4e61f206ab85498647600",
+  "fallback": "00b9eff560ee921b16f240f7d4ff20a5b556aa539878fd8ccee3ad431730699e",
+  "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
+  "protected_files": 13,
+  "profile_budget_preserved": true
+}
