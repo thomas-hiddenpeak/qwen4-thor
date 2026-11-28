@@ -1,0 +1,76 @@
+{
+  "stage": "managed_batch_cancellation_business",
+  "issued": false,
+  "engine": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+  "roles": {
+    "fallback": {
+      "incident": "model exit",
+      "starts": 2,
+      "seconds": 207.19510641507804,
+      "manifest": "202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc",
+      "decision_sha256": "5c46b847634d9ba1a06732203422e54a70198a82c88caea19dc0e74eb7acbd63",
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "completed_job": "batch_26fa903a8c8f20b7735edb04cf8b41c3",
+      "cancelled_job": "batch_2c662b1021d4b08cf62c066a691ae41c",
+      "cancelled_at": 1795826108,
+      "original_output_bytes": 635,
+      "original_output_sha256": "21863c223ce580699e44e5128cd42d363d654472f9e2d3277b05ba67105920d6",
+      "original_row_id": "batch_req_tool_run_e6776410fcb43d96633f5a4c70999933",
+      "original_revision": 592,
+      "independent_chat": "42",
+      "sdk": [
+        "python-3.55.1",
+        "node-7.47.0"
+      ],
+      "requests": 23,
+      "wire_sha256": {
+        "submit-wire.json": "8fce9f512ccd5f27771f2e5dce49c92f7dbfce06770c067a77b5011c2cc756cf",
+        "checkpoint-wire.json": "545afba06105fb42e5cd4a779b4ad7f98ef6fb07e61eba2f97a05644264aa139",
+        "restore-wire.json": "b20fc554717ef41272eb41a4966ceea8c227ca264e74537457cff298e15828f6"
+      },
+      "nvml_samples": 193,
+      "guard_sha256": "bd8efe4511c807d8e9c666cb7f80d68dcf482587e4742837f576440c80fb90ab",
+      "result_sha256": "d53c99a2fde98bf61468553d5c848c159f978a59bca7f6f4ea8d05a0ef45ba97",
+      "ports_released": true,
+      "remaining": [],
+      "default_unchanged": true
+    },
+    "primary": {
+      "incident": "primary gateway SIGABRT",
+      "starts": 2,
+      "seconds": 363.52198724495247,
+      "manifest": "96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed",
+      "decision_sha256": "93f73fd8f58a74f0fd275c3e5a61dcb7d0434b0e6636c5c20bc21ae686694ae1",
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "completed_job": "batch_998b54bebd9c53eac621d3a1833d4994",
+      "cancelled_job": "batch_d71ba23b0135025ab75913b006d28b2b",
+      "cancelled_at": 1795826528,
+      "original_output_bytes": 635,
+      "original_output_sha256": "7d903b251c8bfa33a4909e3580881c350fffd95a08d9b56f67be1ce06ca58227",
+      "original_row_id": "batch_req_tool_run_7915d1ce43c7efbcf7822d7ba32b6f10",
+      "original_revision": 592,
+      "independent_chat": "42",
+      "sdk": [
+        "python-3.55.1",
+        "node-7.47.0"
+      ],
+      "requests": 23,
+      "wire_sha256": {
+        "submit-wire.json": "bca8ae49b434565050f0eb824c6d5bce4059176b0cca77753fbd9ffc5386d3b9",
+        "checkpoint-wire.json": "2308d51bcbe2f6fa7e2795899733fb5eb8795cf5faa20b2d7f27b3c3eb56e243",
+        "restore-wire.json": "b000893c3852d7ec4a82938644f6933abf40077062a05f299d2eba7660c833e0"
+      },
+      "nvml_samples": 337,
+      "guard_sha256": "3e064971c18f7ab9a394be816b935732dfacaf8a6f51330ef3ae52e7b964e51b",
+      "result_sha256": "1c41b6d714e2b7988f9163bd4b56e9d3b6765faaf779e85052ea8c2e5145b962",
+      "ports_released": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "registered_fallback": "202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc"
+    }
+  }
+}

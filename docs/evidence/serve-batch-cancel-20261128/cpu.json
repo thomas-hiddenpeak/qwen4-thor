@@ -1,0 +1,35 @@
+{
+  "stage": "native_cpu_contract",
+  "issued": false,
+  "source_base": "4999eba569e97dbe687557c74d3b4662a86251cb",
+  "previous_source_sha256": "00b48713bab250cd7b3bc4851c0288da2bdde18345d01b0f872de33e6013281f",
+  "candidate_source_sha256": "5ac0f9d975cb54761f0283ed4e10cbdf2921a25bdbe42da3c74c015847003d59",
+  "test_source_sha256": "60429a6b795d27561f7abdbe64590bf38241f535df6f5b40c272afc0e891d3cc",
+  "previous_failure": [
+    "409 object_revision_conflict: Object revision changed",
+    "  CHECK failed: Ok(reply) && OutputJson(reply.value) == recorded (line 369)",
+    "[FAIL] batch_state_concurrent_cancel_returns_one_durable_transition",
+    "1 tests, 0 passed, 1 failed, 0 skipped"
+  ],
+  "candidate_cases": [
+    "batch_state_public_list_cursor_and_owner_isolation",
+    "batch_state_cancel_prevents_late_validation_and_waits_for_owner",
+    "batch_state_concurrent_cancel_returns_one_durable_transition",
+    "batch_state_cancel_lost_ack_keeps_uncertain_result_and_durable_intent",
+    "batch_state_failed_validation_keeps_original_line_error",
+    "batch_state_actual_unknown_page_receipt_commits_root_and_page_once",
+    "batch_validation_rows_cancel_collects_private_inputs_after_terminal"
+  ],
+  "actor_count": 6,
+  "fixture": "Six CPU caller threads released by a common barrier, native object worker and a private filesystem store. Reopens the store and checks tenant isolation, identical cancellation receipts and exactly one durable revision.",
+  "lost_ack": "The actual worker commits the cancellation and withholds its acknowledgment. The initial caller retains commit_unknown and the original ID. After the worker drains, a repeat reads cancelling at the same durable revision.",
+  "candidate_tests_sha256": "b9fc91f542df87243cf70bfbbb64c895601516e1418a101dbe5dfd6189f15eba",
+  "baseline_tests_sha256": "aee1792f5a8e2743814eedec975a186e186b5eb78fe7499d2c2f7b8b2d34dbce",
+  "compile_warnings": 0,
+  "inventory": {
+    "reviewed": 1399,
+    "mutations": 40
+  },
+  "model_starts": 0,
+  "verification": "CPU only. Targeted SDK HTTP business and managed delivery remain pending."
+}

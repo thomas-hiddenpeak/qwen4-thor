@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev594 已发行批任务并发取消修复。按原生网关的 Retry-After 续试得到同一取消记录，已完成的任务仍返回 409。主轻容量、模型恢复及主网关切换后，真实 SDK 读回同一任务和逐字节相同的项目结果。登记时服务为 STOPPED，模型启动为零。24 小时运行与独立冷启动计划已交接。 [发行回执](evidence/serve-batch-cancel-20261128/delivery.json)
+
 rev592 已发行独立 serve 诊断日志隔离。日志读端停读和退出时，同一模型进程仍完成真实 Chat；读端恢复后收到原请求 ID。主、轻容量及两种托管恢复均已核对真实模型日志。设备默认状态为 STOPPED，回退包已登记，发布时模型启动为零。24 小时运行计划与 NVML 冷启动入口已完成预检。 [发行回执](evidence/serve-diagnostic-pipe-20261128/delivery.json)
 
 rev590 已发行并发上传修复。两个客户会话同时为同一所属者完成上传时，相同参数返回同一个 File ID，不同参数返回 409。模型退出和网关切换后均能按原 ID 重试并续传。设备默认状态为 STOPPED，回退包已登记，发布时模型启动为零。24 小时计划与 NVML 冷启动入口已预检。 [发行回执](evidence/serve-upload-completion-race-20261128/delivery.json)
