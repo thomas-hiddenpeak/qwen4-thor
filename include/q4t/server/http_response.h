@@ -103,8 +103,10 @@ class HttpResponseContext {
   static bool LegacyCacheRetention();
   static bool LegacyMcpError();
   static bool LegacyFunctionArgumentName();
-  void SetResponsesView(ResponsesSdkView view) {
+  static bool LegacyStreamOutputText();
+  void SetResponsesView(ResponsesSdkView view, bool stream_output_text = false) {
     responses_view_ = view;
+    stream_output_text_ = stream_output_text;
   }
   const char* ResponsesSdkVaryHeader() const {
     return responses_view_.has_value()
@@ -299,6 +301,7 @@ class HttpResponseContext {
   const io::Json* realtime_startup_ = nullptr;
   bool responses_multi_agent_ = false;
   std::optional<ResponsesSdkView> responses_view_;
+  bool stream_output_text_ = false;
   bool assistants_beta_ = false;
   bool agents_beta_ = false;
   bool chatkit_beta_ = false;

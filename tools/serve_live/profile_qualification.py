@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'responses_stream_text_handoff' in plan:
+            from tools.serve_audit import stream_text_profiles
+            current = profiles[name]['evidence_sha256']
+            current.update(stream_text_profiles.verify(phase, plan, declared, current))
+            continue
         if 'web_provider_handoff' in plan:
             from tools.serve_responses import web_provider_profiles
             current = profiles[name]['evidence_sha256']

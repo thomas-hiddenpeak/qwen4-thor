@@ -1,0 +1,95 @@
+{
+  "scope": "Real persisted Thor responses, official SDK GET via local TLS fixture and candidate native retained-state reader",
+  "model_starts": 0,
+  "previous_engine": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
+  "candidate_engine": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+  "candidate_native_reader_sha256": "5cc68022d3fee8e13922c6e4379dc567addbe8d6f4e430f8290e2d15925792e8",
+  "reader_source_sha256": "5b73bceebe9e6f384c6a340ee7098d679724b8d2da56fb59d9ae80220f02495d",
+  "acceptance_driver_sha256": "49e195e0f278039ab619e8d203a4a9b2ce3674fc6da0819c218cef1163c156e5",
+  "data_sha256": "a0e3ffb64e7e0785721aefd3eb3a95df46df214882fe35cfdb628bd506a3c856",
+  "rows": {
+    "stream-python-2.8.1": {
+      "events": 66,
+      "native_wire": "4114e0272e7a47e17aa813bdef12e63048fcfc05cef90c8292ab9ba5d89c4fe9",
+      "sdk_response": "bdcc0b1f3f28db610c39929029940809fc6166186b1b04214235b1b8966260b7"
+    },
+    "stream-python-2.33.0": {
+      "events": 66,
+      "native_wire": "730725684bad3323086be749dc60a19ee0471e3efe4506969192279827cac544",
+      "sdk_response": "7f6a63a973b6d50e0393733302542d74261cb1c1a83643e5e8e28e5723717b79"
+    },
+    "stream-python-3.42.1": {
+      "events": 66,
+      "native_wire": "aa10bf28ced4f8ec007fbec144155bf8db79651698e27ca6ec90993c6d99bb6b",
+      "sdk_response": "67cd3c0944b4a9fdb435acef4dd406263463dd0a01813221bbb44df5279c8e44"
+    },
+    "stream-python-3.55.1": {
+      "events": 66,
+      "native_wire": "507c4ba12670737e5f3feab05a6d22f82d9dd1f72ee1278d8b4d2f6f7be8d0cd",
+      "sdk_response": "032fcbb707a32f294030f0b98ac3eadca5b73cc4888b54279f20223ec2f4c7ca"
+    },
+    "stream-node-6.34.0": {
+      "events": 66,
+      "native_wire": "146fcebf6d330f6338589d516d84c343eed24c4374adcdfde56dbddc2fe7d0aa",
+      "sdk_response": "0c185c6afa77c0e22c0a71953ddc230a07e9ef364c07cfc342abb78806c269b0"
+    },
+    "stream-node-7.47.0": {
+      "events": 66,
+      "native_wire": "0c4ad387119710fc7a23e703356483427e9e5af33751cb6cd659f4be1eced7a6",
+      "sdk_response": "e3ef6b52523a649e9aa1e395e2f06e2c4a046ff13f7c6ff9f1a6f1cba47bacaa"
+    },
+    "profile-python-2.8.1": {
+      "events": 66,
+      "native_wire": "a4ae1098266e24681b26691d48b909d80f3ad6b3ffe010626f009a3065a11d69",
+      "sdk_response": "fbd79a2e48483289645f4aa7db2d531747bad3a437d5bc3d2c0aa2bbc56a0bed"
+    },
+    "profile-python-2.33.0": {
+      "events": 66,
+      "native_wire": "0dba236e2ed86b1e6e363cd66080da5af1e7ed63670cbe6c16b78badcac403d2",
+      "sdk_response": "1ca9e056d64b963a95150a80b7fb2424a403f0b272d23193bb740d7783e1b7ea"
+    },
+    "profile-python-3.42.1": {
+      "events": 66,
+      "native_wire": "b265ab5ba8b593c52a69b014ad70e08a7fb4d58a9d4e34e5aaaf47a36f95dff8",
+      "sdk_response": "5ae4f8d493ec31dfeb9201a23f35bea186db4b5829852af02198d44cc077d037"
+    },
+    "profile-python-3.55.1": {
+      "events": 66,
+      "native_wire": "313be5bf3bd0a745c2e2a9f15e2b018e4762185e24bfb2b7ff11b8b6b91544ce",
+      "sdk_response": "9e517801c0174273aba45c1245578641f302b0ea0259f55f5df7cc7c6a4179e3"
+    },
+    "profile-node-6.34.0": {
+      "events": 66,
+      "native_wire": "0f38802e40230926685ade9fc6e678caa3d0e9e9fe75c4581ab80c2391e6b372",
+      "sdk_response": "500a62cbcbc8d756cb681ec7aca4fca4de419977569360056244bf074b640e09"
+    },
+    "profile-node-7.47.0": {
+      "events": 66,
+      "native_wire": "90ecf758f862b8a8de2456bcad58a703d5595ce005c9ace4dfc311c75117bf50",
+      "sdk_response": "3bd45cd1eb13f288b73604ce264f3ce8fab92cf487d6cf25af33ca76d477c5d0"
+    }
+  },
+  "foreign_checks": 4,
+  "records": [
+    {
+      "source": "stream",
+      "id": "resp_9364ec1c9c03dafce8008d3876e2a131",
+      "record_sha256": "fca5ae5b7f17eb728af84baac35139458d4fd527af2257e994c0a38a7ff85f32",
+      "file_count": 12,
+      "all_storage_bytes_unchanged": true,
+      "terminal_sequence": 65,
+      "annotations": 1,
+      "characters": 180
+    },
+    {
+      "source": "profile",
+      "id": "resp_9a85fe8adf1b29c613cc55dad4510a94",
+      "record_sha256": "27df6a3ab85e90ec895258123730a9181c17a1a5341caf652ce23ae9334eb043",
+      "file_count": 13,
+      "all_storage_bytes_unchanged": true,
+      "terminal_sequence": 65,
+      "annotations": 1,
+      "characters": 180
+    }
+  ]
+}

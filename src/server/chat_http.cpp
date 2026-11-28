@@ -360,8 +360,10 @@ bool ChatServer::HandleRequest(int fd, bool operations, HttpRequestState* state,
       context.SetAgentEventKey(std::move(headers.agent_event_key));
       context.SetResponsesMultiAgent(headers.responses_multi_agent &&
                                      IsResponsesTarget(path));
-      if (IsResponsesTarget(path))
-        context.SetResponsesView(headers.ResponsesView());
+      if (IsResponsesTarget(path)) {
+        const auto profile = headers.ResponsesProfile();
+        context.SetResponsesView(profile.view, profile.stream_output_text);
+      }
       const auto kind = ClassifyHttpConnection(method, path);
       if (operations && ((kind != HttpConnectionClass::kControl &&
                           kind != HttpConnectionClass::kObservation) ||

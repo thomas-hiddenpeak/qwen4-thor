@@ -11,6 +11,7 @@ from urllib.parse import parse_qsl
 from .render_sdk_matrix import CATALOG, VERSIONS, sha
 from .response_handoff_receipt import verify as verify_response_handoff
 from .stored_chat_receipt import verify as verify_stored_chat
+from .stream_sdk_evidence import stream_campaigns
 
 EVIDENCE = CATALOG.parents[1]
 CLIENTS = tuple(f'{language}-{version}' for language, version in VERSIONS)
@@ -256,6 +257,10 @@ def render():
                              receipt=f'{directory}/business.json', receipt_sha256=sha(receipt),
                              wire=f'{directory}/requests.json', wire_sha256=digest)
     recovered_batches(sources, suites)
+    for name, packets, source in stream_campaigns(
+            EVIDENCE / 'serve-responses-search-stream-sdk-20261128', CLIENTS):
+        sources[name] = source
+        suites.append((name, (source['revision'], packets, {'200': source['requests']})))
     counts, unassigned = index(catalog, suites)
     buffer = io.StringIO(newline='')
     writer = csv.writer(buffer, lineterminator='\n')

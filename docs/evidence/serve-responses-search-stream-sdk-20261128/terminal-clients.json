@@ -1,0 +1,87 @@
+{
+  "scope": "Unmodified SDKs reading two recorded Thor terminal outcomes via local TLS GET. The fixture frames the retained failure journal as SSE and adds the legacy text aggregate to terminal frames. No fresh inference or device fault injection.",
+  "model_starts": 0,
+  "requests": 24,
+  "controls": {
+    "helper_result_sha256": "dfd603b8fdaefd9b190d64bc62871d2c7eb0f04469fa99d53d748476f4287d32",
+    "event_result_sha256": "5ef80d9e2d0aaa2d84e0d8a7d14c717bc88e33c694c52383492e3a9a365d63d1"
+  },
+  "sources": {
+    "incomplete": {
+      "blob": "eaffc235a5d1fd778387be3054e62a8dacf1602b1d66b00af3913bf2616c96ec",
+      "path": "docs/evidence/serve-responses-summary-business-20261109/business-02/incomplete.wire"
+    },
+    "failed": {
+      "object": "289029ed6ddfc84a2e6ac26599ff4728f04562df25281adbb49e9971b202b04c",
+      "http_get": "238ae5a1d0dfd62d10e79a7aa3c3d7afd0a2a31c1422216f5a68dc727efd0ba3"
+    }
+  },
+  "outcomes": {
+    "failed": {
+      "python-2.8.1": {
+        "event_status": "failed",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "python-2.33.0": {
+        "event_status": "failed",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "python-3.42.1": {
+        "event_status": "failed",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "python-3.55.1": {
+        "event_status": "failed",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "node-6.34.0": {
+        "event_status": "failed",
+        "helper": "in_progress"
+      },
+      "node-7.47.0": {
+        "event_status": "failed",
+        "helper": "failed"
+      },
+      "payload": {
+        "error": {
+          "code": "server_error",
+          "message": "request cancelled",
+          "type": "explicit_cancel"
+        },
+        "incomplete_details": null
+      }
+    },
+    "incomplete": {
+      "python-2.8.1": {
+        "event_status": "incomplete",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "python-2.33.0": {
+        "event_status": "incomplete",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "python-3.42.1": {
+        "event_status": "incomplete",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "python-3.55.1": {
+        "event_status": "incomplete",
+        "helper": "RuntimeError: Didn't receive a `response.completed` event."
+      },
+      "node-6.34.0": {
+        "event_status": "incomplete",
+        "helper": "in_progress"
+      },
+      "node-7.47.0": {
+        "event_status": "incomplete",
+        "helper": "incomplete"
+      },
+      "payload": {
+        "error": null,
+        "incomplete_details": {
+          "reason": "max_output_tokens"
+        }
+      }
+    }
+  }
+}

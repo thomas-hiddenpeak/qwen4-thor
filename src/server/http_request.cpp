@@ -24,27 +24,9 @@ namespace {
 using http::IsToken;
 using http::Trim;
 
-}  // namespace
-
-ResponsesSdkView ClassifyResponsesVersion(ResponsesSdkLanguage language,
-                                          std::string_view version) {
+ResponsesSdkView WireTypes(ResponsesSdkLanguage language, unsigned major,
+                           unsigned minor) {
   using View = ResponsesSdkView;
-  const auto number = [](std::string_view digits, unsigned* value) {
-    if (digits.empty() || (digits.size() > 1 && digits.front() == '0'))
-      return false;
-    const auto end = digits.data() + digits.size();
-    const auto parsed = std::from_chars(digits.data(), end, *value);
-    return parsed.ec == std::errc{} && parsed.ptr == end;
-  };
-  const auto first = version.find('.');
-  if (first == version.npos) return View::kCurrent;
-  const auto second = version.find('.', first + 1);
-  if (second == version.npos) return View::kCurrent;
-  unsigned major = 0, minor = 0, patch = 0;
-  if (!number(version.substr(0, first), &major) ||
-      !number(version.substr(first + 1, second - first - 1), &minor) ||
-      !number(version.substr(second + 1), &patch))
-    return View::kCurrent;
   if (language == ResponsesSdkLanguage::kJavaScript) {
     // Match openai-node's published MCP error, cache and SSE event types.
     if ((major == 4 && minor >= 101) || major == 5)
@@ -66,6 +48,33 @@ ResponsesSdkView ClassifyResponsesVersion(ResponsesSdkLanguage language,
   // 2.0.0 through 3.8.x require the function name in arguments.done.
   if (major == 3 && minor < 9) return View::kNamedArguments;
   return View::kCurrent;
+}
+}  // namespace
+
+ResponsesSdkProfile ClassifyResponsesClient(ResponsesSdkLanguage language,
+                                           std::string_view version) {
+  const auto number = [](std::string_view digits, unsigned* value) {
+    if (digits.empty() || (digits.size() > 1 && digits.front() == '0'))
+      return false;
+    const auto end = digits.data() + digits.size();
+    const auto parsed = std::from_chars(digits.data(), end, *value);
+    return parsed.ec == std::errc{} && parsed.ptr == end;
+  };
+  const auto first = version.find('.');
+  if (first == version.npos) return {};
+  const auto second = version.find('.', first + 1);
+  if (second == version.npos) return {};
+  unsigned major = 0, minor = 0, patch = 0;
+  if (!number(version.substr(0, first), &major) ||
+      !number(version.substr(first + 1, second - first - 1), &minor) ||
+      !number(version.substr(second + 1), &patch))
+    return {};
+  // These openai-node stream helpers pass through the terminal response
+  // without aggregating its output_text parts. Version 6.45 adds the getter.
+  const bool stream_text = language == ResponsesSdkLanguage::kJavaScript &&
+                           ((major == 4 && minor >= 87) || major == 5 ||
+                            (major == 6 && minor < 45));
+  return {WireTypes(language, major, minor), stream_text};
 }
 
 void DrainHttpClose(int fd) noexcept {
@@ -459,8 +468,8 @@ bool ReadHttpRequest(int fd, std::string* method, std::string* path,
     auto language = ResponsesSdkLanguage::kOther;
     if (*sdk_language == "python") language = ResponsesSdkLanguage::kPython;
     if (*sdk_language == "js") language = ResponsesSdkLanguage::kJavaScript;
-    if (ClassifyResponsesVersion(language, *sdk_version) !=
-        ResponsesSdkView::kCurrent) {
+    const auto profile = ClassifyResponsesClient(language, *sdk_version);
+    if (profile.view != ResponsesSdkView::kCurrent || profile.stream_output_text) {
       headers->sdk_language = language;
       headers->legacy_sdk_version = *sdk_version;
     }

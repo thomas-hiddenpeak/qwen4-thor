@@ -475,6 +475,10 @@ bool HttpResponseContext::LegacyCacheRetention() {
              ResponsesSdkView::kStringMcpErrorAndHyphenatedCache;
 }
 
+bool HttpResponseContext::LegacyStreamOutputText() {
+  return current_response && current_response->stream_output_text_;
+}
+
 bool HttpResponseContext::LegacyMcpError() {
   if (!current_response) return false;
   const auto view = current_response->responses_view_;

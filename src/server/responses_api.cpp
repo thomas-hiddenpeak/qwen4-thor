@@ -126,6 +126,7 @@ Json ViewEvent(Json event, const ResponsesReadPlan& plan) {
         part && part->GetString("type") == "output_text")
       Set(&Field(event, "part"), "logprobs", Array());
   }
+  ProjectStreamOutputText(&event);
   ApplyDeltaObfuscation(&event, plan.obfuscation);
   return event;
 }

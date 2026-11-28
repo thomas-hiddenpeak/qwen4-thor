@@ -99,6 +99,7 @@ Q4T_TEST(http_responses_presentation_matches_published_sdk_ranges) {
     Q4T_CHECK(Read("GET /v1/responses/resp_example HTTP/1.1\r\nHost: test\r\n" +
                        headers + "\r\n", &body, &parsed));
     Q4T_CHECK(parsed.legacy_sdk_version == expected);
+    Q4T_CHECK(!parsed.ResponsesProfile().stream_output_text);
   }
   return true;
 }
@@ -113,26 +114,35 @@ Q4T_TEST(http_javascript_responses_version_selects_declared_wire_types) {
     return Read("GET /v1/responses/r HTTP/1.1\r\nHost: test\r\n" +
                     fields + "\r\n", &body, result);
   };
-  for (const auto& [version, view] :
-       std::vector<std::pair<std::string, View>>{
-           {"4.100.0", View::kCurrent}, {"4.101.0", View::kStringMcpError},
-           {"5.23.2", View::kStringMcpError},
-           {"6.0.0", View::kStringMcpErrorAndNamedArguments},
-           {"6.8.1", View::kStringMcpErrorAndNamedArguments},
-           {"6.9.0", View::kStringMcpErrorAndHyphenatedCache},
-           {"6.34.0", View::kStringMcpErrorAndHyphenatedCache},
-           {"6.35.0", View::kStringMcpErrorAndNamedArguments},
-           {"7.4.0", View::kStringMcpErrorAndNamedArguments},
-           {"7.5.0", View::kNamedArguments}, {"7.10.0", View::kNamedArguments},
-           {"7.11.0", View::kCurrent}, {"7.47.0", View::kCurrent},
-           {"7.010.0", View::kCurrent}, {"6.8.1-rc.1", View::kCurrent}}) {
+  for (const auto& [version, view, aggregate] :
+       std::vector<std::tuple<std::string, View, bool>>{
+           {"4.86.2", View::kCurrent, false},
+           {"4.87.0", View::kCurrent, true},
+           {"4.100.0", View::kCurrent, true},
+           {"4.101.0", View::kStringMcpError, true},
+           {"5.23.2", View::kStringMcpError, true},
+           {"6.0.0", View::kStringMcpErrorAndNamedArguments, true},
+           {"6.8.1", View::kStringMcpErrorAndNamedArguments, true},
+           {"6.9.0", View::kStringMcpErrorAndHyphenatedCache, true},
+           {"6.34.0", View::kStringMcpErrorAndHyphenatedCache, true},
+           {"6.35.0", View::kStringMcpErrorAndNamedArguments, true},
+           {"6.44.0", View::kStringMcpErrorAndNamedArguments, true},
+           {"6.45.0", View::kStringMcpErrorAndNamedArguments, false},
+           {"7.4.0", View::kStringMcpErrorAndNamedArguments, false},
+           {"7.5.0", View::kNamedArguments, false},
+           {"7.10.0", View::kNamedArguments, false},
+           {"7.11.0", View::kCurrent, false},
+           {"7.47.0", View::kCurrent, false},
+           {"7.010.0", View::kCurrent, false},
+           {"6.8.1-rc.1", View::kCurrent, false}}) {
     HttpRequestHeaders parsed;
     Q4T_CHECK(read(header + version + "\r\n" + lang, &parsed));
     Q4T_CHECK(parsed.ResponsesView() == view);
-    Q4T_CHECK(parsed.legacy_sdk_version ==
-              (view == View::kCurrent ? "" : version));
+    Q4T_CHECK(parsed.ResponsesProfile().stream_output_text == aggregate);
+    const bool forward = view != View::kCurrent || aggregate;
+    Q4T_CHECK(parsed.legacy_sdk_version == (forward ? version : ""));
     Q4T_CHECK((parsed.sdk_language == ResponsesSdkLanguage::kJavaScript) ==
-              (view != View::kCurrent));
+              forward);
   }
   const std::string version = header + "7.10.0\r\n";
   for (const auto& fields :

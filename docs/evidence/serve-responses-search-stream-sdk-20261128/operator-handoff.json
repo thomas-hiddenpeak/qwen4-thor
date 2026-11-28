@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "previous_revision": 584,
+  "installed_revision": 596,
+  "registered_primary": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3",
+  "day_sha256": "aee90296054bdb15b61a4d570ea3139612cdec89d317c6789b463037af05badb",
+  "cold_sha256": "41b0069ae1466908a0998a3d28072689dfeec64486f8da6a78a34ad614d95e89",
+  "operator_sha256": "46aafd74417d32166eb1f59806f17d4854f795625e3309b3e92720a04c96aa77",
+  "previous_matrix_sha256": "552865f3d933167b1a0d163db21fd96a2f83d91920985406d0a74f16312364f4",
+  "corrected_matrix_sha256": "04f1f573926f33358b55ccc4791bfd484afe010e846fd8b8d37c50052b6cb5ba",
+  "unchanged_tasks": 31,
+  "changed_tasks": [
+    "Q03",
+    "R07"
+  ],
+  "idempotent": true,
+  "model_starts": 0,
+  "host_services_modified": false,
+  "cpu_tests": 9,
+  "cpu_log_sha256": "7d0a716133c750bab0f9cb48289286ee1d1960c4a3b1e142afd3a974c0bab712",
+  "inputs": {
+    "tools/serve_audit/refresh_release_handoff.py": "f58c9bc4e15a6bce0714477c1f8fe189820a657d3c282d78671e5d99580d14aa",
+    "tools/serve_audit/test_operator_handoff.py": "0481d79e6c0b6550b49c074f49533546a81a25d986ec56b31a8b443473c94673"
+  }
+}

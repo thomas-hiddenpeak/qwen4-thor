@@ -1,0 +1,100 @@
+{
+  "stage": "managed_responses_stream_recovery",
+  "issued": false,
+  "engine": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+  "roles": {
+    "fallback": {
+      "incident": "model exit",
+      "starts": 2,
+      "seconds": 203.35101240687072,
+      "manifest": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+      "decision_sha256": "c5e473d67b04c5b63da72692f85ee5c16e3f4ff1c2de913e33b2e603cc49ec2a",
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "original_response": "resp_8350ca1244a4f2b1e2634edcb6f62ef2",
+      "same_output": true,
+      "independent_chat": "42",
+      "sdk_readers": [
+        "node-6.34.0",
+        "node-7.47.0"
+      ],
+      "web_egress": false,
+      "responses": {
+        "prepare-node-6.34.0": {
+          "status": 200,
+          "sha256": "05a6ed7258993c6f020e9ce2735319f2bf82226eb8072e6fccf53fa0f34b4627"
+        },
+        "restore-node-6.34.0": {
+          "status": 200,
+          "sha256": "b1f1078791b08bbf66b8950ff7f4f225c8b05dd560968f94394fd2bd8596a25e"
+        },
+        "restore-node-7.47.0": {
+          "status": 200,
+          "sha256": "c52b3c4e69aabd0ac2cbc802fb69d3bdc45fdcc0832886d26ff5db4546e734a7"
+        },
+        "restore-retrieve": {
+          "status": 200,
+          "sha256": "3626b53077040cea7db23cd6e3726c66f20a1ea36b4f20fc0197daa9ec48d7c5"
+        },
+        "restore-foreign": {
+          "status": 404,
+          "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+        }
+      },
+      "nvml_samples": 190,
+      "guard_sha256": "2965211c94f9aa71158654b73c287b05751715fb767068ab76fabc6b021cb15b",
+      "result_sha256": "9983d51f208fd960b10fec148997cdca7bf1b870ab116abc329ec12f16882e14",
+      "ports_released": true,
+      "remaining": [],
+      "default_unchanged": true
+    },
+    "primary": {
+      "incident": "primary gateway SIGABRT",
+      "starts": 2,
+      "seconds": 365.84633995080367,
+      "manifest": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
+      "decision_sha256": "43f6fa87c30d0439f9f8bd6bd80e0349bac997ca1924296c0578df474802c243",
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "original_response": "resp_4bd15e86d600c70b9f67ff47d2da80ce",
+      "same_output": true,
+      "independent_chat": "42",
+      "sdk_readers": [
+        "node-6.34.0",
+        "node-7.47.0"
+      ],
+      "web_egress": false,
+      "responses": {
+        "prepare-node-6.34.0": {
+          "status": 200,
+          "sha256": "13fd72bba83c5d04b125986520b6fe35a4f13d3eae8ccc6c03c088d5f715d0f2"
+        },
+        "restore-node-6.34.0": {
+          "status": 200,
+          "sha256": "0b1c7f9728fc354549da571a2fe791fda08b3b7383e5126ad61556fcc999e155"
+        },
+        "restore-node-7.47.0": {
+          "status": 200,
+          "sha256": "ee46eba2c67223c83b1cbf78fe3f9c59cdd33135697fa65b6a9ccdc047a01768"
+        },
+        "restore-retrieve": {
+          "status": 200,
+          "sha256": "5448dbdd58f212194f9a815a5e8cae53f3aa64c43ea6aa3f0a4394a1e006b009"
+        },
+        "restore-foreign": {
+          "status": 404,
+          "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+        }
+      },
+      "nvml_samples": 339,
+      "guard_sha256": "df9d7f048387b6bed8f10b8b1232dbaea10b0e00a40934195f60373cb0580c1f",
+      "result_sha256": "e5c12e5a62fed73e70813e07594425aacf8cc350dd2fd34f95fe7289153da6aa",
+      "ports_released": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "registered_fallback": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1"
+    }
+  }
+}

@@ -17,9 +17,25 @@ Guardian 通过独立私有通道接收物理内存样本。采集卡住时管�
 
 内存采集曾在持锁时读取内核，读阻塞会卡住健康快照。实机旧包另在相隔 300 秒的两次低读数后错误触发停模回调。候选隔离了采集线程，拒用超时结果并重置中断的低内存计时；23 项 CPU 检查通过，含持续压力下的真实子进程保护。GPU 业务与发行待验，Thor 的 CUDA 物理硬限额仍待证实。 [CPU 回执](evidence/serve-memory-watchdog-stall-20261128/cpu.json)
 
+rev598 已发行旧版 Node SDK 的流式正文兼容修复。模型重启和主网关切换后，Node 6.34 与 7.47 均按原 ID 读回原文、事件顺序和终态，跨客户读取为 404。主包与独立回退包已登记，发行时服务为 STOPPED。 [发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
+
+设备已登记 rev596，Q03 长稳和 R07 冷启动入口原先仍指向 rev584。发行刷新现核对主包、计划摘要和操作者入口，再同步两处交接；冷启动的设备占用改为执行时检查。9 项 CPU 检查及 rev596 实盘回执复核通过。下一次发行将通过同一入口刷新两项计划。 [交接复核](evidence/serve-responses-search-stream-sdk-20261128/operator-handoff.json)
+
+在模型退出与主网关切换两种故障后，旧版和当前 Node 客户端均按原 ID 恢复了完整事件、原文和终态。跨客户读取返回 404，独立 Chat 得到 42。下一步登记主包及回退包。 [托管恢复回执](evidence/serve-responses-search-stream-sdk-20261128/managed.json)
+
+主容量的 Node 6.34 创建并保存了带来源引用的答复。切换到轻容量后，Node 6.34 和 7.47 从原 ID 恢复相同的事件序列、正文与引用。两容量均验证了客户隔离、Chat 与资源清理，资格记录绑定实测网关。下一步封装主包和回退包并验证托管恢复。 [容量回执](evidence/serve-responses-search-stream-sdk-20261128/profiles.json)
+
+Thor 上的 Node 6.34 通过原生 TLS 创建并保存带引用的 RFC 2606 回答。六个登记 SDK 从同一 ID 重放了完整事件和正文，同客户普通 GET 保持原始响应形状，另一客户为 404。下一步验证主轻容量交接并准备回退发行。 [模型 HTTP 回执](evidence/serve-responses-search-stream-sdk-20261128/device.json)
+
+六版官方 SDK 在实际截断和取消事件的 TLS 回放中均能从 event.response 读到正确终态与原因。四版 Python 终态助手在这两类结果上抛错，Node 6.34 助手返回 in_progress。兼容指南已给出两语言的事件读取示例。下一步继续候选实机生成与回读。 [终态回放](evidence/serve-responses-search-stream-sdk-20261128/terminal-clients.json)
+
+六个官方 Python 和 Node SDK 用原 ID 从两份历史 Thor 对象各重放 66 个事件，经候选原生读取路径取得完整正文与引用。四组跨客户和未知 ID 读取均为 404，保存的文件与测试副本逐字节一致。下一步通过原生网关检验实时创建与回读。 [回读验收](evidence/serve-responses-search-stream-sdk-20261128/retained.json)
+
 rev596 已发行可选的网页搜索提供方。主、轻容量验证了真实查询的引用与同客户离线交接。发行配置默认关闭外部搜索，在模型退出和网关切换后均能按原 ID 取回项目答复。主包和回退包已经登记，发行时意图为 STOPPED。 [发行回执](evidence/serve-web-provider-20261128/delivery.json)
 
 公共 CPU 检查链接失败，独立测试目标遗漏了网页索引实现。已补齐源文件并用 CI 的独立 CMake 入口重新链接；同一可执行文件的 25 项网页合同通过。下一步复核 GitHub 检查及发行登记。 [链接回执](evidence/serve-web-provider-20261128/host-link.json)
+
+Node 6.34 的流式助手曾能读回正文与引用，但 finalResponse().output_text 为空。候选为受影响的 Node 版本在终态事件补齐聚合文本；当前客户端的原始回包和持久对象保持原合同。六个登记版本及 6.44/6.45 边界均从同一段 Thor 实机流重组出 66 个事件和正确引用，3,900 个 token 的概率输出也已回归。下一步通过原生 TLS 验证实际创建及按原 ID 重放。 [客户端回执](evidence/serve-responses-search-stream-sdk-20261128/cpu.json)
 
 模型退出和主网关切换后均按原 ID 读回项目发行答复，另一客户读取返回 404。未配置网页策略的搜索请求在故障前后均返回明确的 503，两个恢复后的独立 Chat 均答 42。下一步登记经过短验的主包与回退包。 [托管恢复回执](evidence/serve-web-provider-20261128/managed.json)
 
@@ -1524,13 +1540,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev596**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev596 发行回执](evidence/serve-web-provider-20261128/delivery.json)
+本机登记的发行版本为 **rev598**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev598 发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3` |
-| 回退服务包清单 | `f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5` |
-| 默认引擎 | `8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56` |
+| 主服务包清单 | `2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b` |
+| 回退服务包清单 | `74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1` |
+| 默认引擎 | `5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

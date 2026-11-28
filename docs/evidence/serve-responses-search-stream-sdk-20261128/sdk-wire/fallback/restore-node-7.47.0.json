@@ -1,0 +1,64 @@
+{
+  "sdk": "node-7.47.0",
+  "requests": [
+    {
+      "url": "/v1/responses/resp_8350ca1244a4f2b1e2634edcb6f62ef2?stream=true",
+      "method": "GET",
+      "version": "7.47.0",
+      "trace": "req-4877851722257b74c8ebd362a5fc7d30",
+      "status": 200
+    }
+  ],
+  "id": "resp_8350ca1244a4f2b1e2634edcb6f62ef2",
+  "status": "completed",
+  "output_text": "596",
+  "parts": [
+    "596"
+  ],
+  "events": [
+    [
+      0,
+      "response.created"
+    ],
+    [
+      1,
+      "response.in_progress"
+    ],
+    [
+      2,
+      "response.output_item.added"
+    ],
+    [
+      3,
+      "response.content_part.added"
+    ],
+    [
+      4,
+      "response.output_text.delta"
+    ],
+    [
+      5,
+      "response.output_text.delta"
+    ],
+    [
+      6,
+      "response.output_text.delta"
+    ],
+    [
+      7,
+      "response.output_text.done"
+    ],
+    [
+      8,
+      "response.content_part.done"
+    ],
+    [
+      9,
+      "response.output_item.done"
+    ],
+    [
+      10,
+      "response.completed"
+    ]
+  ]
+}

@@ -17,9 +17,9 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 ## 按方法查真实业务回包
 
-[业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)按同一组 231 个公开方法和六版 SDK 列出历史实机回包。例如 `vectors/200=1` 表示这个 SDK 在向量库业务中调用该方法一次并收到 200。空白表示此次纳入的四组回执没有该组合的记录。400、404、409 单独计数；每组的发行号、原始请求和校验摘要见[来源清单](evidence/serve-sdk-business-index-20261128/sources.json)。
+业务矩阵按 231 个公开方法和六版 SDK 列出实机回包。例如 `stream-gateway-restore/200=1` 表示该版本客户端在网关切换后，用原响应 ID 请求成功一次。空白表示所收录的原始记录未覆盖该组合。各组的发行身份、传输方式、故障阶段和原始凭据可从来源清单核对。[业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv) · [来源清单](evidence/serve-sdk-business-index-20261128/sources.json)
 
-四组业务共 209 个已认证请求，208 个可对应到具体方法，覆盖 32 个有成功回包的方法和 126 个有成功回包的方法与版本组合。旧上传记录中的一条 `POST /v1/responses` 缺少原始查询串，保留在来源清单的 `unassigned`。新上传验证器保留查询串，可区分普通与 beta 路径。复核命令为 `python3 -B -m tools.serve_audit.sdk_business_evidence build/sdk-business`。
+来源清单的 `methods_with_success` 和 `method_sdk_pairs_with_success` 分别给出有成功回包的方法数、方法与版本组合数。每组请求数记录在 `sources` 下。旧上传记录中缺少查询串的请求保留在 `unassigned`。Responses 流式短验的七次原生 TLS SDK 请求和六次托管恢复 SDK 请求均可追溯到原始请求 ID；两次直接 HTTP 对照单独记录。可以用 `python3 -B -m tools.serve_audit.sdk_business_evidence build/sdk-business` 重建清单。
 
 ## 验证范围
 
@@ -35,6 +35,37 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 - **重试。** 准入前的配额或恢复错误，以及已经转交写请求后丢失应答的错误，各有原生和可选 nginx 入口的独立 SDK 记录。 [重试证据](evidence/serve-inference-http-errors-20261127/sdk-retries.json)
 
 复核版本时，Python 使用已安装目标 SDK 的解释器运行 `-m tools.serve_audit.sdk_method_matrix <challenges.json>`。Node 使用 `node tools/serve_audit/sdk_method_matrix.mjs <openai 包目录> <challenges.json>`。将每个输出按 `python-版本.json` 或 `node-版本.json` 放入同一目录，再运行 `python3 -m tools.serve_audit.render_sdk_matrix <challenges.json> <客户端输出目录> <矩阵输出目录>`。
+
+## Responses 流式助手聚合正文
+
+直接调用 Node 的 `responses.stream().finalResponse()` 时，原版 6.34 与 6.44 能读到消息及 URL 引用，`output_text` 却为 undefined。6.45 已在 SDK 内完成聚合。候选从请求头识别相应旧版 Node，为终态流事件拼接所有消息的 `output_text` 片段；工具输出和拒答文字不参与拼接。六个登记 SDK 加上 6.44、6.45 的边界验证均通过 Thor 流的本机 TLS 回放。候选的实机请求与可回退发行继续验收。 [流式助手回执](evidence/serve-responses-search-stream-sdk-20261128/cpu.json)
+
+## Responses 的失败与截断终态
+
+应用需要区分成功、失败和输出预算耗尽时，直接读取终态事件的 `response`。六个登记版本均能从这里取得 `status`、`error` 和 `incomplete_details`。在真实历史事件的 TLS 回放中，四个 Python 版本的 `get_final_response()` 对失败和截断都抛出缺少 `response.completed` 的异常。Node 6.34 的 `finalResponse()` 在这两种情况下返回 `in_progress`，Node 7.47 返回正确终态。[六版客户端回放](evidence/serve-responses-search-stream-sdk-20261128/terminal-clients.json)
+
+以下示例按已存 ID 重放，创建时的事件流也可采用相同的判断。
+
+```python
+terminal = None
+with client.responses.stream(response_id=response_id) as stream:
+    for event in stream:
+        if event.type in ("response.completed", "response.failed", "response.incomplete"):
+            terminal = event.response
+if terminal is None:
+    raise RuntimeError("Response stream ended before a terminal event")
+```
+
+```javascript
+const stream = client.responses.stream({ response_id: responseId });
+let terminal;
+for await (const event of stream) {
+  if (["response.completed", "response.failed", "response.incomplete"].includes(event.type)) {
+    terminal = event.response;
+  }
+}
+if (!terminal) throw new Error("Response stream ended before a terminal event");
+```
 
 ## Live 录音下载及标准响应头
 
