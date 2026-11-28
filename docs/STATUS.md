@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+PR #207 的 push 和 pull_request 检查均在观测隔离夹具报错。构造函数已初始化 watchdog，测试使用的手工控制器缺少该字段，进度夹具也未提供真实快照结构。补齐两处夹具，增加“日志和内存同时失去观测”的心跳断言，确认 READY、UNKNOWN 且不发模型事务。Thor 运行两份完整 CPU 测试文件，40 项通过。等待最终提交的两次远端检查。
+
 Guardian 内存采集卡住后，同一模型在 READY_DEGRADED 状态回答了 37，管理请求也在 300 ms 的期限内完成。采集恢复后，主网关故障触发已登记的回退包接管；另验回退包模型意外退出后原控制器恢复服务。共 4 次模型启动、5 条经鉴权的 HTTP Chat，13 份运行状态及 7 项发行绑定通过复核。下一步登记已验主包及回退包。 [业务回执](evidence/serve-memory-watchdog-stall-20261128/guardian-business.json)
 
 Guardian 通过独立私有通道接收物理内存样本。采集卡住时管理请求与停机仍可用，健康模型保留服务；新的模型许可及版本切换均等待对应的新鲜证据。过期前开始的读取不能把准入重新打开。5 个故障反例及 15 个既有恢复用例通过。新 Guardian 仍待实机与发行。 [CPU 验收](evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json)
