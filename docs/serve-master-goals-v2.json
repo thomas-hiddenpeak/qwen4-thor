@@ -3414,6 +3414,11 @@
         "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json",
         "issued": true,
         "delivery": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate"
       }
     },
     {
@@ -8301,6 +8306,11 @@
         "managed": "evidence/serve-web-provider-20261128/managed.json",
         "issued": true,
         "delivery": "evidence/serve-web-provider-20261128/delivery.json"
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate"
       }
     },
     {
@@ -9927,6 +9937,11 @@
         "capacity": "primary_and_light_passed",
         "managed_receipt": "evidence/serve-transcription-discovery-20261128/managed.json",
         "managed": "real_model_restart_and_gateway_takeover_passed"
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate"
       }
     },
     {
@@ -14731,6 +14746,11 @@
         "binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
+      },
+      "producer_discovery_20261128": {
+        "capacity_receipt": "evidence/serve-interpreter-output-discovery-20261128/capacity.json",
+        "short_receipt": "evidence/serve-interpreter-output-discovery-20261128/device.json",
+        "release": "candidate"
       }
     },
     {

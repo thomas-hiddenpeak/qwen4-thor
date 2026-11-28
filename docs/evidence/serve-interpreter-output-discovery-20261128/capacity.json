@@ -1,0 +1,65 @@
+{
+  "status": "PASS_CAPACITY",
+  "history": "ACCEPT_RESPONSE_PRODUCERS_PRIMARY_LIGHT",
+  "engine": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "previous_revision": 602,
+  "roles": {
+    "primary": {
+      "mtp": true,
+      "starts": 1,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 72,
+        "producer_responses": 2
+      },
+      "interpreter": {
+        "id": "resp_0a2e12d1e930d501489c05474f5d54c2",
+        "container": "cntr_8fabca3a81ed32037668c5d1b62ac78e",
+        "item": "ci_720c357ed51fdd02c958e204f91af63a",
+        "logs": "603\n"
+      },
+      "beta": {
+        "id": "resp_bfa3689b8c0939ed4ff0d0a1946a17a8",
+        "call": "call_resp_bfa3689b8c0939ed4ff0d0a1946a17a8_0",
+        "caller": "root",
+        "children": []
+      },
+      "profile": "2aff60937a1f930e7f825cddf32f2a4a2fa1e2d9cee3764829e9394237c1a1f1",
+      "receipt_sha256": "573d369c836fe47f778e3fce0f79eb03cf92e8ce6bf406dc384ebfc6c4d2d231"
+    },
+    "light": {
+      "mtp": false,
+      "starts": 1,
+      "counts": {
+        "starts": 1,
+        "ingress_starts": 1,
+        "sdk_posts": 1,
+        "chats": 1,
+        "controls": 69,
+        "producer_responses": 2
+      },
+      "interpreter": {
+        "id": "resp_325169fd96c8396f7a35c176c9eaab63",
+        "container": "cntr_11355c1c636410df02bd8460f904d50c",
+        "item": "ci_c90847e4c3711a3121c56cf6e1a5af30",
+        "logs": "603\n"
+      },
+      "beta": {
+        "id": "resp_79fb2e1d2fa08a0cc439793f2b221ab9",
+        "call": "call_resp_79fb2e1d2fa08a0cc439793f2b221ab9_0",
+        "caller": "root",
+        "children": []
+      },
+      "profile": "8e4b624d76b8be197dc2d7e2044f9e2cd19b92339f72bdda60125f82bc00c37e",
+      "receipt_sha256": "0f88d89a41dec2df8917fff8cf9f204a4e73c6163c341bdc47d378e5e53ebdd8"
+    }
+  },
+  "lease_sha256": "e99d9e131b0d44382e24d2fb879091e9767f16f910391a174fbe8aac3065c11b",
+  "observations_sha256": "3331b645f38ce98be36d387e6dc6837b8d9ef21b36179d17ae86ef0c6a55833d",
+  "accepted_sha256": "abfe34bf0a9920517b9acbdc47ded0527665656e2e9009a1cf65e39e2212ea6d",
+  "issued": false
+}

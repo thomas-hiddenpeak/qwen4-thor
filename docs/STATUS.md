@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+主档 MTP 开启与轻量档 MTP 关闭，各自用一次模型启动完成解释器和 Beta 多代理调用，独立容器的 stdout 均为 603，调用者和空子代理表与实际新树一致。两个新容量记录可逐字节还原各自的 rev602 历史，下一步验证主包和回退包的托管恢复。[容量回执](evidence/serve-interpreter-output-discovery-20261128/capacity.json)
+
 首次 7 个请求保留原断言失败；只补跑多代理请求和独立 Chat。两次 TLS 短验累计 2 次模型启动、9 个请求，覆盖原定 8 项行为。解释器输出 603，官方 SDK 存储读回一致。多代理两次都以 root 为调用者，空子代理表与新树一致。独立 Chat 答 42，两次清理均完成。下一步验证主档与轻量档。[业务回执](evidence/serve-interpreter-output-discovery-20261128/device.json)
 
 候选首次短验发出 7 个真实请求。解释器与公开、存储结果一致，Beta 调用者为 root，新树尚无下属代理，原断言却要求下属清单包含 root。已保留原失败并修正核对逻辑，补验仅覆盖多代理请求与尚未执行的 Chat。[原始记录](evidence/serve-interpreter-output-discovery-20261128/initial-device.json)
