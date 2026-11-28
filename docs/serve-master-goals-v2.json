@@ -8259,13 +8259,14 @@
         "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       },
       "optional_web_provider_20261128": {
-        "state": "primary_light_search_handoff_verified",
+        "state": "managed_recovery_verified",
         "evidence": "evidence/serve-web-provider-20261128/cpu.json",
         "remaining": [
           "reversible issued deployment and main"
         ],
         "device": "evidence/serve-web-provider-20261128/device.json",
-        "capacity": "evidence/serve-web-provider-20261128/profiles.json"
+        "capacity": "evidence/serve-web-provider-20261128/profiles.json",
+        "managed": "evidence/serve-web-provider-20261128/managed.json"
       }
     },
     {
