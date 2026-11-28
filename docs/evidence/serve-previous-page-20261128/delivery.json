@@ -1,0 +1,148 @@
+{
+  "stage": "stopped_default_and_operator_handoff",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 610,
+    "version_revision": 234,
+    "profile_revision": 118,
+    "previous_profile_revision": 117,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "9429e5d9630c8cf0d15ddd2996ef1238ebe1817ca84fc3120d80b988034f7c3c",
+    "fallback": "d3548dea38880c6e20c48603bb424f1a2dc90b0a1ed4cbd809ca7d349a1a2e18",
+    "engine": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 608,
+  "short_receipt_sha256": "e61e64d9b43b66f7a7d85ecf75ded61fa3cddc8c50b01c451484ee7fc0e1e941",
+  "capacity_receipt_sha256": "5de268afbc9b261eaa5533e1a3994f72c610659bf8deb6a0a6a177424fa12731",
+  "profile_transition": {
+    "from_revision": 117,
+    "to_revision": 118,
+    "request": "13dd0ae3-c513-4917-98d7-aabe239aef7f",
+    "migration_request": "e7770f04-9e33-57a8-b4d0-836020df6037",
+    "bound_registry": "ef1625edd573a8b971dd5823b6db53bc0cb82e266818479d2839c50e1a7daa34",
+    "policy": "57e4f52fbf053dfd1b84da37f4a3e818120e4f26796dabaaa96b9441113ca9cf",
+    "capacities_unchanged": true,
+    "thresholds_and_budgets_unchanged": true,
+    "protected_runtime_fields": [
+      "selected",
+      "clock",
+      "pending",
+      "not_before_ns",
+      "light_since_ns",
+      "history"
+    ],
+    "protected_file_count": 13,
+    "model_starts": 0
+  },
+  "day": {
+    "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-day-src/.q4t-work/day-01/audio-day.sh",
+    "operator_sha256": "a66cb7e5e21ccde664a80562306d2126d93535db414c3c963e634bf37ebbb758",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-day-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "086e65ca87490d139d69113947b7f664df48ba060acc5ca71c981366683cecab",
+    "business_requests": 7250,
+    "first_hour_business": 304,
+    "checked_at": "2026-11-28T16:43:00.147378+00:00",
+    "minimum_evidence_free_bytes": 12884901888,
+    "source": "9a13279e668c858bcad988a3bf0e3e4e3f1510ee",
+    "audio_pairs": 25,
+    "hours_executed": 0
+  },
+  "cold": {
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-day-src/.q4t-work/cold610-01/plan.json",
+    "plan_sha256": "04f536341d6cd632d2747a2c29f810d36c5f29455ba9eeb122bfc8c5d52f04bd",
+    "model_actions": 0,
+    "host_units_modified": false
+  },
+  "maintenance_lease_sha256": "555d36ee641e73f13169ad463c3ba8c08f9958b42f5ebcbe3a7d67ff5da3b7ea",
+  "publish_lease_sha256": "e15a6c677934795529d68c2d3b56d6c113dc21face2c69d3bea1d6166f9de7e6",
+  "retention_maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "89bbe06a5e728d4451e190f7a39245a11ed0f3240f941f57c517dc59ec45d8fa"
+        ],
+        "sha256": "5ce3e9744d37213eec78bfe086738fe7a4e584f15344a2cd545825d99b876185",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "4be28b48-8181-4a3b-ab92-ea2706d60877"
+        ],
+        "sha256": "c82267369a2929661516db954b8244df308339e23fbb98e76aa93f50ae52eb37",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "6c33777a-b6f6-493a-b148-5f54edd523e2"
+        ],
+        "sha256": "c0d7df68aaf92115e0b8beea2ed78dea4ba1660053c54f911c86408998ebdb72",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "sdk_evidence": {
+    "cpu.json": "5b6e1aac6c3b7f753375efffd9c71fc975c2d3eb576779cbc43be8e72ebca336",
+    "cpu-wire.json": "4f34ce3a96ae5ef408ff6ecca5025e8cc7b23ce39c6e815eac649359c0d257b8",
+    "name-cpu.json": "8cb159d1a634712ac2a496c3f66ea05b3598532b8e982aae3b166dda6d1b65a0",
+    "name-cpu-wire.json": "b326ac38b4d2618fb74809d6019719a1d012e22828b8b3145efb23114e10c359",
+    "device.json": "ba21292f12c8b0d85e87ad02be94df7a1e91592d12cd0524bc46e8f38fb7a95c",
+    "device-wire.json": "6ce9fcaf595fb74521546a6cda10e3ee029911b98a22b2f0f13d126145100938",
+    "capacity-business.json": "85a82089d96eca27f32ae4de547fbf5b3b4a6d6fb5f81a7043855766c604b565",
+    "capacity.json": "5de268afbc9b261eaa5533e1a3994f72c610659bf8deb6a0a6a177424fa12731",
+    "managed.json": "e61e64d9b43b66f7a7d85ecf75ded61fa3cddc8c50b01c451484ee7fc0e1e941"
+  },
+  "input_recheck": {
+    "frozen_files": 74,
+    "frozen_sha256": "1fcca45dd24f10f650c093c883b6166ea7cd84bece79498d349c62b6400c7dab"
+  },
+  "signed_source": {
+    "head": "9a13279e668c858bcad988a3bf0e3e4e3f1510ee",
+    "evidence": "5de268afbc9b261eaa5533e1a3994f72c610659bf8deb6a0a6a177424fa12731"
+  },
+  "main_ancestor": {
+    "number": 212,
+    "head": "06b25f5b8277db95fe3cb23fc4f2ddd483e9dc8c",
+    "merge": "7c1cd9ce4ee14ac9187ea11cb30640236423e0ff",
+    "tree": "c69a81a104a638436186da71f106ac9e6bcdf405",
+    "revision": 608
+  },
+  "managed_commit": "395fc2bfd84f5ff075464c186ae35342f9e85114",
+  "operator_handoff_check_sha256": "cf190d45f0247c993c22a44ce917e362ce35d06449409ec1b8736d3761ada221",
+  "required_methods": 231,
+  "declared_methods": 219,
+  "method_coverage": {
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "openapi_sha256": {
+      "fallback": "aaf6cc8aff2b6c79028c61f9173e3bc5238a7f23e50092ac84bd8ce27b67f2d2",
+      "primary": "aaf6cc8aff2b6c79028c61f9173e3bc5238a7f23e50092ac84bd8ce27b67f2d2"
+    },
+    "remaining_declarations": [
+      "DELETE /videos/{video_id}",
+      "GET /videos",
+      "GET /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "POST /videos/{video_id}/remix"
+    ]
+  },
+  "previous_delivery": "../serve-completion-best-of-20261128/delivery.json"
+}

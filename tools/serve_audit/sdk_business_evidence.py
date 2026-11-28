@@ -17,6 +17,7 @@ from .render_sdk_matrix import CATALOG, VERSIONS, sha
 from .response_handoff_receipt import verify as verify_response_handoff
 from .stored_chat_receipt import verify as verify_stored_chat
 from .stream_sdk_evidence import stream_campaigns
+from .vector_store_sdk_evidence import vector_store_campaigns
 from .transcription_sdk_evidence import issued_transcription_campaigns, transcription_campaigns
 
 EVIDENCE = CATALOG.parents[1]
@@ -313,6 +314,10 @@ def render():
         suites.append((name, (source['revision'], packets, statuses)))
     for name, packets, statuses, source in completion_recovery_campaigns(
             EVIDENCE / 'serve-completion-best-of-20261128'):
+        sources[name] = source
+        suites.append((name, (source['revision'], packets, statuses)))
+    for name, packets, statuses, source in vector_store_campaigns(
+            EVIDENCE / 'serve-previous-page-20261128', CLIENTS):
         sources[name] = source
         suites.append((name, (source['revision'], packets, statuses)))
     counts, unassigned = index(catalog, suites)

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated": "2026-11-28",
+  "updated": "2026-11-29",
   "plan": "SERVE_MASTER_PLAN_2026-11-08.md",
   "goal_state": "active",
   "app_migration": {
@@ -1083,14 +1083,13 @@
         ]
       },
       "backward_pagination_20261128": {
-        "status": "capacity_registered",
+        "status": "issued",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
         "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "sealed packages and managed recovery",
-          "default publication and main integration"
+          "main integration"
         ],
         "device": "evidence/serve-previous-page-20261128/device.json",
         "sdk_reads": 72,
@@ -1098,7 +1097,9 @@
         "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
         "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json",
         "managed_receipt": "evidence/serve-previous-page-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "issued": true,
+        "delivery": "evidence/serve-previous-page-20261128/delivery.json"
       }
     },
     {
@@ -4324,14 +4325,13 @@
         "authenticated_requests": 74
       },
       "backward_pagination_20261128": {
-        "status": "capacity_registered",
+        "status": "issued",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
         "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "sealed packages and managed recovery",
-          "default publication and main integration"
+          "main integration"
         ],
         "device": "evidence/serve-previous-page-20261128/device.json",
         "sdk_reads": 72,
@@ -4339,7 +4339,9 @@
         "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
         "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json",
         "managed_receipt": "evidence/serve-previous-page-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "issued": true,
+        "delivery": "evidence/serve-previous-page-20261128/delivery.json"
       }
     },
     {
@@ -10023,12 +10025,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 550,
+        "source_requests": 730,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 255,
-        "methods_with_success": 59,
-        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations. The short projection and both recovery scenarios contribute 30 stock Python requests from the engine subsequently registered as rev606. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs. Sixteen stock Python completions across both sides of model recovery and native gateway takeover on the packages issued as revision 608.",
-        "assigned_requests": 549
+        "method_sdk_pairs_with_success": 285,
+        "methods_with_success": 63,
+        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations. The short projection and both recovery scenarios contribute 30 stock Python requests from the engine subsequently registered as rev606. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs. Sixteen stock Python completions across both sides of model recovery and native gateway takeover on the packages issued as revision 608. Vector store pagination, nullable names and file lifecycle on the release 610 candidate, plus native model and gateway recovery on both subsequently issued packages. Four direct controls excluded.",
+        "assigned_requests": 729
       },
       "stored_chat_sdk_handoff_20261128": {
         "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
@@ -10140,14 +10142,13 @@
         "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       },
       "backward_pagination_20261128": {
-        "status": "capacity_registered",
+        "status": "issued",
         "evidence": "evidence/serve-previous-page-20261128/cpu.json",
         "model_starts": 1,
         "name_reset_cpu": "evidence/serve-previous-page-20261128/name-cpu.json",
         "name_reset_sdk_requests": 24,
         "remaining": [
-          "sealed packages and managed recovery",
-          "default publication and main integration"
+          "main integration"
         ],
         "device": "evidence/serve-previous-page-20261128/device.json",
         "sdk_reads": 72,
@@ -10155,7 +10156,9 @@
         "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
         "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json",
         "managed_receipt": "evidence/serve-previous-page-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "issued": true,
+        "delivery": "evidence/serve-previous-page-20261128/delivery.json"
       }
     },
     {
@@ -11462,10 +11465,10 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 608,
-        "receipt": "evidence/serve-completion-best-of-20261128/delivery.json",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src/.q4t-work/cold608-01/plan.json",
-        "plan_sha256": "cfa3f2bac255a4e9f406927e5e78429114c96b01693801c0c256137175129024",
+        "revision": 610,
+        "receipt": "evidence/serve-previous-page-20261128/delivery.json",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-day-src/.q4t-work/cold610-01/plan.json",
+        "plan_sha256": "04f536341d6cd632d2747a2c29f810d36c5f29455ba9eeb122bfc8c5d52f04bd",
         "model_starts": 0,
         "executed": false
       },
@@ -13441,7 +13444,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev608_delivered_remaining_deliveries",
+      "state": "rev610_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13491,13 +13494,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 608,
+        "revision": 610,
         "state": "STOPPED",
-        "primary_manifest_sha256": "0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245",
-        "fallback_manifest_sha256": "d9c93f4f3885b38125703ce3ab8bc273adce9ef1febc9af7bf2f18fc3fb63f4c",
-        "binary_sha256": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
+        "primary_manifest_sha256": "9429e5d9630c8cf0d15ddd2996ef1238ebe1817ca84fc3120d80b988034f7c3c",
+        "fallback_manifest_sha256": "d3548dea38880c6e20c48603bb424f1a2dc90b0a1ed4cbd809ca7d349a1a2e18",
+        "binary_sha256": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-completion-best-of-20261128/delivery.json"
+        "evidence": "evidence/serve-previous-page-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -15017,6 +15020,15 @@
         "binary_sha256": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-response-include-projection-20261128/delivery.json"
+      },
+      "release_revision_608": {
+        "revision": 608,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245",
+        "fallback_manifest_sha256": "d9c93f4f3885b38125703ce3ab8bc273adce9ef1febc9af7bf2f18fc3fb63f4c",
+        "binary_sha256": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-completion-best-of-20261128/delivery.json"
       }
     },
     {
@@ -15125,21 +15137,21 @@
         "audio_pairs": 25,
         "first_hour_business": 304,
         "business_requests": 7250,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "35e02d6a1a029ddfcf6098e7f6b93446c33261e58fac995c7a3c17a9c71c0b8d",
-        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src/.q4t-work/day-01/audio-day.sh",
-        "operator_sha256": "006b664aa312d91635909dc830022ab966e8d07d3f4ad89e1a75b80ef5ab59c5",
-        "checked_at": "2026-11-28T14:48:54.152236+00:00",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-day-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "086e65ca87490d139d69113947b7f664df48ba060acc5ca71c981366683cecab",
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-day-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "a66cb7e5e21ccde664a80562306d2126d93535db414c3c963e634bf37ebbb758",
+        "checked_at": "2026-11-28T16:43:00.147378+00:00",
         "minimum_evidence_free_bytes": 12884901888,
         "hours_executed": 0,
-        "revision": 608,
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src",
+        "revision": 610,
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-day-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-client-primary-01/bundle",
-          "manifest_sha256": "0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/vector-view-client-primary-01/bundle",
+          "manifest_sha256": "9429e5d9630c8cf0d15ddd2996ef1238ebe1817ca84fc3120d80b988034f7c3c"
         },
-        "source_commit": "d6b86bc4339ca258e72b2a670db947213f5be1bd",
-        "handoff_sha256": "1269e13def3596846baba6560aa4879079591c662eb121415801e877faa6623d",
+        "source_commit": "9a13279e668c858bcad988a3bf0e3e4e3f1510ee",
+        "handoff_sha256": "c38bbdc1562c51351de8835e4964e1b1f8e17d594109790171cbae031d2b4d66",
         "source_files": 705,
         "checked": true
       },
@@ -15549,9 +15561,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 608,
-        "receipt": "evidence/serve-completion-best-of-20261128/delivery.json",
-        "plan_sha256": "35e02d6a1a029ddfcf6098e7f6b93446c33261e58fac995c7a3c17a9c71c0b8d",
+        "revision": 610,
+        "receipt": "evidence/serve-previous-page-20261128/delivery.json",
+        "plan_sha256": "086e65ca87490d139d69113947b7f664df48ba060acc5ca71c981366683cecab",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
@@ -15601,12 +15613,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 550,
+        "source_requests": 730,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 255,
-        "methods_with_success": 59,
-        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs. Sixteen stock Python completions across both sides of model recovery and native gateway takeover on the packages issued as revision 608.",
-        "assigned_requests": 549
+        "method_sdk_pairs_with_success": 285,
+        "methods_with_success": 63,
+        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs. Sixteen stock Python completions across both sides of model recovery and native gateway takeover on the packages issued as revision 608. Vector store pagination, nullable names and file lifecycle on the release 610 candidate, plus native model and gateway recovery on both subsequently issued packages. Four direct controls excluded.",
+        "assigned_requests": 729
       }
     }
   ],
