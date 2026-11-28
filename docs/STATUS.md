@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+六版官方 SDK 已在 Thor 通过原生 TLS 完成容器与文件的 9 个方法。每版 15 次请求，真实发行记录上传、翻页和下载均一致，另一个客户端和删除后的查询都返回 404。CPU 测试服务已接入容器管理路由。发行包实机验证另行记录。 [CPU 验收回执](evidence/serve-container-sdk-lifecycle-20261128/cpu.json)
+
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)完成全部33项任务；阶段验证、
 发行和PR合入都不是总任务终点。非性能改动只做受影响行为的针对性
