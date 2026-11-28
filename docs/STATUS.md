@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev602 已登记双人重叠转录的主包和回退包。官方 SDK 在两档容量和两种托管恢复场景中均识别出两位说话人；原录音的 1.68 秒重叠与首句词形误差已记录。登记期间服务为 STOPPED，13 份运行状态通过复核。 [发行回执](evidence/serve-transcription-discovery-20261128/delivery.json)
+
 已验收两个托管恢复场景：回退包的模型退出后恢复，主包的网关故障后切换到已登记的独立回退包。每个场景在故障前后各完成一次真实 SDK 转录，四条请求 ID 独立，均识别出两位说话人。两次后续 Chat 均答 42。正式发行登记待完成。 [托管恢复记录](evidence/serve-transcription-discovery-20261128/managed.json)
 
 候选主容量（MTP 开）和轻量容量（MTP 关）各用 1 次模型启动和 1 次官方 SDK 转录请求验证同一段混合语音，两条请求 ID 独立，两档后续 Chat 都答 42。新容量记录已还原两份上一版完整记录；正式主包和回退包的业务验收仍待完成。 [容量回执](evidence/serve-transcription-discovery-20261128/capacity.json)
@@ -1560,13 +1562,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev600**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev600 发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
+本机登记的发行版本为 **rev602**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev602 发行回执](evidence/serve-transcription-discovery-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1` |
-| 回退服务包清单 | `8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61` |
-| 默认引擎 | `5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113` |
+| 主服务包清单 | `d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66` |
+| 回退服务包清单 | `13f7ef77d9abe8e1591df9fccfafb5af70a43f654992d6d943da0ed015a141bd` |
+| 默认引擎 | `c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 

@@ -7,6 +7,7 @@ import unittest
 
 from .sdk_business_evidence import Catalog, CLIENTS, index, render
 from .stream_sdk_evidence import actor
+from .transcription_sdk_evidence import transcription
 
 
 class BusinessEvidenceTest(unittest.TestCase):
@@ -80,6 +81,45 @@ class BusinessEvidenceTest(unittest.TestCase):
         for rows, statuses in bad:
             with self.subTest(rows=rows, statuses=statuses), self.assertRaises(ValueError):
                 index(self.catalog, [('trial', (590, rows, statuses))])
+
+    def test_mixed_speech_requires_typed_source_and_actual_wire(self):
+        folder = Path(__file__).resolve().parents[2] / 'docs/evidence/serve-transcription-discovery-20261128'
+        capture = json.loads((folder / 'sdk-wire/device-transcription.json').read_bytes())
+        witness = json.loads((folder / 'device.json').read_bytes())
+        witness['trace'] = witness['authenticated_requests'][1]['trace']
+        label, packet = transcription(capture, witness, witness['source_sha256'])
+        self.assertEqual((label, packet['trace']), ('python-3.55.1', witness['trace']))
+        for change in ({'method':'GET'}, {'path':'/v1/audio/translations'}, {'sdk':'3.42.1'},
+                       {'trace':'another-request'}, {'source_sha256':'0'*64}, {'labels':['A','A']},
+                       {'wire_sha256':'0'*64}, {'request':{'response_format':'json'}}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                transcription(capture | change, witness, witness['source_sha256'])
+
+    def test_mixed_speech_matrix_distinguishes_transports_and_generations(self):
+        table, manifest = render()
+        rows = list(csv.DictReader(io.StringIO(table)))
+        speech = next(r for r in rows if r['path'] == '/audio/transcriptions' and r['method'] == 'POST')
+        sources = {k:v for k,v in manifest['sources'].items() if k.startswith('speech-') and not k.startswith('speech-issued-')}
+        self.assertEqual(len(sources), 7)
+        self.assertEqual(sum(v['requests'] for v in sources.values()), 8)
+        self.assertTrue(all(k+'/200=1' in speech['python-3.55.1'] for k in sources))
+        self.assertTrue(all(all(k+'/200=' not in speech[c] for k in sources)
+                            for c in CLIENTS if c != 'python-3.55.1'))
+        self.assertEqual(sources['speech-tls']['direct_http_controls'], 1)
+        self.assertTrue(sources['speech-capacity-primary']['mtp'])
+        self.assertFalse(sources['speech-capacity-light']['mtp'])
+        before, after = (sources['speech-gateway-'+p] for p in ('prepare','restore'))
+        self.assertGreater(after['generation'], before['generation'])
+        self.assertNotEqual(before['manifest'], after['manifest'])
+        self.assertEqual(after['manifest'], sources['speech-model-restore']['manifest'])
+        for client in CLIENTS:
+            for mode in ('json', 'sse'):
+                label = f'speech-issued-{client}-{mode}'
+                self.assertIn(label+'/200=1', speech[client])
+                meta = manifest['sources'][label]
+                self.assertEqual((meta['sdk'], meta['mode'], meta['manifest']),
+                                 (client, mode, before['manifest']))
+                self.assertTrue(all(label+'/200=' not in speech[other] for other in CLIENTS if other != client))
 
     def test_published_matrix_matches_reconstruction(self):
         directory = Path(__file__).resolve().parents[2] / 'docs/evidence/serve-sdk-business-index-20261128'
