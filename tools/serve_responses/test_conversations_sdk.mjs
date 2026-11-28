@@ -106,6 +106,12 @@ test('official include arrays affect views without removing retained input', asy
     assert.equal(hidden.data[0].content[0].image_url, null);
     const visible = await sdk.conversations.items.list(conversation.id, { include: ['message.input_image.image_url'] });
     assert.equal(visible.data[0].content[0].image_url, image);
+    const include = Array(12).fill('message.input_image.image_url');
+    const repeated = await sdk.conversations.items.list(conversation.id, {include});
+    assert.deepEqual(repeated.data, visible.data);
+    const retained = await sdk.conversations.items.retrieve(hidden.data[0].id,
+      {conversation_id: conversation.id, include});
+    assert.equal(retained.content[0].image_url, image);
     const another = await sdk.conversations.create({ items: [{ id: hidden.data[0].id }] });
     const referenced = await sdk.conversations.items.list(another.id, { include: ['message.input_image.image_url'] });
     assert.equal(referenced.data[0].content[0].image_url, image);

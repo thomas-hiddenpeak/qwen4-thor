@@ -498,26 +498,16 @@ Status ParseResponsesEnvelope(const io::Json& request,
       PublicPromptCacheOptions(result.cache));
   if (const auto* include = request.Find("include");
       include && !include->IsNull()) {
-    if (!include->IsArray() || include->array.size() > 8)
-      return Invalid(error, "include", "invalid include list");
-    std::unordered_set<std::string> seen;
-    for (size_t i = 0; i < include->array.size(); ++i) {
-      const auto& item = include->array[i];
-      if (!item.IsString() ||
-          !OneOf(
-              item.str,
-              {"file_search_call.results", "web_search_call.results",
-               "web_search_call.action.sources",
-               "message.input_image.image_url",
-               "computer_call_output.output.image_url",
-               "code_interpreter_call.outputs", "reasoning.encrypted_content",
-               "message.output_text.logprobs"}) ||
-          !seen.insert(item.str).second)
-        return Invalid(error, "include[" + std::to_string(i) + ']',
-                       "invalid or duplicate include option");
-      result.logprobs |= item.str == "message.output_text.logprobs";
-      result.encrypted_reasoning |= item.str == "reasoning.encrypted_content";
+    std::vector<std::string> selections;
+    auto parsed = ParseResponseIncludes(*include, &selections, error);
+    if (!parsed) return parsed;
+    auto canonical = Array();
+    for (const auto& selection : selections) {
+      result.logprobs |= selection == "message.output_text.logprobs";
+      result.encrypted_reasoning |= selection == "reasoning.encrypted_content";
+      canonical.array.push_back(String(selection));
     }
+    Set(&result.request, "include", std::move(canonical));
   }
   result.logprobs |= result.options.GetInt("top_logprobs") > 0;
   auto sampling_request = Object();

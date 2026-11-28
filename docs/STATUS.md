@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+Responses 与 Conversations 已修复重复 `include` 导致的 400。修复前正式客户端追加条目收到 400。修复后六版 SDK 对同一张 PNG 验证了追加、默认视图、重复选择、错误选项及跨客户拒绝，共 54 个响应。后台流式请求保留去重后的选择器；真实模型续读待短验。 [CPU 与 SDK 回执](evidence/serve-response-include-projection-20261128/cpu.json)
+
 Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08.md)
 和[逐项任务表](serve-master-goals-v2.json)完成全部33项任务；阶段验证、
 发行和PR合入都不是总任务终点。非性能改动只做受影响行为的针对性

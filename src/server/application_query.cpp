@@ -1,5 +1,6 @@
 #include "q4t/server/application_query.h"
 
+#include <algorithm>
 #include <charconv>
 #include <unordered_set>
 
@@ -65,8 +66,12 @@ ObjectReply ParseApplicationQuery(std::string_view raw, bool allow_status_list) 
       encoding = key;
       if (!value.Has(field)) Set(&value, field, Array());
       auto& items = Field(value, field).array;
-      if (items.size() >= 8) return Invalid("Too many array values", field);
-      items.push_back(String(text));
+      if (status || !std::ranges::any_of(items, [&](const Json& item) {
+            return item.str == text;
+          })) {
+        if (items.size() >= 8) return Invalid("Too many array values", field);
+        items.push_back(String(text));
+      }
     } else {
       if (!seen.insert(key).second) return Invalid("Repeated query field", key);
       if (key == "limit" || key == "starting_after") {

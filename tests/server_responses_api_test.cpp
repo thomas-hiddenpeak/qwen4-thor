@@ -775,3 +775,26 @@ Q4T_TEST(responses_legacy_aggregate_accepts_large_logprob_frames) {
   Q4T_CHECK(rendered.find(scores, earlier.size()) != rendered.npos);
   return true;
 }
+
+Q4T_TEST(responses_read_repeated_include_projects_once_on_stored_routes) {
+  std::string query;
+  for (int i = 0; i < 12; ++i)
+    query += "include%5B%5D=message.output_text.logprobs&";
+  for (const std::string path :
+       {"/v1/responses/resp_1?stream=true&",
+        "/v1/responses/resp_1/input_items?beta=true&"}) {
+    ResponsesReadPlan plan;
+    Q4T_CHECK(PlanResponsesRead(
+                  "GET",
+                  path + query + "include%5B%5D=reasoning.encrypted_content",
+                  "", &plan)
+                  .ok());
+    Q4T_CHECK(plan.view.include.size() == 2);
+    Q4T_CHECK(plan.view.include[0] == "message.output_text.logprobs");
+    Q4T_CHECK(plan.view.include[1] == "reasoning.encrypted_content");
+    Q4T_CHECK(PlanResponsesRead("GET", path + query + "include%5B%5D=unknown",
+                                "", &plan)
+                  .http_status == 400);
+  }
+  return true;
+}

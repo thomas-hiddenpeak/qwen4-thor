@@ -1039,6 +1039,11 @@
         "remaining": [
           "main integration"
         ]
+      },
+      "include_projection_20261128": {
+        "state": "cpu_verified",
+        "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
+        "device": "pending"
       }
     },
     {
@@ -3426,6 +3431,11 @@
         "release": "candidate",
         "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
         "managed": "real_model_restart_and_gateway_takeover_passed"
+      },
+      "include_projection_20261128": {
+        "state": "cpu_verified",
+        "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
+        "device": "pending"
       }
     },
     {
@@ -9963,6 +9973,11 @@
         "release": "candidate",
         "managed_receipt": "evidence/serve-interpreter-output-discovery-20261128/managed.json",
         "managed": "real_model_restart_and_gateway_takeover_passed"
+      },
+      "include_projection_20261128": {
+        "state": "cpu_verified",
+        "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
+        "device": "pending"
       }
     },
     {
