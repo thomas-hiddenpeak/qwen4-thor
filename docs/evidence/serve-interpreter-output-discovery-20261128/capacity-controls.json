@@ -1,0 +1,56 @@
+{
+  "status": "CPU_ONLY",
+  "fit": "real previous role records; synthetic new responses",
+  "device_requests": 0,
+  "registered": false,
+  "profiles": {
+    "primary": {
+      "previous_sha256": "251f4fa11724a614834663421b527250ca83133a73668d2927b23d1f589c1d3d",
+      "denied": [
+        "undisclosed capability",
+        "forged source",
+        "wrong generation",
+        "wrong engine",
+        "false count"
+      ]
+    },
+    "light": {
+      "previous_sha256": "c696545ba4385e64e9d921a6cda15d9d7f3bbecb9a53f90f9309f1e66c4fdfbf",
+      "denied": [
+        "undisclosed capability",
+        "forged source",
+        "wrong generation",
+        "wrong engine",
+        "false count",
+        "reused primary responses"
+      ]
+    }
+  },
+  "history_preparation": {
+    "primary": {
+      "previous_sha256": "251f4fa11724a614834663421b527250ca83133a73668d2927b23d1f589c1d3d",
+      "exact_previous_recovered": true,
+      "rejected_controls": [
+        "missing interpreter",
+        "beta leaked into ordinary",
+        "missing selector",
+        "wrong conditional type",
+        "damaged isolation",
+        "missing preceding business"
+      ]
+    },
+    "light": {
+      "previous_sha256": "c696545ba4385e64e9d921a6cda15d9d7f3bbecb9a53f90f9309f1e66c4fdfbf",
+      "exact_previous_recovered": true,
+      "rejected_controls": [
+        "missing interpreter",
+        "beta leaked into ordinary",
+        "missing selector",
+        "wrong conditional type",
+        "damaged isolation",
+        "missing preceding business"
+      ]
+    }
+  },
+  "contract_test_log_sha256": "c1a3ff2dfea85b2ad062c4e04e70c183ec35c730128386889cd132686b11e913"
+}

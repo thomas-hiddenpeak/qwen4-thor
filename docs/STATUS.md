@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已接入两档容量的 Responses 输出合同校验，要求同一请求的解释器容器、stdout 和回答对应，多代理结果与调用 ID 相同，轻量档必须返回独立响应。用两份已登记的前序档案及合成新响应完成 CPU 反例检查；新候选的真实 HTTP 与两档业务结果待验。[验收边界](evidence/serve-interpreter-output-discovery-20261128/capacity-controls.json)
+
 多代理 Beta 的调用和结果类型已在各自选择器下声明。普通客户端仍看到 18 个通用输出类型，启用 `responses_multi_agent=v1` 时可另外发现两个类型。两个历史已验收容量均实际发出这两种条目。34 项原生合同与 52 项迁移 CPU 测试通过，联合候选已构建，真实 HTTP 短验待完成。[分协议验收](evidence/serve-interpreter-output-discovery-20261128/beta-contract.json)
 
 Responses 的能力发现候选已补上原生解释器实际返回的 `code_interpreter_call`。已回查主包和回退包的四份真实 SSE 与四份后续能力快照，新增回归覆盖从原生终态到公开声明及恢复合同的匹配。18 项原生和 51 项迁移 CPU 测试通过；候选 HTTP 短验与发行待完成。[合同与原始数据摘要](evidence/serve-interpreter-output-discovery-20261128/contract.json)
