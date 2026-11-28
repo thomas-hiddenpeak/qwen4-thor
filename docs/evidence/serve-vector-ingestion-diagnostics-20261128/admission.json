@@ -1,0 +1,17 @@
+{
+  "scope": "unmodified native embedding and real admission on a model-free ChatServer",
+  "cases": [
+    "explicit cancellation survives admission shutdown; 409/explicit_cancel and aborted end record",
+    "unhealthy shared device refuses admission; 503/gpu_unhealthy and error end record"
+  ],
+  "previous_engine": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
+  "candidate_engine": "8a430b251c7a4a23aec01302750a06d08a0b1e6edfed635e8e26b2bf61250906",
+  "previous_result": "  CHECK failed: end.find(device_failure ? \"outcome=error reason=gpu_unhealthy \" : \"outcome=aborted reason=explicit_cancel \") != end.npos (line 72)\n[FAIL] vector_ingestion_diagnostics_preserve_explicit_cancel_at_admission\n  CHECK failed: end.find(device_failure ? \"outcome=error reason=gpu_unhealthy \" : \"outcome=aborted reason=explicit_cancel \") != end.npos (line 72)\n[FAIL] vector_ingestion_diagnostics_preserve_device_failure_at_admission\n2 tests, 0 passed, 2 failed, 0 skipped\n",
+  "candidate_result": "[PASS] vector_ingestion_diagnostics_preserve_explicit_cancel_at_admission\n[PASS] vector_ingestion_diagnostics_preserve_device_failure_at_admission\n2 tests, 2 passed, 0 failed, 0 skipped\n",
+  "targeted_cmake_object": "CMakeFiles/q4t_tests.dir/tests/server_vector_ingestion_diagnostics_test.cpp.o",
+  "test_source_sha256": "91dd14471cb7482fc57f1883b5d89bae7afda0b4531033b195c7a4e6fc285ffe",
+  "model_starts": 0,
+  "allocated_sequence_slots": 0,
+  "changed_candidate_engine": false,
+  "compile_warnings": 0
+}

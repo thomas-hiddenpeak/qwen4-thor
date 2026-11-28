@@ -1021,6 +1021,7 @@ if(Q4T_BUILD_TESTS)
     tests/server_realtime_noise_test.cpp
     tests/server_realtime_pump_test.cpp
     tests/server_object_diagnostics_test.cpp
+    tests/server_vector_ingestion_diagnostics_test.cpp
     tests/server_asr_stream_state_test.cpp
     tests/server_asr_stream_output_test.cpp
     tests/server_asr_stream_input_test.cpp
