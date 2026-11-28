@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Guardian 内存采集卡住后，同一模型在 READY_DEGRADED 状态回答了 37，管理请求也在 300 ms 的期限内完成。采集恢复后，主网关故障触发已登记的回退包接管；另验回退包模型意外退出后原控制器恢复服务。共 4 次模型启动、5 条经鉴权的 HTTP Chat，13 份运行状态及 7 项发行绑定通过复核。下一步登记已验主包及回退包。 [业务回执](evidence/serve-memory-watchdog-stall-20261128/guardian-business.json)
+
 Guardian 通过独立私有通道接收物理内存样本。采集卡住时管理请求与停机仍可用，健康模型保留服务；新的模型许可及版本切换均等待对应的新鲜证据。过期前开始的读取不能把准入重新打开。5 个故障反例及 15 个既有恢复用例通过。新 Guardian 仍待实机与发行。 [CPU 验收](evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json)
 
 在原生 Guardian 的内存读取点加入 CPU 等待，版本恢复已启用、CPU 后端已就绪时，状态请求 300 ms 超时。解除等待后同一后端继续就绪，正常停止并释放锁。下一步隔离 Guardian 自身的读取，保留发放许可及版本切换所需的独立内存证据。 [复现记录](evidence/serve-memory-watchdog-stall-20261128/guardian-before.json)

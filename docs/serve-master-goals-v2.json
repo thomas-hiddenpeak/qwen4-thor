@@ -10602,12 +10602,15 @@
         "chats": 4
       },
       "guardian_memory_read_20261128": {
-        "stage": "targeted_cpu_passed",
+        "stage": "real_http_and_recovery_verified",
         "evidence": "evidence/serve-memory-watchdog-stall-20261128/guardian-before.json",
         "fix": "candidate",
         "targeted_cpu": "evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json",
         "cpu_checks": 20,
-        "issued": false
+        "issued": false,
+        "business": "evidence/serve-memory-watchdog-stall-20261128/guardian-business.json",
+        "model_starts": 4,
+        "chats": 5
       }
     },
     {
@@ -11373,12 +11376,15 @@
         "chats": 4
       },
       "guardian_memory_read_20261128": {
-        "stage": "targeted_cpu_passed",
+        "stage": "real_http_and_recovery_verified",
         "evidence": "evidence/serve-memory-watchdog-stall-20261128/guardian-before.json",
         "fix": "candidate",
         "targeted_cpu": "evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json",
         "cpu_checks": 20,
-        "issued": false
+        "issued": false,
+        "business": "evidence/serve-memory-watchdog-stall-20261128/guardian-business.json",
+        "model_starts": 4,
+        "chats": 5
       }
     },
     {
@@ -11717,12 +11723,15 @@
         "pending_upload_resumed": true
       },
       "guardian_memory_read_20261128": {
-        "stage": "targeted_cpu_passed",
+        "stage": "real_http_and_recovery_verified",
         "evidence": "evidence/serve-memory-watchdog-stall-20261128/guardian-before.json",
         "fix": "candidate",
         "targeted_cpu": "evidence/serve-memory-watchdog-stall-20261128/guardian-cpu.json",
         "cpu_checks": 20,
-        "issued": false
+        "issued": false,
+        "business": "evidence/serve-memory-watchdog-stall-20261128/guardian-business.json",
+        "model_starts": 4,
+        "chats": 5
       }
     },
     {

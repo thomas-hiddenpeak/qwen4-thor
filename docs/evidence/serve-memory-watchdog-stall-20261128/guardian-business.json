@@ -1,0 +1,103 @@
+{
+  "stage": "isolated_native_guardian_memory_and_recovery",
+  "implementation_commit": "e81696920420f6aa46061fe08254e4e70f1ea955",
+  "registered_default_at_qualification": 598,
+  "issued": false,
+  "roles": {
+    "fallback": {
+      "manifest_sha256": "8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61",
+      "guardian_sha256": "8df9c88ff8c87560fc7eb969fd12a103e3635441bfd0548650fccaed9169bd83",
+      "lease_sha256": "f0505cd6625b133f7ed2a38bdff23d764f79bc2becf21c034e1f8e659db7ff7d",
+      "decision_sha256": "5da4d432142e5476f4f9d5fe86607434c8852c84bb695f5c620fae8a89dfa21d",
+      "runtime_result_sha256": "7a7241afbefd78d4765fe657d331d6cbcff9fd36100732d9c44050c48b16dd06",
+      "nvml_queries": 159,
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true
+      },
+      "seconds": 170.8679414112121,
+      "model_starts": 2,
+      "generations": [
+        1,
+        2
+      ],
+      "same_guardian": true,
+      "chats": {
+        "before": {
+          "answer": "42",
+          "id": "chatcmpl-auto-b68d9be2798aa8e01b69a9f5c22b936e",
+          "wire": "fallback-before-chat.json",
+          "sha256": "9ce9107660eb8576ef0dd1ada39d6f5e11db22d25b5bea4b6cb3a45f92ee4274"
+        },
+        "after": {
+          "answer": "31",
+          "id": "chatcmpl-auto-66ae6549570fd517deed9add7ba96588",
+          "wire": "fallback-after-chat.json",
+          "sha256": "3285d93dedba2f6bb72106c47e4b33b71a6ac517d12557b2d45134e05d30f4b2"
+        }
+      },
+      "fault": "owned model SIGKILL",
+      "same_controller": true
+    },
+    "primary": {
+      "manifest_sha256": "0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1",
+      "guardian_sha256": "8df9c88ff8c87560fc7eb969fd12a103e3635441bfd0548650fccaed9169bd83",
+      "lease_sha256": "274894cd86333479c40781173c1ceac4abc572dc4e0c9b25a08c0ffe89c18d3a",
+      "decision_sha256": "94f4a64f43273f6b5811f4b0ffa1ee2f89725fd9c38f2868b4d2b4cd5cc52396",
+      "runtime_result_sha256": "953b68ee84b171a38c66ac54a5e79e3d860e3229d67ee08399168654f05fc842",
+      "nvml_queries": 294,
+      "postflight": {
+        "sources_unchanged": true,
+        "owned_processes_gone": true,
+        "ports_free": true,
+        "lock_released": true
+      },
+      "seconds": 317.3366598649882,
+      "model_starts": 2,
+      "generations": [
+        1,
+        2
+      ],
+      "same_guardian": true,
+      "chats": {
+        "before": {
+          "answer": "42",
+          "id": "chatcmpl-auto-ee5bd10c2815b93091915166711f8f8f",
+          "wire": "primary-before-chat.json",
+          "sha256": "3d5e59d415d8add44f6dc9a26750a7b53de3674ebae8eca6e9d7ad68fdd75432"
+        },
+        "during": {
+          "answer": "37",
+          "id": "chatcmpl-auto-96281a29c178ce20408c56f4cdfd5961",
+          "wire": "primary-during-chat.json",
+          "sha256": "bbe567cd0c7b9fbc518e9b748379083fbfb15893a647ad78f8f901c8fe80475d"
+        },
+        "after": {
+          "answer": "31",
+          "id": "chatcmpl-auto-d12ae9a8ef6e51cd61fb5d7d3f46acec",
+          "wire": "primary-after-chat.json",
+          "sha256": "dd2b60cba9762ee9e61d09343a7d0f01905e11cf702b54bdc3dc25aa4c60f511"
+        }
+      },
+      "memory_states": [
+        "OPEN",
+        "UNKNOWN",
+        "OPEN"
+      ],
+      "during_state": "READY_DEGRADED",
+      "same_model_while_stalled": true,
+      "status_request_deadline_seconds": 0.3,
+      "fault": "owned primary gateway SIGABRT",
+      "probe_count": 1,
+      "selected_manifest": "8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61",
+      "observer_and_gateway_fixture_sha256": "c966a51136ac858896d53c63dfacda480a70b30976f67b1e3490df5518d7adac"
+    }
+  },
+  "model_starts": 4,
+  "authenticated_chats": 5,
+  "default_protected_state_files": 13,
+  "release_bindings": 7,
+  "limits": "Injected only an owned memory probe stall and role-specific faults. Physical device memory exhaustion, real NVML loss, long stability and performance were not exercised."
+}
