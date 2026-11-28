@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev600 的 PR 检查中，终态日志写满用例在注入故障前返回 FAILED。Thor 上为内存读取注入 80 毫秒延迟，复现了相同返回；该用例的独立等待预算已修正。16 项辅助依赖隔离检查通过，原始远端失败原因未写入状态，复跑将附状态详情。[针对性复核](evidence/serve-memory-watchdog-stall-20261128/terminal-event-fixture.json)
+
 远端清单检查发现 Guardian 的 7 个源码摘要仍指向旧版，涉及内存采样通道、启动准入和 CPU 夹具。已逐文件与 rev600 及原基线对照，Thor 本机通过 1,401 个源码锚点和 40 个反例检查。发行包沿用先前的真实恢复回执。 [清单校验记录](evidence/serve-memory-watchdog-stall-20261128/inventory-review.json)
 
 rev600 已登记主包和回退包。Guardian 的内存采集卡住期间，同一模型与管理入口继续响应。采集恢复后，主网关故障触发回退接管。登记期间服务处于 STOPPED，模型启动次数为零，13 份运行状态和既有容量策略通过复核。长稳及冷启动交接入口已更新。 [发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
