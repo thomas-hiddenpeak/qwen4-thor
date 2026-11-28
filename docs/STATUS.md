@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev594 已发行批任务并发取消修复。按原生网关的 Retry-After 续试得到同一取消记录，已完成的任务仍返回 409。主轻容量、模型恢复及主网关切换后，真实 SDK 读回同一任务和逐字节相同的项目结果。登记时服务为 STOPPED，模型启动为零。24 小时运行与独立冷启动计划已交接。 [发行回执](evidence/serve-batch-cancel-20261128/delivery.json)
+
 模型退出和主网关故障切换到已登记回退包后，官方 SDK 均读回原取消任务、终态时间及逐字节相同的项目输出。两种恢复后的独立 Chat 均答 42，守护进程身份、端口和子进程回收已核验。下一步登记主包和回退包。 [托管恢复回执](evidence/serve-batch-cancel-20261128/managed.json)
 
 主容量下，两次并发取消取得相同的取消时间。切换到轻容量后，Node SDK 读回同一批任务、原始时间和逐字节相同的项目答复。两档独立 Chat 均答 42，进程和端口均已回收。下一步验证托管恢复和回退发行。 [容量回执](evidence/serve-batch-cancel-20261128/profiles.json)
@@ -1480,13 +1482,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev592**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev592 发行回执](evidence/serve-diagnostic-pipe-20261128/delivery.json)
+本机登记的发行版本为 **rev594**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev594 发行回执](evidence/serve-batch-cancel-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `a4190f48718b1bd1b5e516a74861c5ad0a34d0d3d1f4e61f206ab85498647600` |
-| 回退服务包清单 | `00b9eff560ee921b16f240f7d4ff20a5b556aa539878fd8ccee3ad431730699e` |
-| 默认引擎 | `9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607` |
+| 主服务包清单 | `96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed` |
+| 回退服务包清单 | `202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc` |
+| 默认引擎 | `e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 
