@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+模型退出重建及主网关切换后，五份项目记录的库标识、来源摘要、空名称和相邻页均完整。另一客户端在两种场景恢复前后的查询均返回 404，删除完成后列表为空，独立 Chat 均回答 42。 [托管恢复记录](evidence/serve-previous-page-20261128/managed.json)
+
 向量库候选的主包与轻量容量记录已登记。两份 v105 记录均可按字节摘要还原 rev608 对应的容量来源。 [登记回执](evidence/serve-previous-page-20261128/capacity.json)
 
 主、轻两档均通过相邻页与名称清空短验。每档 18 次向量库请求，独立 Chat 均回答 42。 [容量回执](evidence/serve-previous-page-20261128/capacity-business.json)

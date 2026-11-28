@@ -1089,7 +1089,9 @@
         "sdk_reads": 72,
         "name_sdk_calls": 24,
         "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-previous-page-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -4321,7 +4323,9 @@
         "sdk_reads": 72,
         "name_sdk_calls": 24,
         "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-previous-page-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -10135,7 +10139,9 @@
         "sdk_reads": 72,
         "name_sdk_calls": 24,
         "capacity_business": "evidence/serve-previous-page-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-previous-page-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-previous-page-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
