@@ -1,0 +1,63 @@
+{
+  "scope": "CPU HTTP request-target fidelity only",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "query": "limit=50&purpose=user_data",
+      "status": 200,
+      "trace": "req-query-capture-1"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "query": "limit=50&purpose=user_data",
+      "status": 200,
+      "trace": "req-query-capture-2"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "query": "limit=50&purpose=user_data",
+      "status": 200,
+      "trace": "req-query-capture-3"
+    },
+    {
+      "method": "GET",
+      "path": "/v1/files",
+      "query": "limit=50&purpose=user_data",
+      "status": 200,
+      "trace": "req-query-capture-4"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_missing/cancel",
+      "query": "",
+      "status": 404,
+      "trace": "req-query-capture-5"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/uploads/upload_missing/cancel",
+      "query": "",
+      "status": 404,
+      "trace": "req-query-capture-6"
+    },
+    {
+      "method": "POST",
+      "path": "/v1/responses",
+      "query": "",
+      "status": 404,
+      "trace": "req-query-capture-7"
+    }
+  ],
+  "sdk": [
+    "python-2.8.1",
+    "python-2.33.0",
+    "python-3.42.1",
+    "python-3.55.1",
+    "node-6.34.0",
+    "node-7.47.0",
+    "python-3.55.1"
+  ]
+}
