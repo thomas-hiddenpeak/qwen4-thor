@@ -1073,7 +1073,9 @@
         "model_starts": 1,
         "requests": 6,
         "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-completion-best-of-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -1871,7 +1873,9 @@
         "model_starts": 1,
         "requests": 6,
         "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-completion-best-of-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       },
       "model_inference_sdk_20261128": {
         "status": "published_engine_native_tls_business_pass",

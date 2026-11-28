@@ -1,0 +1,432 @@
+{
+  "status": "PASS",
+  "registered": false,
+  "stock_sdk": "python-3.55.1",
+  "actor_sha256": "4e38871f38a608bf58dacd20c627597856cb3792b20a7cd2fa71b0f54fe3ce69",
+  "roles": {
+    "fallback": {
+      "incident": "model_exit",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "d9c93f4f3885b38125703ce3ab8bc273adce9ef1febc9af7bf2f18fc3fb63f4c",
+      "requests": {
+        "prepare": {
+          "completion": "cmpl-auto-652f528a38822d080aa1bccaf2f768bb",
+          "answer": "606",
+          "traces": [
+            "req-005f37dcc5721babe27bfae26699947f",
+            "req-2040c2dd34eb1de7524f748e407e26d9",
+            "req-9100434ed2dfba301e6da08a08be84d8",
+            "req-0c96f1f1600f951fe937d8553f0a03ad",
+            "req-1d0c0099985185a301261af3bf365c84"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-005f37dcc5721babe27bfae26699947f",
+              "query": "",
+              "body": null
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 400,
+              "trace": "req-2040c2dd34eb1de7524f748e407e26d9",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion prepare",
+                "best_of": 21,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-9100434ed2dfba301e6da08a08be84d8",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion prepare",
+                "best_of": 20,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-0c96f1f1600f951fe937d8553f0a03ad",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion prepare",
+                "echo": true,
+                "max_tokens": 0,
+                "n": 21
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-1d0c0099985185a301261af3bf365c84",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t release record\npublication_revision: 606\nCopy the publication_revision value.\npublication_revision:",
+                "echo": true,
+                "logprobs": 1,
+                "max_tokens": 8,
+                "seed": 17,
+                "stop": [
+                  "\n"
+                ],
+                "temperature": 0
+              }
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "source_sha256": {
+            "prepare-requests.json": "e39f9122f0eaca5e26d0613c73fe9547778c919f1e25490b644a71bb85c962fb",
+            "prepare-capabilities.json": "c744a4be13380efb65e948bd72131f4a5a2d06195318c0a8d1682126f9e05cfa",
+            "prepare-limits.json": "d39c3dc763ffe003282db76faed8b9cb3e2dd06285e6e7a9ac50f271d3c2e2ee",
+            "prepare-generation.json": "9011150c19337ecf70d226a45b69ac671303cb645e01560dc51b0feea0eef2eb"
+          }
+        },
+        "restore": {
+          "completion": "cmpl-auto-321c7b43d5eca44c8e989a6b4a3d9c31",
+          "answer": "606",
+          "traces": [
+            "req-7aa971a3d22e3253e8cf0bd40e440d79",
+            "req-12f1faf15801a2c191fa4726ef0a56c1",
+            "req-301170a53fdc3ff732d4cbaabc4c85ac",
+            "req-4a6b5f357bff0d17c9e0d71f85748fa1",
+            "req-7cc8f14299e58923ea34eb190f0866b2"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-7aa971a3d22e3253e8cf0bd40e440d79",
+              "query": "",
+              "body": null
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 400,
+              "trace": "req-12f1faf15801a2c191fa4726ef0a56c1",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion restore",
+                "best_of": 21,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-301170a53fdc3ff732d4cbaabc4c85ac",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion restore",
+                "best_of": 20,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-4a6b5f357bff0d17c9e0d71f85748fa1",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion restore",
+                "echo": true,
+                "max_tokens": 0,
+                "n": 21
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-7cc8f14299e58923ea34eb190f0866b2",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t release record\npublication_revision: 606\nCopy the publication_revision value.\npublication_revision:",
+                "echo": true,
+                "logprobs": 1,
+                "max_tokens": 8,
+                "seed": 17,
+                "stop": [
+                  "\n"
+                ],
+                "temperature": 0
+              }
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "source_sha256": {
+            "restore-requests.json": "622bf2abcb6c1b2c784446940c0272aef841ae32fa700c47eb7001c2315479b1",
+            "restore-capabilities.json": "c744a4be13380efb65e948bd72131f4a5a2d06195318c0a8d1682126f9e05cfa",
+            "restore-limits.json": "5104fe00420b372a47ecb55240dc6f0ff7acc3b2eeeeafd0977d0e6106cce453",
+            "restore-generation.json": "dfd92ee710688dc28ed092fc3d89d7c2d58493a8532a9b10edc9f126bef5c75c"
+          }
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 221.78387700999156,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 207,
+      "lease_sha256": "06a4047fca1d9e9d40068a2245583a3de77e8ea497ee1bf5a3d1fd84265cdafd",
+      "decision_sha256": "504d26f946482993e9ed30d34917b93b75ab0bcc0807d0a8731b05d92f5414e7",
+      "result_sha256": "541c09ad1239be6349a42eaffbd89c86255406ae1c41f083bf7195000238d905"
+    },
+    "primary": {
+      "incident": "primary_gateway_SIGABRT",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245",
+      "requests": {
+        "prepare": {
+          "completion": "cmpl-auto-23219d755d17bd3798c1e0ae243528c1",
+          "answer": "606",
+          "traces": [
+            "req-0bbe6e434e328dfe6714fe6e29213bd7",
+            "req-67e85a7a1c13011533d5af823e167e51",
+            "req-48f1494f3b3c7fe9d8352b97c4c182f9",
+            "req-4a120d1d748106aa43530d5b5d520de1",
+            "req-e0598c7b15f8b299f22d74670f7ee02e"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-0bbe6e434e328dfe6714fe6e29213bd7",
+              "query": "",
+              "body": null
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 400,
+              "trace": "req-67e85a7a1c13011533d5af823e167e51",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion prepare",
+                "best_of": 21,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-48f1494f3b3c7fe9d8352b97c4c182f9",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion prepare",
+                "best_of": 20,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-4a120d1d748106aa43530d5b5d520de1",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion prepare",
+                "echo": true,
+                "max_tokens": 0,
+                "n": 21
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-e0598c7b15f8b299f22d74670f7ee02e",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t release record\npublication_revision: 606\nCopy the publication_revision value.\npublication_revision:",
+                "echo": true,
+                "logprobs": 1,
+                "max_tokens": 8,
+                "seed": 17,
+                "stop": [
+                  "\n"
+                ],
+                "temperature": 0
+              }
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "source_sha256": {
+            "prepare-requests.json": "72ed4e3c5309e14a3a759e42d801a3fe890eefc69f0677efa4ce42b01bb41e02",
+            "prepare-capabilities.json": "c744a4be13380efb65e948bd72131f4a5a2d06195318c0a8d1682126f9e05cfa",
+            "prepare-limits.json": "bcbd2b645042b0e3a93720541b483ad73409aba094ebfecb337e5a4f89b0d4bc",
+            "prepare-generation.json": "948ebe5f671f06caed77ff7fb9f83d67eeb034441df098f67c62f04db979b0e8"
+          }
+        },
+        "restore": {
+          "completion": "cmpl-auto-5ce5a10b3077fa484b60e687d28f0c55",
+          "answer": "606",
+          "traces": [
+            "req-9cd99e055b6c48d519e1a198e4f92fd2",
+            "req-1e8a15a446dee859b7d7e6d92089ceac",
+            "req-3d61763e1cd3e6d5e7e5db15be906ad6",
+            "req-3fe51cb2593f65854aca4737652c954b",
+            "req-1f1a3c29fabf0eb679a547fe949039d8"
+          ],
+          "sdk": "python-3.55.1",
+          "requests": [
+            {
+              "path": "/v1/capabilities",
+              "method": "GET",
+              "status": 200,
+              "trace": "req-9cd99e055b6c48d519e1a198e4f92fd2",
+              "query": "",
+              "body": null
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 400,
+              "trace": "req-1e8a15a446dee859b7d7e6d92089ceac",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion restore",
+                "best_of": 21,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-3d61763e1cd3e6d5e7e5db15be906ad6",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion restore",
+                "best_of": 20,
+                "echo": true,
+                "max_tokens": 0
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-3fe51cb2593f65854aca4737652c954b",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t managed completion restore",
+                "echo": true,
+                "max_tokens": 0,
+                "n": 21
+              }
+            },
+            {
+              "path": "/v1/completions",
+              "method": "POST",
+              "status": 200,
+              "trace": "req-1f1a3c29fabf0eb679a547fe949039d8",
+              "query": "",
+              "body": {
+                "model": "qwen3.8-flash-next",
+                "prompt": "q4t release record\npublication_revision: 606\nCopy the publication_revision value.\npublication_revision:",
+                "echo": true,
+                "logprobs": 1,
+                "max_tokens": 8,
+                "seed": 17,
+                "stop": [
+                  "\n"
+                ],
+                "temperature": 0
+              }
+            }
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "source_sha256": {
+            "restore-requests.json": "c2c1a0bdd99cb3a65ed20bc3a4625c978d39fa42e51d73f64677cede9c511bdd",
+            "restore-capabilities.json": "c744a4be13380efb65e948bd72131f4a5a2d06195318c0a8d1682126f9e05cfa",
+            "restore-limits.json": "24ff86401eb58ecf2217e2a9485b0d98f8f6ea26ba4b3114d65ce9afa897469d",
+            "restore-generation.json": "ed7b2d423ff8b78a8d65a81fb6fa891242c3e56e7fb2fe4b6a376069d513adcc"
+          }
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 395.7835168009624,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 367,
+      "lease_sha256": "c77139345f74648c37f8aeecab7a7dbd00faf148b46434f6c40ab4c9026d1133",
+      "decision_sha256": "da68b60a3de6bb77ba260947c25520c4f2e927e1288e646abf9d35e7eeed4069",
+      "result_sha256": "efddfa44b4b0b13736d7707328bf15b286a143750e4371a5f2e49586600d4d1f",
+      "registered_fallback": "d9c93f4f3885b38125703ce3ab8bc273adce9ef1febc9af7bf2f18fc3fb63f4c"
+    }
+  },
+  "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
+  "package_source": "d6b86bc4339ca258e72b2a670db947213f5be1bd",
+  "model_starts": 4
+}
