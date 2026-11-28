@@ -1,0 +1,27 @@
+{
+  "case": "binary_abandoned_upload_and_reader_expire_after_restart",
+  "previous_head": "c4041fc61917e1a652bdd3f0dd0d955c8a2fd134",
+  "workflow": {
+    "run": 46130526932,
+    "job": 140934434685,
+    "push_run": 46130522681,
+    "push_status": "success",
+    "pr_status": "failure",
+    "native_passed": 4012,
+    "native_total": 4013,
+    "log_sha256": "8dc60686faff463167aab5df91fbad435ac49faa2de96bc15977e39d32bcb7f5"
+  },
+  "setup_delay_ms": 1150,
+  "original": "failed before the first append",
+  "fixed": "passed normal and with setup delay",
+  "accepted_binary_tests": 13,
+  "released_model_starts": 0,
+  "changed_test_sha256": "7f016d4da549e34bec0a263da95319024fed58dde59f11f3ace1861be0be7a7d",
+  "unchanged_runtime": true,
+  "logs": {
+    "original-delay.log": "7e44a51d61057363a4220f24709ce9111486f21105d5b907ced66b84bf705ab8",
+    "fixed-final-delay.log": "4416dd7abcbd2413e26399791fb5c117ada2fcc34fe86b44b6f151f33e1e559a",
+    "fixed-final.log": "4416dd7abcbd2413e26399791fb5c117ada2fcc34fe86b44b6f151f33e1e559a",
+    "group-all-final.log": "785d57608d89e22eaca5d8d2748db8d20ed03a062f029f47a348551db52d249f"
+  }
+}

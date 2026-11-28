@@ -4056,9 +4056,7 @@
             "vtt",
             "diarized_json"
           ],
-          "required_pending_executors": [
-            "overlap_diarization"
-          ],
+          "required_pending_executors": [],
           "diarization": {
             "configured_by": "speaker-model-dir",
             "requires": [
@@ -4073,6 +4071,9 @@
             "overlap": {
               "configured_by": "separator-model-dir",
               "requires": [
+                "asr-model-dir",
+                "aligner-model-dir",
+                "vad-model-dir",
                 "speaker-model-dir"
               ],
               "model": "speechbrain-sepformer-wsj02mix",
@@ -4083,7 +4084,7 @@
               "timing": "original time, crossing segments retained",
               "identity": "cross-track actual ECAPA embeddings",
               "quotas": "one original RPM/output/VAD/window budget for both tracks",
-              "acceptance": "actual mixed-voice HTTP and recovery remain pending"
+              "acceptance": "release qualification uses mixed-voice transcripts, streaming segments and recovery"
             }
           },
           "alignment": {

@@ -1,0 +1,124 @@
+{
+  "stage": "targeted_cpu_and_retained_business_review",
+  "released_source_at_review": 598,
+  "registered_declarations_still_pending": true,
+  "old": {
+    "primary": {
+      "manifest_sha256": "2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b",
+      "capabilities_sha256": "5f42455e70303364e844bfab9e1731a69a327571c29d892349e99b60d32db042",
+      "openapi_sha256": "4e3e1826406cf4c182d1c970c06510b0df5425abf4d6cebfc0a848d1b51edc8d",
+      "profiles": {
+        "primary": {
+          "profile_sha256": "6c2a27d94d194293ea4b612e2359b520d86c4045e4aa18b35481fbd11553268f",
+          "audio_source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "overlap_seconds": 1.68,
+          "observed_text": [
+            "The child almost hurts the small dog.",
+            "We are sure that one war is enough."
+          ],
+          "word_error_rate": [
+            0.14285714285714285,
+            0.0
+          ]
+        },
+        "light": {
+          "profile_sha256": "3bc537a542d56187161ebe46134d260b670b01b9c24dca1ad1e07c96ab31ba3c",
+          "audio_source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "overlap_seconds": 1.68,
+          "observed_text": [
+            "The child almost hurts the small dog.",
+            "We are sure that one war is enough."
+          ],
+          "word_error_rate": [
+            0.14285714285714285,
+            0.0
+          ]
+        }
+      }
+    },
+    "fallback": {
+      "manifest_sha256": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+      "capabilities_sha256": "5f42455e70303364e844bfab9e1731a69a327571c29d892349e99b60d32db042",
+      "openapi_sha256": "4e3e1826406cf4c182d1c970c06510b0df5425abf4d6cebfc0a848d1b51edc8d",
+      "profiles": {
+        "primary": {
+          "profile_sha256": "6c2a27d94d194293ea4b612e2359b520d86c4045e4aa18b35481fbd11553268f",
+          "audio_source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "overlap_seconds": 1.68,
+          "observed_text": [
+            "The child almost hurts the small dog.",
+            "We are sure that one war is enough."
+          ],
+          "word_error_rate": [
+            0.14285714285714285,
+            0.0
+          ]
+        },
+        "light": {
+          "profile_sha256": "3bc537a542d56187161ebe46134d260b670b01b9c24dca1ad1e07c96ab31ba3c",
+          "audio_source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "overlap_seconds": 1.68,
+          "observed_text": [
+            "The child almost hurts the small dog.",
+            "We are sure that one war is enough."
+          ],
+          "word_error_rate": [
+            0.14285714285714285,
+            0.0
+          ]
+        }
+      }
+    }
+  },
+  "source_specific_quality_decision": "docs/evidence/serve-overlap-owner-decision-20261118/decision.json",
+  "quality_decision_sha256": "f32a678cef856e3680ff67b6b06afa22dccbfa281b5d8aac854eaa279b7527ed",
+  "before": {
+    "remaining_native_work": [
+      "overlap_diarization"
+    ],
+    "required_pending_executors": [
+      "overlap_diarization"
+    ],
+    "qualified_separator_configured": true
+  },
+  "after": {
+    "remaining_native_work": [],
+    "required_pending_executors": [],
+    "configurations_checked": [
+      "ASR absent",
+      "ASR only",
+      "speaker without separator",
+      "all overlap dependencies"
+    ],
+    "simultaneous_sources": 2,
+    "implementation_only": true,
+    "release_attestation": false
+  },
+  "native_tests": [
+    "asr_capabilities_separate_configured_backend_and_remaining_native_work",
+    "speaker_options_bind_required_components_and_atomic_budgets",
+    "speaker_capabilities_report_native_identity_without_separator",
+    "separator_options_require_complete_pipeline_and_atomic_limits",
+    "separator_capabilities_distinguish_actual_tracks_and_release_evidence",
+    "aligner_capability_separates_configuration_and_unfinished_segments"
+  ],
+  "python_tests": [
+    "test_pinned_sdk_and_native_openapi_publication",
+    "test_completion_declaration_and_migration_cannot_drop_separator",
+    "test_reviewed_inflection_retains_raw_wer_and_model_limitation",
+    "test_review_does_not_accept_meaning_changes_or_missing_speech",
+    "test_mixed_source_time_words_usage_and_health_are_required"
+  ],
+  "generated_openapi_sha256": {
+    "serve-openapi-v1.json": "fd2515b8ff62a90ea2c032ffa31af4e1388609860407422eebcc76e18406e0b5",
+    "serve-openapi-bundle-v1.json": "88de9514167ce17e6101728c604aec6a4ab69aae137aff18698ef96327272841"
+  },
+  "targeted_native_binary_sha256": "66481a3c3d1507f14170159f9dba88b90cbc0d276ea06e5a6eccc960b0c51c2d",
+  "migration_check": "Existing qualified declarations extend to the completed executor. Deleting this feature fails the capability-extension comparison; malformed separator backend identity is rejected in the existing migration tests.",
+  "obligations": {
+    "candidate_http": false,
+    "candidate_issued": false,
+    "candidate_recovery_verified": false
+  },
+  "new_model_starts": 0
+}

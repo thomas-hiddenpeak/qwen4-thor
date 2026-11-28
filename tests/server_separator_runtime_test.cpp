@@ -49,6 +49,8 @@ Q4T_TEST(
         &root));
     const auto* asr = root.Find("transcriptions");
     Q4T_CHECK(asr);
+    const auto* remaining = asr->GetArray("remaining_native_work");
+    Q4T_CHECK(remaining && remaining->array.empty());
     const auto* separator = asr->Find("separator");
     Q4T_CHECK(separator &&
               separator->GetBool("configured", !enabled) == enabled);
