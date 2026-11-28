@@ -1025,6 +1025,11 @@
         "state": "targeted_cpu_verified",
         "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
         "issued": false
+      },
+      "overlap_discovery_http_20261128": {
+        "status": "targeted_http_passed",
+        "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
+        "issued": false
       }
     },
     {
@@ -7227,6 +7232,11 @@
         "state": "targeted_cpu_verified",
         "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
         "issued": false
+      },
+      "overlap_discovery_http_20261128": {
+        "status": "targeted_http_passed",
+        "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
+        "issued": false
       }
     },
     {
@@ -9899,6 +9909,11 @@
       "transcription_discovery_20261128": {
         "state": "targeted_cpu_verified",
         "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
+        "issued": false
+      },
+      "overlap_discovery_http_20261128": {
+        "status": "targeted_http_passed",
+        "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
         "issued": false
       }
     },
