@@ -67,8 +67,8 @@ def verify(actor, label, source):
         trace = row['trace']
         assert isinstance(trace,str) and re.fullmatch(r'req-[a-zA-Z0-9-]+', trace) and trace not in traces
         traces.add(trace)
-        query = dict(parse_qsl(row['query']))
-        assert query == ({'limit':'20','order':'desc'} if action == 'list' else {}), step['name']
+        query = sorted(parse_qsl(row['query'], strict_parsing=True, keep_blank_values=True))
+        assert query == ([('limit','20'),('order','desc')] if action == 'list' else []), step['name']
         if method == 'POST': assert row['body'] == step['fields'], step['name']
         else: assert row['body'] is None
         wire, typed = row['response'], row['sdk_value']

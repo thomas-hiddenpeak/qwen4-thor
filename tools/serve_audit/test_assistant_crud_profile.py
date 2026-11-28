@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import unittest
 
+from tools.serve_audit.assistant_crud_evidence import read_clients
 from tools.serve_audit.assistant_crud_profile import verify
 
 
@@ -52,6 +53,23 @@ class AssistantCrudReceiptTest(unittest.TestCase):
                 obj[path[-1]] = value
                 with self.assertRaises(AssertionError):
                     verify(actor, self.label, self.source)
+
+    def test_distinct_clients_and_original_files(self):
+        summary = json.loads((self.path/'cpu.json').read_bytes())
+        digests = summary['sdk_wire_sha256']
+        actors = list(read_clients(self.path, tuple(digests), digests, self.source))
+        self.assertEqual({label for label,_ in actors}, set(digests))
+        for bad in [{k:v for k,v in digests.items() if k != self.label},
+                    {**digests,self.label:'0'*64}]:
+            with self.assertRaises(ValueError):
+                list(read_clients(self.path, tuple(digests), bad, self.source))
+
+    def test_reject_duplicate_query_parameter(self):
+        actor = deepcopy(self.data)
+        row = next(r for r in actor['requests'] if r['step'] == 'assistant-list')
+        row['query'] += '&limit=20'
+        with self.assertRaises(AssertionError):
+            verify(actor, self.label, self.source)
 
     def test_reject_missing_exchange_and_wrong_sdk(self):
         for label, data in [(self.label, dict(self.data,requests=self.data['requests'][:-1])),
