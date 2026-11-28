@@ -9835,6 +9835,17 @@
         "publication": 594,
         "business": "evidence/serve-responses-sdk-business-20261128/business.json",
         "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
+      },
+      "batch_recovery_wire_20261128": {
+        "publication": 594,
+        "requests": 46,
+        "issued_packages": 2,
+        "observed": "pre-issuance",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json",
+        "scope": [
+          "model exit",
+          "primary gateway failure"
+        ]
       }
     },
     {

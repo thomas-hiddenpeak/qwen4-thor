@@ -200,6 +200,47 @@ def index(catalog, suites):
     return counts, unassigned
 
 
+def recovered_batches(sources, suites):
+    """Index each SDK actor on its own side of the recorded recovery boundary."""
+    directory = EVIDENCE / 'serve-batch-cancel-20261128'
+    managed_path = directory / 'managed.json'
+    delivery_path = directory / 'delivery.json'
+    managed, delivery = read(managed_path), read(delivery_path)
+    publication = delivery['publication']
+    require(sha(managed_path) == delivery['short_receipt_sha256'] and publication['status'] == 'PASS'
+            and managed['engine'] == publication['engine'], 'Batch recovery release differs')
+    for role, incident in [('fallback', 'model'), ('primary', 'gateway')]:
+        claim = managed['roles'][role]
+        require(claim['manifest'] == publication[role] and claim['starts'] == 2 and claim['guardian_same']
+                and claim['new_generation'] > claim['old_generation'] and claim['ports_released']
+                and claim['default_unchanged'] and not claim['remaining'], 'incomplete Batch recovery')
+        if role == 'primary':
+            require(claim['registered_fallback'] == publication['fallback'], 'Batch recovery fallback differs')
+        total = 0
+        for phase in ('submit', 'checkpoint', 'restore'):
+            name = f'batch-{incident}-{phase}'
+            leaf = phase + '-wire.json'
+            wire_path = directory / 'sdk-wire' / role / leaf
+            digest = claim['wire_sha256'][leaf]
+            require(sha(wire_path) == digest, 'original Batch recovery capture differs')
+            wires = read(wire_path)
+            sdk = claim['sdk'][1 if phase == 'restore' else 0]
+            codes = Counter(str(w['status']) for w in wires)
+            revision = publication['publication_revision']
+            suites.append((name, (revision, [(sdk, w) for w in wires], codes)))
+            after = phase == 'restore'
+            serving = claim['registered_fallback'] if after and role == 'primary' else claim['manifest']
+            sources[name] = dict(revision=revision, transport='authenticated native loopback HTTP',
+                                 requests=len(wires), sdk=sdk, incident=claim['incident'],
+                                 phase='after_recovery' if after else 'before_incident',
+                                 generation=claim['new_generation'] if after else claim['old_generation'],
+                                 observed='qualified candidate before issuance', initial_manifest=claim['manifest'], manifest=serving,
+                                 receipt=str(managed_path.relative_to(EVIDENCE)), receipt_sha256=sha(managed_path),
+                                 wire=str(wire_path.relative_to(EVIDENCE)), wire_sha256=digest)
+            total += len(wires)
+        require(total == claim['requests'], 'Batch recovery actor totals differ')
+
+
 def render():
     catalog = Catalog(read(CATALOG)['rows'])
     sources, suites = {}, []
@@ -214,6 +255,7 @@ def render():
         sources[name] = dict(revision=revision, transport=proof['transport'], requests=len(packets),
                              receipt=f'{directory}/business.json', receipt_sha256=sha(receipt),
                              wire=f'{directory}/requests.json', wire_sha256=digest)
+    recovered_batches(sources, suites)
     counts, unassigned = index(catalog, suites)
     buffer = io.StringIO(newline='')
     writer = csv.writer(buffer, lineterminator='\n')

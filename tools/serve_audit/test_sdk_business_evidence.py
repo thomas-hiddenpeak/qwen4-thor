@@ -59,6 +59,26 @@ class BusinessEvidenceTest(unittest.TestCase):
         self.assertEqual((directory/'business.csv').read_bytes(), table.encode())
         self.assertEqual(json.loads((directory/'sources.json').read_bytes()), manifest)
 
+    def test_batch_recovery_keeps_the_writer_and_reader_on_their_original_sides(self):
+        table, manifest = render()
+        rows = list(csv.DictReader(io.StringIO(table)))
+        cancel = next(r for r in rows if r['method'] == 'POST' and r['path'].endswith('/cancel')
+                      and r['path'].startswith('/batches/'))
+        for incident in ('model', 'gateway'):
+            with self.subTest(incident=incident):
+                before = 'batch-' + incident + '-submit'
+                after = 'batch-' + incident + '-restore'
+                self.assertEqual(manifest['sources'][before]['phase'], 'before_incident')
+                self.assertEqual(manifest['sources'][after]['phase'], 'after_recovery')
+                initial, recovered = manifest['sources'][before], manifest['sources'][after]
+                self.assertGreater(recovered['generation'], initial['generation'])
+                self.assertEqual(initial['manifest'], recovered['initial_manifest'])
+                self.assertEqual(initial['manifest'] == recovered['manifest'], incident == 'model')
+                self.assertIn(before+'/429=1', cancel['python-3.55.1'])
+                self.assertIn(after+'/409=1', cancel['node-7.47.0'])
+                self.assertNotIn(after+'/', cancel['python-3.55.1'])
+                self.assertNotIn(before+'/', cancel['node-7.47.0'])
+
     def test_original_historical_wire_receipts(self):
         table, summary = render()
         records = list(csv.DictReader(io.StringIO(table)))
