@@ -125,6 +125,9 @@ class Stage(workers.ice.Stage):
                   controls=2000, seconds=300)
 
     def __init__(self, plan):
+        if 'vector_store_views' in plan:
+            from tools.serve_audit import vector_store_view_profiles as views
+            self.limits = dict(self.limits, vector_store_views=views.CALLS)
         if 'completion_candidate_limit' in plan:
             self.limits = dict(self.limits, completion_limits=3)
         if 'responses_include_projection' in plan:
@@ -172,6 +175,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'vector_store_views' in self.plan:
+            from tools.serve_audit import vector_store_view_profiles as views
+            views.business(self)
         if 'completion_candidate_limit' in self.plan:
             from tools.serve_completions import boundary_profiles
             boundary_profiles.business(self, capabilities)

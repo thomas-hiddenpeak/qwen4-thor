@@ -1,0 +1,10 @@
+{
+  "status": "CPU_PASS",
+  "calls": 18,
+  "fixture_sha256": "5a32f1a2b8f087d8152db140ec338e9256a9c3742324e55b06d876c5cac87a38",
+  "receipts": "c8ee5c6c09d08e2826471d6bab459ba06e29386ac2d90d2f6a2cf2fd65cad999",
+  "mutations": 5,
+  "validated_suite": "f5a21db00c9b44dcba0aa2e30e8fe1ced3c618269b0b74e1a8a4c353f519d48c",
+  "model_starts": 0,
+  "description": "Native TLS HTTP and storage, predecessor-source and runtime binding to be verified on the two actual capacities."
+}
