@@ -6,6 +6,7 @@ from pathlib import Path
 import unittest
 
 from .sdk_business_evidence import Catalog, CLIENTS, index, render
+from .stream_sdk_evidence import actor
 
 
 class BusinessEvidenceTest(unittest.TestCase):
@@ -45,6 +46,33 @@ class BusinessEvidenceTest(unittest.TestCase):
         self.assertEqual((missing[0]['trace'], missing[0]['sdk'], missing[0]['revision']),
                          ('req-1', CLIENTS[0], 588))
 
+    def test_stream_get_requires_original_query_identity_and_sdk(self):
+        original = dict(method="GET", url="/v1/responses/resp_1?stream=true", version="6.34.0",
+                        status=200, trace="req-stream")
+        def read(wire):
+            return actor(dict(id="resp_1", status="completed", sdk="node-6.34.0", requests=[wire]),
+                         "node-6.34.0", "resp_1", "read")
+        self.assertEqual(read(original)[1]["query"], "stream=true")
+        for change in ({"version":"7.47.0"}, {"url":"/v1/responses/resp_1"},
+                       {"url":"/v1/responses/resp_2?stream=true"}, {"status":404}):
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                read(original | change)
+
+    def test_stream_evidence_preserves_sdk_and_serving_generation(self):
+        table, manifest = render()
+        rows = list(csv.DictReader(io.StringIO(table)))
+        source = manifest["sources"]
+        read = next(r for r in rows if r["path"] == "/responses/{response_id}" and r["method"] == "GET")
+        self.assertTrue(all("stream-tls/200=1" in read[c] for c in CLIENTS))
+        self.assertEqual(source["stream-tls"]["requests"], 7)
+        self.assertEqual(source["stream-tls"]["direct_http_controls"], 2)
+        old, new = (source["stream-gateway-" + phase] for phase in ("prepare", "restore"))
+        self.assertGreater(new["generation"], old["generation"])
+        self.assertNotEqual(old["manifest"], new["manifest"])
+        self.assertEqual(new["manifest"], source["stream-model-restore"]["manifest"])
+        self.assertIn("stream-gateway-restore/200=1", read["node-7.47.0"])
+        self.assertNotIn("stream-gateway-restore", read["python-3.55.1"])
+
     def test_duplicate_trace_unknown_sdk_and_bad_total_rejected(self):
         packet = self.wire(query='')
         bad = [([(CLIENTS[0], packet)] * 2, {'200': 2}),
@@ -58,6 +86,12 @@ class BusinessEvidenceTest(unittest.TestCase):
         table, manifest = render()
         self.assertEqual((directory/'business.csv').read_bytes(), table.encode())
         self.assertEqual(json.loads((directory/'sources.json').read_bytes()), manifest)
+        goals = json.loads((directory.parents[1] / 'serve-master-goals-v2.json').read_bytes())
+        published = next(t for t in goals['tasks'] if t['id'] == 'A12')['sdk_business_evidence_20261128']
+        for key in ('source_requests', 'assigned_requests', 'methods_with_success', 'method_sdk_pairs_with_success'):
+            self.assertEqual(published[key], manifest[key], key)
+        self.assertEqual(published['unassigned'], len(manifest['unassigned']))
+
 
     def test_batch_recovery_keeps_the_writer_and_reader_on_their_original_sides(self):
         table, manifest = render()

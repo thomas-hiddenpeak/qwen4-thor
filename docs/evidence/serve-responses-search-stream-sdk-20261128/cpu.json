@@ -1,0 +1,186 @@
+{
+  "scope": "CPU SDK playback, native reader projection and retained response access; candidate model HTTP pending",
+  "original_wire": "docs/evidence/serve-web-provider-20261128/responses-offline.wire",
+  "raw_source_sha256": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+  "source_binary": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
+  "engine": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "semantic_contract": "d893ac826e5fbf3e2e39d9e0540547d621a1e0c1dc43e6cbebf3f43db44f4c96",
+  "upstream_boundaries": [
+    {
+      "version": "4.86.2",
+      "url": "https://registry.npmjs.org/openai/-/openai-4.86.2.tgz",
+      "integrity": "sha512-nvYeFjmjdSu6/msld+22JoUlCICNk/lUFpSMmc6KNhpeNLpqL70TqbD/8Vura/tFmYqHKW0trcjgPwUpKSPwaA==",
+      "source_sha256": {},
+      "behavior": "no_helper"
+    },
+    {
+      "version": "4.87.0",
+      "url": "https://registry.npmjs.org/openai/-/openai-4.87.0.tgz",
+      "integrity": "sha512-+rKzPVP4fE8wFvsKrCcS8qBOx0vStzNELq36tVZ+hbBvWKDx0tl2CoQS2wBy7w5CHEvVEJC50BI/WYArmVLe+A==",
+      "source_sha256": {
+        "package/lib/ResponsesParser.mjs": "7d33f273ce94945f99759de2063d7516312cecc8708c1fef8d5d8773fc99e450",
+        "package/lib/responses/ResponseStream.mjs": "e11ffdba9984984932eda0f0ec587813939697d5d46faca224ec2bb0f57bbc50"
+      },
+      "behavior": "passes_through"
+    },
+    {
+      "version": "6.44.0",
+      "url": "https://registry.npmjs.org/openai/-/openai-6.44.0.tgz",
+      "integrity": "sha512-09/gH+8jH0RgUwsgWHAaxsKGRT5zVZ95IaJUnqAWj6XejIBmnFRwq2WUIF37VtDEsmGrtPmvCs5+yBSeZGWvkA==",
+      "source_sha256": {
+        "package/lib/ResponsesParser.mjs": "7d33f273ce94945f99759de2063d7516312cecc8708c1fef8d5d8773fc99e450",
+        "package/lib/responses/ResponseStream.mjs": "b31953aeb7a7060d5d3695a523445770e903a16e04d9dca54e28966f37631a05"
+      },
+      "behavior": "passes_through"
+    },
+    {
+      "version": "6.45.0",
+      "url": "https://registry.npmjs.org/openai/-/openai-6.45.0.tgz",
+      "integrity": "sha512-5DQVNErssk0afNpTTHUm/qZPU4iKR9OYdNid8Ib4puq4gHNNvGWZht2zY4h9a8JMF949Ik6m8gQutllVPbjdnw==",
+      "source_sha256": {
+        "package/lib/ResponsesParser.mjs": "864c5a735ebbfbfd59f1196f4d9003a7734e5f8cce98e33e535848f26e4f3791",
+        "package/lib/responses/ResponseStream.mjs": "bbdbf7d95893bbedd8901feab4965e6065640d98bdbb36eeaefa462f985fd6f0"
+      },
+      "behavior": "aggregates"
+    }
+  ],
+  "before": {
+    "status": "PASS",
+    "mode": "unmodified Thor wire replay before presentation fix",
+    "source": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+    "actors": {
+      "node-6.34.0": {
+        "aggregate_present": false,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "f5944e9e01bca3b2f565804d6ed8c45c9c61a9bb9254652d37bb361cf202e581"
+      },
+      "node-7.47.0": {
+        "aggregate_present": true,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "121ea611b1eede2685d274f9a64f04db52801c73080bb8441f408442438df5bd"
+      },
+      "node-6.44.0": {
+        "aggregate_present": false,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "e6786637be654b429733f41243b4b06290ac6ff39d38d7468a95adbe28f85b9d"
+      },
+      "node-6.45.0": {
+        "aggregate_present": true,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "6c6c680ffb282ab617f9dee68f8e9e3cf8a64cb2e9c8b49beaa1b1fd9cdea6ac"
+      }
+    },
+    "requests": 4,
+    "model_starts": 0
+  },
+  "after": {
+    "status": "PASS",
+    "mode": "TLS playback of original device bytes through candidate native reader projection",
+    "source": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+    "actors": {
+      "python-2.8.1": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "33db6be9826a3a8818cefc4b1d76bd88ecda47f97a9773e0f1b69e5f55f8dcc1"
+      },
+      "python-2.33.0": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "70b8037fe39741d47ca35303b2e3dc0dac4f267a4ab7d1b016de3f8a5fa7119e"
+      },
+      "python-3.42.1": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "7ed77af6fbf697ff17191a39c386a89d097f8726cac0f9701532147d0f89f7b9"
+      },
+      "python-3.55.1": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "2dcb4fdc54893d14eab2a1b9884c6a1994733b0a7cfb7ed9191df6ef74e5b76a"
+      },
+      "node-6.34.0": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "03139965179195eb4c288b352d4a2bbe62c0010911237d262c40e301a08039c1",
+        "sdk_output": "d23749fe1c0cf2f03f8193a4223a5c2e48f6f9253f8098568e2e78f7f32341e3"
+      },
+      "node-7.47.0": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "4f665d1f73df9a201d6fc643a48ffbc6b1f33814cc35fdaaf47ee32556ee0d8b"
+      },
+      "node-6.44.0": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "03139965179195eb4c288b352d4a2bbe62c0010911237d262c40e301a08039c1",
+        "sdk_output": "b8e33a70bebe07e3698216e391e09fc6efad3d7355a58a2298a22fcbc88691c3"
+      },
+      "node-6.45.0": {
+        "aggregate": 180,
+        "events": 66,
+        "annotations": 1,
+        "native_wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb",
+        "sdk_output": "88383cdc16ad3469bcd5dc9828aac5cdef8ca422b0375b24ead189a1fe58e858"
+      }
+    },
+    "requests": 8,
+    "model_starts": 0
+  },
+  "model_starts": 0,
+  "original_reader_check": {
+    "wire": "40ef9b608b9bbb96dcfa08abd71594f1416ee809c7534e6103cb8e2466389015",
+    "current": "8f150289ea341bccbdb8f9df7eb435d833d2f2cc946739b3282c45a462a70aaf",
+    "differences": [
+      "prompt_cache_retention in frames 0, 1 and 8: in-memory to in_memory"
+    ],
+    "verified": "original Python/Node cache spelling contract preserved"
+  },
+  "large_logprobs": {
+    "tokens": 3900,
+    "input_bytes": 407429,
+    "source": "e7a965bd24ae6dd8c1bf1f09fa2e5daff6aaba368a04a063567dfb83e3937f95",
+    "candidate_without_frame_budget": "standalone legacy projector terminated on the request-schema node limit; current raw reader passed",
+    "corrected": {
+      "6.34.0": "eaba16a85d7989b8cc5fd797aca2a89858e4691119bef6ac3c0160398da3cd5c",
+      "6.45.0": "e7a965bd24ae6dd8c1bf1f09fa2e5daff6aaba368a04a063567dfb83e3937f95",
+      "7.47.0": "e7a965bd24ae6dd8c1bf1f09fa2e5daff6aaba368a04a063567dfb83e3937f95"
+    }
+  },
+  "checks": [
+    "http_responses_presentation_matches_published_sdk_ranges",
+    "http_javascript_responses_version_selects_declared_wire_types",
+    "responses_api_replay_uses_original_sequence_and_obfuscation_choice",
+    "responses_api_include_projects_without_changing_retained_probabilities",
+    "responses_parallel_function_names_match_live_and_retained_events",
+    "responses_legacy_stream_text_is_rendered_for_each_reader",
+    "responses_legacy_stream_text_uses_only_message_text_parts",
+    "responses_legacy_aggregate_accepts_large_logprob_frames"
+  ],
+  "native_log": "348b3954279535f7f92a3cea8428a4845a6cc7fe0c29f9677fdf9586ea0d29f6",
+  "inventory_mutation_checks": 40,
+  "actor_sources": {
+    "response_stream_text.py": "e4e37cddea60a0a3e767044a9761891ddf3cb5af8d4e6bf11595fd875b7a3e3d",
+    "response_stream_text.mjs": "01099b5f5776bb50b3d36304969cd3dc0b6125c5de989193e3f5ed88d625c47d"
+  }
+}

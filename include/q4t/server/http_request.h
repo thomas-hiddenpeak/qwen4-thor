@@ -35,8 +35,16 @@ enum class ResponsesSdkView : unsigned char {
   kStringMcpErrorAndHyphenatedCache,
   kNamedArguments,
 };
-ResponsesSdkView ClassifyResponsesVersion(ResponsesSdkLanguage language,
-                                          std::string_view version);
+struct ResponsesSdkProfile {
+  ResponsesSdkView view = ResponsesSdkView::kCurrent;
+  bool stream_output_text = false;
+};
+ResponsesSdkProfile ClassifyResponsesClient(ResponsesSdkLanguage language,
+                                           std::string_view version);
+inline ResponsesSdkView ClassifyResponsesVersion(ResponsesSdkLanguage language,
+                                                 std::string_view version) {
+  return ClassifyResponsesClient(language, version).view;
+}
 
 struct HttpRequestHeaders {
   std::string request_id;
@@ -89,9 +97,10 @@ struct HttpRequestHeaders {
   int system_error = 0;
   // Validated presentation hint. Never used for identity or cache policy.
   std::string legacy_sdk_version;
-  ResponsesSdkView ResponsesView() const {
-    return ClassifyResponsesVersion(sdk_language, legacy_sdk_version);
+  ResponsesSdkProfile ResponsesProfile() const {
+    return ClassifyResponsesClient(sdk_language, legacy_sdk_version);
   }
+  ResponsesSdkView ResponsesView() const { return ResponsesProfile().view; }
 };
 
 // Reservation spans reading, parsing, queueing and response completion.

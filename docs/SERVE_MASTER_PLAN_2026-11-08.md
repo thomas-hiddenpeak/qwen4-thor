@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev598 已发行旧版 Node SDK 的流式正文兼容修复。模型重启和主网关切换后，Node 6.34 与 7.47 均按原 ID 读回原文、事件顺序和终态，跨客户读取为 404。主包与独立回退包已登记，发行时服务为 STOPPED。 [发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
+
 rev596 已发行可选的网页搜索提供方。主、轻容量验证了真实查询的引用与同客户离线交接。发行配置默认关闭外部搜索，在模型退出和网关切换后均能按原 ID 取回项目答复。主包和回退包已经登记，发行时意图为 STOPPED。 [发行回执](evidence/serve-web-provider-20261128/delivery.json)
 
 rev594 已发行批任务并发取消修复。按原生网关的 Retry-After 续试得到同一取消记录，已完成的任务仍返回 409。主轻容量、模型恢复及主网关切换后，真实 SDK 读回同一任务和逐字节相同的项目结果。登记时服务为 STOPPED，模型启动为零。24 小时运行与独立冷启动计划已交接。 [发行回执](evidence/serve-batch-cancel-20261128/delivery.json)

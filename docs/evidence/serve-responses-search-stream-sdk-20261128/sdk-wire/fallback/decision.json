@@ -1,0 +1,42 @@
+{
+  "status": "PASS_STREAM_TEXT_MODEL_RECOVERY",
+  "acceptance": "ACCEPT_STREAM_TEXT_MODEL_RECOVERY",
+  "manifest_sha256": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+  "engine_binary_sha256": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+  "actual_business": {
+    "status": "PASS_STREAM_TEXT_MODEL_RECOVERY",
+    "env_abort": false,
+    "postflight": {
+      "sources_unchanged": true,
+      "owned_processes_gone": true,
+      "ports_free": true,
+      "lock_released": true
+    },
+    "original_sources": {
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/chat-after.wire": "5b0c48e144cd1a20259f21ad0fc4ca0aa978d52bb5019cc0aa8e447d22e3e660",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/interruption.json": "558b4979f824aa933372e5b8768110f5dfa07b2697f73fe5917083023107b5a8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/result.json": "9983d51f208fd960b10fec148997cdca7bf1b870ab116abc329ec12f16882e14",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/responses-search-stream-sdk-src/.q4t-work/stream-text-fallback-lease-01/exit.json": "2965211c94f9aa71158654b73c287b05751715fb767068ab76fabc6b021cb15b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed_stream_text_fallback.py": "20c58c17062f348660496c553ca53e231366586e0de2174c47efb7de3c8d7a43",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream_text_managed_handoff.py": "898a2dd2e43d4775eb4b71ecfd5ceebc3768446549cd4e0151981e243fa4f26b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/web-provider-publication-01/result.json": "2247a283f5937b972a33e5d1f103a8d3c24036a634ed1a375d257a11e41ab069",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/responses-search-stream-sdk-src/docs/evidence/serve-responses-search-stream-sdk-20261128/profiles.json": "1b0c0d2f44a185b483c0a1192d9be1e966a22bafe76770717e73f0552f3ee55b",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream_text_managed_reader.mjs": "bc9c3815e2355b079b95ce6b8e640defe0d6cd1d73fd0d740d6a6379d75021c8",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/stream-text-client-fallback-01/bundle/manifest.json": "74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/prepare-node-6.34.0.json": "04254f8d6ac4597a67ceef31604cd517bd8868e357b4eead6f6b48fe831a4911",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/restore-node-6.34.0.json": "4f45877494522853cdde313df303f9d8b401749e1aa93d426a411129af0f5833",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/restore-node-7.47.0.json": "d38126da99cfb70275a000d92ec399650d5e377f38dc4fca20a21a61ff4cae58",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/prepare-run.json": "a5473bea5b7a4f55cbb6011c087a346a47fbb550126a2053fc73359f32a8c198",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/restore-run.json": "1e11a42f1d8fb284fbb564dfb2b1533a141db2d9eecac795ef96a59d269f29af",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/prepare-node-6.34.0.wire": "05a6ed7258993c6f020e9ce2735319f2bf82226eb8072e6fccf53fa0f34b4627",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/restore-node-6.34.0.wire": "b1f1078791b08bbf66b8950ff7f4f225c8b05dd560968f94394fd2bd8596a25e",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/restore-node-7.47.0.wire": "c52b3c4e69aabd0ac2cbc802fb69d3bdc45fdcc0832886d26ff5db4546e734a7",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/restore-retrieve.wire": "3626b53077040cea7db23cd6e3726c66f20a1ea36b4f20fc0197daa9ec48d7c5",
+      "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/managed-stream-text-fallback-01/restore-foreign.wire": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+    },
+    "seconds": 203.35101240687072,
+    "model_starts": 2,
+    "full_model_quality": false
+  },
+  "scope": "A legacy SDK completed a stored project response. Its original text and event sequence were recovered through legacy and current SDKs after the isolated incident. The canonical read, foreign refusal, independent Chat and cleanup were verified."
+}

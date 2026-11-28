@@ -1,7 +1,8 @@
-"""Refresh the STATUS handoff using a verified local publication and its receipt."""
+"""Refresh the release and operator handoffs using a verified local publication and its receipt."""
 from pathlib import Path
 import hashlib
 import json
+import os
 import re
 
 
@@ -21,6 +22,81 @@ def verify_registration(build, pub):
             any(payloads[role]["manifest_sha256"] != pub[role]
                 for role in ("primary", "fallback"))):
         raise ValueError("Receipt differs from the installed registration")
+
+
+def checked_plan(info):
+    path = Path(info["plan"])
+    data = path.read_bytes()
+    if hashlib.sha256(data).hexdigest() != info["plan_sha256"]:
+        raise ValueError("Operator plan digest differs from the receipt")
+    plan = json.loads(data)
+    if Path(plan["output"]) != path.parent:
+        raise ValueError("Operator plan names a different output directory")
+    return path, plan
+
+
+def refresh_operator_tasks(matrix, record, ref, installed):
+    rows = {task["id"]: task for task in matrix["tasks"]}
+    pub = record["publication"]
+    revision = pub["publication_revision"]
+    day, cold = record["day"], record["cold"]
+    day_path, soak = checked_plan(day)
+    cold_path, preflight = checked_plan(cold)
+    if (soak["package"] != preflight["package"] or
+            soak["package"]["manifest_sha256"] != pub["primary"] or
+            Path(soak["package"]["package"]).resolve() != installed.resolve() or
+            preflight["source_commit"] != soak["source_commit"] or
+            soak["source_commit"] != day["source"]):
+        raise ValueError("Operator plans do not refer to the issued package and source")
+    operator = Path(day["operator"])
+    if (operator.parent != day_path.parent or not os.access(operator, os.X_OK) or
+            hashlib.sha256(operator.read_bytes()).hexdigest() != day["operator_sha256"]):
+        raise ValueError("Operator entry differs from its checked identity")
+    handoff_bytes = (day_path.parent / "handoff.json").read_bytes()
+    handoff = json.loads(handoff_bytes)
+    if (handoff["plan"] != str(day_path) or handoff["user_runs_day"] is not True or
+            handoff["automatically_started"] is not False or
+            soak["profile"] != "day" or soak["day_run_owner"] != "user" or
+            len(soak["audio_cycles"]) != day["audio_pairs"] or day["hours_executed"] != 0 or
+            cold["model_actions"] != 0 or cold["host_units_modified"] is not False or
+            preflight["host_root_filter_installed"] is not False or
+            preflight["other_services_modified"] is not False):
+        raise ValueError("Receipt does not describe operator-owned, prepared plans")
+    manifests = [Path(entry["path"]) for entry in soak["protected"]
+                 if Path(entry["path"]).parts[-3:] == ("build", "service", "manifest.json")
+                 and entry["sha256"] == pub["primary"]]
+    if len(manifests) != 1 or manifests[0].resolve() != (installed / "manifest.json").resolve():
+        raise ValueError("Checked operator workspace does not use the installed package")
+    native = {key: day[key] for key in ("audio_pairs", "first_hour_business", "business_requests",
+                                        "plan", "plan_sha256", "operator", "operator_sha256",
+                                        "checked_at", "minimum_evidence_free_bytes", "hours_executed")}
+    native.update(revision=revision, workspace=str(manifests[0].parents[2]),
+                  package=soak["package"], source_commit=soak["source_commit"],
+                  handoff_sha256=hashlib.sha256(handoff_bytes).hexdigest(),
+                  source_files=len(soak["sources"]), checked=True)
+    # A preparation receipt can refresh entry points, never erase recorded runs.
+    def publish(task, field, current, observed):
+        previous = rows[task].get(field, {})
+        if previous.get(observed):
+            if previous["revision"] == revision:
+                if previous.get("plan_sha256") != current["plan_sha256"]:
+                    raise ValueError("Completed run refers to another plan")
+                return
+            history = rows[task].setdefault("executed_operator_handoffs", [])
+            if previous not in history:
+                history.append(previous)
+        rows[task][field] = current
+
+    publish("Q03", "current_native_day_handoff", native, "hours_executed")
+    publish("Q03", "current_day_handoff", dict(
+        revision=revision, receipt=ref, plan_sha256=day["plan_sha256"],
+        hours_run=day["hours_executed"], owner="user", prepared=True, checked=True), "hours_run")
+    publish("R07", "current_cold_preflight", dict(
+        revision=revision, receipt=ref, plan=str(cold_path), plan_sha256=cold["plan_sha256"],
+        model_starts=0, executed=False), "executed")
+    rows["R07"]["current_execution_prerequisite"] = (
+        "Use the plan for the currently issued package. Check current device owners "
+        "at execution time before inducing a genuine cold NVML failure.")
 
 
 def refresh(root, deployment, receipt_path):
@@ -71,6 +147,12 @@ def refresh(root, deployment, receipt_path):
     if count != 1:
         raise ValueError("Expected one delivery handoff row")
     verify_registration(state, pub)
+    matrix_path = root / "docs/serve-master-goals-v2.json"
+    if matrix_path.exists() and (record["stage"] == "stopped_default_and_operator_handoff" or
+                                 "operator" in record.get("day", {})):
+        matrix = json.loads(matrix_path.read_bytes())
+        refresh_operator_tasks(matrix, record, ref, state / "service")
+        matrix_path.write_text(json.dumps(matrix, ensure_ascii=False, indent=2) + "\n")
     status.write_text(text)
 
 
