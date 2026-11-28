@@ -1,0 +1,48 @@
+{
+  "status": "CPU_PASS",
+  "scope": "native TLS, actual SDKs and durable vector storage, CPU embedding fixture",
+  "model_starts": 0,
+  "parent": "d6b86bc4339ca258e72b2a670db947213f5be1bd",
+  "native_red": [
+    "  CHECK failed: Ok(page) && page.value.GetArray(\"data\")->array.size() == 2 && page.value.GetString(\"first_id\") == rows[end - 2].GetString(\"id\") && page.value.GetString(\"last_id\") == rows[end - 1].GetString(\"id\") && page.value.GetBool(\"has_more\") == (end > 2) (line 546)",
+    "[FAIL] vector_store_and_batch_before_skip_filtered_files_in_both_orders",
+    "  CHECK failed: Ok(page) && page.value.GetString(\"first_id\") == rows[first].GetString(\"id\") && page.value.GetString(\"last_id\") == rows[end - 1].GetString(\"id\") && page.value.GetBool(\"has_more\") == (first > 0) (line 926)",
+    "[FAIL] vector_store_list_before_returns_nearest_page_in_both_orders",
+    "2 tests, 0 passed, 2 failed, 0 skipped"
+  ],
+  "native_green": [
+    "[PASS] vector_store_and_batch_before_skip_filtered_files_in_both_orders",
+    "[PASS] vector_batches_options_pagination_and_atomic_membership",
+    "[PASS] vector_store_list_before_returns_nearest_page_in_both_orders",
+    "[PASS] vector_api_store_crud_and_bidirectional_pagination",
+    "[PASS] vector_api_scope_and_identity_are_not_request_fields",
+    "[PASS] vector_api_strict_body_query_and_method_contracts",
+    "6 tests, 6 passed, 0 failed, 0 skipped"
+  ],
+  "sdk_requests": 72,
+  "sdk_versions": [
+    "python-2.8.1",
+    "python-2.33.0",
+    "python-3.42.1",
+    "python-3.55.1",
+    "node-6.34.0",
+    "node-7.47.0"
+  ],
+  "official_openapi": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "paths": [
+    "GET /vector_stores",
+    "GET /vector_stores/{vector_store_id}/files",
+    "GET /vector_stores/{vector_store_id}/file_batches/{batch_id}/files"
+  ],
+  "response_order": [
+    "asc",
+    "desc"
+  ],
+  "fixture_failed_attempts": [
+    "01: isolated runner omitted the document extraction worker; fixture budget also adjusted for the five source documents",
+    "02: all four Python SDKs passed; the Node assertion incorrectly read first_id/last_id directly from the SDK Page, whereas its public body contains the cursor fields"
+  ],
+  "invalid_receipts_rejected": 4,
+  "wire": "4f34ce3a96ae5ef408ff6ecca5025e8cc7b23ce39c6e815eac649359c0d257b8",
+  "release": "candidate, real-model HTTP qualification and publication pending"
+}

@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+翻到第三页后，存储对象和向量文件列表原先会跳过游标旁边的数据。两处读取路径现从游标向前取相邻项，再按请求顺序返回。六版正式 SDK 已在原生 TLS 与真实存储上完成 72 次分页请求；嵌入使用 CPU 夹具，尚待候选引擎验收。 [分页回执](evidence/serve-previous-page-20261128/cpu.json)
+
 传统补全上限修复的主、轻容量记录均已登记，可逐字节还原 rev606 的前驱记录。下一步生成主包与独立回退包。 [登记回执](evidence/serve-completion-best-of-20261128/capacity.json)
 
 传统补全候选在主、轻两档容量均已通过。两档分别拒绝 best_of=21、接受 20，只给 n=21 时逐项返回 21 个有序结果，独立 Chat 均回答 42。候选待独立封包和登记。 [实机容量回执](evidence/serve-completion-best-of-20261128/capacity-business.json)

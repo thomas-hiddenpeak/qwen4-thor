@@ -512,6 +512,52 @@ ObjectReply Raw(ObjectStore& objects, ObjectKind kind, const std::string& id) {
 }
 }  // namespace
 
+Q4T_TEST(vector_store_and_batch_before_skip_filtered_files_in_both_orders) {
+  Fixture fixture(10000, 100);
+  ObjectStore objects(fixture.objects);
+  VectorStores stores(objects);
+  auto seed = BatchSources(objects, 6);
+  CreateBatch(objects, &seed);
+  const auto full = stores.ListFiles(Access(), seed.store,
+                                     Object({{"order", String("asc")}}));
+  Q4T_CHECK(Ok(full) && full.value.GetArray("data")->array.size() == 6);
+  const auto hidden = full.value.GetArray("data")->array[3].GetString("id");
+  VectorIngestionClaim claim;
+  Q4T_CHECK(
+      Ok(stores.Claim(Access(), seed.store, hidden, "reader", 60, &claim)));
+  Q4T_CHECK(Ok(stores.Fail(Access(), claim, "invalid_file", "fixture")));
+  for (const auto* order : {"asc", "desc"}) {
+    for (const bool batch : {false, true}) {
+      const auto list = [&](const Json& query) {
+        return batch
+                   ? stores.ListBatchFiles(Access(), seed.store, seed.id, query)
+                   : stores.ListFiles(Access(), seed.store, query);
+      };
+      auto query =
+          Object({{"order", String(order)}, {"filter", String("in_progress")}});
+      const auto eligible = list(query);
+      Q4T_CHECK(Ok(eligible) &&
+                eligible.value.GetArray("data")->array.size() == 5);
+      const auto& rows = eligible.value.GetArray("data")->array;
+      Set(&query, "limit", Number(2));
+      Set(&query, "before", *rows.back().Find("id"));
+      for (int end : {4, 2}) {
+        const auto page = list(query);
+        Q4T_CHECK(
+            Ok(page) && page.value.GetArray("data")->array.size() == 2 &&
+            page.value.GetString("first_id") == rows[end - 2].GetString("id") &&
+            page.value.GetString("last_id") == rows[end - 1].GetString("id") &&
+            page.value.GetBool("has_more") == (end > 2));
+        Set(&query, "before", *page.value.Find("first_id"));
+      }
+      const auto empty = list(query);
+      Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+                !empty.value.GetBool("has_more"));
+    }
+  }
+  return true;
+}
+
 Q4T_TEST(vector_batches_options_pagination_and_atomic_membership) {
   Fixture f;
   ObjectStore objects(f.objects);
@@ -857,6 +903,36 @@ Q4T_TEST(vector_api_exact_routes_and_reserved_client_lanes) {
     int status = 0;
     Q4T_CHECK(AdmitClientRequest(operation.first, operation.second, &headers,
                                  f.clients, &permit, &identity, &status));
+  }
+  return true;
+}
+
+Q4T_TEST(vector_store_list_before_returns_nearest_page_in_both_orders) {
+  Fixture fixture(10000, 100);
+  ObjectStore objects(fixture.objects);
+  const std::string path = "/v1/vector_stores";
+  for (int i = 0; i < 6; ++i)
+    Q4T_CHECK(Ok(Api(fixture, objects, "POST", path, "{}")));
+  for (const std::string order : {"asc", "desc"}) {
+    const auto list = path + "?order=" + order;
+    const auto all = Api(fixture, objects, "GET", list);
+    Q4T_CHECK(Ok(all) && all.value.GetArray("data")->array.size() == 6);
+    const auto& rows = all.value.GetArray("data")->array;
+    auto cursor = rows.back().GetString("id");
+    for (int end : {5, 3, 1}) {
+      const auto page =
+          Api(fixture, objects, "GET", list + "&limit=2&before=" + cursor);
+      const int first = end > 2 ? end - 2 : 0;
+      Q4T_CHECK(
+          Ok(page) &&
+          page.value.GetString("first_id") == rows[first].GetString("id") &&
+          page.value.GetString("last_id") == rows[end - 1].GetString("id") &&
+          page.value.GetBool("has_more") == (first > 0));
+      cursor = page.value.GetString("first_id");
+    }
+    const auto empty = Api(fixture, objects, "GET", list + "&before=" + cursor);
+    Q4T_CHECK(Ok(empty) && empty.value.GetArray("data")->array.empty() &&
+              !empty.value.GetBool("has_more"));
   }
   return true;
 }
