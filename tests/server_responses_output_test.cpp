@@ -1,5 +1,6 @@
 #include "q4t/server/responses_output.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -8,6 +9,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "q4t/server/chat_capabilities.h"
 #include "q4t/server/http_response.h"
 #include "q4t/server/lifetime.h"
 #include "q4t/server/output_schema.h"
@@ -1154,6 +1156,41 @@ Q4T_TEST(agent_session_delta_padding_is_per_subscription) {
       R"({"type":"agent.session.turn.item.done","obfuscation":"old"})", &done));
   q4t::server::ApplyDeltaObfuscation(&done, true);
   Q4T_CHECK(!done.Has("obfuscation"));
+  return true;
+}
+
+Q4T_TEST(hosted_python_terminal_item_is_advertised_by_capabilities) {
+  ResponsesOutput output;
+  size_t index;
+  std::string part;
+  std::vector<Json> events;
+  Q4T_CHECK(output.Init(Options(), "resp_discovery", 42, false));
+  Q4T_CHECK(output.Start(&part) && Events(part, &events));
+  Q4T_CHECK(output.StartPython("cntr_a", "print(42)", &index, &part) &&
+            Events(part, &events));
+  Q4T_CHECK(output.EndPython(index, "42", false, nullptr, &part) &&
+            Events(part, &events));
+  Q4T_CHECK(output.Finish(false, 0, {}, 43, &part) && Events(part, &events));
+  Q4T_CHECK(!events.empty() &&
+            events.back().GetString("type") == "response.completed");
+  const auto* response = events.back().Find("response");
+  const auto* items = response ? response->GetArray("output") : nullptr;
+  Q4T_CHECK(items && index < items->array.size());
+  const auto& item = items->array[index];
+  Q4T_CHECK(item.GetString("status") == "completed");
+  const auto type = item.GetString("type");
+  Q4T_CHECK(type == "code_interpreter_call");
+
+  Json discovery;
+  Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("q4t", false, true),
+                               &discovery));
+  const auto* responses = discovery.Find("responses");
+  const auto* advertised = responses ? responses->GetArray("output_items")
+                                     : nullptr;
+  Q4T_CHECK(advertised && std::count_if(advertised->array.begin(),
+      advertised->array.end(), [&](const Json& entry) {
+        return entry.IsString() && entry.str == type;
+      }) == 1);
   return true;
 }
 

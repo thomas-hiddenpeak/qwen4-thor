@@ -348,6 +348,24 @@ class MigrationTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 live.format_for(altered)
 
+    def test_interpreter_output_discovery_requires_qualified_hosted_python(self):
+        from tools.serve_recovery import profile_live_reuse as live
+        old = dict(hosted_python=dict(live.CODE_CAPABILITY),
+                   responses=dict(output_items=['message']))
+        target = dict(old, responses=dict(output_items=['message', 'code_interpreter_call']))
+        before = migration.semantic_capabilities(old)
+        after = migration.semantic_capabilities(target)
+        self.assertTrue(migration.explicit_extension(before, after))
+        self.assertFalse(migration.explicit_extension(after, before))
+        for invalid in (None, {}, dict(live.CODE_CAPABILITY, network='enabled'),
+                        dict(live.CODE_CAPABILITY, responses_citations=1)):
+            with self.subTest(invalid=invalid):
+                bad = dict(target, hosted_python=invalid)
+                if invalid is None:
+                    del bad['hosted_python']
+                with self.assertRaisesRegex(ValueError, 'qualified hosted Python contract'):
+                    migration.semantic_capabilities(bad)
+
     def test_interpreter_extension_preserves_workspace_and_runtime_limits(self):
         from tools.serve_recovery import profile_live_reuse as live
         old = dict(container_workspaces=live.SKILLS_CAPABILITY)

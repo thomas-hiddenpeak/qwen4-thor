@@ -23,7 +23,7 @@ VOICE_FORMAT = 'q4t-profile-migration-permit-v7'
 RESPONSE_OUTPUT_TYPES = frozenset(('message', 'reasoning', 'function_call',
     'custom_tool_call', 'local_shell_call', 'apply_patch_call', 'shell_call', 'compaction', 'file_search_call', 'web_search_call', 'tool_search_call',
     'tool_search_output', 'program', 'program_output', 'mcp_list_tools',
-    'mcp_approval_request', 'mcp_call'))
+    'mcp_approval_request', 'mcp_call', 'code_interpreter_call'))
 MCP_PROVIDER_IDS = frozenset(('connector_dropbox', 'connector_gmail',
     'connector_googlecalendar', 'connector_googledrive', 'connector_microsoftteams',
     'connector_outlookcalendar', 'connector_outlookemail', 'connector_sharepoint'))
@@ -423,6 +423,10 @@ def semantic_capabilities(value):
         ledger.require(type(items) is list and all(type(x) is str for x in items)
             and len(set(items)) == len(items) and
             set(items) <= RESPONSE_OUTPUT_TYPES, 'invalid response output capabilities')
+        if 'code_interpreter_call' in items:
+            from tools.serve_recovery import profile_live_reuse as live
+            ledger.require(package.same_json(result.get('hosted_python'), live.CODE_CAPABILITY),
+                           'interpreter output lacks the qualified hosted Python contract')
         if 'shell_call' in items or 'shell' in responses:
             expected = dict(executor='client', environments=['local'],
                             automatic_execution=False, result_item='shell_call_output')
