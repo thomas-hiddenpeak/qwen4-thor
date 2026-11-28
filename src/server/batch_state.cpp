@@ -582,22 +582,30 @@ ObjectReply BatchState::FailValidation(const BinaryAccess& access,
 }
 ObjectReply BatchState::Cancel(const BinaryAccess& access,
                                const std::string& id) {
-  auto loaded = Load(access, id);
-  if (!loaded.ok()) return loaded;
-  auto root = Update(access, loaded.value);
-  auto& batch = Field(root.data, "batch");
-  const auto status = batch.GetString("status");
-  if (status == "cancelling" || status == "cancelled")
-    return Public(loaded.value);
-  // All execution has drained and the capacity failure is already durable.
-  // Cancellation cannot erase that decision or restart aggregation forever.
-  if (status == "finalizing" && root.data.Has("output_failure"))
-    return Public(loaded.value);
-  if (BatchTerminal(status))
-    return Error(409, "batch_already_terminal", "Batch is already terminal");
-  Set(&batch, "status", String("cancelling"));
-  Set(&batch, "cancelling_at", Number(std::time(nullptr)));
-  return Commit(objects_, access, root);
+  // Both worker checkpoints and another cancellation can advance the root.
+  // Re-read its durable status before deciding whether a new write is needed.
+  ObjectReply result;
+  for (int attempt = 0;; ++attempt) {
+    auto loaded = Load(access, id);
+    if (!loaded.ok()) return loaded;
+    auto root = Update(access, loaded.value);
+    auto& batch = Field(root.data, "batch");
+    const auto status = batch.GetString("status");
+    if (status == "cancelling" || status == "cancelled")
+      return Public(loaded.value);
+    // All execution has drained and the capacity failure is already durable.
+    // Cancellation cannot erase that decision or restart aggregation forever.
+    if (status == "finalizing" && root.data.Has("output_failure"))
+      return Public(loaded.value);
+    if (BatchTerminal(status))
+      return Error(409, "batch_already_terminal", "Batch is already terminal");
+    if (attempt == 32) return result;
+    Set(&batch, "status", String("cancelling"));
+    Set(&batch, "cancelling_at", Number(std::time(nullptr)));
+    result = Commit(objects_, access, root);
+    if (result.commit_unknown || result.code != "object_revision_conflict")
+      return result;
+  }
 }
 ObjectReply BatchState::FinishCancelled(const BinaryAccess& access,
                                         const std::string& id) {

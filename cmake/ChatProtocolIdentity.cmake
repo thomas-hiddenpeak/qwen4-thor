@@ -388,6 +388,8 @@ set(protocol_inputs
   src/server/memory_admission.cpp
   src/server/chat_memory.cpp
   src/main.cpp
+  include/q4t/server/serve_diagnostics.h
+  src/server/serve_diagnostics.cpp
   include/q4t/server/grammar_process.h
   src/server/grammar_process.cpp
   include/q4t/server/worker_io_budget.h

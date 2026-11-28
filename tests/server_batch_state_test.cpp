@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <array>
 #include <barrier>
 #include <cstdlib>
 #include <ctime>
@@ -333,6 +334,73 @@ Q4T_TEST(batch_state_cancel_prevents_late_validation_and_waits_for_owner) {
   auto finished = batches.FinishCancelled(Access(), id);
   Q4T_CHECK(Ok(finished) && finished.value.GetString("status") == "cancelled");
   Q4T_CHECK(Ok(batches.Cancel(Access(), id)));
+  return true;
+}
+
+Q4T_TEST(batch_state_concurrent_cancel_returns_one_durable_transition) {
+  Fixture fixture;
+  std::string id;
+  int64_t revision = 0;
+  std::string recorded;
+  {
+    ObjectStore objects(fixture.options);
+    BatchState batches(objects);
+    id = Create(objects, File(objects, Input(1)));
+    const auto before = batches.Load(Access(), id);
+    Q4T_CHECK(Ok(before));
+    revision = before.value.GetInt("revision") + 1;
+
+    std::array<ObjectReply, 6> replies;
+    std::barrier ready(replies.size());
+    std::vector<std::jthread> callers;
+    for (auto& reply : replies) {
+      callers.emplace_back([&, slot = &reply] {
+        ready.arrive_and_wait();
+        *slot = batches.Cancel(Access(), id);
+      });
+    }
+    callers.clear();
+    auto current = batches.Retrieve(Access(), id);
+    Q4T_CHECK(Ok(current) && current.value.GetString("id") == id &&
+              current.value.GetString("status") == "cancelling" &&
+              current.value.GetInt("cancelling_at") > 0);
+    recorded = OutputJson(current.value);
+    for (const auto& reply : replies) {
+      Q4T_CHECK(Ok(reply) && OutputJson(reply.value) == recorded);
+    }
+  }
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  Q4T_CHECK(batches.Cancel(Access("client:other"), id).http_status == 404);
+  const auto repeated = batches.Cancel(Access(), id);
+  Q4T_CHECK(Ok(repeated) && OutputJson(repeated.value) == recorded);
+  const auto stored = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(stored) && stored.value.GetInt("revision") == revision);
+  return true;
+}
+
+Q4T_TEST(batch_state_cancel_lost_ack_keeps_uncertain_result_and_durable_intent) {
+  Fixture fixture;
+  std::string id;
+  int64_t revision = 0;
+  {
+    ObjectStore objects(fixture.options);
+    id = Create(objects, File(objects, Input(1)));
+    const auto initial = BatchState(objects).Load(Access(), id);
+    Q4T_CHECK(Ok(initial));
+    revision = initial.value.GetInt("revision") + 1;
+  }
+  Injection injection("--q4t-object-worker-lost-ack");
+  ObjectStore objects(fixture.options);
+  BatchState batches(objects);
+  const auto lost = batches.Cancel(Access(), id);
+  Q4T_CHECK(!lost.ok() && lost.commit_unknown &&
+            lost.value.GetString("id") == id);
+  Drain(objects);
+  const auto repeated = batches.Cancel(Access(), id);
+  Q4T_CHECK(Ok(repeated) && repeated.value.GetString("status") == "cancelling");
+  const auto stored = batches.Load(Access(), id);
+  Q4T_CHECK(Ok(stored) && stored.value.GetInt("revision") == revision);
   return true;
 }
 

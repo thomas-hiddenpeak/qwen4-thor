@@ -1,0 +1,128 @@
+{
+  "stage": "stopped_default_and_operator_handoff",
+  "publication": {
+    "status": "PASS",
+    "publication_revision": 592,
+    "version_revision": 225,
+    "profile_revision": 110,
+    "previous_profile_revision": 109,
+    "desired": "STOPPED",
+    "model_starts": 0,
+    "primary": "a4190f48718b1bd1b5e516a74861c5ad0a34d0d3d1f4e61f206ab85498647600",
+    "fallback": "00b9eff560ee921b16f240f7d4ff20a5b556aa539878fd8ccee3ad431730699e",
+    "engine": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
+    "protected_files": 13,
+    "profile_budget_preserved": true
+  },
+  "previous_revision": 590,
+  "short_receipt_sha256": "211b69ca4dcf2e177faf4a755a35435076a613788d7f00c8956d92309d5a9842",
+  "capacity_receipt_sha256": "2b1afe856cafe237503971bdb30d79f4d9be9aa748f7f6a7c739672d1f308a5d",
+  "profile_transition": {
+    "from_revision": 109,
+    "to_revision": 110,
+    "request": "11168fb1-b852-4da8-a703-6dab11922a75",
+    "migration_request": "54fc9610-6f41-5bb9-a3d7-65c5628d05b5",
+    "bound_registry": "6d3c747ccadc46eda6a9802412ea08754e54d6c5f2c2f750cce312762ea66992",
+    "policy": "3aab9eae79d2c21bde120929996d2cfef45a12aff7b85e423f7e3b14b0797ece",
+    "capacities_unchanged": true,
+    "thresholds_and_budgets_unchanged": true,
+    "protected_runtime_fields": [
+      "selected",
+      "clock",
+      "pending",
+      "not_before_ns",
+      "light_since_ns",
+      "history"
+    ],
+    "protected_file_count": 13,
+    "model_starts": 0
+  },
+  "day": {
+    "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/diagnostic-output-day-src/.q4t-work/day-01/audio-day.sh",
+    "operator_sha256": "c76951e4ab50fedf746b34f9c4bef94523b7838113ab7c30e992284a56ff09f5",
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/diagnostic-output-day-src/.q4t-work/day-01/plan.json",
+    "plan_sha256": "df9dc07b20f07191afdd4044f1819716dbfbd23e6d5716e84d3849c3489a9c67",
+    "business_requests": 7250,
+    "first_hour_business": 304,
+    "checked_at": "2026-11-28T00:15:10.720327+00:00",
+    "minimum_evidence_free_bytes": 12884901888,
+    "source": "48b75f7095db028179c961c0ba40569ba710cd3d",
+    "audio_pairs": 25,
+    "hours_executed": 0
+  },
+  "cold": {
+    "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/diagnostic-output-day-src/.q4t-work/cold592-01/plan.json",
+    "plan_sha256": "fb10eb778acbf49dc8573a503ef0c6724820b3d5bc69c40d090f717f6c72cb50",
+    "model_actions": 0,
+    "host_units_modified": false
+  },
+  "maintenance_lease_sha256": "f0813e0fa83f9b4a1cee9f79e85cb4f2ed6f350dc91767f77791ffede4d0726b",
+  "publish_lease_sha256": "60f5ec884fa04fc36481b37cce9c13890b13cbecc4031bb4190a97ea6c4efbff",
+  "retention_maintenance": {
+    "status": "PASS",
+    "pools": {
+      "generations": {
+        "before": 32,
+        "archived": [
+          "bc2b9953a9f10010681719db3673fc00ae31bd6eeed2dd10904d86ba04bbf052"
+        ],
+        "sha256": "51db1ae0154ed0e89ded8fac6837536a148a9d561dccc8f0c99f97d53a192963",
+        "unchanged_bytes_and_inodes": true
+      },
+      "versions": {
+        "before": 18,
+        "archived": [
+          "78b30b78-75e2-4396-86d2-beb99e0555db"
+        ],
+        "sha256": "2d9a89f4989a23b8ab60ed12c849ded50dc474caeb9333a1bff707ca49f4c77c",
+        "unchanged_bytes_and_inodes": true
+      },
+      "intents": {
+        "before": 128,
+        "archived": [
+          "c3134083-e19e-4eb3-9ab1-7044a730897e"
+        ],
+        "sha256": "37c967900f22508c7182c3518af761859da3044340afc1631d527b5ea3ba92f8",
+        "unchanged_bytes_and_inodes": true
+      }
+    },
+    "protected_files": 8,
+    "unchanged": true,
+    "model_starts": 0
+  },
+  "input_recheck": {
+    "original_failure_sha256": "182889cc957f0779d949731a9576f2baf72fb8aa8d8e2b7db426f829d4b3ab5f",
+    "restored_files": "tracked diagnostic evidence in sparse checkout",
+    "frozen_files": 44,
+    "frozen_sha256": "cbd440579de8adf8c40fdc4d4d918c630208334322d0ce0689bcf1c2e614f41a",
+    "repeated_maintenance": 0,
+    "repeated_publication": 0
+  },
+  "required_methods": 231,
+  "declared_methods": 219,
+  "method_coverage": {
+    "sources_sha256": {
+      "scope": "b3a0c7ca462ccf20316f691a775aed4caf1d278253982ff340c650b39b22e13a",
+      "official": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057"
+    },
+    "openapi_sha256": {
+      "primary": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326",
+      "fallback": "4a7de6f1e9322924b3f0908e5535a1a94f1050393399ccf5f22bfb6a80500326"
+    },
+    "remaining_declarations": [
+      "POST /content_provenance_checks",
+      "POST /images/edits",
+      "POST /images/generations",
+      "POST /images/variations",
+      "POST /videos",
+      "GET /videos",
+      "POST /videos/edits",
+      "POST /videos/extensions",
+      "GET /videos/{video_id}",
+      "DELETE /videos/{video_id}",
+      "GET /videos/{video_id}/content",
+      "POST /videos/{video_id}/remix"
+    ]
+  },
+  "previous_delivery": "../serve-upload-completion-race-20261128/delivery.json"
+}

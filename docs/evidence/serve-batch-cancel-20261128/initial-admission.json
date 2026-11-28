@@ -1,0 +1,100 @@
+{
+  "native": "One simultaneous cancellation per client at native ingress, four globally. Ordinary request capacity is configured separately.",
+  "status": "FAIL",
+  "reason": "Three first-attempt cancellations rejected by gateway admission; original harness assumed all would succeed on the first attempt.",
+  "engine": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+  "model_starts": 1,
+  "model_exit": 0,
+  "protected_files": 20,
+  "ports_released": true,
+  "unchanged_default": true,
+  "seconds": 33.904,
+  "requests": [
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "query": "",
+      "status": 200,
+      "trace": "req-34eeb80dc4438bccfb01a99bd849d01e",
+      "start_ns": 4015089773891596,
+      "headers_ns": 4015089781926395
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches",
+      "query": "",
+      "status": 200,
+      "trace": "req-540c1131efd74a6a39609a3add168652",
+      "start_ns": 4015089826555749,
+      "headers_ns": 4015089832031899
+    },
+    {
+      "method": "POST",
+      "path": "/v1/files",
+      "query": "",
+      "status": 200,
+      "trace": "req-6beb92ff01022e4a3447a7138eb2182e",
+      "start_ns": 4015089874359990,
+      "headers_ns": 4015089881405125
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches",
+      "query": "",
+      "status": 200,
+      "trace": "req-4af890122d271131ca24525213265ebd",
+      "start_ns": 4015089924881658,
+      "headers_ns": 4015089930862473
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches/batch_c616432d6ffbf5dd24586f7369595b46/cancel",
+      "query": "",
+      "status": 429,
+      "trace": "req-ab671c9c5b301488ea1545c31ae79662",
+      "start_ns": 4015089979931922,
+      "headers_ns": 4015089983995650
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches/batch_c616432d6ffbf5dd24586f7369595b46/cancel",
+      "query": "",
+      "status": 429,
+      "trace": "req-93ebc630dbb992d4e4b36e4729bcd40b",
+      "start_ns": 4015089979791200,
+      "headers_ns": 4015089984958267
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches/batch_c616432d6ffbf5dd24586f7369595b46/cancel",
+      "query": "",
+      "status": 429,
+      "trace": "req-a8a1f651c9d9c7a5a0c38ad0fc417284",
+      "start_ns": 4015089980215894,
+      "headers_ns": 4015089985235656
+    },
+    {
+      "method": "POST",
+      "path": "/v1/batches/batch_c616432d6ffbf5dd24586f7369595b46/cancel",
+      "query": "",
+      "status": 200,
+      "trace": "req-cceb2e0f1d7db18af1cb378d19595269",
+      "start_ns": 4015089980087106,
+      "headers_ns": 4015090024148850
+    }
+  ],
+  "guard_status": "COMMAND_FAILED",
+  "guard_sha256": "f5f1066a533651bc768f7939e071363cda50f92f84d7d342ab98b6be800d0fb7",
+  "result_sha256": "8e7e4fe28968f028091096201c81e7bdba2dc861e338927d9efe076ee600a213",
+  "original_actors": {
+    "device.py": "54b5ccebe49ef50e624d3d7c4be21b05ed56a0907892f4ca95cb72e7b2777039",
+    "workflow.py": "4ae451bcc01258cc7c7b645dec8c53844aefc4c8f9fe3bbd7891828662b260d0",
+    "batch_cancel_receipt.py": "d06567be776171e315440a9df51d714aa82e0a03e3a2e94503676a705fe2a178",
+    "concurrent_batch_business.py": "e638b2b39b38e369b6f56e05dc5c366089ba9ea061363dcd0ecdf064e5eb48ef",
+    "batch_handoff.mjs": "9b8692c492d27e8677f40e51b14c21ef7c0dfecfd8700269b8be8f2587f6cf83",
+    "batch_state.cpp": "5ac0f9d975cb54761f0283ed4e10cbdf2921a25bdbe42da3c74c015847003d59",
+    "cpu.json": "2710999bd41ab1e5936e95ef555342227098b8b397b62ae1c2c6483753b885ce",
+    "result.json": "d00c6cfb604d4a947274617bb373aab47bee4ef58129d9cd4e69b7b571785016"
+  },
+  "original_exception_sha256": "6fdf3569f8a9bc4ea63f5afe5d24dfa57fde6f4cc5b74aefa8d5fd0afbb55d02"
+}
