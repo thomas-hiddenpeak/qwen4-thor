@@ -3386,6 +3386,14 @@
         "publication": 594,
         "business": "evidence/serve-responses-sdk-business-20261128/business.json",
         "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
+      },
+      "sdk_stream_text_20261128": {
+        "state": "native_and_official_sdk_cpu_verified",
+        "cpu": "evidence/serve-responses-search-stream-sdk-20261128/cpu.json",
+        "remaining": [
+          "candidate model HTTP and stored replay",
+          "reversible issuance and main"
+        ]
       }
     },
     {
@@ -9854,6 +9862,14 @@
         "scope": [
           "model exit",
           "primary gateway failure"
+        ]
+      },
+      "sdk_stream_text_20261128": {
+        "state": "native_and_official_sdk_cpu_verified",
+        "cpu": "evidence/serve-responses-search-stream-sdk-20261128/cpu.json",
+        "remaining": [
+          "candidate model HTTP and stored replay",
+          "reversible issuance and main"
         ]
       }
     },

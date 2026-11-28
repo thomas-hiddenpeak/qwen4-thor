@@ -36,6 +36,10 @@ CSV 中的 `resource` 可以直接使用对应的资源方法。`generic` 表示
 
 复核版本时，Python 使用已安装目标 SDK 的解释器运行 `-m tools.serve_audit.sdk_method_matrix <challenges.json>`。Node 使用 `node tools/serve_audit/sdk_method_matrix.mjs <openai 包目录> <challenges.json>`。将每个输出按 `python-版本.json` 或 `node-版本.json` 放入同一目录，再运行 `python3 -m tools.serve_audit.render_sdk_matrix <challenges.json> <客户端输出目录> <矩阵输出目录>`。
 
+## Responses 流式助手聚合正文
+
+直接调用 Node 的 `responses.stream().finalResponse()` 时，原版 6.34 与 6.44 能读到消息及 URL 引用，`output_text` 却为 undefined。6.45 已在 SDK 内完成聚合。候选从请求头识别相应旧版 Node，为终态流事件拼接所有消息的 `output_text` 片段；工具输出和拒答文字不参与拼接。六个登记 SDK 加上 6.44、6.45 的边界验证均通过 Thor 流的本机 TLS 回放。候选的实机请求与可回退发行继续验收。 [流式助手回执](evidence/serve-responses-search-stream-sdk-20261128/cpu.json)
+
 ## Live 录音下载及标准响应头
 
 临时 503 给出至少一秒的等待时间。Python 3.42.1、3.55.1 和 Node 7.47.0 可通过 Live 资源方法下载；矩阵中的三个较早版本使用公开的通用 GET。六版均通过原生报文回放取得同一 WAV。[客户端记录](evidence/serve-sdk-method-matrix-20261127/recording-download-retries.json)

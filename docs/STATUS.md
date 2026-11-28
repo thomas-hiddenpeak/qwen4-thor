@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Node 6.34 的流式助手曾能读回正文与引用，但 finalResponse().output_text 为空。候选为受影响的 Node 版本在终态事件补齐聚合文本；当前客户端的原始回包和持久对象保持原合同。六个登记版本及 6.44/6.45 边界均从同一段 Thor 实机流重组出 66 个事件和正确引用，3,900 个 token 的概率输出也已回归。下一步通过原生 TLS 验证实际创建及按原 ID 重放。 [客户端回执](evidence/serve-responses-search-stream-sdk-20261128/cpu.json)
+
 主容量通过原生 TLS 检索并存储 RFC 2606 答复。轻容量按原 ID 读回相同输出，再以离线模式从同一来源生成带引用的答复。跨客户读取在两档都返回与未知 ID 相同的 404，两次独立 Chat 均答 42。下一步验证发行包的托管恢复。 [容量回执](evidence/serve-web-provider-20261128/profiles.json)
 
 已使独立 OpenAPI 包和配置 schema 都能验证提供方启用时的真实配置，生成校验还同步了 PR203 的 Batch 源码摘要。主、轻容量交接使用原 RFC 问题、同客户存储和独立 TLS 客户，回执校验通过 7 个反例。 [准备回执](evidence/serve-web-provider-20261128/profile-preparation.json)

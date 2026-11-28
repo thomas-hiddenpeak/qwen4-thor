@@ -207,6 +207,29 @@ bool ProjectFunctionArgumentName(io::Json* event, const io::Json& response) {
   return true;
 }
 
+void ProjectStreamOutputText(io::Json* event) {
+  if (!detail::HttpResponseContext::LegacyStreamOutputText()) return;
+  const auto type = event->GetString("type");
+  if (type != "response.completed" && type != "response.incomplete" &&
+      type != "response.failed") return;
+  if (!event->Has("response")) return;
+  auto& response = Field(*event, "response");
+  const auto* output = response.GetArray("output");
+  if (!output) return;
+  std::string text;
+  for (const auto& item : output->array) {
+    if (item.GetString("type") != "message") continue;
+    const auto* content = item.GetArray("content");
+    if (!content) continue;
+    for (const auto& part : content->array) {
+      const auto* value = part.Find("text");
+      if (part.GetString("type") == "output_text" && value && value->IsString())
+        text += value->str;
+    }
+  }
+  Set(&response, "output_text", String(std::move(text)));
+}
+
 io::Json ResponsesWireValue(io::Json value) {
   ProjectValue(value, true);
   if (detail::HttpResponseContext::LegacyMcpError())

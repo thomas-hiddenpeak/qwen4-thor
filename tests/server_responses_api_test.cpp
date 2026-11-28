@@ -554,7 +554,8 @@ int ResponsesApiFixture(int argc, char** argv) {
         detail::SendSimple(fd, 200, "OK", "{}", "application/json");
         return 0;
       }
-      http.SetResponsesView(headers.ResponsesView());
+      const auto profile = headers.ResponsesProfile();
+      http.SetResponsesView(profile.view, profile.stream_output_text);
       StateAccess access{headers.authorization == "Bearer cpu-a"
                              ? "client:cpu-a"
                              : "client:cpu-b",
@@ -666,5 +667,111 @@ Q4T_TEST(responses_parallel_function_names_match_live_and_retained_events) {
     Q4T_CHECK(frame == replay.wire.substr(retained, retained_start - retained));
     Q4T_CHECK(!Parse(frame.substr(marker.size())).Has("name"));
   }
+  return true;
+}
+
+Q4T_TEST(responses_legacy_stream_text_is_rendered_for_each_reader) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
+  const auto old =
+      ClassifyResponsesClient(ResponsesSdkLanguage::kJavaScript, "6.34.0");
+  context.SetResponsesView(old.view, old.stream_output_text);
+  ResponsesExecution run(store);
+  std::string wire;
+  Q4T_CHECK(Begin(&run, &wire) && Finish(&run, &wire));
+  const auto path = "/v1/responses/" + run.Id();
+  const auto stream = path + "?stream=true&include_obfuscation=false";
+  const auto rendered = run.PublicWire(wire);
+  const std::string key = "\"output_text\":\"actual response\"";
+  const auto terminal = wire.find("event: response.completed\r\n");
+  Q4T_CHECK(terminal != wire.npos && wire.find(key) == wire.npos);
+  Q4T_CHECK(rendered.substr(0, terminal) == wire.substr(0, terminal));
+  Q4T_CHECK(rendered.find(key, terminal) != rendered.npos);
+  ResponsesReplay replay;
+  Q4T_CHECK(Ok(Read(store, "GET", stream, &replay)) && replay.wire == rendered);
+  const auto json = Read(store, "GET", path);
+  Q4T_CHECK(Ok(json) && !json.value.Has("output_text"));
+  context.SetResponsesView(ResponsesSdkView::kCurrent);
+  Q4T_CHECK(run.PublicWire(wire) == wire);
+  Q4T_CHECK(Ok(Read(store, "GET", stream, &replay)));
+  // 6.34 has a second independent presentation difference. Modern readers
+  // receive the underscored retention spelling in response-bearing events.
+  std::string modern = wire;
+  constexpr std::string_view old_cache =
+      R"("prompt_cache_retention":"in-memory")";
+  constexpr std::string_view new_cache =
+      R"("prompt_cache_retention":"in_memory")";
+  for (auto pos = modern.find(old_cache); pos != modern.npos;
+       pos = modern.find(old_cache, pos + new_cache.size())) {
+    modern.replace(pos, old_cache.size(), new_cache);
+  }
+  Q4T_CHECK(replay.wire == modern);
+  return true;
+}
+
+Q4T_TEST(responses_legacy_stream_text_uses_only_message_text_parts) {
+  detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
+  context.SetResponsesView(ResponsesSdkView::kCurrent, true);
+  const auto response = Parse(R"({"output":[
+    {"type":"reasoning","content":[{"type":"output_text","text":"hidden"}]},
+    {"type":"message","content":[{"type":"output_text","text":"甲"},
+      {"type":"refusal","refusal":"secret"},{"type":"output_text","text":" "}]},
+    {"type":"function_call","arguments":"hidden"},
+    {"type":"message","content":[{"type":"output_text","text":"🌙"}]}]})");
+  for (const auto type : {"response.completed", "response.incomplete",
+                          "response.failed", "response.created"}) {
+    auto event = Parse(std::string("{\"type\":\"") + type +
+                       "\",\"response\":" + OutputJson(response) + "}");
+    ProjectStreamOutputText(&event);
+    const auto& view = *event.Find("response");
+    if (std::string_view(type) == "response.created") {
+      Q4T_CHECK(!view.Has("output_text"));
+    } else {
+      Q4T_CHECK(view.GetString("output_text") == "甲 🌙");
+    }
+    Q4T_CHECK(OutputJson(*view.Find("output")) ==
+              OutputJson(*response.Find("output")));
+  }
+  auto empty =
+      Parse(R"({"type":"response.completed","response":{"output":[]}})");
+  ProjectStreamOutputText(&empty);
+  Q4T_CHECK(
+      empty.Find("response")->GetString("output_text", "missing").empty());
+  return true;
+}
+
+Q4T_TEST(responses_legacy_aggregate_accepts_large_logprob_frames) {
+  Fixture fixture;
+  ObjectStore store(fixture.options);
+  ResponsesExecution run(store);
+  detail::HttpResponseContext context(detail::HttpResponseContext::Detached{});
+  const auto profile =
+      ClassifyResponsesClient(ResponsesSdkLanguage::kJavaScript, "6.34.0");
+  context.SetResponsesView(profile.view, profile.stream_output_text);
+  const std::string text(3900, 'x');
+  constexpr std::string_view token =
+      R"({"token":"x","bytes":[120],"logprob":-0.1,)"
+      R"("top_logprobs":[{"token":"x","bytes":[120],"logprob":-0.1}]})";
+  std::string scores;
+  for (size_t i = 0; i < text.size(); ++i) {
+    if (i) scores.push_back(',');
+    scores += token;
+  }
+  const auto earlier =
+      "event: response.output_text.done\r\ndata: " +
+      std::string(R"({"type":"response.output_text.done","text":")") + text +
+      R"(","logprobs":[)" + scores + "]}\r\n\r\n";
+  const auto last =
+      "event: response.completed\r\ndata: " +
+      std::string(
+          R"({"type":"response.completed","response":{"output":[{"type":"message",)"
+          R"("content":[{"type":"output_text","text":")") +
+      text + R"(","logprobs":[)" + scores + "]}]}]}}\r\n\r\n";
+  const auto rendered = run.PublicWire(earlier + last);
+  Q4T_CHECK(rendered.starts_with(earlier));
+  Q4T_CHECK(rendered.find("\"output_text\":\"" + text + "\"", earlier.size()) !=
+            rendered.npos);
+  Q4T_CHECK(rendered.find(scores, earlier.size()) != rendered.npos);
   return true;
 }

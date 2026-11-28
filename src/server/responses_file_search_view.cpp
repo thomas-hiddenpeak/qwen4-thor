@@ -39,16 +39,28 @@ Json ResponsesExecution::PublicResponse() const {
 }
 
 std::string ResponsesExecution::PublicWire(std::string_view wire) const {
-  const bool legacy_mcp = detail::HttpResponseContext::LegacyMcpError() &&
-                          wire.find("\"mcp_call\"") != wire.npos;
+  const bool legacy_mcp = detail::HttpResponseContext::LegacyMcpError();
   const bool named_arguments =
-      detail::HttpResponseContext::LegacyFunctionArgumentName() &&
-      wire.find("event: response.function_call_arguments.done\r\n") != wire.npos;
-  if (!legacy_mcp && !named_arguments && (Includes(envelope_, "file_search_call.results") ||
-       wire.find("\"file_search_call\"") == wire.npos) &&
-      (Includes(envelope_, "web_search_call.action.sources") ||
-       wire.find("\"web_search_call\"") == wire.npos))
-    return std::string(wire);
+      detail::HttpResponseContext::LegacyFunctionArgumentName();
+  const bool stream_text =
+      detail::HttpResponseContext::LegacyStreamOutputText();
+  const bool hide_files = !Includes(envelope_, "file_search_call.results");
+  const bool hide_sources =
+      !Includes(envelope_, "web_search_call.action.sources");
+  const auto project = [&](std::string_view frames) {
+    const auto has = [&](std::string_view key) {
+      return frames.find(key) != frames.npos;
+    };
+    return (legacy_mcp && has("\"mcp_call\"")) ||
+           (named_arguments &&
+            has("event: response.function_call_arguments.done\r\n")) ||
+           (stream_text && (has("event: response.completed\r\n") ||
+                            has("event: response.incomplete\r\n") ||
+                            has("event: response.failed\r\n"))) ||
+           (hide_files && has("\"file_search_call\"")) ||
+           (hide_sources && has("\"web_search_call\""));
+  };
+  if (!project(wire)) return std::string(wire);
   std::string result;
   while (!wire.empty()) {
     const auto line = wire.find("\r\n");
@@ -56,15 +68,29 @@ std::string ResponsesExecution::PublicWire(std::string_view wire) const {
     if (!wire.starts_with("event: ") || line == wire.npos || end == wire.npos ||
         end <= line + 8 || wire.substr(line + 2, 6) != "data: ")
       throw std::logic_error("Invalid native Responses event framing");
+    const auto frame = wire.substr(0, end + 4);
+    if (!project(frame)) {
+      result.append(frame);
+      wire.remove_prefix(frame.size());
+      continue;
+    }
+    // This is an already serialized native output frame. A legal completion
+    // with many logprobs can exceed the input-schema node count. The exact
+    // frame length bounds both the number of JSON values and decoded bytes.
+    auto limits = kSchemaJsonLimits;
+    limits.max_values = frame.size();
+    limits.max_string_bytes = frame.size();
     Json event;
     const auto status =
         io::ParseJson(std::string(wire.substr(line + 8, end - line - 8)),
-                      &event, true, kSchemaJsonLimits);
+                      &event, true, limits);
     if (!status || event.GetString("type") != wire.substr(7, line - 7))
       throw std::logic_error("Invalid native Responses event value");
     if (event.Has("item")) HideResult(&Field(event, "item"), envelope_);
-    if (event.Has("response")) HideResponse(&Field(event, "response"), envelope_);
+    if (event.Has("response"))
+      HideResponse(&Field(event, "response"), envelope_);
     if (legacy_mcp) ProjectMcpErrorStrings(event);
+    if (stream_text) ProjectStreamOutputText(&event);
     if (named_arguments &&
         !ProjectFunctionArgumentName(&event, output_.Snapshot()))
       throw std::logic_error("Function event has no matching output item");
