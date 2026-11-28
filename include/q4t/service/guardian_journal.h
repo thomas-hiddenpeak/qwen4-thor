@@ -39,7 +39,14 @@ class JournalClient {
   Status Start(const std::string& python, const std::string& script,
                const std::string& directory, const std::string& service_id,
                int64_t now_ns, int64_t timeout_ns,
-               JournalDomain domain = JournalDomain::kCore);
+               JournalDomain domain = JournalDomain::kCore,
+               bool observe_memory = false);
+  // The independent channel carries observations only. Its loss cannot
+  // freeze the role-authority journal. All reads here are nonblocking.
+  void PollMemory();
+  std::optional<bool> MemorySafe(uint64_t floor_mib, int64_t since_ns,
+                                 int64_t now_ns) const;
+  int64_t MemorySampleTime() const { return memory_at_; }
   Status Submit(const std::string& operation, const io::Json& args,
                 int64_t now_ns, uint64_t* sequence);
   // Tick, Submit and BeginStop contain no waits or ordinary filesystem writes.
@@ -61,6 +68,11 @@ class JournalClient {
   JournalDomain domain_ = JournalDomain::kCore;
   ChildProcess worker_;
   OwnedFd socket_;
+  OwnedFd memory_socket_;
+  int64_t memory_at_ = 0;
+  int64_t memory_required_after_ = 0;
+  uint64_t total_bytes_ = 0;
+  uint64_t available_bytes_ = 0;
   io::Json snapshot_;
   std::optional<JournalReply> reply_;
   std::string service_id_;

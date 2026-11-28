@@ -348,6 +348,7 @@ jobs:
           python3 -B -m unittest -v \
             tools.serve_service.test_memory \
             tools.serve_recovery.test_profile_memory \
+            tools.serve_recovery.test_guardian_memory \
             tools.serve_recovery.test_production.ControllerTests.test_fresh_launch_gate_precedes_grant_when_memory_changes \
             tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_stalled_launch_memory_keeps_guardian_responsive_without_a_grant \
             tools.serve_recovery.test_runtime.ProductionRuntimeTests.test_observer_loss_after_grant_allows_first_generation_to_become_ready \

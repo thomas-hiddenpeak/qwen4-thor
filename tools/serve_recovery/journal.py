@@ -12,6 +12,8 @@ import signal
 import socket
 import struct
 import sys
+import threading
+import time
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[2]
@@ -93,6 +95,42 @@ def serve(sock, directory, service_id):
         return 1
 
 
+def publish_memory(sock, reader):
+    """Private native-endian seqpacket, sampled independently of journal I/O."""
+    frame = struct.Struct('=QQQ')
+    with sock:
+        while True:
+            started = time.monotonic_ns()
+            try:
+                value = reader()
+                packet = frame.pack(started, value['total_bytes'], value['available_bytes'])
+            except Exception:
+                packet = frame.pack(started, 0, 0)
+            try:
+                sock.send(packet, socket.MSG_DONTWAIT | socket.MSG_NOSIGNAL)
+            except BlockingIOError:
+                pass
+            except OSError:
+                return
+            time.sleep(.1)
+
+
+def start_memory_observer():
+    fd = os.environ.pop('Q4T_GUARDIAN_MEMORY_FD', None)
+    if fd is None:
+        return
+    sock = None
+    try:
+        from tools.serve_service import memory
+        sock = socket.socket(fileno=int(fd))
+        sock.set_inheritable(False)
+        threading.Thread(target=publish_memory, args=(sock, memory.read),
+                         name='q4t-guardian-meminfo', daemon=True).start()
+    except Exception:
+        if sock is not None:
+            sock.close()
+
+
 def main():
     os.umask(0o077)
     parser = argparse.ArgumentParser(description=__doc__)
@@ -104,6 +142,7 @@ def main():
     args = parser.parse_args()
     with socket.socket(fileno=args.fd) as sock:
         verify_parent(sock, args.parent_pid, args.parent_start)
+        start_memory_observer()
         return serve(sock, args.directory, args.service_id)
 
 
