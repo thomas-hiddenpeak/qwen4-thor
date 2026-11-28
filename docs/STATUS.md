@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+rev600 已登记主包和回退包。Guardian 的内存采集卡住期间，同一模型与管理入口继续响应。采集恢复后，主网关故障触发回退接管。登记期间服务处于 STOPPED，模型启动次数为零，13 份运行状态和既有容量策略通过复核。长稳及冷启动交接入口已更新。 [发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
+
 PR #207 的 push 和 pull_request 检查均在观测隔离夹具报错。构造函数已初始化 watchdog，测试使用的手工控制器缺少该字段，进度夹具也未提供真实快照结构。补齐两处夹具，增加“日志和内存同时失去观测”的心跳断言，确认 READY、UNKNOWN 且不发模型事务。Thor 运行两份完整 CPU 测试文件，40 项通过。等待最终提交的两次远端检查。
 
 Guardian 内存采集卡住后，同一模型在 READY_DEGRADED 状态回答了 37，管理请求也在 300 ms 的期限内完成。采集恢复后，主网关故障触发已登记的回退包接管；另验回退包模型意外退出后原控制器恢复服务。共 4 次模型启动、5 条经鉴权的 HTTP Chat，13 份运行状态及 7 项发行绑定通过复核。下一步登记已验主包及回退包。 [业务回执](evidence/serve-memory-watchdog-stall-20261128/guardian-business.json)
@@ -1544,12 +1546,12 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev598**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev598 发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)
+本机登记的发行版本为 **rev600**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev600 发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `2c01d7f76171c2246c619cc892feeb74856147d6af97c323283ee8fc3a0b581b` |
-| 回退服务包清单 | `74aacfbe3d12b162888127cf9f145e2a670595bbf165f7ea8c965373ad88cac1` |
+| 主服务包清单 | `0f6b9d2230949afd26def4952e190ea941cc3258aefd3b04b7ab1fce93a151d1` |
+| 回退服务包清单 | `8b92693c1dff9affda99a2dfc0fd6ac5a3cf1e3d8452fa6472c03766900dac61` |
 | 默认引擎 | `5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
