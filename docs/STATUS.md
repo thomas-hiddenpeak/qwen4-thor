@@ -17,6 +17,8 @@ Thor 上的 Node 6.34 通过原生 TLS 创建并保存带引用的 RFC 2606 回�
 
 六个官方 Python 和 Node SDK 用原 ID 从两份历史 Thor 对象各重放 66 个事件，经候选原生读取路径取得完整正文与引用。四组跨客户和未知 ID 读取均为 404，保存的文件与测试副本逐字节一致。下一步通过原生网关检验实时创建与回读。 [回读验收](evidence/serve-responses-search-stream-sdk-20261128/retained.json)
 
+rev596 已发行可选的网页搜索提供方。主、轻容量验证了真实查询的引用与同客户离线交接。发行配置默认关闭外部搜索，在模型退出和网关切换后均能按原 ID 取回项目答复。主包和回退包已经登记，发行时意图为 STOPPED。 [发行回执](evidence/serve-web-provider-20261128/delivery.json)
+
 公共 CPU 检查链接失败，独立测试目标遗漏了网页索引实现。已补齐源文件并用 CI 的独立 CMake 入口重新链接；同一可执行文件的 25 项网页合同通过。下一步复核 GitHub 检查及发行登记。 [链接回执](evidence/serve-web-provider-20261128/host-link.json)
 
 Node 6.34 的流式助手曾能读回正文与引用，但 finalResponse().output_text 为空。候选为受影响的 Node 版本在终态事件补齐聚合文本；当前客户端的原始回包和持久对象保持原合同。六个登记版本及 6.44/6.45 边界均从同一段 Thor 实机流重组出 66 个事件和正确引用，3,900 个 token 的概率输出也已回归。下一步通过原生 TLS 验证实际创建及按原 ID 重放。 [客户端回执](evidence/serve-responses-search-stream-sdk-20261128/cpu.json)
@@ -1524,13 +1526,13 @@ PR #55合入前发现5项旧音频断言与来源标记表示不一致，已修�
 
 ## 当前实际默认
 
-本机登记的发行版本为 **rev594**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev594 发行回执](evidence/serve-batch-cancel-20261128/delivery.json)
+本机登记的发行版本为 **rev596**。登记时服务意图为 `STOPPED`，模型启动 0 次，13 份客户与恢复状态通过复核。[rev596 发行回执](evidence/serve-web-provider-20261128/delivery.json)
 
 | 已登记产物 | SHA-256 |
 |---|---|
-| 主服务包清单 | `96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed` |
-| 回退服务包清单 | `202f8584c273fe9d168947ec5ca2d6fefd412f53053460bdb7cc65ffb785f3bc` |
-| 默认引擎 | `e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34` |
+| 主服务包清单 | `a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3` |
+| 回退服务包清单 | `f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5` |
+| 默认引擎 | `8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56` |
 
 发行包为范围内 231 个方法中的 219 个声明了预期成功状态。各方法的实际业务验收、剩余媒体后端、客户端与恢复组合见[逐项任务表](serve-master-goals-v2.json)。真实 24 小时运行由用户安排。
 
