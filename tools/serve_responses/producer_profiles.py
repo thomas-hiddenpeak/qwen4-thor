@@ -68,11 +68,12 @@ def check(declaration, row):
     package.require(all(i['type'] in ordinary.union(BETA_TYPES) for i in output)
                     and len(calls) == len(results) == 1 and calls[0].get('call_id')
                     and calls[0]['call_id'] == results[0]['call_id']
-                    and calls[0]['action'] == results[0]['action'] == 'list_agents',
+                    and calls[0]['action'] == results[0]['action'] == 'list_agents'
+                    and calls[0]['agent'] == results[0]['agent'] == {'agent_name': 'root'}
+                    and json.loads(calls[0]['arguments']) == {},
                     'agent result missing or attributed to a different call')
     text = [json.loads(p['text']) for p in results[0]['output'] if p['type'] == 'output_text']
-    package.require(len(text) == 1 and any(a['agent_name'] == 'root' for a in text[0]['agents']),
-                    'list_agents did not return the actual root agent')
+    package.require(text == [{'agents': []}], 'unexpected children in a fresh agent tree')
 
 
 def business(stage, capabilities):

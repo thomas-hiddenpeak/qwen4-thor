@@ -18,9 +18,10 @@ def observation():
              outputs=[dict(type='logs', logs='603\n')]),
         dict(type='message', content=[dict(type='output_text', text='603')])])
     agents = dict(id='resp_agents', status='completed', output=[
-        dict(type='multi_agent_call', action='list_agents', call_id='call_agent'),
-        dict(type='multi_agent_call_output', action='list_agents', call_id='call_agent', output=[
-            dict(type='output_text', text='{"agents":[{"agent_name":"root","status":"running"}]}')])])
+        dict(type='multi_agent_call', action='list_agents', call_id='call_agent',
+             agent={'agent_name': 'root'}, arguments='{}'),
+        dict(type='multi_agent_call_output', action='list_agents', call_id='call_agent',
+             agent={'agent_name': 'root'}, output=[dict(type='output_text', text='{"agents":[]}')])])
     return dict(container='cntr_one', interpreter=interpreter, agents=agents)
 
 
@@ -48,7 +49,8 @@ class ProducerProfilesTest(unittest.TestCase):
             lambda r: r['interpreter']['output'][1]['content'][0].update(text='602'),
             lambda r: r['agents'].update(status='in_progress'),
             lambda r: r['agents']['output'][1].update(call_id='call_foreign'),
-            lambda r: r['agents']['output'][1].update(output=[dict(type='output_text',text='{"agents":[]}')]),
+            lambda r: r['agents']['output'][1].update(agent={'agent_name': 'root/foreign'}),
+            lambda r: r['agents']['output'][1].update(output=[dict(type='output_text',text='{"agents":[{"agent_name":"root"}]}')]),
             lambda r: r['agents']['output'].append(dict(type='unknown_output')),
         ):
             row = observation()
