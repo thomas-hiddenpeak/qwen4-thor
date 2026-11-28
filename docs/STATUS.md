@@ -1,5 +1,7 @@
 # 当前状态（2026-11-29）
 
+两份新容量记录可按摘要还原 rev610 原记录，索引诊断与主轻两档实测结束日志逐一对应。核对 CMake 改动仅新增一项测试文件后，更新来源摘要，40 项反例检查通过。下一步封包及验证托管恢复。 [登记回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity.json)
+
 主、轻两档各用一次真实模型启动，完成项目文档索引。持久化向量的分块数与成功释放槽位的结束事件逐项吻合，跨客户读取返回 404，独立 Chat 均回答 42。下一步登记容量与回退包。 [回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity-business.json)
 
 原生 TLS 与磁盘对象存储完成文件上传、入库、来源回读、跨客户拒绝和删除。CPU 夹具保存了 10 个分块。校验器从真实前序日志检出 15 个误报，并拒绝 9 种损坏证据。下一步在主、轻两档使用原生模型复验。 [回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity-cpu.json)

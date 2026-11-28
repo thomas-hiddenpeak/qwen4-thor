@@ -1,0 +1,53 @@
+{
+  "status": "PASS_CAPACITY",
+  "history": "ACCEPT_VECTOR_INGESTION_PRIMARY_LIGHT",
+  "pins": {
+    "primary": "d03406afdb3a6ea3f326b9b5e07b9fdfff2d1bd852eb88cbc91d0878a762aa18",
+    "light": "0b12978ebe24a7d265ab2d4b4ac447f4eaf47a260a61cb4a3a8f5709e6365290"
+  },
+  "receipts": {
+    "primary": "f22e014656b5ee18446006a5dab7000896d0785172d935db916f493b8f137264",
+    "light": "df864786fd9f7a84c30c6060f4d1ad331dc9317d2df78e17736408f0e723c366"
+  },
+  "engine": "8a430b251c7a4a23aec01302750a06d08a0b1e6edfed635e8e26b2bf61250906",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "previous_revision": 610,
+  "previous_manifest": "9429e5d9630c8cf0d15ddd2996ef1238ebe1817ca84fc3120d80b988034f7c3c",
+  "lease_sha256": "7596cc1dd8d21d7d8be2fe84f37b1a6a113b2fca2cba0a29020b970b054c512b",
+  "observations_sha256": "07ba95effa248d60ec610dd7a901f4d9f125983ecdfb8c22cf5dc73867e445cb",
+  "accepted_sha256": "940ed5b1af15f4dd03fae851e73260a8eacf4b2aefcab594e982bc370956c840",
+  "capacity_business": "1669d9f94a5dd3529756ed6ffbbcd27743951d59c85ce25ec65c72e53fb558bb",
+  "invalid_history_controls": {
+    "primary": {
+      "prior": "ad5f17ca368cfe03b5cb3b7d5dd9aee393383d2de6ba6aea3f444972d12c1ef3",
+      "receipt": "f22e014656b5ee18446006a5dab7000896d0785172d935db916f493b8f137264",
+      "invalid_histories_denied": 2
+    },
+    "light": {
+      "prior": "71ea1b4b877698aba1cd6d8a4d0fc3f7eb45cae068b54dd4066d3a59d11cd839",
+      "receipt": "df864786fd9f7a84c30c6060f4d1ad331dc9317d2df78e17736408f0e723c366",
+      "invalid_histories_denied": 2
+    }
+  },
+  "role_preview": {
+    "primary": {
+      "actual_predecessor": "ad5f17ca368cfe03b5cb3b7d5dd9aee393383d2de6ba6aea3f444972d12c1ef3",
+      "prior": "cc6c8ae39a35b95b579a4cca0d51f6b3cf64e7b2ed6da3da6668975387c08e06",
+      "controls": [
+        "prior receipt missing",
+        "invalid digest",
+        "non-string digest"
+      ]
+    },
+    "light": {
+      "actual_predecessor": "71ea1b4b877698aba1cd6d8a4d0fc3f7eb45cae068b54dd4066d3a59d11cd839",
+      "prior": "f328e66696cf7fe43b9ea793093b16f48440fb32982a9b35254004c8a6e2fe26",
+      "controls": [
+        "prior receipt missing",
+        "invalid digest",
+        "non-string digest"
+      ]
+    }
+  },
+  "release": "candidate"
+}
