@@ -8251,12 +8251,12 @@
         "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
       },
       "optional_web_provider_20261128": {
-        "state": "native_cpu_and_public_https_verified",
+        "state": "native_http_chat_responses_offline_stream_and_outage_verified",
         "evidence": "evidence/serve-web-provider-20261128/cpu.json",
         "remaining": [
-          "model HTTP Chat/Responses citations and auxiliary failure isolation",
           "reversible issued deployment and main"
-        ]
+        ],
+        "device": "evidence/serve-web-provider-20261128/device.json"
       }
     },
     {

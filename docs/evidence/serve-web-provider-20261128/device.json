@@ -1,0 +1,70 @@
+{
+  "stage": "public native search model HTTP accepted; reversible issuance pending",
+  "source_head": "8f9115e0112c285f55decb8b106e1ed2d8f688c1",
+  "engine": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
+  "protocol_sources": "718595cb69bae6c86795fe0153ae36ba0efda28abd6188afba6dd360b7b69385",
+  "predecessor_manifest": "96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed",
+  "previous_revision": 594,
+  "requests": [
+    {
+      "label": "configuration",
+      "path": "/v1/config",
+      "status": 200,
+      "mime": "application/json"
+    },
+    {
+      "label": "preflight",
+      "path": "/v1/chat/preflight",
+      "status": 200,
+      "mime": "application/json"
+    },
+    {
+      "label": "chat",
+      "path": "/v1/chat/completions",
+      "status": 200,
+      "mime": "application/json"
+    },
+    {
+      "label": "responses",
+      "path": "/v1/responses",
+      "status": 200,
+      "mime": "application/json"
+    },
+    {
+      "label": "responses-offline",
+      "path": "/v1/responses",
+      "status": 200,
+      "mime": "text/event-stream"
+    }
+  ],
+  "model_pid": 2086087,
+  "model_exit": 0,
+  "guard": {
+    "status": "COMPLETED",
+    "samples": 84,
+    "all_ok": true,
+    "seconds": 88.461,
+    "ports_free": true,
+    "protected_files": 20
+  },
+  "source": {
+    "url": "https://tex2e.github.io/rfc-translater/html/rfc2606.html",
+    "title": "RFC 2606 - Reserved Top Level DNS Names 日本語訳",
+    "bytes": 32453,
+    "sha256": "7dcac3c4800a70e14f764e09704a786ef91e7df41fdcaac0a05fb138cab1b253",
+    "refresh_seconds": 0
+  },
+  "responses_stream_event_count": 66,
+  "wires": {
+    "chat.wire": "cc71b2003a01c9debbab6fa680c582450cef98d6aaba3c22e866543511a9702b",
+    "responses.wire": "e6c1dacda69445be10eb8e76cd925335151dcb23a33224b08fc63522668c8deb",
+    "responses-offline.wire": "f3b2adb9f24a370d95649fdf77b97ff67507f5ad267091781f701f0be78bacdb"
+  },
+  "original_preflight_request_sha256": "bb5580e3febc147db7c708c7acbebcad159f408685f7fa3cfe716d1e636dbcc0",
+  "preflight_wire_sha256": "114e11b51d98a7d8825c28609ddc00ee2390426aa4c80e92c0da0e658c2c8622",
+  "same_question_and_budget": true,
+  "independent_outage": "outage-and-passages.json",
+  "cumulative_model_starts": 3,
+  "cumulative_generation_requests": 5,
+  "current_installed_revision": 594
+}

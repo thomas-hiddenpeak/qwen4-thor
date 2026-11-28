@@ -1,0 +1,198 @@
+event: response.created
+data: {"response":{"id":"resp_9364ec1c9c03dafce8008d3876e2a131","object":"response","created_at":1795833016,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":"Search once for the exact string \"RFC 2606 reserved example domains\". Then answer from that source. Copy its citation_marker exactly, including angle brackets.","metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":false,"tools":[{"type":"web_search","search_context_size":"low","external_web_access":false}],"tool_choice":{"type":"allowed_tools","mode":"required","tools":[{"type":"web_search"}]},"text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"none","context":"all_turns","mode":"standard","summary":null},"store":true,"background":false,"max_output_tokens":512,"max_tool_calls":1,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.created","sequence_number":0}
+
+event: response.in_progress
+data: {"response":{"id":"resp_9364ec1c9c03dafce8008d3876e2a131","object":"response","created_at":1795833016,"completed_at":null,"status":"in_progress","error":null,"incomplete_details":null,"output":[],"usage":null,"model":"qwen3.8-flash-next","instructions":"Search once for the exact string \"RFC 2606 reserved example domains\". Then answer from that source. Copy its citation_marker exactly, including angle brackets.","metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":false,"tools":[{"type":"web_search","search_context_size":"low","external_web_access":false}],"tool_choice":{"type":"allowed_tools","mode":"required","tools":[{"type":"web_search"}]},"text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"none","context":"all_turns","mode":"standard","summary":null},"store":true,"background":false,"max_output_tokens":512,"max_tool_calls":1,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.in_progress","sequence_number":1}
+
+event: response.output_item.added
+data: {"output_index":0,"item":{"type":"web_search_call","id":"ws_85bb611c7cbb0d9e7dfdc7413994bf34","status":"in_progress","action":{"type":"search","queries":["RFC 2606 reserved example domains"],"query":"RFC 2606 reserved example domains","sources":[]}},"type":"response.output_item.added","sequence_number":2}
+
+event: response.web_search_call.in_progress
+data: {"item_id":"ws_85bb611c7cbb0d9e7dfdc7413994bf34","output_index":0,"type":"response.web_search_call.in_progress","sequence_number":3}
+
+event: response.web_search_call.searching
+data: {"item_id":"ws_85bb611c7cbb0d9e7dfdc7413994bf34","output_index":0,"type":"response.web_search_call.searching","sequence_number":4}
+
+event: response.web_search_call.completed
+data: {"item_id":"ws_85bb611c7cbb0d9e7dfdc7413994bf34","output_index":0,"type":"response.web_search_call.completed","sequence_number":5}
+
+event: response.output_item.done
+data: {"output_index":0,"item":{"type":"web_search_call","id":"ws_85bb611c7cbb0d9e7dfdc7413994bf34","status":"completed","action":{"type":"search","queries":["RFC 2606 reserved example domains"],"query":"RFC 2606 reserved example domains","sources":[{"type":"url","url":"https://tex2e.github.io/rfc-translater/html/rfc2606.html"}]}},"type":"response.output_item.done","sequence_number":6}
+
+event: response.output_item.added
+data: {"output_index":1,"item":{"id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","type":"message","content":[],"role":"assistant","status":"in_progress"},"type":"response.output_item.added","sequence_number":7}
+
+event: response.content_part.added
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"part":{"type":"output_text","text":"","annotations":[],"logprobs":[]},"type":"response.content_part.added","sequence_number":8}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"The","logprobs":[],"type":"response.output_text.delta","sequence_number":9,"obfuscation":"1e0e589b0430edfaad65ad093c7fe413cb7fcda577ab926353dde6bad5bbc7bc5a8e2b8d68c481bb56c487500666a6d4a2470723654051d37dcc4d5b1ffb10bc728520d53af770403f8339c04485d05fc15136e4306d33e0e5bf8e6bce8ecd3e48de7"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" three","logprobs":[],"type":"response.output_text.delta","sequence_number":10,"obfuscation":"4c1656d49432f63208baede9ea8d481fe07b4a58972d8d27285baf3ecd61f5270"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" example","logprobs":[],"type":"response.output_text.delta","sequence_number":11,"obfuscation":"9e748edfa08c74c4781d49f082ffcadcc41f754efe877a23382878cdf65947d407d15247d06e5b7b744c3be712c35fdb195dadb87063187afc2b703d65ce26f914799c30cf244179dfcf2ff06d29ce3e95af134169d73369e3d8cbe7ac1c4df"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" second","logprobs":[],"type":"response.output_text.delta","sequence_number":12,"obfuscation":"bee4b4898b628714ae3b60c38fd7e52838196cd0e8aea2ca7e5a4ef2c01e1e6a"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"-level","logprobs":[],"type":"response.output_text.delta","sequence_number":13,"obfuscation":"06b2ac80b10e651f0ed9d53dc947df2e78ec150904b188b820f80f67c28acc075ca598bd88464383578a38f460f778bb0c7c5eb0cac57ef39544d2f7858a42c1d7b4e7bd1db3509a9c74824fc9aea1fecce25db38b1d61102871fdff0afa7a102"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" domains","logprobs":[],"type":"response.output_text.delta","sequence_number":14,"obfuscation":"42ccfd168583b8edceb4ad531530ac5aca193e608703ed7d04ec02dccc0a9aa"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" reserved","logprobs":[],"type":"response.output_text.delta","sequence_number":15,"obfuscation":"0039d05a80c2a41bf64b842804269f04ec9a38575a6ca04c7c5c5540acc8477ef94d69f1babfb4667053975ac2ef282915aa4713f3880f637b87d04249f4d25298b0f068f7402db581f7ebd9f39ef6aad8f828ea0e69a144586aa19d9b7d76"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" by","logprobs":[],"type":"response.output_text.delta","sequence_number":16,"obfuscation":"acfe9546be212f324d6a4d374b15e3fa0b8d6fc7b2dc26bb9aeb52816c3e4f692f912974d0d6639eac00ee2982d7c667558c1237d0f3c9c5085ed47a1d86ff4d54809a9c85bb52febf9bf1d00983241d7b7f3b980a625319172e93ad0a7e679794df"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" RFC","logprobs":[],"type":"response.output_text.delta","sequence_number":17,"obfuscation":"c01336ff7173d499041199136bb59a3d69cf5cf1bc5df3115d933004aa1ba18b6f9"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" ","logprobs":[],"type":"response.output_text.delta","sequence_number":18,"obfuscation":"e9eaebdd6deb9033f939912dbec3d20e2984791bffc31a2051291409e1b6da4dbd4c2825bad0a42a20ee73ea79218c388693d6ac24829f50700af3ac6dc06d15e3a24b854d13123e1e1419a66f26cbe00c59298fcd985d0db6d0aba600e4e56df6cd23"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"2","logprobs":[],"type":"response.output_text.delta","sequence_number":19,"obfuscation":"0e9b530346b53cb236d4951d066d86a57b3bc70d011c07574b2d73047685fcf47b71ff"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"6","logprobs":[],"type":"response.output_text.delta","sequence_number":20,"obfuscation":"ede1934055ff5e81fc3507a946ab4599a015db120daea0b9960f15f4708b4467322abf99a6b821d54e982c1f4efb34e87e245af8d12b0eb8066c79f2f336bf2f312d05a2ff4ce91281a9170bb36cd246626dfa42aa4a365dc2d46a51b2c0cf1f642340"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"0","logprobs":[],"type":"response.output_text.delta","sequence_number":21,"obfuscation":"d1d67980acdf9ba703dad88a61a6401827c813999f09236edfd2b364f4b1f0b4bde254"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"6","logprobs":[],"type":"response.output_text.delta","sequence_number":22,"obfuscation":"a76edb6b6c71e0b8d0bcbd4569e84048c9e12f741ce7747978cadeffac8d0c22ca762c8bee907fce14f0e6fa2256402dea58b80a9edc73c9a2bfa91d022b6827b07dc2adcc8498a9807cba8dbf412df0b61717d7c192d3e16ec3d2bb7feb8e4423b0c0"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" are","logprobs":[],"type":"response.output_text.delta","sequence_number":23,"obfuscation":"835e1a74dac32d15ade5acd49ee048b36250588221b45a898a1dccbc53b4d3287fa"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":":","logprobs":[],"type":"response.output_text.delta","sequence_number":24,"obfuscation":"ed9d38bf3343cab206cd96e7502839a1845f08576a46b13f10cc095705429f9567a2c1"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"\n\n","logprobs":[],"type":"response.output_text.delta","sequence_number":25,"obfuscation":"82f9d32240292957bceb7bc80032892328f5d004a4e600bfa5daa1d81f7a325dd8b803ea90a2d637d38c807510a57d59b8d41bc35b00644dac9f7069d2bb8f8e67f992bd32a997529a82b899c1971cfd0805544dc091e13fea2de3dffcf86c1bd45"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"1","logprobs":[],"type":"response.output_text.delta","sequence_number":26,"obfuscation":"c1d28a55b45571d262c51c40606b707a9862fba27fbecdf4d181c15a3c83db903f6de5"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".","logprobs":[],"type":"response.output_text.delta","sequence_number":27,"obfuscation":"03999f854667404a43db2dae87a2da4114dca50cf541691af343546dc5b4d644a5defd"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" example","logprobs":[],"type":"response.output_text.delta","sequence_number":28,"obfuscation":"afd0efe122bd67cb5e2c11ecb93e60d252fc3f84c63b851437ad98b0d2f0e609eed60b960c852c6dbb3a4df368c9ba7cff7ea9ac755baed85009546c829e777ea57402faf013c57eda786cc9beb2a6a8538051dc704c234e071c593df5beff3"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".com","logprobs":[],"type":"response.output_text.delta","sequence_number":29,"obfuscation":"3e0b572b7a50e0670909541d21b91f1b1b26cf7456a78b80470481a6f159f643c03"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"\n","logprobs":[],"type":"response.output_text.delta","sequence_number":30,"obfuscation":"a79320801af4f46decdabb7dab920191de9db5ced22bdcf35c40e096acdef8115e5646f7bc2aaea37560ef8a00176652c5a59d2ec1006fa43c893c0e499f57898ee3ae6b495a996b856d0f140dea6aa5d0d0069a8a54db66ff8558a729c76b2e4533c"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"2","logprobs":[],"type":"response.output_text.delta","sequence_number":31,"obfuscation":"8fd92c8270cd3499eb7222f1ff38e615946b1bf541853723d815f6ea6bfb4b4ddd21b5"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".","logprobs":[],"type":"response.output_text.delta","sequence_number":32,"obfuscation":"828c68cab8bfa11cbba6a931fa12a188932e31aac38ba84ced304fd9b55cb5c1cc503d"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" example","logprobs":[],"type":"response.output_text.delta","sequence_number":33,"obfuscation":"de0fefba8c7d0c0543812355cb56564c07c0d6835b91d6d88bd9e05d787e8cceb9f8e7a5da2b8589616b5f28948cb41660e53483a62b4193ade4a8fe6f868b0885111b548e05ed2a5e53023a5082ee4da01cca236c975bcb83445e4482eaf13"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".net","logprobs":[],"type":"response.output_text.delta","sequence_number":34,"obfuscation":"b1400baa7bc345c97275d7ddc2186a5da403c2f9718e904279cbf9f3aaf4740dbaa832f79b7bcaa2a13825c6233ba805ed009e83a21b5b10df992ce4bbc850e7becb955465b463043f132e4b17a4bed225eab71d24afd1a7ee79d31eb863ed19de8"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"\n","logprobs":[],"type":"response.output_text.delta","sequence_number":35,"obfuscation":"5064a674df816bb7323ae985cd821ab63cab2715534c0d9641126830ac7e687259146"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"3","logprobs":[],"type":"response.output_text.delta","sequence_number":36,"obfuscation":"33d01c42e2a51647f652d17917a02ec6b607e1b135833fa42048cc8bb7170e957134b1"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".","logprobs":[],"type":"response.output_text.delta","sequence_number":37,"obfuscation":"4dfa55352feb3133b5579f65a980bc8f3d881a6d452a6caf1622f7429a64ad241c1841"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":" example","logprobs":[],"type":"response.output_text.delta","sequence_number":38,"obfuscation":"a427372fd6cd61f94c4e5f8eb874301656132dfef25542cf0c1e9e0a8a76d40"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".org","logprobs":[],"type":"response.output_text.delta","sequence_number":39,"obfuscation":"34fca5e51f611c36a07c83328e018ad8f8a72eed833218da6c4e3a3e7de4095f93ab8e5659f30a0d37a53745a07ef04b61b02d8e388851cf8b9a8e3c34fb0756bb92c18960226bf51e6b935dc23d0f62664e334bfe83cc414752cca0f96670d289b"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"\n\n","logprobs":[],"type":"response.output_text.delta","sequence_number":40,"obfuscation":"8a1538192d28eef26a2b70c94b9259406ffbb7916b564a026176054453e248c360d"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"[source","logprobs":[],"type":"response.output_text.delta","sequence_number":41,"obfuscation":"c5d91f1b9537358fef078baf8a52454a0135bffeb559ba3ab3ac6f2211b542ad"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"](","logprobs":[],"type":"response.output_text.delta","sequence_number":42,"obfuscation":"8b2fb4641e0f2f4ef9fb983ace9d4264e80e9dc4246c40c542f2d1ad18342f579dba6"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"<https","logprobs":[],"type":"response.output_text.delta","sequence_number":43,"obfuscation":"fe78c7f5a324f2c050af5e08c288a412fb37d7be970b28c42fb627ca2e1a65d9ed3bd44595c7e13adc04c9cea3c3ccda934ca479a712fca14c299e213460a1bbbcc3a603194543c4c20a5ce88ac6e9341e8cbfca1837b9652d288d86e025ed622"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"://","logprobs":[],"type":"response.output_text.delta","sequence_number":44,"obfuscation":"22cc33ae15bf31c784b1a7dc3bc77c629e4b461f0bac13ddafd9ccdb3cf7da80b9be"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"tex","logprobs":[],"type":"response.output_text.delta","sequence_number":45,"obfuscation":"ece9e02ad8c43842f83156b271765e01597bd16d0de0da6714506c96c5a3640fb3bf"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"2","logprobs":[],"type":"response.output_text.delta","sequence_number":46,"obfuscation":"279bb697c871afbd6f33a4016ce19ed14657c44d68ed47305ee88f6e4846346106d47b"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"e","logprobs":[],"type":"response.output_text.delta","sequence_number":47,"obfuscation":"fe8134f3f60373ac601babe128df256e71ba7a079f283ff2f65cdceefc699c5bc047f6"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".github","logprobs":[],"type":"response.output_text.delta","sequence_number":48,"obfuscation":"ff2542e3c0c774ea2aef725c3032da36e978c6c01a1cd9d8c83732185a68dd209f9a2467cc45ab705da6c0e08b46f9a7bb3ff02bfc9b47817ce5b3b6cb95a9c5f00b4d39e9fe8980ce82db63864733dcfd77a4c501e766b76b258fa2963eae7e"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".io","logprobs":[],"type":"response.output_text.delta","sequence_number":49,"obfuscation":"185878257f01d78eaecd38574983c7fec3d18c36e88c5ad95a1239f3005fe817cbc7"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"/rfc","logprobs":[],"type":"response.output_text.delta","sequence_number":50,"obfuscation":"8101b2f23bd94ac006b7278c57bdb7a9c1a25f1727a5a98362d00ca96a3caf75a1e"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"-trans","logprobs":[],"type":"response.output_text.delta","sequence_number":51,"obfuscation":"7a6d65ee56d5832e6b961c6da84dff55901571ac10e32308301a3c6f5f2c4ff3cb8a4ab39cf222fb77494b94d6f0afe3f3cc7fe582e93dae924978f2b8b8e75e4e6dd72686ce589fed781e1036b0fe981249ca84dce380b95c84dcfdeca35623d"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"later","logprobs":[],"type":"response.output_text.delta","sequence_number":52,"obfuscation":"fd75c69d10e4764cbacaf5e22f831ec82847baf8b4adcc455214ef9993351796b75105638479f372bff664b638ef21719bc7fbd2c7352c9a8fdb5d835338a30dc8fc717ac42fbb4e9d1c780bc2bdfa8c950749a57065ba42c643445aa33aef3cd0"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"/html","logprobs":[],"type":"response.output_text.delta","sequence_number":53,"obfuscation":"5d397fde963a92866e9bcaf3bc974220d0e256fb2ab386bb92fe4b6db437463387"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"/rfc","logprobs":[],"type":"response.output_text.delta","sequence_number":54,"obfuscation":"5e69c1e5bdaf90135a17ddd298891699e4d2f34595294c14dcd0b0e0e4f0d89e78bc97436f6de2f85e53f95b989259814a3abe611b6c7c46b9d565e08528eacc637cc51dc98f71431a7810ede3c659085cec435a6f22b698e4e0a38eb817b5baf09"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"2","logprobs":[],"type":"response.output_text.delta","sequence_number":55,"obfuscation":"8636998a84ac2473bf891a2fa9476cb2c94ed77c894c09d2303954ed63196132b20136"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"6","logprobs":[],"type":"response.output_text.delta","sequence_number":56,"obfuscation":"381104135ac33e4f503226818db56d0ca4543a6903d81ba763ae0bae5f9228ee9d6417"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"0","logprobs":[],"type":"response.output_text.delta","sequence_number":57,"obfuscation":"a5f5c4989b69bf5816f068439069c19c900e2d385a3487260989ef52bfccbdea5d5892"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":"6","logprobs":[],"type":"response.output_text.delta","sequence_number":58,"obfuscation":"9555f042acde409c1b8da4bc707ab007a5c4492c02f64e5b1c860179c70339dede205fd9fa1a3682d56f1f31d822a8834ce768b6ff8432b08fb19e387b8b64ccb63817da3d7e1d88b50f23d6622bdc4cfdd8cbb86a61f0c8800be9b1ffe10f0b529c8b"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":".html","logprobs":[],"type":"response.output_text.delta","sequence_number":59,"obfuscation":"55a0594b135d08145f05fe823f65e6277ce0d57ff90bb685cf19bbefbfd97010feb3d9edd8b51b442fe8cd763564623b55e3bf6dd01c5ab90774b4d8df528113beabe5701f002adbdd853340f8512556a5835e22a06538e59eeca3d8718842610f"}
+
+event: response.output_text.delta
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"delta":">)","logprobs":[],"type":"response.output_text.delta","sequence_number":60,"obfuscation":"cc981a2fbc340dddc2ff48dc589020cf4373df67eaf7d0e12d10f9580cb0fe6c0828f6f1dc67588301221e8c062e0d9cbd3fd458cc4aa2aee9a4322d4945aa47382142e8014317fad3e7148688136b66d6152e0544c4010d695a72cbc0177bf4e4f81"}
+
+event: response.output_text.annotation.added
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"annotation_index":0,"annotation":{"type":"url_citation","url":"https://tex2e.github.io/rfc-translater/html/rfc2606.html","title":"RFC 2606 - Reserved Top Level DNS Names 日本語訳","start_index":112,"end_index":180},"type":"response.output_text.annotation.added","sequence_number":61}
+
+event: response.output_text.done
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"text":"The three example second-level domains reserved by RFC 2606 are:\n\n1. example.com\n2. example.net\n3. example.org\n\n[source](<https://tex2e.github.io/rfc-translater/html/rfc2606.html>)","logprobs":[],"type":"response.output_text.done","sequence_number":62}
+
+event: response.content_part.done
+data: {"item_id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","output_index":1,"content_index":0,"part":{"type":"output_text","text":"The three example second-level domains reserved by RFC 2606 are:\n\n1. example.com\n2. example.net\n3. example.org\n\n[source](<https://tex2e.github.io/rfc-translater/html/rfc2606.html>)","annotations":[{"type":"url_citation","url":"https://tex2e.github.io/rfc-translater/html/rfc2606.html","title":"RFC 2606 - Reserved Top Level DNS Names 日本語訳","start_index":112,"end_index":180}],"logprobs":[]},"type":"response.content_part.done","sequence_number":63}
+
+event: response.output_item.done
+data: {"output_index":1,"item":{"id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","type":"message","content":[{"type":"output_text","text":"The three example second-level domains reserved by RFC 2606 are:\n\n1. example.com\n2. example.net\n3. example.org\n\n[source](<https://tex2e.github.io/rfc-translater/html/rfc2606.html>)","annotations":[{"type":"url_citation","url":"https://tex2e.github.io/rfc-translater/html/rfc2606.html","title":"RFC 2606 - Reserved Top Level DNS Names 日本語訳","start_index":112,"end_index":180}],"logprobs":[]}],"role":"assistant","status":"completed"},"type":"response.output_item.done","sequence_number":64}
+
+event: response.completed
+data: {"response":{"id":"resp_9364ec1c9c03dafce8008d3876e2a131","object":"response","created_at":1795833016,"completed_at":1795833036,"status":"completed","error":null,"incomplete_details":null,"output":[{"type":"web_search_call","id":"ws_85bb611c7cbb0d9e7dfdc7413994bf34","status":"completed","action":{"type":"search","queries":["RFC 2606 reserved example domains"],"query":"RFC 2606 reserved example domains","sources":[{"type":"url","url":"https://tex2e.github.io/rfc-translater/html/rfc2606.html"}]}},{"id":"msg_dd78f853730fe7b02ab6ee2c5c0dd108","type":"message","content":[{"type":"output_text","text":"The three example second-level domains reserved by RFC 2606 are:\n\n1. example.com\n2. example.net\n3. example.org\n\n[source](<https://tex2e.github.io/rfc-translater/html/rfc2606.html>)","annotations":[{"type":"url_citation","url":"https://tex2e.github.io/rfc-translater/html/rfc2606.html","title":"RFC 2606 - Reserved Top Level DNS Names 日本語訳","start_index":112,"end_index":180}],"logprobs":[]}],"role":"assistant","status":"completed"}],"usage":{"input_tokens":2903,"input_tokens_details":{"cached_tokens":0,"cache_write_tokens":2314},"output_tokens":113,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":3016},"model":"qwen3.8-flash-next","instructions":"Search once for the exact string \"RFC 2606 reserved example domains\". Then answer from that source. Copy its citation_marker exactly, including angle brackets.","metadata":{},"temperature":0,"top_p":1,"parallel_tool_calls":false,"tools":[{"type":"web_search","search_context_size":"low","external_web_access":false}],"tool_choice":{"type":"allowed_tools","mode":"required","tools":[{"type":"web_search"}]},"text":{"format":{"type":"text"},"verbosity":"medium"},"reasoning":{"effort":"none","context":"all_turns","mode":"standard","summary":null},"store":true,"background":false,"max_output_tokens":512,"max_tool_calls":1,"previous_response_id":null,"prompt_cache_options":{"mode":"implicit","ttl":"30m"},"prompt_cache_retention":"in_memory","service_tier":"default","truncation":"disabled","top_logprobs":0,"access_programs":null},"type":"response.completed","sequence_number":65}
+
