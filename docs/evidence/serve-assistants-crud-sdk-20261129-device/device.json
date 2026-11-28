@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "revision": 610,
+  "release": "../serve-previous-page-20261128/delivery.json",
+  "release_sha256": "c5341a2218c30931d0620a29b4d2f67b31e33a4d9dc8aeb007aea202d95c7a62",
+  "engine": "61f0e5222d9c295bae29f8653b5d3fc31d47c5ad77e568041f368ea308bfe49d",
+  "manifest": "9429e5d9630c8cf0d15ddd2996ef1238ebe1817ca84fc3120d80b988034f7c3c",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "source": "0928ef2a7987fd10f0072ce986d5ab0b3b2c0919",
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2534061,
+    "model_exit": 0,
+    "private_config_reads": 0,
+    "requests": 121,
+    "seconds": 54.805
+  },
+  "plan_sha256": "6f97c8260388171da617428b82172842f04b9866534b1754185a94e0f1935cdc",
+  "guard": {
+    "status": "COMPLETED",
+    "backend": "nvml",
+    "samples": 53,
+    "child_returncode": 0,
+    "inherited": true,
+    "file_sha256": "315a12a989fb9636281eb7bcd076a5c5e44f9e5dae6ff740aa90552cc1d9e674"
+  },
+  "sdk_wire_sha256": {
+    "python-2.8.1": "60e05de7b3441e01635e968067a4a5a0b40fef261f49eddb99fa266215f80e7d",
+    "python-2.33.0": "f2f100f9bab9769fed52d5a0102c376216f3caa8aae98d7eb67e5f067d428d77",
+    "python-3.42.1": "c0df01f335f1ce2691182a12202dc7d5c8eaaba51d9b9e87c72913fa36c7d4fc",
+    "python-3.55.1": "88d184a4cf98238e5b3c46a944d0742273dc06eec3d13fd4cc64c9bbc1b49f68",
+    "node-6.34.0": "e84ead9b580b88be8fec022b36e4c2e1e5edef1b910860406d57053197ca5e55",
+    "node-7.47.0": "ed9deb538cd8c961c287d01d9a628657dcc5f58c9bcf56adc85b9362cd996731"
+  },
+  "chat_sha256": "095774fcbbd641590201b8e575b2c09028209bea5443a0c465bf82958c361f86"
+}

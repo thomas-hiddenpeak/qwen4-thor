@@ -1,0 +1,136 @@
+{
+  "status": "CPU_PREVIEW_ONLY",
+  "release_matrix_written": false,
+  "sdk_clients": 6,
+  "requests": 120,
+  "codes": {
+    "200": 84,
+    "404": 36
+  },
+  "assigned_methods": [
+    [
+      "DELETE",
+      "/assistants/{assistant_id}"
+    ],
+    [
+      "DELETE",
+      "/threads/{thread_id}"
+    ],
+    [
+      "DELETE",
+      "/threads/{thread_id}/messages/{message_id}"
+    ],
+    [
+      "GET",
+      "/assistants"
+    ],
+    [
+      "GET",
+      "/assistants/{assistant_id}"
+    ],
+    [
+      "GET",
+      "/threads/{thread_id}"
+    ],
+    [
+      "GET",
+      "/threads/{thread_id}/messages"
+    ],
+    [
+      "GET",
+      "/threads/{thread_id}/messages/{message_id}"
+    ],
+    [
+      "POST",
+      "/assistants"
+    ],
+    [
+      "POST",
+      "/assistants/{assistant_id}"
+    ],
+    [
+      "POST",
+      "/threads"
+    ],
+    [
+      "POST",
+      "/threads/{thread_id}"
+    ],
+    [
+      "POST",
+      "/threads/{thread_id}/messages"
+    ],
+    [
+      "POST",
+      "/threads/{thread_id}/messages/{message_id}"
+    ]
+  ],
+  "successful_method_client_pairs": 84,
+  "unassigned": 0,
+  "distinct_from_existing_success": [
+    [
+      "DELETE",
+      "/assistants/{assistant_id}"
+    ],
+    [
+      "DELETE",
+      "/threads/{thread_id}"
+    ],
+    [
+      "DELETE",
+      "/threads/{thread_id}/messages/{message_id}"
+    ],
+    [
+      "GET",
+      "/assistants"
+    ],
+    [
+      "GET",
+      "/assistants/{assistant_id}"
+    ],
+    [
+      "GET",
+      "/threads/{thread_id}"
+    ],
+    [
+      "GET",
+      "/threads/{thread_id}/messages"
+    ],
+    [
+      "GET",
+      "/threads/{thread_id}/messages/{message_id}"
+    ],
+    [
+      "POST",
+      "/assistants"
+    ],
+    [
+      "POST",
+      "/assistants/{assistant_id}"
+    ],
+    [
+      "POST",
+      "/threads"
+    ],
+    [
+      "POST",
+      "/threads/{thread_id}"
+    ],
+    [
+      "POST",
+      "/threads/{thread_id}/messages"
+    ],
+    [
+      "POST",
+      "/threads/{thread_id}/messages/{message_id}"
+    ]
+  ],
+  "negative_controls": [
+    "missing client",
+    "wrong wire digest",
+    "wrong document",
+    "relabeled SDK",
+    "repeated request",
+    "cross-client request relabeled"
+  ]
+}

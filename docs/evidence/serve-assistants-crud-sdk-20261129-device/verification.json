@@ -1,0 +1,20 @@
+{
+  "methods": 15,
+  "including_one_chat_method": true,
+  "requests": 121,
+  "sdk_crud_successes": 84,
+  "expected_not_found": 36,
+  "follow_up_chat": "610",
+  "negative_controls": [
+    "other readback",
+    "wrong revision",
+    "no prompt work",
+    "wrong method",
+    "incomplete reply",
+    "wrong release",
+    "wrong engine",
+    "wrong ingress",
+    "missing client",
+    "wrong Chat bytes"
+  ]
+}
