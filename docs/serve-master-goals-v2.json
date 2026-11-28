@@ -1066,7 +1066,7 @@
         "embedding_default_replay": "evidence/serve-model-inference-sdk-20261128/embedding-defaults.json"
       },
       "completion_best_of_20261128": {
-        "status": "two_capacity_https_pass_release_pending",
+        "status": "issued",
         "evidence": "evidence/serve-completion-best-of-20261128/cpu.json",
         "device": "evidence/serve-completion-best-of-20261128/device.json",
         "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
@@ -1075,7 +1075,12 @@
         "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json",
         "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json",
         "managed_receipt": "evidence/serve-completion-best-of-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "issued": true,
+        "delivery": "evidence/serve-completion-best-of-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       }
     },
     {
@@ -1866,7 +1871,7 @@
         "existing_evidence_reviewed": true
       },
       "completion_best_of_20261128": {
-        "status": "two_capacity_https_pass_release_pending",
+        "status": "issued",
         "evidence": "evidence/serve-completion-best-of-20261128/cpu.json",
         "device": "evidence/serve-completion-best-of-20261128/device.json",
         "engine": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
@@ -1875,7 +1880,12 @@
         "capacity_business": "evidence/serve-completion-best-of-20261128/capacity-business.json",
         "capacity_qualification": "evidence/serve-completion-best-of-20261128/capacity.json",
         "managed_receipt": "evidence/serve-completion-best-of-20261128/managed.json",
-        "managed": "real_model_restart_and_gateway_takeover_passed"
+        "managed": "real_model_restart_and_gateway_takeover_passed",
+        "issued": true,
+        "delivery": "evidence/serve-completion-best-of-20261128/delivery.json",
+        "remaining": [
+          "main integration"
+        ]
       },
       "model_inference_sdk_20261128": {
         "status": "published_engine_native_tls_business_pass",
@@ -9977,12 +9987,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 534,
+        "source_requests": 550,
         "unassigned": 1,
         "method_sdk_pairs_with_success": 255,
         "methods_with_success": 59,
-        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations. The short projection and both recovery scenarios contribute 30 stock Python requests from the engine subsequently registered as rev606. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs.",
-        "assigned_requests": 533
+        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations. The short projection and both recovery scenarios contribute 30 stock Python requests from the engine subsequently registered as rev606. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs. Sixteen stock Python completions across both sides of model recovery and native gateway takeover on the packages issued as revision 608.",
+        "assigned_requests": 549
       },
       "stored_chat_sdk_handoff_20261128": {
         "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
@@ -11398,10 +11408,10 @@
         "qualified_cold_run": false
       },
       "current_cold_preflight": {
-        "revision": 606,
-        "receipt": "evidence/serve-response-include-projection-20261128/delivery.json",
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/include-projection-day-src/.q4t-work/cold606-01/plan.json",
-        "plan_sha256": "02047486048dab0f02b1e6db1016565ceeec0e3cdc79f0636b18de989079f4e1",
+        "revision": 608,
+        "receipt": "evidence/serve-completion-best-of-20261128/delivery.json",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src/.q4t-work/cold608-01/plan.json",
+        "plan_sha256": "cfa3f2bac255a4e9f406927e5e78429114c96b01693801c0c256137175129024",
         "model_starts": 0,
         "executed": false
       },
@@ -13377,7 +13387,7 @@
     {
       "id": "Q02",
       "required": true,
-      "state": "rev606_delivered_remaining_deliveries",
+      "state": "rev608_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -13427,13 +13437,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 606,
+        "revision": 608,
         "state": "STOPPED",
-        "primary_manifest_sha256": "68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349",
-        "fallback_manifest_sha256": "2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967",
-        "binary_sha256": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+        "primary_manifest_sha256": "0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245",
+        "fallback_manifest_sha256": "d9c93f4f3885b38125703ce3ab8bc273adce9ef1febc9af7bf2f18fc3fb63f4c",
+        "binary_sha256": "c20df32cdfbe9f2cd524580944d1b8e9ea20e892a45ab4f5163e734e98b2e969",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-response-include-projection-20261128/delivery.json"
+        "evidence": "evidence/serve-completion-best-of-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14944,6 +14954,15 @@
         "binary_sha256": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-interpreter-output-discovery-20261128/delivery.json"
+      },
+      "release_revision_606": {
+        "revision": 606,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349",
+        "fallback_manifest_sha256": "2195faba6ddd28f884ebfcd5a0a0421474a80987449e4ecf565c8744559aa967",
+        "binary_sha256": "a54d08cd7d23a5fb960f68be6dc8e3dc27531b806f58115888524ece2e2be9b0",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-response-include-projection-20261128/delivery.json"
       }
     },
     {
@@ -15052,21 +15071,21 @@
         "audio_pairs": 25,
         "first_hour_business": 304,
         "business_requests": 7250,
-        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/include-projection-day-src/.q4t-work/day-01/plan.json",
-        "plan_sha256": "553c656940d9569e64a6ff07ddcfbc154425f1bf163772018d982502fc3d27dd",
-        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/include-projection-day-src/.q4t-work/day-01/audio-day.sh",
-        "operator_sha256": "974e14c9dcfb6a1be862f255cbe5525532669390b5e8a5ce2fcf00a06ca27f5d",
-        "checked_at": "2026-11-28T12:59:06.241875+00:00",
+        "plan": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src/.q4t-work/day-01/plan.json",
+        "plan_sha256": "35e02d6a1a029ddfcf6098e7f6b93446c33261e58fac995c7a3c17a9c71c0b8d",
+        "operator": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src/.q4t-work/day-01/audio-day.sh",
+        "operator_sha256": "006b664aa312d91635909dc830022ab966e8d07d3f4ad89e1a75b80ef5ab59c5",
+        "checked_at": "2026-11-28T14:48:54.152236+00:00",
         "minimum_evidence_free_bytes": 12884901888,
         "hours_executed": 0,
-        "revision": 606,
-        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/include-projection-day-src",
+        "revision": 608,
+        "workspace": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-day-src",
         "package": {
-          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/include-projection-client-primary-01/bundle",
-          "manifest_sha256": "68bc9ffaea1eed8d6b25c7d22f6c1445d51dfa86a5af3006a203dbc75df3f349"
+          "package": "/home/rm01/models/dev/qwen4-thor/.q4t-work/serve-responses-agents-20261123/completion-limit-client-primary-01/bundle",
+          "manifest_sha256": "0da58524b075e248cb789a441a09ca092785f092406e8637fe766cc2e6c73245"
         },
-        "source_commit": "f07ab44ad48d41de97e08f83da57bb1b08443f18",
-        "handoff_sha256": "47e315e6133720b7dc6f991f353a41da2ae77102b65e9d925ca65af0ff6abf9a",
+        "source_commit": "d6b86bc4339ca258e72b2a670db947213f5be1bd",
+        "handoff_sha256": "1269e13def3596846baba6560aa4879079591c662eb121415801e877faa6623d",
         "source_files": 705,
         "checked": true
       },
@@ -15476,9 +15495,9 @@
         "receipt": "evidence/serve-chatkit-reasoning-workflow-20261126/delivery.json"
       },
       "current_day_handoff": {
-        "revision": 606,
-        "receipt": "evidence/serve-response-include-projection-20261128/delivery.json",
-        "plan_sha256": "553c656940d9569e64a6ff07ddcfbc154425f1bf163772018d982502fc3d27dd",
+        "revision": 608,
+        "receipt": "evidence/serve-completion-best-of-20261128/delivery.json",
+        "plan_sha256": "35e02d6a1a029ddfcf6098e7f6b93446c33261e58fac995c7a3c17a9c71c0b8d",
         "hours_run": 0,
         "owner": "user",
         "prepared": true,
@@ -15528,12 +15547,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 534,
+        "source_requests": 550,
         "unassigned": 1,
         "method_sdk_pairs_with_success": 255,
         "methods_with_success": 59,
-        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs.",
-        "assigned_requests": 533
+        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590. Model catalogue and lookup, seeded legacy text completions and vectors in both encodings through all six SDKs. Sixteen stock Python completions across both sides of model recovery and native gateway takeover on the packages issued as revision 608.",
+        "assigned_requests": 549
       }
     }
   ],

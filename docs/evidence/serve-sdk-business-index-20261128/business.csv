@@ -77,7 +77,7 @@ GET,/chatkit/threads,,,,,,
 GET,/chatkit/threads/{thread_id},,,,,,
 DELETE,/chatkit/threads/{thread_id},,,,,,
 GET,/chatkit/threads/{thread_id}/items,,,,,,
-POST,/completions,inference-issued-python-2.8.1/200=2,inference-issued-python-2.33.0/200=2,inference-issued-python-3.42.1/200=2,inference-issued-python-3.55.1/200=2,inference-issued-node-6.34.0/200=2,inference-issued-node-7.47.0/200=2
+POST,/completions,inference-issued-python-2.8.1/200=2,inference-issued-python-2.33.0/200=2,inference-issued-python-3.42.1/200=2,completion-fallback-prepare/200=3 completion-fallback-prepare/400=1 completion-fallback-restore/200=3 completion-fallback-restore/400=1 completion-primary-prepare/200=3 completion-primary-prepare/400=1 completion-primary-restore/200=3 completion-primary-restore/400=1 inference-issued-python-3.55.1/200=2,inference-issued-node-6.34.0/200=2,inference-issued-node-7.47.0/200=2
 GET,/containers,containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1,containers/200=1
 POST,/containers,containers/200=1 interpreter-issued-python-2.8.1/200=1,containers/200=1 interpreter-issued-python-2.33.0/200=1,containers/200=1 interpreter-issued-python-3.42.1/200=1,containers/200=1 interpreter-issued-python-3.55.1/200=1,containers/200=1 interpreter-issued-node-6.34.0/200=1,containers/200=1 interpreter-issued-node-7.47.0/200=1
 GET,/containers/{container_id},containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2,containers/200=1 containers/404=2

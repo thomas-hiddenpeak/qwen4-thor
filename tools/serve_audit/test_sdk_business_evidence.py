@@ -74,6 +74,26 @@ class BusinessEvidenceTest(unittest.TestCase):
         self.assertIn("stream-gateway-restore/200=1", read["node-7.47.0"])
         self.assertNotIn("stream-gateway-restore", read["python-3.55.1"])
 
+    def test_completion_recovery_counts_only_the_four_sdk_exchanges(self):
+        table, manifest = render()
+        row = next(r for r in csv.DictReader(io.StringIO(table))
+                   if (r['method'], r['path']) == ('POST', '/completions'))
+        generations = {}
+        for role in ('primary', 'fallback'):
+            for phase in ('prepare', 'restore'):
+                label = f'completion-{role}-{phase}'
+                source = manifest['sources'][label]
+                self.assertEqual((source['revision'], source['requests'], source['direct_http_controls']),
+                                 (608, 4, 1))
+                self.assertEqual(source['sdk'], 'python-3.55.1')
+                for status in ('200=3', '400=1'):
+                    self.assertIn(label + '/' + status, row[source['sdk']].split())
+                self.assertTrue(all(label + '/' not in row[other] for other in CLIENTS if other != source['sdk']))
+                generations[role, phase] = source
+            self.assertGreater(generations[role, 'restore']['generation'], generations[role, 'prepare']['generation'])
+        self.assertNotEqual(generations['primary', 'prepare']['manifest'], generations['primary', 'restore']['manifest'])
+        self.assertEqual(generations['primary', 'restore']['manifest'], generations['fallback', 'restore']['manifest'])
+
     def test_issued_inference_outcomes_belong_to_the_client_that_sent_them(self):
         table, manifest = render()
         rows = {(r['method'], r['path']): r for r in csv.DictReader(io.StringIO(table))}
