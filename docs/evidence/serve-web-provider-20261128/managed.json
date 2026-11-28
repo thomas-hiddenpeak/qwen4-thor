@@ -1,0 +1,92 @@
+{
+  "stage": "managed_web_provider_default_business",
+  "issued": false,
+  "engine": "8050bce58d81590d7de4512593e4262b051391278ef0fc868d9a1a70c2931f56",
+  "roles": {
+    "fallback": {
+      "incident": "model exit",
+      "starts": 2,
+      "seconds": 201.71851188410074,
+      "manifest": "f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5",
+      "decision_sha256": "8f3d5af542ca9838015e0a4949790ba0aa97e93c1358b274a81a3b3c880d649f",
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "original_response": "resp_6628a9d6cc54b025c3e766f8a502869b",
+      "same_output": true,
+      "independent_chat": "42",
+      "web_egress": false,
+      "responses": {
+        "prepare-disabled-search": {
+          "status": 503,
+          "sha256": "6134ddbeca0976b8609bbea236395fc17765b632d48551ab4e9acd599a065ec7"
+        },
+        "prepare-create": {
+          "status": 200,
+          "sha256": "03dfbd996b429d0eff996caf0820fd68204e7f17ae9a972654c2d1a8cf2ad5b2"
+        },
+        "restore-disabled-search": {
+          "status": 503,
+          "sha256": "6134ddbeca0976b8609bbea236395fc17765b632d48551ab4e9acd599a065ec7"
+        },
+        "restore-retrieve": {
+          "status": 200,
+          "sha256": "03dfbd996b429d0eff996caf0820fd68204e7f17ae9a972654c2d1a8cf2ad5b2"
+        },
+        "restore-foreign": {
+          "status": 404,
+          "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+        }
+      },
+      "nvml_samples": 188,
+      "guard_sha256": "628b8feb8bc0bf6288f05b30a687d8c98367a8392e989050d1dac722502d74e0",
+      "result_sha256": "9f8eec723bad740fcc5b467a0d5bc165f55c2ac34aca0826fd14dea1231ae35f",
+      "ports_released": true,
+      "remaining": [],
+      "default_unchanged": true
+    },
+    "primary": {
+      "incident": "primary gateway SIGABRT",
+      "starts": 2,
+      "seconds": 362.42612353898585,
+      "manifest": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3",
+      "decision_sha256": "f2bcac8c2363db68ac9f6a8d7a7de0fb4eacbff506b9a92a108d636c612b1810",
+      "guardian_same": true,
+      "old_generation": 1,
+      "new_generation": 2,
+      "original_response": "resp_8277f4aeb62cec5c01a83ce79618279a",
+      "same_output": true,
+      "independent_chat": "42",
+      "web_egress": false,
+      "responses": {
+        "prepare-disabled-search": {
+          "status": 503,
+          "sha256": "6134ddbeca0976b8609bbea236395fc17765b632d48551ab4e9acd599a065ec7"
+        },
+        "prepare-create": {
+          "status": 200,
+          "sha256": "d6bdbc7e4f624cf114fd09c1126656b598206007e33cc1023580e21a7f70fbdb"
+        },
+        "restore-disabled-search": {
+          "status": 503,
+          "sha256": "6134ddbeca0976b8609bbea236395fc17765b632d48551ab4e9acd599a065ec7"
+        },
+        "restore-retrieve": {
+          "status": 200,
+          "sha256": "d6bdbc7e4f624cf114fd09c1126656b598206007e33cc1023580e21a7f70fbdb"
+        },
+        "restore-foreign": {
+          "status": 404,
+          "sha256": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+        }
+      },
+      "nvml_samples": 336,
+      "guard_sha256": "b5d36d528538b6eae084a2510092a299ec00809718e0bdfce2894d6fb2f5e641",
+      "result_sha256": "9dbfc3307b5b0a129cbda39c2112a42a7a527bae8e3294641d713b055bcf7b9f",
+      "ports_released": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "registered_fallback": "f10fabf7969efc8fdc0f61ac1b6abe7dbb1315a19ad90dcde17e33fe7ffb08a5"
+    }
+  }
+}
