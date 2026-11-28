@@ -10563,12 +10563,14 @@
         "delivery": "evidence/serve-diagnostic-pipe-20261128/delivery.json"
       },
       "memory_watchdog_stall_20261128": {
-        "stage": "targeted_cpu_passed",
+        "stage": "targeted_cpu_and_real_http_passed",
         "evidence": "evidence/serve-memory-watchdog-stall-20261128/cpu.json",
         "cpu_checks": 28,
-        "model_business": "pending",
+        "model_business": "evidence/serve-memory-watchdog-stall-20261128/business.json",
         "issued": false,
-        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json"
+        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json",
+        "model_starts": 3,
+        "chats": 4
       }
     },
     {
@@ -11322,12 +11324,14 @@
         "handoff": "evidence/serve-soak-observation-report-20261128/handoff.json"
       },
       "memory_watchdog_stall_20261128": {
-        "stage": "targeted_cpu_passed",
+        "stage": "targeted_cpu_and_real_http_passed",
         "evidence": "evidence/serve-memory-watchdog-stall-20261128/cpu.json",
         "cpu_checks": 28,
-        "model_business": "pending",
+        "model_business": "evidence/serve-memory-watchdog-stall-20261128/business.json",
         "issued": false,
-        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json"
+        "native_cpu_evidence": "evidence/serve-memory-watchdog-stall-20261128/native-controller.json",
+        "model_starts": 3,
+        "chats": 4
       }
     },
     {

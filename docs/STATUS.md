@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+独立监督器的内存采集卡住后，同一 GPU 模型保持 READY 并回答第二个 Chat，读端仍阻塞时完成停机。原生主包和回退包各从发行入口启动、完成 Chat 并清理，合计 3 次启动、4 条真实 Chat，13 份受保护状态一致。待发行。另在 Guardian 的版本恢复与授权路径发现同步内存读取，需要独立定位。 [实机回执](evidence/serve-memory-watchdog-stall-20261128/business.json)
+
 原生控制器在内存采集阻塞期间持续发送心跳。发放新模型许可前会重新核对物理内存和容量门槛，已取得许可的进程在观测中断时可继续就绪，状态报告观测降级。28 项针对性 CPU 用例通过，含真实 Guardian、CPU 后端、运行期恢复及启动压力保护。GPU 业务和发行待验。 [托管 CPU 回执](evidence/serve-memory-watchdog-stall-20261128/native-controller.json)
 
 内存采集曾在持锁时读取内核，读阻塞会卡住健康快照。实机旧包另在相隔 300 秒的两次低读数后错误触发停模回调。候选隔离了采集线程，拒用超时结果并重置中断的低内存计时；23 项 CPU 检查通过，含持续压力下的真实子进程保护。GPU 业务与发行待验，Thor 的 CUDA 物理硬限额仍待证实。 [CPU 回执](evidence/serve-memory-watchdog-stall-20261128/cpu.json)
