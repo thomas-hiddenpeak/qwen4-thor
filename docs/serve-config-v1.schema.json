@@ -3948,7 +3948,10 @@
           ]
         },
         "backend": {
-          "const": "native_configured_sites"
+          "enum": [
+            "native_configured_sites",
+            "mwmbl_v2"
+          ]
         },
         "seed_count": {
           "type": "integer",

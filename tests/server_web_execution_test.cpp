@@ -130,6 +130,12 @@ class Site {
          "charset=utf-8\r\nContent-Length: " +
              std::to_string(body.size()) + "\r\n\r\n" + body);
   }
+  void Discovery(std::string query, std::string body) {
+    Wire("/api/search/?q=" + query,
+         "HTTP/1.1 200 OK\r\nContent-Type: "
+         "application/json\r\nContent-Length: " +
+             std::to_string(body.size()) + "\r\n\r\n" + body);
+  }
   Json Config() const {
     return Object(
         {{"version", Number(1)},
@@ -156,6 +162,32 @@ class Site {
   std::map<std::string, std::string> pages_;
   std::jthread thread_;
 };
+Json ProviderConfig(const Site& provider, const Site& page) {
+  auto config = page.Config();
+  std::erase_if(config.object,
+                [](const auto& pair) { return pair.first == "seeds"; });
+  auto fetch = *provider.Config().Find("fetch");
+  Set(&fetch, "allow_http", Boolean(true));
+  Set(&config, "provider",
+      Object({{"type", String("mwmbl_v2")},
+              {"endpoint", String(provider.Url("/api/search/"))},
+              {"fetch", fetch}}));
+  return config;
+}
+WebDeploymentPolicy Configured(const Json& config) {
+  WebDeploymentPolicy policy;
+  if (!ParseWebDeploymentPolicy(OutputJson(config), &policy))
+    throw std::runtime_error("invalid fixture source policy");
+  return policy;
+}
+std::string Results(const std::string& query,
+                    std::initializer_list<std::string> urls) {
+  auto rows = Array();
+  for (const auto& url : urls)
+    rows.array.push_back(Object(
+        {{"url", String(url)}, {"content", String("UNVERIFIED_SNIPPET")}}));
+  return OutputJson(Object({{"query", String(query)}, {"results", rows}}));
+}
 WebAction Query(std::string text = "alpha") {
   WebAction action;
   action.queries.push_back(std::move(text));
@@ -616,5 +648,264 @@ Q4T_TEST(web_execution_configured_source_preflight) {
   Q4T_CHECK(result.cached && budget.acquisition.used_files == acquired &&
             result.sources.size() == 1 &&
             result.sources[0].source_sha256 == Digest(bytes));
+  return true;
+}
+
+Q4T_TEST(web_provider_private_selection_and_redaction) {
+  Site provider, page;
+  const auto config = ProviderConfig(provider, page);
+  const auto policy = Configured(config);
+  Q4T_CHECK(policy.provider && !policy.provider->fetch.max_redirects &&
+            policy.seeds.empty() && !policy.max_depth);
+  const auto description = WebDeploymentPolicyDescription(&policy);
+  Q4T_CHECK(description.GetString("backend") == "mwmbl_v2" &&
+            OutputJson(description).find("127.0.0.1") == std::string::npos);
+  for (const auto& [key, value] : std::vector<std::pair<std::string, Json>>{
+           {"endpoint", String(provider.Url("/?q=private"))},
+           {"endpoint", String(provider.Url("/#fragment"))},
+           {"endpoint", String("http://user@private.example/")},
+           {"type", String("unknown")},
+           {"headers", Object()}}) {
+    auto invalid = config;
+    Set(&Field(invalid, "provider"), key, value);
+    WebDeploymentPolicy out;
+    Q4T_CHECK(!ParseWebDeploymentPolicy(OutputJson(invalid), &out));
+  }
+  for (auto item : {"seeds", "max_depth", "max_redirects", "allow_http"}) {
+    auto invalid = config;
+    auto& fetch = Field(Field(invalid, "provider"), "fetch");
+    if (std::string_view(item) == "seeds")
+      Set(&invalid, item, Array({String(page.Url())}));
+    else if (std::string_view(item) == "max_depth")
+      Set(&invalid, item, Number(1));
+    else
+      Set(&fetch, item,
+          std::string_view(item) == "allow_http" ? Boolean(false) : Number(1));
+    WebDeploymentPolicy out;
+    Q4T_CHECK(!ParseWebDeploymentPolicy(OutputJson(invalid), &out));
+  }
+  Q4T_CHECK(provider.requests == 0 && page.requests == 0);
+  return true;
+}
+
+Q4T_TEST(web_provider_verified_sources_query_cache_and_offline_url) {
+  Directory directory;
+  Site provider, page;
+  const auto policy = Configured(ProviderConfig(provider, page));
+  const std::string query = "中文 &q=red#";
+  const std::string body = "<title>Original</title>独立正文";
+  page.Page("/source", body);
+  provider.Discovery(
+      "%E4%B8%AD%E6%96%87%20%26q%3Dred%23",
+      Results(query, {page.Url("/source"), page.Url("/source#same")}));
+  WebExecutionBudget budget;
+  WebExecutionResult output;
+  {
+    ObjectStore objects(directory.objects);
+    Q4T_CHECK(Ok(Run(objects, policy, &budget, &output, {}, Query(query))));
+    Q4T_CHECK(output.sources.size() == 1 && !output.cached &&
+              output.sources.front().source_sha256 == Digest(body) &&
+              output.sources.front().title == "Original" &&
+              output.sources.front().text.find("独立正文") !=
+                  std::string::npos &&
+              OutputJson(output.context).find("UNVERIFIED_SNIPPET") ==
+                  std::string::npos);
+  }
+  ObjectStore restarted(directory.objects);
+  WebSearchOptions offline;
+  offline.external_web_access = false;
+  const auto calls = budget.acquisition.used_files;
+  Q4T_CHECK(
+      Ok(Run(restarted, policy, &budget, &output, offline, Query(query))) &&
+      output.cached && output.sources[0].source_sha256 == Digest(body));
+  Q4T_CHECK(
+      Run(restarted, policy, &budget, &output, offline, Query("other")).code ==
+      "web_index_unavailable");
+  WebAction open{WebAction::Kind::kFind, {}, page.Url("/source"), "独立"};
+  Q4T_CHECK(Ok(Run(restarted, policy, &budget, &output, offline, open)) &&
+            output.cached && output.sources[0].source_sha256 == Digest(body));
+  Q4T_CHECK(Run(restarted, policy, &budget, &output, offline, open,
+                Access("client:web-b"))
+                .code == "web_source_unavailable");
+  Q4T_CHECK(provider.requests == 1 && page.requests == 1 && calls == 2 &&
+            budget.acquisition.used_files == calls);
+  return true;
+}
+
+Q4T_TEST(
+    web_provider_multiple_queries_share_limit_and_respect_destination_policy) {
+  Directory directory;
+  Site provider, page, outside;
+  auto config = ProviderConfig(provider, page);
+  Set(&config, "max_pages", Number(2));
+  auto policy = Configured(config);
+  provider.Discovery("first", Results("first", {outside.Url(), page.Url("/a"),
+                                                page.Url("/b")}));
+  provider.Discovery("second", Results("second", {page.Url("/c")}));
+  page.Page("/a", "A");
+  page.Page("/b", "B");
+  page.Page("/c", "C");
+  ObjectStore objects(directory.objects);
+  WebExecutionBudget budget;
+  WebExecutionResult output;
+  WebAction search{WebAction::Kind::kSearch, {"first", "second"}, {}, {}};
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &output, {}, search)) &&
+            output.sources.size() == 2 &&
+            output.sources[0].url == page.Url("/a") &&
+            output.sources[1].url == page.Url("/c"));
+  WebSearchOptions filters;
+  filters.allowed_domains = {"example.org"};
+  Q4T_CHECK(
+      Ok(Run(objects, policy, &budget, &output, filters, Query("first"))) &&
+      output.sources.empty());
+  filters.empty_domain_allowlist = true;
+  Q4T_CHECK(
+      Ok(Run(objects, policy, &budget, &output, filters, Query("unused"))) &&
+      output.sources.empty());
+  Q4T_CHECK(outside.requests == 0 && provider.requests == 3 &&
+            page.requests == 2);
+  return true;
+}
+
+Q4T_TEST(web_provider_failure_and_partial_search_keep_complete_cache) {
+  Directory directory;
+  Site provider, page;
+  auto policy = Configured(ProviderConfig(provider, page));
+  policy.refresh_seconds = 0;
+  ObjectStore objects(directory.objects);
+  WebExecutionBudget budget;
+  WebExecutionResult output;
+  page.Page("/kept", "Original");
+  provider.Discovery("alpha", Results("alpha", {page.Url("/kept")}));
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &output)));
+  page.Page("/fresh", "New");
+  page.Wire(
+      "/dead",
+      "HTTP/1.1 301 Moved Permanently\r\n"
+      "Location: ftp://not-a-web-source.invalid/\r\nContent-Length: 0\r\n\r\n");
+  provider.Discovery("alpha",
+                     Results("alpha", {page.Url("/dead"), page.Url("/fresh")}));
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &output)) &&
+            output.sources.size() == 1 &&
+            output.sources[0].url == page.Url("/fresh") &&
+            output.context.GetInt("unavailable_sources") == 1);
+  WebSearchOptions offline;
+  offline.external_web_access = false;
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &output, offline)) &&
+            output.cached && output.sources[0].url == page.Url("/kept"));
+  provider.Discovery("alpha", Results("alpha", {page.Url("/dead")}));
+  Q4T_CHECK(!Run(objects, policy, &budget, &output).ok() &&
+            output.sources.empty());
+  provider.Discovery("alpha", Results("different", {}));
+  Q4T_CHECK(Run(objects, policy, &budget, &output).code ==
+            "web_search_provider_invalid");
+  provider.Discovery("alpha", R"({"query":"alpha","results":{},"results":[]})");
+  Q4T_CHECK(Run(objects, policy, &budget, &output).code ==
+            "web_search_provider_invalid");
+  provider.Discovery("alpha", Results("alpha", {}));
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &output)) &&
+            output.sources.empty());
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &output, offline)) &&
+            output.cached && output.sources.empty());
+  return true;
+}
+
+Q4T_TEST(web_provider_egress_budget_redirect_and_cancellation) {
+  Directory directory;
+  Site provider, page, other;
+  auto policy = Configured(ProviderConfig(provider, page));
+  WebExecutionBudget budget;
+  WebExecutionResult output;
+  ObjectStore objects(directory.objects);
+  provider.Wire("/api/search/?q=alpha",
+                "HTTP/1.1 302 Found\r\nLocation: " + other.Url("/again") +
+                    "\r\nContent-Length: 0\r\n\r\n");
+  Q4T_CHECK(Run(objects, policy, &budget, &output).code ==
+                "file_fetch_redirect_limit" &&
+            other.requests == 0 && budget.acquisition.used_files == 1 &&
+            budget.acquisition.used_bytes > 0);
+  auto cancelled = Access();
+  cancelled.cancelled = [] { return true; };
+  const auto attempts = provider.requests.load();
+  Q4T_CHECK(Run(objects, policy, &budget, &output, {}, Query(), cancelled)
+                    .http_status == 499 &&
+            provider.requests == attempts);
+  budget = {};
+  budget.acquisition.max_files = 1;
+  provider.Discovery("alpha", Results("alpha", {page.Url()}));
+  Q4T_CHECK(Run(objects, policy, &budget, &output).http_status == 413 &&
+            page.requests == 0 && budget.acquisition.used_files == 1);
+  provider.Discovery("long", std::string(4096, 'x'));
+  budget = {};
+  budget.acquisition.max_bytes = 128;
+  Q4T_CHECK(!Run(objects, policy, &budget, &output, {}, Query("long")).ok() &&
+            budget.acquisition.used_bytes == 128);
+  return true;
+}
+
+Q4T_TEST(web_provider_source_preflight) {
+  Directory directory;
+  Site local_index, local_page;
+  const auto* policy_path = std::getenv("Q4T_WEB_PROVIDER_PREFLIGHT_POLICY");
+  const auto* source_path = std::getenv("Q4T_WEB_PROVIDER_PREFLIGHT_SOURCE");
+  const auto* source_url = std::getenv("Q4T_WEB_PROVIDER_PREFLIGHT_URL");
+  const std::string query = "RFC 2606 reserved example domains";
+  Q4T_CHECK(bool(policy_path) == bool(source_path) &&
+            bool(policy_path) == bool(source_url));
+  std::string body = "<title>Example Domains</title><p>documentation</p>";
+  std::string expected = local_page.Url();
+  WebDeploymentPolicy policy;
+  if (policy_path) {
+    Q4T_CHECK(LoadWebDeploymentPolicy(policy_path, &policy));
+    std::ifstream file(source_path, std::ios::binary | std::ios::ate);
+    Q4T_CHECK(file && file.tellg() > 0 && file.tellg() <= (2 << 20));
+    body.resize(file.tellg());
+    file.seekg(0);
+    Q4T_CHECK(bool(file.read(body.data(), body.size())));
+    expected = source_url;
+  } else {
+    auto config = ProviderConfig(local_index, local_page);
+    Set(&config, "max_pages", Number(1));
+    policy = Configured(config);
+    local_index.Discovery("RFC%202606%20reserved%20example%20domains",
+                          Results(query, {expected}));
+    local_page.Page("/", body);
+  }
+  Q4T_CHECK(policy.provider && policy.max_pages == 1 && !policy.scopes.empty());
+  WebExecutionBudget budget;
+  WebExecutionResult output;
+  auto access = Access(policy.scopes.front());
+  access.deadline = Clock::now() + 45s;
+  WebSearchOptions options;
+  {
+    ObjectStore objects(directory.objects);
+    Q4T_CHECK(Ok(
+        Run(objects, policy, &budget, &output, options, Query(query), access)));
+    Q4T_CHECK(!output.cached && output.sources.size() == 1 &&
+              output.sources[0].url == expected &&
+              output.sources[0].source_sha256 == Digest(body) &&
+              output.sources[0].text.find("documentation") !=
+                  std::string::npos &&
+              budget.acquisition.used_files == 2);
+  }
+  const auto bytes = budget.acquisition.used_bytes;
+  ObjectStore reopened(directory.objects);
+  options.external_web_access = false;
+  Q4T_CHECK(Ok(Run(reopened, policy, &budget, &output, options, Query(query),
+                   access)) &&
+            output.cached && output.sources.size() == 1 &&
+            output.sources[0].source_sha256 == Digest(body));
+  WebAction open{WebAction::Kind::kOpen, {}, expected, {}};
+  Q4T_CHECK(
+      Ok(Run(reopened, policy, &budget, &output, options, open, access)) &&
+      output.cached && output.sources[0].url == expected &&
+      budget.acquisition.used_bytes == bytes &&
+      budget.acquisition.used_files == 2);
+  if (policy_path)
+    std::printf(
+        "verified public source SHA256=%s content_bytes=%zu "
+        "total_received=%llu\n",
+        output.sources[0].source_sha256.c_str(), body.size(),
+        static_cast<unsigned long long>(bytes));
   return true;
 }

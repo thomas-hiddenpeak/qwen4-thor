@@ -8249,6 +8249,14 @@
         "capacity_profiles": "evidence/serve-program-sdk-reader-20261127/profiles.json",
         "revision": 568,
         "delivery": "evidence/serve-program-sdk-reader-20261127/delivery.json"
+      },
+      "optional_web_provider_20261128": {
+        "state": "native_cpu_and_public_https_verified",
+        "evidence": "evidence/serve-web-provider-20261128/cpu.json",
+        "remaining": [
+          "model HTTP Chat/Responses citations and auxiliary failure isolation",
+          "reversible issued deployment and main"
+        ]
       }
     },
     {

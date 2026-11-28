@@ -1,9 +1,15 @@
-// Native configured-site retrieval. No external search daemon is required.
+// Native webpage retrieval with deployment-owned discovery.
 #pragma once
+
+#include <optional>
 
 #include "q4t/server/web_index.h"
 
 namespace q4t::server {
+struct WebSearchProvider {
+  std::string endpoint;
+  FileFetchOptions fetch;
+};
 struct WebDeploymentPolicy {
   FileFetchOptions fetch;
   std::vector<std::string> seeds, scopes;
@@ -11,6 +17,7 @@ struct WebDeploymentPolicy {
   uint64_t max_download_bytes = 16U << 20;
   int refresh_seconds = 300, retention_seconds = 86400;
   std::string sha256;
+  std::optional<WebSearchProvider> provider;
 };
 // Strict offline loading, with the existing owned/private regular-file reader.
 Status ParseWebDeploymentPolicy(std::string_view raw,

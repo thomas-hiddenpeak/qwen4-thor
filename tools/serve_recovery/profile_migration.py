@@ -57,6 +57,11 @@ def web_search_capabilities(value):
     ledger.require(all(chat.get(k) == v for k, v in chat_values.items()) and
         all(web.get(k) == v for k, v in web_values.items()),
         'invalid native web source or citation contract')
+    if 'optional_providers' in chat or 'optional_providers' in web:
+        expected = {'mwmbl_v2': True}
+        ledger.require(all(package.same_json(owner.get('optional_providers'), expected)
+                           for owner in (chat, web)),
+                       'inconsistent optional web discovery provider')
     for object_, enabled, disabled in (
         (chat, ('pre_answer_search', 'json', 'stream', 'url_citations',
                 'stored', 'batch_frozen_inputs', 'policy_check_cli'),

@@ -56,6 +56,22 @@ class WebMigrationTests(unittest.TestCase):
                     allow_capability_extension=True)
         self.assertEqual((base.first, self.evidence), original)
 
+    def test_optional_web_provider_requires_both_native_clients_and_explicit_upgrade(self):
+        previous = self.records['primary']['capabilities']
+        modern = copy.deepcopy(previous)
+        modern['web_search']['optional_providers'] = {'mwmbl_v2': True}
+        with self.assertRaises(ValueError):
+            migration.semantic_capabilities(modern)
+        modern['responses']['web_search']['optional_providers'] = {'mwmbl_v2': 1}
+        with self.assertRaises(ValueError):
+            migration.semantic_capabilities(modern)
+        modern['responses']['web_search']['optional_providers'] = {'mwmbl_v2': True}
+        old = migration.semantic_capabilities(previous)
+        new = migration.semantic_capabilities(modern)
+        self.assertTrue(migration.explicit_extension(old, new))
+        self.assertFalse(migration.explicit_extension(new, old))
+        self.assertNotEqual(old, new)
+
     def test_pending_history_and_consumed_budget_survive_upgrade(self):
         base = self.base
         grant = base.extended_permit(base.new, self.evidence, allow_capability_extension=True)

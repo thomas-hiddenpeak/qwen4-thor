@@ -1,0 +1,61 @@
+{
+  "stage": "native function and live HTTPS preflight; model HTTP and rollout pending",
+  "date": "2026-11-28",
+  "parent": "ba89cf9d66bcdbd52693a5cb6d4b838a4a05cbda",
+  "device": "Jetson AGX Thor",
+  "model_starts": 0,
+  "suites": {
+    "legacy_web_execution": 17,
+    "provider": 6,
+    "qualified_migration": 5,
+    "inventory_mutations": 40
+  },
+  "files": {
+    "native-cpu-01.log": "217b4345e319e08e595a089ea6ddd7bb7bacfc181fb6482ff5a9d22cb35095be",
+    "native-cpu-02.log": "3a7dc81a631220a03ce3fe96fd0951de98ab7872d4b0ef755c47a27f47490505",
+    "redirect-cpu.log": "1ed5e507736029b1c23be1ecd18d1168bd48d926c2ccb27dff59aedb9f212333",
+    "recovery-final.log": "8eff198b23208ca6aff073f1cc13c66686ed7427f8e7f1487e0356a90fee85fa",
+    "inventory-reviewed.json": "103b1d6d723bfdfa9120e4a24b687d01a2eb9fb34ae5458463a50810d2ee50f4",
+    "real-01.log": "eb6a491df06f6cf6a943fbd4fb029a7d0123622066ec8d000900d9261621d556",
+    "real-02.log": "976f389105fbfc4ce2430f5b4d5133902f0118b7c1d9bedb636b841b1e231fa9",
+    "real-03.log": "edf707e91750b67e68fc9f8c3eaed0f932872336ed59c2765a2426867d39a011",
+    "real-04.log": "d179bb16be3fc289de943ef9a6f8eade4e36754944541d5533f4c6d3afb5f765"
+  },
+  "public_search": {
+    "query": "RFC 2606 reserved example domains",
+    "api": "https://api.mwmbl.org/api/v2/search/",
+    "independent_count": 15,
+    "observed_index_sha256": "a3a29d4d7189ec39c8abe9b3b2b5647e038afbad70a2c3c12a5e274600512369",
+    "accepted_source_url": "https://tex2e.github.io/rfc-translater/html/rfc2606.html",
+    "accepted_source_bytes": 32453,
+    "accepted_source_sha256": "7dcac3c4800a70e14f764e09704a786ef91e7df41fdcaac0a05fb138cab1b253",
+    "received_bytes": 38830,
+    "cache_checks": [
+      "exact query after store reopen",
+      "offline open_page by retained URL"
+    ],
+    "fetches": 2,
+    "extra_offline_fetches": 0
+  },
+  "retained_failures": [
+    {
+      "step": "first CPU and live preflight",
+      "problem": "FileInputSource borrowed a temporary encoded URL",
+      "fix": "keep the encoded string alive through the worker call"
+    },
+    {
+      "step": "first IANA result",
+      "problem": "HTTPS redirect targeted http://www.iana.org/help/example-domains",
+      "result": "rejected; HTTPS downgrade prevention remains active"
+    },
+    {
+      "step": "IETF datatracker result",
+      "problem": "independent byte digest differed",
+      "observations": [
+        "e7fb42dc472f72541395606ea3ab25688d160685f8d6f6018516dab59ab40810",
+        "a24f3dab961aaf4177bdf1fc4242443ddc8d55c9c7abbb341393267fe7fcc619"
+      ],
+      "difference": "Independent captures differed on the single inline challenge script line. Raw-byte test did not pass for this source."
+    }
+  ]
+}

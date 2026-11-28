@@ -216,3 +216,37 @@ rev234完成19项STOPPED升级、整根回退和再前进，284.889秒、
 0新增GPU；预算/周期保持，私有搜索配置可选。原失败不追认，
 原224及长稳入口保留。见[交付记录](evidence/serve-web-search-delivery-20261117/README.md)。
 继续day交接、实际合main及全部master任务。
+
+## 按部署选择 Mwmbl v2 网页索引
+
+候选支持部署方以私有策略选用公开或自有的 Mwmbl v2 兼容索引。Chat
+会把最后一条用户查询发送给所配端点，Responses 使用网页工具的实际查询。
+只给适合向该端点发送查询的客户配置 scope。现有 seeds 配置仍使用原生
+网站索引。以下示例供有意启用的部署使用。 [提供方接口](https://developer.mwmbl.org/)
+
+```json
+{
+  "version": 1,
+  "scopes": ["client:research"],
+  "provider": {
+    "type": "mwmbl_v2",
+    "endpoint": "https://api.mwmbl.org/api/v2/search/"
+  },
+  "fetch": {"allow_http": false, "ports": [443]},
+  "max_pages": 4,
+  "max_download_bytes": 8388608,
+  "refresh_seconds": 300,
+  "retention_seconds": 86400
+}
+```
+
+provider.fetch 只约束索引连接，默认 HTTPS，索引请求禁止跳转。
+顶层 fetch 和请求域名过滤约束每一次回源及跳转。索引端点只提供
+候选 URL。q4t 单独抓取并解析网页，按实际正文生成摘要和引用。
+每个索引请求至多读取 512 KiB，索引和网页共用调用方的采集预算。
+多条查询交错选择结果，已验证的部分结果可以返回；不可用来源
+不覆盖先前完整查询的快照。所有结果抓取失败时向本次工具调用返回错误。
+
+离线搜索按客户、部署、域名过滤及原查询序列读取，open/find 可用
+已核验的最终 URL 重读同客户页面。提供方策略与 seeds 互斥；凭据、
+端点和来源范围由部署掌握。当前适配器覆盖无需凭据的查询。
