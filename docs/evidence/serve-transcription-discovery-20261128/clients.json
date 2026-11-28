@@ -1,0 +1,431 @@
+{
+  "status": "PASS",
+  "publication": 602,
+  "package": "d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66",
+  "engine": "c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "sdk": {
+    "python-2.8.1": {
+      "capture_sha256": "5b1692ef456a85f5d91a8acd81451e305d581524a8de0959d2fb3d255b85deb4",
+      "codec": "multipart WAV",
+      "quality": {
+        "policy": "source-specific-owner-inflection-20261118",
+        "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "voices": [
+          {
+            "reference": "The child almost hurt the small dog.",
+            "observed": "The child almost hurts the small dog.",
+            "wer": 0.14285714285714285,
+            "threshold": 0.125,
+            "accepted_inflection": true
+          },
+          {
+            "reference": "We are sure that one war is enough.",
+            "observed": "We are sure that one war is enough.",
+            "wer": 0.0,
+            "threshold": 0.125,
+            "accepted_inflection": false
+          }
+        ],
+        "overlap_seconds": 1.68,
+        "model_quality_limitation": true
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-3368579438a0c4a5660ea5451fa7570e"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-cee0b66e5649619364eef687c1d977b0"
+        }
+      ],
+      "event_types": [
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.done"
+      ],
+      "segments": 2
+    },
+    "python-2.33.0": {
+      "capture_sha256": "7c709373633b2c495b36cf093a67c070c20427f7f52c6c8c409730ab9efc8da8",
+      "codec": "multipart WAV",
+      "quality": {
+        "policy": "source-specific-owner-inflection-20261118",
+        "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "voices": [
+          {
+            "reference": "The child almost hurt the small dog.",
+            "observed": "The child almost hurts the small dog.",
+            "wer": 0.14285714285714285,
+            "threshold": 0.125,
+            "accepted_inflection": true
+          },
+          {
+            "reference": "We are sure that one war is enough.",
+            "observed": "We are sure that one war is enough.",
+            "wer": 0.0,
+            "threshold": 0.125,
+            "accepted_inflection": false
+          }
+        ],
+        "overlap_seconds": 1.68,
+        "model_quality_limitation": true
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-3b128240d4bdad2fd8e66b4aabc44e34"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-ba0a4ee73eea3da5f54dafbedc72fbf7"
+        }
+      ],
+      "event_types": [
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.done"
+      ],
+      "segments": 2
+    },
+    "python-3.42.1": {
+      "capture_sha256": "d672ed3b7f5922ae4f238228024848d85b119a586e31af6fff853d0cc381c228",
+      "codec": "multipart WAV",
+      "quality": {
+        "policy": "source-specific-owner-inflection-20261118",
+        "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "voices": [
+          {
+            "reference": "The child almost hurt the small dog.",
+            "observed": "The child almost hurts the small dog.",
+            "wer": 0.14285714285714285,
+            "threshold": 0.125,
+            "accepted_inflection": true
+          },
+          {
+            "reference": "We are sure that one war is enough.",
+            "observed": "We are sure that one war is enough.",
+            "wer": 0.0,
+            "threshold": 0.125,
+            "accepted_inflection": false
+          }
+        ],
+        "overlap_seconds": 1.68,
+        "model_quality_limitation": true
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-379e87284acb457feb162ed703c0c6dd"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-90f6342583cbe3ab7985de7e294551e9"
+        }
+      ],
+      "event_types": [
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.done"
+      ],
+      "segments": 2
+    },
+    "python-3.55.1": {
+      "capture_sha256": "66561a713430485a7f633263861a6bbd95ca2de4c0cfe4d7fe05619f6143ad6f",
+      "codec": "multipart WAV",
+      "quality": {
+        "policy": "source-specific-owner-inflection-20261118",
+        "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "voices": [
+          {
+            "reference": "The child almost hurt the small dog.",
+            "observed": "The child almost hurts the small dog.",
+            "wer": 0.14285714285714285,
+            "threshold": 0.125,
+            "accepted_inflection": true
+          },
+          {
+            "reference": "We are sure that one war is enough.",
+            "observed": "We are sure that one war is enough.",
+            "wer": 0.0,
+            "threshold": 0.125,
+            "accepted_inflection": false
+          }
+        ],
+        "overlap_seconds": 1.68,
+        "model_quality_limitation": true
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-1d826b48542493f3fb5af07a46f37f3a"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-fae83b5aa06954fbc952e22207b92157"
+        }
+      ],
+      "event_types": [
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.done"
+      ],
+      "segments": 2
+    },
+    "node-6.34.0": {
+      "capture_sha256": "be18ad2d991d05d3de576fb8aa527efc86088842aa8256832ab01a4bf139b442",
+      "codec": "multipart WAV",
+      "quality": {
+        "policy": "source-specific-owner-inflection-20261118",
+        "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "voices": [
+          {
+            "reference": "The child almost hurt the small dog.",
+            "observed": "The child almost hurts the small dog.",
+            "wer": 0.14285714285714285,
+            "threshold": 0.125,
+            "accepted_inflection": true
+          },
+          {
+            "reference": "We are sure that one war is enough.",
+            "observed": "We are sure that one war is enough.",
+            "wer": 0.0,
+            "threshold": 0.125,
+            "accepted_inflection": false
+          }
+        ],
+        "overlap_seconds": 1.68,
+        "model_quality_limitation": true
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-fb938454c16d457dceefd90b08e919a2"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-d0b196e5a7a2c4ea6d5691b4112a0853"
+        }
+      ],
+      "event_types": [
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.done"
+      ],
+      "segments": 2
+    },
+    "node-7.47.0": {
+      "capture_sha256": "0c02f46db5191fd73452312b6e1bca580eb93753e33211ac39cd87c407fa6349",
+      "codec": "multipart WAV",
+      "quality": {
+        "policy": "source-specific-owner-inflection-20261118",
+        "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+        "voices": [
+          {
+            "reference": "The child almost hurt the small dog.",
+            "observed": "The child almost hurts the small dog.",
+            "wer": 0.14285714285714285,
+            "threshold": 0.125,
+            "accepted_inflection": true
+          },
+          {
+            "reference": "We are sure that one war is enough.",
+            "observed": "We are sure that one war is enough.",
+            "wer": 0.0,
+            "threshold": 0.125,
+            "accepted_inflection": false
+          }
+        ],
+        "overlap_seconds": 1.68,
+        "model_quality_limitation": true
+      },
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-0e41ac4be12c8b1a8bfbead08ed86822"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-d5f5d953216d1e389a2deeb55864b83a"
+        }
+      ],
+      "event_types": [
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.delta",
+        "transcript.text.segment",
+        "transcript.text.done"
+      ],
+      "segments": 2
+    }
+  },
+  "lease_sha256": "510821535027da4463c2e92500ec7d99c807d093858d2acc27e4752f579e3f6d",
+  "samples": 67,
+  "runtime": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2281694,
+    "model_exit": 0,
+    "private_config_reads": 1,
+    "requests": 12,
+    "seconds": 70.322
+  },
+  "plan_sha256": "034966ec75d67321d57db8fa0aca7a353614473e9baad4486a9bccd3481374cb",
+  "guard": {
+    "status": "COMPLETED",
+    "backend": "nvml",
+    "samples": 67,
+    "child_returncode": 0
+  },
+  "input_wav_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+  "private_health_sha256": "0f719f68c9e4e443a5deb82d192d2aa12e07833f4b9a5a9bd58a6093810975ee",
+  "replay": {
+    "sdk": {
+      "python-2.8.1": {
+        "exchanges": 2,
+        "statuses": [
+          200,
+          200
+        ],
+        "speaker_segments": 2,
+        "event_types": [
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.done"
+        ],
+        "capture_sha256": "3aa9f8a7c73ea7e5d1eb8ec2b71923c16ebc5d99384c362d5f52311c4e89a1c0"
+      },
+      "python-2.33.0": {
+        "exchanges": 2,
+        "statuses": [
+          200,
+          200
+        ],
+        "speaker_segments": 2,
+        "event_types": [
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.done"
+        ],
+        "capture_sha256": "c1623f32c8ac15f694126b2eec8354e65cd5f9653c4b939129c9d183c20a10c1"
+      },
+      "python-3.42.1": {
+        "exchanges": 2,
+        "statuses": [
+          200,
+          200
+        ],
+        "speaker_segments": 2,
+        "event_types": [
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.done"
+        ],
+        "capture_sha256": "b3b917013db9f677e2f62be6d8048d6aefe371a7158954a4dcab3566be7d23f0"
+      },
+      "python-3.55.1": {
+        "exchanges": 2,
+        "statuses": [
+          200,
+          200
+        ],
+        "speaker_segments": 2,
+        "event_types": [
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.done"
+        ],
+        "capture_sha256": "40cb8345a829125eacb2326b64a93a5d5f0eff7d3bf87be5ce900787f8b97080"
+      },
+      "node-6.34.0": {
+        "exchanges": 2,
+        "statuses": [
+          200,
+          200
+        ],
+        "speaker_segments": 2,
+        "event_types": [
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.done"
+        ],
+        "capture_sha256": "675b4bb81d0231d7964e7313e50827c398e53c2e6056e5d23d6235d675155876"
+      },
+      "node-7.47.0": {
+        "exchanges": 2,
+        "statuses": [
+          200,
+          200
+        ],
+        "speaker_segments": 2,
+        "event_types": [
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.delta",
+          "transcript.text.segment",
+          "transcript.text.done"
+        ],
+        "capture_sha256": "78bdf7dceffa45ac34aafbe50879e6f8f2b94919dd3c9c2f5c1fddf93f904e9b"
+      }
+    },
+    "issues": {},
+    "input_wav_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+    "stream_sha256": "075168642430267ba5a70bdb9103d3c81fa918b476d0189c6a6949975b0e7cd7",
+    "unary_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+    "request_count": 12,
+    "model_starts": 0
+  },
+  "source_sha256": {
+    "speech.py": "58dd161ff249489285e8c4305d8b62e113f74f1f0f1f428292ec5d0d30125bc8",
+    "speech.mjs": "dea13b6be2abdd414d44ac2194e2d4ff3d44838a0dc5c146a414987cbfc36747",
+    "business.py": "38e917bacbca325d79d3f1e53470e94db5b09ac8ccdd27c0f79047208cee8799",
+    "replay.py": "f43632891b33168658196b9f2ff3e9d5b3c3ab192b4082a6f42e9c94ff19b9e2"
+  }
+}

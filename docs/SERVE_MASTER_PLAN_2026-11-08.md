@@ -1,5 +1,7 @@
 # Serve总目标重审：补齐能力，持续执行至全部计划完成
 
+rev602 已登记双人重叠转录的主包和回退包。官方 SDK 在两档容量和两种托管恢复场景中均识别出两位说话人；原录音的 1.68 秒重叠与首句词形误差已记录。登记期间服务为 STOPPED，13 份运行状态通过复核。 [发行回执](evidence/serve-transcription-discovery-20261128/delivery.json)
+
 rev600 已登记主包和回退包。Guardian 的内存采集卡住期间，同一模型与管理入口继续响应。采集恢复后，主网关故障触发回退接管。登记期间服务处于 STOPPED，模型启动次数为零，13 份运行状态和既有容量策略通过复核。长稳及冷启动交接入口已更新。 [发行回执](evidence/serve-memory-watchdog-stall-20261128/delivery.json)
 
 rev598 已发行旧版 Node SDK 的流式正文兼容修复。模型重启和主网关切换后，Node 6.34 与 7.47 均按原 ID 读回原文、事件顺序和终态，跨客户读取为 404。主包与独立回退包已登记，发行时服务为 STOPPED。 [发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)

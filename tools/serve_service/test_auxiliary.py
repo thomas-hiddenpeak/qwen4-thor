@@ -312,9 +312,12 @@ class IsolationTests(unittest.TestCase):
         def observe(pid, _):
             pkg.save(self.root/'runtime/stop.request.json', {})
             return self.observation(pid)
+        # Allow the CPU fixture to reach the terminal write under host load.
+        # Watchdog deadline behavior has separate tests.
         rc, state = self.run_supervisor(observe, isolated=True,
+            config_overrides=dict(memory_unknown_seconds=2, startup_seconds=2),
             patch=mock.patch.object(sup.RotatingLog, 'write', new=write))
-        self.assertEqual((rc, state['state']), (0, 'STOPPED'))
+        self.assertEqual((rc, state['state']), (0, 'STOPPED'), state)
         self.assertTrue(state['had_auxiliary_gaps'])
         self.assertEqual(state['auxiliary_io']['events']['failed_operations'], 1)
 

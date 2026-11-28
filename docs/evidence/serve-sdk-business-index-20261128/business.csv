@@ -52,7 +52,7 @@ GET,/assistants/{assistant_id},,,,,,
 POST,/assistants/{assistant_id},,,,,,
 DELETE,/assistants/{assistant_id},,,,,,
 POST,/audio/speech,,,,,,
-POST,/audio/transcriptions,,,,,,
+POST,/audio/transcriptions,speech-issued-python-2.8.1-json/200=1 speech-issued-python-2.8.1-sse/200=1,speech-issued-python-2.33.0-json/200=1 speech-issued-python-2.33.0-sse/200=1,speech-issued-python-3.42.1-json/200=1 speech-issued-python-3.42.1-sse/200=1,speech-capacity-light/200=1 speech-capacity-primary/200=1 speech-gateway-prepare/200=1 speech-gateway-restore/200=1 speech-issued-python-3.55.1-json/200=1 speech-issued-python-3.55.1-sse/200=1 speech-model-prepare/200=1 speech-model-restore/200=1 speech-tls/200=1,speech-issued-node-6.34.0-json/200=1 speech-issued-node-6.34.0-sse/200=1,speech-issued-node-7.47.0-json/200=1 speech-issued-node-7.47.0-sse/200=1
 POST,/audio/translations,,,,,,
 POST,/audio/voice_consents,,,,,,
 GET,/audio/voice_consents,,,,,,
@@ -66,7 +66,7 @@ GET,/batches,,,,,,batch-gateway-restore/200=2 batch-model-restore/200=2
 GET,/batches/{batch_id},,,,batch-gateway-checkpoint/200=2 batch-model-checkpoint/200=2,,batch-gateway-restore/200=2 batch-gateway-restore/404=1 batch-model-restore/200=2 batch-model-restore/404=1
 POST,/batches/{batch_id}/cancel,,,,batch-gateway-submit/200=2 batch-gateway-submit/404=1 batch-gateway-submit/429=1 batch-model-submit/200=2 batch-model-submit/404=1 batch-model-submit/429=1,,batch-gateway-restore/200=1 batch-gateway-restore/409=1 batch-model-restore/200=1 batch-model-restore/409=1
 GET,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
-POST,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,batch-gateway-restore/200=1 batch-model-restore/200=1 chats/200=1
+POST,/chat/completions,chats/200=1,chats/200=1,chats/200=1,chats/200=1 speech-tls/200=1,chats/200=1,batch-gateway-restore/200=1 batch-model-restore/200=1 chats/200=1
 GET,/chat/completions/{completion_id},chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2,chats/200=2 chats/404=2
 POST,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
 DELETE,/chat/completions/{completion_id},chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1,chats/200=1
