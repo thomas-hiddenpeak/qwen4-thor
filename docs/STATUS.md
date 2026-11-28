@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+主、轻两档均通过相邻页与名称清空短验。每档 18 次向量库请求，独立 Chat 均回答 42。 [容量回执](evidence/serve-previous-page-20261128/capacity-business.json)
+
 已准备针对本次向量库改动的主、轻容量验收。原生 TLS 的 CPU 场景包含 18 次请求，覆盖相邻页、名称清空、跨客户端拒绝和删除，五种证据变更均被检出。 [容量回执](evidence/serve-previous-page-20261128/capacity-cpu.json)
 
 候选引擎、已登记的 rev608 原生网关与真实嵌入模型完成了向前分页短验。六版客户端连续取回紧邻游标的两页，72 次读取覆盖两种排序和三类资源，另有 24 次正式客户端请求验证向量库名称清空后仍返回字符串。独立 Chat 从下载的原发行记录回答 606。 [实机回执](evidence/serve-previous-page-20261128/device.json)
