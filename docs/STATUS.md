@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+在模型退出与主网关切换两种故障后，旧版和当前 Node 客户端均按原 ID 恢复了完整事件、原文和终态。跨客户读取返回 404，独立 Chat 得到 42。下一步登记主包及回退包。 [托管恢复回执](evidence/serve-responses-search-stream-sdk-20261128/managed.json)
+
 主容量的 Node 6.34 创建并保存了带来源引用的答复。切换到轻容量后，Node 6.34 和 7.47 从原 ID 恢复相同的事件序列、正文与引用。两容量均验证了客户隔离、Chat 与资源清理，资格记录绑定实测网关。下一步封装主包和回退包并验证托管恢复。 [容量回执](evidence/serve-responses-search-stream-sdk-20261128/profiles.json)
 
 Thor 上的 Node 6.34 通过原生 TLS 创建并保存带引用的 RFC 2606 回答。六个登记 SDK 从同一 ID 重放了完整事件和正文，同客户普通 GET 保持原始响应形状，另一客户为 404。下一步验证主轻容量交接并准备回退发行。 [模型 HTTP 回执](evidence/serve-responses-search-stream-sdk-20261128/device.json)
