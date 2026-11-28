@@ -1,0 +1,72 @@
+{
+  "scope": "Official SDKs through native TLS, C++ Files and Container HTTP handlers, real object storage; synthetic controller admission; no model loaded.",
+  "model_starts": 0,
+  "cpu_source_base": "a127697af66fc25408b1929699a69401c2adbc39",
+  "linked_engine_build_source": "ade75d59ff9e58896408970d1d03c6ded1016687",
+  "production_source_sha256": {
+    "include/q4t/server/application_routes.h": "68f1be91450808cee6f7529b97385bb8d7946531f729c2fbf80be6eaf5d084f4",
+    "src/server/client_request.cpp": "1fb436f54d8914d99c58e466f6af5c5d049b4c36752d51de1867d4bb99d76473",
+    "src/server/container_files.cpp": "e442730a05aa9f27c82d57fb5d07425aafdc40952b4300f19b543bd125b7c1a4",
+    "src/server/containers.cpp": "1a9ddadb06da95335da2f03f14e8be8f325ed0ed6612674be8f7e5c9129444bd",
+    "src/server/containers_internal.h": "010803c591e9075ea45cb285655929b207a619920802fb083ee42ee32d60d4f3",
+    "src/server/files_http.cpp": "96698feb4738a4da00d9966465a6f6b5e3d32a220f60b644a5d337af88cc57dc",
+    "src/server/http_response.cpp": "00c1072b37243688bab72c1325be43de53ddf6ac4b350b57b662cc7746b75cfc",
+    "src/server/object_store.cpp": "21be1c598287e4f21c712ffa3c76ba1ce8b7dc0de8f67fcce99174ac59e72423",
+    "src/server/object_worker.cpp": "2b0d9616e4ebd9b3ca84dadbc984ff338c97cacf209e2da9bbd5e57bb36acc49"
+  },
+  "ingress_sha256": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "fixture_sha256": "b1f0907a532ac77584a7d20c802735458abe19a3362fb7f295246864fa0a584b",
+  "document": {
+    "path": "docs/evidence/serve-memory-watchdog-stall-20261128/delivery.json",
+    "bytes": 5960,
+    "sha256": "4dc1bcbf03cfd5797c9cc5a8c6f3c79470d87a138a79bd897a55b0a842b85ce8"
+  },
+  "requests": {
+    "file": "requests.json",
+    "sha256": "48b7f53bdacd1182376c03c2ccc02756aca5f1aede91cfe154808e83e3ff3017",
+    "total": 90,
+    "http_200": 66,
+    "http_404": 24,
+    "distinct_request_ids": 90,
+    "methods_per_client": 9,
+    "clients": [
+      "python-2.8.1",
+      "python-2.33.0",
+      "python-3.42.1",
+      "python-3.55.1",
+      "node-6.34.0",
+      "node-7.47.0"
+    ]
+  },
+  "fixture_regression": {
+    "before": "POST succeeded; first owner GET returned 404 on operations listener",
+    "after": "POST 200 (data), GET 200, DELETE 200, GET 404 (control)",
+    "pre_fix_log_sha256": "a1bf11b8b9e3244e082aee9f3a6b45dff49a3034be3cca44368736daa492a130",
+    "first_post_fix_log_sha256": "ed462ad9c7aed9fa29dfc7ab537fa9d6a14033b07fe16d3ca6e70d8a03508541",
+    "first_post_fix_assertion": "Each operation can ask for admission multiple times. All HTTP expectations passed. Regression now verifies lanes per request."
+  },
+  "multipart_probe": {
+    "original_node_6_34_wire_sha256": "f67c20b90d5b6e65ea7703c2a127af929f149fce2ace1334cdab637a4642a55b",
+    "reason": "Node multipart helper probes fetch(data:,) locally. The first recorder counted this as HTTP. The corrected recorder tracks it separately and checks endpoint origin.",
+    "per_node_reader": {
+      "node-6.34.0": 1,
+      "node-7.47.0": 1
+    }
+  },
+  "negative_controls": {
+    "wrong-version": "python-2.8.1: SDK identity differs",
+    "wrong-document": "python-2.8.1: download differs from the project document",
+    "duplicate-id": "python-2.8.1: missing or repeated request ID",
+    "foreign-content-allowed": "python-2.8.1: unexpected method, path or status",
+    "wrong-next-cursor": "python-2.8.1: query or page cursor differs",
+    "extra-query": "python-2.8.1: query or page cursor differs",
+    "wrong-file-path": "python-2.8.1: unexpected method, path or status",
+    "missing-owner-deletion": "python-2.8.1: unexpected method, path or status",
+    "wrong-pagination": "python-2.8.1: invalid file pages"
+  },
+  "cleanup": {
+    "fixture_exited": true,
+    "ingress_exited": true
+  },
+  "full_release_business": "pending"
+}

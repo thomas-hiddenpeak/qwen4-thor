@@ -9,6 +9,7 @@ import re
 from urllib.parse import parse_qsl
 
 from .producer_sdk_evidence import issued_producer_campaigns
+from .container_receipt import verify as verify_container
 from .render_sdk_matrix import CATALOG, VERSIONS, sha
 from .response_handoff_receipt import verify as verify_response_handoff
 from .stored_chat_receipt import verify as verify_stored_chat
@@ -168,8 +169,35 @@ def responses(proof, pairs):
     return proof['publication'], packets, proof['statuses']
 
 
+def issued_containers(proof, records):
+    published = read(EVIDENCE / 'serve-interpreter-output-discovery-20261128/delivery.json')['publication']
+    require(published == proof['registration'] and published['status'] == 'PASS'
+            and published['primary'] == proof['primary'] and published['engine'] == proof['engine']
+            and published['publication_revision'] == proof['publication'], 'container release differs')
+    guard, run = proof['strict_lease'], proof['result']
+    require(guard['status'] == 'COMPLETED' and guard['inherited'] and guard['backend'] == 'nvml'
+            and guard['returncode'] == 0 and guard['samples'] > 0 and run['status'] == 'PASS'
+            and run['model_exit'] == 0 and run['starts'] == 1 and run['ports_free']
+            and run['unchanged_default'], 'container device run incomplete')
+    document = EVIDENCE / 'serve-memory-watchdog-stall-20261128/delivery.json'
+    require(proof['document']['path'] == str(document.relative_to(EVIDENCE.parents[1]))
+            and sha(document) == proof['document']['sha256']
+            and document.stat().st_size == proof['document']['bytes'], 'container document differs')
+    require(set(records) == set(CLIENTS) and proof['sdk_versions'] == list(CLIENTS),
+            'container SDK set differs')
+    packets = []
+    body = document.read_bytes()
+    for client in CLIENTS:
+        record = records[client]
+        verify_container(client, record, body)
+        packets.extend((client, row) for row in record['requests'])
+    require(len(packets) == proof['requests'] == run['requests'] == 90, 'container request total differs')
+    return proof['publication'], packets, proof['statuses']
+
+
 # Only suites with original, authenticated wire records and a matching device receipt.
 SUITES = (
+    ('containers', 'serve-container-sdk-issued-20261128', 'request_evidence_sha256', issued_containers),
     ('conversations', 'serve-conversation-sdk-business-20261128', 'requests_sha256', conversations),
     ('uploads', 'serve-upload-sdk-recovery-20261128', 'trace_sha256', uploads),
     ('vectors', 'serve-vector-batch-sdk-20261128', 'request_evidence_sha256', vectors),

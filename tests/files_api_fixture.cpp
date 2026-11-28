@@ -221,6 +221,7 @@ int FilesApiFixture(int argc, char** argv) {
                 if (!headers.client_id.empty()) headers.gateway_token = token;
               }
               if (operations && !IsFileMetadata(method, target) &&
+                  !IsContainerObservation(method, target) &&
                   !IsUploadCancellation(method, target) &&
                   !(vector_fixture &&
                     (IsVectorStoreObservation(method, target) ||

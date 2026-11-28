@@ -184,6 +184,22 @@ class FilesTransportTests(unittest.TestCase):
     def test_official_sdk_real_core_files_and_large_bytes(self):self.sdk(False)
     def test_official_sdk_native_tls_prefix_files_and_large_bytes(self):self.sdk(True)
 
+    def test_container_lifecycle_across_native_listeners(self):
+        server = self.stack()
+        before = len(server.admissions)
+        status, body = server.request('POST', '/v1/containers',
+            b'{"name":"project-records"}', {'Content-Type': 'application/json'})
+        self.assertEqual(status, 200, body)
+        self.assertEqual({row['lane'] for row in server.admissions[before:]}, {'data'})
+        path = '/v1/containers/' + json.loads(body)['id']
+        for method, target, expected in [('GET', path, 200), ('DELETE', path, 200),
+                                          ('GET', path, 404)]:
+            before = len(server.admissions)
+            status, body = server.request(method, target)
+            self.assertEqual(status, expected, body)
+            self.assertEqual({row['lane'] for row in server.admissions[before:]},
+                             {'control'})
+
     def test_malformed_chunk_trailer_never_publishes_complete_multipart(self):
         server = self.stack()
         wire = form()
