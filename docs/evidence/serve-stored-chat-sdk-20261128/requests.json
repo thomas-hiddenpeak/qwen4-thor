@@ -1,0 +1,1004 @@
+[
+  {
+    "writer": {
+      "sdk": "python-2.8.1",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "query": "",
+          "status": 200,
+          "trace": "req-ac6b7021ec82e9b54940cac1e8fa43a8"
+        }
+      ],
+      "created": {
+        "id": "chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+        "answer": "580",
+        "metadata": {
+          "writer": "python-2.8.1"
+        }
+      }
+    },
+    "reader": {
+      "sdk": "python-2.33.0",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+          "query": "",
+          "status": 200,
+          "trace": "req-0624ebd5e4dfd3f78754c9ff21e8b137"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+          "query": "",
+          "status": 404,
+          "trace": "req-6b25dfb5112b7eb7ba5897697a773160"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+          "query": "",
+          "status": 200,
+          "trace": "req-38bc463f79463b88855408552a1125be"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions",
+          "query": "limit=1&metadata%5Bwriter%5D=python-2.8.1&metadata%5Breader%5D=python-2.33.0",
+          "status": 200,
+          "trace": "req-5dc484a380c01e881a382a59c3421638"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d/messages",
+          "query": "limit=1&order=asc",
+          "status": 200,
+          "trace": "req-63e11d5022e4318d150d6d98fe4e88a6"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d/messages",
+          "query": "after=chatmsg_a8888a01cc6f49450b583f652dc931dc3c078c89954de87b893ddeea7f42953e&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-7a401de3019a155571e945f304c18df3"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+          "query": "",
+          "status": 200,
+          "trace": "req-8f3fb3f4acab51a5ba6cfc984e69f48e"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+          "query": "",
+          "status": 200,
+          "trace": "req-9f22ae90d1aa2f238538e9250750f218"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+          "query": "",
+          "status": 404,
+          "trace": "req-81dec3ae2fb169ea84e49713316c17ac"
+        }
+      ],
+      "before": {
+        "id": "chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+        "answer": "580",
+        "metadata": {
+          "writer": "python-2.8.1"
+        }
+      },
+      "forbidden": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "updated": {
+        "id": "chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+        "answer": "580",
+        "metadata": {
+          "writer": "python-2.8.1",
+          "reader": "python-2.33.0"
+        }
+      },
+      "listed": [
+        "chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d"
+      ],
+      "list_has_more": false,
+      "pages": [
+        {
+          "id": "chatmsg_a8888a01cc6f49450b583f652dc931dc3c078c89954de87b893ddeea7f42953e",
+          "role": "system",
+          "content": "Answer with only the requested integer.",
+          "has_more": true
+        },
+        {
+          "id": "chatmsg_e20fcb35ea30f46536ea7e854d93b774fa41d36899f180ca0ece660086e42c51",
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 580,\n  \"version_revision\": 219,\n  \"profile_revision\": 106,\n  \"previous_profile_revision\": 105,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1\",\n  \"fallback\": \"7eea5d6c33de3eff6560fac2466840f09035437ab0a52bf869d2fed923923fa8\",\n  \"engine\": \"4e4793560074b3bd6799058c059ab023e72b1bb93a0289a3a7e52b711082e16a\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n",
+          "has_more": false
+        }
+      ],
+      "saved": {
+        "id": "chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+        "answer": "580",
+        "metadata": {
+          "writer": "python-2.8.1",
+          "reader": "python-2.33.0"
+        }
+      },
+      "deleted": {
+        "id": "chatcmpl-auto-eebc92c6cff66bdb15f71323103bcd2d",
+        "deleted": true
+      },
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning_effort": "none",
+      "max_completion_tokens": 48,
+      "metadata": {
+        "writer": "python-2.8.1"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer with only the requested integer."
+        },
+        {
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 580,\n  \"version_revision\": 219,\n  \"profile_revision\": 106,\n  \"previous_profile_revision\": 105,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"008bcd7da04b2722893257421ef66f98ba8534b6aff02c907d3dffa0c71895a1\",\n  \"fallback\": \"7eea5d6c33de3eff6560fac2466840f09035437ab0a52bf869d2fed923923fa8\",\n  \"engine\": \"4e4793560074b3bd6799058c059ab023e72b1bb93a0289a3a7e52b711082e16a\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+        }
+      ]
+    },
+    "metadata": {
+      "writer": "python-2.8.1",
+      "reader": "python-2.33.0"
+    },
+    "source": "serve-voice-consent-pagination-20261127/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "python-2.33.0",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "query": "",
+          "status": 200,
+          "trace": "req-5ac64738a97073b3c0a41f6213e7375f"
+        }
+      ],
+      "created": {
+        "id": "chatcmpl-auto-f29a81bc843932da153b48540842477c",
+        "answer": "582",
+        "metadata": {
+          "writer": "python-2.33.0"
+        }
+      }
+    },
+    "reader": {
+      "sdk": "python-3.42.1",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c",
+          "query": "",
+          "status": 200,
+          "trace": "req-78354bc3ef9bc55a8d04d22a13bed108"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c",
+          "query": "",
+          "status": 404,
+          "trace": "req-8859e3725686ac883338553e7750d4e3"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c",
+          "query": "",
+          "status": 200,
+          "trace": "req-3854e4e98472253dd0a2e539c027d436"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions",
+          "query": "limit=1&metadata%5Bwriter%5D=python-2.33.0&metadata%5Breader%5D=python-3.42.1",
+          "status": 200,
+          "trace": "req-0c257e6d5b860e203fa3e82d31559398"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c/messages",
+          "query": "limit=1&order=asc",
+          "status": 200,
+          "trace": "req-4f65f44a4a8b40aafd479d49e74c121d"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c/messages",
+          "query": "after=chatmsg_d79bad270cb721579c0a401ebfdb890977ffeea5ac2c73fe67e8e4579526d269&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-61312d18d1c820c3d7e9d1954289c824"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c",
+          "query": "",
+          "status": 200,
+          "trace": "req-2ad4cb92f1635dc838c2783e48d1e349"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c",
+          "query": "",
+          "status": 200,
+          "trace": "req-2c0d411a414ebf2c01bd0cc59bda694e"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-f29a81bc843932da153b48540842477c",
+          "query": "",
+          "status": 404,
+          "trace": "req-28d7d74540b2509f2ceed4396797a943"
+        }
+      ],
+      "before": {
+        "id": "chatcmpl-auto-f29a81bc843932da153b48540842477c",
+        "answer": "582",
+        "metadata": {
+          "writer": "python-2.33.0"
+        }
+      },
+      "forbidden": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "updated": {
+        "id": "chatcmpl-auto-f29a81bc843932da153b48540842477c",
+        "answer": "582",
+        "metadata": {
+          "writer": "python-2.33.0",
+          "reader": "python-3.42.1"
+        }
+      },
+      "listed": [
+        "chatcmpl-auto-f29a81bc843932da153b48540842477c"
+      ],
+      "list_has_more": false,
+      "pages": [
+        {
+          "id": "chatmsg_d79bad270cb721579c0a401ebfdb890977ffeea5ac2c73fe67e8e4579526d269",
+          "role": "system",
+          "content": "Answer with only the requested integer.",
+          "has_more": true
+        },
+        {
+          "id": "chatmsg_8135d40d13e0be22fea10b4bf06c4a153e36a7b652753ac59504fa1a0723b124",
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 582,\n  \"version_revision\": 220,\n  \"profile_revision\": 107,\n  \"previous_profile_revision\": 106,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb\",\n  \"fallback\": \"a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9\",\n  \"engine\": \"312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n",
+          "has_more": false
+        }
+      ],
+      "saved": {
+        "id": "chatcmpl-auto-f29a81bc843932da153b48540842477c",
+        "answer": "582",
+        "metadata": {
+          "writer": "python-2.33.0",
+          "reader": "python-3.42.1"
+        }
+      },
+      "deleted": {
+        "id": "chatcmpl-auto-f29a81bc843932da153b48540842477c",
+        "deleted": true
+      },
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning_effort": "none",
+      "max_completion_tokens": 48,
+      "metadata": {
+        "writer": "python-2.33.0"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer with only the requested integer."
+        },
+        {
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 582,\n  \"version_revision\": 220,\n  \"profile_revision\": 107,\n  \"previous_profile_revision\": 106,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"12c74e4d540fc2d05606a619c074827dc08adbe84d10ea62ff49e46e26961adb\",\n  \"fallback\": \"a82b77a1545bbece40a38a71a80c6ab6f2421f9e7cd984e0e34ce22bca07e7a9\",\n  \"engine\": \"312335e08d48f421da721171ade3e4faedaf1e6c26fac3384ab2e6ed2cdd599b\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+        }
+      ]
+    },
+    "metadata": {
+      "writer": "python-2.33.0",
+      "reader": "python-3.42.1"
+    },
+    "source": "serve-asset-admission-20261127/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "python-3.42.1",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "query": "",
+          "status": 200,
+          "trace": "req-29e3bc0a53dfd8f7d58dd952f666a7fa"
+        }
+      ],
+      "created": {
+        "id": "chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+        "answer": "584",
+        "metadata": {
+          "writer": "python-3.42.1"
+        }
+      }
+    },
+    "reader": {
+      "sdk": "python-3.55.1",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+          "query": "",
+          "status": 200,
+          "trace": "req-72ef577ab93fc877f632caea09b20001"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+          "query": "",
+          "status": 404,
+          "trace": "req-31bf3d0b89f878b165d4270316c93644"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+          "query": "",
+          "status": 200,
+          "trace": "req-2bf4547ddca948f5308aef45dfe54a81"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions",
+          "query": "limit=1&metadata%5Bwriter%5D=python-3.42.1&metadata%5Breader%5D=python-3.55.1",
+          "status": 200,
+          "trace": "req-c18d24976dd2cc4307ee678003ab2ae7"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44/messages",
+          "query": "limit=1&order=asc",
+          "status": 200,
+          "trace": "req-0ad0ca7c5d2da60fb9f2de32378e9b42"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44/messages",
+          "query": "after=chatmsg_e09887ec190b5e8e7e6c2426d6b788198370a5c639529541adc14bfb75d77038&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-0ac0756755d1d103944f32b01a212f16"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+          "query": "",
+          "status": 200,
+          "trace": "req-7eb1fb297ee26d11b4f2e987944f2a53"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+          "query": "",
+          "status": 200,
+          "trace": "req-032c0f7d01376a079d262e9556e4c3f6"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+          "query": "",
+          "status": 404,
+          "trace": "req-44acacd03ab355080572414c271a9acb"
+        }
+      ],
+      "before": {
+        "id": "chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+        "answer": "584",
+        "metadata": {
+          "writer": "python-3.42.1"
+        }
+      },
+      "forbidden": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "updated": {
+        "id": "chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+        "answer": "584",
+        "metadata": {
+          "writer": "python-3.42.1",
+          "reader": "python-3.55.1"
+        }
+      },
+      "listed": [
+        "chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44"
+      ],
+      "list_has_more": false,
+      "pages": [
+        {
+          "id": "chatmsg_e09887ec190b5e8e7e6c2426d6b788198370a5c639529541adc14bfb75d77038",
+          "role": "system",
+          "content": "Answer with only the requested integer.",
+          "has_more": true
+        },
+        {
+          "id": "chatmsg_c474ea83834db006992249d06933b78804a31e9c205f1cb1f62ed95279ba6245",
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 584,\n  \"version_revision\": 221,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 107,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a\",\n  \"fallback\": \"28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n",
+          "has_more": false
+        }
+      ],
+      "saved": {
+        "id": "chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+        "answer": "584",
+        "metadata": {
+          "writer": "python-3.42.1",
+          "reader": "python-3.55.1"
+        }
+      },
+      "deleted": {
+        "id": "chatcmpl-auto-2eb2e28e07b4bf38e08ca852dd87ae44",
+        "deleted": true
+      },
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning_effort": "none",
+      "max_completion_tokens": 48,
+      "metadata": {
+        "writer": "python-3.42.1"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer with only the requested integer."
+        },
+        {
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 584,\n  \"version_revision\": 221,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 107,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"b628d782da2f23f145b14e9fa35346b5d9566e877695abec9ee0f5e193fcd74a\",\n  \"fallback\": \"28ffa8a5f760302987b40a7285d02288adf685c722df1dccb580ad2e540b6b28\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+        }
+      ]
+    },
+    "metadata": {
+      "writer": "python-3.42.1",
+      "reader": "python-3.55.1"
+    },
+    "source": "serve-chatkit-pending-user-message-20261127/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "python-3.55.1",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "query": "",
+          "status": 200,
+          "trace": "req-c760e37775a1c23737f804defc94b029"
+        }
+      ],
+      "created": {
+        "id": "chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+        "answer": "586",
+        "metadata": {
+          "writer": "python-3.55.1"
+        }
+      }
+    },
+    "reader": {
+      "sdk": "node-6.34.0",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+          "query": "",
+          "status": 200,
+          "trace": "req-f6fbce7ec701e0d84d4bc9079d7425e5"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+          "query": "",
+          "status": 404,
+          "trace": "req-d9425ac1312cc35db51c57ecc2511d92"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+          "query": "",
+          "status": 200,
+          "trace": "req-647d90fc77a3e4c351515d748250ae51"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions",
+          "query": "metadata%5Bwriter%5D=python-3.55.1&metadata%5Breader%5D=node-6.34.0&limit=1",
+          "status": 200,
+          "trace": "req-4c1740d0310c9d0306c30578d22318d8"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8/messages",
+          "query": "order=asc&limit=1",
+          "status": 200,
+          "trace": "req-72672c3ab9c108fcea2c1894341097ea"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8/messages",
+          "query": "order=asc&limit=1&after=chatmsg_b345f3487738450407438f304e3e183d9fcccca215bf4c50a53f5cb60f890ca9",
+          "status": 200,
+          "trace": "req-1ede8c6e3faf849a66382c190c6e2cc5"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+          "query": "",
+          "status": 200,
+          "trace": "req-e94a31dd37734931b424e258a4033eea"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+          "query": "",
+          "status": 200,
+          "trace": "req-5c6abc971fc33c539c2fbe19d859e0cd"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+          "query": "",
+          "status": 404,
+          "trace": "req-5ee735dc3f3f6504b9967ae64803af22"
+        }
+      ],
+      "before": {
+        "id": "chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+        "answer": "586",
+        "metadata": {
+          "writer": "python-3.55.1"
+        }
+      },
+      "forbidden": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "updated": {
+        "id": "chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+        "answer": "586",
+        "metadata": {
+          "writer": "python-3.55.1",
+          "reader": "node-6.34.0"
+        }
+      },
+      "listed": [
+        "chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8"
+      ],
+      "list_has_more": false,
+      "pages": [
+        {
+          "id": "chatmsg_b345f3487738450407438f304e3e183d9fcccca215bf4c50a53f5cb60f890ca9",
+          "role": "system",
+          "content": "Answer with only the requested integer.",
+          "has_more": true
+        },
+        {
+          "id": "chatmsg_26358072cf940724df7111bf5ce1bda73e99435127e14e59f0962ea7e0cf8f88",
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 586,\n  \"version_revision\": 222,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246\",\n  \"fallback\": \"bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n",
+          "has_more": false
+        }
+      ],
+      "saved": {
+        "id": "chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+        "answer": "586",
+        "metadata": {
+          "writer": "python-3.55.1",
+          "reader": "node-6.34.0"
+        }
+      },
+      "deleted": {
+        "id": "chatcmpl-auto-59f22572dd107015b280e7ea278a2bb8",
+        "deleted": true
+      },
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning_effort": "none",
+      "max_completion_tokens": 48,
+      "metadata": {
+        "writer": "python-3.55.1"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer with only the requested integer."
+        },
+        {
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 586,\n  \"version_revision\": 222,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"3e7fd669db294d9bfc39f8e35011b4233c51d3f18a4232bd0f2589e398790246\",\n  \"fallback\": \"bac53d80b6fe3c91c7bb73b1bfed5a4515c22979b0efdb3ae20384fc9200c9ae\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+        }
+      ]
+    },
+    "metadata": {
+      "writer": "python-3.55.1",
+      "reader": "node-6.34.0"
+    },
+    "source": "serve-openapi-ingress-auth-20261128/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "node-6.34.0",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "query": "",
+          "status": 200,
+          "trace": "req-4bb4901d438237134fad6a167df4fe39"
+        }
+      ],
+      "created": {
+        "id": "chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+        "answer": "588",
+        "metadata": {
+          "writer": "node-6.34.0"
+        }
+      }
+    },
+    "reader": {
+      "sdk": "node-7.47.0",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+          "query": "",
+          "status": 200,
+          "trace": "req-c6d09f8ff3f8957672ec636fd88b1979"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+          "query": "",
+          "status": 404,
+          "trace": "req-b57427d27f27c24e9c8518967f3ab108"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+          "query": "",
+          "status": 200,
+          "trace": "req-0937a1dff8e33f4983acc34f852d2954"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions",
+          "query": "metadata%5Bwriter%5D=node-6.34.0&metadata%5Breader%5D=node-7.47.0&limit=1",
+          "status": 200,
+          "trace": "req-5cc3edcb2654e5f7b6fea21a9fcdd3dd"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b/messages",
+          "query": "order=asc&limit=1",
+          "status": 200,
+          "trace": "req-42fc35d15fe334e766d71ee23a6635ec"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b/messages",
+          "query": "order=asc&limit=1&after=chatmsg_51d9ded1311fc8e9e9f429e7c27d0a829e44e8ac8372ccacd542192bc96c2bf3",
+          "status": 200,
+          "trace": "req-fc0f3da5509382d887fa550e1c1f24a3"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+          "query": "",
+          "status": 200,
+          "trace": "req-6128df2e02be92ed989844548df9c340"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+          "query": "",
+          "status": 200,
+          "trace": "req-0adde8953bd850fb4b8e37f3a6c8879c"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+          "query": "",
+          "status": 404,
+          "trace": "req-7cf2ed95c6a35025d90c718c55b1951e"
+        }
+      ],
+      "before": {
+        "id": "chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+        "answer": "588",
+        "metadata": {
+          "writer": "node-6.34.0"
+        }
+      },
+      "forbidden": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "updated": {
+        "id": "chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+        "answer": "588",
+        "metadata": {
+          "writer": "node-6.34.0",
+          "reader": "node-7.47.0"
+        }
+      },
+      "listed": [
+        "chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b"
+      ],
+      "list_has_more": false,
+      "pages": [
+        {
+          "id": "chatmsg_51d9ded1311fc8e9e9f429e7c27d0a829e44e8ac8372ccacd542192bc96c2bf3",
+          "role": "system",
+          "content": "Answer with only the requested integer.",
+          "has_more": true
+        },
+        {
+          "id": "chatmsg_c6971491af391c2e6d05e12e334652246ac88d7ef616ffe8bac58d746d7b5bf5",
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 588,\n  \"version_revision\": 223,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b\",\n  \"fallback\": \"105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n",
+          "has_more": false
+        }
+      ],
+      "saved": {
+        "id": "chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+        "answer": "588",
+        "metadata": {
+          "writer": "node-6.34.0",
+          "reader": "node-7.47.0"
+        }
+      },
+      "deleted": {
+        "id": "chatcmpl-auto-c7f56e8846afadfccec5e26dbaf05b5b",
+        "deleted": true
+      },
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning_effort": "none",
+      "max_completion_tokens": 48,
+      "metadata": {
+        "writer": "node-6.34.0"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer with only the requested integer."
+        },
+        {
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 588,\n  \"version_revision\": 223,\n  \"profile_revision\": 108,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"dc5938f1cd0d64b322b95bdf839b0cdac849d9f851176e9fbc138caf6e79ab1b\",\n  \"fallback\": \"105554a45d4127583063aa8370998ba2b90ccc7ed8cba95d24798966f986e266\",\n  \"engine\": \"231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+        }
+      ]
+    },
+    "metadata": {
+      "writer": "node-6.34.0",
+      "reader": "node-7.47.0"
+    },
+    "source": "serve-native-soak-retention-20261128/delivery.json"
+  },
+  {
+    "writer": {
+      "sdk": "node-7.47.0",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions",
+          "query": "",
+          "status": 200,
+          "trace": "req-97fd4695ed4e69f0ca8b4a70cc3d7a58"
+        }
+      ],
+      "created": {
+        "id": "chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+        "answer": "590",
+        "metadata": {
+          "writer": "node-7.47.0"
+        }
+      }
+    },
+    "reader": {
+      "sdk": "python-2.8.1",
+      "requests": [
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+          "query": "",
+          "status": 200,
+          "trace": "req-7c810b7d1329fee32fa5097e1bf47186"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+          "query": "",
+          "status": 404,
+          "trace": "req-1485bed1e8de1ff18eeda8d4401948b8"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+          "query": "",
+          "status": 200,
+          "trace": "req-aad3dd72363be01b42ae595335db5ac3"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions",
+          "query": "limit=1&metadata%5Bwriter%5D=node-7.47.0&metadata%5Breader%5D=python-2.8.1",
+          "status": 200,
+          "trace": "req-91173807fb817d742dda8dcd823745dd"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa/messages",
+          "query": "limit=1&order=asc",
+          "status": 200,
+          "trace": "req-0b0ff946cc98dac341dc72ff7e9488d4"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa/messages",
+          "query": "after=chatmsg_a77ac5fdd11c586919407689cb56df48116facf4dee484053b557b794ba4b220&limit=1&order=asc",
+          "status": 200,
+          "trace": "req-30015e7923b42fc2a0ac901eebc88644"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+          "query": "",
+          "status": 200,
+          "trace": "req-69b4727affdcd129e379718f54da2042"
+        },
+        {
+          "method": "DELETE",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+          "query": "",
+          "status": 200,
+          "trace": "req-1e0e385b0f04d56f31ca469d969924eb"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/chat/completions/chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+          "query": "",
+          "status": 404,
+          "trace": "req-8269aebf304db873ed5ac4c953a0b480"
+        }
+      ],
+      "before": {
+        "id": "chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+        "answer": "590",
+        "metadata": {
+          "writer": "node-7.47.0"
+        }
+      },
+      "forbidden": {
+        "status": 404,
+        "code": "object_not_found"
+      },
+      "updated": {
+        "id": "chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+        "answer": "590",
+        "metadata": {
+          "writer": "node-7.47.0",
+          "reader": "python-2.8.1"
+        }
+      },
+      "listed": [
+        "chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa"
+      ],
+      "list_has_more": false,
+      "pages": [
+        {
+          "id": "chatmsg_a77ac5fdd11c586919407689cb56df48116facf4dee484053b557b794ba4b220",
+          "role": "system",
+          "content": "Answer with only the requested integer.",
+          "has_more": true
+        },
+        {
+          "id": "chatmsg_0b8f569f866751fd01e493302e9b0efa26bb36b0690e4beb413d2400a4be019f",
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 590,\n  \"version_revision\": 224,\n  \"profile_revision\": 109,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652\",\n  \"fallback\": \"eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9\",\n  \"engine\": \"aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n",
+          "has_more": false
+        }
+      ],
+      "saved": {
+        "id": "chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+        "answer": "590",
+        "metadata": {
+          "writer": "node-7.47.0",
+          "reader": "python-2.8.1"
+        }
+      },
+      "deleted": {
+        "id": "chatcmpl-auto-e507a8b36eb7bfe0e3c2ea4ce5fdd3fa",
+        "deleted": true
+      },
+      "gone": {
+        "status": 404,
+        "code": "object_not_found"
+      }
+    },
+    "request": {
+      "model": "qwen3.8-flash-next",
+      "store": true,
+      "temperature": 0,
+      "reasoning_effort": "none",
+      "max_completion_tokens": 48,
+      "metadata": {
+        "writer": "node-7.47.0"
+      },
+      "messages": [
+        {
+          "role": "system",
+          "content": "Answer with only the requested integer."
+        },
+        {
+          "role": "user",
+          "content": "Read this q4t project publication receipt. What is its publication_revision?\n{\n  \"status\": \"PASS\",\n  \"publication_revision\": 590,\n  \"version_revision\": 224,\n  \"profile_revision\": 109,\n  \"previous_profile_revision\": 108,\n  \"desired\": \"STOPPED\",\n  \"model_starts\": 0,\n  \"primary\": \"7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652\",\n  \"fallback\": \"eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9\",\n  \"engine\": \"aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9\",\n  \"protected_files\": 13,\n  \"profile_budget_preserved\": true\n}\n"
+        }
+      ]
+    },
+    "metadata": {
+      "writer": "node-7.47.0",
+      "reader": "python-2.8.1"
+    },
+    "source": "serve-upload-completion-race-20261128/delivery.json"
+  }
+]

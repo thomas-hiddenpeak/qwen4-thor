@@ -998,6 +998,16 @@
         "managed": "evidence/serve-openapi-ingress-auth-20261128/managed.json",
         "revision": 586,
         "delivery": "evidence/serve-openapi-ingress-auth-20261128/delivery.json"
+      },
+      "stored_chat_sdk_handoff_20261128": {
+        "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
+        "wire": "evidence/serve-stored-chat-sdk-20261128/requests.json",
+        "release": 590,
+        "observed_methods": 6,
+        "sdk_versions": 6,
+        "success_pairs": 36,
+        "starts": 1,
+        "requests": 60
       }
     },
     {
@@ -4439,6 +4449,13 @@
         "device": "evidence/serve-batch-cancel-20261128/device.json",
         "capacity": "evidence/serve-batch-cancel-20261128/profiles.json",
         "managed": "evidence/serve-batch-cancel-20261128/managed.json"
+      },
+      "vector_batch_sdk_20261128": {
+        "evidence": "evidence/serve-vector-batch-sdk-20261128/business.json",
+        "wire": "evidence/serve-vector-batch-sdk-20261128/requests.json",
+        "release": 590,
+        "model_starts": 1,
+        "stage": "issued_engine_and_native_embedding_verified"
       }
     },
     {
@@ -9759,6 +9776,32 @@
         "capacity": "evidence/serve-upload-completion-race-20261128/profiles.json",
         "managed": "evidence/serve-upload-completion-race-20261128/managed.json",
         "delivery": "evidence/serve-upload-completion-race-20261128/delivery.json"
+      },
+      "vector_batch_sdk_20261128": {
+        "evidence": "evidence/serve-vector-batch-sdk-20261128/business.json",
+        "wire": "evidence/serve-vector-batch-sdk-20261128/requests.json",
+        "release": 590,
+        "model_starts": 1,
+        "stage": "issued_engine_and_native_embedding_verified"
+      },
+      "sdk_business_evidence_20261128": {
+        "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
+        "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
+        "source_requests": 209,
+        "unassigned": 1,
+        "method_sdk_pairs_with_success": 126,
+        "methods_with_success": 32,
+        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590."
+      },
+      "stored_chat_sdk_handoff_20261128": {
+        "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
+        "wire": "evidence/serve-stored-chat-sdk-20261128/requests.json",
+        "release": 590,
+        "observed_methods": 6,
+        "sdk_versions": 6,
+        "success_pairs": 36,
+        "starts": 1,
+        "requests": 60
       }
     },
     {
@@ -10339,7 +10382,7 @@
     {
       "id": "R01",
       "required": true,
-      "state": "diagnostic_backpressure_business_verified_release_pending",
+      "state": "delivered",
       "implementation": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；会话/前缀缓存文件I/O原生独立worker、有界IPC与恢复",
       "acceptance": "普通日志/观察阻塞隔离；有界队列/单worker、未回收不增殖、健康核心同PID继续；保留可诊断性；缓存故障降级、真实字节合同和同PID业务继续",
       "depends_on": [],
@@ -10452,8 +10495,8 @@
         "issued": false
       },
       "diagnostic_pipe_20261128": {
-        "stage": "managed_recovery_verified",
-        "issued": false,
+        "stage": "issued",
+        "issued": true,
         "evidence": "evidence/serve-diagnostic-pipe-20261128/cpu.json",
         "closed_stderr": "same_generation_returned_chat",
         "stalled_source": "evidence/serve-diagnostic-pipe-20261128/backpressure-cpu.json",
@@ -10462,7 +10505,8 @@
         "descriptor_exhaustion": "evidence/serve-diagnostic-pipe-20261128/descriptor-exhaustion.json",
         "device": "evidence/serve-diagnostic-pipe-20261128/device.json",
         "capacity": "evidence/serve-diagnostic-pipe-20261128/profiles.json",
-        "managed": "evidence/serve-diagnostic-pipe-20261128/managed.json"
+        "managed": "evidence/serve-diagnostic-pipe-20261128/managed.json",
+        "delivery": "evidence/serve-diagnostic-pipe-20261128/delivery.json"
       }
     },
     {
@@ -12938,12 +12982,29 @@
         "registered_fallback_probes": 1,
         "completed_upload_replay": true,
         "pending_upload_resumed": true
+      },
+      "vector_batch_sdk_20261128": {
+        "evidence": "evidence/serve-vector-batch-sdk-20261128/business.json",
+        "wire": "evidence/serve-vector-batch-sdk-20261128/requests.json",
+        "release": 590,
+        "model_starts": 1,
+        "stage": "issued_engine_and_native_embedding_verified"
+      },
+      "stored_chat_sdk_handoff_20261128": {
+        "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",
+        "wire": "evidence/serve-stored-chat-sdk-20261128/requests.json",
+        "release": 590,
+        "observed_methods": 6,
+        "sdk_versions": 6,
+        "success_pairs": 36,
+        "starts": 1,
+        "requests": 60
       }
     },
     {
       "id": "Q02",
       "required": true,
-      "state": "rev590_delivered_remaining_deliveries",
+      "state": "rev592_delivered_remaining_deliveries",
       "implementation": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "acceptance": "已验实现进入可用发行，默认程序/服务包/协议声明/客户端一致；回退可核验、来源与证据可重建；阶段提交推送及PR真实状态明确，关PR不能代替代码合入",
       "depends_on": [
@@ -12993,13 +13054,13 @@
         "whole_task_complete": false
       },
       "latest_release": {
-        "revision": 590,
+        "revision": 592,
         "state": "STOPPED",
-        "primary_manifest_sha256": "7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652",
-        "fallback_manifest_sha256": "eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9",
-        "binary_sha256": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9",
+        "primary_manifest_sha256": "a4190f48718b1bd1b5e516a74861c5ad0a34d0d3d1f4e61f206ab85498647600",
+        "fallback_manifest_sha256": "00b9eff560ee921b16f240f7d4ff20a5b556aa539878fd8ccee3ad431730699e",
+        "binary_sha256": "9b89e6d63984dfcd75c0ee861d38ba5b05b3381dc392affa0f1e3c930b5dc607",
         "new_gpu_starts": 0,
-        "evidence": "evidence/serve-upload-completion-race-20261128/delivery.json"
+        "evidence": "evidence/serve-diagnostic-pipe-20261128/delivery.json"
       },
       "merged_foundation": {
         "pr": 22,
@@ -14425,6 +14486,15 @@
         "binary_sha256": "231576f841bca1ce2a678ae65d85104a13fc621ea54c1f7348b0de28d96f3742",
         "new_gpu_starts": 0,
         "evidence": "evidence/serve-native-soak-retention-20261128/delivery.json"
+      },
+      "release_revision_590": {
+        "revision": 590,
+        "state": "STOPPED",
+        "primary_manifest_sha256": "7411491058e63dc0c96520e8e69b07fd315e869abf160ec07f605478d0bc0652",
+        "fallback_manifest_sha256": "eed20b2ba886d5b4bc6a8a92d0ccced9025ec3565cddc530fa9576a2995f53e9",
+        "binary_sha256": "aa69797d2cb70fdf9f4ed95373d0eb0ee38d30fe1d4432d05cb45a121193ecf9",
+        "new_gpu_starts": 0,
+        "evidence": "evidence/serve-upload-completion-race-20261128/delivery.json"
       }
     },
     {
@@ -15005,6 +15075,15 @@
         "archive": "evidence/serve-soak-observation-report-20261128/archive.json",
         "day_hours_executed": 0,
         "handoff": "evidence/serve-soak-observation-report-20261128/handoff.json"
+      },
+      "sdk_business_evidence_20261128": {
+        "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
+        "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
+        "source_requests": 209,
+        "unassigned": 1,
+        "method_sdk_pairs_with_success": 126,
+        "methods_with_success": 32,
+        "scope": "Original trace-linked authenticated SDK exchanges for Conversations, Uploads, vector batch polling and stored Chat on releases 588 and 590."
       }
     }
   ],
