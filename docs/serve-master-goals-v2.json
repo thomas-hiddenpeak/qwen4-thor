@@ -1020,6 +1020,11 @@
         "evidence": "evidence/serve-responses-sdk-business-20261128/chat-output-wire.json",
         "sources": 24,
         "new_model_starts": 0
+      },
+      "transcription_discovery_20261128": {
+        "state": "targeted_cpu_verified",
+        "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
+        "issued": false
       }
     },
     {
@@ -7217,6 +7222,11 @@
         "managed": "evidence/serve-asset-admission-20261127/managed.json",
         "revision": 582,
         "delivery": "evidence/serve-asset-admission-20261127/delivery.json"
+      },
+      "transcription_discovery_20261128": {
+        "state": "targeted_cpu_verified",
+        "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
+        "issued": false
       }
     },
     {
@@ -9885,6 +9895,11 @@
         "managed": "evidence/serve-responses-search-stream-sdk-20261128/managed.json",
         "issued": true,
         "delivery": "evidence/serve-responses-search-stream-sdk-20261128/delivery.json"
+      },
+      "transcription_discovery_20261128": {
+        "state": "targeted_cpu_verified",
+        "evidence": "evidence/serve-transcription-discovery-20261128/cpu.json",
+        "issued": false
       }
     },
     {

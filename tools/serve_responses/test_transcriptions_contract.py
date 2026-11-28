@@ -86,7 +86,12 @@ class TranscriptionsContract(unittest.TestCase):
                          {'application/json', 'text/plain', 'text/event-stream',
                           'text/vtt', 'application/x-subrip'})
         self.assertFalse(operation['x-q4t']['core_readiness_dependency'])
-        self.assertEqual(operation['x-q4t']['required_pending_executors'], ['overlap_diarization'])
+        self.assertEqual(operation['x-q4t']['required_pending_executors'], [])
+        overlap = operation['x-q4t']['diarization']['overlap']
+        self.assertEqual(overlap['configured_by'], 'separator-model-dir')
+        self.assertEqual(set(overlap['requires']), {
+            'asr-model-dir', 'aligner-model-dir', 'vad-model-dir', 'speaker-model-dir'})
+        self.assertEqual(overlap['simultaneous_sources'], 2)
         self.assertIn('server_vad', operation['x-q4t']['chunking']['strategies'])
 
     def test_actual_multi_clip_segments_stream_and_silent_usage(self):

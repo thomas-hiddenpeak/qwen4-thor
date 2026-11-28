@@ -92,7 +92,7 @@ Q4T_TEST(speaker_options_bind_required_components_and_atomic_budgets) {
   return true;
 }
 
-Q4T_TEST(speaker_capabilities_report_native_identity_and_pending_overlap) {
+Q4T_TEST(speaker_capabilities_report_native_identity_without_separator) {
   using C = q4t::audio::SpeakerConfig;
   for (bool enabled : {false, true}) {
     q4t::io::Json root;
@@ -108,8 +108,8 @@ Q4T_TEST(speaker_capabilities_report_native_identity_and_pending_overlap) {
               speaker->GetString("weight_sha256") == C::kWeightSha256);
     Q4T_CHECK(!speaker->GetBool("core_readiness_dependency", true));
     Q4T_CHECK(speaker->GetString("reference_scope") == "current_request_only");
-    Q4T_CHECK(asr->GetArray("remaining_native_work")->array[0].str ==
-              "overlap_diarization");
+    const auto* separator = asr->Find("separator");
+    Q4T_CHECK(separator && !separator->GetBool("configured", true));
     Q4T_CHECK(root.GetBool("implementation_only") &&
               !root.GetBool("release_attestation"));
     for (auto key : {"formats", "stream_formats"}) {

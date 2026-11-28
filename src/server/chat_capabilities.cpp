@@ -247,7 +247,7 @@ std::string ChatCapabilitiesJson(
          R"("speaker_identity":"cross_track_acoustic_clustering",)"
          R"("timestamps":"original_time_with_overlap",)"
          R"("budget":"shared_request","core_readiness_dependency":false},)"
-         R"("remaining_native_work":["overlap_diarization"]})" +
+         R"("remaining_native_work":[]})" +
          R"(,"models":{"endpoint":"/v1/models","detail":true,)"
          R"("aliases":"explicit_cli","max_aliases":32,)"
          R"("created":"registration_time","loaded_base_delete":403},)"
