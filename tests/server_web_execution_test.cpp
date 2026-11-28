@@ -938,3 +938,46 @@ Q4T_TEST(web_provider_source_preflight) {
         static_cast<unsigned long long>(bytes));
   return true;
 }
+
+Q4T_TEST(web_search_retains_relevant_late_passage_with_correct_coordinates) {
+  Directory directory;
+  Site provider, page;
+  const auto policy = Configured(ProviderConfig(provider, page));
+  const std::string query = "RFC 2606 reserved example domains";
+  std::string body = "<title>RFC 2606</title><p>example.com ";
+  for (size_t i = 0; i < 3300; ++i) body += "前 ";
+  body += "reserved example domains: example.com example.net example.org</p>";
+  if (const auto* source = std::getenv("Q4T_WEB_PASSAGE_REFERENCE")) {
+    std::ifstream file(source, std::ios::ate | std::ios::binary);
+    Q4T_CHECK(file && file.tellg() > 0 && file.tellg() <= (2 << 20));
+    body.resize(file.tellg());
+    file.seekg(0);
+    Q4T_CHECK(bool(file.read(body.data(), body.size())));
+  }
+  provider.Discovery("RFC%202606%20reserved%20example%20domains",
+                     Results(query, {page.Url()}));
+  page.Page("/", body);
+  ObjectStore objects(directory.objects);
+  WebSearchOptions options;
+  options.context_size = "low";
+  WebExecutionBudget budget;
+  WebExecutionResult result;
+  Q4T_CHECK(Ok(Run(objects, policy, &budget, &result, options, Query(query))));
+  const auto& item = result.context.GetArray("results")->array[0];
+  const auto* passages = item.GetArray("additional_passages");
+  Q4T_CHECK(passages && passages->array.size() == 1 &&
+            item.GetBool("text_truncated"));
+  const auto first = item.GetString("text");
+  const auto& extra = passages->array[0];
+  const auto second = extra.GetString("text");
+  const auto& full = result.sources[0].text;
+  const auto at = full.find(second);
+  Q4T_CHECK(!second.empty() && at != std::string::npos && at >= first.size() &&
+            full.starts_with(first) && first.size() + second.size() <= 8192 &&
+            extra.GetInt("start_index") ==
+                static_cast<int64_t>(
+                    Utf8Characters(std::string_view(full).substr(0, at))) &&
+            second.find("example.net") != std::string::npos &&
+            second.find("example.org") != std::string::npos);
+  return true;
+}

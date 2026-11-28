@@ -8,6 +8,7 @@
 #include "file_fetch_internal.h"
 #include "object_protocol.h"
 #include "web_provider.h"
+#include "web_page_internal.h"
 #include "q4t/server/completion_response.h"
 #include "q4t/server/http_response.h"
 
@@ -175,13 +176,14 @@ size_t Boundary(std::string_view text, size_t end) {
 }
 Json PageContext(const WebPage& page, const WebSearchOptions& options,
                  size_t text_budget, std::string_view pattern,
-                 size_t* image_budget) {
+                 size_t* image_budget, size_t second = 0) {
   size_t begin = 0;
   const size_t match =
       pattern.empty() ? std::string::npos : page.text.find(pattern);
   if (match != std::string::npos && match > text_budget / 3)
     begin = Boundary(page.text, match - text_budget / 3);
-  const auto end = Boundary(page.text, begin + text_budget);
+  const auto end =
+      Boundary(page.text, begin + (second ? text_budget / 2 : text_budget));
   auto images = Array(), matches = Array();
   if (options.images)
     for (const auto& image : page.images) {
@@ -217,6 +219,15 @@ Json PageContext(const WebPage& page, const WebSearchOptions& options,
     Set(&item, "start_index",
         Number(Utf8Characters(std::string_view(page.text).substr(0, begin))));
     Set(&item, "text_truncated", Boolean(begin > 0 || end < page.text.size()));
+    if (second) {
+      const auto tail = Boundary(page.text, second + text_budget / 2);
+      Set(&item, "additional_passages",
+          Array({Object(
+              {{"text", String(page.text.substr(second, tail - second))},
+               {"start_index",
+                Number(Utf8Characters(
+                    std::string_view(page.text).substr(0, second)))}})}));
+    }
   }
   if (!pattern.empty()) {
     Set(&item, "matches", std::move(matches));
@@ -320,8 +331,14 @@ ObjectReply ExecuteWebAction(ObjectStore& objects, const BinaryAccess& access,
     const auto per_page = context_bytes / std::max<size_t>(1, hits.size());
     for (const auto& hit : hits) {
       next.sources.push_back(std::move(snapshot.pages[hit.page]));
+      size_t second = 0;
+      if (options.text) {
+        result = web_detail::SelectSearchPassage(
+            next.sources.back().text, per_page, action.queries, access, second);
+        if (!result.ok()) return result;
+      }
       results.array.push_back(PageContext(next.sources.back(), options,
-                                          per_page, {}, &image_budget));
+                                          per_page, {}, &image_budget, second));
     }
   } else {
     if (!action.queries.empty() ||

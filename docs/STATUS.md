@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+实机搜索端点拒绝连接时返回 503，同一模型仍 ready 并答出 42。另一启动取得真实网页，但低预算的 8,192 字节开头遗漏位于第 8,854 字节的答案。已修正搜索上下文，在同一预算内保留开头及相关的后续段落，各自携带原文字符位置。原网页和多字节夹具通过 CPU 复核。下一步在相同低预算下重跑原 HTTP 问题。 [故障与段落回执](evidence/serve-web-provider-20261128/outage-and-passages.json)
+
 选用外部网页索引时，发行包在准备与复核两处都要求 Chat 和 Responses 声明该提供方。8 项封包测试和 1 项分别制造 HTTP 503、连接被拒的原生检查通过，服务端统一返回提供方不可用。 [封包与故障回执](evidence/serve-web-provider-20261128/qualified-provider.json)
 
 可选的 Mwmbl v2 网页索引已在 Thor 上取回真实搜索结果和 RFC 2606 来源。32,453 字节正文与独立下载的 SHA-256 一致，重开存储后可离线搜索和打开原 URL。17 项原有网页检查、6 项新增用例及 5 项迁移检查通过。IANA 降级跳转和 IETF 动态页面的原失败已保留。下一步验收模型 HTTP 回答、引用和失败隔离。 [原生回执](evidence/serve-web-provider-20261128/cpu.json)
