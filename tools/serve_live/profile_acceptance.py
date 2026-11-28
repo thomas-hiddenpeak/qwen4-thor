@@ -161,6 +161,9 @@ class Stage(workers.ice.Stage):
         pkg.save(self.out/'capabilities.json', capabilities)
         pkg.require(status == 200 and capabilities.get('protocol_source_sha256') ==
                     cfg['protocol_source_sha256'], 'capability identity: '+str(status))
+        if 'overlap_transcription_handoff' in self.plan:
+            from tools.native_asr import overlap_profiles
+            overlap_profiles.business(self)
         if 'responses_stream_text_handoff' in self.plan:
             from tools.serve_audit import stream_text_profiles
             stream_text_profiles.business(self)

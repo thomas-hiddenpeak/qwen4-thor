@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+双人重叠转录的验收已接入主容量和轻量容量。固定的 Python SDK 3.55.1 通过 TLS 回放读出两位说话人；夹具收到完整 WAV、标准 multipart 参数及其嵌套 VAD 字段。用两档原始健康记录核对了 1.68 秒重叠，并拒绝 23 个错误输入，涵盖未加载分离器、ASR 预算漂移和跨容量复用请求。候选设备 HTTP 和容量切换仍待实测。 [CPU 回执](evidence/serve-transcription-discovery-20261128/sdk-cpu.json)
+
 rev598 主包和回退包均保留了主、轻两档的双人转录记录，但能力接口和 OpenAPI 仍将重叠说话人分离列为待实现。候选已统一声明，并列出启用分离所需后端。6 项原生测试与 5 项 Python 检查通过；原录音的 1.68 秒交叠和首句 1/7 词错误率均已复核。下一步核对候选的实际 HTTP 发现入口与发行交接。 [声明与复核记录](evidence/serve-transcription-discovery-20261128/cpu.json)
 
 rev598 已发行旧版 Node SDK 的流式正文兼容修复。模型重启和主网关切换后，Node 6.34 与 7.47 均按原 ID 读回原文、事件顺序和终态，跨客户读取为 404。主包与独立回退包已登记，发行时服务为 STOPPED。 [发行回执](evidence/serve-responses-search-stream-sdk-20261128/delivery.json)

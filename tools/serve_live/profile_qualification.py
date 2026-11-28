@@ -67,6 +67,11 @@ def observations(directory, accepted):
             evidence_sha256={p: package.sha(phase/p) for p in (
                 'configuration.wire', 'capabilities.json', 'core-after.wire',
                 'observation.json', 'result.json', 'cleanup.json', 'plan.json')})
+        if 'overlap_transcription_handoff' in plan:
+            from tools.native_asr import overlap_profiles
+            current = profiles[name]['evidence_sha256']
+            current.update(overlap_profiles.verify(phase, plan, declared, current))
+            continue
         if 'responses_stream_text_handoff' in plan:
             from tools.serve_audit import stream_text_profiles
             current = profiles[name]['evidence_sha256']
