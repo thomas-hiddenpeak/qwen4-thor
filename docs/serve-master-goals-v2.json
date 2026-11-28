@@ -1031,7 +1031,9 @@
         "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
         "issued": false,
         "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
-        "capacity": "primary_and_light_passed"
+        "capacity": "primary_and_light_passed",
+        "managed_receipt": "evidence/serve-transcription-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -7240,7 +7242,9 @@
         "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
         "issued": false,
         "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
-        "capacity": "primary_and_light_passed"
+        "capacity": "primary_and_light_passed",
+        "managed_receipt": "evidence/serve-transcription-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {
@@ -9920,7 +9924,9 @@
         "receipt": "evidence/serve-transcription-discovery-20261128/device.json",
         "issued": false,
         "capacity_receipt": "evidence/serve-transcription-discovery-20261128/capacity.json",
-        "capacity": "primary_and_light_passed"
+        "capacity": "primary_and_light_passed",
+        "managed_receipt": "evidence/serve-transcription-discovery-20261128/managed.json",
+        "managed": "real_model_restart_and_gateway_takeover_passed"
       }
     },
     {

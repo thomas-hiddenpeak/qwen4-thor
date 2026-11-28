@@ -1,0 +1,202 @@
+{
+  "status": "PASS",
+  "registered": false,
+  "roles": {
+    "fallback": {
+      "incident": "model_exit",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "13f7ef77d9abe8e1591df9fccfafb5af70a43f654992d6d943da0ed015a141bd",
+      "requests": {
+        "prepare": {
+          "sdk": "3.55.1",
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-c5f1ea2217492cd9bbd81b38a3227bf9",
+          "actor_sha256": "6fc391ee78ad6d0d56429c5f928761222446cd9f133eb52359316c11a881336b",
+          "wire_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+          "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "quality": {
+            "policy": "source-specific-owner-inflection-20261118",
+            "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "voices": [
+              {
+                "reference": "The child almost hurt the small dog.",
+                "observed": "The child almost hurts the small dog.",
+                "wer": 0.14285714285714285,
+                "threshold": 0.125,
+                "accepted_inflection": true
+              },
+              {
+                "reference": "We are sure that one war is enough.",
+                "observed": "We are sure that one war is enough.",
+                "wer": 0.0,
+                "threshold": 0.125,
+                "accepted_inflection": false
+              }
+            ],
+            "overlap_seconds": 1.68,
+            "model_quality_limitation": true
+          },
+          "speaker_labels": [
+            "B",
+            "A"
+          ],
+          "health_sha256": "61ac4e0a8f56a8d7aa25438331c93078bf2bcd18bdd6d53c9c3c2f502bbbc11b",
+          "capabilities_sha256": "d05e46d98a0239049ad2af7777174f445b3dab8d2ac7f69c090955973a8e0e6f"
+        },
+        "restore": {
+          "sdk": "3.55.1",
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-986a06aacc9f3054704c13f3ff9b4860",
+          "actor_sha256": "5f593b2d9e3ea0223c4d2bbb7e23a1363787fb6dd63a920124151d5734a6464e",
+          "wire_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+          "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "quality": {
+            "policy": "source-specific-owner-inflection-20261118",
+            "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "voices": [
+              {
+                "reference": "The child almost hurt the small dog.",
+                "observed": "The child almost hurts the small dog.",
+                "wer": 0.14285714285714285,
+                "threshold": 0.125,
+                "accepted_inflection": true
+              },
+              {
+                "reference": "We are sure that one war is enough.",
+                "observed": "We are sure that one war is enough.",
+                "wer": 0.0,
+                "threshold": 0.125,
+                "accepted_inflection": false
+              }
+            ],
+            "overlap_seconds": 1.68,
+            "model_quality_limitation": true
+          },
+          "speaker_labels": [
+            "B",
+            "A"
+          ],
+          "health_sha256": "e02e2b8d02e44fda61f9ba41a437d777c3fbd1a2cf83f6da06d76a925211a251",
+          "capabilities_sha256": "d05e46d98a0239049ad2af7777174f445b3dab8d2ac7f69c090955973a8e0e6f"
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 233.20938895223662,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 212,
+      "lease_sha256": "ccacacbf10107bcc4e97c6be39bb00161f57ae81edfcb811ca8c2fdf80a19dfe",
+      "decision_sha256": "92000a2bc11d81ed86a249920661f139ea546d9375a9c4e8612801fba7800688",
+      "result_sha256": "7239153b33e9afea70db640c4fbef82721e896094b285d08f07ef6609e67b306"
+    },
+    "primary": {
+      "incident": "primary_gateway_SIGABRT",
+      "transport": "authenticated_native_loopback_http",
+      "manifest": "d7fa6c43e5aaa5ed2e3b4c0eab91e660e6cb2f1a5614d0695c58fd6f82108e66",
+      "requests": {
+        "prepare": {
+          "sdk": "3.55.1",
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-8514f83a6bf3299ca6140efbf6d643eb",
+          "actor_sha256": "15e602e440e19b42343c7c6bbaeb0b11c8247f5f4f2d8ffac6511350b39e5fae",
+          "wire_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+          "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "quality": {
+            "policy": "source-specific-owner-inflection-20261118",
+            "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "voices": [
+              {
+                "reference": "The child almost hurt the small dog.",
+                "observed": "The child almost hurts the small dog.",
+                "wer": 0.14285714285714285,
+                "threshold": 0.125,
+                "accepted_inflection": true
+              },
+              {
+                "reference": "We are sure that one war is enough.",
+                "observed": "We are sure that one war is enough.",
+                "wer": 0.0,
+                "threshold": 0.125,
+                "accepted_inflection": false
+              }
+            ],
+            "overlap_seconds": 1.68,
+            "model_quality_limitation": true
+          },
+          "speaker_labels": [
+            "B",
+            "A"
+          ],
+          "health_sha256": "072f900af8ccd30ff9ae511f527245260c87d770f266556536555c492c7fd43e",
+          "capabilities_sha256": "d05e46d98a0239049ad2af7777174f445b3dab8d2ac7f69c090955973a8e0e6f"
+        },
+        "restore": {
+          "sdk": "3.55.1",
+          "method": "POST",
+          "path": "/v1/audio/transcriptions",
+          "status": 200,
+          "trace": "req-062186615b14dd64e52903593a36a09b",
+          "actor_sha256": "ba5938183e349299c0f32f08830def1a02c45234ce8767f2d978cf4dc1c4d353",
+          "wire_sha256": "e771d2893a85d3998788d7c09c7e7160a2cad22f17bec60c1acb292dbc53f773",
+          "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+          "quality": {
+            "policy": "source-specific-owner-inflection-20261118",
+            "source_sha256": "bfa3025ba290d854b1c86539113492cd5e03d0c04b622fed28ae266caac6f001",
+            "voices": [
+              {
+                "reference": "The child almost hurt the small dog.",
+                "observed": "The child almost hurts the small dog.",
+                "wer": 0.14285714285714285,
+                "threshold": 0.125,
+                "accepted_inflection": true
+              },
+              {
+                "reference": "We are sure that one war is enough.",
+                "observed": "We are sure that one war is enough.",
+                "wer": 0.0,
+                "threshold": 0.125,
+                "accepted_inflection": false
+              }
+            ],
+            "overlap_seconds": 1.68,
+            "model_quality_limitation": true
+          },
+          "speaker_labels": [
+            "B",
+            "A"
+          ],
+          "health_sha256": "33a52e52fefabec992938a2049f85431ace0d9200860607381a02cd9a924e33a",
+          "capabilities_sha256": "d05e46d98a0239049ad2af7777174f445b3dab8d2ac7f69c090955973a8e0e6f"
+        }
+      },
+      "core_chat": "42",
+      "model_starts": 2,
+      "seconds": 394.23386327689514,
+      "old_generation": 1,
+      "new_generation": 2,
+      "guardian_same": true,
+      "ports_free": true,
+      "remaining": [],
+      "default_unchanged": true,
+      "nvml_samples": 365,
+      "lease_sha256": "02c7234fb9503369b8ce2c80016a16009ed44f7dc09c659b2571d93c1ec622af",
+      "decision_sha256": "c397c33aca7d9f9f02409c4b23bfcf6e22bedc0cbcfe742bebca587ec0aba531",
+      "result_sha256": "54d499e4938d0883c88cfda602548c468e8b94ea8ffd55bbe3823d9656660034",
+      "registered_fallback": "13f7ef77d9abe8e1591df9fccfafb5af70a43f654992d6d943da0ed015a141bd"
+    }
+  },
+  "engine": "c7a7e3a15120a74cb9493e291354ddb721bedfc39cf02454dddd00f3edec2a7c",
+  "package_source": "03b6dbcb609e1dc6717bfa8e31b544c4137337c3",
+  "model_starts": 4
+}

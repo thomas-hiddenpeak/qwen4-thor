@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已验收两个托管恢复场景：回退包的模型退出后恢复，主包的网关故障后切换到已登记的独立回退包。每个场景在故障前后各完成一次真实 SDK 转录，四条请求 ID 独立，均识别出两位说话人。两次后续 Chat 均答 42。正式发行登记待完成。 [托管恢复记录](evidence/serve-transcription-discovery-20261128/managed.json)
+
 候选主容量（MTP 开）和轻量容量（MTP 关）各用 1 次模型启动和 1 次官方 SDK 转录请求验证同一段混合语音，两条请求 ID 独立，两档后续 Chat 都答 42。新容量记录已还原两份上一版完整记录；正式主包和回退包的业务验收仍待完成。 [容量回执](evidence/serve-transcription-discovery-20261128/capacity.json)
 
 候选已在 Thor 通过原生 TLS 短验。1 次模型启动、3 条公开请求和 1 次私有配置读取。官方 Python SDK 3.55.1 为同一段四秒录音返回两位说话人，重叠 1.68 秒，后续 Chat 回答 42。默认包与服务状态的 20 份文件通过复核。两档容量和回退包仍需单独验收。 [实机回执](evidence/serve-transcription-discovery-20261128/device.json)
