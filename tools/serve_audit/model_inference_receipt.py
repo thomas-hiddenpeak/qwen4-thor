@@ -1,4 +1,5 @@
 """Verify a single stock client's model discovery, completion stream and embeddings."""
+import math
 import struct
 
 from tools.serve_responses.embeddings_acceptance import vectors
@@ -11,7 +12,9 @@ def verify(record, config, sdk):
 
     model = config['model']
     meta = record['model']
-    require(record['sdk'] == sdk and meta['object'] == 'model' and meta['id'] == model,
+    require(record['sdk'] == sdk and meta['object'] == 'model' and meta['id'] == model
+            and isinstance(meta['owned_by'], str) and meta['owned_by'].strip()
+            and type(meta['created']) is int and meta['created'] >= 0,
             'retrieved model identity differs')
     matches = [m for m in record['catalogue'] if m['id'] == model]
     require(len(matches) == 1 and all(matches[0][k] == meta[k] for k in ('id', 'object', 'owned_by', 'created')),
@@ -52,6 +55,19 @@ def verify(record, config, sdk):
     logs = choice['logprobs']
     require(logs and len(logs['tokens']) == len(logs['text_offset']) == len(logs['token_logprobs'])
             == len(logs['top_logprobs']) and len(logs['tokens']) > 0, 'missing completion logprobs')
+    offsets = logs['text_offset']
+    require(offsets[0] == 0 and all(type(offset) is int and 0 <= offset <= len(choice['text'])
+                                    for offset in offsets)
+            and all(a <= b for a, b in zip(offsets, offsets[1:])), 'invalid character offsets')
+    def log_probability(value):
+        return type(value) in (float, int) and math.isfinite(value) and value <= 0
+
+    require(all(isinstance(token, str) for token in logs['tokens'])
+            and logs['token_logprobs'][0] is None and logs['top_logprobs'][0] is None,
+            'invalid echoed first-token observation')
+    require(all(log_probability(value) for value in logs['token_logprobs'][1:])
+            and all(isinstance(row, dict) and all(log_probability(value) for value in row.values())
+                    for row in logs['top_logprobs'][1:]), 'invalid token log probability')
     for key in ('tokens', 'text_offset', 'token_logprobs', 'top_logprobs'):
         combined = [value for c in pieces if c.get('logprobs') for value in c['logprobs'][key]]
         require(combined == logs[key], f'streamed {key} differs from JSON')
