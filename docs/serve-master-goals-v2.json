@@ -1044,7 +1044,8 @@
         "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
         "device": "evidence/serve-response-include-projection-20261128/device.json",
-        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
       }
     },
     {
@@ -3437,7 +3438,8 @@
         "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
         "device": "evidence/serve-response-include-projection-20261128/device.json",
-        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
       }
     },
     {
@@ -9980,7 +9982,8 @@
         "state": "candidate_device_verified",
         "receipt": "evidence/serve-response-include-projection-20261128/cpu.json",
         "device": "evidence/serve-response-include-projection-20261128/device.json",
-        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json"
+        "capacity_business": "evidence/serve-response-include-projection-20261128/capacity-business.json",
+        "capacity_qualification": "evidence/serve-response-include-projection-20261128/capacity.json"
       }
     },
     {
