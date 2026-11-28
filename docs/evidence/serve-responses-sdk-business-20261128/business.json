@@ -1,0 +1,86 @@
+{
+  "stage": "published_responses_sdk_handoff",
+  "publication": 594,
+  "engine": "e338caa912396e6716cbfa1fc59189dd47e4e0576a9407aaffefde74a5215b34",
+  "primary": "96716713fd6298ab021dcdb539aca87f9d111a7f05a62e7c9bfc0a25b02d73ed",
+  "issued_package": {
+    "source": "serve-batch-cancel-20261128/delivery.json",
+    "delivery_sha256": "f585a6d5c0cf9cf500b98bdbe4a898cc08e5adce87da4aed4840dc61443b55d8"
+  },
+  "prelaunch": {
+    "stage": "guard_cli_rejected_other_checkout_output_before_lease",
+    "model_starts": 0,
+    "http_requests": 0,
+    "lease_directory_created": false,
+    "device_directory_created": false,
+    "stderr_sha256": "fa3918447c7e09a6f2423b6ae6c093a809ff6bb43a2dc00902cbedf8d79dfd2c"
+  },
+  "guard_source_sha256": "c577312109f50f5f14d88eb6976053ced7b290c654cc95cbba0241a2054862a9",
+  "sdk_versions": [
+    "python-2.8.1",
+    "python-2.33.0",
+    "python-3.42.1",
+    "python-3.55.1",
+    "node-6.34.0",
+    "node-7.47.0"
+  ],
+  "transport": "issued model, verified native loopback TLS, two isolated clients",
+  "result": {
+    "status": "PASS",
+    "starts": 1,
+    "ports_free": true,
+    "unchanged_default": true,
+    "model_pid": 2063453,
+    "model_exit": 0,
+    "clients": {},
+    "requests": 60,
+    "seconds": 49.003
+  },
+  "requests": 60,
+  "statuses": {
+    "200": 48,
+    "404": 12
+  },
+  "protected_files": 20,
+  "distinct_response_ids": 12,
+  "success_pairs": 31,
+  "source_publications": {
+    "serve-voice-consent-pagination-20261127/delivery.json": {
+      "publication": 580,
+      "original_sha256": "725a8361643b81f0f57d83ba0207e68661fb5faf068289f961df82d034edc8d8",
+      "delivery_sha256": "b9bf686c8002ba52190627dc5b728c6eda6bc4654b34f53333cf6cb4ed92f9eb"
+    },
+    "serve-asset-admission-20261127/delivery.json": {
+      "publication": 582,
+      "original_sha256": "8c989d1040ccae0b45903d63b87057eabf7b9207d81690caca2ec03eea7a9ea2",
+      "delivery_sha256": "0118690f911641e8aa3babafa5b229f5d6d24102aed52ff69b8625f18f40d80e"
+    },
+    "serve-chatkit-pending-user-message-20261127/delivery.json": {
+      "publication": 584,
+      "original_sha256": "adc5da9058becd7829810ec922d4d5db6723a73df9faef8b5ee2bfd79928aed2",
+      "delivery_sha256": "75d98c4768b7eb9757af2b78b8e1b98c92b1ce58b2da8ee11c23175bda048535"
+    },
+    "serve-openapi-ingress-auth-20261128/delivery.json": {
+      "publication": 586,
+      "original_sha256": "18bf32fc13a366b60f9e0f2366d5f11f583f20594a861b0f4f952fcf8a1e701b",
+      "delivery_sha256": "d8f62d3c6239c8894b973cbe0aeeb2b74e8d4d755661ce095424a8093f1af2a7"
+    },
+    "serve-native-soak-retention-20261128/delivery.json": {
+      "publication": 588,
+      "original_sha256": "2815138410ae1c966fba15656b0f1773006f03b3066a7026138f104cbba50f01",
+      "delivery_sha256": "eef8c868e9883fa93b9f5a1f2dbbcda363bf82f2240037ef26a3cbd17de5594e"
+    },
+    "serve-upload-completion-race-20261128/delivery.json": {
+      "publication": 590,
+      "original_sha256": "d2e7ba9f69feda3bed1ca766da92398935257a17048f93f3e3d6ab79228de6f8",
+      "delivery_sha256": "63195c8fca65b498ffc54bdf49814da1342f3f3ce4a672b66469689a74544372"
+    }
+  },
+  "device_attempt": "01",
+  "request_evidence_sha256": "3a59a33b6734389b8efcd11ca02ce390485a184adc9ab19e48cb42c23d297735",
+  "original_scenarios_sha256": "5f64454376bbcb3e3745830e8ee794587bcf4ecdb597999ac01e1c7f74a223b4",
+  "nvml_samples": 48,
+  "lease_sha256": "333197f0b31aca271b1b64059f90c812a82bd812da1d25d97e80455ec08b9a5d",
+  "driver_sha256": "58b4f3946f9d61ec15657cd5d09a66a517571f5b1aafd33fc971fe1fcdfd4825",
+  "plan_sha256": "11f383c949a0f027c3c83260bede6c31fc34fb407bf5662e804e9eaca38c0599"
+}

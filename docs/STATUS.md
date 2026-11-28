@@ -7,6 +7,20 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+已按请求 ID 将两次 Batch 故障恢复的 46 条官方 SDK 请求并入兼容矩阵。Python 在故障前提交和记录终态，Node 在恢复后用原 ID 读取、重复取消并下载原文件。模型退出和主网关切换分别保留，38 次成功、4 次 404、2 次 409 和 2 次 429 均可追溯至设备原始记录。 下一步补齐其他应用接口的跨版本记录。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
+
+rev594 的 HTTP 实机短验已通过。六版官方 SDK 交接六份真实发行记录。原始和重放流的事件序号、增量及终态相符，按原响应 ID 续答取得另一项发行数据。两页输入、跨客户隔离与删除后的 404 也已核对。共 60 个 HTTP 请求，新增 31 个有成功请求的接口与 SDK 版本组合。 [实机回执](evidence/serve-responses-sdk-business-20261128/business.json)
+
+已按冻结 OpenAPI 复核 24 份原始 Chat 回包，含两次 Batch 恢复后返回的 42。17 份完整响应、108 个增量、2 个错误终态和 7 个流结束标记均通过校验。缺失必填字段、错误增量、流内 ID 变化、错误体缺码和缺失结束标记均被拒绝。 其他模态与输出组合仍待分别核对。 [原文校验回执](evidence/serve-responses-sdk-business-20261128/chat-output-wire.json)
+
+六版官方 SDK 的九种调用方式通过本机 TLS 重放同一段真实 Responses 流。现在逐项核对 content_part 的消息 ID、输出位置、片段位置及完整载荷，并把它与输出项和最终响应对照。错误归属、缺失结束事件和终态片段错序均有反例。18 个夹具请求和 23 项相关 CPU 检查通过，下一步用 rev594 验证实时流与按原 ID 重放。 [片段校验回执](evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json)
+
+按冻结 OpenAPI 逐项核对了 Chat 的 26 个顶层可空参数，另覆盖四版 Python SDK 接受的 top_logprobs:null。原生请求规划器在逐项和同时传空时生成相同的文本提示、输出预算及采样配置。metadata 显式传空可与省略区分，两者均保持 store=false。该回归已加入原生 Chat 规划测试。 [输入合同回执](evidence/serve-responses-sdk-business-20261128/chat-null-input.json)
+
+六版 SDK 通过九种资源调用方式读取了同一段历史实机输出的 11 个流事件。消息 ID、输出位置、文本片段和结束事件的内容一致；两项反例也验证了错误消息 ID 和错误结束文本会被拒绝。下一步在 rev594 上对照实时生成和原 ID 重放。 [历史流 CPU 复核](evidence/serve-responses-sdk-business-20261128/stream-cpu.json)
+
+四版 Python 和两版 Node 官方 SDK 已通过 Responses 请求路径和查询参数预检。九种资源调用方式在本机 TLS 夹具上发出 18 个请求，另有五项回执校验通过。下一步用已发行的模型验证原文流式答复、跨 SDK 续答、按游标读取输入和删除后的 404。 [CPU 回执](evidence/serve-responses-sdk-business-20261128/cpu.json)
+
 rev594 已发行批任务并发取消修复。按原生网关的 Retry-After 续试得到同一取消记录，已完成的任务仍返回 409。主轻容量、模型恢复及主网关切换后，真实 SDK 读回同一任务和逐字节相同的项目结果。登记时服务为 STOPPED，模型启动为零。24 小时运行与独立冷启动计划已交接。 [发行回执](evidence/serve-batch-cancel-20261128/delivery.json)
 
 模型退出和主网关故障切换到已登记回退包后，官方 SDK 均读回原取消任务、终态时间及逐字节相同的项目输出。两种恢复后的独立 Chat 均答 42，守护进程身份、端口和子进程回收已核验。下一步登记主包和回退包。 [托管恢复回执](evidence/serve-batch-cancel-20261128/managed.json)

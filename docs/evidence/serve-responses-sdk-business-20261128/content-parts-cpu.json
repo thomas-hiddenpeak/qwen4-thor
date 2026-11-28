@@ -1,0 +1,64 @@
+{
+  "stage": "cpu_replay_before_issued_business",
+  "business_verified": false,
+  "source": "Prior device recording from the cache retention business, replayed on CPU via loopback TLS",
+  "native_recording_sha256": "174ce8eab3d7b4f49f15f12f8ee39ccb2cc213c3abdcb527711461b728b78dfa",
+  "sdk_resources": [
+    "python-2.8.1-plain",
+    "python-2.33.0-plain",
+    "python-3.42.1-plain",
+    "python-3.42.1-beta",
+    "python-3.55.1-plain",
+    "python-3.55.1-beta",
+    "node-6.34.0-plain",
+    "node-7.47.0-plain",
+    "node-7.47.0-beta"
+  ],
+  "requests": 18,
+  "model_starts": 0,
+  "event_types": [
+    "response.created",
+    "response.in_progress",
+    "response.output_item.added",
+    "response.content_part.added",
+    "response.output_text.delta",
+    "response.output_text.delta",
+    "response.output_text.delta",
+    "response.output_text.done",
+    "response.content_part.done",
+    "response.output_item.done",
+    "response.completed"
+  ],
+  "message_parts": {
+    "0": [
+      {
+        "annotations": [],
+        "text": "558",
+        "type": "output_text",
+        "logprobs": []
+      }
+    ]
+  },
+  "assertions": [
+    "compound output and content indexes",
+    "message and response IDs",
+    "typed part payload versus raw historical event",
+    "full part payload versus item.done and response.completed",
+    "ordered delta and terminal text"
+  ],
+  "related_tests": 23,
+  "regression_cases": [
+    "incorrect enveloping response ID",
+    "wrong content index or message ID",
+    "missing content_part.done",
+    "part text differs from text.done",
+    "metadata dropped from completed output item",
+    "two parts reordered in the final response"
+  ],
+  "client_source_sha256": {
+    "tools/serve_audit/response_handoff.py": "c2f8600b3faca98cde483d13ba568d009f3256156d0b883e94f604c8d831ecff",
+    "tools/serve_audit/response_handoff.mjs": "1dc6bfd27b3c4f5c72a74f87ad6559aec8f5b40589d7da9de19161cc3133ba69",
+    "tools/serve_audit/response_handoff_receipt.py": "31e434e3a5a908f9e4cbaee379fe47acae991c4aa6feda1f71c6d0f476da9f71",
+    "tools/serve_audit/test_response_handoff_receipt.py": "329c9a1675b4246e07e4c0531927147317a461d56cd25312148826f0eb6eb523"
+  }
+}

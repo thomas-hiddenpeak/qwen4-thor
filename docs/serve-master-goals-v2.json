@@ -1008,6 +1008,18 @@
         "success_pairs": 36,
         "starts": 1,
         "requests": 60
+      },
+      "chat_top_level_null_20261128": {
+        "stage": "targeted_cpu_verified",
+        "fields": 26,
+        "evidence": "evidence/serve-responses-sdk-business-20261128/chat-null-input.json",
+        "nested_contracts": "Tracked separately"
+      },
+      "chat_output_wire_20261128": {
+        "scope": "targeted raw JSON/SSE and error validation",
+        "evidence": "evidence/serve-responses-sdk-business-20261128/chat-output-wire.json",
+        "sources": 24,
+        "new_model_starts": 0
       }
     },
     {
@@ -3364,6 +3376,16 @@
         "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json",
         "revision": 584,
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      },
+      "responses_sdk_handoff_20261128": {
+        "stage": "issued_engine_business_verified",
+        "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
+        "issued_business": true,
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json",
+        "publication": 594,
+        "business": "evidence/serve-responses-sdk-business-20261128/business.json",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
       }
     },
     {
@@ -9803,6 +9825,27 @@
         "success_pairs": 36,
         "starts": 1,
         "requests": 60
+      },
+      "responses_sdk_handoff_20261128": {
+        "stage": "issued_engine_business_verified",
+        "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
+        "issued_business": true,
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json",
+        "publication": 594,
+        "business": "evidence/serve-responses-sdk-business-20261128/business.json",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
+      },
+      "batch_recovery_wire_20261128": {
+        "publication": 594,
+        "requests": 46,
+        "issued_packages": 2,
+        "observed": "pre-issuance",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json",
+        "scope": [
+          "model exit",
+          "primary gateway failure"
+        ]
       }
     },
     {
@@ -13000,6 +13043,16 @@
         "success_pairs": 36,
         "starts": 1,
         "requests": 60
+      },
+      "responses_sdk_handoff_20261128": {
+        "stage": "issued_engine_business_verified",
+        "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
+        "issued_business": true,
+        "stream_cpu": "evidence/serve-responses-sdk-business-20261128/stream-cpu.json",
+        "content_parts_cpu": "evidence/serve-responses-sdk-business-20261128/content-parts-cpu.json",
+        "publication": 594,
+        "business": "evidence/serve-responses-sdk-business-20261128/business.json",
+        "matrix": "evidence/serve-sdk-business-index-20261128/sources.json"
       }
     },
     {

@@ -1,0 +1,197 @@
+{
+  "scope": "Existing raw Chat finite replies and SSE recordings. Includes two current candidate recovery replies. No new model runs.",
+  "openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "history_git": "64e936abca27394eba080d56e405855fe863a983",
+  "sources": {
+    "docs/evidence/serve-chat-audio-projection-fix-20261118/http-02-core-during-asr-failure.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "097c00f7ca1be6374f7c965c89333596b8f6defdba271492a8968828467c7678"
+    },
+    "docs/evidence/serve-chat-audio-projection-fix-20261118/http-02-python-zh.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "c2d4c9df6fd1d81283090b828b41c8a579191c7ead0f988a60d11a65f39ac18f"
+    },
+    "docs/evidence/serve-chat-audio-silence-state-20261118/original-silence.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "0162bfdeb8b2a343a84c0e19bf00341e939d8dbac1a1aab1a058e5ac0b655b16"
+    },
+    "docs/evidence/serve-chat-audio-source-map-20261118/http-03-python-zh.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "9745903fce2bab3e874d9e4d998fcde5e6fbcfccda628db5aa3a4d92b34f0798"
+    },
+    "docs/evidence/serve-chat-storage-prefix-20261109/business-01/json-retrieve.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "1814ac589fcabd15135affca459fa4f570bd4b69de857fdd122c9d5dd41d4c66"
+    },
+    "docs/evidence/serve-chat-storage-prefix-20261109/business-01/json.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "1814ac589fcabd15135affca459fa4f570bd4b69de857fdd122c9d5dd41d4c66"
+    },
+    "docs/evidence/serve-chat-storage-prefix-20261109/business-01/stream-stored.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "afb21a90534dfbaa99de4da34e1f9de1d05d7856c97693fafd7f7b687f4318c0"
+    },
+    "docs/evidence/serve-chat-storage-prefix-20261109/business-01/stream.wire": {
+      "media": "text/event-stream",
+      "counts": {
+        "chunks": 9,
+        "done": 1
+      },
+      "sha256": "701f067f42688c67c19b9c51d1efaa49d3e7b917b34545c8c850b0f81e38140b"
+    },
+    "docs/evidence/serve-chat-storage-prefix-20261109/business-01/unretained.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "1366a34160b4e1d1f105f8a23d41154af090fdacb1daebed31521f0a6363a58a"
+    },
+    "docs/evidence/serve-legacy-tools-20261108/business-01/auto-json.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "d5f9edc07ac4350a72c4877f895046e620543f8df3d59137dd118935c00b6cd8"
+    },
+    "docs/evidence/serve-legacy-tools-20261108/business-01/cancel.wire": {
+      "media": "text/event-stream",
+      "counts": {
+        "chunks": 2,
+        "errors": 1,
+        "done": 1
+      },
+      "sha256": "d5512a42942e33440bb4e1def33f968ef211a05f86f238763663aed9dc763a1a"
+    },
+    "docs/evidence/serve-legacy-tools-20261108/business-01/greedy-after-cancel.wire": {
+      "media": "text/event-stream",
+      "counts": {
+        "chunks": 5,
+        "done": 1
+      },
+      "sha256": "93ff38786723be8cb310872428fb3edb1a0901bbb463c10e5b2e16f6bbfaba49"
+    },
+    "docs/evidence/serve-legacy-tools-20261108/business-01/modern-history-migration.wire": {
+      "media": "text/event-stream",
+      "counts": {
+        "chunks": 18,
+        "done": 1
+      },
+      "sha256": "3eb6a002c1817c693457d5f38f681c52e210333c35ba175f4a6048c30e98e13a"
+    },
+    "docs/evidence/serve-legacy-tools-20261108/business-01/tool-final.wire": {
+      "media": "text/event-stream",
+      "counts": {
+        "chunks": 4,
+        "done": 1
+      },
+      "sha256": "07417a5525b43281ad3e346ac49a4cc3d148d6e81a66a5241d4756282e8d1b22"
+    },
+    "docs/evidence/serve-legacy-tools-20261108/business-01/tool.wire": {
+      "media": "text/event-stream",
+      "counts": {
+        "chunks": 18,
+        "done": 1
+      },
+      "sha256": "3fda835ca907abf86f16e80218dc7bc961fdbef3dc2a95fff7777b786a519e98"
+    },
+    "docs/evidence/serve-legacy-tools-20261108/business-01/truncated.wire": {
+      "media": "text/event-stream",
+      "counts": {
+        "chunks": 52,
+        "errors": 1,
+        "done": 1
+      },
+      "sha256": "e8319fcffc57caf64117d0c84c53f009b8cb5494efa93084d445e284407264a4"
+    },
+    "docs/evidence/serve-refusal-profiles-20261112/light-schema.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "7cfa5c4ff169557d0fc0452fed44a2e3f64616d9e7e7a6b56914f699b95804ec"
+    },
+    "docs/evidence/serve-refusal-profiles-20261112/light-tool-result.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "eb7d35a1603be838133c3cf08d4498aa3e23770e5e4ea08fe1055f23a75825b5"
+    },
+    "docs/evidence/serve-refusal-profiles-20261112/light-tool.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "c6bc7c0fe2d829c7363e515152df2f54e99d62df0e9a330822d37be5351990fe"
+    },
+    "docs/evidence/serve-refusal-profiles-20261112/primary-schema.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "71d4b24a70acf8010279f816b2f5e18660fb8e214d3380fa0a6a248cbf04f666"
+    },
+    "docs/evidence/serve-refusal-profiles-20261112/primary-tool-result.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "740749bd72138196b775a5431c76be4cf9c5dff9ccddf506965796dd9bd27e98"
+    },
+    "docs/evidence/serve-refusal-profiles-20261112/primary-tool.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "61090cc91dcc8aee47f751bc0ad9f747ae9ea1a5d717449673072b26e1ac3313"
+    },
+    "docs/evidence/serve-responses-sdk-business-20261128/fallback-restored-chat.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "153f918740eff8897e33e005b37f1a0b6b917efc66c92274fe272dc291d718ad"
+    },
+    "docs/evidence/serve-responses-sdk-business-20261128/primary-restored-chat.wire": {
+      "media": "application/json",
+      "counts": {
+        "responses": 1
+      },
+      "sha256": "89d8e1af6826f41211b43b7b3abfdb0da495c3a3ba3512addafc5fecc16aa524"
+    }
+  },
+  "totals": {
+    "responses": 17,
+    "chunks": 108,
+    "done": 7,
+    "errors": 2
+  },
+  "negative_controls": [
+    "required choice logprobs",
+    "delta shape",
+    "wrong stream identity",
+    "terminal error without code",
+    "missing DONE"
+  ]
+}

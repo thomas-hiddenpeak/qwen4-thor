@@ -1,0 +1,68 @@
+{
+  "scope": "CPU validation of top-level Chat request planning and rendered text on a single text prompt. Runtime HTTP and nested media/tool behavior are separate.",
+  "official_openapi_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "official_component": "CreateChatCompletionRequest",
+  "nullable_properties": [
+    "audio",
+    "frequency_penalty",
+    "logit_bias",
+    "logprobs",
+    "max_completion_tokens",
+    "max_tokens",
+    "metadata",
+    "modalities",
+    "moderation",
+    "n",
+    "prediction",
+    "presence_penalty",
+    "prompt_cache_key",
+    "prompt_cache_retention",
+    "reasoning_effort",
+    "safety_identifier",
+    "seed",
+    "service_tier",
+    "stop",
+    "store",
+    "stream",
+    "stream_options",
+    "temperature",
+    "top_p",
+    "user",
+    "verbosity"
+  ],
+  "nullable_count": 26,
+  "typed_sdk_extra": {
+    "top_logprobs": [
+      "python-2.33.0",
+      "python-2.8.1",
+      "python-3.42.1",
+      "python-3.55.1"
+    ]
+  },
+  "individually_accepted": 27,
+  "all_null_accepted": true,
+  "omitted_baseline": true,
+  "verified": [
+    "rendered prompt bytes",
+    "output token budget",
+    "sampling defaults and biases",
+    "text stops",
+    "prompt cache request",
+    "audio output enablement",
+    "storage and explicit null metadata"
+  ],
+  "metadata_null": "Recorded as explicitly supplied. The store flag stays false.",
+  "compiled_sources": {
+    "src/server/chat_contract.cpp": "71e6cdea9a6e9ce7869aef3f39c2d734c8081046e86fb36d8d43d7bade2bcdf9",
+    "src/server/chat_plan.cpp": "8e74bb7eeb9f38b4cc3916077e4b6bdbd63bac12c0390c6b09e347a291c4c5b4",
+    "src/server/chat_storage.cpp": "0cf50c6a5583c231d73514ac2558bcbed65e9022ae75e18712c5ad7b711c085f",
+    "src/server/chat_template.cpp": "f72370336a1d03e66397f52b1ad002230d4ce5b0bcb826a9e74ddf469061280d",
+    "src/server/sampling.cpp": "b27733666708e0aa0be1ae6ae9d109d9b9500d3daca7a39dc56ec501dcbe1b8c",
+    "src/server/text_stop.cpp": "bcfff59a107286c5ca3328c6f523f576f57df75d0e608c3c60afc537ec100978"
+  },
+  "test": "chat_plan_nullable_options_preserve_text_and_generation_defaults",
+  "test_source_sha256": "2f2306cd35ed8a6a8090880552701c3952a346c128c613fbe047369b6a9636eb",
+  "compile": "g++-14 -std=c++23 -O2 -Wall -Wextra -Werror",
+  "model_starts": 0,
+  "targeted_test_output": "[PASS] chat_plan_nullable_options_preserve_text_and_generation_defaults\n1 tests, 1 passed, 0 failed, 0 skipped"
+}
