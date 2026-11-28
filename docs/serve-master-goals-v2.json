@@ -9926,12 +9926,12 @@
       "sdk_business_evidence_20261128": {
         "matrix": "evidence/serve-sdk-business-index-20261128/business.csv",
         "sources": "evidence/serve-sdk-business-index-20261128/sources.json",
-        "source_requests": 462,
+        "source_requests": 492,
         "unassigned": 1,
-        "method_sdk_pairs_with_success": 230,
+        "method_sdk_pairs_with_success": 231,
         "methods_with_success": 55,
-        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations.",
-        "assigned_requests": 461
+        "scope": "Authenticated Conversations, Uploads, vector Files, stored Chat and Responses, Batch recovery, and SDK stream creation and recovery. Mixed-speech SDK requests across TLS, capacities, model recovery and gateway takeover. Interpreter creation, streamed output, owned and foreign reads on six issued SDK clients. Six issued clients completed all nine container/file operations. The short projection and both recovery scenarios contribute 30 stock Python requests from the engine subsequently registered as rev606.",
+        "assigned_requests": 491
       },
       "stored_chat_sdk_handoff_20261128": {
         "evidence": "evidence/serve-stored-chat-sdk-20261128/business.json",

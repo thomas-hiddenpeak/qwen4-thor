@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+SDK 业务矩阵已计入 rev606 同一引擎的 30 次正式 Python 调用。其中 10 次来自 TLS 后台流与存储读回，另外 20 次来自模型恢复与网关回退的前后对照。 [业务矩阵](evidence/serve-sdk-business-index-20261128/business.csv)
+
 输入语义清单的三个源码摘要已随重复选择器修复同步；完整生成合同核对通过。
 
 重复选择器候选的两份容量记录已登记。主容量和轻量容量均可逐字节还原各自 rev604 的发行证据。下一步准备独立主包与回退包。 [登记回执](evidence/serve-response-include-projection-20261128/capacity.json)
