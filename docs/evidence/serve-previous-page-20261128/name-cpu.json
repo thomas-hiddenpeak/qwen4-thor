@@ -1,0 +1,46 @@
+{
+  "status": "CPU_PASS",
+  "scope": "native TLS and durable vector stores; no inference process",
+  "previous_source": "e2325952a32b09ba582083c9b011f39bbae022c7",
+  "sdk": [
+    "python-2.8.1",
+    "python-2.33.0",
+    "python-3.42.1",
+    "python-3.55.1",
+    "node-6.34.0",
+    "node-7.47.0"
+  ],
+  "official_sha256": "718389d43b97973b8687134f17e5d4c502660538cb8207bf0617288f20819057",
+  "official_request": [
+    "string",
+    "null"
+  ],
+  "official_response": "string",
+  "previous_wire": [
+    "Thor \u9879\u76ee\u8d44\u6599",
+    null,
+    null,
+    null
+  ],
+  "sdk_requests": 24,
+  "control": "set name, clear, retrieve and list",
+  "candidate_wire": [
+    "Thor \u9879\u76ee\u8d44\u6599",
+    "",
+    "",
+    ""
+  ],
+  "negative_receipt_controls": 4,
+  "raw_sha256": "b326ac38b4d2618fb74809d6019719a1d012e22828b8b3145efb23114e10c359",
+  "native": [
+    "[PASS] vector_store_list_before_returns_nearest_page_in_both_orders",
+    "[PASS] vector_api_store_crud_and_bidirectional_pagination",
+    "[PASS] vector_api_legacy_null_name_is_a_string_on_retrieve_and_list",
+    "[PASS] vector_api_scope_and_identity_are_not_request_fields",
+    "4 tests, 4 passed, 0 failed, 0 skipped"
+  ],
+  "model_starts": 0,
+  "application_sha256": "714ad474ee718bcfbb43f2f374aa64517d4138e778f682cac738d2ee3b502e83",
+  "openapi_sha256": "aaf6cc8aff2b6c79028c61f9173e3bc5238a7f23e50092ac84bd8ce27b67f2d2",
+  "harness_note": "First native driver reused the preceding test object and rejected the unregistered new test. Recompiled the changed source and ran the four targeted tests."
+}

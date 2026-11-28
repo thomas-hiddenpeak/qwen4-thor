@@ -963,10 +963,44 @@ Q4T_TEST(vector_api_store_crud_and_bidirectional_pagination) {
   Q4T_CHECK(before.value.GetString("first_id") == first_id);
   auto updated = Api(f, objects, "POST", StorePath(ids[0]),
                       R"({"name":null,"metadata":null,"expires_after":null})");
-  Q4T_CHECK(Ok(updated) && updated.value.Find("name")->IsNull());
+  Q4T_CHECK(Ok(updated) && updated.value.GetString("name", "missing").empty());
   auto removed = Api(f, objects, "DELETE", StorePath(ids[0]));
   Q4T_CHECK(Ok(removed) && removed.value.GetBool("deleted"));
   Q4T_CHECK(Api(f, objects, "GET", StorePath(ids[0])).http_status == 404);
+  return true;
+}
+
+Q4T_TEST(vector_api_legacy_null_name_is_a_string_on_retrieve_and_list) {
+  Fixture fixture(10000, 100);
+  std::string id;
+  {
+    ObjectStore objects(fixture.objects);
+    const auto created = Api(fixture, objects, "POST", "/v1/vector_stores",
+                             R"({"name":"older store"})");
+    Q4T_CHECK(Ok(created));
+    id = created.value.GetString("id");
+    auto old = Raw(objects, ObjectKind::kVectorStore, id);
+    Q4T_CHECK(Ok(old));
+    ObjectRequest write;
+    write.operation = ObjectOperation::kPut;
+    write.kind = ObjectKind::kVectorStore;
+    write.scope = Access().scope;
+    write.id = id;
+    write.ttl_seconds = 0;
+    write.created_at = old.value.GetInt("created_at");
+    write.expected_revision = old.value.GetInt("revision");
+    write.data = *old.value.Find("data");
+    Set(&Field(write.data, "vector_store"), "name", Json());
+    Q4T_CHECK(Ok(objects.Execute(write, Access().deadline)));
+  }
+  ObjectStore objects(fixture.objects);
+  auto item = Api(fixture, objects, "GET", StorePath(id));
+  Q4T_CHECK(Ok(item) && item.value.GetString("name", "missing").empty());
+  auto list = Api(fixture, objects, "GET", "/v1/vector_stores");
+  Q4T_CHECK(Ok(list) && list.value.GetArray("data")->array.size() == 1);
+  const auto& row = list.value.GetArray("data")->array[0];
+  Q4T_CHECK(row.GetString("id") == id &&
+            row.GetString("name", "missing").empty());
   return true;
 }
 

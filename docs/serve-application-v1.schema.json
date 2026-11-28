@@ -65650,15 +65650,8 @@
           ]
         },
         "name": {
-          "anyOf": [
-            {
-              "type": "string",
-              "maxLength": 4096
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": "string",
+          "maxLength": 4096
         },
         "description": {
           "type": "string",

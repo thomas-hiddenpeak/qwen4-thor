@@ -4940,7 +4940,7 @@
     "src/server/vector_store_content.cpp": "daa1d7a68af23b28b12b018b7d4b2ea0b767846427aee5364b00ce59e3da5500",
     "src/server/vector_store_files.cpp": "9e9516a6a0f9651bd3d720c826c79d9d13f8acf05ab8aa7a97e9e401cc85c4af",
     "src/server/vector_stores.cpp": "0e4e312d40fa405cca07b20acd821663f32c4790f700e3602fdc6311d7e8ac23",
-    "src/server/vector_stores_internal.cpp": "13cd02c70952dcd417b35469a35deb65449ce31e2ee3bede5e07b30543bc56ef",
+    "src/server/vector_stores_internal.cpp": "b5be906971527a04bcca6af49895714bac91c9c45efb929cc47caf6c39775047",
     "src/server/vector_stores_internal.h": "b6f67564d6655b2c9de7ac8101c0fd5e8d68527dc00b250baac5d5459366be24",
     "src/server/video_characters.cpp": "58698f03234ded534a6557627c86e668d2df78613dd6063905ad46770fbfabb2",
     "src/server/voice_api.cpp": "221ee68919786c2aa7666bc99cab616ea9a329ad7e6632de068081bdd4d9079f",

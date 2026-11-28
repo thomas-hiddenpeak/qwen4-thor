@@ -1,0 +1,368 @@
+{
+  "predecessor": {
+    "sdk": "python-3.55.1",
+    "store": "vs_d950a385206070cc8f04eb45f1c178ec",
+    "names": [
+      "Thor \u9879\u76ee\u8d44\u6599",
+      null,
+      null,
+      null
+    ],
+    "requests": [
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores/vs_d950a385206070cc8f04eb45f1c178ec",
+        "query": "",
+        "status": 200,
+        "trace": "req-a2775e46e84c2ee7b914d406f3b947d4",
+        "body": {
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        "name": "Thor \u9879\u76ee\u8d44\u6599"
+      },
+      {
+        "method": "POST",
+        "path": "/v1/vector_stores/vs_d950a385206070cc8f04eb45f1c178ec",
+        "query": "",
+        "status": 200,
+        "trace": "req-98b1642b20c05c723129cfe5b1435fa4",
+        "body": {
+          "name": null
+        },
+        "name": null
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores/vs_d950a385206070cc8f04eb45f1c178ec",
+        "query": "",
+        "status": 200,
+        "trace": "req-79de9e84b0bb44865b5ff3760a10e6a2",
+        "body": null,
+        "name": null
+      },
+      {
+        "method": "GET",
+        "path": "/v1/vector_stores",
+        "query": "limit=100",
+        "status": 200,
+        "trace": "req-89c68c3381937d022a38d6a59aaee5ad",
+        "body": null,
+        "name": null
+      }
+    ]
+  },
+  "candidate": {
+    "python-2.8.1": {
+      "sdk": "python-2.8.1",
+      "store": "vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-5663b7ce89ccdc9483724e0066797484",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-4e6b50feb164b1204e351be85c2353dd",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-c40e7ab3aa12093bc18b324a207ed2c7",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-230927b1c54a713e0092f718c1153964",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "python-2.33.0": {
+      "sdk": "python-2.33.0",
+      "store": "vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-894ac719ad957fbae1e740a5979a0ea2",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-b8781f2b8e978e26a17544b122d58a4d",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-d37dde024034292cb2bf46ce529a95b5",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-0f45e90cd521714d4587ccab2ca27752",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "python-3.42.1": {
+      "sdk": "python-3.42.1",
+      "store": "vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-7b626ddfb5f27a2f53937ed342f7b467",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-4ba22d3dd60203b546849b27a3645587",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-2aa1f7c63d0de4614d958a970a49c71b",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-8471853fb48af4370a8eed73de69b875",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "python-3.55.1": {
+      "sdk": "python-3.55.1",
+      "store": "vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-07d838a34cd29558cbc5340f75818ca6",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-cf8ee856fcff332345650c2cf2b0b2c1",
+          "body": {
+            "name": null
+          },
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "status": 200,
+          "trace": "req-1cd1a654c822199fc7682a20a2e4012b",
+          "body": null,
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "status": 200,
+          "trace": "req-8c7d6ddfc65fe1e3b2aaa73c584e57dd",
+          "body": null,
+          "name": ""
+        }
+      ]
+    },
+    "node-6.34.0": {
+      "sdk": "node-6.34.0",
+      "store": "vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "status": 200,
+          "trace": "req-01b172be2ea06a5370fc68a1d0557771",
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "body": {
+            "name": null
+          },
+          "status": 200,
+          "trace": "req-f61075e87588aabae1ecb99840e1e9bb",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "body": null,
+          "status": 200,
+          "trace": "req-74837a1198a6755b7428c9bf1b4aa5c4",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "body": null,
+          "status": 200,
+          "trace": "req-8fc94a39786f9e04b3acfe9ee0f66a97",
+          "name": ""
+        }
+      ],
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ]
+    },
+    "node-7.47.0": {
+      "sdk": "node-7.47.0",
+      "store": "vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+      "requests": [
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "body": {
+            "name": "Thor \u9879\u76ee\u8d44\u6599"
+          },
+          "status": 200,
+          "trace": "req-e4463686435f44f9762c34045637c9bc",
+          "name": "Thor \u9879\u76ee\u8d44\u6599"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "body": {
+            "name": null
+          },
+          "status": 200,
+          "trace": "req-a62c2a696e7eca765e53e2edf0d7f96a",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores/vs_ccceeeab89a2dac5819f6fa02f6ac9d9",
+          "query": "",
+          "body": null,
+          "status": 200,
+          "trace": "req-5d7ded90633094e3b88406cfe88f765f",
+          "name": ""
+        },
+        {
+          "method": "GET",
+          "path": "/v1/vector_stores",
+          "query": "limit=100",
+          "body": null,
+          "status": 200,
+          "trace": "req-572ff4b078be6997d6b4170dae23e936",
+          "name": ""
+        }
+      ],
+      "names": [
+        "Thor \u9879\u76ee\u8d44\u6599",
+        "",
+        "",
+        ""
+      ]
+    }
+  }
+}

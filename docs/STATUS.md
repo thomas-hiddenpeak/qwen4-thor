@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+清空向量库名称时，更新、重新读取和列表现均返回空字符串。旧版在同样三个响应中直接返回 null；四版 Python、两版 Node 在原生 TLS 上完成了 24 次请求，实际 JSON 与 SDK 值一致。 [名称合同回执](evidence/serve-previous-page-20261128/name-cpu.json)
+
 翻到第三页后，存储对象和向量文件列表原先会跳过游标旁边的数据。两处读取路径现从游标向前取相邻项，再按请求顺序返回。六版正式 SDK 已在原生 TLS 与真实存储上完成 72 次分页请求；嵌入使用 CPU 夹具，尚待候选引擎验收。 [分页回执](evidence/serve-previous-page-20261128/cpu.json)
 
 传统补全上限修复的主、轻容量记录均已登记，可逐字节还原 rev606 的前驱记录。下一步生成主包与独立回退包。 [登记回执](evidence/serve-completion-best-of-20261128/capacity.json)

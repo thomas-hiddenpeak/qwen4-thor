@@ -122,6 +122,8 @@ void Activity(Json* data) {
 }
 Json PublicStore(const Json& data) {
   auto result = *data.Find("vector_store");
+  // A nullable update clears the name. Older records store that reset as null.
+  if (result.Find("name")->IsNull()) Set(&result, "name", String(""));
   if (!Live(data)) {
     Set(&result, "status", String("expired"));
     Set(&result, "usage_bytes", Number(0));
@@ -180,6 +182,7 @@ int64_t SearchRevision(const Json& record) {
 bool ValidateStore(const Json& record) {
   const auto* data = record.Find("data");
   const auto* store = data ? data->Find("vector_store") : nullptr;
+  const auto* name = store ? store->Find("name") : nullptr;
   const auto* members = data ? data->GetArray("members") : nullptr;
   if (data && data->Has("search_revision")) {
     const auto& revision = *data->Find("search_revision");
@@ -188,7 +191,8 @@ bool ValidateStore(const Json& record) {
       return false;
   }
   if (!data || data->GetString("format") != kStore || !store ||
-      !store->IsObject() || !members ||
+      !store->IsObject() || !name || (!name->IsNull() && !Text(*name, 4096)) ||
+      !members ||
       members->array.size() > kVectorStoreFiles ||
       store->GetString("id") != record.GetString("id") ||
       !store->GetString("id").starts_with("vs_") ||
