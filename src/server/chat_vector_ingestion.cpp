@@ -1,6 +1,7 @@
 #include "chat_server_internal.h"
 
 #include "object_protocol.h"
+#include "q4t/server/object_diagnostics.h"
 #include "q4t/server/request_diagnostics.h"
 
 namespace q4t::server {
@@ -49,6 +50,8 @@ ObjectReply ChatServer::RunVectorEmbedding(
   diagnostic.BindProgress(progress.Handle());
   diagnostic.Bind(control->id());
   ProgressContext context(progress.Handle());
-  return RunNativeEmbeddingInput(-1, tokens, control, diagnostic, result);
+  return RunDiagnosedObjectRequest(diagnostic, *control, [&] {
+    return RunNativeEmbeddingInput(-1, tokens, control, diagnostic, result);
+  });
 }
 }  // namespace q4t::server

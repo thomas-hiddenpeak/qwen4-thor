@@ -4493,7 +4493,7 @@
     "src/server/chat_tts_backend.cpp": "4cbd1c256e1a949a9b05fb52664706af09c13247cc25bcca72b8d173a3790946",
     "src/server/chat_tts_execution.cpp": "8adb04490a52a5d353ba3e3497ad1acc252bd057b9eee7220942bd354cf64f1f",
     "src/server/chat_vad_backend.cpp": "6a84890c85d7053c1e94aa027f28b19e3eab1773c5a5dd6d9ab30ac255ea9f80",
-    "src/server/chat_vector_ingestion.cpp": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50",
+    "src/server/chat_vector_ingestion.cpp": "c7d68161d44dddc3c60d0a9e13cc262f201df3de4a71358cf5c0c4e9a847c5dd",
     "src/server/chat_vector_search.cpp": "0a94a751cbd930e7186b3e8141299d40ca9e89d88291652139d1a57d7398c263",
     "src/server/chat_voice_backend.cpp": "1fb46a670c39589c8bb05ab09b22f84514fe1626b1e26668b1ee28030fe0b1ce",
     "src/server/chat_voice_evidence.cpp": "76c60aaa17e53fcbf20e2bebed83c66c9c2bcbc3fbcf7dfa249294903f4757bf",

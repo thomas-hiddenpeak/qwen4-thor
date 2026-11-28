@@ -1,5 +1,7 @@
 # 当前状态（2026-11-28）
 
+向量库文件成功建索引时，15 次分块嵌入的结束日志都误报 handler_error。执行入口现按真实返回值、取消原因或异常记录结果。CPU 从实际入口验证了四种结果及原有返回值和控制状态，候选待实机复验。 [原始对照与 CPU 回执](evidence/serve-vector-ingestion-diagnostics-20261128/cpu.json)
+
 向量库候选的主包与轻量容量记录已登记。两份 v105 记录均可按字节摘要还原 rev608 对应的容量来源。 [登记回执](evidence/serve-previous-page-20261128/capacity.json)
 
 主、轻两档均通过相邻页与名称清空短验。每档 18 次向量库请求，独立 Chat 均回答 42。 [容量回执](evidence/serve-previous-page-20261128/capacity-business.json)

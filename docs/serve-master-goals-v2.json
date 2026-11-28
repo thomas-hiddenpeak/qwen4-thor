@@ -10866,6 +10866,16 @@
         "chats": 5,
         "revision": 600,
         "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
+      },
+      "vector_ingestion_diagnostics_20261128": {
+        "status": "cpu_pass",
+        "receipt": "evidence/serve-vector-ingestion-diagnostics-20261128/cpu.json",
+        "observed_successful_chunks_mislabeled": 15,
+        "distinct_jobs": 5,
+        "remaining": [
+          "real indexed document and chunk outcome correlation",
+          "issued package and main integration"
+        ]
       }
     },
     {

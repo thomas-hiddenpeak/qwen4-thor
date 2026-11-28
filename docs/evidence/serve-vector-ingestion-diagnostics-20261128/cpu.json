@@ -1,0 +1,86 @@
+{
+  "stage": "CPU_VERIFIED",
+  "real_predecessor": {
+    "source": "serve-previous-page-20261128/device.json",
+    "receipt_sha256": "ba21292f12c8b0d85e87ad02be94df7a1e91592d12cd0524bc46e8f38fb7a95c",
+    "wire_sha256": "6ce9fcaf595fb74521546a6cda10e3ee029911b98a22b2f0f13d126145100938",
+    "model_log_sha256": "ee978a409c04b71f6a07139dd43b4e674c07bfbc0702fb397a0f414c1288f049",
+    "job_count": 5,
+    "chunks": 15,
+    "reported_outcome": "error",
+    "reported_reason": "handler_error",
+    "business_requests": 132
+  },
+  "direct_native_route": {
+    "previous": {
+      "mode": "old",
+      "records": [
+        [
+          "error",
+          "handler_error",
+          "0"
+        ],
+        [
+          "error",
+          "handler_error",
+          "1"
+        ],
+        [
+          "error",
+          "handler_error",
+          "2"
+        ],
+        [
+          "error",
+          "handler_error",
+          "3"
+        ]
+      ],
+      "model_starts": 0,
+      "source": "1e6b34f6b03447cd962a3bffaab6acefb1dacb357a32854fb450154f05d0df50"
+    },
+    "candidate": {
+      "mode": "new",
+      "records": [
+        [
+          "success",
+          "execution_complete",
+          "0"
+        ],
+        [
+          "error",
+          "embedding_unavailable",
+          "1"
+        ],
+        [
+          "aborted",
+          "explicit_cancel",
+          "2"
+        ],
+        [
+          "error",
+          "handler_exception",
+          "3"
+        ]
+      ],
+      "model_starts": 0,
+      "source": "c7d68161d44dddc3c60d0a9e13cc262f201df3de4a71358cf5c0c4e9a847c5dd"
+    },
+    "entry": "ChatServer::RunVectorEmbedding",
+    "backend": "stand-in for RunNativeEmbeddingInput, real request control and diagnostics",
+    "expected_control": [
+      "active",
+      "active",
+      "explicit_cancel",
+      "active"
+    ],
+    "committed_tokens_per_call": 1,
+    "compiler": "g++-14 -Wall -Wextra -Werror",
+    "model_starts": 0
+  },
+  "previous_stderr_sha256": "1fed0af482cfcad591de9cb702b7fb595dcb51b6fd579633e4524cf5ce4ebaeb",
+  "candidate_stderr_sha256": "fe9e1fd0227cca36b4e6e6bf5c5ee94e330c1ae0ee560e37d0f0abfc3800dca3",
+  "sources_checked": 1401,
+  "inventory_negative_checks": 40,
+  "default_replaced": false
+}
