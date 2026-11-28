@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+Thor 上的 Node 6.34 通过原生 TLS 创建并保存带引用的 RFC 2606 回答。六个登记 SDK 从同一 ID 重放了完整事件和正文，同客户普通 GET 保持原始响应形状，另一客户为 404。下一步验证主轻容量交接并准备回退发行。 [模型 HTTP 回执](evidence/serve-responses-search-stream-sdk-20261128/device.json)
+
 六版官方 SDK 在实际截断和取消事件的 TLS 回放中均能从 event.response 读到正确终态与原因。四版 Python 终态助手在这两类结果上抛错，Node 6.34 助手返回 in_progress。兼容指南已给出两语言的事件读取示例。下一步继续候选实机生成与回读。 [终态回放](evidence/serve-responses-search-stream-sdk-20261128/terminal-clients.json)
 
 六个官方 Python 和 Node SDK 用原 ID 从两份历史 Thor 对象各重放 66 个事件，经候选原生读取路径取得完整正文与引用。四组跨客户和未知 ID 读取均为 404，保存的文件与测试副本逐字节一致。下一步通过原生网关检验实时创建与回读。 [回读验收](evidence/serve-responses-search-stream-sdk-20261128/retained.json)

@@ -1,0 +1,88 @@
+{
+  "scope": "One real legacy SDK generation and six retained response stream readers over candidate native TLS on Thor",
+  "predecessor_manifest": "a95cb27331b4723c1fed433c3dfff8adeca93d4a0d622b7ef229bfbeba5eced3",
+  "predecessor_revision": 596,
+  "package_source_commit": "379d7c6b90e8709d81bd4eb4ee2334cdee2e97b8",
+  "tested_commit": "b6e9721b79404d837c77c849f793d877b7b0deba",
+  "engine": "5e444211932482a5901c085ef0d096265bd99099220f1878e369dd7c5e5a9113",
+  "ingress": "42bda0632fc4416bd7b6425732e59c9daff62ef0c242f11d8ef05b71399d00b4",
+  "protocol_sources": "e29d7bb07d55e6286e3fe0ccad5b81175fb0b18a1f4750b44f26e098d14af0d5",
+  "id": "resp_5b1b7dc60f09b1d32967def17cea1cae",
+  "question_source": {
+    "url": "https://tex2e.github.io/rfc-translater/html/rfc2606.html",
+    "title": "RFC 2606 - Reserved Top Level DNS Names 日本語訳",
+    "bytes": 32453,
+    "sha256": "7dcac3c4800a70e14f764e09704a786ef91e7df41fdcaac0a05fb138cab1b253",
+    "refresh_seconds": 0
+  },
+  "answer": "The three example second-level domains reserved by RFC 2606 are:\n\n1. example.com\n2. example.net\n3. example.org\n\n[source](<https://tex2e.github.io/rfc-translater/html/rfc2606.html>)",
+  "citations": [
+    {
+      "item_id": "msg_f1cf8ae470fd21ef761ce1554d278d41",
+      "output_index": 1,
+      "content_index": 0,
+      "annotation_index": 0,
+      "annotation": {
+        "type": "url_citation",
+        "url": "https://tex2e.github.io/rfc-translater/html/rfc2606.html",
+        "title": "RFC 2606 - Reserved Top Level DNS Names 日本語訳",
+        "start_index": 112,
+        "end_index": 180
+      }
+    }
+  ],
+  "create_sha256": "eb70a3fdc5cb9e9f413d82a44194f6b8dec45a110f9566dfea6747d2e38b9eb6",
+  "readers": {
+    "python-2.8.1": {
+      "result_sha256": "d5f6b3c3eb0968a9caae46f62418910fc24f458f51266099feed0df4db74771f",
+      "events": 66,
+      "query": "stream=true"
+    },
+    "python-2.33.0": {
+      "result_sha256": "2438b093e84e67496406eab0997291e85a30c62508f95a1351af9f6179e124ff",
+      "events": 66,
+      "query": "stream=true"
+    },
+    "python-3.42.1": {
+      "result_sha256": "bb16683ac5f85162e530fd4e6640a5017b0760a2955c36a15acce69b6f368560",
+      "events": 66,
+      "query": "stream=true"
+    },
+    "python-3.55.1": {
+      "result_sha256": "20e8afd42b0c703334415dfc4c9b5314156733d27b9d897a996810dcde5b6e95",
+      "events": 66,
+      "query": "stream=true"
+    },
+    "node-6.34.0": {
+      "result_sha256": "8691ce0fdd029c53c3c47577bea432b2f2c41709e26dd9a3de6a99afd830ffa8",
+      "events": 66,
+      "query": "stream=true"
+    },
+    "node-7.47.0": {
+      "result_sha256": "7abc48751a8e0cd1db38f897ec9e61c98a4dbdce7cd4d9bbbc28f8b3f92277c5",
+      "events": 66,
+      "query": "stream=true"
+    }
+  },
+  "requests": 9,
+  "starts": 1,
+  "direct_reads": {
+    "same_customer": 200,
+    "original_json_has_no_output_text": true,
+    "other_customer": 404
+  },
+  "receipts": {
+    "result.json": "3e4d5e2c4e4d34f7be94656a69df9ee1462190c4ee42a82f881e86a80862a5ba",
+    "requests.json": "0625bb92917c94ab0799cb4b5f5273746371918c0436f353814133df93d2c65b",
+    "alpha-get.wire": "bd10e52dfaf65a47d3974bf5d115778a880be14082c10bdef2935b52ccf0a938",
+    "beta-get.wire": "880bc20d8ee2fb33edda1776541632739bbe5a770a8ee51547791fa146d190b1"
+  },
+  "guard": {
+    "status": "COMPLETED",
+    "exit_sha256": "7b4119098549986449cfed4622239df8902971c94afe0b3dd2ea82657e793b95",
+    "samples": 65,
+    "seconds": 68.092,
+    "protected_files": 20,
+    "ports_free": true
+  }
+}
