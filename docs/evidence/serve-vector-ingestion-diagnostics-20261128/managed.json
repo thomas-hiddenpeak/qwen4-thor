@@ -1,0 +1,938 @@
+{
+  "status": "PASS_MANAGED",
+  "previous_revision": 610,
+  "release": "candidate",
+  "registered_capacity": "0825f0dd489a7156181a7832e86322a721f867df88e1692623c24f90f5050607",
+  "cpu": {
+    "status": "CPU_PASS",
+    "model_starts": 0,
+    "fixture_backend": "deterministic CPU embeddings",
+    "two_native_process_generations": [
+      [
+        2540506,
+        2540511
+      ],
+      [
+        2540526,
+        2540531
+      ]
+    ],
+    "sdk": "python-3.55.1",
+    "roles": {
+      "prepare": {
+        "index": {
+          "job": "tool_run_527d52392813ebcffac6d579cea08ae0",
+          "store": "vs_202fe586abc117e138ba527b178afed6",
+          "file": "file_c429ae9e3ca53cb438a7b65a03faf6a3",
+          "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+          "dimensions": 1024,
+          "vectors_bytes": 40960,
+          "chunks": 10,
+          "binding": "231098aa2d911fa38676a3010209d4bba40c3b17e28a317314d109f166cd4c83",
+          "usage_bytes": 43187
+        },
+        "traces": [
+          "req-df9e1b3ba4b8cc047cec71f4a65ca75a",
+          "req-4009bd9bb4e78fd165c535992dcb856e",
+          "req-6c234aad3016bf09c319f5fdbee86970",
+          "req-937a567d5489814c6b38933d98774f03",
+          "req-8b6ff0137b8e27f993c13a0f86a4d49b",
+          "req-2f90836b9fc973b0ca8e6362630babff"
+        ],
+        "stock_sdk_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "restore": {
+        "index": {
+          "job": "tool_run_c0ce49803a7a51487c3e5f855a9630ae",
+          "store": "vs_202fe586abc117e138ba527b178afed6",
+          "file": "file_af4fd8e48f4a2a5193e5d2b5ab1ab1de",
+          "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+          "dimensions": 1024,
+          "vectors_bytes": 40960,
+          "chunks": 10,
+          "binding": "07390f05ae550af07123bcd3fdb69d1dd7ce1677b2ff12cc89eefd9c04527884",
+          "usage_bytes": 43187
+        },
+        "traces": [
+          "req-0dfd10ee8f72f0b6b497cbabda94ab90",
+          "req-8122e8baf00dd507e4b1b4a9d57fb919",
+          "req-0791001b6718acf915b1c71ff2e95ed5",
+          "req-cbb5a578c07085e5b6f2af81b272508f",
+          "req-fc5174a5ccf729443bebfc49ddaf08a8",
+          "req-af2195ca0d4e690ff53b63947a9dff94",
+          "req-384b113357b98e4a9c42037e7c058ab6",
+          "req-e2f28a090934313dbf226bf6720cd865",
+          "req-168858d92d04266ecfb44c4cdb64296c",
+          "req-052eab7cbb9cedd2c6f4c42a6f67569d",
+          "req-271e185246222338d1283b7767173ff4",
+          "req-76c08d9d67cd150ae3204ef8b65ac573",
+          "req-8c45996b7ab264be7cfe04c46f1ec7e3",
+          "req-ab2304df3fc20e1c9ed69d1bf159f007"
+        ],
+        "stock_sdk_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ]
+      }
+    },
+    "negative_controls": [
+      "missing polling",
+      "changed original vector binding",
+      "reused claim",
+      "missing isolation",
+      "lost cleanup",
+      "cross-generation trace reuse"
+    ],
+    "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+    "programs": {
+      "managed-index-sdk.py": "e520affcd708c72958803ee08a1c53bc6b43f4e6aa90087e0a5073c647ba13f8",
+      "managed-index-check.py": "8a94133e83fc77d1ec0902e894b5d733e6ffb5ff287863702e4a9aea84ecfbe1",
+      "managed-index-cleanup.py": "08983bd8765e0b37069add7b7416853c1adb15103e9b44203040405cf2ed830a"
+    }
+  },
+  "native_build_reuse": {
+    "status": "PASS",
+    "previous_cmake_sha256": "2db34cc47aab14a7aaa0f9877bef3d7828e1ef48abd99ed95e114da64e35a6d6",
+    "candidate_cmake_sha256": "ad24f08118a6d2a4a7b1ea3b983a708f7e741e2395a1e2d3ae393b7b1dd8b127",
+    "native_recipe_changes": 0,
+    "source_only_in_test_list": "tests/server_vector_ingestion_diagnostics_test.cpp",
+    "native_graphs": {
+      "q4t_guardian": {
+        "commands": 14,
+        "normalized_commands_sha256": "653048192f20f0025d4192b629ed5767efc9a1dedfc4bee56ee3f22679479b98"
+      },
+      "q4t_device_control": {
+        "commands": 12,
+        "normalized_commands_sha256": "89a81fd19d76b5e2ce611de21f7c56a6fb137cfcc449ee42fd5d3333985d8768"
+      },
+      "q4t_cuda_probe": {
+        "commands": 2,
+        "normalized_commands_sha256": "a1045decc6d217f73707469b797bfa0f8d4c36d30731869a7ea4a63c057d6548"
+      },
+      "q4t_ingress": {
+        "commands": 25,
+        "normalized_commands_sha256": "bfefffaaf7f1dbef90aba1262497963b30d53a98904cae5d48eb16c4d57205a5"
+      }
+    },
+    "predecessor_receipts": {
+      "fallback": "42933b2a6e5ac50281cf9e99f4bfcfc22194b346041290a1fdb169e56f0bfabe",
+      "primary": "cbf583ca9d2f08f790503c5036a3cddb8373b81799dd56c82b46697b3cdde58b"
+    },
+    "normalization": "Only the two checkout root path prefixes are normalized."
+  },
+  "total_trace_ids": 64,
+  "roles": {
+    "fallback": {
+      "manifest": "7833d90fc3332329f6e6ba31410d7eb8bb86ac2c1c758c9a92008e3579d18794",
+      "incident": "model_exit",
+      "generations": [
+        1,
+        2
+      ],
+      "core_chat": "42",
+      "work": {
+        "prepare": {
+          "index": {
+            "job": "tool_run_889aaa2745507f822984176e878336b9",
+            "store": "vs_78a2a264dde9299f1c15d3083a97f992",
+            "file": "file_c11197c11b894f0be4330b48136661a8",
+            "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+            "dimensions": 1024,
+            "vectors_bytes": 16384,
+            "chunks": 4,
+            "binding": "e07d40e5f69768383280d350ed64e4bd999ca5a5873fd1540eed8b78294e82b7",
+            "usage_bytes": 18611
+          },
+          "traces": [
+            "req-5e0c060c46abbab277fa21c4366e3fdf",
+            "req-13a1832045045a36417d58b6184c23bf",
+            "req-d8837ba00a56655476642f219040e3bb",
+            "req-2db36c1ac779d4ccbb82a1114a875bd3",
+            "req-d0d5147122346a167977c81c97073fa9",
+            "req-9b83be1dc1eef2e2ff484464957ab42a",
+            "req-38b083748b5baa18bcd42e07d3764b5c",
+            "req-074d661984168316ab6ff62880f2ebf3",
+            "req-d52dc4997ba7ba557f2bfc622db5e95c",
+            "req-fee0e4353a0809487ba97773f64cdaab",
+            "req-6a257a062c163f9a247a21afd4f4b95e",
+            "req-383b2d99f9a6db17294b2108cda54198"
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "model_log": "state/runs/5bb12dcc-90c8-4e07-a460-b0392026dac4/controller-1/model-1/model.log",
+          "terminals": 4,
+          "requests": [
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-13a1832045045a36417d58b6184c23bf"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-d8837ba00a56655476642f219040e3bb"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-2db36c1ac779d4ccbb82a1114a875bd3"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-d0d5147122346a167977c81c97073fa9"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-9b83be1dc1eef2e2ff484464957ab42a"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-38b083748b5baa18bcd42e07d3764b5c"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-074d661984168316ab6ff62880f2ebf3"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-d52dc4997ba7ba557f2bfc622db5e95c"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-fee0e4353a0809487ba97773f64cdaab"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_c11197c11b894f0be4330b48136661a8/content",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-6a257a062c163f9a247a21afd4f4b95e"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "beta",
+              "status": 404,
+              "query": "",
+              "trace": "req-383b2d99f9a6db17294b2108cda54198"
+            }
+          ],
+          "control": {
+            "method": "GET",
+            "path": "/v1/capabilities",
+            "status": 200,
+            "trace": "req-5e0c060c46abbab277fa21c4366e3fdf",
+            "sdk": false
+          },
+          "cleanup": [],
+          "raw_sha256": {
+            "prepare-requests.json": "d0e012069298eb1db2c2b52b8d858b30915329fbc82734d8b7c67e68e40046fd",
+            "prepare-actor.json": "559a25dcd66f159f6f64b47b0c8723b6db61e38057562d546644891d7ed09362",
+            "prepare-snapshots.json": "f4e9390514a46629bf2174a2232851904d6517b138264c1d11d9cdf70cca80d1",
+            "prepare-control.json": "a6117e4406f8fdc9a2746639339b5f2be3ee703f66dd6de2ef6082edd447f7d0",
+            "prepare-capabilities.json": "6d070b31d2be1e5666b5302113254b06db4cee976c34ac86b2ccd8004d09c570",
+            "prepare-terminals.json": "9e9451fc6294d891bd87acae0c9f48f56c37c7ab0044c03fd64d9991fb226632"
+          }
+        },
+        "restore": {
+          "index": {
+            "job": "tool_run_d32552f47fc87a27fe9354f041109a3a",
+            "store": "vs_78a2a264dde9299f1c15d3083a97f992",
+            "file": "file_af1482ca48734cf76b9aab44888fe604",
+            "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+            "dimensions": 1024,
+            "vectors_bytes": 16384,
+            "chunks": 4,
+            "binding": "1ce9b029667a9408dc08e0596999e2583ff6a7f2c0db06a37c338937a8cb6f0c",
+            "usage_bytes": 18611
+          },
+          "traces": [
+            "req-bab658a186823ff06ffab9d8aac34357",
+            "req-37d71b43ae2ec30f035e9cfe1376177d",
+            "req-4b0b6bd538c91d51afe8a4be85d8ef27",
+            "req-68ec28268b8e9a83931e04eecee3f946",
+            "req-402c6a015f76f5425205763f21ccf499",
+            "req-25fc2649008f7f8458b4db6e6900990f",
+            "req-607fe738a805ae462fc2e34a943810cf",
+            "req-3d5c29ab7aad8062916028ecf6a95c64",
+            "req-a2c763901510edeeaca00239a11ff316",
+            "req-358f214e5f803e2fe3b80e2782f5195e",
+            "req-00632fd939e2a6f1e828e235b21936c4",
+            "req-617fad50251b3ee9ac905a3e3ff41a5d",
+            "req-b060061503d322bc9fc8e12256c14816",
+            "req-12a68d8d80a1c0e9d26f0f81b9880506",
+            "req-581466d9bc702526fbaf5c25e3441486",
+            "req-1bbd3bc8583e0970c829be08de391e39",
+            "req-af2d5f99144e406369781aff5ff57698",
+            "req-4f2452935cc5a78b592d6f6958953d6f",
+            "req-0efc36076ebde9de409df80095a1886f"
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "model_log": "state/runs/5bb12dcc-90c8-4e07-a460-b0392026dac4/controller-1/model-2/model.log",
+          "terminals": 4,
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-37d71b43ae2ec30f035e9cfe1376177d"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_c11197c11b894f0be4330b48136661a8",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-4b0b6bd538c91d51afe8a4be85d8ef27"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_c11197c11b894f0be4330b48136661a8/content",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-68ec28268b8e9a83931e04eecee3f946"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-402c6a015f76f5425205763f21ccf499"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-25fc2649008f7f8458b4db6e6900990f"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_af1482ca48734cf76b9aab44888fe604",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-607fe738a805ae462fc2e34a943810cf"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_af1482ca48734cf76b9aab44888fe604",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-3d5c29ab7aad8062916028ecf6a95c64"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_af1482ca48734cf76b9aab44888fe604",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-a2c763901510edeeaca00239a11ff316"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_af1482ca48734cf76b9aab44888fe604",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-358f214e5f803e2fe3b80e2782f5195e"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_af1482ca48734cf76b9aab44888fe604",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-00632fd939e2a6f1e828e235b21936c4"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_af1482ca48734cf76b9aab44888fe604/content",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-617fad50251b3ee9ac905a3e3ff41a5d"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992/files/file_af1482ca48734cf76b9aab44888fe604",
+              "scope": "beta",
+              "status": 404,
+              "query": "",
+              "trace": "req-b060061503d322bc9fc8e12256c14816"
+            }
+          ],
+          "control": {
+            "method": "GET",
+            "path": "/v1/capabilities",
+            "status": 200,
+            "trace": "req-bab658a186823ff06ffab9d8aac34357",
+            "sdk": false
+          },
+          "cleanup": [
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992",
+              "status": 200,
+              "trace": "req-12a68d8d80a1c0e9d26f0f81b9880506",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/files/file_c11197c11b894f0be4330b48136661a8",
+              "status": 200,
+              "trace": "req-581466d9bc702526fbaf5c25e3441486",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_c11197c11b894f0be4330b48136661a8",
+              "status": 404,
+              "trace": "req-1bbd3bc8583e0970c829be08de391e39",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/files/file_af1482ca48734cf76b9aab44888fe604",
+              "status": 200,
+              "trace": "req-af2d5f99144e406369781aff5ff57698",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_af1482ca48734cf76b9aab44888fe604",
+              "status": 404,
+              "trace": "req-4f2452935cc5a78b592d6f6958953d6f",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_78a2a264dde9299f1c15d3083a97f992",
+              "status": 404,
+              "trace": "req-0efc36076ebde9de409df80095a1886f",
+              "scope": "alpha",
+              "query": ""
+            }
+          ],
+          "raw_sha256": {
+            "restore-requests.json": "4f0f565c280372e31a976c0bcfe66388cc937cadcfc25762d7f4a7ce00d7f2b4",
+            "restore-actor.json": "a80c9f6a4b2674049177594b48eb5e1077c0d5a3649f78c2a70fbc76b852a938",
+            "restore-snapshots.json": "0d32f36709137772f8ae452db3159f03b34ea366bb7e9cbf63fc8a7ad0af4346",
+            "restore-control.json": "676a9b4a38e87b1cd4d579fde8b050d623599c9b09eaf01fa2db535e295501f2",
+            "restore-capabilities.json": "6d070b31d2be1e5666b5302113254b06db4cee976c34ac86b2ccd8004d09c570",
+            "restore-terminals.json": "9f5af41ae4152ab9ecc160bba179a5f8b6575acd5b4de3c7848b6b2905300cb2",
+            "cleanup-requests.json": "c6426c53bd76f838614ad86a4bb32bb6ae12f46c15038d3891f3b06605699f0f"
+          }
+        }
+      },
+      "lease_sha256": "66141fb2344f630a5359d8159d56946a42a5518081c928970ec29e89693fc952",
+      "default_unchanged": true,
+      "ports_free": true,
+      "nvml_samples": 214,
+      "model_starts": 2,
+      "seconds": 230.67436793912202,
+      "origin_sha256": "c985aba2b06ce6b7849af215ace7d2a29c36ee7b0f79cb986ad77b00084cac8a"
+    },
+    "primary": {
+      "manifest": "def9a956c76508de6a8dd80fd02f3547db801eba5451ecea8d2c983151c592a5",
+      "incident": "primary_gateway_SIGABRT",
+      "generations": [
+        1,
+        2
+      ],
+      "core_chat": "42",
+      "work": {
+        "prepare": {
+          "index": {
+            "job": "tool_run_4ddd187b938586e07e2a999f9e8623c0",
+            "store": "vs_e8e766eefeafccd0838d33612a2b14fb",
+            "file": "file_138b7f6e7bdb525ae8f09233e2004c82",
+            "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+            "dimensions": 1024,
+            "vectors_bytes": 16384,
+            "chunks": 4,
+            "binding": "ca40c7b1ec789328246a8cefbb40145d116503f8d4d3acb9a3428b202df90d40",
+            "usage_bytes": 18611
+          },
+          "traces": [
+            "req-5919117352fb455bed94030130fa43d7",
+            "req-de5ad0f84a6aa0322a7d84cba0aa6f19",
+            "req-4a50dcf4270083fa87d3da9899aff229",
+            "req-012e003f24d6eddd720b3bd381f59ba5",
+            "req-a8b6bcb1e34085de3224d772967921c9",
+            "req-f5f4e59b126b9dc8772634718532cefd",
+            "req-e1db0475a6909060d652d82237b5ec9a",
+            "req-a304211387585cd65505cd8f87e41169",
+            "req-c6d176957464bf5371290438cffd9167",
+            "req-0fe0647c4b0ac39ab413a007b94b1351",
+            "req-c6294fc864410f0a88b75f9b80eb9043",
+            "req-9b068f84ccae22931fe8c10271b5789b",
+            "req-81911a6377283af959d2973a06a90705",
+            "req-985dc7cdb4cded06866b7d9015fff315"
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13
+          ],
+          "model_log": "state/runs/d94a1960-836a-4a6d-ae11-3f863729d2dd/primary/controller-1/model-1/model.log",
+          "terminals": 4,
+          "requests": [
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-de5ad0f84a6aa0322a7d84cba0aa6f19"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-4a50dcf4270083fa87d3da9899aff229"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-012e003f24d6eddd720b3bd381f59ba5"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-a8b6bcb1e34085de3224d772967921c9"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-f5f4e59b126b9dc8772634718532cefd"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-e1db0475a6909060d652d82237b5ec9a"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-a304211387585cd65505cd8f87e41169"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-c6d176957464bf5371290438cffd9167"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-0fe0647c4b0ac39ab413a007b94b1351"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-c6294fc864410f0a88b75f9b80eb9043"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-9b068f84ccae22931fe8c10271b5789b"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_138b7f6e7bdb525ae8f09233e2004c82/content",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-81911a6377283af959d2973a06a90705"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "beta",
+              "status": 404,
+              "query": "",
+              "trace": "req-985dc7cdb4cded06866b7d9015fff315"
+            }
+          ],
+          "control": {
+            "method": "GET",
+            "path": "/v1/capabilities",
+            "status": 200,
+            "trace": "req-5919117352fb455bed94030130fa43d7",
+            "sdk": false
+          },
+          "cleanup": [],
+          "raw_sha256": {
+            "prepare-requests.json": "e2233e1023614d1fedd0cefb0eb6990f562aab70c5c5928c5eadfb584f6fa2e9",
+            "prepare-actor.json": "0ca08d798d9595d2d28229b68b2087ca642322ba2d6c58a4c58e3f76bc571cce",
+            "prepare-snapshots.json": "7fa3428bc58a2c9c6c23db11d3e55916d53564cc13e29ea5181c619156b33a52",
+            "prepare-control.json": "3521a8370098d66bd47317dbe1d64d11bc46f8919380fecc0e9399928ea9a88e",
+            "prepare-capabilities.json": "6d070b31d2be1e5666b5302113254b06db4cee976c34ac86b2ccd8004d09c570",
+            "prepare-terminals.json": "be81aacb009a67d5482dae2e35a8443defed02324cd44909d05b5b6bba204744"
+          }
+        },
+        "restore": {
+          "index": {
+            "job": "tool_run_4dd73c75717964f99e9c3fc7d09f1217",
+            "store": "vs_e8e766eefeafccd0838d33612a2b14fb",
+            "file": "file_5733067e49d4fc441db1ea4db10616d2",
+            "source_sha256": "c748476dc8cb14b75e9c79bfc82bc7ce4d567d75ad202a472797525c7f876942",
+            "dimensions": 1024,
+            "vectors_bytes": 16384,
+            "chunks": 4,
+            "binding": "e5e32934e993d74a66e98978f60207d3ca1b60e6b0a76f0c4612ae07d53a0a14",
+            "usage_bytes": 18611
+          },
+          "traces": [
+            "req-e40eae3c02298b9b7704fdcbe5450f40",
+            "req-b3b481704fd54169618fc423c56aab82",
+            "req-b17187a7b5f4b3128c3c6b7efc0fb8df",
+            "req-5f2271ab62029610994ef21e67f8b094",
+            "req-f44a52a411c77524746b2fb74d6c4eca",
+            "req-9e5c6c4c14836d2809b6adf7254c2bd1",
+            "req-93d0592a858bfec6d31835e1fd3e7c13",
+            "req-5b37dd0aa7cf7aa86c6c9b72123eee63",
+            "req-d5954467c3b53ec98f6d82f6057039d6",
+            "req-a89567932236a101275d65d7d2763762",
+            "req-38647b1dd741c10dca4c2b53f3c1146b",
+            "req-ed6cbe89c36363218e37eb99393dbf8f",
+            "req-67227de30589e61bb3a7a761b6feeeb4",
+            "req-7980550c111282ce6e93cb8b8fd0b778",
+            "req-4693d1b582b204fea4c78d68d939949e",
+            "req-22c61a3eac7c1141d78bca6b40a9e28e",
+            "req-237e7b2231957db4c27f747648deccdd",
+            "req-0a48eb4ec326cfce19aa683e987c576f",
+            "req-1724de77c01eef6544772b6f77d11817"
+          ],
+          "stock_sdk_indices": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+          ],
+          "model_log": "state/runs/d94a1960-836a-4a6d-ae11-3f863729d2dd/fallback/controller-2/model-2/model.log",
+          "terminals": 4,
+          "requests": [
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-b3b481704fd54169618fc423c56aab82"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-b17187a7b5f4b3128c3c6b7efc0fb8df"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_138b7f6e7bdb525ae8f09233e2004c82/content",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-5f2271ab62029610994ef21e67f8b094"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-f44a52a411c77524746b2fb74d6c4eca"
+            },
+            {
+              "method": "POST",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-9e5c6c4c14836d2809b6adf7254c2bd1"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-93d0592a858bfec6d31835e1fd3e7c13"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-5b37dd0aa7cf7aa86c6c9b72123eee63"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-d5954467c3b53ec98f6d82f6057039d6"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-a89567932236a101275d65d7d2763762"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-38647b1dd741c10dca4c2b53f3c1146b"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_5733067e49d4fc441db1ea4db10616d2/content",
+              "scope": "alpha",
+              "status": 200,
+              "query": "",
+              "trace": "req-ed6cbe89c36363218e37eb99393dbf8f"
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "scope": "beta",
+              "status": 404,
+              "query": "",
+              "trace": "req-67227de30589e61bb3a7a761b6feeeb4"
+            }
+          ],
+          "control": {
+            "method": "GET",
+            "path": "/v1/capabilities",
+            "status": 200,
+            "trace": "req-e40eae3c02298b9b7704fdcbe5450f40",
+            "sdk": false
+          },
+          "cleanup": [
+            {
+              "method": "DELETE",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb",
+              "status": 200,
+              "trace": "req-7980550c111282ce6e93cb8b8fd0b778",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "status": 200,
+              "trace": "req-4693d1b582b204fea4c78d68d939949e",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_138b7f6e7bdb525ae8f09233e2004c82",
+              "status": 404,
+              "trace": "req-22c61a3eac7c1141d78bca6b40a9e28e",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "DELETE",
+              "path": "/v1/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "status": 200,
+              "trace": "req-237e7b2231957db4c27f747648deccdd",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "GET",
+              "path": "/v1/files/file_5733067e49d4fc441db1ea4db10616d2",
+              "status": 404,
+              "trace": "req-0a48eb4ec326cfce19aa683e987c576f",
+              "scope": "alpha",
+              "query": ""
+            },
+            {
+              "method": "GET",
+              "path": "/v1/vector_stores/vs_e8e766eefeafccd0838d33612a2b14fb",
+              "status": 404,
+              "trace": "req-1724de77c01eef6544772b6f77d11817",
+              "scope": "alpha",
+              "query": ""
+            }
+          ],
+          "raw_sha256": {
+            "restore-requests.json": "fa8c994872a36c52eaa3e2d0195f6cba3f647181b6df7147f49ee927b2b00520",
+            "restore-actor.json": "2c894a455e9ac06fe0ccde5d859f42d243ff93ffa6bdcba318a7e77ef2c9721d",
+            "restore-snapshots.json": "86cf046f138068878959d566acd94a9de2b724590983508c8724e385dd4e0c91",
+            "restore-control.json": "6897d4095255a1552046935ec3f1a577792c6f82a35c7eafd67b1077816934f1",
+            "restore-capabilities.json": "6d070b31d2be1e5666b5302113254b06db4cee976c34ac86b2ccd8004d09c570",
+            "restore-terminals.json": "4b5c2a0cb577f15c04dd7849d83a06b81135cff1d6792723e05c726631b19ba7",
+            "cleanup-requests.json": "38d0cda2f241935cd35588f482d83b7830ef38e846589902f0baac94c12fa48e"
+          }
+        }
+      },
+      "lease_sha256": "a2c2807474d25b6af7daa1530ca11acead4bc5130cf4a2eb005ff5aceb1e6bca",
+      "default_unchanged": true,
+      "ports_free": true,
+      "nvml_samples": 382,
+      "model_starts": 2,
+      "seconds": 413.6617484721355,
+      "origin_sha256": "8d77754ee1a6685f5a78b05ca2695b96017c59b8709709b63fbf16b2b7e65f87",
+      "taken_over_by": "7833d90fc3332329f6e6ba31410d7eb8bb86ac2c1c758c9a92008e3579d18794"
+    }
+  }
+}

@@ -1,5 +1,7 @@
 # 当前状态（2026-11-29）
 
+模型重建与网关切换后均读回故障前的索引及来源文件，新的索引任务在第二代模型完成。两代的原生结束日志与持久分块逐项相符，跨客户访问返回 404，独立 Chat 回答 42。下一步发布已验回退包。 [托管恢复回执](evidence/serve-vector-ingestion-diagnostics-20261128/managed.json)
+
 两份新容量记录可按摘要还原 rev610 原记录，索引诊断与主轻两档实测结束日志逐一对应。核对 CMake 改动仅新增一项测试文件后，更新来源摘要，40 项反例检查通过。下一步封包及验证托管恢复。 [登记回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity.json)
 
 主、轻两档各用一次真实模型启动，完成项目文档索引。持久化向量的分块数与成功释放槽位的结束事件逐项吻合，跨客户读取返回 404，独立 Chat 均回答 42。下一步登记容量与回退包。 [回执](evidence/serve-vector-ingestion-diagnostics-20261128/capacity-business.json)

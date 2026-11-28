@@ -10868,17 +10868,17 @@
         "delivery": "evidence/serve-memory-watchdog-stall-20261128/delivery.json"
       },
       "vector_ingestion_diagnostics_20261128": {
-        "status": "capacity_registered",
+        "status": "managed_accepted",
         "receipt": "evidence/serve-vector-ingestion-diagnostics-20261128/cpu.json",
         "observed_successful_chunks_mislabeled": 15,
         "distinct_jobs": 5,
         "remaining": [
-          "sealed packages and managed recovery",
           "default publication and main integration"
         ],
         "device": "evidence/serve-vector-ingestion-diagnostics-20261128/device.json",
         "capacity_business": "evidence/serve-vector-ingestion-diagnostics-20261128/capacity-business.json",
-        "capacity_qualification": "evidence/serve-vector-ingestion-diagnostics-20261128/capacity.json"
+        "capacity_qualification": "evidence/serve-vector-ingestion-diagnostics-20261128/capacity.json",
+        "managed_receipt": "evidence/serve-vector-ingestion-diagnostics-20261128/managed.json"
       }
     },
     {
