@@ -418,6 +418,12 @@ def semantic_capabilities(value):
     realtime_pending_capabilities(result)
     realtime_prompt_capabilities(result)
     responses = result.get('responses')
+    agents = responses.get('multi_agent') if type(responses) is dict else None
+    if type(agents) is dict and 'output_items' in agents:
+        from tools.serve_recovery import profile_live_reuse as live
+        ledger.require(responses.get('beta_query_selector') == 'beta=true' and
+                       live.valid_multi_agent(agents), 'invalid beta agent output contract')
+        agents['output_items'] = {item: True for item in agents['output_items']}
     if type(responses) is dict and 'output_items' in responses:
         items = responses['output_items']
         ledger.require(type(items) is list and all(type(x) is str for x in items)

@@ -1,0 +1,48 @@
+{
+  "status": "PASS_TARGETED_CPU",
+  "candidate_protocol": "8e6af6d0ee6b894c4216361b354711cfd8a39206590bb08d5068b12d70c86358",
+  "candidate_sha256": "9ce1fcace0fb0485c70aa7994976ee1a61b56b22951ac655542ec53a475b77cc",
+  "full_build_id": "1fa2423c935a96d4a7681ff708957db30b02ad3e307b9bea12e4e716931b5460",
+  "incremental_build_id": "532dfde543a631697d371fedb7b9b69bb49ba6eeef8a920037560ba25a51cc39",
+  "prior_omission": "cb6bb80ca21358dc223aec2371a18f1040ddc31d51cf1de521bab2294a6a1f74",
+  "api": {
+    "ordinary_types": 18,
+    "selector": "responses_multi_agent=v1",
+    "conditional_types": [
+      "multi_agent_call",
+      "multi_agent_call_output"
+    ]
+  },
+  "original_qualified_runs": {
+    "primary": {
+      "profile_sha256": "251f4fa11724a614834663421b527250ca83133a73668d2927b23d1f589c1d3d",
+      "wire_sha256": "2390573475bc05d82fe1a473872f38ae815428c1280bf1a6f0e3eb6f37773fe5",
+      "response": "resp_bf67601f3d67903a3b62b98269f24951",
+      "actions": [
+        "spawn_agent",
+        "wait_agent"
+      ],
+      "call_result_pairs": 2
+    },
+    "light": {
+      "profile_sha256": "c696545ba4385e64e9d921a6cda15d9d7f3bbecb9a53f90f9309f1e66c4fdfbf",
+      "wire_sha256": "9d49e2d23c2ab415a0f5914d82c75c45c1ffa3fc6909896b12c5da855c306387",
+      "response": "resp_b93d32747abcffb286f266581c483f6f",
+      "actions": [
+        "spawn_agent",
+        "wait_agent"
+      ],
+      "call_result_pairs": 2
+    }
+  },
+  "native": {
+    "tests": 34,
+    "sha256": "23d45a64dc75a6d0384561dfe8d8ee88ec980961e965ab4903720ef9492d3eb0"
+  },
+  "migration": {
+    "tests": 52,
+    "sha256": "84ccb60271fe2d28413a0163bf0cf48f76d77248f168731264b2ec5998061325"
+  },
+  "candidate_model_starts": 0,
+  "delivery": "candidate; authentic HTTP verification and publication pending"
+}

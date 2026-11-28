@@ -7,6 +7,8 @@ Serve总目标仍为 **active**。按[完整计划](SERVE_MASTER_PLAN_2026-11-08
 
 ## 正在推进
 
+多代理 Beta 的调用和结果类型已在各自选择器下声明。普通客户端仍看到 18 个通用输出类型，启用 `responses_multi_agent=v1` 时可另外发现两个类型。两个历史已验收容量均实际发出这两种条目。34 项原生合同与 52 项迁移 CPU 测试通过，联合候选已构建，真实 HTTP 短验待完成。[分协议验收](evidence/serve-interpreter-output-discovery-20261128/beta-contract.json)
+
 Responses 的能力发现候选已补上原生解释器实际返回的 `code_interpreter_call`。已回查主包和回退包的四份真实 SSE 与四份后续能力快照，新增回归覆盖从原生终态到公开声明及恢复合同的匹配。18 项原生和 51 项迁移 CPU 测试通过；候选 HTTP 短验与发行待完成。[合同与原始数据摘要](evidence/serve-interpreter-output-discovery-20261128/contract.json)
 
 已验收两个托管恢复场景：回退包的模型退出后恢复，主包的网关故障后切换到已登记的独立回退包。每个场景在故障前后各完成一次真实 SDK 转录，四条请求 ID 独立，均识别出两位说话人。两次后续 Chat 均答 42。正式发行登记待完成。 [托管恢复记录](evidence/serve-transcription-discovery-20261128/managed.json)

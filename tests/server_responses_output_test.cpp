@@ -30,7 +30,29 @@ Json Options() {
   if (!status) throw std::runtime_error(status.message());
   return options;
 }
-bool Events(const std::string& wire, std::vector<Json>* out) {
+bool AdvertisesOutputItem(const Json& item, bool multi_agent = false) {
+  static const Json discovery = [] {
+    Json value;
+    if (!q4t::io::ParseJson(ChatCapabilitiesJson("q4t", false, true), &value))
+      throw std::runtime_error("Invalid capabilities document");
+    return value;
+  }();
+  const auto* responses = discovery.Find("responses");
+  const auto type = item.GetString("type");
+  const auto declares = [&](const Json* profile) {
+    const auto* types = profile ? profile->GetArray("output_items") : nullptr;
+    if (!types) return false;
+    const auto matches = [&](const Json& entry) {
+      return entry.IsString() && entry.str == type;
+    };
+    return std::count_if(types->array.begin(), types->array.end(), matches) == 1;
+  };
+  return declares(responses) ||
+         (multi_agent && responses && declares(responses->Find("multi_agent")));
+}
+
+bool Events(const std::string& wire, std::vector<Json>* out,
+            bool multi_agent = false) {
   size_t begin = 0;
   while (begin < wire.size()) {
     const auto end = wire.find("\r\n\r\n", begin);
@@ -46,6 +68,19 @@ bool Events(const std::string& wire, std::vector<Json>* out) {
         event.GetInt("sequence_number", -1) !=
             static_cast<int64_t>(out->size()))
       return false;
+    const auto type = event.GetString("type");
+    if (type == "response.output_item.added" ||
+        type == "response.output_item.done") {
+      const auto* item = event.Find("item");
+      Q4T_CHECK(item && AdvertisesOutputItem(*item, multi_agent));
+    }
+    if (const auto* response = event.Find("response")) {
+      if (const auto* items = response->GetArray("output"))
+        Q4T_CHECK(std::all_of(items->array.begin(), items->array.end(),
+                             [&](const auto& item) {
+                               return AdvertisesOutputItem(item, multi_agent);
+                             }));
+    }
     out->push_back(std::move(event));
     begin = end + 4;
   }
@@ -436,7 +471,8 @@ Q4T_TEST(responses_beta_agent_result_preserves_scores_and_projects_history) {
   Q4T_CHECK(output.Fail("explicit_cancel", "stopped", &part));
   wire += part;
   std::vector<Json> events;
-  Q4T_CHECK(Events(wire, &events));
+  Q4T_CHECK(!AdvertisesOutputItem(item));
+  Q4T_CHECK(Events(wire, &events, true));
   const auto projected = ResponsesWireValue(item);
   const auto* scores =
       projected.GetArray("output")->array[0].GetArray("logprobs");
@@ -1178,19 +1214,8 @@ Q4T_TEST(hosted_python_terminal_item_is_advertised_by_capabilities) {
   Q4T_CHECK(items && index < items->array.size());
   const auto& item = items->array[index];
   Q4T_CHECK(item.GetString("status") == "completed");
-  const auto type = item.GetString("type");
-  Q4T_CHECK(type == "code_interpreter_call");
-
-  Json discovery;
-  Q4T_CHECK(q4t::io::ParseJson(ChatCapabilitiesJson("q4t", false, true),
-                               &discovery));
-  const auto* responses = discovery.Find("responses");
-  const auto* advertised = responses ? responses->GetArray("output_items")
-                                     : nullptr;
-  Q4T_CHECK(advertised && std::count_if(advertised->array.begin(),
-      advertised->array.end(), [&](const Json& entry) {
-        return entry.IsString() && entry.str == type;
-      }) == 1);
+  Q4T_CHECK(item.GetString("type") == "code_interpreter_call" &&
+            AdvertisesOutputItem(item));
   return true;
 }
 

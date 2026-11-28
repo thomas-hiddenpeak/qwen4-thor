@@ -10,6 +10,7 @@ BETA_FORMAT = 'q4t-live-beta-profile-source-reuse-v1'
 BETA_RECORD_FORMAT = 'q4t-profile-business-v24'
 AGENT_RECORD_FORMAT = 'q4t-profile-business-v25'
 AGENT_FORMAT = 'q4t-agent-profile-source-reuse-v1'
+MULTI_AGENT_OUTPUT_TYPES = ('multi_agent_call', 'multi_agent_call_output')
 AGENT_REFRESH = 'q4t-agent-profile-requalification-v1'
 REGISTRATION_RECORD = 'q4t-profile-business-v26'
 REGISTRATION_FORMAT = 'q4t-agent-registration-profile-source-v1'
@@ -1144,6 +1145,21 @@ def layer_file_inputs(previous):
         'timeline': 'movie', 'background': 'black', 'frozen_conversion': 'q4t.cpu_video_png.v9'}))
 
 
+def valid_multi_agent(capability):
+    if type(capability) is not dict:
+        return False
+    expected = dict(selector='responses_multi_agent=v1', default_max_concurrent_subagents=3,
+                    shared_output_budget=True, agent_events=True, actions=['spawn_agent',
+                    'interrupt_agent', 'list_agents', 'send_message', 'followup_task', 'wait_agent'])
+    if 'output_items' in capability:
+        items = capability['output_items']
+        if (type(items) is not list or not all(type(i) is str for i in items) or
+                sorted(items) != list(MULTI_AGENT_OUTPUT_TYPES)):
+            return False
+        expected['output_items'] = items
+    return ledger.canonical(capability) == ledger.canonical(expected)
+
+
 def format_for(capabilities, evidence=None):
     if 'video_characters' in capabilities:
         prior = dict(capabilities)
@@ -1549,10 +1565,7 @@ def format_for(capabilities, evidence=None):
         ledger.require(capabilities['responses']['beta_query_selector'] == 'beta=true',
                        'unknown qualified Responses Beta selector')
         if 'multi_agent' in capabilities['responses']:
-            ledger.require(capabilities['responses']['multi_agent'] == dict(
-                selector='responses_multi_agent=v1', default_max_concurrent_subagents=3,
-                shared_output_budget=True, agent_events=True, actions=['spawn_agent',
-                'interrupt_agent', 'list_agents', 'send_message', 'followup_task', 'wait_agent']),
+            ledger.require(valid_multi_agent(capabilities['responses']['multi_agent']),
                 'unknown qualified hosted Responses agent capabilities')
             if 'agent_registration' in capabilities:
                 ledger.require(capabilities['agent_registration'] == REGISTRATION_CAPABILITY,

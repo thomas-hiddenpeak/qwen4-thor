@@ -278,6 +278,7 @@ std::string ChatCapabilitiesJson(
          R"("endpoint":"/v1/responses","shared_native_generation":true,)"
          R"("beta_query_selector":"beta=true",)"
          R"("multi_agent":{"selector":"responses_multi_agent=v1",)"
+         R"("output_items":["multi_agent_call","multi_agent_call_output"],)"
          R"("actions":["spawn_agent","interrupt_agent","list_agents",)"
          R"("send_message","followup_task","wait_agent"],)"
          R"("default_max_concurrent_subagents":3,"shared_output_budget":true,)"
