@@ -1,0 +1,166 @@
+{
+  "stage": "official_sdk_transport_checked",
+  "business_verified": false,
+  "model_starts": 0,
+  "transport": {
+    "scope": "CPU transport and request body only",
+    "groups": {
+      "python-2.8.1-plain": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-fixture-1"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 404,
+          "trace": "req-fixture-2"
+        }
+      ],
+      "python-2.33.0-plain": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-fixture-3"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 404,
+          "trace": "req-fixture-4"
+        }
+      ],
+      "python-3.42.1-plain": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-fixture-5"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 404,
+          "trace": "req-fixture-6"
+        }
+      ],
+      "python-3.42.1-beta": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-fixture-7"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-fixture-8"
+        }
+      ],
+      "python-3.55.1-plain": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-fixture-9"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 404,
+          "trace": "req-fixture-10"
+        }
+      ],
+      "python-3.55.1-beta": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-fixture-11"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-fixture-12"
+        }
+      ],
+      "node-6.34.0-plain": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-fixture-13"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 404,
+          "trace": "req-fixture-14"
+        }
+      ],
+      "node-7.47.0-plain": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "",
+          "status": 200,
+          "trace": "req-fixture-15"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "",
+          "status": 404,
+          "trace": "req-fixture-16"
+        }
+      ],
+      "node-7.47.0-beta": [
+        {
+          "method": "POST",
+          "path": "/v1/responses/input_tokens",
+          "query": "beta=true",
+          "status": 200,
+          "trace": "req-fixture-17"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/responses",
+          "query": "beta=true",
+          "status": 404,
+          "trace": "req-fixture-18"
+        }
+      ]
+    },
+    "requests": 18,
+    "model_starts": 0
+  },
+  "first_transport_check": "The first CPU probe required the literal error code in exception text. Python 3.42.1 reported the expected HTTP 404 and message. A second probe compared actual server and SDK request paths, selectors and request IDs.",
+  "distinct_receipt_tests": 5,
+  "existing_matrix_tests": 7,
+  "receipt_tests_sha256": "dc6bcf33630fa4e903b9990c8389fb83992eb09a2bbf848c110e2979befb1216",
+  "combined_tests_sha256": "f29f7827b66a1937eec363ec247bf347476092ad98d6e1de4cef3111b610bef6",
+  "limits": {
+    "launches": 1,
+    "requests": 60,
+    "seconds": 300
+  }
+}

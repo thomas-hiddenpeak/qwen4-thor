@@ -3364,6 +3364,11 @@
         "managed": "evidence/serve-chatkit-pending-user-message-20261127/managed.json",
         "revision": 584,
         "delivery": "evidence/serve-chatkit-pending-user-message-20261127/delivery.json"
+      },
+      "responses_sdk_handoff_20261128": {
+        "stage": "cpu_transport_checked",
+        "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
+        "issued_business": false
       }
     },
     {
@@ -9794,6 +9799,11 @@
         "success_pairs": 36,
         "starts": 1,
         "requests": 60
+      },
+      "responses_sdk_handoff_20261128": {
+        "stage": "cpu_transport_checked",
+        "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
+        "issued_business": false
       }
     },
     {
@@ -12977,6 +12987,11 @@
         "success_pairs": 36,
         "starts": 1,
         "requests": 60
+      },
+      "responses_sdk_handoff_20261128": {
+        "stage": "cpu_transport_checked",
+        "cpu": "evidence/serve-responses-sdk-business-20261128/cpu.json",
+        "issued_business": false
       }
     },
     {
